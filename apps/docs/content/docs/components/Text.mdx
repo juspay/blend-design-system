@@ -1,0 +1,119 @@
+---
+title: Text
+description: A versatile text component with semantic HTML support, typography variants, and comprehensive styling options for consistent text rendering across the design system.
+---
+
+
+# Text Component Documentation
+
+## Description
+A versatile text component with semantic HTML support, typography variants, and comprehensive styling options for consistent text rendering across the design system.
+
+## Features
+- Multiple typography variants (body, display, heading, code)
+- Semantic HTML tag support (p, h1-h5, span, code, etc.)
+- Automatic semantic tag selection based on variant
+- Custom font size and weight overrides
+- Color customization support
+- Text truncation capabilities
+- Responsive typography scaling
+- Accessible markup generation
+- Custom styling support
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `children` | `React.ReactNode` | Yes | The text content to display | `-` |
+| `as` | `SemanticTagType` | No | HTML semantic tag to render (overrides automatic tag selection) | `auto-selected based on variant` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `variant` | `VariantType` | No | Typography variant that determines font size and semantic meaning | `undefined` |
+| `color` | `string` | No | Text color (supports theme color tokens) | `inherit` |
+| `fontWeight` | `number \| string` | No | Font weight override | `undefined` |
+| `fontSize` | `number \| string` | No | Font size override (bypasses variant sizing) | `undefined` |
+
+### Behavior
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `truncate` | `boolean` | No | Whether to truncate text with ellipsis when it overflows | `false` |
+
+### Styling
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `style` | `React.CSSProperties` | No | Custom CSS styles to apply to the text element | `undefined` |
+
+## Usage Examples
+
+### Basic Text with Variants
+Text using different typography variants
+
+```tsx
+<Text variant="body.md">
+  This is body text in medium size.
+</Text>
+
+<Text variant="heading.lg">
+  This is a large heading
+</Text>
+
+<Text variant="code.sm">
+  console.log('Hello World');
+</Text>
+```
+
+### Custom Semantic Tags
+Text with explicit semantic HTML tags
+
+```tsx
+<Text variant="heading.xl" as="h1">
+  Main Page Title
+</Text>
+
+<Text variant="body.sm" as="span" color="gray.600">
+  Subtitle or description text
+</Text>
+
+<Text as="label" fontWeight={600}>
+  Form Label
+</Text>
+```
+
+### Text with Custom Styling
+Text with custom colors, weights, and truncation
+
+```tsx
+<Text 
+  variant="body.lg"
+  color="primary.500"
+  fontWeight={700}
+  truncate={true}
+  style={{ maxWidth: '200px' }}
+>
+  This text will be truncated if it's too long
+</Text>
+```
+
+### Display and Heading Variants
+Large display text and various heading sizes
+
+```tsx
+<Text variant="display.xl">
+  Hero Display Text
+</Text>
+
+<Text variant="heading.2xl">
+  Section Title
+</Text>
+
+<Text variant="heading.md" color="gray.700">
+  Subsection Heading
+</Text>
+```

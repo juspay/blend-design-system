@@ -1,0 +1,102 @@
+---
+title: Button
+description: A versatile button component with multiple variants, sizes, and states for user interactions.
+---
+
+import { BlendTypeTable } from "@/components/ui/BlendTypeTable";
+import buttonMeta from "@/meta/button.context";
+
+# Button Component Documentation
+
+## Description
+A versatile button component with multiple variants, sizes, and states for user interactions.
+
+## Features
+- Multiple button types (primary, secondary, danger, success)
+- Three sizes (small, medium, large)
+- Loading and disabled states
+- Icon support (leading and trailing)
+- Full width option
+- Flexible content alignment
+- Button group positioning support
+
+## Props
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `buttonType` | `ButtonTypeV2` | No | The type of button to use | `ButtonTypeV2.PRIMARY` |
+| `size` | `ButtonSizeV2` | No | The size of the button | `ButtonSizeV2.MEDIUM` |
+| `subType` | `ButtonSubTypeV2` | No | The subtype of the button | `ButtonSubTypeV2.DEFAULT` |
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `text` | `string` | No | The text content of the button | `undefined` |
+| `leadingIcon` | `React.ReactNode` | No | Icon to display before the button text | `undefined` |
+| `trailingIcon` | `React.ReactNode` | No | Icon to display after the button text | `undefined` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `disabled` | `boolean` | No | Whether the button is disabled | `false` |
+| `loading` | `boolean` | No | Whether the button is in loading state | `false` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onClick` | `function` | No | Callback function called when button is clicked | `undefined` |
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `buttonGroupPosition` | `'center' \| 'left' \| 'right'` | No | Position of the button within a button group | `undefined` |
+| `fullWidth` | `boolean` | No | Whether the button should take full width of its container | `false` |
+| `justifyContent` | `CSSObject['justifyContent']` | No | CSS justify-content property for button content alignment | `undefined` |
+
+## Usage Examples
+
+### Basic Button
+Simple button with text
+
+```tsx
+<Button text="Click me" buttonType={ButtonTypeV2.PRIMARY} />
+```
+
+### Button with Icons
+Button with leading and trailing icons
+
+```tsx
+<Button 
+  text="Save" 
+  leadingIcon={<SaveIcon />} 
+  buttonType={ButtonTypeV2.SUCCESS} 
+/>
+```
+
+### Loading Button
+Button in loading state
+
+```tsx
+<Button 
+  text="Processing..." 
+  loading={true}
+  buttonType={ButtonTypeV2.PRIMARY} 
+/>
+```
+
+### Full Width Button
+Button that takes full width of container
+
+```tsx
+<Button 
+  text="Full Width" 
+  fullWidth={true}
+  buttonType={ButtonTypeV2.SECONDARY} 
+/>
+```

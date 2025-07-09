@@ -1,0 +1,28 @@
+
+
+> nextdocs@0.1.0 build /Users/harsh.sharma.001/Documents/Git/juspay-design-system/cloved/apps/nextdocs
+> next build
+
+   [1m[38;2;173;127;168m▲ Next.js 15.3.5[39m[22m
+
+ [37m[1m [22m[39m Creating an optimized production build ...
+ [32m[1m✓[22m[39m Compiled successfully in 6.0s
+[?25l [37m[1m [22m[39m Linting and checking validity of types  [36m.[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m..[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m...[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m.[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m..[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m...[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m.[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m..[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m...[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m.[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m..[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m...[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m.[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m..[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m...[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m.[39m[2K[1G[?25h [37m[1m [22m[39m Linting and checking validity of types     [32m[1m✓[22m[39m Linting and checking validity of types 
+[?25l [37m[1m [22m[39m Collecting page data  [36m.[39m[2K[1G [37m[1m [22m[39m Collecting page data  [36m..[39m[2K[1G [37m[1m [22m[39m Collecting page data  [36m...[39m[2K[1G [37m[1m [22m[39m Collecting page data  [36m.[39m[2K[1G[?25h [37m[1m [22m[39m Collecting page data     [32m[1m✓[22m[39m Collecting page data 
+[?25l [37m[1m [22m[39m Generating static pages (0/6)  [36m[    ][39m[2K[1G [37m[1m [22m[39m Generating static pages (0/6)  [36m[=   ][39m[2K[1G [37m[1m [22m[39m Generating static pages (0/6)  [36m[==  ][39m[2K[1G [37m[1m [22m[39m Generating static pages (0/6)  [36m[=== ][39m[2K[1G[?25h [32m[1m✓[22m[39m Generating static pages (6/6)
+[?25l [37m[1m [22m[39m Finalizing page optimization  [36m.[39m[?25l [37m[1m [22m[39m Collecting build traces  [36m.[39m[2K[1G[?25h [37m[1m [22m[39m Collecting build traces     [32m[1m✓[22m[39m Collecting build traces 
+[2K[1G[?25h [37m[1m [22m[39m Finalizing page optimization     [32m[1m✓[22m[39m Finalizing page optimization 
+
+[4mRoute (app)[24m                                 [4mSize[24m  [4mFirst Load JS[24m  [4m[24m  [4m[24m
+┌ ○ /                                      139 B         [37m[1m102 kB[22m[39m
+├ ○ /_not-found                            977 B         [37m[1m102 kB[22m[39m
+└ ○ /docs                                  139 B         [37m[1m102 kB[22m[39m
++ First Load JS shared by all             [37m[1m101 kB[22m[39m
+  ├ chunks/2328953d-5482de88ba362295.js  53.2 kB
+  ├ chunks/518-54a1507de1ca022e.js       46.4 kB
+  └ other shared chunks (total)          1.83 kB
+
+
+○  (Static)  prerendered as static content
+
+[?25h

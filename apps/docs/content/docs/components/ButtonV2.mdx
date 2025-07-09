@@ -1,0 +1,142 @@
+---
+title: Buttonv2
+description: An enhanced button component with comprehensive styling options, multiple variants, loading states, and flexible layout configurations for modern user interfaces.
+---
+
+import { BlendTypeTable } from "@/components/ui/BlendTypeTable";
+import buttonv2Meta from "@/meta/buttonv2.context";
+
+# ButtonV2 Component Documentation
+
+## Description
+An enhanced button component with comprehensive styling options, multiple variants, loading states, and flexible layout configurations for modern user interfaces.
+
+## Features
+- Four button types (primary, secondary, danger, success)
+- Three sizes (small, medium, large)
+- Multiple subtypes (default, icon-only, inline)
+- Loading state with spinner
+- Leading and trailing icon support
+- Full width option
+- Button group integration
+- Disabled state handling
+- Flexible content justification
+- Accessible design
+
+## Props
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `buttonType` | `ButtonTypeV2` | No | The visual type/variant of the button | `ButtonTypeV2.PRIMARY` |
+| `size` | `ButtonSizeV2` | No | The size of the button | `ButtonSizeV2.MEDIUM` |
+| `subType` | `ButtonSubTypeV2` | No | The subtype that affects button styling and behavior | `ButtonSubTypeV2.DEFAULT` |
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `text` | `string` | No | The text content displayed in the button | `undefined` |
+| `leadingIcon` | `React.ReactNode` | No | Icon element to display before the button text | `undefined` |
+| `trailingIcon` | `React.ReactNode` | No | Icon element to display after the button text | `undefined` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `disabled` | `boolean` | No | Whether the button is disabled and non-interactive | `false` |
+| `loading` | `boolean` | No | Whether the button is in a loading state with spinner | `false` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onClick` | `() => void` | No | Callback function called when the button is clicked | `undefined` |
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `buttonGroupPosition` | `'center' \| 'left' \| 'right'` | No | Position of the button within a button group | `undefined` |
+| `fullWidth` | `boolean` | No | Whether the button should take the full width of its container | `false` |
+| `justifyContent` | `CSSObject['justifyContent']` | No | CSS justify-content property for button content alignment | `undefined` |
+
+## Usage Examples
+
+### Basic Button Types
+Different button types with text
+
+```tsx
+<ButtonV2 
+  text="Primary Action" 
+  buttonType={ButtonTypeV2.PRIMARY} 
+  size={ButtonSizeV2.MEDIUM}
+/>
+
+<ButtonV2 
+  text="Secondary Action" 
+  buttonType={ButtonTypeV2.SECONDARY} 
+/>
+
+<ButtonV2 
+  text="Delete Item" 
+  buttonType={ButtonTypeV2.DANGER} 
+/>
+```
+
+### Buttons with Icons
+Buttons with leading and trailing icons
+
+```tsx
+<ButtonV2 
+  text="Save Document" 
+  buttonType={ButtonTypeV2.SUCCESS}
+  leadingIcon={<SaveIcon />}
+  size={ButtonSizeV2.LARGE}
+/>
+
+<ButtonV2 
+  text="Download" 
+  buttonType={ButtonTypeV2.SECONDARY}
+  trailingIcon={<DownloadIcon />}
+/>
+```
+
+### Icon-Only and Loading States
+Icon-only buttons and loading state
+
+```tsx
+<ButtonV2 
+  leadingIcon={<EditIcon />}
+  subType={ButtonSubTypeV2.ICON_ONLY}
+  buttonType={ButtonTypeV2.SECONDARY}
+  size={ButtonSizeV2.SMALL}
+/>
+
+<ButtonV2 
+  text="Processing..." 
+  buttonType={ButtonTypeV2.PRIMARY}
+  loading={true}
+  disabled={true}
+/>
+```
+
+### Full Width and Inline Buttons
+Full width and inline button variants
+
+```tsx
+<ButtonV2 
+  text="Full Width Button" 
+  buttonType={ButtonTypeV2.PRIMARY}
+  fullWidth={true}
+  size={ButtonSizeV2.LARGE}
+/>
+
+<ButtonV2 
+  text="Inline Link" 
+  subType={ButtonSubTypeV2.INLINE}
+  buttonType={ButtonTypeV2.SECONDARY}
+  onClick={() => handleInlineAction()}
+/>
+```

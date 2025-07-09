@@ -1,0 +1,126 @@
+---
+title: Tooltip
+description: A flexible tooltip component for displaying contextual information on hover or focus with customizable positioning, sizing, and content slots.
+---
+
+
+# Tooltip Component Documentation
+
+## Description
+A flexible tooltip component for displaying contextual information on hover or focus with customizable positioning, sizing, and content slots.
+
+## Features
+- Multiple positioning options (top, right, bottom, left)
+- Flexible alignment (start, center, end)
+- Two sizes (small, large)
+- Optional arrow indicator
+- Custom content slots with directional placement
+- Controlled and uncontrolled modes
+- Customizable delay duration
+- Offset positioning control
+- Accessible design with proper ARIA attributes
+- Keyboard navigation support
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `children` | `ReactNode` | Yes | The trigger element that will show the tooltip on hover/focus | `-` |
+| `content` | `ReactNode \| string` | Yes | The content to display inside the tooltip | `-` |
+| `slot` | `ReactNode` | No | Additional content slot within the tooltip | `undefined` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `open` | `boolean` | No | Controlled open state of the tooltip | `undefined` |
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `side` | `TooltipSide` | No | The side where the tooltip should appear relative to the trigger | `TooltipSide.TOP` |
+| `align` | `TooltipAlign` | No | The alignment of the tooltip relative to the trigger | `TooltipAlign.CENTER` |
+| `slotDirection` | `TooltipSlotDirection` | No | Direction of the slot content placement | `TooltipSlotDirection.RIGHT` |
+| `offset` | `number` | No | Distance in pixels between the tooltip and trigger element | `5` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `showArrow` | `boolean` | No | Whether to show an arrow pointing to the trigger element | `false` |
+| `size` | `TooltipSize` | No | Size variant of the tooltip | `TooltipSize.SMALL` |
+
+### Behavior
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `delayDuration` | `number` | No | Delay in milliseconds before the tooltip appears | `700` |
+
+## Usage Examples
+
+### Basic Tooltip
+Simple tooltip with text content
+
+```tsx
+<Tooltip content="This is a helpful tooltip">
+  <Button>Hover me</Button>
+</Tooltip>
+```
+
+### Tooltip with Custom Positioning
+Tooltip with specific side and alignment
+
+```tsx
+<Tooltip 
+  content="Positioned tooltip"
+  side={TooltipSide.RIGHT}
+  align={TooltipAlign.START}
+  showArrow={true}
+  size={TooltipSize.LARGE}
+>
+  <IconButton icon={<InfoIcon />} />
+</Tooltip>
+```
+
+### Tooltip with Rich Content
+Tooltip containing complex content and custom slot
+
+```tsx
+<Tooltip 
+  content={
+    <div>
+      <strong>Pro Tip</strong>
+      <p>Use keyboard shortcuts for faster navigation</p>
+    </div>
+  }
+  slot={<Badge variant="info">New</Badge>}
+  slotDirection={TooltipSlotDirection.RIGHT}
+  delayDuration={500}
+>
+  <Button variant="secondary">Advanced Feature</Button>
+</Tooltip>
+```
+
+### Controlled Tooltip
+Tooltip with controlled open state
+
+```tsx
+const [isOpen, setIsOpen] = useState(false);
+
+<Tooltip 
+  content="Controlled tooltip content"
+  open={isOpen}
+  side={TooltipSide.BOTTOM}
+  offset={10}
+>
+  <Button 
+    onMouseEnter={() => setIsOpen(true)}
+    onMouseLeave={() => setIsOpen(false)}
+  >
+    Controlled Tooltip
+  </Button>
+</Tooltip>
+```

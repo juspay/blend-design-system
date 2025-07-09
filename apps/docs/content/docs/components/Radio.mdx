@@ -1,0 +1,154 @@
+---
+title: Radio
+description: A radio button component for single selection within groups, with support for controlled and uncontrolled modes, multiple sizes, and comprehensive form integration.
+---
+
+
+# Radio Component Documentation
+
+## Description
+A radio button component for single selection within groups, with support for controlled and uncontrolled modes, multiple sizes, and comprehensive form integration.
+
+## Features
+- Single selection within radio groups
+- Controlled and uncontrolled modes
+- Two sizes (small, medium)
+- Error state handling
+- Required field indication
+- Label and subtext support
+- Custom slot for additional content
+- Disabled state support
+- Radio group functionality
+- Accessible design with proper ARIA attributes
+- Form integration ready
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `id` | `string` | No | Unique identifier for the radio input | `auto-generated` |
+| `value` | `string` | No | Value attribute for the radio input | `undefined` |
+| `children` | `ReactNode` | No | Label content for the radio | `undefined` |
+| `subtext` | `string` | No | Additional descriptive text below the radio | `undefined` |
+| `slot` | `ReactNode` | No | Custom content slot next to the radio label | `undefined` |
+| `name` | `string` | Yes | Name attribute for form submission (RadioGroup prop) | `-` |
+| `label` | `string` | No | Label for the radio group (RadioGroup prop) | `undefined` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `checked` | `boolean` | No | Controlled checked state of the radio | `undefined` |
+| `defaultChecked` | `boolean` | No | Default checked state for uncontrolled mode | `false` |
+| `disabled` | `boolean` | No | Whether the radio is disabled | `false` |
+| `required` | `boolean` | No | Whether the radio is required (shows asterisk) | `false` |
+| `error` | `boolean` | No | Whether the radio is in error state | `false` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onChange` | `(checked: boolean) => void` | No | Callback fired when the radio state changes | `undefined` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `size` | `RadioSize` | No | Size variant of the radio | `RadioSize.MEDIUM` |
+
+## Usage Examples
+
+### Basic Radio Group
+Simple radio group with multiple options
+
+```tsx
+<RadioGroup name="plan" label="Select Plan">
+  <Radio value="basic">
+    Basic Plan
+  </Radio>
+  <Radio value="pro">
+    Pro Plan
+  </Radio>
+  <Radio value="enterprise">
+    Enterprise Plan
+  </Radio>
+</RadioGroup>
+```
+
+### Controlled Radio Group
+Radio group with controlled state
+
+```tsx
+const [selectedPlan, setSelectedPlan] = useState('pro');
+
+<RadioGroup 
+  name="subscription"
+  value={selectedPlan}
+  onChange={setSelectedPlan}
+  label="Choose Subscription"
+>
+  <Radio value="monthly" size={RadioSize.MEDIUM}>
+    Monthly Billing
+  </Radio>
+  <Radio value="yearly" size={RadioSize.MEDIUM}>
+    Yearly Billing
+  </Radio>
+</RadioGroup>
+```
+
+### Radio with Subtext and Slots
+Radio buttons with additional information
+
+```tsx
+<RadioGroup name="payment" label="Payment Method">
+  <Radio 
+    value="card"
+    slot={<CreditCardIcon />}
+    subtext="Visa, Mastercard, American Express"
+  >
+    Credit Card
+  </Radio>
+  <Radio 
+    value="paypal"
+    slot={<PayPalIcon />}
+    subtext="Pay with your PayPal account"
+  >
+    PayPal
+  </Radio>
+  <Radio 
+    value="bank"
+    slot={<BankIcon />}
+    subtext="Direct bank transfer"
+    disabled={true}
+  >
+    Bank Transfer
+  </Radio>
+</RadioGroup>
+```
+
+### Radio with Error State
+Radio group with error state and required indication
+
+```tsx
+<RadioGroup 
+  name="agreement"
+  label="Terms Agreement"
+  required={true}
+>
+  <Radio 
+    value="accept"
+    error={true}
+    subtext="You must accept the terms to continue"
+  >
+    I accept the terms and conditions
+  </Radio>
+  <Radio 
+    value="decline"
+    error={true}
+  >
+    I decline the terms and conditions
+  </Radio>
+</RadioGroup>
+```

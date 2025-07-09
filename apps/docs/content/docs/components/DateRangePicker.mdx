@@ -1,0 +1,151 @@
+---
+title: Daterangepicker
+description: A comprehensive date range picker component with calendar interface, time selection, preset ranges, and flexible configuration options for selecting date and time ranges.
+---
+
+import { BlendTypeTable } from "@/components/ui/BlendTypeTable";
+import daterangepickerMeta from "@/meta/daterangepicker.context";
+
+# DateRangePicker Component Documentation
+
+## Description
+A comprehensive date range picker component with calendar interface, time selection, preset ranges, and flexible configuration options for selecting date and time ranges.
+
+## Features
+- Interactive calendar grid for date selection
+- Optional time picker for precise time selection
+- Quick preset ranges (today, yesterday, last 7 days, etc.)
+- Custom date range selection
+- Min/max date constraints
+- Future/past date restrictions
+- Single date selection mode
+- Custom trigger element support
+- Accessible keyboard navigation
+- Customizable date formatting
+- Disabled state support
+
+## Props
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `value` | `DateRange` | No | The selected date range value | `undefined` |
+| `isDisabled` | `boolean` | No | Whether the date range picker is disabled | `false` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onChange` | `(range: DateRange) => void` | No | Callback fired when the date range changes | `undefined` |
+
+### Features
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `showTimePicker` | `boolean` | No | Whether to show time selection in addition to date selection | `false` |
+| `showPresets` | `boolean` | No | Whether to show quick preset range options | `true` |
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `placeholder` | `string` | No | Placeholder text for the date range input | `'Select date range'` |
+| `icon` | `ReactNode` | No | Custom icon to display in the trigger element | `undefined` |
+| `triggerElement` | `ReactNode` | No | Custom trigger element to open the date range picker | `undefined` |
+
+### Styling
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `className` | `string` | No | Additional CSS class names for the component | `undefined` |
+
+### Constraints
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `minDate` | `Date` | No | Minimum selectable date | `undefined` |
+| `maxDate` | `Date` | No | Maximum selectable date | `undefined` |
+| `disableFutureDates` | `boolean` | No | Whether to disable selection of future dates | `false` |
+| `disablePastDates` | `boolean` | No | Whether to disable selection of past dates | `false` |
+
+### Formatting
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `dateFormat` | `string` | No | Format string for displaying dates | `'MM/dd/yyyy'` |
+
+### Accessibility
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `ariaLabel` | `string` | No | Accessibility label for the date range picker | `undefined` |
+
+### Behavior
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `allowSingleDateSelection` | `boolean` | No | Whether to allow selecting a single date instead of a range | `false` |
+
+## Usage Examples
+
+### Basic Date Range Picker
+Simple date range picker with default settings
+
+```tsx
+const [dateRange, setDateRange] = useState({
+  startDate: new Date(),
+  endDate: new Date()
+});
+
+<DateRangePicker 
+  value={dateRange}
+  onChange={setDateRange}
+  placeholder="Select date range"
+/>
+```
+
+### Date Range Picker with Time
+Date range picker with time selection enabled
+
+```tsx
+<DateRangePicker 
+  value={selectedRange}
+  onChange={handleRangeChange}
+  showTimePicker={true}
+  showPresets={true}
+  placeholder="Select date and time range"
+/>
+```
+
+### Constrained Date Range Picker
+Date range picker with date constraints
+
+```tsx
+<DateRangePicker 
+  value={dateRange}
+  onChange={setDateRange}
+  minDate={new Date('2024-01-01')}
+  maxDate={new Date('2024-12-31')}
+  disableFutureDates={true}
+  showPresets={false}
+/>
+```
+
+### Custom Date Range Picker
+Date range picker with custom trigger and formatting
+
+```tsx
+<DateRangePicker 
+  value={dateRange}
+  onChange={setDateRange}
+  triggerElement={
+    <Button 
+      text="Choose Dates" 
+      leadingIcon={<CalendarIcon />}
+    />
+  }
+  dateFormat="MM/dd/yyyy"
+  allowSingleDateSelection={true}
+/>
+```

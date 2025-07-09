@@ -1,0 +1,125 @@
+---
+title: Avatargroup
+description: A sophisticated avatar group component that displays multiple user avatars with overflow handling, selection capabilities, and an interactive menu for managing large sets of users.
+---
+
+import { BlendTypeTable } from "@/components/ui/BlendTypeTable";
+import avatargroupMeta from "@/meta/avatargroup.context";
+
+# AvatarGroup Component Documentation
+
+## Description
+A sophisticated avatar group component that displays multiple user avatars with overflow handling, selection capabilities, and an interactive menu for managing large sets of users.
+
+## Features
+- Configurable maximum visible avatar count
+- Overflow counter with expandable menu
+- Multi-selection support with visual feedback
+- Search functionality within overflow menu
+- Multiple sizes and shapes (inherited from Avatar)
+- Accessible keyboard navigation
+- Click outside to close menu
+- Responsive positioning
+- Screen reader support
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `avatars` | `AvatarData[]` | Yes | Array of avatar data objects to display in the group | `-` |
+| `id` | `string \| number` | Yes | Unique identifier for the avatar (AvatarData property) | `-` |
+| `src` | `string` | No | Image source URL for the avatar (AvatarData property) | `undefined` |
+| `alt` | `string` | No | Alternative text for the avatar image (AvatarData property) | `undefined` |
+| `fallback` | `string \| React.ReactNode` | No | Fallback content when image is not available (AvatarData property) | `undefined` |
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `maxCount` | `number` | No | Maximum number of avatars to display before showing overflow counter | `5` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `size` | `AvatarSize` | No | Size of all avatars in the group | `AvatarSize.MD` |
+| `shape` | `AvatarShape` | No | Shape of all avatars in the group | `AvatarShape.CIRCULAR` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `selectedAvatarIds` | `(string \| number)[]` | No | Array of selected avatar IDs for controlled selection | `[]` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onSelectionChange` | `(selectedIds: (string \| number)[]) => void` | No | Callback fired when avatar selection changes | `undefined` |
+
+## Usage Examples
+
+### Basic Avatar Group
+Simple avatar group with default settings
+
+```tsx
+<AvatarGroup 
+  avatars={[
+    { id: 1, src: "/user1.jpg", alt: "John Doe" },
+    { id: 2, src: "/user2.jpg", alt: "Jane Smith" },
+    { id: 3, src: "/user3.jpg", alt: "Bob Johnson" },
+    { id: 4, alt: "Alice Brown" },
+    { id: 5, alt: "Charlie Wilson" }
+  ]}
+  maxCount={3}
+/>
+```
+
+### Avatar Group with Selection
+Avatar group with controlled selection state
+
+```tsx
+const [selectedIds, setSelectedIds] = useState([1, 3]);
+
+<AvatarGroup 
+  avatars={teamMembers}
+  maxCount={4}
+  size={AvatarSize.LG}
+  selectedAvatarIds={selectedIds}
+  onSelectionChange={setSelectedIds}
+/>
+```
+
+### Rounded Avatar Group
+Avatar group with rounded square avatars
+
+```tsx
+<AvatarGroup 
+  avatars={[
+    { id: "user1", src: "/avatar1.jpg", alt: "Team Lead" },
+    { id: "user2", src: "/avatar2.jpg", alt: "Developer" },
+    { id: "user3", src: "/avatar3.jpg", alt: "Designer" },
+    { id: "user4", alt: "Product Manager" },
+    { id: "user5", alt: "QA Engineer" },
+    { id: "user6", alt: "DevOps" }
+  ]}
+  maxCount={3}
+  size={AvatarSize.MD}
+  shape={AvatarShape.ROUNDED}
+/>
+```
+
+### Large Team Avatar Group
+Avatar group for displaying large teams with overflow
+
+```tsx
+<AvatarGroup 
+  avatars={allTeamMembers} // Array of 20+ members
+  maxCount={5}
+  size={AvatarSize.SM}
+  selectedAvatarIds={selectedMembers}
+  onSelectionChange={handleMemberSelection}
+/>
+```

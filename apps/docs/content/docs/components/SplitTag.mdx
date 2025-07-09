@@ -1,0 +1,118 @@
+---
+title: SplitTag
+description: A tag component with split functionality, featuring a main content area and a separate action button for enhanced user interactions.
+---
+
+# SplitTag Component Documentation
+
+## Description
+A tag component with split functionality, featuring a main content area and a separate action button for enhanced user interactions.
+
+## Features
+- Split design with main content and action button
+- Multiple size variants
+- Color customization options
+- Icon support for both sections
+- Disabled state handling
+- Click handlers for both sections
+- Accessible keyboard navigation
+- Custom styling support
+- Flexible content layout
+- Responsive design
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `mainContent` | `React.ReactNode` | Yes | Content to display in the main section of the split tag | `-` |
+| `mainIcon` | `React.ReactNode` | No | Icon to display in the main section | `undefined` |
+| `actionIcon` | `React.ReactNode` | No | Icon to display in the action section | `undefined` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onMainClick` | `() => void` | No | Click handler for the main section | `undefined` |
+| `onActionClick` | `() => void` | No | Click handler for the action section | `undefined` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `size` | `SplitTagSize` | No | Size variant of the split tag | `SplitTagSize.MEDIUM` |
+
+### Styling
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `backgroundColor` | `string` | No | Background color for the main section | `undefined` |
+| `textColor` | `string` | No | Text color for the main section | `undefined` |
+| `actionBackgroundColor` | `string` | No | Background color for the action section | `undefined` |
+| `className` | `string` | No | Additional CSS class names | `undefined` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `disabled` | `boolean` | No | Whether the split tag is disabled | `false` |
+
+## Usage Examples
+
+### Basic Split Tag
+Simple split tag with text and action
+
+```tsx
+<SplitTag
+  mainContent="JavaScript"
+  onMainClick={() => console.log('Main clicked')}
+  onActionClick={() => console.log('Action clicked')}
+/>
+```
+
+### Split Tag with Icons
+Split tag with icons in both sections
+
+```tsx
+<SplitTag
+  mainContent="React"
+  mainIcon={<ReactIcon />}
+  actionIcon={<CloseIcon />}
+  onMainClick={() => selectFramework('react')}
+  onActionClick={() => removeFramework('react')}
+/>
+```
+
+### Colored Split Tag
+Split tag with custom colors
+
+```tsx
+<SplitTag
+  mainContent="Premium User"
+  backgroundColor="#ffd700"
+  textColor="#000"
+  actionBackgroundColor="#ff6b6b"
+  onMainClick={() => viewProfile()}
+  onActionClick={() => removeTag()}
+/>
+```
+
+### Large Split Tag with Custom Content
+Large split tag with complex content
+
+```tsx
+<SplitTag
+  size={SplitTagSize.LARGE}
+  mainContent={
+    <div>
+      <span>John Doe</span>
+      <small>Administrator</small>
+    </div>
+  }
+  actionIcon={<EditIcon />}
+  onMainClick={() => viewUser('john-doe')}
+  onActionClick={() => editUser('john-doe')}
+  disabled={!canEdit}
+/>
+```

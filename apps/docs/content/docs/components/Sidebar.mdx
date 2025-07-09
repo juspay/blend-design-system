@@ -1,0 +1,147 @@
+---
+title: Sidebar
+description: A navigation sidebar component for organizing hierarchical content with collapsible sections, custom styling, and responsive behavior.
+---
+
+
+# Sidebar Component Documentation
+
+## Description
+A navigation sidebar component for organizing hierarchical content with collapsible sections, custom styling, and responsive behavior.
+
+## Features
+- Hierarchical navigation structure
+- Collapsible sections and items
+- Custom content slots
+- Responsive design
+- Active state management
+- Icon and badge support
+- Nested navigation items
+- Customizable styling
+- Accessible navigation
+- Mobile-friendly layout
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `children` | `React.ReactNode` | Yes | Sidebar sections and items to display | `-` |
+| `title` | `string` | No | Title for the sidebar section (SidebarSection prop) | `undefined` |
+| `icon` | `React.ReactNode` | No | Icon to display for the sidebar item (SidebarItem prop) | `undefined` |
+| `badge` | `React.ReactNode` | No | Badge or notification indicator (SidebarItem prop) | `undefined` |
+
+### Styling
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `className` | `string` | No | Additional CSS class names for the sidebar | `undefined` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `collapsed` | `boolean` | No | Whether the sidebar is in collapsed state | `false` |
+| `defaultOpen` | `boolean` | No | Whether the section is open by default (SidebarSection prop) | `true` |
+| `active` | `boolean` | No | Whether the sidebar item is currently active (SidebarItem prop) | `false` |
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `width` | `string \| number` | No | Width of the sidebar | `'280px'` |
+
+### Behavior
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `collapsible` | `boolean` | No | Whether the section can be collapsed (SidebarSection prop) | `false` |
+
+### Navigation
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `href` | `string` | No | URL for the sidebar item link (SidebarItem prop) | `undefined` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onClick` | `() => void` | No | Click handler for the sidebar item (SidebarItem prop) | `undefined` |
+
+## Usage Examples
+
+### Basic Sidebar
+Simple sidebar with navigation items
+
+```tsx
+<Sidebar>
+  <SidebarSection title="Navigation">
+    <SidebarItem href="/dashboard" icon={<DashboardIcon />}>
+      Dashboard
+    </SidebarItem>
+    <SidebarItem href="/users" icon={<UsersIcon />}>
+      Users
+    </SidebarItem>
+    <SidebarItem href="/settings" icon={<SettingsIcon />}>
+      Settings
+    </SidebarItem>
+  </SidebarSection>
+</Sidebar>
+```
+
+### Collapsible Sidebar
+Sidebar with collapsible sections
+
+```tsx
+<Sidebar>
+  <SidebarSection title="Main" collapsible defaultOpen>
+    <SidebarItem href="/home">Home</SidebarItem>
+    <SidebarItem href="/profile">Profile</SidebarItem>
+  </SidebarSection>
+  <SidebarSection title="Admin" collapsible>
+    <SidebarItem href="/admin/users">User Management</SidebarItem>
+    <SidebarItem href="/admin/settings">System Settings</SidebarItem>
+  </SidebarSection>
+</Sidebar>
+```
+
+### Sidebar with Badges
+Sidebar items with notification badges
+
+```tsx
+<Sidebar>
+  <SidebarItem 
+    href="/messages" 
+    icon={<MessageIcon />}
+    badge={<Badge variant="danger">5</Badge>}
+  >
+    Messages
+  </SidebarItem>
+  <SidebarItem 
+    href="/notifications"
+    icon={<BellIcon />}
+    badge={<Badge variant="info">12</Badge>}
+  >
+    Notifications
+  </SidebarItem>
+</Sidebar>
+```
+
+### Nested Sidebar Navigation
+Sidebar with nested navigation items
+
+```tsx
+<Sidebar>
+  <SidebarSection title="Products">
+    <SidebarItem href="/products">All Products</SidebarItem>
+    <SidebarItem href="/products/categories">
+      Categories
+      <SidebarItem href="/products/categories/electronics">Electronics</SidebarItem>
+      <SidebarItem href="/products/categories/clothing">Clothing</SidebarItem>
+    </SidebarItem>
+    <SidebarItem href="/products/inventory">Inventory</SidebarItem>
+  </SidebarSection>
+</Sidebar>
+```

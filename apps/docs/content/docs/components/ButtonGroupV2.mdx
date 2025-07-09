@@ -1,0 +1,109 @@
+---
+title: Buttongroupv2
+description: A streamlined button group component designed specifically for ButtonV2 components, providing flexible layout options with stacked and inline arrangements.
+---
+
+import { BlendTypeTable } from "@/components/ui/BlendTypeTable";
+import buttongroupv2Meta from "@/meta/buttongroupv2.context";
+
+# ButtonGroupV2 Component Documentation
+
+## Description
+A streamlined button group component designed specifically for ButtonV2 components, providing flexible layout options with stacked and inline arrangements.
+
+## Features
+- Optimized for ButtonV2 components
+- Stacked and inline layout modes
+- Automatic button positioning
+- Seamless button integration
+- Flexible gap management
+- Simple and lightweight design
+- Responsive layout support
+
+## Props
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `stacked` | `boolean` | No | Whether buttons should be stacked together with no gaps (true) or spaced apart (false) | `false` |
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `children` | `ReactElement<ButtonV2Props> \| ReactElement<ButtonV2Props>[]` | Yes | ButtonV2 components to be grouped together | `-` |
+
+## Usage Examples
+
+### Inline Button Group
+Simple inline button group with spacing
+
+```tsx
+<ButtonGroupV2 stacked={false}>
+  <ButtonV2 
+    text="Cancel" 
+    buttonType={ButtonTypeV2.SECONDARY} 
+  />
+  <ButtonV2 
+    text="Save" 
+    buttonType={ButtonTypeV2.PRIMARY} 
+  />
+</ButtonGroupV2>
+```
+
+### Stacked Button Group
+Connected buttons with no gaps between them
+
+```tsx
+<ButtonGroupV2 stacked={true}>
+  <ButtonV2 
+    text="Edit" 
+    buttonType={ButtonTypeV2.SECONDARY} 
+  />
+  <ButtonV2 
+    text="Delete" 
+    buttonType={ButtonTypeV2.DANGER} 
+  />
+  <ButtonV2 
+    text="Archive" 
+    buttonType={ButtonTypeV2.SECONDARY} 
+  />
+</ButtonGroupV2>
+```
+
+### Action Button Group
+Multiple action buttons with different types
+
+```tsx
+<ButtonGroupV2 stacked={false}>
+  <ButtonV2 
+    text="Previous" 
+    buttonType={ButtonTypeV2.SECONDARY}
+    leadingIcon={<ChevronLeftIcon />}
+  />
+  <ButtonV2 
+    text="Next" 
+    buttonType={ButtonTypeV2.PRIMARY}
+    trailingIcon={<ChevronRightIcon />}
+  />
+</ButtonGroupV2>
+```
+
+### Form Button Group
+Form action buttons in stacked layout
+
+```tsx
+<ButtonGroupV2 stacked={true}>
+  <ButtonV2 
+    text="Reset" 
+    buttonType={ButtonTypeV2.SECONDARY}
+    size={ButtonSizeV2.LARGE}
+  />
+  <ButtonV2 
+    text="Submit" 
+    buttonType={ButtonTypeV2.SUCCESS}
+    size={ButtonSizeV2.LARGE}
+  />
+</ButtonGroupV2>
+```

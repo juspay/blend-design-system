@@ -1,0 +1,183 @@
+---
+title: MultiSelect
+description: A comprehensive multi-selection dropdown component with grouped items, search functionality, customizable positioning, and flexible selection display options for selecting multiple values from a list.
+---
+
+# MultiSelect Component Documentation
+
+## Description
+A comprehensive multi-selection dropdown component with grouped items, search functionality, customizable positioning, and flexible selection display options for selecting multiple values from a list.
+
+## Features
+- Multiple item selection with controlled state
+- Grouped menu items with labels and separators
+- Two visual variants (container, no-container)
+- Selection display modes (count, text tags)
+- Custom slot content for each menu item (up to 4 slots)
+- Flexible positioning and alignment options
+- Form integration with labels and validation
+- Disabled state and required field support
+- Submenu support for nested options
+- Customizable dimensions and styling
+
+## Props
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `selectedValues` | `string[]` | Yes | Array of currently selected values | `-` |
+| `disabled` | `boolean` | No | Whether the multi-select is disabled | `false` |
+| `required` | `boolean` | No | Whether the multi-select is required (shows asterisk) | `false` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onChange` | `(selectedValue: string) => void` | Yes | Callback fired when a selection changes | `-` |
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `items` | `MultiSelectMenuGroupType[]` | Yes | Array of grouped menu items for selection | `-` |
+| `label` | `string` | Yes | The main label text for the multi-select | `-` |
+| `placeholder` | `string` | Yes | Placeholder text displayed when no items are selected | `-` |
+| `sublabel` | `string` | No | Additional label text displayed below the main label | `undefined` |
+| `helpIconHintText` | `string` | No | Text displayed in help tooltip next to the label | `undefined` |
+| `hintText` | `string` | No | Hint text displayed below the multi-select | `undefined` |
+| `slot` | `React.ReactNode` | No | Custom content (usually an icon) displayed in the trigger | `undefined` |
+| `name` | `string` | No | Name attribute for form submission | `undefined` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `variant` | `MultiSelectVariant` | No | Visual variant of the multi-select component | `MultiSelectVariant.CONTAINER` |
+| `selectionTagType` | `MultiSelectSelectionTagType` | No | How selected items are displayed (count or individual tags) | `MultiSelectSelectionTagType.COUNT` |
+| `size` | `MultiSelectMenuSize` | No | Size variant of the multi-select menu | `MultiSelectMenuSize.MEDIUM` |
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `side` | `MultiSelectMenuSide` | No | Side where the menu should appear relative to the trigger | `MultiSelectMenuSide.BOTTOM` |
+| `alignment` | `MultiSelectMenuAlignment` | No | Alignment of the menu relative to the trigger | `MultiSelectMenuAlignment.CENTER` |
+| `minWidth` | `number` | No | Minimum width of the dropdown menu in pixels | `undefined` |
+| `maxWidth` | `number` | No | Maximum width of the dropdown menu in pixels | `undefined` |
+| `maxHeight` | `number` | No | Maximum height of the dropdown menu in pixels | `undefined` |
+| `sideOffset` | `number` | No | Distance in pixels between the menu and trigger | `5` |
+| `alignOffset` | `number` | No | Offset in pixels for menu alignment | `0` |
+
+## Usage Examples
+
+### Basic Multi-Select
+Simple multi-select with grouped options
+
+```tsx
+const [selectedValues, setSelectedValues] = useState([]);
+
+const handleChange = (value) => {
+  setSelectedValues(prev => 
+    prev.includes(value) 
+      ? prev.filter(v => v !== value)
+      : [...prev, value]
+  );
+};
+
+<MultiSelect
+  selectedValues={selectedValues}
+  onChange={handleChange}
+  label="Select Technologies"
+  placeholder="Choose technologies..."
+  items={[
+    {
+      groupLabel: "Frontend",
+      items: [
+        { label: "React", value: "react" },
+        { label: "Vue.js", value: "vue" },
+        { label: "Angular", value: "angular" }
+      ]
+    },
+    {
+      groupLabel: "Backend", 
+      items: [
+        { label: "Node.js", value: "nodejs" },
+        { label: "Python", value: "python" },
+        { label: "Java", value: "java" }
+      ]
+    }
+  ]}
+/>
+```
+
+### Multi-Select with Custom Slots
+Multi-select with icons and additional content
+
+```tsx
+<MultiSelect
+  selectedValues={selectedSkills}
+  onChange={handleSkillChange}
+  label="Skills & Expertise"
+  sublabel="Select your areas of expertise"
+  placeholder="Choose skills..."
+  variant={MultiSelectVariant.CONTAINER}
+  selectionTagType={MultiSelectSelectionTagType.TEXT}
+  items={[
+    {
+      groupLabel: "Technical Skills",
+      items: [
+        { 
+          label: "JavaScript", 
+          value: "js",
+          slot1: <JavaScriptIcon />,
+          slot4: <Badge>Expert</Badge>
+        },
+        { 
+          label: "TypeScript", 
+          value: "ts",
+          slot1: <TypeScriptIcon />,
+          slot4: <Badge>Advanced</Badge>
+        }
+      ]
+    }
+  ]}
+/>
+```
+
+### Multi-Select with Custom Positioning
+Multi-select with custom menu positioning and sizing
+
+```tsx
+<MultiSelect
+  selectedValues={selectedCategories}
+  onChange={handleCategoryChange}
+  label="Product Categories"
+  placeholder="Select categories..."
+  size={MultiSelectMenuSize.LARGE}
+  side={MultiSelectMenuSide.TOP}
+  alignment={MultiSelectMenuAlignment.START}
+  maxWidth={400}
+  maxHeight={300}
+  items={categoryGroups}
+/>
+```
+
+### Form Multi-Select with Validation
+Multi-select with form integration and validation
+
+```tsx
+<MultiSelect
+  selectedValues={selectedOptions}
+  onChange={handleSelectionChange}
+  label="Required Selection"
+  sublabel="Choose at least one option"
+  placeholder="Select options..."
+  required={true}
+  disabled={isLoading}
+  helpIconHintText="This field is required for processing"
+  hintText="Select multiple options from the list"
+  slot={<FilterIcon />}
+  items={formOptions}
+/>
+```

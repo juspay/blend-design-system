@@ -1,0 +1,140 @@
+---
+title: Dropdown
+description: A form dropdown component that combines a label, trigger button, and menu for selecting options with support for icons, hints, and customizable styling.
+---
+
+
+# Dropdown Component Documentation
+
+## Description
+A form dropdown component that combines a label, trigger button, and menu for selecting options with support for icons, hints, and customizable styling.
+
+## Features
+- Form-ready with label and hint text
+- Optional label support
+- Custom slot for icons or content
+- Menu-based option selection
+- Hover and focus states
+- Accessible design with proper labeling
+- Customizable trigger button
+- Responsive layout
+- Integration with Menu component
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `label` | `string` | No | The main label text for the dropdown | `'Your Label'` |
+| `optionalLabel` | `string` | No | Optional label text displayed next to the main label | `'(optional)'` |
+| `hintText` | `string` | No | Hint text displayed below the dropdown | `'This is a hint text'` |
+| `slot` | `React.ReactNode` | No | Custom content (usually an icon) displayed in the trigger button | `undefined` |
+| `items` | `MenuV2GroupType[]` | Yes | Array of menu groups containing selectable items | `-` |
+
+## Usage Examples
+
+### Basic Dropdown
+Simple dropdown with label and options
+
+```tsx
+<Dropdown 
+  label="Select Country"
+  hintText="Choose your country from the list"
+  items={[
+    {
+      groupItems: [
+        { id: "us", text: "United States" },
+        { id: "ca", text: "Canada" },
+        { id: "uk", text: "United Kingdom" },
+        { id: "de", text: "Germany" }
+      ]
+    }
+  ]}
+/>
+```
+
+### Optional Dropdown with Icon
+Dropdown with optional label and icon slot
+
+```tsx
+<Dropdown 
+  label="Preferred Language"
+  optionalLabel="(optional)"
+  hintText="Select your preferred language for the interface"
+  slot={<LanguageIcon />}
+  items={[
+    {
+      groupItems: [
+        { id: "en", text: "English" },
+        { id: "es", text: "Spanish" },
+        { id: "fr", text: "French" },
+        { id: "de", text: "German" }
+      ]
+    }
+  ]}
+/>
+```
+
+### Grouped Dropdown Options
+Dropdown with grouped menu items
+
+```tsx
+<Dropdown 
+  label="Select Framework"
+  hintText="Choose a frontend framework"
+  items={[
+    {
+      groupLabel: "React Ecosystem",
+      groupItems: [
+        { id: "react", text: "React" },
+        { id: "nextjs", text: "Next.js" },
+        { id: "gatsby", text: "Gatsby" }
+      ]
+    },
+    {
+      groupLabel: "Vue Ecosystem", 
+      groupItems: [
+        { id: "vue", text: "Vue.js" },
+        { id: "nuxt", text: "Nuxt.js" },
+        { id: "quasar", text: "Quasar" }
+      ]
+    }
+  ]}
+/>
+```
+
+### Custom Dropdown
+Dropdown with custom styling and content
+
+```tsx
+<Dropdown 
+  label="Priority Level"
+  hintText="Set the priority for this task"
+  slot={<PriorityIcon />}
+  items={[
+    {
+      groupItems: [
+        { 
+          id: "high", 
+          text: "High Priority",
+          hasSlotL: true,
+          slotL: <HighPriorityIcon />
+        },
+        { 
+          id: "medium", 
+          text: "Medium Priority",
+          hasSlotL: true,
+          slotL: <MediumPriorityIcon />
+        },
+        { 
+          id: "low", 
+          text: "Low Priority",
+          hasSlotL: true,
+          slotL: <LowPriorityIcon />
+        }
+      ]
+    }
+  ]}
+/>
+```
