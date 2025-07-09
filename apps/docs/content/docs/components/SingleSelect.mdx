@@ -1,0 +1,181 @@
+---
+title: SingleSelect
+description: A single-selection dropdown component with grouped items, search functionality, and customizable positioning for selecting one value from a list of options.
+---
+
+# SingleSelect Component Documentation
+
+## Description
+A single-selection dropdown component with grouped items, search functionality, and customizable positioning for selecting one value from a list of options.
+
+## Features
+- Single item selection with controlled state
+- Grouped menu items with labels and separators
+- Two visual variants (container, no-container)
+- Optional search functionality for filtering items
+- Custom slot content for each menu item (up to 4 slots)
+- Flexible positioning and alignment options
+- Form integration with labels and validation
+- Disabled state and required field support
+- Submenu support for nested options
+- Customizable dimensions and styling
+
+## Props
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `selected` | `string` | Yes | Currently selected value | `-` |
+| `disabled` | `boolean` | No | Whether the single select is disabled | `false` |
+| `required` | `boolean` | No | Whether the single select is required (shows asterisk) | `false` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onSelect` | `(value: string) => void` | Yes | Callback fired when a selection is made | `-` |
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `items` | `SelectMenuGroupType[]` | Yes | Array of grouped menu items for selection | `-` |
+| `label` | `string` | Yes | The main label text for the single select | `-` |
+| `placeholder` | `string` | Yes | Placeholder text displayed when no item is selected | `-` |
+| `subLabel` | `string` | No | Additional label text displayed below the main label | `undefined` |
+| `hintText` | `string` | No | Hint text displayed below the single select | `undefined` |
+| `helpIconText` | `string` | No | Text displayed in help tooltip next to the label | `undefined` |
+| `slot` | `React.ReactNode` | No | Custom content (usually an icon) displayed in the trigger | `undefined` |
+| `name` | `string` | No | Name attribute for form submission | `undefined` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `variant` | `SelectMenuVariant` | No | Visual variant of the single select component | `SelectMenuVariant.CONTAINER` |
+| `size` | `SelectMenuSize` | No | Size variant of the single select menu | `SelectMenuSize.MEDIUM` |
+
+### Features
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `enableSearch` | `boolean` | No | Whether to enable search functionality for filtering items | `false` |
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `side` | `SelectMenuSide` | No | Side where the menu should appear relative to the trigger | `SelectMenuSide.BOTTOM` |
+| `alignment` | `SelectMenuAlignment` | No | Alignment of the menu relative to the trigger | `SelectMenuAlignment.CENTER` |
+| `minWidth` | `number` | No | Minimum width of the dropdown menu in pixels | `undefined` |
+| `maxWidth` | `number` | No | Maximum width of the dropdown menu in pixels | `undefined` |
+| `maxHeight` | `number` | No | Maximum height of the dropdown menu in pixels | `undefined` |
+| `sideOffset` | `number` | No | Distance in pixels between the menu and trigger | `5` |
+| `alignOffset` | `number` | No | Offset in pixels for menu alignment | `0` |
+
+## Usage Examples
+
+### Basic Single Select
+Simple single select with grouped options
+
+```tsx
+const [selectedValue, setSelectedValue] = useState('');
+
+<SingleSelect
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  label="Select Country"
+  placeholder="Choose a country..."
+  items={[
+    {
+      groupLabel: "North America",
+      items: [
+        { label: "United States", value: "us" },
+        { label: "Canada", value: "ca" },
+        { label: "Mexico", value: "mx" }
+      ]
+    },
+    {
+      groupLabel: "Europe",
+      items: [
+        { label: "United Kingdom", value: "uk" },
+        { label: "Germany", value: "de" },
+        { label: "France", value: "fr" }
+      ]
+    }
+  ]}
+/>
+```
+
+### Single Select with Search
+Single select with search functionality enabled
+
+```tsx
+<SingleSelect
+  selected={selectedFramework}
+  onSelect={setSelectedFramework}
+  label="Frontend Framework"
+  subLabel="Choose your preferred framework"
+  placeholder="Search frameworks..."
+  enableSearch={true}
+  size={SelectMenuSize.LARGE}
+  items={[
+    {
+      groupLabel: "React Ecosystem",
+      items: [
+        { 
+          label: "React", 
+          value: "react",
+          slot1: <ReactIcon />,
+          subLabel: "A JavaScript library for building user interfaces"
+        },
+        { 
+          label: "Next.js", 
+          value: "nextjs",
+          slot1: <NextIcon />,
+          subLabel: "The React Framework for Production"
+        }
+      ]
+    }
+  ]}
+/>
+```
+
+### Single Select with Custom Positioning
+Single select with custom menu positioning and sizing
+
+```tsx
+<SingleSelect
+  selected={selectedOption}
+  onSelect={setSelectedOption}
+  label="Priority Level"
+  placeholder="Select priority..."
+  variant={SelectMenuVariant.NO_CONTAINER}
+  side={SelectMenuSide.TOP}
+  alignment={SelectMenuAlignment.START}
+  maxWidth={300}
+  maxHeight={200}
+  items={priorityOptions}
+/>
+```
+
+### Form Single Select with Validation
+Single select with form integration and validation
+
+```tsx
+<SingleSelect
+  selected={selectedCategory}
+  onSelect={setSelectedCategory}
+  label="Product Category"
+  subLabel="Required field"
+  placeholder="Choose category..."
+  required={true}
+  disabled={isLoading}
+  helpIconText="This determines the product classification"
+  hintText="Select the most appropriate category"
+  slot={<CategoryIcon />}
+  name="productCategory"
+  items={categoryOptions}
+/>
+```

@@ -1,0 +1,131 @@
+---
+title: DataTable
+description: A comprehensive data table component with advanced features including sorting, filtering, pagination, search, inline editing, and row expansion capabilities.
+---
+
+# DataTable Component Documentation
+
+## Description
+A comprehensive data table component with advanced features including sorting, filtering, pagination, search, inline editing, and row expansion capabilities.
+
+## Features
+- Advanced sorting and filtering
+- Server-side and client-side data handling
+- Pagination with customizable page sizes
+- Universal search functionality
+- Inline editing capabilities
+- Row expansion for detailed views
+- Column management (show/hide columns)
+- Bulk actions support
+- Custom cell rendering
+- Loading states and empty states
+
+## Props
+
+### Data
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `data` | `T[]` | Yes | Array of data objects to display in the table | `-` |
+
+### General
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `columns` | `ColumnDefinition<T>[]` | No | Column definitions specifying how each column should be displayed and behave | `-` |
+| `idField` | `string` | No | Field name to use as unique identifier for rows | `-` |
+| `title` | `string` | No | Optional table title displayed in the header | `-` |
+| `description` | `string` | No | Optional table description displayed in the header | `-` |
+| `isHoverable` | `boolean` | No | Whether to show hover effects on table rows | `true` |
+| `defaultSort` | `SortConfig` | No | Default sort configuration for the table | `-` |
+| `enableSearch` | `boolean` | No | Whether to enable universal search functionality | `false` |
+| `searchPlaceholder` | `string` | No | Placeholder text for the search input | `"Search..."` |
+| `enableFiltering` | `boolean` | No | Whether to enable column filtering (local) | `false` |
+| `enableAdvancedFilter` | `boolean` | No | Whether to enable advanced filtering (user-controlled) | `false` |
+| `advancedFilterComponent` | `React.ComponentType<AdvancedFilterProps>` | No | Custom advanced filter component | `-` |
+| `advancedFilters` | `unknown[]` | No | Current filters for advanced filter | `[]` |
+| `serverSideSearch` | `boolean` | No | Whether search is handled server-side (disables local search) | `false` |
+| `serverSideFiltering` | `boolean` | No | Whether filtering is handled server-side (disables local filtering) | `false` |
+| `serverSidePagination` | `boolean` | No | Whether pagination is handled server-side (disables local pagination) | `false` |
+| `isLoading` | `boolean` | No | Whether data is currently being loaded (shows loading states) | `false` |
+| `enableColumnManager` | `boolean` | No | Whether to show column manager for hiding/showing columns | `true` |
+| `showToolbar` | `boolean` | No | Whether to show the toolbar with search and filter controls | `true` |
+| `enableInlineEdit` | `boolean` | No | Whether to enable inline editing of table rows | `false` |
+| `enableRowExpansion` | `boolean` | No | Whether to enable row expansion functionality | `false` |
+| `renderExpandedRow` | `(expandedData: ExpandedRowData) => React.ReactNode` | No | Render function for expanded row content with access to row data and utilities | `-` |
+| `isRowExpandable` | `(row: T, index: number) => boolean` | No | Optional function to determine if a row should be expandable | `-` |
+| `pagination` | `PaginationConfig` | No | Pagination configuration for the table | `{ currentPage: 1, pageSize: 10, totalRows: 0, pageSizeOptions: [10, 20, 50, 100] }` |
+| `onPageChange` | `(page: number) => void` | No | Callback when page changes | `-` |
+| `onPageSizeChange` | `(size: number) => void` | No | Callback when page size changes | `-` |
+| `onSortChange` | `(sortConfig: SortConfig) => void` | No | Callback when sort changes | `-` |
+| `onSearchChange` | `(searchConfig: SearchConfig) => void` | No | Callback when search changes | `-` |
+| `onFilterChange` | `(filters: ColumnFilter[]) => void` | No | Callback when column filters change (local) | `-` |
+| `onAdvancedFiltersChange` | `(filters: unknown[]) => void` | No | Callback when advanced filters change | `-` |
+| `onRowSave` | `(rowId: unknown, updatedRow: T) => void` | No | Callback when row is saved after editing | `-` |
+| `onRowCancel` | `(rowId: unknown) => void` | No | Callback when row edit is cancelled | `-` |
+| `onRowExpansionChange` | `(rowId: unknown, isExpanded: boolean, rowData: T) => void` | No | Callback when row expansion changes | `-` |
+| `className` | `string` | No | Optional additional class name for the table container | `-` |
+| `headerSlot1` | `React.ReactNode` | No | Custom slot on the left side of the toolbar | `-` |
+| `headerSlot2` | `React.ReactNode` | No | Custom slot in the middle of the toolbar | `-` |
+| `headerSlot3` | `React.ReactNode` | No | Custom slot on the right side of the toolbar | `-` |
+| `bulkActions` | `React.ReactNode` | No | Custom bulk actions to display in the bulk action bar | `-` |
+
+## Usage Examples
+
+### Basic Data Table
+Simple data table with basic configuration
+
+```tsx
+<DataTable
+  data={tableData}
+  columns={columns}
+  idField="id"
+  title="User Management"
+/>
+```
+
+### Table with Search and Filtering
+Data table with search and column filtering enabled
+
+```tsx
+<DataTable
+  data={tableData}
+  columns={columns}
+  idField="id"
+  enableSearch={true}
+  enableFiltering={true}
+  searchPlaceholder="Search users..."
+/>
+```
+
+### Table with Pagination
+Data table with custom pagination settings
+
+```tsx
+<DataTable
+  data={tableData}
+  columns={columns}
+  idField="id"
+  pagination={{
+    currentPage: 1,
+    pageSize: 20,
+    totalRows: 100,
+    pageSizeOptions: [10, 20, 50]
+  }}
+/>
+```
+
+### Table with Row Expansion
+Data table with expandable rows for detailed views
+
+```tsx
+<DataTable
+  data={tableData}
+  columns={columns}
+  idField="id"
+  enableRowExpansion={true}
+  renderExpandedRow={({ row }) => (
+    <div>Detailed view for {row.name}</div>
+  )}
+/>
+```

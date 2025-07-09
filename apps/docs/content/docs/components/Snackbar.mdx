@@ -1,0 +1,140 @@
+---
+title: Snackbar
+description: A toast notification system for displaying temporary messages with multiple variants, action buttons, and automatic dismissal functionality.
+---
+
+
+# Snackbar Component Documentation
+
+## Description
+A toast notification system for displaying temporary messages with multiple variants, action buttons, and automatic dismissal functionality.
+
+## Features
+- Four notification variants (info, success, warning, error)
+- Automatic dismissal with customizable duration
+- Action button support for user interactions
+- Manual close functionality
+- Toast queue management
+- Accessible design with proper ARIA attributes
+- Responsive positioning
+- Custom styling support
+- Programmatic toast creation
+- Event callbacks for user actions
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `header` | `string` | Yes | The main heading text of the toast notification | `-` |
+| `description` | `string` | No | Additional descriptive text for the toast notification | `undefined` |
+| `label` | `string` | Yes | Text label for the action button (ActionButton property) | `-` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `variant` | `SnackbarVariant` | No | The visual variant determining the toast's appearance and icon | `SnackbarVariant.INFO` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onClose` | `() => void` | No | Callback function called when the toast is closed | `undefined` |
+| `onClick` | `() => void` | Yes | Click handler for the action button (ActionButton property) | `-` |
+
+### Actions
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `actionButton` | `ActionButton` | No | Configuration for an optional action button in the toast | `undefined` |
+
+## Usage Examples
+
+### Basic Toast Notifications
+Simple toast notifications with different variants
+
+```tsx
+import { addToast } from 'blend-v1';
+
+// Success notification
+addToast({
+  header: "Success!",
+  description: "Your changes have been saved successfully.",
+  variant: SnackbarVariant.SUCCESS
+});
+
+// Error notification
+addToast({
+  header: "Error occurred",
+  description: "Failed to save changes. Please try again.",
+  variant: SnackbarVariant.ERROR
+});
+```
+
+### Toast with Action Button
+Toast notification with an action button
+
+```tsx
+addToast({
+  header: "File uploaded",
+  description: "Your file has been uploaded successfully.",
+  variant: SnackbarVariant.INFO,
+  actionButton: {
+    label: "View File",
+    onClick: () => {
+      // Navigate to file or open preview
+      window.open('/files/uploaded-file.pdf');
+    }
+  }
+});
+```
+
+### Toast with Custom Close Handler
+Toast with custom logic when closed
+
+```tsx
+addToast({
+  header: "Session expiring",
+  description: "Your session will expire in 5 minutes.",
+  variant: SnackbarVariant.WARNING,
+  onClose: () => {
+    // Log the dismissal or trigger other actions
+    console.log('Session warning dismissed');
+    trackEvent('session_warning_dismissed');
+  },
+  actionButton: {
+    label: "Extend Session",
+    onClick: () => {
+      extendUserSession();
+    }
+  }
+});
+```
+
+### Multiple Toast Notifications
+Creating multiple toasts in sequence
+
+```tsx
+// Queue multiple notifications
+const showProgressToasts = () => {
+  addToast({
+    header: "Processing started",
+    description: "Your request is being processed...",
+    variant: SnackbarVariant.INFO
+  });
+  
+  setTimeout(() => {
+    addToast({
+      header: "Processing complete",
+      description: "Your request has been processed successfully.",
+      variant: SnackbarVariant.SUCCESS,
+      actionButton: {
+        label: "View Results",
+        onClick: () => showResults()
+      }
+    });
+  }, 3000);
+};
+```

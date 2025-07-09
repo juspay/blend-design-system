@@ -1,0 +1,40 @@
+/* Global styles for Storybook preview */
+
+/* Ensure the storybook preview container has proper positioning context */
+#storybook-root,
+#storybook-preview-wrapper,
+.sb-show-main {
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Ensure proper stacking context for fixed positioned elements */
+.sb-show-main {
+  z-index: 1;
+}
+
+/* Override any overflow hidden on parent containers that might clip menus */
+.docs-story,
+.sb-story,
+.sb-unstyled,
+[id^="story--"] {
+  overflow: visible !important;
+}
+
+/* Ensure the iframe body has enough height for dropdowns */
+body {
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Fix for avatar group menu positioning */
+[role="group"] {
+  position: relative;
+}
+
+/* Ensure menus/dropdowns have high z-index */
+[role="menu"],
+[role="listbox"],
+.menu-container {
+  z-index: 9999 !important;
+}

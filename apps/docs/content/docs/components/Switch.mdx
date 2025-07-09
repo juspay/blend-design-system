@@ -1,0 +1,108 @@
+---
+title: Switch
+description: A toggle switch component for binary on/off states with support for controlled and uncontrolled modes, multiple sizes, and comprehensive form integration.
+---
+
+
+# Switch Component Documentation
+
+## Description
+A toggle switch component for binary on/off states with support for controlled and uncontrolled modes, multiple sizes, and comprehensive form integration.
+
+## Features
+- Controlled and uncontrolled modes
+- Two sizes (small, medium)
+- Error state handling
+- Required field indication
+- Label and subtext support
+- Custom slot for additional content
+- Disabled state support
+- Switch group functionality
+- Accessible design with proper ARIA attributes
+- Form integration ready
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `id` | `string` | No | Unique identifier for the switch input | `auto-generated` |
+| `label` | `ReactNode` | No | Label content for the switch | `undefined` |
+| `subtext` | `ReactNode` | No | Additional descriptive text below the switch | `undefined` |
+| `slot` | `ReactNode` | No | Custom content slot next to the switch label | `undefined` |
+| `name` | `string` | No | Name attribute for form submission | `undefined` |
+| `value` | `string` | No | Value attribute for the switch input | `undefined` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `checked` | `boolean` | No | Controlled checked state of the switch | `undefined` |
+| `defaultChecked` | `boolean` | No | Default checked state for uncontrolled mode | `false` |
+| `disabled` | `boolean` | No | Whether the switch is disabled | `false` |
+| `required` | `boolean` | No | Whether the switch is required (shows asterisk) | `false` |
+| `error` | `boolean` | No | Whether the switch is in error state | `false` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onChange` | `(checked: boolean) => void` | No | Callback fired when the switch state changes | `undefined` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `size` | `SwitchSize` | No | Size variant of the switch | `SwitchSize.MEDIUM` |
+
+## Usage Examples
+
+### Basic Switch
+Simple toggle switch with label
+
+```tsx
+<Switch 
+  label="Enable notifications"
+  size={SwitchSize.MEDIUM}
+/>
+```
+
+### Controlled Switch
+Switch with controlled state
+
+```tsx
+const [isEnabled, setIsEnabled] = useState(false);
+
+<Switch 
+  checked={isEnabled}
+  onChange={setIsEnabled}
+  label="Dark mode"
+  subtext="Toggle between light and dark themes"
+/>
+```
+
+### Switch with Error State
+Switch with error state and required indication
+
+```tsx
+<Switch 
+  required={true}
+  error={true}
+  label="Accept terms"
+  subtext="You must accept the terms to continue"
+  size={SwitchSize.SMALL}
+/>
+```
+
+### Switch with Custom Slot
+Switch with additional content slot
+
+```tsx
+<Switch 
+  label="Premium features"
+  subtext="Unlock advanced functionality"
+  slot={<Badge variant="premium">Pro</Badge>}
+  defaultChecked={true}
+/>
+```

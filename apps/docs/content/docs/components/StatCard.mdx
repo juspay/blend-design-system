@@ -1,0 +1,98 @@
+---
+title: StatCard
+description: A versatile statistics card component that displays key metrics with various visualization options including charts, progress bars, and change indicators.
+---
+
+# StatCard Component Documentation
+
+## Description
+A versatile statistics card component that displays key metrics with various visualization options including charts, progress bars, and change indicators.
+
+## Features
+- Multiple display variants (number, line chart, bar chart, progress bar)
+- Change indicators with increase/decrease visualization
+- Chart data visualization support
+- Progress tracking with percentage display
+- Icon support for titles and actions
+- Help tooltips for additional context
+- Responsive design
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `title` | `string` | Yes | The title of the stat card | `-` |
+| `value` | `string \| number` | Yes | The main value to display in the stat card | `-` |
+| `subtitle` | `string` | No | Optional subtitle text for the stat card | `-` |
+| `titleIcon` | `React.ReactNode` | No | Icon to display next to the title | `-` |
+| `actionIcon` | `React.ReactNode` | No | Icon for action button in the stat card | `-` |
+| `helpIconText` | `string` | No | Text to display in help tooltip | `-` |
+
+### Data
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `change` | `StatCardChange` | No | Change indicator showing increase or decrease with value | `-` |
+| `chartData` | `ChartDataPoint[]` | No | Array of data points for chart visualization | `-` |
+| `progressValue` | `number` | No | Progress value for progress bar variant (0-100) | `-` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `variant` | `StatCardVariant` | Yes | The visual variant of the stat card | `StatCardVariant.NUMBER` |
+
+## Usage Examples
+
+### Basic Number Card
+Simple stat card displaying a number value
+
+```tsx
+<StatCard
+  title="Total Revenue"
+  value="$125,000"
+  variant={StatCardVariant.NUMBER}
+/>
+```
+
+### Card with Change Indicator
+Stat card showing positive change
+
+```tsx
+<StatCard
+  title="Monthly Sales"
+  value="$45,000"
+  change={{ value: 12, type: ChangeType.INCREASE }}
+  variant={StatCardVariant.NUMBER}
+/>
+```
+
+### Line Chart Card
+Stat card with embedded line chart
+
+```tsx
+<StatCard
+  title="Website Traffic"
+  value="12,543"
+  variant={StatCardVariant.LINE}
+  chartData={[
+    { label: "Jan", value: 1200 },
+    { label: "Feb", value: 1350 },
+    { label: "Mar", value: 1543 }
+  ]}
+/>
+```
+
+### Progress Bar Card
+Stat card with progress visualization
+
+```tsx
+<StatCard
+  title="Goal Progress"
+  value="75%"
+  variant={StatCardVariant.PROGRESS_BAR}
+  progressValue={75}
+/>
+```

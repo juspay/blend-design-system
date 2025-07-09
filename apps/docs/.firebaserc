@@ -1,0 +1,20 @@
+{
+  "projects": {
+    "default": "storybook-452807",
+    "staging": "storybook-452807",
+    "production": "storybook-452807"
+  },
+  "targets": {
+    "storybook-452807": {
+      "hosting": {
+        "blend-staging": [
+          "blend-staging"
+        ],
+        "blend-prod": [
+          "blend-prod"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

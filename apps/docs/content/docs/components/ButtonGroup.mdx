@@ -1,0 +1,107 @@
+---
+title: Buttongroup
+description: A flexible button group component that organizes multiple buttons with intelligent styling modes, positioning, and layout options for cohesive user interfaces.
+---
+
+import { BlendTypeTable } from "@/components/ui/BlendTypeTable";
+import buttongroupMeta from "@/meta/buttongroup.context";
+
+# ButtonGroup Component Documentation
+
+## Description
+A flexible button group component that organizes multiple buttons with intelligent styling modes, positioning, and layout options for cohesive user interfaces.
+
+## Features
+- Multiple styling modes (single primary, all secondary, no transform)
+- Stacked and inline layout options
+- Automatic button positioning and styling
+- Consistent sizing across all buttons
+- Intelligent primary button detection
+- Accessible group semantics
+- Responsive design support
+- Seamless button integration
+
+## Props
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `size` | `ButtonSize` | No | Size applied to all buttons in the group | `ButtonSize.MEDIUM` |
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `isStacked` | `boolean` | No | Whether buttons should be stacked with connected borders | `true` |
+
+### Behavior
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `mode` | `ButtonGroupMode` | No | Styling mode that determines how button types are transformed within the group | `ButtonGroupMode.SINGLE_PRIMARY` |
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `children` | `ReactNode` | Yes | Button components to be grouped together | `-` |
+
+## Usage Examples
+
+### Basic Button Group
+Simple button group with single primary mode
+
+```tsx
+<ButtonGroup 
+  mode={ButtonGroupMode.SINGLE_PRIMARY}
+  size={ButtonSize.MEDIUM}
+>
+  <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+  <Button text="Save" buttonType={ButtonType.PRIMARY} />
+  <Button text="Submit" buttonType={ButtonType.SECONDARY} />
+</ButtonGroup>
+```
+
+### All Secondary Mode
+Button group where all buttons are styled as secondary
+
+```tsx
+<ButtonGroup 
+  mode={ButtonGroupMode.ALL_SECONDARY}
+  isStacked={true}
+>
+  <Button text="Edit" />
+  <Button text="Delete" />
+  <Button text="Archive" />
+</ButtonGroup>
+```
+
+### Inline Button Group
+Non-stacked button group for horizontal layout
+
+```tsx
+<ButtonGroup 
+  isStacked={false}
+  mode={ButtonGroupMode.NO_TRANSFORM}
+  size={ButtonSize.SMALL}
+>
+  <Button text="Previous" buttonType={ButtonType.SECONDARY} />
+  <Button text="Next" buttonType={ButtonType.PRIMARY} />
+</ButtonGroup>
+```
+
+### Large Button Group
+Button group with large size and custom styling
+
+```tsx
+<ButtonGroup 
+  size={ButtonSize.LARGE}
+  mode={ButtonGroupMode.SINGLE_PRIMARY}
+  isStacked={true}
+>
+  <Button text="Draft" buttonType={ButtonType.SECONDARY} />
+  <Button text="Preview" buttonType={ButtonType.SECONDARY} />
+  <Button text="Publish" buttonType={ButtonType.PRIMARY} />
+</ButtonGroup>
+```

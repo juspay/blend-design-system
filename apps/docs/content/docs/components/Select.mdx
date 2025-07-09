@@ -1,0 +1,125 @@
+---
+title: Select
+description: A versatile select menu component with grouped items, multi-selection support, search functionality, and flexible positioning for complex selection scenarios.
+---
+
+
+# Select Component Documentation
+
+## Description
+A versatile select menu component with grouped items, multi-selection support, search functionality, and flexible positioning for complex selection scenarios.
+
+## Features
+- Single and multi-selection modes
+- Grouped menu items with labels
+- Search functionality for filtering
+- Custom slot content (up to 4 slots per item)
+- Submenu support for nested options
+- Flexible positioning and alignment
+- Modal mode for mobile devices
+- Collision boundary detection
+- Customizable dimensions
+- Accessible keyboard navigation
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `trigger` | `React.ReactNode` | No | The trigger element that opens the select menu | `undefined` |
+| `items` | `SelectMenuGroupType[]` | Yes | Array of grouped menu items for selection | `-` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `selected` | `string \| string[]` | No | Currently selected value(s) | `undefined` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onSelect` | `(value: string \| string[]) => void` | No | Callback fired when selection changes | `undefined` |
+
+### Behavior
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `allowMultiSelect` | `boolean` | No | Whether multiple items can be selected | `false` |
+| `asModal` | `boolean` | No | Whether to render as modal on mobile devices | `false` |
+
+### Features
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `enableSearch` | `boolean` | No | Whether to enable search functionality | `false` |
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `side` | `SelectMenuSide` | No | Side where menu appears relative to trigger | `SelectMenuSide.BOTTOM` |
+| `alignment` | `SelectMenuAlignment` | No | Alignment of menu relative to trigger | `SelectMenuAlignment.CENTER` |
+| `maxHeight` | `number` | No | Maximum height of the menu in pixels | `undefined` |
+
+## Usage Examples
+
+### Basic Select Menu
+Simple select with grouped items
+
+```tsx
+<SelectMenu
+  trigger={<Button text="Select Options" />}
+  items={[
+    {
+      groupLabel: "Actions",
+      items: [
+        { label: "Edit", value: "edit" },
+        { label: "Delete", value: "delete" },
+        { label: "Archive", value: "archive" }
+      ]
+    }
+  ]}
+  onSelect={(value) => handleSelection(value)}
+/>
+```
+
+### Multi-Select with Search
+Select menu with multiple selection and search
+
+```tsx
+<SelectMenu
+  trigger={<Button text="Choose Multiple" />}
+  allowMultiSelect={true}
+  enableSearch={true}
+  selected={selectedValues}
+  onSelect={setSelectedValues}
+  items={menuItems}
+/>
+```
+
+### Select with Custom Positioning
+Select menu with custom positioning
+
+```tsx
+<SelectMenu
+  trigger={<IconButton icon={<MoreIcon />} />}
+  side={SelectMenuSide.LEFT}
+  alignment={SelectMenuAlignment.START}
+  maxHeight={300}
+  items={contextMenuItems}
+/>
+```
+
+### Modal Select for Mobile
+Select that becomes modal on mobile
+
+```tsx
+<SelectMenu
+  trigger={<Button text="Mobile Friendly" />}
+  asModal={true}
+  items={mobileMenuItems}
+  onSelect={handleMobileSelection}
+/>
+```

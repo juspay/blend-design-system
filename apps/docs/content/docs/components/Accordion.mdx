@@ -1,0 +1,143 @@
+---
+title: Accordion
+description: A flexible and accessible accordion component built on Radix UI that allows users to show and hide sections of content with support for single and multiple panel expansion modes.
+---
+
+import { BlendTypeTable } from "@/components/ui/BlendTypeTable";
+import accordionMeta from "@/meta/accordion.context";
+
+# Accordion Component Documentation
+
+## Description
+A flexible and accessible accordion component built on Radix UI that allows users to show and hide sections of content with support for single and multiple panel expansion modes.
+
+## Features
+- Built on Radix UI for accessibility compliance
+- Single or multiple panel expansion modes
+- Two visual variants (bordered and borderless)
+- Customizable chevron positioning (left or right)
+- Support for custom content slots (left, right, subtext)
+- Disabled state support
+- Smooth animations and transitions
+- Keyboard navigation support
+- Focus management and ARIA attributes
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `children` | `ReactNode` | Yes | AccordionItem components to render within the accordion | `-` |
+| `value` | `string` | Yes | Unique identifier for the accordion item (AccordionItem prop) | `-` |
+| `title` | `string` | Yes | Main heading text for the accordion item (AccordionItem prop) | `-` |
+| `subtext` | `string` | No | Secondary text below the title (AccordionItem prop) | `undefined` |
+| `leftSlot` | `ReactNode` | No | Custom content on the left side of the header (AccordionItem prop) | `undefined` |
+| `rightSlot` | `ReactNode` | No | Custom content on the right side of the header (AccordionItem prop) | `undefined` |
+| `subtextSlot` | `ReactNode` | No | Custom content in the subtext area (AccordionItem prop) | `undefined` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `accordionType` | `AccordionType` | No | Visual style variant of the accordion | `AccordionType.NO_BORDER` |
+| `chevronPosition` | `AccordionChevronPosition` | No | Position of the expand/collapse chevron (AccordionItem prop) | `AccordionChevronPosition.RIGHT` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `defaultValue` | `string \| string[]` | No | Default expanded item(s) for uncontrolled mode | `undefined` |
+| `value` | `string \| string[]` | No | Controlled expanded item(s) value | `undefined` |
+| `isDisabled` | `boolean` | No | Whether the accordion item is disabled (AccordionItem prop) | `false` |
+
+### Behavior
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `isMultiple` | `boolean` | No | Whether multiple items can be expanded simultaneously | `false` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onValueChange` | `(value: string \| string[]) => void` | No | Callback fired when expansion state changes | `undefined` |
+
+### Styling
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `className` | `string` | No | Additional CSS class names for the accordion container | `undefined` |
+
+## Usage Examples
+
+### Basic Accordion
+Simple accordion with single expansion
+
+```tsx
+<Accordion>
+  <AccordionItem value="item1" title="First Section">
+    <p>Content for the first section goes here.</p>
+  </AccordionItem>
+  <AccordionItem value="item2" title="Second Section">
+    <p>Content for the second section goes here.</p>
+  </AccordionItem>
+</Accordion>
+```
+
+### Multiple Expansion Accordion
+Allow multiple items to be expanded simultaneously
+
+```tsx
+<Accordion isMultiple defaultValue={["item1", "item3"]}>
+  <AccordionItem value="item1" title="Always Expanded">
+    <p>This section starts expanded.</p>
+  </AccordionItem>
+  <AccordionItem value="item2" title="Collapsible Section">
+    <p>This section can be toggled.</p>
+  </AccordionItem>
+  <AccordionItem value="item3" title="Also Expanded">
+    <p>This section also starts expanded.</p>
+  </AccordionItem>
+</Accordion>
+```
+
+### Bordered Accordion with Custom Slots
+Rich accordion items with icons and additional content
+
+```tsx
+<Accordion accordionType={AccordionType.BORDER}>
+  <AccordionItem 
+    value="profile" 
+    title="User Profile"
+    subtext="Manage your personal information"
+    leftSlot={<UserIcon />}
+    rightSlot={<Badge>New</Badge>}
+  >
+    <div>
+      <p>Update your profile information and preferences.</p>
+      <Button text="Edit Profile" />
+    </div>
+  </AccordionItem>
+</Accordion>
+```
+
+### Controlled Accordion
+Accordion with external state management
+
+```tsx
+const [expandedItems, setExpandedItems] = useState(['item1']);
+
+<Accordion 
+  isMultiple 
+  value={expandedItems}
+  onValueChange={setExpandedItems}
+>
+  <AccordionItem value="item1" title="Controlled Item 1">
+    <p>This accordion is controlled by external state.</p>
+  </AccordionItem>
+  <AccordionItem value="item2" title="Controlled Item 2">
+    <p>State changes are handled by the parent component.</p>
+  </AccordionItem>
+</Accordion>
+```

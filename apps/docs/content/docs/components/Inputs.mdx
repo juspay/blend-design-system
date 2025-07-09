@@ -1,0 +1,124 @@
+---
+title: Inputs
+description: A comprehensive collection of input components including TextInput, NumberInput, SearchInput, OTPInput, TextArea, and specialized inputs for various data types and use cases.
+---
+
+
+# Inputs Component Documentation
+
+## Description
+A comprehensive collection of input components including TextInput, NumberInput, SearchInput, OTPInput, TextArea, and specialized inputs for various data types and use cases.
+
+## Features
+- Multiple input types (text, number, search, OTP, textarea)
+- Two sizes (medium, large)
+- Error state handling with messages
+- Required field indication
+- Label and sublabel support
+- Hint text and help tooltips
+- Left and right slot content
+- Disabled state support
+- Form integration ready
+- Accessible design with proper labeling
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `label` | `string` | Yes | The main label text for the input | `-` |
+| `sublabel` | `string` | No | Additional label text displayed below the main label | `undefined` |
+| `hintText` | `string` | No | Hint text displayed below the input | `undefined` |
+| `helpIconHintText` | `string` | No | Text displayed in help tooltip next to the label | `undefined` |
+| `errorMessage` | `string` | No | Error message displayed when input is in error state | `undefined` |
+| `leftSlot` | `React.ReactNode` | No | Custom content displayed on the left side of the input | `undefined` |
+| `rightSlot` | `React.ReactNode` | No | Custom content displayed on the right side of the input | `undefined` |
+| `placeholder` | `string` | No | Placeholder text for the input | `undefined` |
+| `name` | `string` | No | Name attribute for form submission | `undefined` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `value` | `string` | Yes | The current value of the input | `-` |
+| `required` | `boolean` | No | Whether the input is required (shows asterisk) | `false` |
+| `error` | `boolean` | No | Whether the input is in error state | `false` |
+| `disabled` | `boolean` | No | Whether the input is disabled | `false` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onChange` | `(e: React.ChangeEvent<HTMLInputElement>) => void` | Yes | Callback fired when the input value changes | `-` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `size` | `TextInputSize` | No | Size variant of the input | `TextInputSize.MEDIUM` |
+
+## Usage Examples
+
+### Basic Text Input
+Simple text input with label and hint
+
+```tsx
+const [value, setValue] = useState('');
+
+<TextInput 
+  label="Full Name"
+  value={value}
+  onChange={(e) => setValue(e.target.value)}
+  placeholder="Enter your full name"
+  hintText="This will be displayed on your profile"
+/>
+```
+
+### Required Input with Error
+Input with required indication and error state
+
+```tsx
+<TextInput 
+  label="Email Address"
+  sublabel="We'll use this to contact you"
+  required={true}
+  error={true}
+  errorMessage="Please enter a valid email address"
+  value={email}
+  onChange={handleEmailChange}
+  placeholder="you@example.com"
+  size={TextInputSize.LARGE}
+/>
+```
+
+### Input with Slots
+Input with left and right slot content
+
+```tsx
+<TextInput 
+  label="Website URL"
+  value={url}
+  onChange={handleUrlChange}
+  leftSlot={<GlobeIcon />}
+  rightSlot={<Button size="sm" text="Verify" />}
+  placeholder="https://example.com"
+  hintText="Enter your website or portfolio URL"
+/>
+```
+
+### Number Input with Help
+Number input with help tooltip
+
+```tsx
+<NumberInput 
+  label="Monthly Budget"
+  sublabel="USD"
+  value={budget}
+  onChange={setBudget}
+  helpIconHintText="This helps us recommend suitable plans"
+  leftSlot={<DollarIcon />}
+  placeholder="0.00"
+  disabled={false}
+/>
+```

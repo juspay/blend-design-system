@@ -1,0 +1,106 @@
+---
+title: GradientBlur
+description: A decorative gradient blur background component that creates animated, colorful gradient effects for visual enhancement and modern UI aesthetics.
+---
+
+# GradientBlur Component Documentation
+
+## Description
+A decorative gradient blur background component that creates animated, colorful gradient effects for visual enhancement and modern UI aesthetics.
+
+## Features
+- Animated gradient background effects
+- Multiple gradient layers for depth
+- CSS-based animations for performance
+- No configuration required
+- Lightweight and performant
+- Modern visual aesthetics
+- Responsive design
+- Easy integration
+
+## Props
+
+This component does not accept any props. It renders a decorative gradient blur effect with predefined animations and styling.
+
+## Usage Examples
+
+### Basic Gradient Blur
+Simple gradient blur background effect
+
+```tsx
+<div style={{ position: 'relative', minHeight: '400px' }}>
+  <GradientBlur />
+  <div style={{ position: 'relative', zIndex: 1 }}>
+    <h1>Content over gradient blur</h1>
+    <p>This content appears above the gradient blur effect.</p>
+  </div>
+</div>
+```
+
+### Hero Section with Gradient Blur
+Using gradient blur as a hero section background
+
+```tsx
+<section style={{ position: 'relative', height: '100vh' }}>
+  <GradientBlur />
+  <div style={{ 
+    position: 'relative', 
+    zIndex: 1, 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    height: '100%',
+    textAlign: 'center'
+  }}>
+    <div>
+      <h1>Welcome to Our Platform</h1>
+      <p>Experience the future of design</p>
+      <Button text="Get Started" />
+    </div>
+  </div>
+</section>
+```
+
+### Card with Gradient Blur Background
+Gradient blur as a card background
+
+```tsx
+<div style={{ 
+  position: 'relative', 
+  borderRadius: '12px', 
+  overflow: 'hidden',
+  padding: '2rem'
+}}>
+  <GradientBlur />
+  <div style={{ position: 'relative', zIndex: 1 }}>
+    <h3>Featured Content</h3>
+    <p>This card has a beautiful gradient blur background.</p>
+  </div>
+</div>
+```
+
+### Modal Backdrop with Gradient Blur
+Using gradient blur as a modal backdrop
+
+```tsx
+<div style={{ 
+  position: 'fixed', 
+  inset: 0, 
+  display: 'flex', 
+  alignItems: 'center', 
+  justifyContent: 'center' 
+}}>
+  <GradientBlur />
+  <div style={{ 
+    position: 'relative', 
+    zIndex: 1, 
+    background: 'white', 
+    borderRadius: '8px', 
+    padding: '2rem',
+    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+  }}>
+    <h2>Modal Content</h2>
+    <p>Modal with gradient blur backdrop</p>
+  </div>
+</div>
+```

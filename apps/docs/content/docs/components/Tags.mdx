@@ -1,0 +1,149 @@
+---
+title: Tags
+description: A versatile tag component for displaying labels, categories, or status indicators with multiple variants, sizes, and interactive capabilities.
+---
+
+
+# Tags Component Documentation
+
+## Description
+A versatile tag component for displaying labels, categories, or status indicators with multiple variants, sizes, and interactive capabilities.
+
+## Features
+- Multiple visual variants (solid, outline, ghost)
+- Various size options (small, medium, large)
+- Color customization support
+- Icon integration (leading and trailing)
+- Removable tags with close functionality
+- Disabled state handling
+- Click event handling
+- Custom styling options
+- Accessible keyboard navigation
+- Responsive design
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `children` | `React.ReactNode` | Yes | Content to display inside the tag | `-` |
+| `leadingIcon` | `React.ReactNode` | No | Icon to display before the tag content | `undefined` |
+| `trailingIcon` | `React.ReactNode` | No | Icon to display after the tag content | `undefined` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `variant` | `TagVariant` | No | Visual variant of the tag | `TagVariant.SOLID` |
+| `size` | `TagSize` | No | Size variant of the tag | `TagSize.MEDIUM` |
+
+### Styling
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `color` | `string` | No | Color theme for the tag | `'gray'` |
+| `className` | `string` | No | Additional CSS class names | `undefined` |
+
+### Behavior
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `removable` | `boolean` | No | Whether the tag can be removed (shows close button) | `false` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onRemove` | `() => void` | No | Callback fired when the remove button is clicked | `undefined` |
+| `onClick` | `() => void` | No | Callback fired when the tag is clicked | `undefined` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `disabled` | `boolean` | No | Whether the tag is disabled | `false` |
+| `loading` | `boolean` | No | Whether the tag is in loading state | `false` |
+
+## Usage Examples
+
+### Basic Tags
+Simple tags with different variants
+
+```tsx
+<div className="flex gap-2">
+  <Tags variant={TagVariant.SOLID} color="blue">
+    React
+  </Tags>
+  <Tags variant={TagVariant.OUTLINE} color="green">
+    TypeScript
+  </Tags>
+  <Tags variant={TagVariant.GHOST} color="purple">
+    Next.js
+  </Tags>
+</div>
+```
+
+### Tags with Icons
+Tags with leading and trailing icons
+
+```tsx
+<div className="flex gap-2">
+  <Tags 
+    leadingIcon={<StarIcon />}
+    color="yellow"
+  >
+    Featured
+  </Tags>
+  <Tags 
+    trailingIcon={<ArrowRightIcon />}
+    color="blue"
+    onClick={() => navigate('/details')}
+  >
+    View Details
+  </Tags>
+</div>
+```
+
+### Removable Tags
+Tags with remove functionality
+
+```tsx
+const [tags, setTags] = useState(['React', 'Vue', 'Angular']);
+
+const removeTag = (tagToRemove) => {
+  setTags(tags.filter(tag => tag !== tagToRemove));
+};
+
+<div className="flex gap-2">
+  {tags.map(tag => (
+    <Tags
+      key={tag}
+      removable
+      onRemove={() => removeTag(tag)}
+      color="gray"
+    >
+      {tag}
+    </Tags>
+  ))}
+</div>
+```
+
+### Different Sizes and States
+Tags with various sizes and states
+
+```tsx
+<div className="space-y-4">
+  <div className="flex gap-2 items-center">
+    <Tags size={TagSize.SMALL} color="red">Small</Tags>
+    <Tags size={TagSize.MEDIUM} color="blue">Medium</Tags>
+    <Tags size={TagSize.LARGE} color="green">Large</Tags>
+  </div>
+  
+  <div className="flex gap-2">
+    <Tags color="orange">Active</Tags>
+    <Tags disabled color="gray">Disabled</Tags>
+    <Tags loading color="purple">Loading</Tags>
+  </div>
+</div>
+```

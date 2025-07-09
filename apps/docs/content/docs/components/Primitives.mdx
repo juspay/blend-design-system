@@ -1,0 +1,192 @@
+---
+title: Primitives
+description: A collection of low-level, unstyled primitive components that serve as building blocks for creating custom UI components with full control over styling and behavior.
+---
+
+
+# Primitives Component Documentation
+
+## Description
+A collection of low-level, unstyled primitive components that serve as building blocks for creating custom UI components with full control over styling and behavior.
+
+## Features
+- Unstyled base components
+- Accessibility features built-in
+- Keyboard navigation support
+- Focus management
+- ARIA attributes handling
+- Composable architecture
+- Headless component patterns
+- Custom styling flexibility
+- Event handling abstractions
+- Cross-browser compatibility
+
+## Props
+
+### Composition
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `asChild` | `boolean` | No | Merges props with the first child element instead of rendering a wrapper | `false` |
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `children` | `React.ReactNode` | Yes | Child elements to render within the primitive | `-` |
+
+### Styling
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `className` | `string` | No | CSS class names for styling the primitive | `undefined` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onSelect` | `(event: Event) => void` | No | Callback fired when an item is selected (for selectable primitives) | `undefined` |
+| `onOpenChange` | `(open: boolean) => void` | No | Callback fired when open state changes | `undefined` |
+| `onCheckedChange` | `(checked: boolean) => void` | No | Callback fired when checked state changes | `undefined` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `disabled` | `boolean` | No | Whether the primitive is disabled | `false` |
+| `open` | `boolean` | No | Controlled open state (for dialog/dropdown primitives) | `undefined` |
+| `checked` | `boolean` | No | Controlled checked state (for checkbox/radio primitives) | `undefined` |
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `side` | `'top' \| 'right' \| 'bottom' \| 'left'` | No | Preferred side for positioning (for floating primitives) | `'bottom'` |
+| `align` | `'start' \| 'center' \| 'end'` | No | Alignment relative to the trigger (for floating primitives) | `'center'` |
+| `sideOffset` | `number` | No | Distance in pixels from the trigger (for floating primitives) | `0` |
+
+### Form
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `value` | `string` | No | Value for form submission (for input primitives) | `undefined` |
+| `name` | `string` | No | Name attribute for form submission | `undefined` |
+
+## Usage Examples
+
+### Custom Button Primitive
+Building a custom button using primitives
+
+```tsx
+import { ButtonPrimitive } from 'blend-v1';
+
+const CustomButton = ({ children, variant = 'primary', ...props }) => {
+  const baseStyles = 'px-4 py-2 rounded font-medium transition-colors';
+  const variantStyles = {
+    primary: 'bg-blue-500 text-white hover:bg-blue-600',
+    secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300'
+  };
+
+  return (
+    <ButtonPrimitive
+      className={`${baseStyles} ${variantStyles[variant]}`}
+      {...props}
+    >
+      {children}
+    </ButtonPrimitive>
+  );
+};
+```
+
+### Custom Dialog Primitive
+Creating a custom dialog using dialog primitives
+
+```tsx
+import { DialogPrimitive } from 'blend-v1';
+
+const CustomDialog = ({ children, title, open, onOpenChange }) => {
+  return (
+    <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
+      <DialogPrimitive.Trigger asChild>
+        <button>Open Dialog</button>
+      </DialogPrimitive.Trigger>
+      
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="fixed inset-0 bg-black/50" />
+        <DialogPrimitive.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg">
+          <DialogPrimitive.Title className="text-lg font-semibold mb-4">
+            {title}
+          </DialogPrimitive.Title>
+          {children}
+          <DialogPrimitive.Close className="absolute top-2 right-2">
+            ×
+          </DialogPrimitive.Close>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
+  );
+};
+```
+
+### Custom Dropdown Primitive
+Building a dropdown menu using primitives
+
+```tsx
+import { DropdownPrimitive } from 'blend-v1';
+
+const CustomDropdown = ({ trigger, children }) => {
+  return (
+    <DropdownPrimitive.Root>
+      <DropdownPrimitive.Trigger asChild>
+        {trigger}
+      </DropdownPrimitive.Trigger>
+      
+      <DropdownPrimitive.Portal>
+        <DropdownPrimitive.Content 
+          className="bg-white border rounded-md shadow-lg p-1 min-w-[200px]"
+          sideOffset={5}
+        >
+          {children}
+          <DropdownPrimitive.Arrow className="fill-white" />
+        </DropdownPrimitive.Content>
+      </DropdownPrimitive.Portal>
+    </DropdownPrimitive.Root>
+  );
+};
+
+const DropdownItem = ({ children, onSelect }) => (
+  <DropdownPrimitive.Item
+    className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded"
+    onSelect={onSelect}
+  >
+    {children}
+  </DropdownPrimitive.Item>
+);
+```
+
+### Custom Checkbox Primitive
+Creating a styled checkbox using primitives
+
+```tsx
+import { CheckboxPrimitive } from 'blend-v1';
+
+const CustomCheckbox = ({ children, ...props }) => {
+  return (
+    <div className="flex items-center space-x-2">
+      <CheckboxPrimitive.Root
+        className="w-5 h-5 border-2 border-gray-300 rounded data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+        {...props}
+      >
+        <CheckboxPrimitive.Indicator className="text-white">
+          <CheckIcon />
+        </CheckboxPrimitive.Indicator>
+      </CheckboxPrimitive.Root>
+      {children && (
+        <label className="text-sm font-medium">
+          {children}
+        </label>
+      )}
+    </div>
+  );
+};
+```

@@ -1,0 +1,27 @@
+{
+  "name": "blend-design-system",
+  "packageManager": "pnpm@10.12.4",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "storybook": "turbo run storybook",
+    "storybook:build": "turbo run build-storybook",
+    "storybook:preview": "turbo run preview-storybook",
+    "docs:dev": "turbo run dev --filter=docs",
+    "docs:build": "turbo run build --filter=docs",
+    "deploy:staging": "cd apps/docs && npm run deploy:staging-env",
+    "deploy:production": "cd apps/docs && npm run deploy:production-env",
+    "deploy:setup": "cd apps/docs && npm run setup:hosting",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "release": "turbo run build --filter=docs^... && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "prettier": "^3.2.5",
+    "turbo": "^2.5.4"
+  }
+}

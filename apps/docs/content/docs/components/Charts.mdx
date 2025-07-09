@@ -1,0 +1,103 @@
+---
+title: Charts
+description: A comprehensive charting component that supports line, bar, and pie charts with customizable styling and interactive features.
+---
+
+import { BlendTypeTable } from "@/components/ui/BlendTypeTable";
+import chartsMeta from "@/meta/charts.context";
+
+# Charts Component Documentation
+
+## Description
+A comprehensive charting component that supports line, bar, and pie charts with customizable styling and interactive features.
+
+## Features
+- Multiple chart types (line, bar, pie)
+- Interactive legends with hover effects
+- Customizable colors and styling
+- Flexible slot system for custom content
+- Responsive design
+- Custom tooltips
+- Axis labeling support
+
+## Props
+
+### Configuration
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `chartType` | `ChartType` | No | The type of chart to render | `ChartType.LINE` |
+| `metrics` | `string[]` | No | Array of metric names to display | `-` |
+
+### Data
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `data` | `NewNestedDataPoint[]` | Yes | Array of data points for chart visualization | `-` |
+
+### Labels
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `xAxisLabel` | `string` | No | Label for the X-axis | `-` |
+| `yAxisLabel` | `string` | No | Label for the Y-axis | `-` |
+
+### Styling
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `colors` | `string[]` | No | Array of colors for chart elements | `DEFAULT_COLORS` |
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `slot1` | `ReactNode` | No | First slot for custom content in chart header | `-` |
+| `slot2` | `ReactNode` | No | Second slot for custom content in chart header | `-` |
+| `slot3` | `ReactNode` | No | Third slot for custom content in chart header | `-` |
+| `chartHeaderSlot` | `ReactNode` | Yes | Custom content for the chart header | `-` |
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `legendPosition` | `ChartLegendPosition` | No | Position of the chart legend | `ChartLegendPosition.TOP` |
+
+## Usage Examples
+
+### Basic Line Chart
+Simple line chart with data points
+
+```tsx
+<Charts
+  chartType={ChartType.LINE}
+  data={chartData}
+  xAxisLabel="Month"
+  yAxisLabel="Revenue"
+  chartHeaderSlot="Monthly Revenue"
+/>
+```
+
+### Bar Chart with Custom Colors
+Bar chart with custom color scheme
+
+```tsx
+<Charts
+  chartType={ChartType.BAR}
+  data={chartData}
+  colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]}
+  chartHeaderSlot="Sales by Category"
+/>
+```
+
+### Pie Chart with Legend
+Pie chart with right-positioned legend
+
+```tsx
+<Charts
+  chartType={ChartType.PIE}
+  data={pieData}
+  legendPosition={ChartLegendPosition.RIGHT}
+  chartHeaderSlot="Market Share"
+/>
+```

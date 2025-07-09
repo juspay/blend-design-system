@@ -1,0 +1,118 @@
+---
+title: Breadcrumb
+description: A navigation breadcrumb component that displays the current page's location within a navigational hierarchy with support for overflow handling and custom content slots.
+---
+
+import { BlendTypeTable } from "@/components/ui/BlendTypeTable";
+import breadcrumbMeta from "@/meta/breadcrumb.context";
+
+# Breadcrumb Component Documentation
+
+## Description
+A navigation breadcrumb component that displays the current page's location within a navigational hierarchy with support for overflow handling and custom content slots.
+
+## Features
+- Hierarchical navigation display
+- Automatic overflow handling with ellipsis menu
+- Maximum item limit (4 items) with smart truncation
+- Left and right content slots for each item
+- Active state indication for current page
+- Accessible navigation structure
+- Responsive design
+- Custom styling support
+- Link-based navigation
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `items` | `BreadcrumbItemType[]` | Yes | Array of breadcrumb items to display in the navigation | `-` |
+| `label` | `string` | Yes | Display text for the breadcrumb item (BreadcrumbItemType property) | `-` |
+| `href` | `string` | Yes | URL link for the breadcrumb item (BreadcrumbItemType property) | `-` |
+| `leftSlot` | `React.ReactNode` | No | Custom content to display on the left side of the breadcrumb item (BreadcrumbItemType property) | `undefined` |
+| `rightSlot` | `React.ReactNode` | No | Custom content to display on the right side of the breadcrumb item (BreadcrumbItemType property) | `undefined` |
+
+## Usage Examples
+
+### Basic Breadcrumb
+Simple breadcrumb navigation with multiple levels
+
+```tsx
+<Breadcrumb 
+  items={[
+    { label: "Home", href: "/" },
+    { label: "Products", href: "/products" },
+    { label: "Electronics", href: "/products/electronics" },
+    { label: "Smartphones", href: "/products/electronics/smartphones" }
+  ]}
+/>
+```
+
+### Breadcrumb with Icons
+Breadcrumb items with left slot icons
+
+```tsx
+<Breadcrumb 
+  items={[
+    { 
+      label: "Dashboard", 
+      href: "/dashboard",
+      leftSlot: <HomeIcon size={16} />
+    },
+    { 
+      label: "Users", 
+      href: "/dashboard/users",
+      leftSlot: <UsersIcon size={16} />
+    },
+    { 
+      label: "Profile", 
+      href: "/dashboard/users/profile",
+      leftSlot: <UserIcon size={16} />
+    }
+  ]}
+/>
+```
+
+### Breadcrumb with Custom Slots
+Breadcrumb with both left and right content slots
+
+```tsx
+<Breadcrumb 
+  items={[
+    { 
+      label: "Projects", 
+      href: "/projects",
+      leftSlot: <FolderIcon size={16} />
+    },
+    { 
+      label: "Website Redesign", 
+      href: "/projects/website-redesign",
+      rightSlot: <Badge variant="active">Active</Badge>
+    },
+    { 
+      label: "Design System", 
+      href: "/projects/website-redesign/design-system",
+      rightSlot: <Badge variant="draft">Draft</Badge>
+    }
+  ]}
+/>
+```
+
+### Long Breadcrumb with Overflow
+Breadcrumb that demonstrates overflow handling
+
+```tsx
+<Breadcrumb 
+  items={[
+    { label: "Home", href: "/" },
+    { label: "Category", href: "/category" },
+    { label: "Subcategory", href: "/category/subcategory" },
+    { label: "Product Type", href: "/category/subcategory/type" },
+    { label: "Brand", href: "/category/subcategory/type/brand" },
+    { label: "Model", href: "/category/subcategory/type/brand/model" },
+    { label: "Variant", href: "/category/subcategory/type/brand/model/variant" }
+  ]}
+/>
+```

@@ -1,0 +1,177 @@
+---
+title: Popover
+description: A flexible popover component for displaying contextual content in an overlay with customizable positioning, sizing, and action buttons for rich interactive experiences.
+---
+
+
+# Popover Component Documentation
+
+## Description
+A flexible popover component for displaying contextual content in an overlay with customizable positioning, sizing, and action buttons for rich interactive experiences.
+
+## Features
+- Controlled and uncontrolled open state
+- Flexible positioning (top, right, bottom, left)
+- Customizable alignment (start, center, end)
+- Two sizes (small, medium)
+- Primary and secondary action buttons
+- Optional close button
+- Modal mode for mobile devices
+- Customizable dimensions and offsets
+- Z-index control for layering
+- Rich content support with heading and description
+
+## Props
+
+### Content
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `trigger` | `React.ReactNode` | Yes | The trigger element that opens the popover when clicked | `-` |
+| `children` | `React.ReactNode` | Yes | The content to be displayed inside the popover | `-` |
+| `heading` | `string` | No | The heading text displayed at the top of the popover | `undefined` |
+| `description` | `string` | No | The description text displayed below the heading | `undefined` |
+
+### State
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `open` | `boolean` | No | Controlled open state of the popover | `undefined` |
+
+### Events
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `onOpenChange` | `(open: boolean) => void` | No | Callback fired when the popover open state changes | `undefined` |
+| `onClose` | `() => void` | No | Callback fired when the popover is closed | `undefined` |
+
+### Behavior
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `showCloseButton` | `boolean` | No | Whether to show the close button in the popover header | `false` |
+| `asModal` | `boolean` | No | Whether to render the popover as a modal on mobile devices | `false` |
+
+### Actions
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `primaryAction` | `PopoverActionType` | No | Configuration for the primary action button | `undefined` |
+| `secondaryAction` | `PopoverActionType` | No | Configuration for the secondary action button | `undefined` |
+
+### Appearance
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `size` | `PopoverSize` | No | Size variant of the popover | `PopoverSize.MEDIUM` |
+
+### Layout
+
+| Prop Name | Type | Required | Description | Default Value |
+|-----------|------|----------|-------------|---------------|
+| `side` | `'top' \| 'right' \| 'bottom' \| 'left'` | No | Side where the popover should appear relative to the trigger | `'bottom'` |
+| `align` | `'start' \| 'center' \| 'end'` | No | Alignment of the popover relative to the trigger | `'center'` |
+| `sideOffset` | `number` | No | Distance in pixels between the popover and trigger | `5` |
+| `alignOffset` | `number` | No | Offset in pixels for popover alignment | `0` |
+| `width` | `number` | No | Fixed width of the popover in pixels | `undefined` |
+| `minWidth` | `number` | No | Minimum width of the popover in pixels | `undefined` |
+| `maxWidth` | `number` | No | Maximum width of the popover in pixels | `undefined` |
+| `height` | `number` | No | Fixed height of the popover in pixels | `undefined` |
+| `minHeight` | `number` | No | Minimum height of the popover in pixels | `undefined` |
+| `maxHeight` | `number` | No | Maximum height of the popover in pixels | `undefined` |
+| `zIndex` | `number` | No | Z-index value for the popover layering | `undefined` |
+
+## Usage Examples
+
+### Basic Popover
+Simple popover with heading and content
+
+```tsx
+<Popover
+  trigger={<Button text="Show Info" />}
+  heading="User Information"
+  description="Additional details about the user"
+>
+  <div>
+    <p>This is the popover content area.</p>
+    <p>You can put any React content here.</p>
+  </div>
+</Popover>
+```
+
+### Popover with Actions
+Popover with primary and secondary action buttons
+
+```tsx
+<Popover
+  trigger={<Button text="Confirm Action" />}
+  heading="Confirm Deletion"
+  description="This action cannot be undone"
+  primaryAction={{
+    text: "Delete",
+    buttonType: ButtonTypeV2.DANGER,
+    onClick: () => handleDelete()
+  }}
+  secondaryAction={{
+    text: "Cancel",
+    buttonType: ButtonTypeV2.SECONDARY,
+    onClick: () => handleCancel()
+  }}
+  showCloseButton={true}
+>
+  <p>Are you sure you want to delete this item?</p>
+</Popover>
+```
+
+### Controlled Popover with Custom Positioning
+Popover with controlled state and custom positioning
+
+```tsx
+const [isOpen, setIsOpen] = useState(false);
+
+<Popover
+  trigger={<IconButton icon={<InfoIcon />} />}
+  open={isOpen}
+  onOpenChange={setIsOpen}
+  heading="Help Information"
+  side="top"
+  align="start"
+  sideOffset={10}
+  size={PopoverSize.LARGE}
+  maxWidth={400}
+>
+  <div>
+    <h4>Quick Tips</h4>
+    <ul>
+      <li>Use keyboard shortcuts for faster navigation</li>
+      <li>Right-click for context menus</li>
+      <li>Drag and drop to reorder items</li>
+    </ul>
+  </div>
+</Popover>
+```
+
+### Mobile Modal Popover
+Popover that becomes a modal on mobile devices
+
+```tsx
+<Popover
+  trigger={<Button text="Settings" />}
+  heading="User Settings"
+  description="Manage your account preferences"
+  asModal={true}
+  size={PopoverSize.MEDIUM}
+  primaryAction={{
+    text: "Save Changes",
+    buttonType: ButtonTypeV2.PRIMARY,
+    onClick: () => saveSettings()
+  }}
+  onClose={() => handleClose()}
+>
+  <div className="settings-form">
+    <Switch label="Email notifications" />
+    <Switch label="Push notifications" />
+    <TextInput label="Display name" />
+  </div>
+</Popover>
+```

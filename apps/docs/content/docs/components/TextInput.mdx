@@ -1,0 +1,101 @@
+---
+title: TextInput
+description: A text input component for form inputs with validation and styling
+---
+
+import BlendTypeTable from "@/components/ui/BlendTypeTable";
+
+# TextInput
+
+<BlendTypeTable tableRows={[
+  {
+    propName: "required",
+    propType: "boolean",
+    propDescription: "Whether the input is required",
+    propDefault: "false",
+  },
+  {
+    propName: "label",
+    propType: "string",
+    propDescription: "Label text for the input field",
+    propDefault: "undefined",
+  },
+  {
+    propName: "sublabel",
+    propType: "string",
+    propDescription: "Additional sub-label text",
+    propDefault: "undefined",
+  },
+  {
+    propName: "hintText",
+    propType: "string",
+    propDescription: "Helper text displayed below the input",
+    propDefault: "undefined",
+  },
+  {
+    propName: "helpIconHintText",
+    propType: "string",
+    propDescription: "Tooltip text for the help icon",
+    propDefault: "undefined",
+  },
+  {
+    propName: "error",
+    propType: "boolean",
+    propDescription: "Whether to show error state",
+    propDefault: "false",
+  },
+  {
+    propName: "errorMessage",
+    propType: "string",
+    propDescription: "Error message to display when error is true",
+    propDefault: "undefined",
+  },
+  {
+    propName: "disabled",
+    propType: "boolean",
+    propDescription: "Whether the input is disabled",
+    propDefault: "false",
+  },
+  {
+    propName: "size",
+    propType: "TextInputSize",
+    propDescription: "Size of the input (md, lg)",
+    propDefault: "TextInputSize.MEDIUM",
+  },
+  {
+    propName: "leftSlot",
+    propType: "React.ReactNode",
+    propDescription: "Content to display on the left side of the input",
+    propDefault: "undefined",
+  },
+  {
+    propName: "rightSlot",
+    propType: "React.ReactNode",
+    propDescription: "Content to display on the right side of the input",
+    propDefault: "undefined",
+  },
+  {
+    propName: "value",
+    propType: "string",
+    propDescription: "Current value of the input",
+    propDefault: "undefined",
+  },
+  {
+    propName: "onChange",
+    propType: "(e: React.ChangeEvent<HTMLInputElement>) => void",
+    propDescription: "Callback when input value changes",
+    propDefault: "undefined",
+  },
+  {
+    propName: "placeholder",
+    propType: "string",
+    propDescription: "Placeholder text for the input",
+    propDefault: "undefined",
+  },
+  {
+    propName: "name",
+    propType: "string",
+    propDescription: "Name attribute for the input element",
+    propDefault: "undefined",
+  },
+]} /> 
