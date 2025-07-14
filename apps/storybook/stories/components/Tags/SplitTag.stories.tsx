@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 import { SplitTag, TagColor, TagSize, TagShape } from 'blend-v1'
+
+// Figma Code Connect is configured in SplitTag.figma.tsx
 import {
     Star,
     Check,

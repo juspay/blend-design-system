@@ -24,6 +24,8 @@ import {
     Percent,
 } from 'lucide-react'
 
+// Figma Code Connect is configured in Tags.figma.tsx
+
 const meta: Meta<typeof Tag> = {
     title: 'Components/Tags/Tag',
     component: Tag,

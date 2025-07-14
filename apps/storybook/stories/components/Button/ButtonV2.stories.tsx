@@ -12,6 +12,8 @@ import {
     Trash2,
 } from 'lucide-react'
 
+// Figma Code Connect is now in a separate file: ButtonV2.figma.tsx
+
 const meta: Meta<typeof ButtonV2> = {
     title: 'Components/Button/ButtonV2',
     component: ButtonV2,
@@ -180,7 +182,7 @@ export const ButtonSubTypes: Story = {
             <ButtonV2 subType={ButtonSubTypeV2.DEFAULT} text="Default" />
             <ButtonV2
                 subType={ButtonSubTypeV2.ICON_ONLY}
-                leadingIcon={<Settings size={16} />}
+                leftIcon={<Settings size={16} />}
                 text="Icon Only"
             />
             <ButtonV2 subType={ButtonSubTypeV2.INLINE} text="Inline" />
@@ -201,23 +203,23 @@ export const WithIcons: Story = {
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <ButtonV2
                 text="Add Item"
-                leadingIcon={<Plus size={16} />}
+                leftIcon={<Plus size={16} />}
                 buttonType={ButtonTypeV2.PRIMARY}
             />
             <ButtonV2
                 text="Download"
-                leadingIcon={<Download size={16} />}
+                leftIcon={<Download size={16} />}
                 buttonType={ButtonTypeV2.SECONDARY}
             />
             <ButtonV2
                 text="Settings"
-                trailingIcon={<Settings size={16} />}
+                rightIcon={<Settings size={16} />}
                 buttonType={ButtonTypeV2.SECONDARY}
             />
             <ButtonV2
                 text="Favorite"
-                leadingIcon={<Heart size={16} />}
-                trailingIcon={<Star size={16} />}
+                leftIcon={<Heart size={16} />}
+                rightIcon={<Star size={16} />}
                 buttonType={ButtonTypeV2.SUCCESS}
             />
         </div>
@@ -244,25 +246,25 @@ export const IconOnly: Story = {
         >
             <ButtonV2
                 subType={ButtonSubTypeV2.ICON_ONLY}
-                leadingIcon={<Plus size={16} />}
+                leftIcon={<Plus size={16} />}
                 buttonType={ButtonTypeV2.PRIMARY}
                 size={ButtonSizeV2.SMALL}
             />
             <ButtonV2
                 subType={ButtonSubTypeV2.ICON_ONLY}
-                leadingIcon={<Search size={16} />}
+                leftIcon={<Search size={16} />}
                 buttonType={ButtonTypeV2.SECONDARY}
                 size={ButtonSizeV2.MEDIUM}
             />
             <ButtonV2
                 subType={ButtonSubTypeV2.ICON_ONLY}
-                leadingIcon={<Edit size={16} />}
+                leftIcon={<Edit size={16} />}
                 buttonType={ButtonTypeV2.SUCCESS}
                 size={ButtonSizeV2.LARGE}
             />
             <ButtonV2
                 subType={ButtonSubTypeV2.ICON_ONLY}
-                leadingIcon={<Trash2 size={16} />}
+                leftIcon={<Trash2 size={16} />}
                 buttonType={ButtonTypeV2.DANGER}
                 size={ButtonSizeV2.MEDIUM}
             />
@@ -362,7 +364,7 @@ export const FullWidth: Story = {
             <ButtonV2
                 text="Full Width with Icon"
                 buttonType={ButtonTypeV2.SUCCESS}
-                leadingIcon={<Plus size={16} />}
+                leftIcon={<Plus size={16} />}
                 fullWidth={true}
             />
         </div>
@@ -567,17 +569,17 @@ export const Showcase: Story = {
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                     <ButtonV2
                         text="Add"
-                        leadingIcon={<Plus size={16} />}
+                        leftIcon={<Plus size={16} />}
                         buttonType={ButtonTypeV2.PRIMARY}
                     />
                     <ButtonV2
                         text="Download"
-                        trailingIcon={<Download size={16} />}
+                        rightIcon={<Download size={16} />}
                         buttonType={ButtonTypeV2.SECONDARY}
                     />
                     <ButtonV2
                         subType={ButtonSubTypeV2.ICON_ONLY}
-                        leadingIcon={<Settings size={16} />}
+                        leftIcon={<Settings size={16} />}
                         buttonType={ButtonTypeV2.SECONDARY}
                     />
                 </div>
