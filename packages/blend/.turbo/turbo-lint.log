@@ -1,26 +1,25 @@
 
-
 > blend-v1@0.2.32 lint /Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend
 > eslint .
 
-[0m[0m
-[0m[4m/Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend/lib/components/DataTable/DataTable.tsx[24m[0m
-[0m  [2m266:12[22m  [33mwarning[39m  React Hook useEffect has a missing dependency: 'updateSelectAllState'. Either include it or remove the dependency array  [2mreact-hooks/exhaustive-deps[22m[0m
-[0m[0m
-[0m[4m/Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend/lib/components/Menu/Menu.tsx[24m[0m
-[0m  [2m15:14[22m  [33mwarning[39m  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  [2mreact-refresh/only-export-components[22m[0m
-[0m[0m
-[0m[4m/Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend/lib/components/Select/Select.tsx[24m[0m
-[0m  [2m17:13[22m  [33mwarning[39m  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  [2mreact-refresh/only-export-components[22m[0m
-[0m[0m
-[0m[4m/Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend/lib/components/Snackbar/Snackbar.tsx[24m[0m
-[0m  [2m106:14[22m  [33mwarning[39m  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  [2mreact-refresh/only-export-components[22m[0m
-[0m[0m
-[0m[4m/Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend/lib/context/ThemeContext.tsx[24m[0m
-[0m  [2m163:14[22m  [33mwarning[39m  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  [2mreact-refresh/only-export-components[22m[0m
-[0m[0m
-[0m[4m/Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend/lib/hooks/useBreakPoints.ts[24m[0m
-[0m  [2m29:8[22m  [33mwarning[39m  React Hook useEffect has a missing dependency: 'getLabel'. Either include it or remove the dependency array  [2mreact-hooks/exhaustive-deps[22m[0m
-[0m[0m
-[0m[33m[1m✖ 6 problems (0 errors, 6 warnings)[22m[39m[0m
-[0m[33m[1m[22m[39m[0m
+
+/Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend/lib/components/DataTable/DataTable.tsx
+  266:12  warning  React Hook useEffect has a missing dependency: 'updateSelectAllState'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend/lib/components/Menu/Menu.tsx
+  15:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend/lib/components/Select/Select.tsx
+  17:13  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend/lib/components/Snackbar/Snackbar.tsx
+  106:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend/lib/context/ThemeContext.tsx
+  163:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/blend/lib/hooks/useBreakPoints.ts
+  29:8  warning  React Hook useEffect has a missing dependency: 'getLabel'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+✖ 6 problems (0 errors, 6 warnings)
+
