@@ -1,9 +1,6 @@
 
 
-> nextdocs@0.1.0 lint /Users/harsh.sharma.001/Documents/Git/juspay-design-system/cloved/apps/nextdocs
+> nextdocs@0.1.0 lint /Users/aryan.pidiha/Desktop/Work/blend-design-system/apps/nextdocs
 > next lint
 
-[1m[36m?[39m How would you like to configure ESLint? https://nextjs.org/docs/app/api-reference/config/eslint[22m
-[?25l[36m❯ [39m [1m[4m[36mStrict[39m[24m[22m[1m[33m (recommended)[39m[22m
-   Base
-   Cancel
+[32m✔ No ESLint warnings or errors[39m

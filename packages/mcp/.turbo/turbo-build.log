@@ -1,5 +1,5 @@
 
 
-> @design-juspay/blend-mcp-server@1.0.0 build /Users/harsh.sharma.001/Documents/Git/juspay-design-system/cloved/packages/mcp
+> @design-juspay/blend-mcp-server@1.0.0 build /Users/aryan.pidiha/Desktop/Work/blend-design-system/packages/mcp
 > node -e "require('fs').chmodSync('index.js', '755')"
 
