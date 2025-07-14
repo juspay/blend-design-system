@@ -2,3 +2,4 @@ node_modules
 .turbo
 apps/firebase-app/.turbo
 .env
+apps/nextdocs/.turbo/

@@ -234,7 +234,6 @@ Deployments happen automatically via GitHub Actions:
 
     ```jsx
     import { Component } from 'blend-v1'
-
     ;<Component prop="value" />
     ```
     ````
