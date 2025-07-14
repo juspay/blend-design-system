@@ -1,18 +1,12 @@
 {
-  "extends": "../../packages/typescript-config/react-app.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "blend-v1": ["../../packages/blend/lib/main.ts"],
-      "blend-v1/*": ["../../packages/blend/lib/*"]
-    }
-  },
-  "include": [
-    "stories/**/*",
-    ".storybook/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "storybook-static"
-  ]
+    "extends": "../../packages/typescript-config/react-app.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "blend-v1": ["../../packages/blend/lib/main.ts"],
+            "blend-v1/*": ["../../packages/blend/lib/*"]
+        }
+    },
+    "include": ["stories/**/*", ".storybook/**/*"],
+    "exclude": ["node_modules", "storybook-static"]
 }

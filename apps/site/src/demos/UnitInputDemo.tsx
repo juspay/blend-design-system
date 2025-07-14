@@ -1,9 +1,5 @@
-
-
 const UnitInputDemo = () => {
-  return (
-    <div>UnitInputDemo</div>
-  )
+    return <div>UnitInputDemo</div>
 }
 
 export default UnitInputDemo

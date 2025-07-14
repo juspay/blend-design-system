@@ -1,145 +1,147 @@
-import { CSSObject } from 'styled-components';
-import { StatCardVariant } from './types';
-import { FoundationTokenType } from '../../tokens/theme.token';
-export type StatCardState = "default" | "hover" | "loading";
+import { CSSObject } from 'styled-components'
+import { StatCardVariant } from './types'
+import { FoundationTokenType } from '../../tokens/theme.token'
+export type StatCardState = 'default' | 'hover' | 'loading'
 export type StatCardTokenType = {
-    height: CSSObject["height"];
+    height: CSSObject['height']
     border: {
-        [key in StatCardState]?: CSSObject["border"];
-    };
-    borderRadius: CSSObject["borderRadius"];
+        [key in StatCardState]?: CSSObject['border']
+    }
+    borderRadius: CSSObject['borderRadius']
     backgroundColor: {
-        [key in StatCardState]?: CSSObject["backgroundColor"];
-    };
-    boxShadow: CSSObject["boxShadow"];
-    padding: CSSObject["padding"];
-    gap: CSSObject["gap"];
+        [key in StatCardState]?: CSSObject['backgroundColor']
+    }
+    boxShadow: CSSObject['boxShadow']
+    padding: CSSObject['padding']
+    gap: CSSObject['gap']
     header: {
-        gap: CSSObject["gap"];
+        gap: CSSObject['gap']
         titleIcon: {
-            width: CSSObject["width"];
-            height: CSSObject["height"];
-            marginBottom: CSSObject["marginBottom"];
-        };
+            width: CSSObject['width']
+            height: CSSObject['height']
+            marginBottom: CSSObject['marginBottom']
+        }
         title: {
             [key in StatCardVariant]: {
-                fontSize: CSSObject["fontSize"];
-                fontWeight: CSSObject["fontWeight"];
-                color: CSSObject["color"];
-            };
-        };
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+        }
         helpIcon: {
-            width: CSSObject["width"];
-            height: CSSObject["height"];
-            color: CSSObject["color"];
-        };
-    };
+            width: CSSObject['width']
+            height: CSSObject['height']
+            color: CSSObject['color']
+        }
+    }
     headerStatGap: {
-        gap: CSSObject["gap"];
-    };
+        gap: CSSObject['gap']
+    }
     stats: {
-        gap: CSSObject["gap"];
+        gap: CSSObject['gap']
         value: {
             [key in StatCardVariant]: {
-                fontSize: CSSObject["fontSize"];
-                fontWeight: CSSObject["fontWeight"];
-                color: CSSObject["color"];
-            };
-        };
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+        }
         change: {
-            marginLeft: CSSObject["marginLeft"];
+            marginLeft: CSSObject['marginLeft']
             arrow: {
-                width: CSSObject["width"];
-                height: CSSObject["height"];
-                marginRight: CSSObject["marginRight"];
-            };
+                width: CSSObject['width']
+                height: CSSObject['height']
+                marginRight: CSSObject['marginRight']
+            }
             text: {
-                fontSize: CSSObject["fontSize"];
-                fontWeight: CSSObject["fontWeight"];
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
                 increase: {
-                    color: CSSObject["color"];
-                };
+                    color: CSSObject['color']
+                }
                 decrease: {
-                    color: CSSObject["color"];
-                };
-            };
-        };
+                    color: CSSObject['color']
+                }
+            }
+        }
         subtitle: {
             [key in StatCardVariant]: {
-                fontSize: CSSObject["fontSize"];
-                fontWeight: CSSObject["fontWeight"];
-                color: CSSObject["color"];
-            };
-        };
-    };
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+        }
+    }
     chart: {
-        height: CSSObject["height"];
+        height: CSSObject['height']
         colors: {
             line: {
-                increase: CSSObject["color"];
-                decrease: CSSObject["color"];
-            };
+                increase: CSSObject['color']
+                decrease: CSSObject['color']
+            }
             area: {
-                increase: CSSObject["color"];
-                decrease: CSSObject["color"];
-            };
+                increase: CSSObject['color']
+                decrease: CSSObject['color']
+            }
             gradient: {
-                end: CSSObject["color"];
-                startOpacity: number;
-                endOpacity: number;
-            };
-        };
+                end: CSSObject['color']
+                startOpacity: number
+                endOpacity: number
+            }
+        }
         line: {
-            strokeWidth: CSSObject["strokeWidth"];
+            strokeWidth: CSSObject['strokeWidth']
             activeDot: {
-                radius: number;
-                fill: CSSObject["fill"];
-            };
-        };
+                radius: number
+                fill: CSSObject['fill']
+            }
+        }
         bar: {
-            radius: number[];
-            fill: CSSObject["fill"];
+            radius: number[]
+            fill: CSSObject['fill']
             activeBar: {
-                fill: CSSObject["fill"];
-            };
-        };
+                fill: CSSObject['fill']
+            }
+        }
         progressBar: {
-            height: CSSObject["height"];
-            borderRadius: CSSObject["borderRadius"];
-            gap: CSSObject["gap"];
+            height: CSSObject['height']
+            borderRadius: CSSObject['borderRadius']
+            gap: CSSObject['gap']
             background: {
-                fill: CSSObject["backgroundColor"];
-                empty: CSSObject["backgroundColor"];
+                fill: CSSObject['backgroundColor']
+                empty: CSSObject['backgroundColor']
                 pattern: {
-                    color: CSSObject["color"];
-                    size: CSSObject["backgroundSize"];
-                };
-            };
+                    color: CSSObject['color']
+                    size: CSSObject['backgroundSize']
+                }
+            }
             label: {
-                fontSize: CSSObject["fontSize"];
-                fontWeight: CSSObject["fontWeight"];
-                color: CSSObject["color"];
-            };
-        };
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+        }
         tooltip: {
             cursor: {
-                strokeDasharray: string;
-                stroke: CSSObject["stroke"];
-            };
+                strokeDasharray: string
+                stroke: CSSObject['stroke']
+            }
             container: {
-                backgroundColor: CSSObject["backgroundColor"];
-                padding: CSSObject["padding"];
-                borderRadius: CSSObject["borderRadius"];
-            };
+                backgroundColor: CSSObject['backgroundColor']
+                padding: CSSObject['padding']
+                borderRadius: CSSObject['borderRadius']
+            }
             text: {
-                color: CSSObject["color"];
-            };
+                color: CSSObject['color']
+            }
             bar: {
                 cursor: {
-                    fill: CSSObject["fill"];
-                };
-            };
-        };
-    };
-};
-export declare const getStatCardToken: (foundationToken: FoundationTokenType) => StatCardTokenType;
+                    fill: CSSObject['fill']
+                }
+            }
+        }
+    }
+}
+export declare const getStatCardToken: (
+    foundationToken: FoundationTokenType
+) => StatCardTokenType

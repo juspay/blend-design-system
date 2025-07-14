@@ -112,13 +112,13 @@ The Storybook is configured as a separate Firebase hosting target:
 
 ```json
 {
-  "hosting": [
-    {
-      "target": "storybook",
-      "public": "storybook-static",
-      "site": "your-storybook-site"
-    }
-  ]
+    "hosting": [
+        {
+            "target": "storybook",
+            "public": "storybook-static",
+            "site": "your-storybook-site"
+        }
+    ]
 }
 ```
 

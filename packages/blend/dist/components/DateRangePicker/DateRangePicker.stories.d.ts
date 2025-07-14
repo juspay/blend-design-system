@@ -1,15 +1,15 @@
-import { Meta, StoryObj } from '@storybook/react';
-import { default as DateRangePicker } from './DateRangePicker';
-declare const meta: Meta<typeof DateRangePicker>;
-export default meta;
-type Story = StoryObj<typeof DateRangePicker>;
-export declare const Default: Story;
-export declare const WithTimePicker: Story;
-export declare const CustomTrigger: Story;
-export declare const WithoutPresets: Story;
-export declare const SingleDateSelection: Story;
-export declare const PastDatesOnly: Story;
-export declare const FutureDatesOnly: Story;
-export declare const CustomDateFormat: Story;
-export declare const DisabledState: Story;
-export declare const ComplexIntegration: Story;
+import { Meta, StoryObj } from '@storybook/react'
+import { default as DateRangePicker } from './DateRangePicker'
+declare const meta: Meta<typeof DateRangePicker>
+export default meta
+type Story = StoryObj<typeof DateRangePicker>
+export declare const Default: Story
+export declare const WithTimePicker: Story
+export declare const CustomTrigger: Story
+export declare const WithoutPresets: Story
+export declare const SingleDateSelection: Story
+export declare const PastDatesOnly: Story
+export declare const FutureDatesOnly: Story
+export declare const CustomDateFormat: Story
+export declare const DisabledState: Story
+export declare const ComplexIntegration: Story

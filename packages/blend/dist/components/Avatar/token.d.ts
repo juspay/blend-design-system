@@ -1,71 +1,71 @@
 declare const avatarTokens: {
     container: {
         background: {
-            default: string;
-        };
+            default: string
+        }
         border: {
-            withImage: string;
-            withoutImage: string;
-        };
-    };
+            withImage: string
+            withoutImage: string
+        }
+    }
     text: {
         color: {
-            default: string;
-        };
-    };
+            default: string
+        }
+    }
     indicator: {
         background: {
-            default: string;
-        };
+            default: string
+        }
         ring: {
-            color: string;
-        };
-    };
+            color: string
+        }
+    }
     sizes: {
         sm: {
-            width: string;
-            height: string;
-            fontSize: string;
-            fontWeight: string;
-            indicatorSize: string;
-            indicatorRingWidth: string;
-            indicatorOffset: string;
-        };
+            width: string
+            height: string
+            fontSize: string
+            fontWeight: string
+            indicatorSize: string
+            indicatorRingWidth: string
+            indicatorOffset: string
+        }
         md: {
-            width: string;
-            height: string;
-            fontSize: string;
-            fontWeight: string;
-            indicatorSize: string;
-            indicatorRingWidth: string;
-            indicatorOffset: string;
-        };
+            width: string
+            height: string
+            fontSize: string
+            fontWeight: string
+            indicatorSize: string
+            indicatorRingWidth: string
+            indicatorOffset: string
+        }
         lg: {
-            width: string;
-            height: string;
-            fontSize: string;
-            fontWeight: string;
-            indicatorSize: string;
-            indicatorRingWidth: string;
-            indicatorOffset: string;
-        };
+            width: string
+            height: string
+            fontSize: string
+            fontWeight: string
+            indicatorSize: string
+            indicatorRingWidth: string
+            indicatorOffset: string
+        }
         xl: {
-            width: string;
-            height: string;
-            fontSize: string;
-            fontWeight: string;
-            indicatorSize: string;
-            indicatorRingWidth: string;
-            indicatorOffset: string;
-        };
-    };
+            width: string
+            height: string
+            fontSize: string
+            fontWeight: string
+            indicatorSize: string
+            indicatorRingWidth: string
+            indicatorOffset: string
+        }
+    }
     shapes: {
         circular: {
-            borderRadius: string;
-        };
+            borderRadius: string
+        }
         rounded: {
-            borderRadius: string;
-        };
-    };
-};
-export default avatarTokens;
+            borderRadius: string
+        }
+    }
+}
+export default avatarTokens

@@ -1,91 +1,92 @@
-import { default as React } from 'react';
-import { CSSObject } from 'styled-components';
+import { default as React } from 'react'
+import { CSSObject } from 'styled-components'
 type StateStyles = {
-    _hover?: PrimitiveInputProps;
-    _focus?: PrimitiveInputProps;
-    _active?: PrimitiveInputProps;
-    _disabled?: PrimitiveInputProps;
-    _visited?: PrimitiveInputProps;
-    _focusVisible?: PrimitiveInputProps;
-    _focusWithin?: PrimitiveInputProps;
-    _focusActive?: PrimitiveInputProps;
-};
+    _hover?: PrimitiveInputProps
+    _focus?: PrimitiveInputProps
+    _active?: PrimitiveInputProps
+    _disabled?: PrimitiveInputProps
+    _visited?: PrimitiveInputProps
+    _focusVisible?: PrimitiveInputProps
+    _focusWithin?: PrimitiveInputProps
+    _focusActive?: PrimitiveInputProps
+}
 type PrimitiveInputProps = StateStyles & {
-    color?: CSSObject["color"];
-    position?: CSSObject["position"];
-    inset?: CSSObject["inset"];
-    top?: CSSObject["top"];
-    right?: CSSObject["right"];
-    bottom?: CSSObject["bottom"];
-    left?: CSSObject["left"];
-    zIndex?: CSSObject["zIndex"];
-    pointerEvents?: CSSObject["pointerEvents"];
-    opacity?: CSSObject["opacity"];
-    padding?: CSSObject["padding"];
-    paddingTop?: CSSObject["paddingTop"];
-    paddingBottom?: CSSObject["paddingBottom"];
-    paddingLeft?: CSSObject["paddingLeft"];
-    paddingRight?: CSSObject["paddingRight"];
-    paddingX?: CSSObject["padding"];
-    paddingY?: CSSObject["padding"];
-    paddingInlineStart?: CSSObject["paddingInlineStart"];
-    paddingInlineEnd?: CSSObject["paddingInlineEnd"];
-    margin?: CSSObject["margin"];
-    marginTop?: CSSObject["marginTop"];
-    marginBottom?: CSSObject["marginBottom"];
-    marginLeft?: CSSObject["marginLeft"];
-    marginRight?: CSSObject["marginRight"];
-    marginX?: CSSObject["margin"];
-    marginY?: CSSObject["margin"];
-    display?: CSSObject["display"];
-    flexDirection?: CSSObject["flexDirection"];
-    justifyContent?: CSSObject["justifyContent"];
-    alignItems?: CSSObject["alignItems"];
-    flexWrap?: CSSObject["flexWrap"];
-    flexGrow?: CSSObject["flexGrow"];
-    flexShrink?: CSSObject["flexShrink"];
-    flexBasis?: CSSObject["flexBasis"];
-    gap?: CSSObject["gap"];
-    rowGap?: CSSObject["rowGap"];
-    columnGap?: CSSObject["columnGap"];
-    alignContent?: CSSObject["alignContent"];
-    alignSelf?: CSSObject["alignSelf"];
-    justifySelf?: CSSObject["justifySelf"];
-    borderRadius?: CSSObject["borderRadius"];
-    borderTopLeftRadius?: CSSObject["borderTopLeftRadius"];
-    borderTopRightRadius?: CSSObject["borderTopRightRadius"];
-    borderBottomLeftRadius?: CSSObject["borderBottomLeftRadius"];
-    borderBottomRightRadius?: CSSObject["borderBottomRightRadius"];
-    outline?: CSSObject["outline"];
-    outlineColor?: CSSObject["outlineColor"];
-    outlineWidth?: CSSObject["outlineWidth"];
-    outlineStyle?: CSSObject["outlineStyle"];
-    outlineOffset?: CSSObject["outlineOffset"];
-    width?: CSSObject["width"];
-    height?: CSSObject["height"];
-    minWidth?: CSSObject["minWidth"];
-    minHeight?: CSSObject["minHeight"];
-    maxWidth?: CSSObject["maxWidth"];
-    maxHeight?: CSSObject["maxHeight"];
-    size?: CSSObject["width"] | CSSObject["height"];
-    backgroundColor?: CSSObject["backgroundColor"];
-    border?: CSSObject["border"];
-    borderTop?: CSSObject["borderTop"];
-    borderBottom?: CSSObject["borderBottom"];
-    borderLeft?: CSSObject["borderLeft"];
-    borderRight?: CSSObject["borderRight"];
-    boxShadow?: CSSObject["boxShadow"];
-    overflow?: CSSObject["overflow"];
-    overflowX?: CSSObject["overflowX"];
-    overflowY?: CSSObject["overflowY"];
-    contentCentered?: boolean;
-    cursor?: CSSObject["cursor"];
-    placeholderStyles?: CSSObject;
-};
-export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & PrimitiveInputProps & {
-    as?: "input" | "textarea";
-    key?: string | number;
-    ref?: React.Ref<HTMLInputElement>;
-};
-declare const PrimitiveInput: React.FC<InputProps>;
-export default PrimitiveInput;
+    color?: CSSObject['color']
+    position?: CSSObject['position']
+    inset?: CSSObject['inset']
+    top?: CSSObject['top']
+    right?: CSSObject['right']
+    bottom?: CSSObject['bottom']
+    left?: CSSObject['left']
+    zIndex?: CSSObject['zIndex']
+    pointerEvents?: CSSObject['pointerEvents']
+    opacity?: CSSObject['opacity']
+    padding?: CSSObject['padding']
+    paddingTop?: CSSObject['paddingTop']
+    paddingBottom?: CSSObject['paddingBottom']
+    paddingLeft?: CSSObject['paddingLeft']
+    paddingRight?: CSSObject['paddingRight']
+    paddingX?: CSSObject['padding']
+    paddingY?: CSSObject['padding']
+    paddingInlineStart?: CSSObject['paddingInlineStart']
+    paddingInlineEnd?: CSSObject['paddingInlineEnd']
+    margin?: CSSObject['margin']
+    marginTop?: CSSObject['marginTop']
+    marginBottom?: CSSObject['marginBottom']
+    marginLeft?: CSSObject['marginLeft']
+    marginRight?: CSSObject['marginRight']
+    marginX?: CSSObject['margin']
+    marginY?: CSSObject['margin']
+    display?: CSSObject['display']
+    flexDirection?: CSSObject['flexDirection']
+    justifyContent?: CSSObject['justifyContent']
+    alignItems?: CSSObject['alignItems']
+    flexWrap?: CSSObject['flexWrap']
+    flexGrow?: CSSObject['flexGrow']
+    flexShrink?: CSSObject['flexShrink']
+    flexBasis?: CSSObject['flexBasis']
+    gap?: CSSObject['gap']
+    rowGap?: CSSObject['rowGap']
+    columnGap?: CSSObject['columnGap']
+    alignContent?: CSSObject['alignContent']
+    alignSelf?: CSSObject['alignSelf']
+    justifySelf?: CSSObject['justifySelf']
+    borderRadius?: CSSObject['borderRadius']
+    borderTopLeftRadius?: CSSObject['borderTopLeftRadius']
+    borderTopRightRadius?: CSSObject['borderTopRightRadius']
+    borderBottomLeftRadius?: CSSObject['borderBottomLeftRadius']
+    borderBottomRightRadius?: CSSObject['borderBottomRightRadius']
+    outline?: CSSObject['outline']
+    outlineColor?: CSSObject['outlineColor']
+    outlineWidth?: CSSObject['outlineWidth']
+    outlineStyle?: CSSObject['outlineStyle']
+    outlineOffset?: CSSObject['outlineOffset']
+    width?: CSSObject['width']
+    height?: CSSObject['height']
+    minWidth?: CSSObject['minWidth']
+    minHeight?: CSSObject['minHeight']
+    maxWidth?: CSSObject['maxWidth']
+    maxHeight?: CSSObject['maxHeight']
+    size?: CSSObject['width'] | CSSObject['height']
+    backgroundColor?: CSSObject['backgroundColor']
+    border?: CSSObject['border']
+    borderTop?: CSSObject['borderTop']
+    borderBottom?: CSSObject['borderBottom']
+    borderLeft?: CSSObject['borderLeft']
+    borderRight?: CSSObject['borderRight']
+    boxShadow?: CSSObject['boxShadow']
+    overflow?: CSSObject['overflow']
+    overflowX?: CSSObject['overflowX']
+    overflowY?: CSSObject['overflowY']
+    contentCentered?: boolean
+    cursor?: CSSObject['cursor']
+    placeholderStyles?: CSSObject
+}
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
+    PrimitiveInputProps & {
+        as?: 'input' | 'textarea'
+        key?: string | number
+        ref?: React.Ref<HTMLInputElement>
+    }
+declare const PrimitiveInput: React.FC<InputProps>
+export default PrimitiveInput

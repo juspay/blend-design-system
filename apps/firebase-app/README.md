@@ -26,9 +26,9 @@ pnpm install
 2. Enable Authentication with Email/Password provider
 3. Create a Realtime Database
 4. Generate a service account key:
-   - Go to Project Settings > Service Accounts
-   - Click "Generate new private key"
-   - Download the JSON file
+    - Go to Project Settings > Service Accounts
+    - Click "Generate new private key"
+    - Download the JSON file
 
 ### 3. Environment Variables
 
@@ -41,6 +41,7 @@ cp env.example .env.local
 Update the following variables in `.env.local`:
 
 **Client Configuration (Public):**
+
 - `NEXT_PUBLIC_FIREBASE_API_KEY`
 - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
 - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
@@ -50,6 +51,7 @@ Update the following variables in `.env.local`:
 - `NEXT_PUBLIC_FIREBASE_DATABASE_URL`
 
 **Admin Configuration (Private):**
+
 - `FIREBASE_PROJECT_ID`
 - `FIREBASE_CLIENT_EMAIL`
 - `FIREBASE_PRIVATE_KEY`
@@ -66,11 +68,13 @@ The app will be available at `http://localhost:3000`
 ## API Endpoints
 
 ### `/api/ping`
+
 - **Method:** GET
 - **Authentication:** Required (Bearer token)
 - **Description:** Test endpoint to verify backend connectivity
 
 ### `/api/users`
+
 - **Method:** GET
 - **Authentication:** Required (Bearer token)
 - **Description:** Retrieve all users from Realtime Database
@@ -122,4 +126,4 @@ firebase-app/
 - **TypeScript:** Full type safety throughout the application
 - **ESLint:** Code linting with Next.js configuration
 - **Tailwind CSS:** Utility-first CSS framework
-- **Firebase:** Real-time database and authentication 
+- **Firebase:** Real-time database and authentication

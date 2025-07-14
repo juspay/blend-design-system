@@ -1,38 +1,38 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react'
 
 export enum TooltipSlotDirection {
-  LEFT = "left",
-  RIGHT = "right",
+    LEFT = 'left',
+    RIGHT = 'right',
 }
 
 export enum TooltipSide {
-  TOP = "top",
-  RIGHT = "right",
-  LEFT = "left",
-  BOTTOM = "bottom",
+    TOP = 'top',
+    RIGHT = 'right',
+    LEFT = 'left',
+    BOTTOM = 'bottom',
 }
 
 export enum TooltipAlign {
-  START = "start",
-  END = "end",
-  CENTER = "center",
+    START = 'start',
+    END = 'end',
+    CENTER = 'center',
 }
 
 export enum TooltipSize {
-  SMALL = "sm",
-  LARGE = "lg",
+    SMALL = 'sm',
+    LARGE = 'lg',
 }
 
 export type TooltipProps = {
-  children: ReactNode;
-  content: ReactNode | string;
-  open?: boolean;
-  side?: TooltipSide;
-  align?: TooltipAlign;
-  showArrow?: boolean;
-  size?: TooltipSize;
-  slot?: ReactNode;
-  slotDirection?: TooltipSlotDirection;
-  delayDuration?: number;
-  offset?: number;
-};
+    children: ReactNode
+    content: ReactNode | string
+    open?: boolean
+    side?: TooltipSide
+    align?: TooltipAlign
+    showArrow?: boolean
+    size?: TooltipSize
+    slot?: ReactNode
+    slotDirection?: TooltipSlotDirection
+    delayDuration?: number
+    offset?: number
+}

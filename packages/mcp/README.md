@@ -30,17 +30,20 @@ curl -s https://raw.githubusercontent.com/design-juspay/cloved/main/packages/mcp
 ### Local Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/design-juspay/cloved.git
 cd cloved/packages/mcp
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Run the server:
+
 ```bash
 node index.js
 ```
@@ -64,15 +67,15 @@ Add to your Claude Desktop configuration file:
 
 ```json
 {
-  "mcpServers": {
-    "blend": {
-      "command": "node",
-      "args": ["/path/to/cloved/packages/mcp/index.js"],
-      "env": {
-        "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1"
-      }
+    "mcpServers": {
+        "blend": {
+            "command": "node",
+            "args": ["/path/to/cloved/packages/mcp/index.js"],
+            "env": {
+                "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1"
+            }
+        }
     }
-  }
 }
 ```
 
@@ -80,16 +83,29 @@ Or if you have blend-v1 installed as a dependency:
 
 ```json
 {
-  "mcpServers": {
-    "blend": {
-      "command": "npx",
-      "args": ["degit", "design-juspay/cloved/packages/mcp", "blend-mcp-temp", "&&", "cd", "blend-mcp-temp", "&&", "npm", "install", "&&", "node", "index.js"],
-      "env": {
-        "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1",
-        "BLEND_LIBRARY_PATH": "./node_modules/blend-v1/lib/components"
-      }
+    "mcpServers": {
+        "blend": {
+            "command": "npx",
+            "args": [
+                "degit",
+                "design-juspay/cloved/packages/mcp",
+                "blend-mcp-temp",
+                "&&",
+                "cd",
+                "blend-mcp-temp",
+                "&&",
+                "npm",
+                "install",
+                "&&",
+                "node",
+                "index.js"
+            ],
+            "env": {
+                "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1",
+                "BLEND_LIBRARY_PATH": "./node_modules/blend-v1/lib/components"
+            }
+        }
     }
-  }
 }
 ```
 
@@ -99,15 +115,15 @@ Add to your MCP settings:
 
 ```json
 {
-  "mcpServers": {
-    "blend": {
-      "command": "node", 
-      "args": ["/path/to/cloved/packages/mcp/index.js"],
-      "env": {
-        "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1"
-      }
+    "mcpServers": {
+        "blend": {
+            "command": "node",
+            "args": ["/path/to/cloved/packages/mcp/index.js"],
+            "env": {
+                "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1"
+            }
+        }
     }
-  }
 }
 ```
 
@@ -118,6 +134,7 @@ Add to your MCP settings:
 Lists all available components in the Blend design system.
 
 **Usage:**
+
 ```
 Tool: list_blend_components
 Arguments: {}
@@ -130,6 +147,7 @@ Arguments: {}
 Retrieves detailed prop information for a specific component.
 
 **Usage:**
+
 ```
 Tool: get_blend_component_props
 Arguments: {
@@ -144,6 +162,7 @@ Arguments: {
 Generates React code for a component with specified props.
 
 **Usage:**
+
 ```
 Tool: generate_blend_component
 Arguments: {
@@ -163,10 +182,12 @@ Arguments: {
 Generates common UI patterns for dashboards.
 
 **Available patterns:**
+
 - `fintech_kpi_summary_with_chart`: KPI cards with charts
 - `transaction_list_with_controls`: Data table with filters
 
 **Usage:**
+
 ```
 Tool: scaffold_dashboard_section
 Arguments: {
@@ -190,6 +211,7 @@ Arguments: {
 Generates markdown documentation for a component.
 
 **Usage:**
+
 ```
 Tool: generate_component_documentation
 Arguments: {
@@ -294,6 +316,7 @@ MIT License - see the [LICENSE](../../LICENSE) file for details.
 ## Support
 
 For issues and questions:
+
 - Open an issue on [GitHub](https://github.com/design-juspay/cloved/issues)
 - Check existing issues for solutions
 - Ensure you're using the latest version
@@ -301,6 +324,7 @@ For issues and questions:
 ## Changelog
 
 ### v1.0.0
+
 - Initial release with core MCP tools
 - Support for component generation and documentation
 - Dashboard scaffolding patterns

@@ -1,2 +1,2 @@
-export { default as SearchInput } from './SearchInput';
-export * from './types';
+export { default as SearchInput } from './SearchInput'
+export * from './types'

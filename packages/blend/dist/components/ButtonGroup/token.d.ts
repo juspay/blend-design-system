@@ -1,30 +1,30 @@
 declare const buttonGroupTokens: {
     container: {
-        display: string;
-        alignItems: string;
-    };
+        display: string
+        alignItems: string
+    }
     spacing: {
-        sm: string;
-        md: string;
-        lg: string;
-    };
-    borderRadius: string;
+        sm: string
+        md: string
+        lg: string
+    }
+    borderRadius: string
     stacked: {
         positions: {
             first: {
-                borderTopRightRadius: string;
-                borderBottomRightRadius: string;
-                borderRight: string;
-            };
+                borderTopRightRadius: string
+                borderBottomRightRadius: string
+                borderRight: string
+            }
             middle: {
-                borderRadius: string;
-                borderRight: string;
-            };
+                borderRadius: string
+                borderRight: string
+            }
             last: {
-                borderTopLeftRadius: string;
-                borderBottomLeftRadius: string;
-            };
-        };
-    };
-};
-export default buttonGroupTokens;
+                borderTopLeftRadius: string
+                borderBottomLeftRadius: string
+            }
+        }
+    }
+}
+export default buttonGroupTokens

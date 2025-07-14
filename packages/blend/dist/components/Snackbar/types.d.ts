@@ -1,26 +1,26 @@
 export declare enum SnackbarVariant {
-    INFO = "info",
-    SUCCESS = "success",
-    WARNING = "warning",
-    ERROR = "error"
+    INFO = 'info',
+    SUCCESS = 'success',
+    WARNING = 'warning',
+    ERROR = 'error',
 }
 export type AddToastOptions = {
-    header: string;
-    description?: string;
-    variant?: SnackbarVariant;
-    onClose?: () => void;
+    header: string
+    description?: string
+    variant?: SnackbarVariant
+    onClose?: () => void
     actionButton?: {
-        label: string;
-        onClick: () => void;
-    };
-};
+        label: string
+        onClick: () => void
+    }
+}
 export type CustomToastProps = {
-    header: string;
-    description?: string;
-    variant: SnackbarVariant;
-    onClose?: () => void;
+    header: string
+    description?: string
+    variant: SnackbarVariant
+    onClose?: () => void
     actionButton?: {
-        label: string;
-        onClick: () => void;
-    };
-};
+        label: string
+        onClick: () => void
+    }
+}

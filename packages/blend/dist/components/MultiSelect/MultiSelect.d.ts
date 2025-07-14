@@ -1,3 +1,26 @@
-import { MultiSelectProps } from './types';
-declare const MultiSelect: ({ selectedValues, onChange, items, label, sublabel, disabled, helpIconHintText, name, required, variant, selectionTagType, slot, hintText, placeholder, size, minWidth, maxWidth, maxHeight, alignment, side, sideOffset, alignOffset, }: MultiSelectProps) => import("react/jsx-runtime").JSX.Element;
-export default MultiSelect;
+import { MultiSelectProps } from './types'
+declare const MultiSelect: ({
+    selectedValues,
+    onChange,
+    items,
+    label,
+    sublabel,
+    disabled,
+    helpIconHintText,
+    name,
+    required,
+    variant,
+    selectionTagType,
+    slot,
+    hintText,
+    placeholder,
+    size,
+    minWidth,
+    maxWidth,
+    maxHeight,
+    alignment,
+    side,
+    sideOffset,
+    alignOffset,
+}: MultiSelectProps) => import('react/jsx-runtime').JSX.Element
+export default MultiSelect

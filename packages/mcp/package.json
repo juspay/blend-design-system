@@ -1,48 +1,48 @@
 {
-  "name": "@design-juspay/blend-mcp-server",
-  "version": "1.0.0",
-  "description": "MCP server for Blend design system - provides tools for generating React components and documentation",
-  "private": true,
-  "type": "module",
-  "bin": {
-    "blend-mcp-server": "./index.js"
-  },
-  "files": [
-    "index.js",
-    "metaReader.js",
-    "README.md"
-  ],
-  "scripts": {
-    "build": "node -e \"require('fs').chmodSync('index.js', '755')\"",
-    "watch": "echo 'No watch needed for JavaScript files'",
-    "inspector": "npx @modelcontextprotocol/inspector index.js"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "0.6.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.24"
-  },
-  "keywords": [
-    "mcp",
-    "model-context-protocol",
-    "blend",
-    "design-system",
-    "react",
-    "components"
-  ],
-  "author": "Design Juspay",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/design-juspay/cloved.git",
-    "directory": "packages/mcp"
-  },
-  "bugs": {
-    "url": "https://github.com/design-juspay/cloved/issues"
-  },
-  "homepage": "https://github.com/design-juspay/cloved/tree/main/packages/mcp#readme",
-  "engines": {
-    "node": ">=18.0.0"
-  }
+    "name": "@design-juspay/blend-mcp-server",
+    "version": "1.0.0",
+    "description": "MCP server for Blend design system - provides tools for generating React components and documentation",
+    "private": true,
+    "type": "module",
+    "bin": {
+        "blend-mcp-server": "./index.js"
+    },
+    "files": [
+        "index.js",
+        "metaReader.js",
+        "README.md"
+    ],
+    "scripts": {
+        "build": "node -e \"require('fs').chmodSync('index.js', '755')\"",
+        "watch": "echo 'No watch needed for JavaScript files'",
+        "inspector": "npx @modelcontextprotocol/inspector index.js"
+    },
+    "dependencies": {
+        "@modelcontextprotocol/sdk": "0.6.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.24"
+    },
+    "keywords": [
+        "mcp",
+        "model-context-protocol",
+        "blend",
+        "design-system",
+        "react",
+        "components"
+    ],
+    "author": "Design Juspay",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/design-juspay/cloved.git",
+        "directory": "packages/mcp"
+    },
+    "bugs": {
+        "url": "https://github.com/design-juspay/cloved/issues"
+    },
+    "homepage": "https://github.com/design-juspay/cloved/tree/main/packages/mcp#readme",
+    "engines": {
+        "node": ">=18.0.0"
+    }
 }

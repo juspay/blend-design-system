@@ -3,13 +3,14 @@ title: Modal
 description: A flexible modal dialog component for displaying content in an overlay with customizable header, footer, and action buttons.
 ---
 
-
 # Modal Component Documentation
 
 ## Description
+
 A flexible modal dialog component for displaying content in an overlay with customizable header, footer, and action buttons.
 
 ## Features
+
 - Controlled open/close state
 - Customizable header with title and subtitle
 - Primary and secondary action buttons
@@ -24,129 +25,133 @@ A flexible modal dialog component for displaying content in an overlay with cust
 
 ### State
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `isOpen` | `boolean` | Yes | Controls whether the modal is open or closed | `-` |
+| Prop Name | Type      | Required | Description                                  | Default Value |
+| --------- | --------- | -------- | -------------------------------------------- | ------------- |
+| `isOpen`  | `boolean` | Yes      | Controls whether the modal is open or closed | `-`           |
 
 ### Events
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `onClose` | `() => void` | Yes | Callback function called when the modal should be closed | `-` |
+| Prop Name | Type         | Required | Description                                              | Default Value |
+| --------- | ------------ | -------- | -------------------------------------------------------- | ------------- |
+| `onClose` | `() => void` | Yes      | Callback function called when the modal should be closed | `-`           |
 
 ### Content
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `title` | `string` | No | The title text displayed in the modal header | `undefined` |
-| `subtitle` | `string` | No | The subtitle text displayed below the title | `undefined` |
-| `children` | `ReactNode` | Yes | The content to be displayed in the modal body | `-` |
-| `customHeader` | `ReactNode` | No | Custom content to replace the default header | `undefined` |
-| `customFooter` | `ReactNode` | No | Custom content to replace the default footer | `undefined` |
-| `headerRightSlot` | `ReactNode` | No | Additional content to display on the right side of the header | `undefined` |
+| Prop Name         | Type        | Required | Description                                                   | Default Value |
+| ----------------- | ----------- | -------- | ------------------------------------------------------------- | ------------- |
+| `title`           | `string`    | No       | The title text displayed in the modal header                  | `undefined`   |
+| `subtitle`        | `string`    | No       | The subtitle text displayed below the title                   | `undefined`   |
+| `children`        | `ReactNode` | Yes      | The content to be displayed in the modal body                 | `-`           |
+| `customHeader`    | `ReactNode` | No       | Custom content to replace the default header                  | `undefined`   |
+| `customFooter`    | `ReactNode` | No       | Custom content to replace the default footer                  | `undefined`   |
+| `headerRightSlot` | `ReactNode` | No       | Additional content to display on the right side of the header | `undefined`   |
 
 ### Actions
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `primaryAction` | `ModalButtonAction` | No | Configuration for the primary action button | `undefined` |
-| `secondaryAction` | `ModalButtonAction` | No | Configuration for the secondary action button | `undefined` |
+| Prop Name         | Type                | Required | Description                                   | Default Value |
+| ----------------- | ------------------- | -------- | --------------------------------------------- | ------------- |
+| `primaryAction`   | `ModalButtonAction` | No       | Configuration for the primary action button   | `undefined`   |
+| `secondaryAction` | `ModalButtonAction` | No       | Configuration for the secondary action button | `undefined`   |
 
 ### Styling
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `className` | `string` | No | Additional CSS class names for the modal | `undefined` |
-| `showDivider` | `boolean` | No | Whether to show a divider line below the header | `false` |
+| Prop Name     | Type      | Required | Description                                     | Default Value |
+| ------------- | --------- | -------- | ----------------------------------------------- | ------------- |
+| `className`   | `string`  | No       | Additional CSS class names for the modal        | `undefined`   |
+| `showDivider` | `boolean` | No       | Whether to show a divider line below the header | `false`       |
 
 ### Behavior
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `showCloseButton` | `boolean` | No | Whether to show the close button in the header | `true` |
-| `closeOnBackdropClick` | `boolean` | No | Whether clicking the backdrop should close the modal | `true` |
+| Prop Name              | Type      | Required | Description                                          | Default Value |
+| ---------------------- | --------- | -------- | ---------------------------------------------------- | ------------- |
+| `showCloseButton`      | `boolean` | No       | Whether to show the close button in the header       | `true`        |
+| `closeOnBackdropClick` | `boolean` | No       | Whether clicking the backdrop should close the modal | `true`        |
 
 ### Layout
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `showHeader` | `boolean` | No | Whether to show the modal header | `true` |
-| `showFooter` | `boolean` | No | Whether to show the modal footer with action buttons | `true` |
+| Prop Name    | Type      | Required | Description                                          | Default Value |
+| ------------ | --------- | -------- | ---------------------------------------------------- | ------------- |
+| `showHeader` | `boolean` | No       | Whether to show the modal header                     | `true`        |
+| `showFooter` | `boolean` | No       | Whether to show the modal footer with action buttons | `true`        |
 
 ## Usage Examples
 
 ### Basic Modal
+
 Simple modal with title and content
 
 ```tsx
 <Modal
-  isOpen={isModalOpen}
-  onClose={() => setIsModalOpen(false)}
-  title="Confirm Action"
+    isOpen={isModalOpen}
+    onClose={() => setIsModalOpen(false)}
+    title="Confirm Action"
 >
-  <p>Are you sure you want to proceed?</p>
+    <p>Are you sure you want to proceed?</p>
 </Modal>
 ```
 
 ### Modal with Actions
+
 Modal with primary and secondary action buttons
 
 ```tsx
 <Modal
-  isOpen={isModalOpen}
-  onClose={() => setIsModalOpen(false)}
-  title="Delete Item"
-  subtitle="This action cannot be undone"
-  primaryAction={{
-    text: "Delete",
-    buttonType: ButtonTypeV2.DANGER,
-    onClick: () => handleDelete()
-  }}
-  secondaryAction={{
-    text: "Cancel",
-    buttonType: ButtonTypeV2.SECONDARY,
-    onClick: () => setIsModalOpen(false)
-  }}
+    isOpen={isModalOpen}
+    onClose={() => setIsModalOpen(false)}
+    title="Delete Item"
+    subtitle="This action cannot be undone"
+    primaryAction={{
+        text: 'Delete',
+        buttonType: ButtonTypeV2.DANGER,
+        onClick: () => handleDelete(),
+    }}
+    secondaryAction={{
+        text: 'Cancel',
+        buttonType: ButtonTypeV2.SECONDARY,
+        onClick: () => setIsModalOpen(false),
+    }}
 >
-  <p>Are you sure you want to delete this item?</p>
+    <p>Are you sure you want to delete this item?</p>
 </Modal>
 ```
 
 ### Modal with Custom Header
+
 Modal with custom header content
 
 ```tsx
 <Modal
-  isOpen={isModalOpen}
-  onClose={() => setIsModalOpen(false)}
-  customHeader={
-    <div className="flex items-center gap-2">
-      <Icon name="warning" />
-      <h2>Custom Header</h2>
-    </div>
-  }
-  showDivider={true}
+    isOpen={isModalOpen}
+    onClose={() => setIsModalOpen(false)}
+    customHeader={
+        <div className="flex items-center gap-2">
+            <Icon name="warning" />
+            <h2>Custom Header</h2>
+        </div>
+    }
+    showDivider={true}
 >
-  <p>Modal content with custom header</p>
+    <p>Modal content with custom header</p>
 </Modal>
 ```
 
 ### Modal with Header Slot
+
 Modal with additional content in header right slot
 
 ```tsx
 <Modal
-  isOpen={isModalOpen}
-  onClose={() => setIsModalOpen(false)}
-  title="Settings"
-  headerRightSlot={
-    <Button 
-      text="Reset" 
-      buttonType={ButtonTypeV2.SECONDARY}
-      size={ButtonSizeV2.SMALL}
-    />
-  }
+    isOpen={isModalOpen}
+    onClose={() => setIsModalOpen(false)}
+    title="Settings"
+    headerRightSlot={
+        <Button
+            text="Reset"
+            buttonType={ButtonTypeV2.SECONDARY}
+            size={ButtonSizeV2.SMALL}
+        />
+    }
 >
-  <div>Settings content here</div>
+    <div>Settings content here</div>
 </Modal>
 ```
