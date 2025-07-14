@@ -26,6 +26,82 @@ importers:
                 specifier: ^2.5.4
                 version: 2.5.4
 
+    apps/ascent:
+        dependencies:
+            '@mdx-js/loader':
+                specifier: ^3.1.0
+                version: 3.1.0(acorn@8.15.0)
+            '@mdx-js/react':
+                specifier: ^3.1.0
+                version: 3.1.0(@types/react@19.1.8)(react@19.1.0)
+            '@next/mdx':
+                specifier: ^15.3.4
+                version: 15.3.5(@mdx-js/loader@3.1.0(acorn@8.15.0))(@mdx-js/react@3.1.0(@types/react@19.1.8)(react@19.1.0))
+            '@types/mdx':
+                specifier: ^2.0.13
+                version: 2.0.13
+            blend-v1:
+                specifier: workspace:*
+                version: link:../../packages/blend
+            cmdk:
+                specifier: ^1.1.1
+                version: 1.1.1(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+            gray-matter:
+                specifier: ^4.0.3
+                version: 4.0.3
+            lucide-react:
+                specifier: ^0.525.0
+                version: 0.525.0(react@19.1.0)
+            motion:
+                specifier: ^12.23.2
+                version: 12.23.5(@emotion/is-prop-valid@1.2.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+            next:
+                specifier: 15.3.5
+                version: 15.3.5(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+            next-mdx-remote:
+                specifier: ^5.0.0
+                version: 5.0.0(@types/react@19.1.8)(acorn@8.15.0)(react@19.1.0)
+            next-themes:
+                specifier: ^0.4.6
+                version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+            react:
+                specifier: ^19.0.0
+                version: 19.1.0
+            react-dom:
+                specifier: ^19.0.0
+                version: 19.1.0(react@19.1.0)
+            remark-gfm:
+                specifier: ^4.0.1
+                version: 4.0.1
+            sonner:
+                specifier: ^2.0.6
+                version: 2.0.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+            sugar-high:
+                specifier: ^0.9.3
+                version: 0.9.3
+            vaul:
+                specifier: ^1.1.2
+                version: 1.1.2(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        devDependencies:
+            '@tailwindcss/postcss':
+                specifier: ^4
+                version: 4.1.11
+            '@types/node':
+                specifier: ^20
+                version: 20.19.4
+            '@types/react':
+                specifier: ^19
+                version: 19.1.8
+            '@types/react-dom':
+                specifier: ^19
+                version: 19.1.6(@types/react@19.1.8)
+            tailwindcss:
+                specifier: ^4
+                version: 4.1.11
+            typescript:
+                specifier: ^5
+                version: 5.8.3
+
     apps/docs:
         dependencies:
             '@radix-ui/react-tooltip':
@@ -129,64 +205,6 @@ importers:
             eslint-config-next:
                 specifier: 15.3.5
                 version: 15.3.5(eslint@8.57.1)(typescript@5.8.3)
-
-    apps/nextdocs:
-        dependencies:
-            '@mdx-js/loader':
-                specifier: ^3.1.0
-                version: 3.1.0(acorn@8.15.0)
-            '@mdx-js/react':
-                specifier: ^3.1.0
-                version: 3.1.0(@types/react@19.1.8)(react@19.1.0)
-            '@next/mdx':
-                specifier: ^15.3.5
-                version: 15.3.5(@mdx-js/loader@3.1.0(acorn@8.15.0))(@mdx-js/react@3.1.0(@types/react@19.1.8)(react@19.1.0))
-            '@types/mdx':
-                specifier: ^2.0.13
-                version: 2.0.13
-            next:
-                specifier: 15.3.5
-                version: 15.3.5(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-            next-themes:
-                specifier: ^0.4.6
-                version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-            react:
-                specifier: ^19.0.0
-                version: 19.1.0
-            react-dom:
-                specifier: ^19.0.0
-                version: 19.1.0(react@19.1.0)
-            remark-gfm:
-                specifier: ^4.0.1
-                version: 4.0.1
-            sugar-high:
-                specifier: ^0.9.3
-                version: 0.9.3
-        devDependencies:
-            '@tailwindcss/postcss':
-                specifier: ^4
-                version: 4.1.11
-            '@types/node':
-                specifier: ^20
-                version: 20.19.4
-            '@types/react':
-                specifier: ^19
-                version: 19.1.8
-            '@types/react-dom':
-                specifier: ^19
-                version: 19.1.6(@types/react@19.1.8)
-            eslint:
-                specifier: ^8
-                version: 8.57.1
-            eslint-config-next:
-                specifier: 15.3.5
-                version: 15.3.5(eslint@8.57.1)(typescript@5.8.3)
-            tailwindcss:
-                specifier: ^4
-                version: 4.1.11
-            typescript:
-                specifier: ^5
-                version: 5.8.3
 
     apps/site:
         dependencies:
@@ -5492,6 +5510,15 @@ packages:
             }
         engines: { node: '>=6' }
 
+    cmdk@1.1.1:
+        resolution:
+            {
+                integrity: sha512-Vsv7kFaXm+ptHDMZ7izaRsP70GgrW9NBNGswt9OZaVBLlE0SNpDq8eu/VGXyF9r7M0azK3Wy7OlYXsuyYLFzHg==,
+            }
+        peerDependencies:
+            react: ^18 || ^19 || ^19.0.0-rc
+            react-dom: ^18 || ^19 || ^19.0.0-rc
+
     collapse-white-space@2.1.0:
         resolution:
             {
@@ -6645,6 +6672,13 @@ packages:
                 integrity: sha512-VO5fQUzZtI6C+vx4w/4BWJpg3s/5l+6pRQEHzFRM8WFi4XffSP1Z+4qi7GbjWbvRQEbdIco5mIMq+zX4rPuLrw==,
             }
 
+    extend-shallow@2.0.1:
+        resolution:
+            {
+                integrity: sha512-zCnTtlxNoAiDc3gqY2aYAWFx7XWWiasuF2K8Me5WbN8otHKTUKBwjPtNpRs/rbUZm7KxWAaNj7P1a/p52GbVug==,
+            }
+        engines: { node: '>=0.10.0' }
+
     extend@3.0.2:
         resolution:
             {
@@ -6842,6 +6876,23 @@ packages:
             {
                 integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==,
             }
+
+    framer-motion@12.23.5:
+        resolution:
+            {
+                integrity: sha512-t+6/f2TUowkr1gVuGwVwxR3ZQupCdCZj0mivG8M8CW2kwHPqtSePomECvmto15qoFCwost77O/XuEsq59MLDKw==,
+            }
+        peerDependencies:
+            '@emotion/is-prop-valid': '*'
+            react: ^18.0.0 || ^19.0.0
+            react-dom: ^18.0.0 || ^19.0.0
+        peerDependenciesMeta:
+            '@emotion/is-prop-valid':
+                optional: true
+            react:
+                optional: true
+            react-dom:
+                optional: true
 
     fs-extra@11.3.0:
         resolution:
@@ -7158,6 +7209,13 @@ packages:
             {
                 integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==,
             }
+
+    gray-matter@4.0.3:
+        resolution:
+            {
+                integrity: sha512-5v6yZd4JK3eMI3FqqCouswVqwugaA9r4dNZB1wwcmrD02QkV5H0y7XBQW8QwQqEaZY1pM9aqORSORhJRdNK44Q==,
+            }
+        engines: { node: '>=6.0' }
 
     gtoken@7.1.0:
         resolution:
@@ -7588,6 +7646,13 @@ packages:
                 integrity: sha512-F2FnH/otLNJv0J6wc73A5Xo7oHLNnqplYqZhUu01tD54DIPvxIRSTSLkrUB/M0nHO4vo1O9PDfN4KoTxCzLh/w==,
             }
 
+    is-extendable@0.1.1:
+        resolution:
+            {
+                integrity: sha512-5BMULNob1vgFX6EjQw5izWDxrecWK9AM72rugNr0TFldMOi0fj6Jk+zeKIt0xGj4cEfQIJth4w3OKWOJ4f+AFw==,
+            }
+        engines: { node: '>=0.10.0' }
+
     is-extglob@2.1.1:
         resolution:
             {
@@ -7997,6 +8062,13 @@ packages:
                 integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==,
             }
 
+    kind-of@6.0.3:
+        resolution:
+            {
+                integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==,
+            }
+        engines: { node: '>=0.10.0' }
+
     kleur@4.1.5:
         resolution:
             {
@@ -8343,6 +8415,14 @@ packages:
         resolution:
             {
                 integrity: sha512-VK5a2ydJ7xm8GvBeKLS9mu1pVK6ucef9780JVUjw6bAjJL/QXnd4Y0p7SPeOUMC27YhzNCZvm5d/QX0Tp3rc0w==,
+            }
+        peerDependencies:
+            react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+    lucide-react@0.525.0:
+        resolution:
+            {
+                integrity: sha512-Tm1txJ2OkymCGkvwoHt33Y2JpN5xucVq1slHcgE6Lk0WjDfjgKWor5CdVER8U6DvcfMwh4M8XxmpTiyzfmfDYQ==,
             }
         peerDependencies:
             react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -8815,6 +8895,35 @@ packages:
                 integrity: sha512-qmdSIPC4bDJXgZTCR7XosJiNKySV7O215tsPtDN9iEO/7q/76b/ijtgRu/+epFXSJhijtTCCGp3DWS549P3xKw==,
             }
 
+    motion-dom@12.23.5:
+        resolution:
+            {
+                integrity: sha512-RrUS4X11w7kIU1COoSVptuYTx1QQ/sViDEI1Yl1zL0nem8UXn3HRcsMrFTCkZSSRLXeVpN540bFP1iS87SicPQ==,
+            }
+
+    motion-utils@12.23.2:
+        resolution:
+            {
+                integrity: sha512-cIEXlBlXAOUyiAtR0S+QPQUM9L3Diz23Bo+zM420NvSd/oPQJwg6U+rT+WRTpp0rizMsBGQOsAwhWIfglUcZfA==,
+            }
+
+    motion@12.23.5:
+        resolution:
+            {
+                integrity: sha512-FpabXbpG816YVOIoOpd0BNOCmOXOLwHMbX4Am4OpDs7VqbAfQvejM+CnTA6TuMKLdmX7h1FxG7bXaDGQiceHCg==,
+            }
+        peerDependencies:
+            '@emotion/is-prop-valid': '*'
+            react: ^18.0.0 || ^19.0.0
+            react-dom: ^18.0.0 || ^19.0.0
+        peerDependenciesMeta:
+            '@emotion/is-prop-valid':
+                optional: true
+            react:
+                optional: true
+            react-dom:
+                optional: true
+
     mri@1.2.0:
         resolution:
             {
@@ -8862,6 +8971,15 @@ packages:
                 integrity: sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==,
             }
         engines: { node: '>= 0.6' }
+
+    next-mdx-remote@5.0.0:
+        resolution:
+            {
+                integrity: sha512-RNNbqRpK9/dcIFZs/esQhuLA8jANqlH694yqoDBK8hkVdJUndzzGmnPHa2nyi90N4Z9VmzuSWNRpr5ItT3M7xQ==,
+            }
+        engines: { node: '>=14', npm: '>=7' }
+        peerDependencies:
+            react: '>=16'
 
     next-themes@0.4.6:
         resolution:
@@ -10064,6 +10182,13 @@ packages:
                 integrity: sha512-49oNpRjWRvnU8NyGVmUaYG4jtTkNonFZI86MmGRDqBphEK2EXT9gdEUoQPZhuBM8yWHxCWbobltqYO5M4XrUvQ==,
             }
 
+    section-matter@1.0.0:
+        resolution:
+            {
+                integrity: sha512-vfD3pmTzGpufjScBh50YHKzEu2lxBWhVEHsNGoEXmCmn2hKGfeNLYMzCJpe8cD7gqX7TJluOVpBkAequ6dgMmA==,
+            }
+        engines: { node: '>=4' }
+
     semver@5.7.2:
         resolution:
             {
@@ -10440,6 +10565,13 @@ packages:
                 integrity: sha512-iq6eVVI64nQQTRYq2KtEg2d2uU7LElhTJwsH4YzIHZshxlgZms/wIc4VoDQTlG/IvVIrBKG06CrZnp0qv7hkcQ==,
             }
         engines: { node: '>=12' }
+
+    strip-bom-string@1.0.0:
+        resolution:
+            {
+                integrity: sha512-uCC2VHvQRYu+lMh4My/sFNmF2klFymLX1wHJeXnbEJERpV/ZsVuonzerjfrGpIGF7LBVa1O7i9kjiWvJiFck8g==,
+            }
+        engines: { node: '>=0.10.0' }
 
     strip-bom@3.0.0:
         resolution:
@@ -10976,6 +11108,12 @@ packages:
                 integrity: sha512-mOlg8Mp33pR0eeFpo5d2902ojqFFOKMMG2hF8bmH7ZlhnmjFgh0NI3/ZDwdaBJNbvrS7LZFVrBVtIE9KZ9s7vQ==,
             }
 
+    unist-util-is@5.2.1:
+        resolution:
+            {
+                integrity: sha512-u9njyyfEh43npf1M+yGKDGVPbY/JWEemg5nH05ncKPfi+kBbKBJoTdsogMu33uhytuLlv9y0O7GH7fEdwLdLQw==,
+            }
+
     unist-util-is@6.0.0:
         resolution:
             {
@@ -10994,10 +11132,22 @@ packages:
                 integrity: sha512-fucsC7HjXvkB5R3kTCO7kUjRdrS0BJt3M/FPxmHMBOm8JQi2BsHAHFsy27E0EolP8rp0NzXsJ+jNPyDWvOJZPA==,
             }
 
+    unist-util-remove@3.1.1:
+        resolution:
+            {
+                integrity: sha512-kfCqZK5YVY5yEa89tvpl7KnBBHu2c6CzMkqHUrlOqaRgGOMp0sMvwWOVrbAtj03KhovQB7i96Gda72v/EFE0vw==,
+            }
+
     unist-util-stringify-position@4.0.0:
         resolution:
             {
                 integrity: sha512-0ASV06AAoKCDkS2+xw5RXJywruurpbC4JZSm7nr7MOt1ojAzvyyaO+UxZf18j8FCF6kmzCZKcAgN/yu2gm2XgQ==,
+            }
+
+    unist-util-visit-parents@5.1.3:
+        resolution:
+            {
+                integrity: sha512-x6+y8g7wWMyQhL1iZfhIPhDAs7Xwbn9nRosDXl7qoPTSCy0yNxnKc+hWokFifWQIDGi154rdUqKvbCa4+1kLhg==,
             }
 
     unist-util-visit-parents@6.0.1:
@@ -11148,6 +11298,21 @@ packages:
                 integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==,
             }
         engines: { node: ^14.17.0 || ^16.13.0 || >=18.0.0 }
+
+    vaul@1.1.2:
+        resolution:
+            {
+                integrity: sha512-ZFkClGpWyI2WUQjdLJ/BaGuV6AVQiJ3uELGk3OYtP+B6yCO7Cmn9vPFXVJkRaGkOJu3m8bQMgtyzNHixULceQA==,
+            }
+        peerDependencies:
+            react: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
+            react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
+
+    vfile-matter@5.0.1:
+        resolution:
+            {
+                integrity: sha512-o6roP82AiX0XfkyTHyRCMXgHfltUNlXSEqCIS80f+mbAyiQBE2fxtDVMtseyytGx75sihiJFo/zR6r/4LTs2Cw==,
+            }
 
     vfile-message@4.0.2:
         resolution:
@@ -15209,6 +15374,18 @@ snapshots:
 
     clsx@2.1.1: {}
 
+    cmdk@1.1.1(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+        dependencies:
+            '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.8)(react@19.1.0)
+            '@radix-ui/react-dialog': 1.1.14(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+            '@radix-ui/react-id': 1.1.1(@types/react@19.1.8)(react@19.1.0)
+            '@radix-ui/react-primitive': 2.1.3(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+            react: 19.1.0
+            react-dom: 19.1.0(react@19.1.0)
+        transitivePeerDependencies:
+            - '@types/react'
+            - '@types/react-dom'
+
     collapse-white-space@2.1.0: {}
 
     color-convert@2.0.1:
@@ -16219,6 +16396,10 @@ snapshots:
 
     exsolve@1.0.7: {}
 
+    extend-shallow@2.0.1:
+        dependencies:
+            is-extendable: 0.1.1
+
     extend@3.0.2: {}
 
     extendable-error@0.1.7: {}
@@ -16383,6 +16564,16 @@ snapshots:
         optional: true
 
     fraction.js@4.3.7: {}
+
+    framer-motion@12.23.5(@emotion/is-prop-valid@1.2.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+        dependencies:
+            motion-dom: 12.23.5
+            motion-utils: 12.23.2
+            tslib: 2.8.1
+        optionalDependencies:
+            '@emotion/is-prop-valid': 1.2.2
+            react: 19.1.0
+            react-dom: 19.1.0(react@19.1.0)
 
     fs-extra@11.3.0:
         dependencies:
@@ -16662,6 +16853,13 @@ snapshots:
 
     graphemer@1.4.0: {}
 
+    gray-matter@4.0.3:
+        dependencies:
+            js-yaml: 3.14.1
+            kind-of: 6.0.3
+            section-matter: 1.0.0
+            strip-bom-string: 1.0.0
+
     gtoken@7.1.0:
         dependencies:
             gaxios: 6.7.1
@@ -16937,6 +17135,8 @@ snapshots:
 
     is-empty@1.2.0: {}
 
+    is-extendable@0.1.1: {}
+
     is-extglob@2.1.1: {}
 
     is-finalizationregistry@1.1.1:
@@ -17169,6 +17369,8 @@ snapshots:
         dependencies:
             json-buffer: 3.0.1
 
+    kind-of@6.0.3: {}
+
     kleur@4.1.5: {}
 
     kolorist@1.8.0: {}
@@ -17322,6 +17524,10 @@ snapshots:
             lru-cache: 6.0.0
 
     lucide-react@0.511.0(react@19.1.0):
+        dependencies:
+            react: 19.1.0
+
+    lucide-react@0.525.0(react@19.1.0):
         dependencies:
             react: 19.1.0
 
@@ -17829,6 +18035,21 @@ snapshots:
             pkg-types: 1.3.1
             ufo: 1.6.1
 
+    motion-dom@12.23.5:
+        dependencies:
+            motion-utils: 12.23.2
+
+    motion-utils@12.23.2: {}
+
+    motion@12.23.5(@emotion/is-prop-valid@1.2.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+        dependencies:
+            framer-motion: 12.23.5(@emotion/is-prop-valid@1.2.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+            tslib: 2.8.1
+        optionalDependencies:
+            '@emotion/is-prop-valid': 1.2.2
+            react: 19.1.0
+            react-dom: 19.1.0(react@19.1.0)
+
     mri@1.2.0: {}
 
     ms@2.1.3: {}
@@ -17842,6 +18063,20 @@ snapshots:
     natural-compare@1.4.0: {}
 
     negotiator@1.0.0: {}
+
+    next-mdx-remote@5.0.0(@types/react@19.1.8)(acorn@8.15.0)(react@19.1.0):
+        dependencies:
+            '@babel/code-frame': 7.27.1
+            '@mdx-js/mdx': 3.1.0(acorn@8.15.0)
+            '@mdx-js/react': 3.1.0(@types/react@19.1.8)(react@19.1.0)
+            react: 19.1.0
+            unist-util-remove: 3.1.1
+            vfile: 6.0.3
+            vfile-matter: 5.0.1
+        transitivePeerDependencies:
+            - '@types/react'
+            - acorn
+            - supports-color
 
     next-themes@0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
         dependencies:
@@ -18692,6 +18927,11 @@ snapshots:
         dependencies:
             compute-scroll-into-view: 3.1.1
 
+    section-matter@1.0.0:
+        dependencies:
+            extend-shallow: 2.0.1
+            kind-of: 6.0.3
+
     semver@5.7.2: {}
 
     semver@6.3.1: {}
@@ -18974,6 +19214,8 @@ snapshots:
     strip-ansi@7.1.0:
         dependencies:
             ansi-regex: 6.1.0
+
+    strip-bom-string@1.0.0: {}
 
     strip-bom@3.0.0: {}
 
@@ -19287,6 +19529,10 @@ snapshots:
         dependencies:
             '@types/unist': 3.0.3
 
+    unist-util-is@5.2.1:
+        dependencies:
+            '@types/unist': 2.0.11
+
     unist-util-is@6.0.0:
         dependencies:
             '@types/unist': 3.0.3
@@ -19299,9 +19545,20 @@ snapshots:
         dependencies:
             '@types/unist': 3.0.3
 
+    unist-util-remove@3.1.1:
+        dependencies:
+            '@types/unist': 2.0.11
+            unist-util-is: 5.2.1
+            unist-util-visit-parents: 5.1.3
+
     unist-util-stringify-position@4.0.0:
         dependencies:
             '@types/unist': 3.0.3
+
+    unist-util-visit-parents@5.1.3:
+        dependencies:
+            '@types/unist': 2.0.11
+            unist-util-is: 5.2.1
 
     unist-util-visit-parents@6.0.1:
         dependencies:
@@ -19408,6 +19665,20 @@ snapshots:
             spdx-expression-parse: 3.0.1
 
     validate-npm-package-name@5.0.1: {}
+
+    vaul@1.1.2(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+        dependencies:
+            '@radix-ui/react-dialog': 1.1.14(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+            react: 19.1.0
+            react-dom: 19.1.0(react@19.1.0)
+        transitivePeerDependencies:
+            - '@types/react'
+            - '@types/react-dom'
+
+    vfile-matter@5.0.1:
+        dependencies:
+            vfile: 6.0.3
+            yaml: 2.8.0
 
     vfile-message@4.0.2:
         dependencies:

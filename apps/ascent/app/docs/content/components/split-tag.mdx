@@ -1,0 +1,154 @@
+---
+title: Split Tag
+description: The SplitTag component is a specialized tag variant that can be split into multiple sections, useful for displaying complex labels or status indicators.
+category: components
+tags:
+    - split-tag
+    - component
+    - label
+RepoFolderName: SplitTag
+StorybookLink: components-tags-splittag--docs
+---
+
+<SplitTagPreview />
+
+## Usage
+
+```tsx
+import { SplitTag, TagColor, TagSize, TagShape, TagVariant } from 'blend-v1'
+
+function MyComponent() {
+    return (
+        <SplitTag
+            primaryTag={{
+                text: 'Status',
+                variant: TagVariant.NO_FILL,
+                color: TagColor.PRIMARY,
+            }}
+            secondaryTag={{
+                text: 'Active',
+                variant: TagVariant.ATTENTIVE,
+                color: TagColor.SUCCESS,
+            }}
+            size={TagSize.MD}
+            shape={TagShape.ROUNDED}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'primaryTag',
+                hintText: 'The primary tag configuration',
+            },
+            { content: 'TagConfig', hintText: 'object' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'secondaryTag',
+                hintText: 'The secondary tag configuration (optional)',
+            },
+            { content: 'TagConfig', hintText: 'object' },
+            { content: 'Optional' },
+        ],
+        [
+            {
+                content: 'leadingSlot',
+                hintText: 'Content to display before the tags',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'trailingSlot',
+                hintText: 'Content to display after the tags',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            { content: 'size', hintText: 'The size of the split tag' },
+            { content: 'TagSize', hintText: 'enum' },
+            { content: 'SM' },
+        ],
+        [
+            { content: 'shape', hintText: 'The shape of the split tag' },
+            { content: 'TagShape', hintText: 'enum' },
+            { content: 'SQUARICAL' },
+        ],
+    ]}
+    isHoverable={true}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### TagConfig Properties
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'text', hintText: 'The text content of the tag' },
+            { content: 'string', hintText: 'string' },
+            { content: 'Required' },
+        ],
+        [
+            { content: 'variant', hintText: 'The visual variant of the tag' },
+            { content: 'TagVariant', hintText: 'enum' },
+            { content: 'SUBTLE' },
+        ],
+        [
+            { content: 'color', hintText: 'The color scheme of the tag' },
+            { content: 'TagColor', hintText: 'enum' },
+            { content: 'PRIMARY' },
+        ],
+        [
+            { content: 'onClick', hintText: 'Click handler function' },
+            { content: '() => void', hintText: 'function' },
+            { content: '' },
+        ],
+    ]}
+    isHoverable={true}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- Split design with primary and secondary sections
+- Multiple color schemes (neutral, primary, success, error, warning, purple)
+- Three visual variants (no fill, attentive, subtle)
+- Four sizes (xs, sm, md, lg)
+- Two shapes (rounded, squarical)
+- Optional leading and trailing slots
+- Click handlers for interactive tags
+- Seamless border radius handling for split sections
+
+## Usage Examples
+
+### Basic Split Tag
+
+Simple split tag with primary and secondary sections
+
+```tsx
+<SplitTag
+    primaryTag={{
+        text: 'Status',
+        variant: TagVariant.NO_FILL,
+        color: TagColor.PRIMARY,
+    }}
+    secondaryTag={{
+        text: 'Active',
+        variant: TagVariant.ATTENTIVE,
+        color: TagColor.SUCCESS,
+    }}
+/>
+```
