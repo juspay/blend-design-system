@@ -1,11 +1,7 @@
-import type { StorybookConfig } from '@storybook/react-vite'
-import path from 'path'
-import { fileURLToPath } from 'url'
+const { join } = require('path')
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const config: StorybookConfig = {
+/** @type {import('@storybook/react-vite').StorybookConfig} */
+const config = {
     stories: [
         '../stories/**/*.stories.@(js|jsx|ts|tsx|mdx)',
         '../stories/**/*.mdx',
@@ -39,7 +35,7 @@ const config: StorybookConfig = {
         if (config.resolve) {
             config.resolve.alias = {
                 ...config.resolve.alias,
-                'blend-v1': path.resolve(
+                'blend-v1': join(
                     __dirname,
                     '../../../packages/blend/lib/main.ts'
                 ),
@@ -49,4 +45,4 @@ const config: StorybookConfig = {
     },
 }
 
-export default config
+module.exports = config

@@ -20,6 +20,7 @@
         "release": "turbo run build --filter=docs^... && changeset publish",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
+        "fix:all": "prettier --write . && turbo run lint",
         "prepare": "husky"
     },
     "devDependencies": {
