@@ -3,26 +3,26 @@ import { FoundationTokenType } from '../../../tokens/theme.token';
 import { MultiValueInputSize, MultiValueInputState } from './types';
 export type MultiValueInputTokensType = {
     input: {
-        gap: CSSObject["gap"];
-        borderRadius?: CSSObject["borderRadius"];
-        boxShadow: CSSObject["boxShadow"];
+        gap: CSSObject['gap'];
+        borderRadius?: CSSObject['borderRadius'];
+        boxShadow: CSSObject['boxShadow'];
         paddingX: {
-            [key in MultiValueInputSize]: CSSObject["padding"];
+            [key in MultiValueInputSize]: CSSObject['padding'];
         };
         paddingY: {
-            [key in MultiValueInputSize]: CSSObject["padding"];
+            [key in MultiValueInputSize]: CSSObject['padding'];
         };
         border: {
-            [key in MultiValueInputState]: CSSObject["border"];
+            [key in MultiValueInputState]: CSSObject['border'];
         };
         color: {
-            [key in MultiValueInputState]: CSSObject["color"];
+            [key in MultiValueInputState]: CSSObject['color'];
         };
         outline: {
-            [key in MultiValueInputState]: CSSObject["outline"];
+            [key in MultiValueInputState]: CSSObject['outline'];
         };
         backgroundColor: {
-            [key in MultiValueInputState]: CSSObject["backgroundColor"];
+            [key in MultiValueInputState]: CSSObject['backgroundColor'];
         };
     };
 };

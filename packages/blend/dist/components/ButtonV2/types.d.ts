@@ -28,7 +28,7 @@ export type ButtonV2Props = {
     disabled?: boolean;
     onClick?: () => void;
     loading?: boolean;
-    buttonGroupPosition?: "center" | "left" | "right";
+    buttonGroupPosition?: 'center' | 'left' | 'right';
     fullWidth?: boolean;
-    justifyContent?: CSSObject["justifyContent"];
-} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "style" | "className">;
+    justifyContent?: CSSObject['justifyContent'];
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style' | 'className'>;

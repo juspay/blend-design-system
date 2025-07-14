@@ -53,8 +53,8 @@ pnpm deploy:production
 
 - **Single Firebase Project**: `storybook-452807`
 - **Path-based Routing**:
-  - `/` → Documentation
-  - `/storybook/*` → Storybook
+    - `/` → Documentation
+    - `/storybook/*` → Storybook
 - **Static Export**: Both apps are built as static sites
 - **Client-side Search**: No server required
 
@@ -72,74 +72,74 @@ pnpm deploy:production
 
 1. **Install Dependencies**
 
-   ```bash
-   # Install pnpm if not already installed
-   npm install -g pnpm
+    ```bash
+    # Install pnpm if not already installed
+    npm install -g pnpm
 
-   # Install project dependencies
-   pnpm install
+    # Install project dependencies
+    pnpm install
 
-   # Install Firebase CLI
-   npm install -g firebase-tools
-   ```
+    # Install Firebase CLI
+    npm install -g firebase-tools
+    ```
 
 2. **Firebase Login**
-   ```bash
-   firebase login
-   ```
+    ```bash
+    firebase login
+    ```
 
 ### Environment Configuration
 
 1. **Copy Environment Template**
 
-   ```bash
-   cp .env.example .env.staging
-   cp .env.example .env.production
-   ```
+    ```bash
+    cp .env.example .env.staging
+    cp .env.example .env.production
+    ```
 
 2. **Configure Environment Variables**
 
-   Edit `.env.staging`:
+    Edit `.env.staging`:
 
-   ```env
-   FIREBASE_PROJECT_ID=storybook-452807
-   FIREBASE_HOSTING_TARGET_STAGING=blend-staging
-   STAGING_URL=https://blend-staging.web.app
-   STAGING_CACHE_MAX_AGE=3600
-   ENVIRONMENT=staging
-   ```
+    ```env
+    FIREBASE_PROJECT_ID=storybook-452807
+    FIREBASE_HOSTING_TARGET_STAGING=blend-staging
+    STAGING_URL=https://blend-staging.web.app
+    STAGING_CACHE_MAX_AGE=3600
+    ENVIRONMENT=staging
+    ```
 
-   Edit `.env.production`:
+    Edit `.env.production`:
 
-   ```env
-   FIREBASE_PROJECT_ID=storybook-452807
-   FIREBASE_HOSTING_TARGET_PROD=blend-prod
-   PRODUCTION_URL=https://blend-prod.web.app
-   PRODUCTION_CACHE_MAX_AGE=31536000
-   ENVIRONMENT=production
-   ```
+    ```env
+    FIREBASE_PROJECT_ID=storybook-452807
+    FIREBASE_HOSTING_TARGET_PROD=blend-prod
+    PRODUCTION_URL=https://blend-prod.web.app
+    PRODUCTION_CACHE_MAX_AGE=31536000
+    ENVIRONMENT=production
+    ```
 
 3. **Setup Firebase Hosting Targets**
-   ```bash
-   pnpm deploy:setup
-   ```
+    ```bash
+    pnpm deploy:setup
+    ```
 
 ### GitHub Actions Setup
 
 1. **Generate Firebase Service Account**
-   - Go to [Firebase Console](https://console.firebase.google.com/project/storybook-452807) → Project Settings → Service Accounts
-   - Click "Generate new private key"
-   - Save the JSON file
+    - Go to [Firebase Console](https://console.firebase.google.com/project/storybook-452807) → Project Settings → Service Accounts
+    - Click "Generate new private key"
+    - Save the JSON file
 
 2. **Add GitHub Secrets**
-   - Go to your GitHub repo → Settings → Secrets
-   - Add these secrets:
-     ```
-     FIREBASE_SERVICE_ACCOUNT     # The JSON content from step 1
-     FIREBASE_PROJECT_ID          # storybook-452807
-     FIREBASE_HOSTING_TARGET_STAGING  # blend-staging
-     FIREBASE_HOSTING_TARGET_PROD     # blend-prod
-     ```
+    - Go to your GitHub repo → Settings → Secrets
+    - Add these secrets:
+        ```
+        FIREBASE_SERVICE_ACCOUNT     # The JSON content from step 1
+        FIREBASE_PROJECT_ID          # storybook-452807
+        FIREBASE_HOSTING_TARGET_STAGING  # blend-staging
+        FIREBASE_HOSTING_TARGET_PROD     # blend-prod
+        ```
 
 ## Deployment
 
@@ -191,21 +191,21 @@ Deployments happen automatically via GitHub Actions:
 ### 📦 What Gets Deployed
 
 1. **Documentation Site** (`/`)
-   - Next.js static export
-   - MDX documentation pages
-   - Client-side search index
-   - Component examples
+    - Next.js static export
+    - MDX documentation pages
+    - Client-side search index
+    - Component examples
 
 2. **Storybook** (`/storybook`)
-   - Component stories
-   - Interactive playground
-   - Design tokens
-   - Usage examples
+    - Component stories
+    - Interactive playground
+    - Design tokens
+    - Usage examples
 
 3. **Static Assets**
-   - Fonts
-   - Images
-   - Generated search index (`/static.json`)
+    - Fonts
+    - Images
+    - Generated search index (`/static.json`)
 
 ## Content Management
 
@@ -213,52 +213,51 @@ Deployments happen automatically via GitHub Actions:
 
 1. **Create MDX File**
 
-   ```bash
-   # Create new component doc
-   touch apps/docs/content/docs/components/NewComponent.mdx
-   ```
+    ```bash
+    # Create new component doc
+    touch apps/docs/content/docs/components/NewComponent.mdx
+    ```
 
 2. **MDX Format**
 
-   ````mdx
-   ---
-   title: Component Name
-   description: Brief description for search
-   ---
+    ````mdx
+    ---
+    title: Component Name
+    description: Brief description for search
+    ---
 
-   # Component Name
+    # Component Name
 
-   Component description and usage.
+    Component description and usage.
 
-   ## Usage
+    ## Usage
 
-   ```jsx
-   import { Component } from "blend-v1";
+    ```jsx
+    import { Component } from 'blend-v1'
+    ;<Component prop="value" />
+    ```
+    ````
 
-   <Component prop="value" />;
-   ```
-   ````
+    ## Props
 
-   ## Props
+    | Prop | Type   | Default | Description |
+    | ---- | ------ | ------- | ----------- |
+    | prop | string | -       | Description |
 
-   | Prop | Type   | Default | Description |
-   | ---- | ------ | ------- | ----------- |
-   | prop | string | -       | Description |
+    ```
 
-   ```
-
-   ```
+    ```
 
 3. **Update Navigation**
 
-   Edit `apps/docs/content/docs/components/meta.json`:
+    Edit `apps/docs/content/docs/components/meta.json`:
 
-   ```json
-   {
-     "title": "Components",
-     "pages": ["Button", "Alert", "NewComponent"]
-   }
-   ```
+    ```json
+    {
+        "title": "Components",
+        "pages": ["Button", "Alert", "NewComponent"]
+    }
+    ```
 
 ### 🔍 Search System
 
@@ -384,25 +383,25 @@ pnpm storybook:build
 2. Click "Add custom domain"
 3. Follow DNS configuration steps
 4. Suggested setup:
-   - Production: `docs.yourdomain.com`
-   - Staging: `docs-staging.yourdomain.com`
+    - Production: `docs.yourdomain.com`
+    - Staging: `docs-staging.yourdomain.com`
 
 ### 📈 Performance Optimization
 
 1. **Enable Compression**
-   - Already configured in `firebase.json`
-   - Brotli compression for modern browsers
+    - Already configured in `firebase.json`
+    - Brotli compression for modern browsers
 
 2. **Optimize Images**
 
-   ```bash
-   # Add image optimization to build
-   pnpm add -D sharp
-   ```
+    ```bash
+    # Add image optimization to build
+    pnpm add -D sharp
+    ```
 
 3. **Monitor Performance**
-   - Use Lighthouse CI in GitHub Actions
-   - Track Core Web Vitals
+    - Use Lighthouse CI in GitHub Actions
+    - Track Core Web Vitals
 
 ### 🏗️ Infrastructure as Code
 

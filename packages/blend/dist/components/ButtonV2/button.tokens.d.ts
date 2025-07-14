@@ -1,53 +1,53 @@
 import { CSSObject } from 'styled-components';
 import { ButtonSizeV2, ButtonSubTypeV2, ButtonTypeV2 } from './types';
 import { FoundationTokenType } from '../../tokens/theme.token';
-export type ButtonState = "default" | "hover" | "active" | "disabled";
+export type ButtonState = 'default' | 'hover' | 'active' | 'disabled';
 export type ButtonTokensType = {
-    gap: CSSObject["gap"];
+    gap: CSSObject['gap'];
     backgroundColor: {
         [key in ButtonTypeV2]: {
             [key in ButtonSubTypeV2]: {
-                [key in ButtonState]: CSSObject["background"];
+                [key in ButtonState]: CSSObject['background'];
             };
         };
     };
     color: {
         [key in ButtonTypeV2]: {
             [key in ButtonSubTypeV2]: {
-                [key in ButtonState]: CSSObject["color"];
+                [key in ButtonState]: CSSObject['color'];
             };
         };
     };
     borderRadius: {
         [key in ButtonTypeV2]: {
             [key in ButtonSubTypeV2]: {
-                [key in ButtonState]: CSSObject["borderRadius"];
+                [key in ButtonState]: CSSObject['borderRadius'];
             };
         };
     };
     padding: {
         [key in ButtonSizeV2]: {
-            [key in ButtonSubTypeV2]: CSSObject["padding"];
+            [key in ButtonSubTypeV2]: CSSObject['padding'];
         };
     };
     border: {
         [key in ButtonTypeV2]: {
             [key in ButtonSubTypeV2]: {
-                [key in ButtonState]: CSSObject["border"];
+                [key in ButtonState]: CSSObject['border'];
             };
         };
     };
     shadow: {
         [key in ButtonTypeV2]: {
             [key in ButtonSubTypeV2]: {
-                [key in ButtonState]: CSSObject["boxShadow"];
+                [key in ButtonState]: CSSObject['boxShadow'];
             };
         };
     };
     outline: {
         [key in ButtonTypeV2]: {
             [key in ButtonSubTypeV2]: {
-                [key in ButtonState]: CSSObject["outline"];
+                [key in ButtonState]: CSSObject['outline'];
             };
         };
     };

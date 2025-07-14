@@ -25,4 +25,4 @@ export type DropdownInputProps = {
     dropDownValue?: string;
     onDropDownChange?: (value: string) => void;
     dropDownItems: SelectMenuGroupType[];
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "style" | "className">;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'style' | 'className'>;

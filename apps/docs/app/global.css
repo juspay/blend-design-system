@@ -2,7 +2,6 @@
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
 
-
-.debug{
-  outline: 1px solid red;
+.debug {
+    outline: 1px solid red;
 }

@@ -21,4 +21,4 @@ export type TextInputProps = {
     rightSlot?: React.ReactNode;
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "style" | "className">;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'style' | 'className'>;

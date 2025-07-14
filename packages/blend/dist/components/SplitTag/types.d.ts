@@ -7,8 +7,8 @@ export type TagConfig = {
     onClick?: () => void;
 };
 export type SplitTagProps = {
-    primaryTag: Omit<TagProps, "splitTagPosition" | "size" | "shape">;
-    secondaryTag?: Omit<TagProps, "splitTagPosition" | "size" | "shape">;
+    primaryTag: Omit<TagProps, 'splitTagPosition' | 'size' | 'shape'>;
+    secondaryTag?: Omit<TagProps, 'splitTagPosition' | 'size' | 'shape'>;
     leadingSlot?: ReactNode;
     trailingSlot?: ReactNode;
     size?: TagSize;

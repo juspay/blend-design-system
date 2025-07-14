@@ -16,7 +16,7 @@ export declare enum ButtonSubType {
     LINK = "link",
     PLAIN_ICON = "plainIcon"
 }
-export type ButtonProps = ComponentPropsWithoutRef<"button"> & {
+export type ButtonProps = ComponentPropsWithoutRef<'button'> & {
     buttonType?: ButtonType;
     size?: ButtonSize;
     subType?: ButtonSubType;
@@ -28,6 +28,6 @@ export type ButtonProps = ComponentPropsWithoutRef<"button"> & {
     ariaLabel?: string;
     ariaExpanded?: boolean;
     ariaControls?: string;
-    ariaPressed?: boolean | "mixed";
-    ariaHasPopup?: boolean | "menu" | "listbox" | "tree" | "grid" | "dialog";
+    ariaPressed?: boolean | 'mixed';
+    ariaHasPopup?: boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
 };

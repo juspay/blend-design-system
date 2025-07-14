@@ -3,15 +3,17 @@ title: Checkbox
 description: A versatile checkbox component with support for controlled and uncontrolled states, indeterminate state, multiple sizes, and comprehensive form integration capabilities.
 ---
 
-import { BlendTypeTable } from "@/components/ui/BlendTypeTable";
-import checkboxMeta from "@/meta/checkbox.context";
+import { BlendTypeTable } from '@/components/ui/BlendTypeTable'
+import checkboxMeta from '@/meta/checkbox.context'
 
 # Checkbox Component Documentation
 
 ## Description
+
 A versatile checkbox component with support for controlled and uncontrolled states, indeterminate state, multiple sizes, and comprehensive form integration capabilities.
 
 ## Features
+
 - Controlled and uncontrolled modes
 - Indeterminate state support
 - Two sizes (small, medium)
@@ -27,85 +29,87 @@ A versatile checkbox component with support for controlled and uncontrolled stat
 
 ### Content
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `id` | `string` | No | Unique identifier for the checkbox input | `auto-generated` |
-| `value` | `string` | No | Value attribute for the checkbox input | `undefined` |
-| `children` | `ReactNode` | No | Label content for the checkbox | `undefined` |
-| `subtext` | `string` | No | Additional descriptive text below the checkbox | `undefined` |
-| `slot` | `ReactNode` | No | Custom content slot next to the checkbox label | `undefined` |
+| Prop Name  | Type        | Required | Description                                    | Default Value    |
+| ---------- | ----------- | -------- | ---------------------------------------------- | ---------------- |
+| `id`       | `string`    | No       | Unique identifier for the checkbox input       | `auto-generated` |
+| `value`    | `string`    | No       | Value attribute for the checkbox input         | `undefined`      |
+| `children` | `ReactNode` | No       | Label content for the checkbox                 | `undefined`      |
+| `subtext`  | `string`    | No       | Additional descriptive text below the checkbox | `undefined`      |
+| `slot`     | `ReactNode` | No       | Custom content slot next to the checkbox label | `undefined`      |
 
 ### State
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `checked` | `boolean \| 'indeterminate'` | No | Controlled checked state of the checkbox | `undefined` |
-| `defaultChecked` | `boolean` | No | Default checked state for uncontrolled mode | `false` |
-| `disabled` | `boolean` | No | Whether the checkbox is disabled | `false` |
-| `required` | `boolean` | No | Whether the checkbox is required (shows asterisk) | `false` |
-| `error` | `boolean` | No | Whether the checkbox is in error state | `false` |
+| Prop Name        | Type                         | Required | Description                                       | Default Value |
+| ---------------- | ---------------------------- | -------- | ------------------------------------------------- | ------------- |
+| `checked`        | `boolean \| 'indeterminate'` | No       | Controlled checked state of the checkbox          | `undefined`   |
+| `defaultChecked` | `boolean`                    | No       | Default checked state for uncontrolled mode       | `false`       |
+| `disabled`       | `boolean`                    | No       | Whether the checkbox is disabled                  | `false`       |
+| `required`       | `boolean`                    | No       | Whether the checkbox is required (shows asterisk) | `false`       |
+| `error`          | `boolean`                    | No       | Whether the checkbox is in error state            | `false`       |
 
 ### Events
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `onCheckedChange` | `(checked: boolean \| 'indeterminate') => void` | No | Callback fired when the checked state changes | `undefined` |
+| Prop Name         | Type                                            | Required | Description                                   | Default Value |
+| ----------------- | ----------------------------------------------- | -------- | --------------------------------------------- | ------------- |
+| `onCheckedChange` | `(checked: boolean \| 'indeterminate') => void` | No       | Callback fired when the checked state changes | `undefined`   |
 
 ### Appearance
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `size` | `CheckboxSize` | No | Size variant of the checkbox | `CheckboxSize.MEDIUM` |
+| Prop Name | Type           | Required | Description                  | Default Value         |
+| --------- | -------------- | -------- | ---------------------------- | --------------------- |
+| `size`    | `CheckboxSize` | No       | Size variant of the checkbox | `CheckboxSize.MEDIUM` |
 
 ## Usage Examples
 
 ### Basic Checkbox
+
 Simple checkbox with label
 
 ```tsx
-<Checkbox>
-  Accept terms and conditions
-</Checkbox>
+<Checkbox>Accept terms and conditions</Checkbox>
 ```
 
 ### Controlled Checkbox
+
 Checkbox with controlled state
 
 ```tsx
-const [isChecked, setIsChecked] = useState(false);
+const [isChecked, setIsChecked] = useState(false)
 
-<Checkbox 
-  checked={isChecked}
-  onCheckedChange={setIsChecked}
-  size={CheckboxSize.MEDIUM}
+;<Checkbox
+    checked={isChecked}
+    onCheckedChange={setIsChecked}
+    size={CheckboxSize.MEDIUM}
 >
-  Subscribe to newsletter
+    Subscribe to newsletter
 </Checkbox>
 ```
 
 ### Checkbox with Subtext and Error
+
 Checkbox with additional information and error state
 
 ```tsx
-<Checkbox 
-  required={true}
-  error={true}
-  subtext="This field is required"
-  size={CheckboxSize.SMALL}
+<Checkbox
+    required={true}
+    error={true}
+    subtext="This field is required"
+    size={CheckboxSize.SMALL}
 >
-  I agree to the privacy policy
+    I agree to the privacy policy
 </Checkbox>
 ```
 
 ### Indeterminate Checkbox with Slot
+
 Checkbox in indeterminate state with custom slot content
 
 ```tsx
-<Checkbox 
-  checked="indeterminate"
-  slot={<Badge variant="info">Partial</Badge>}
-  subtext="Some items are selected"
+<Checkbox
+    checked="indeterminate"
+    slot={<Badge variant="info">Partial</Badge>}
+    subtext="Some items are selected"
 >
-  Select all items
+    Select all items
 </Checkbox>
 ```

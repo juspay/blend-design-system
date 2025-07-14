@@ -8,4 +8,4 @@ export type OTPProps = {
     value?: string;
     onChange?: (value: string) => void;
     form?: string;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "style" | "className">;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'style' | 'className'>;

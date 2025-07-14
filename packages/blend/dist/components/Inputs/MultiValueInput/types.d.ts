@@ -22,4 +22,4 @@ export type MultiValueInputProps = {
     onTagAdd?: (tag: string) => void;
     onTagRemove?: (tag: string) => void;
     size?: TextInputSize;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "style" | "className">;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'style' | 'className'>;

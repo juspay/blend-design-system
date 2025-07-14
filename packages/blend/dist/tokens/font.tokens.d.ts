@@ -1,35 +1,35 @@
 import { CSSObject } from 'styled-components';
 type FontWeightType = Readonly<{
-    100: CSSObject["fontWeight"];
-    200: CSSObject["fontWeight"];
-    300: CSSObject["fontWeight"];
-    400: CSSObject["fontWeight"];
-    500: CSSObject["fontWeight"];
-    600: CSSObject["fontWeight"];
-    700: CSSObject["fontWeight"];
-    800: CSSObject["fontWeight"];
-    900: CSSObject["fontWeight"];
+    100: CSSObject['fontWeight'];
+    200: CSSObject['fontWeight'];
+    300: CSSObject['fontWeight'];
+    400: CSSObject['fontWeight'];
+    500: CSSObject['fontWeight'];
+    600: CSSObject['fontWeight'];
+    700: CSSObject['fontWeight'];
+    800: CSSObject['fontWeight'];
+    900: CSSObject['fontWeight'];
 }>;
 type FontFamilyType = Readonly<{
-    display: CSSObject["fontFamily"];
-    body: CSSObject["fontFamily"];
-    heading: CSSObject["fontFamily"];
-    mono: CSSObject["fontFamily"];
+    display: CSSObject['fontFamily'];
+    body: CSSObject['fontFamily'];
+    heading: CSSObject['fontFamily'];
+    mono: CSSObject['fontFamily'];
 }>;
 type LetterSpacingType = Readonly<{
-    compressed: CSSObject["letterSpacing"];
-    condensed: CSSObject["letterSpacing"];
-    normal: CSSObject["letterSpacing"];
-    expanded: CSSObject["letterSpacing"];
-    extended: CSSObject["letterSpacing"];
+    compressed: CSSObject['letterSpacing'];
+    condensed: CSSObject['letterSpacing'];
+    normal: CSSObject['letterSpacing'];
+    expanded: CSSObject['letterSpacing'];
+    extended: CSSObject['letterSpacing'];
 }>;
 export type FontGroupType = Readonly<{
-    fontSize: CSSObject["fontSize"];
-    lineHeight: CSSObject["lineHeight"];
-    letterSpacing: CSSObject["letterSpacing"];
+    fontSize: CSSObject['fontSize'];
+    lineHeight: CSSObject['lineHeight'];
+    letterSpacing: CSSObject['letterSpacing'];
 }>;
 type FontSizeType = Readonly<{
-    base: CSSObject["fontSize"];
+    base: CSSObject['fontSize'];
     body: {
         xs: FontGroupType;
         sm: FontGroupType;
@@ -41,7 +41,7 @@ type FontSizeType = Readonly<{
         md: FontGroupType;
         lg: FontGroupType;
         xl: FontGroupType;
-        "2xl": FontGroupType;
+        '2xl': FontGroupType;
     };
     display: {
         sm: FontGroupType;

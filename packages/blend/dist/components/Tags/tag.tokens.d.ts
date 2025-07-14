@@ -4,47 +4,47 @@ import { TagColor, TagShape, TagSize, TagVariant } from './types';
 export type TagTokensType = Readonly<{
     background: {
         [key in TagVariant]: {
-            [key in TagColor]: CSSObject["color"];
+            [key in TagColor]: CSSObject['color'];
         };
     };
     color: {
         [key in TagVariant]: {
-            [key in TagColor]: CSSObject["color"];
+            [key in TagColor]: CSSObject['color'];
         };
     };
     borderColor: {
         [key in TagVariant]: {
-            [key in TagColor]: CSSObject["color"];
+            [key in TagColor]: CSSObject['color'];
         };
     };
     borderRadius: {
         [key in TagShape]: {
-            [key in TagSize]: CSSObject["borderRadius"];
+            [key in TagSize]: CSSObject['borderRadius'];
         };
     };
     borderWidth: {
         [key in TagVariant]: {
-            [key in TagColor]: CSSObject["borderWidth"];
+            [key in TagColor]: CSSObject['borderWidth'];
         };
     };
     font: {
         [key in TagSize]: {
-            fontSize: CSSObject["fontSize"];
-            fontWeight: CSSObject["fontWeight"];
+            fontSize: CSSObject['fontSize'];
+            fontWeight: CSSObject['fontWeight'];
         };
     };
     gap: {
-        [key in TagSize]: CSSObject["gap"];
+        [key in TagSize]: CSSObject['gap'];
     };
     padding: {
-        [key in TagSize]: CSSObject["padding"];
+        [key in TagSize]: CSSObject['padding'];
     };
     height: {
-        [key in TagSize]: CSSObject["height"];
+        [key in TagSize]: CSSObject['height'];
     };
     slot: {
         size: {
-            [key in TagSize]: CSSObject["width"];
+            [key in TagSize]: CSSObject['width'];
         };
     };
 }>;

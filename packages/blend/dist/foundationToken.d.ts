@@ -150,7 +150,7 @@ declare const foundationToken: {
         md: string;
         lg: string;
         xl: string;
-        "2xl": string;
+        '2xl': string;
         full: string;
     };
     wordBreak: {

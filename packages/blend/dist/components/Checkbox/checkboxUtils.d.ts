@@ -62,7 +62,7 @@ export declare const getCheckboxLabelStyles: (disabled: boolean) => {
  */
 export declare const getAccessibilityAttributes: (uniqueId: string, isIndeterminate: boolean) => {
     role: string;
-    "aria-checked": string | undefined;
-    "aria-labelledby": string;
-    "aria-describedby": string;
+    'aria-checked': string | undefined;
+    'aria-labelledby': string;
+    'aria-describedby': string;
 };

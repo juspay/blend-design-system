@@ -31,5 +31,5 @@ export type TagProps = {
     leftSlot?: ReactNode;
     rightSlot?: ReactNode;
     onClick?: () => void;
-    splitTagPosition?: "left" | "right";
+    splitTagPosition?: 'left' | 'right';
 };

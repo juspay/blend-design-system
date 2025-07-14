@@ -20,10 +20,10 @@ export type NavbarItem = {
 export type SectionProps = {
     section: DirectoryData;
     sectionIndex: number;
-    onNavigateBetweenSections: (direction: "up" | "down", currentIndex: number) => void;
+    onNavigateBetweenSections: (direction: 'up' | 'down', currentIndex: number) => void;
 };
 export type NavItemProps = {
     item: NavbarItem;
     index: number;
-    onNavigate: (direction: "up" | "down", currentIndex: number) => void;
+    onNavigate: (direction: 'up' | 'down', currentIndex: number) => void;
 };

@@ -3,26 +3,26 @@ import { FoundationTokenType } from '../../../tokens/theme.token';
 import { DropdownInputSize, DropdownInputState } from './types';
 export type DropdownInputTokensType = {
     input: {
-        gap: CSSObject["gap"];
-        borderRadius?: CSSObject["borderRadius"];
-        boxShadow: CSSObject["boxShadow"];
+        gap: CSSObject['gap'];
+        borderRadius?: CSSObject['borderRadius'];
+        boxShadow: CSSObject['boxShadow'];
         paddingX: {
-            [key in DropdownInputSize]: CSSObject["padding"];
+            [key in DropdownInputSize]: CSSObject['padding'];
         };
         paddingY: {
-            [key in DropdownInputSize]: CSSObject["padding"];
+            [key in DropdownInputSize]: CSSObject['padding'];
         };
         border: {
-            [key in DropdownInputState]: CSSObject["border"];
+            [key in DropdownInputState]: CSSObject['border'];
         };
         color: {
-            [key in DropdownInputState]: CSSObject["color"];
+            [key in DropdownInputState]: CSSObject['color'];
         };
         outline: {
-            [key in DropdownInputState]: CSSObject["outline"];
+            [key in DropdownInputState]: CSSObject['outline'];
         };
         backgroundColor: {
-            [key in DropdownInputState]: CSSObject["backgroundColor"];
+            [key in DropdownInputState]: CSSObject['backgroundColor'];
         };
     };
 };

@@ -17,6 +17,6 @@ export type TextAreaProps = {
     required?: boolean;
     error?: boolean;
     errorMessage?: string;
-    resize?: "none" | "both" | "horizontal" | "vertical" | "block" | "inline";
-    wrap?: CSSObject["whiteSpace"];
-} & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "size" | "style" | "className">;
+    resize?: 'none' | 'both' | 'horizontal' | 'vertical' | 'block' | 'inline';
+    wrap?: CSSObject['whiteSpace'];
+} & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size' | 'style' | 'className'>;

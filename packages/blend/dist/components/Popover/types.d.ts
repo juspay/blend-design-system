@@ -1,5 +1,5 @@
 import { ButtonV2Props } from '../ButtonV2';
-export type PopoverActionType = Omit<ButtonV2Props, "buttonGroupPosition" | "subType">;
+export type PopoverActionType = Omit<ButtonV2Props, 'buttonGroupPosition' | 'subType'>;
 export declare enum PopoverSize {
     SMALL = "small",
     MEDIUM = "medium"
@@ -16,8 +16,8 @@ export type PopoverProps = {
     primaryAction?: PopoverActionType;
     secondaryAction?: PopoverActionType;
     sideOffset?: number;
-    side?: "top" | "right" | "bottom" | "left";
-    align?: "start" | "center" | "end";
+    side?: 'top' | 'right' | 'bottom' | 'left';
+    align?: 'start' | 'center' | 'end';
     alignOffset?: number;
     width?: number;
     minWidth?: number;

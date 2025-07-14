@@ -9,32 +9,31 @@ This is a monorepo built with [Turborepo](https://turbo.build/repo) and [pnpm](h
 ### 📦 Packages
 
 - **`packages/blend`** - Core design system library (`blend-v1`)
-  - React components built with Radix UI primitives
-  - TypeScript support with full type definitions
-  - Styled-components for styling
-  - Comprehensive component library including:
-    - **Form Components**: Button, ButtonGroup, Inputs, Checkbox, Radio, Switch, Select, MultiSelect, OTPInput, SearchInput, TextArea, NumberInput, UnitInput, DropdownInput, MultiValueInput
-    - **Layout Components**: Accordion, Alert, Avatar, AvatarGroup, Breadcrumb, DataTable, Directory, Modal, Popover, Sidebar, Tabs
-    - **Display Components**: Charts, StatCard, Tags, SplitTag, Text, Tooltip, GradientBlur
-    - **Navigation**: Menu, DateRangePicker
-    - **Feedback**: Snackbar
+    - React components built with Radix UI primitives
+    - TypeScript support with full type definitions
+    - Styled-components for styling
+    - Comprehensive component library including:
+        - **Form Components**: Button, ButtonGroup, Inputs, Checkbox, Radio, Switch, Select, MultiSelect, OTPInput, SearchInput, TextArea, NumberInput, UnitInput, DropdownInput, MultiValueInput
+        - **Layout Components**: Accordion, Alert, Avatar, AvatarGroup, Breadcrumb, DataTable, Directory, Modal, Popover, Sidebar, Tabs
+        - **Display Components**: Charts, StatCard, Tags, SplitTag, Text, Tooltip, GradientBlur
+        - **Navigation**: Menu, DateRangePicker
+        - **Feedback**: Snackbar
 
 ### 🚀 Apps
 
 - **`apps/docs`** - Documentation site built with Next.js and Fumadocs
-  - Component documentation and usage examples
-  - Deployable to Firebase hosting
-  - MDX-based content with interactive examples
+    - Component documentation and usage examples
+    - Deployable to Firebase hosting
+    - MDX-based content with interactive examples
 
 - **`apps/storybook`** - Component development and testing environment
-  - Interactive component playground
-  - Visual testing and documentation
-  - Component stories for all design system components
+    - Interactive component playground
+    - Visual testing and documentation
+    - Component stories for all design system components
 
 - **`apps/site`** - Demo site showcasing the design system
-  - Live examples of all components
-  - Built with Vite and React
-
+    - Live examples of all components
+    - Built with Vite and React
 
 ### 🔧 Shared Configuration
 
@@ -104,27 +103,29 @@ pnpm release              # Build and publish packages
 ## 🚀 Getting Started
 
 1. **Install the package**:
-   ```bash
-   npm install blend-v1
-   ```
+
+    ```bash
+    npm install blend-v1
+    ```
 
 2. **Import components**:
-   ```tsx
-   import { Button, Alert, Avatar } from 'blend-v1';
-   ```
+
+    ```tsx
+    import { Button, Alert, Avatar } from 'blend-v1'
+    ```
 
 3. **Use components**:
-   ```tsx
-   function App() {
-     return (
-       <div>
-         <Button variant={ButtonVariant.Secondary}>Click me</Button>
-         <Alert>This is an info message</Alert>
-         <Avatar src="/avatar.jpg" alt="User" />
-       </div>
-     );
-   }
-   ```
+    ```tsx
+    function App() {
+        return (
+            <div>
+                <Button variant={ButtonVariant.Secondary}>Click me</Button>
+                <Alert>This is an info message</Alert>
+                <Avatar src="/avatar.jpg" alt="User" />
+            </div>
+        )
+    }
+    ```
 
 ## 🤝 Contributing
 
@@ -137,5 +138,3 @@ pnpm release              # Build and publish packages
 ## 📄 License
 
 MIT License - see LICENSE file for details
-
-

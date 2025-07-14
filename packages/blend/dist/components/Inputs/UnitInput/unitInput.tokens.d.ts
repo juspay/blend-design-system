@@ -10,26 +10,26 @@ declare enum UnitInputState {
 }
 export type UnitInputTokensType = {
     input: {
-        gap: CSSObject["gap"];
-        borderRadius?: CSSObject["borderRadius"];
-        boxShadow: CSSObject["boxShadow"];
+        gap: CSSObject['gap'];
+        borderRadius?: CSSObject['borderRadius'];
+        boxShadow: CSSObject['boxShadow'];
         paddingX: {
-            [key in UnitInputSize]: CSSObject["padding"];
+            [key in UnitInputSize]: CSSObject['padding'];
         };
         paddingY: {
-            [key in UnitInputSize]: CSSObject["padding"];
+            [key in UnitInputSize]: CSSObject['padding'];
         };
         border: {
-            [key in UnitInputState]: CSSObject["border"];
+            [key in UnitInputState]: CSSObject['border'];
         };
         color: {
-            [key in UnitInputState]: CSSObject["color"];
+            [key in UnitInputState]: CSSObject['color'];
         };
         outline: {
-            [key in UnitInputState]: CSSObject["outline"];
+            [key in UnitInputState]: CSSObject['outline'];
         };
         backgroundColor: {
-            [key in UnitInputState]: CSSObject["backgroundColor"];
+            [key in UnitInputState]: CSSObject['backgroundColor'];
         };
     };
 };

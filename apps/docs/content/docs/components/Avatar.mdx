@@ -3,15 +3,17 @@ title: Avatar
 description: A flexible avatar component for displaying user profile images with automatic fallback to initials, multiple sizes and shapes, and online status indicators.
 ---
 
-import { BlendTypeTable } from "@/components/ui/BlendTypeTable";
-import avatarMeta from "@/meta/avatar.context";
+import { BlendTypeTable } from '@/components/ui/BlendTypeTable'
+import avatarMeta from '@/meta/avatar.context'
 
 # Avatar Component Documentation
 
 ## Description
+
 A flexible avatar component for displaying user profile images with automatic fallback to initials, multiple sizes and shapes, and online status indicators.
 
 ## Features
+
 - Multiple sizes (small, medium, large, extra large)
 - Two shape variants (circular, rounded)
 - Automatic fallback to initials when image fails
@@ -26,72 +28,72 @@ A flexible avatar component for displaying user profile images with automatic fa
 
 ### Content
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `src` | `string` | No | URL of the avatar image to display | `undefined` |
-| `alt` | `string` | No | Alternative text for the avatar image and fallback initials generation | `''` |
-| `fallback` | `React.ReactNode` | No | Custom fallback content when image is not available | `undefined` |
-| `leadingSlot` | `React.ReactNode` | No | Custom content to display before the avatar | `undefined` |
-| `trailingSlot` | `React.ReactNode` | No | Custom content to display after the avatar | `undefined` |
+| Prop Name      | Type              | Required | Description                                                            | Default Value |
+| -------------- | ----------------- | -------- | ---------------------------------------------------------------------- | ------------- |
+| `src`          | `string`          | No       | URL of the avatar image to display                                     | `undefined`   |
+| `alt`          | `string`          | No       | Alternative text for the avatar image and fallback initials generation | `''`          |
+| `fallback`     | `React.ReactNode` | No       | Custom fallback content when image is not available                    | `undefined`   |
+| `leadingSlot`  | `React.ReactNode` | No       | Custom content to display before the avatar                            | `undefined`   |
+| `trailingSlot` | `React.ReactNode` | No       | Custom content to display after the avatar                             | `undefined`   |
 
 ### Appearance
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `size` | `AvatarSize` | No | Size variant of the avatar | `AvatarSize.MD` |
-| `shape` | `AvatarShape` | No | Shape variant of the avatar | `AvatarShape.CIRCULAR` |
+| Prop Name | Type          | Required | Description                 | Default Value          |
+| --------- | ------------- | -------- | --------------------------- | ---------------------- |
+| `size`    | `AvatarSize`  | No       | Size variant of the avatar  | `AvatarSize.MD`        |
+| `shape`   | `AvatarShape` | No       | Shape variant of the avatar | `AvatarShape.CIRCULAR` |
 
 ### State
 
-| Prop Name | Type | Required | Description | Default Value |
-|-----------|------|----------|-------------|---------------|
-| `online` | `boolean` | No | Whether to show online status indicator | `false` |
+| Prop Name | Type      | Required | Description                             | Default Value |
+| --------- | --------- | -------- | --------------------------------------- | ------------- |
+| `online`  | `boolean` | No       | Whether to show online status indicator | `false`       |
 
 ## Usage Examples
 
 ### Basic Avatar with Image
+
 Simple avatar with user image and alt text
 
 ```tsx
-<Avatar 
-  src="/user-profile.jpg" 
-  alt="John Doe" 
-  size={AvatarSize.MD} 
-/>
+<Avatar src="/user-profile.jpg" alt="John Doe" size={AvatarSize.MD} />
 ```
 
 ### Avatar with Fallback Initials
+
 Avatar that shows initials when image is not available
 
 ```tsx
-<Avatar 
-  alt="Jane Smith" 
-  size={AvatarSize.LG}
-  shape={AvatarShape.ROUNDED}
-/>
+<Avatar alt="Jane Smith" size={AvatarSize.LG} shape={AvatarShape.ROUNDED} />
 ```
 
 ### Avatar with Online Status
+
 Avatar displaying online status indicator
 
 ```tsx
-<Avatar 
-  src="/user-avatar.jpg"
-  alt="Alex Johnson"
-  size={AvatarSize.XL}
-  online={true}
+<Avatar
+    src="/user-avatar.jpg"
+    alt="Alex Johnson"
+    size={AvatarSize.XL}
+    online={true}
 />
 ```
 
 ### Avatar with Custom Slots
+
 Avatar with leading and trailing content slots
 
 ```tsx
-<Avatar 
-  src="/profile.jpg"
-  alt="Sarah Wilson"
-  size={AvatarSize.MD}
-  leadingSlot={<Badge variant="success">Pro</Badge>}
-  trailingSlot={<Button size="sm" variant="ghost"><EditIcon /></Button>}
+<Avatar
+    src="/profile.jpg"
+    alt="Sarah Wilson"
+    size={AvatarSize.MD}
+    leadingSlot={<Badge variant="success">Pro</Badge>}
+    trailingSlot={
+        <Button size="sm" variant="ghost">
+            <EditIcon />
+        </Button>
+    }
 />
 ```

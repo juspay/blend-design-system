@@ -1,2 +1,2 @@
-export { default as ButtonGroupV2 } from "./ButtonGroupV2";
-export * from "./types";
+export { default as ButtonGroupV2 } from './ButtonGroupV2'
+export * from './types'

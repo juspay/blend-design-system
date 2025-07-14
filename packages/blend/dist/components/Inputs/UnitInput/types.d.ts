@@ -22,4 +22,4 @@ export type UnitInputProps = {
     rightSlot?: React.ReactNode;
     unit: string;
     unitPosition?: UnitPosition;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "style" | "className">;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'style' | 'className'>;

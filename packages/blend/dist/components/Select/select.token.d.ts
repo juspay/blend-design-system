@@ -2,35 +2,35 @@ import { CSSObject } from 'styled-components';
 type SelectTokenTypes = {
     trigger: {
         container: {
-            gap: CSSObject["gap"];
+            gap: CSSObject['gap'];
         };
         label: {
-            color: CSSObject["color"];
-            fontWeight: CSSObject["fontWeight"];
-            fontSize: CSSObject["fontSize"];
+            color: CSSObject['color'];
+            fontWeight: CSSObject['fontWeight'];
+            fontSize: CSSObject['fontSize'];
         };
         selectedValue: {
-            color: CSSObject["color"];
+            color: CSSObject['color'];
             font: {
-                weight: CSSObject["fontWeight"];
+                weight: CSSObject['fontWeight'];
                 size: {
-                    sm: CSSObject["fontSize"];
-                    md: CSSObject["fontSize"];
-                    lg: CSSObject["fontSize"];
+                    sm: CSSObject['fontSize'];
+                    md: CSSObject['fontSize'];
+                    lg: CSSObject['fontSize'];
                 };
             };
             padding: {
                 sm: {
-                    x: CSSObject["padding"];
-                    y: CSSObject["padding"];
+                    x: CSSObject['padding'];
+                    y: CSSObject['padding'];
                 };
                 md: {
-                    x: CSSObject["padding"];
-                    y: CSSObject["padding"];
+                    x: CSSObject['padding'];
+                    y: CSSObject['padding'];
                 };
                 lg: {
-                    x: CSSObject["padding"];
-                    y: CSSObject["padding"];
+                    x: CSSObject['padding'];
+                    y: CSSObject['padding'];
                 };
             };
         };

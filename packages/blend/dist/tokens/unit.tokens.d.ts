@@ -1,5 +1,5 @@
 import { CSSObject } from 'styled-components';
-type UnitType = CSSObject["width"] | CSSObject["height"] | CSSObject["gap"] | CSSObject["padding"] | CSSObject["margin"];
+type UnitType = CSSObject['width'] | CSSObject['height'] | CSSObject['gap'] | CSSObject['padding'] | CSSObject['margin'];
 export type UnitTokensType = Readonly<{
     0: UnitType;
     1: UnitType;

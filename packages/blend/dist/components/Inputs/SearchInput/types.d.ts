@@ -4,4 +4,4 @@ export type SearchInputProps = {
     error?: boolean;
     value?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "style" | "className">;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'style' | 'className'>;

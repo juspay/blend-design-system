@@ -3,47 +3,47 @@ import { VariantType } from '../Text/Text';
 export type SnackbarTokens = Readonly<{
     icon: {
         color: {
-            info: CSSObject["color"];
-            success: CSSObject["color"];
-            warning: CSSObject["color"];
-            error: CSSObject["color"];
+            info: CSSObject['color'];
+            success: CSSObject['color'];
+            warning: CSSObject['color'];
+            error: CSSObject['color'];
         };
     };
     container: {
-        backgroundColor: CSSObject["color"];
-        borderRadius: CSSObject["borderRadius"];
-        padding: CSSObject["padding"];
-        minWidth: CSSObject["minWidth"];
-        maxWidth: CSSObject["maxWidth"];
-        boxShadow: CSSObject["boxShadow"];
+        backgroundColor: CSSObject['color'];
+        borderRadius: CSSObject['borderRadius'];
+        padding: CSSObject['padding'];
+        minWidth: CSSObject['minWidth'];
+        maxWidth: CSSObject['maxWidth'];
+        boxShadow: CSSObject['boxShadow'];
     };
     header: {
         layout: {
-            gap: CSSObject["gap"];
-            marginBottom: CSSObject["marginBottom"];
-            iconGap: CSSObject["gap"];
+            gap: CSSObject['gap'];
+            marginBottom: CSSObject['marginBottom'];
+            iconGap: CSSObject['gap'];
         };
         text: {
-            color: CSSObject["color"];
+            color: CSSObject['color'];
             variant: VariantType;
         };
     };
     description: {
         layout: {
-            paddingLeft: CSSObject["paddingLeft"];
-            gap: CSSObject["gap"];
+            paddingLeft: CSSObject['paddingLeft'];
+            gap: CSSObject['gap'];
         };
         text: {
-            color: CSSObject["color"];
+            color: CSSObject['color'];
             variant: VariantType;
         };
     };
     actionButton: {
         layout: {
-            paddingX: CSSObject["padding"];
+            paddingX: CSSObject['padding'];
         };
         text: {
-            color: CSSObject["color"];
+            color: CSSObject['color'];
             variant: VariantType;
         };
     };

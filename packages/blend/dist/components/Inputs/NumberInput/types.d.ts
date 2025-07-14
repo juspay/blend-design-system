@@ -13,4 +13,4 @@ export type NumberInputProps = {
     sublabel?: string;
     helpIconHintText?: string;
     hintText?: string;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "style" | "className" | "value">;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'style' | 'className' | 'value'>;
