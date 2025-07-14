@@ -10,8 +10,7 @@ storybook-static
 
 # Cache and temporary files
 .turbo
-apps/firebase-app/.turbo
-apps/nextdocs/.turbo
+**/.turbo
 .next
 .cache
 .temp
