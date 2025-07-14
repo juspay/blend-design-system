@@ -41,6 +41,10 @@ import AlertDemo from './AlertDemo'
 import TabsDemo from './TabsDemo'
 import AccordionDemo from './AccordionDemo'
 import StatCardDemo from './StatCardDemo'
+import SnackbarDemo from './SnackbarDemo'
+import AvatarGroupDemo from './AvatarGroupDemo'
+import TooltipDemo from './TooltipDemo'
+import ModalDemo from './ModalDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -150,6 +154,14 @@ const SidebarDemo = () => {
                 return <AccordionDemo />
             case 'statCard':
                 return <StatCardDemo />
+            case 'avatarGroup':
+                return <AvatarGroupDemo />
+            case 'snackbar':
+                return <SnackbarDemo />
+            case 'tooltips':
+                return <TooltipDemo />
+            case 'modal':
+                return <ModalDemo />
             default:
                 return <div>No component selected</div>
         }
