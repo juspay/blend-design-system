@@ -1,60 +1,60 @@
-import { ThemeType } from '../tokens'
-import { TagTokensType } from '../components/Tags/tag.tokens'
-import { SearchInputTokensType } from '../components/Inputs/SearchInput/searchInput.tokens'
-import { TextAreaTokensType } from '../components/Inputs/TextArea/textarea.token'
-import { RadioTokensType } from '../components/Radio/radio.token'
-import { SwitchTokensType } from '../components/Switch/switch.token'
-import { TextInputTokensType } from '../components/Inputs/TextInput/textInput.tokens'
-import { NumberInputTokensType } from '../components/Inputs/NumberInput/numberInput.tokens'
-import { AlertTokenType } from '../components/Alert/alert.tokens'
-import { OTPInputTokensType } from '../components/Inputs/OTPInput/otpInput.tokens'
-import { TooltipTokensType } from '../components/Tooltip/tooltip.tokens'
-import { UnitInputTokensType } from '../components/Inputs/UnitInput/unitInput.tokens'
-import { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
-import { DropdownInputTokensType } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
-import { CheckboxTokensType } from '../components/Checkbox/checkbox.token'
-import { TabsTokensType } from '../components/Tabs/tabs.token'
-import { ButtonTokensType } from '../components/ButtonV2/button.tokens'
-import { ModalTokensType } from '../components/Modal/modal.tokens'
-import { BreadcrumbTokenType } from '../components/Breadcrumb/breadcrumb.tokens'
-import { PopoverTokenType } from '../components/Popover/popover.tokens'
-import { MenuTokensType } from '../components/Menu/menu.tokens'
-import { MultiSelectTokensType } from '../components/MultiSelect/multiSelect.tokens'
-import { TableTokenType } from '../components/DataTable/dataTable.tokens'
-import { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
-import { AccordionTokenType } from '../components/Accordion/accordion.tokens'
-import { StatCardTokenType } from '../components/StatCard/statcard.tokens'
+import { ThemeType } from '../tokens';
+import { TagTokensType } from '../components/Tags/tag.tokens';
+import { SearchInputTokensType } from '../components/Inputs/SearchInput/searchInput.tokens';
+import { TextAreaTokensType } from '../components/Inputs/TextArea/textarea.token';
+import { RadioTokensType } from '../components/Radio/radio.token';
+import { SwitchTokensType } from '../components/Switch/switch.token';
+import { TextInputTokensType } from '../components/Inputs/TextInput/textInput.tokens';
+import { NumberInputTokensType } from '../components/Inputs/NumberInput/numberInput.tokens';
+import { AlertTokenType } from '../components/Alert/alert.tokens';
+import { OTPInputTokensType } from '../components/Inputs/OTPInput/otpInput.tokens';
+import { TooltipTokensType } from '../components/Tooltip/tooltip.tokens';
+import { UnitInputTokensType } from '../components/Inputs/UnitInput/unitInput.tokens';
+import { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens';
+import { DropdownInputTokensType } from '../components/Inputs/DropdownInput/dropdownInput.tokens';
+import { CheckboxTokensType } from '../components/Checkbox/checkbox.token';
+import { TabsTokensType } from '../components/Tabs/tabs.token';
+import { ButtonTokensType } from '../components/ButtonV2/button.tokens';
+import { ModalTokensType } from '../components/Modal/modal.tokens';
+import { BreadcrumbTokenType } from '../components/Breadcrumb/breadcrumb.tokens';
+import { PopoverTokenType } from '../components/Popover/popover.tokens';
+import { MenuTokensType } from '../components/Menu/menu.tokens';
+import { MultiSelectTokensType } from '../components/MultiSelect/multiSelect.tokens';
+import { TableTokenType } from '../components/DataTable/dataTable.tokens';
+import { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens';
+import { AccordionTokenType } from '../components/Accordion/accordion.tokens';
+import { StatCardTokenType } from '../components/StatCard/statcard.tokens';
 export type ComponentTokenType = {
-    TAGS?: TagTokensType
-    SEARCH_INPUT?: SearchInputTokensType
-    TEXT_AREA?: TextAreaTokensType
-    RADIO?: RadioTokensType
-    SWITCH?: SwitchTokensType
-    TEXT_INPUT?: TextInputTokensType
-    NUMBER_INPUT?: NumberInputTokensType
-    ALERT?: AlertTokenType
-    OTP_INPUT?: OTPInputTokensType
-    TOOLTIP?: TooltipTokensType
-    UNIT_INPUT?: UnitInputTokensType
-    MULTI_VALUE_INPUT?: MultiValueInputTokensType
-    DROPDOWN_INPUT?: DropdownInputTokensType
-    CHECKBOX?: CheckboxTokensType
-    TABS?: TabsTokensType
-    BUTTON?: ButtonTokensType
-    MODAL?: ModalTokensType
-    BREADCRUMB?: BreadcrumbTokenType
-    POPOVER?: PopoverTokenType
-    MENU?: MenuTokensType
-    MULTI_SELECT?: MultiSelectTokensType
-    TABLE?: TableTokenType
-    CALENDAR?: CalendarTokenType
-    ACCORDION?: AccordionTokenType
-    STAT_CARD?: StatCardTokenType
-}
+    TAGS?: TagTokensType;
+    SEARCH_INPUT?: SearchInputTokensType;
+    TEXT_AREA?: TextAreaTokensType;
+    RADIO?: RadioTokensType;
+    SWITCH?: SwitchTokensType;
+    TEXT_INPUT?: TextInputTokensType;
+    NUMBER_INPUT?: NumberInputTokensType;
+    ALERT?: AlertTokenType;
+    OTP_INPUT?: OTPInputTokensType;
+    TOOLTIP?: TooltipTokensType;
+    UNIT_INPUT?: UnitInputTokensType;
+    MULTI_VALUE_INPUT?: MultiValueInputTokensType;
+    DROPDOWN_INPUT?: DropdownInputTokensType;
+    CHECKBOX?: CheckboxTokensType;
+    TABS?: TabsTokensType;
+    BUTTON?: ButtonTokensType;
+    MODAL?: ModalTokensType;
+    BREADCRUMB?: BreadcrumbTokenType;
+    POPOVER?: PopoverTokenType;
+    MENU?: MenuTokensType;
+    MULTI_SELECT?: MultiSelectTokensType;
+    TABLE?: TableTokenType;
+    CALENDAR?: CalendarTokenType;
+    ACCORDION?: AccordionTokenType;
+    STAT_CARD?: StatCardTokenType;
+};
 type ThemeContextType = {
-    foundationTokens: ThemeType
-    componentTokens: Required<ComponentTokenType>
-}
-declare const ThemeContext: import('react').Context<ThemeContextType>
-export declare const useTheme: () => ThemeContextType
-export default ThemeContext
+    foundationTokens: ThemeType;
+    componentTokens: Required<ComponentTokenType>;
+};
+declare const ThemeContext: import('react').Context<ThemeContextType>;
+export declare const useTheme: () => ThemeContextType;
+export default ThemeContext;

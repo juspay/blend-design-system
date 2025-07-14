@@ -1,2 +1,2 @@
-export { default as Menu } from './Menu'
-export * from './types'
+export { default as Menu } from './Menu';
+export * from './types';

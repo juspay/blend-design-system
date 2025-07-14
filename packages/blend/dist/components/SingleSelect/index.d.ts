@@ -1,2 +1,2 @@
-export { default as SingleSelect } from './SingleSelect'
-export * from './types'
+export { default as SingleSelect } from './SingleSelect';
+export * from './types';

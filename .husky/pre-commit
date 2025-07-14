@@ -1,0 +1,7 @@
+echo "Checking code formatting..."
+pnpm format:check
+
+echo "Running linter..."
+pnpm lint
+
+echo "Pre-commit checks passed!"

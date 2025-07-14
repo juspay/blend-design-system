@@ -1,1 +1,1 @@
-export declare const DEFAULT_COLORS: string[]
+export declare const DEFAULT_COLORS: string[];

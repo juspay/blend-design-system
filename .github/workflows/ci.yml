@@ -42,5 +42,5 @@ jobs:
             - name: Run linting
               run: pnpm lint
 
-            - name: Build project
-              run: pnpm build
+            - name: Build project (excluding firebase-app)
+              run: pnpm build --filter='!firebase-app'

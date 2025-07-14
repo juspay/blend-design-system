@@ -1,54 +1,27 @@
-import { SearchInputTokensType } from '../components/Inputs/SearchInput/searchInput.tokens'
-import { TextAreaTokensType } from '../components/Inputs/TextArea/textarea.token'
-import { TagTokensType } from '../components/Tags/tag.tokens'
-import { RadioTokensType } from '../components/Radio/radio.token'
-import { SwitchTokensType } from '../components/Switch/switch.token'
-import { CheckboxTokensType } from '../components/Checkbox/checkbox.token'
-import { TabsTokensType } from '../components/Tabs/tabs.token'
-import { ComponentTokenType } from './ThemeContext'
-import { TextInputTokensType } from '../components/Inputs/TextInput/textInput.tokens'
-import { NumberInputTokensType } from '../components/Inputs/NumberInput/numberInput.tokens'
-import { AlertTokenType } from '../components/Alert/alert.tokens'
-import { OTPInputTokensType } from '../components/Inputs/OTPInput/otpInput.tokens'
-import { TooltipTokensType } from '../components/Tooltip/tooltip.tokens'
-import { UnitInputTokensType } from '../components/Inputs/UnitInput/unitInput.tokens'
-import { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
-import { DropdownInputTokensType } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
-import { ButtonTokensType } from '../components/ButtonV2/button.tokens'
-import { ModalTokensType } from '../components/Modal/modal.tokens'
-import { BreadcrumbTokenType } from '../components/Breadcrumb/breadcrumb.tokens'
-import { PopoverTokenType } from '../components/Popover/popover.tokens'
-import { MenuTokensType } from '../components/Menu/menu.tokens'
-import { MultiSelectTokensType } from '../components/MultiSelect/multiSelect.tokens'
-import { TableTokenType } from '../components/DataTable/dataTable.tokens'
-import { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
-import { AccordionTokenType } from '../components/Accordion/accordion.tokens'
-import { StatCardTokenType } from '../components/StatCard/statcard.tokens'
-export declare const useComponentToken: (
-    component: keyof ComponentTokenType
-) =>
-    | SearchInputTokensType
-    | TagTokensType
-    | TextAreaTokensType
-    | TextInputTokensType
-    | NumberInputTokensType
-    | AlertTokenType
-    | RadioTokensType
-    | OTPInputTokensType
-    | UnitInputTokensType
-    | MultiValueInputTokensType
-    | SwitchTokensType
-    | CheckboxTokensType
-    | TabsTokensType
-    | TooltipTokensType
-    | DropdownInputTokensType
-    | ButtonTokensType
-    | ModalTokensType
-    | BreadcrumbTokenType
-    | PopoverTokenType
-    | MenuTokensType
-    | MultiSelectTokensType
-    | TableTokenType
-    | CalendarTokenType
-    | AccordionTokenType
-    | StatCardTokenType
+import { SearchInputTokensType } from '../components/Inputs/SearchInput/searchInput.tokens';
+import { TextAreaTokensType } from '../components/Inputs/TextArea/textarea.token';
+import { TagTokensType } from '../components/Tags/tag.tokens';
+import { RadioTokensType } from '../components/Radio/radio.token';
+import { SwitchTokensType } from '../components/Switch/switch.token';
+import { CheckboxTokensType } from '../components/Checkbox/checkbox.token';
+import { TabsTokensType } from '../components/Tabs/tabs.token';
+import { ComponentTokenType } from './ThemeContext';
+import { TextInputTokensType } from '../components/Inputs/TextInput/textInput.tokens';
+import { NumberInputTokensType } from '../components/Inputs/NumberInput/numberInput.tokens';
+import { AlertTokenType } from '../components/Alert/alert.tokens';
+import { OTPInputTokensType } from '../components/Inputs/OTPInput/otpInput.tokens';
+import { TooltipTokensType } from '../components/Tooltip/tooltip.tokens';
+import { UnitInputTokensType } from '../components/Inputs/UnitInput/unitInput.tokens';
+import { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens';
+import { DropdownInputTokensType } from '../components/Inputs/DropdownInput/dropdownInput.tokens';
+import { ButtonTokensType } from '../components/ButtonV2/button.tokens';
+import { ModalTokensType } from '../components/Modal/modal.tokens';
+import { BreadcrumbTokenType } from '../components/Breadcrumb/breadcrumb.tokens';
+import { PopoverTokenType } from '../components/Popover/popover.tokens';
+import { MenuTokensType } from '../components/Menu/menu.tokens';
+import { MultiSelectTokensType } from '../components/MultiSelect/multiSelect.tokens';
+import { TableTokenType } from '../components/DataTable/dataTable.tokens';
+import { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens';
+import { AccordionTokenType } from '../components/Accordion/accordion.tokens';
+import { StatCardTokenType } from '../components/StatCard/statcard.tokens';
+export declare const useComponentToken: (component: keyof ComponentTokenType) => SearchInputTokensType | TagTokensType | TextAreaTokensType | TextInputTokensType | NumberInputTokensType | AlertTokenType | RadioTokensType | OTPInputTokensType | UnitInputTokensType | MultiValueInputTokensType | SwitchTokensType | CheckboxTokensType | TabsTokensType | TooltipTokensType | DropdownInputTokensType | ButtonTokensType | ModalTokensType | BreadcrumbTokenType | PopoverTokenType | MenuTokensType | MultiSelectTokensType | TableTokenType | CalendarTokenType | AccordionTokenType | StatCardTokenType;

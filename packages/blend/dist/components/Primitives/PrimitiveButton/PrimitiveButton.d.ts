@@ -1,134 +1,131 @@
-import { default as React } from 'react'
-import { CSSObject } from 'styled-components'
+import { default as React } from 'react';
+import { CSSObject } from 'styled-components';
 type StateStyles = {
-    _hover?: PrimitiveButtonProps
-    _focus?: PrimitiveButtonProps
-    _active?: PrimitiveButtonProps
-    _disabled?: PrimitiveButtonProps
-    _visited?: PrimitiveButtonProps
-    _focusVisible?: PrimitiveButtonProps
-    _focusWithin?: PrimitiveButtonProps
-}
+    _hover?: PrimitiveButtonProps;
+    _focus?: PrimitiveButtonProps;
+    _active?: PrimitiveButtonProps;
+    _disabled?: PrimitiveButtonProps;
+    _visited?: PrimitiveButtonProps;
+    _focusVisible?: PrimitiveButtonProps;
+    _focusWithin?: PrimitiveButtonProps;
+};
 type PrimitiveButtonProps = StateStyles & {
-    padding?: CSSObject['padding']
-    paddingX?: CSSObject['padding']
-    paddingY?: CSSObject['padding']
-    margin?: CSSObject['margin']
-    marginX?: CSSObject['margin']
-    marginY?: CSSObject['margin']
-    display?: CSSObject['display']
-    justifyContent?: CSSObject['justifyContent']
-    alignItems?: CSSObject['alignItems']
-    gap?: CSSObject['gap']
-    contentCentered?: boolean
-    width?: CSSObject['width']
-    height?: CSSObject['height']
-    size?: CSSObject['width'] | CSSObject['height']
-    minWidth?: CSSObject['minWidth']
-    maxWidth?: CSSObject['maxWidth']
-    minHeight?: CSSObject['minHeight']
-    maxHeight?: CSSObject['maxHeight']
-    flexGrow?: CSSObject['flexGrow']
-    flexShrink?: CSSObject['flexShrink']
-    flexBasis?: CSSObject['flexBasis']
-    position?: CSSObject['position']
-    top?: CSSObject['top']
-    right?: CSSObject['right']
-    bottom?: CSSObject['bottom']
-    left?: CSSObject['left']
-    zIndex?: CSSObject['zIndex']
-    backgroundColor?: CSSObject['backgroundColor']
-    background?: CSSObject['background']
-    color?: CSSObject['color']
-    border?: CSSObject['border']
-    borderTop?: CSSObject['borderTop']
-    borderRight?: CSSObject['borderRight']
-    borderBottom?: CSSObject['borderBottom']
-    borderLeft?: CSSObject['borderLeft']
-    borderRadius?: CSSObject['borderRadius']
-    boxShadow?: CSSObject['boxShadow']
-    textAlign?: CSSObject['textAlign']
-    whiteSpace?: CSSObject['whiteSpace']
-    overflow?: CSSObject['overflow']
-    overflowX?: CSSObject['overflowX']
-    overflowY?: CSSObject['overflowY']
-    cursor?: CSSObject['cursor']
-    outline?: CSSObject['outline']
-    outlineOffset?: CSSObject['outlineOffset']
-    outlineStyle?: CSSObject['outlineStyle']
-    outlineWidth?: CSSObject['outlineWidth']
-    outlineColor?: CSSObject['outlineColor']
-    disabled?: boolean
-    fontWeight?: CSSObject['fontWeight']
-    fontSize?: CSSObject['fontSize']
-    fontFamily?: CSSObject['fontFamily']
-    textDecoration?: CSSObject['textDecoration']
-    textUnderlineOffset?: CSSObject['textUnderlineOffset']
-    textTransform?: CSSObject['textTransform']
-}
-export type ButtonProps = PrimitiveButtonProps &
-    Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'> & {
-        children?: React.ReactNode
-    }
-declare const PrimitiveButton: React.ForwardRefExoticComponent<
-    StateStyles & {
-        padding?: CSSObject['padding']
-        paddingX?: CSSObject['padding']
-        paddingY?: CSSObject['padding']
-        margin?: CSSObject['margin']
-        marginX?: CSSObject['margin']
-        marginY?: CSSObject['margin']
-        display?: CSSObject['display']
-        justifyContent?: CSSObject['justifyContent']
-        alignItems?: CSSObject['alignItems']
-        gap?: CSSObject['gap']
-        contentCentered?: boolean
-        width?: CSSObject['width']
-        height?: CSSObject['height']
-        size?: CSSObject['width'] | CSSObject['height']
-        minWidth?: CSSObject['minWidth']
-        maxWidth?: CSSObject['maxWidth']
-        minHeight?: CSSObject['minHeight']
-        maxHeight?: CSSObject['maxHeight']
-        flexGrow?: CSSObject['flexGrow']
-        flexShrink?: CSSObject['flexShrink']
-        flexBasis?: CSSObject['flexBasis']
-        position?: CSSObject['position']
-        top?: CSSObject['top']
-        right?: CSSObject['right']
-        bottom?: CSSObject['bottom']
-        left?: CSSObject['left']
-        zIndex?: CSSObject['zIndex']
-        backgroundColor?: CSSObject['backgroundColor']
-        background?: CSSObject['background']
-        color?: CSSObject['color']
-        border?: CSSObject['border']
-        borderTop?: CSSObject['borderTop']
-        borderRight?: CSSObject['borderRight']
-        borderBottom?: CSSObject['borderBottom']
-        borderLeft?: CSSObject['borderLeft']
-        borderRadius?: CSSObject['borderRadius']
-        boxShadow?: CSSObject['boxShadow']
-        textAlign?: CSSObject['textAlign']
-        whiteSpace?: CSSObject['whiteSpace']
-        overflow?: CSSObject['overflow']
-        overflowX?: CSSObject['overflowX']
-        overflowY?: CSSObject['overflowY']
-        cursor?: CSSObject['cursor']
-        outline?: CSSObject['outline']
-        outlineOffset?: CSSObject['outlineOffset']
-        outlineStyle?: CSSObject['outlineStyle']
-        outlineWidth?: CSSObject['outlineWidth']
-        outlineColor?: CSSObject['outlineColor']
-        disabled?: boolean
-        fontWeight?: CSSObject['fontWeight']
-        fontSize?: CSSObject['fontSize']
-        fontFamily?: CSSObject['fontFamily']
-        textDecoration?: CSSObject['textDecoration']
-        textUnderlineOffset?: CSSObject['textUnderlineOffset']
-        textTransform?: CSSObject['textTransform']
-    } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'> & {
-            children?: React.ReactNode
-        } & React.RefAttributes<HTMLButtonElement>
->
-export default PrimitiveButton
+    padding?: CSSObject['padding'];
+    paddingX?: CSSObject['padding'];
+    paddingY?: CSSObject['padding'];
+    margin?: CSSObject['margin'];
+    marginX?: CSSObject['margin'];
+    marginY?: CSSObject['margin'];
+    display?: CSSObject['display'];
+    justifyContent?: CSSObject['justifyContent'];
+    alignItems?: CSSObject['alignItems'];
+    gap?: CSSObject['gap'];
+    contentCentered?: boolean;
+    width?: CSSObject['width'];
+    height?: CSSObject['height'];
+    size?: CSSObject['width'] | CSSObject['height'];
+    minWidth?: CSSObject['minWidth'];
+    maxWidth?: CSSObject['maxWidth'];
+    minHeight?: CSSObject['minHeight'];
+    maxHeight?: CSSObject['maxHeight'];
+    flexGrow?: CSSObject['flexGrow'];
+    flexShrink?: CSSObject['flexShrink'];
+    flexBasis?: CSSObject['flexBasis'];
+    position?: CSSObject['position'];
+    top?: CSSObject['top'];
+    right?: CSSObject['right'];
+    bottom?: CSSObject['bottom'];
+    left?: CSSObject['left'];
+    zIndex?: CSSObject['zIndex'];
+    backgroundColor?: CSSObject['backgroundColor'];
+    background?: CSSObject['background'];
+    color?: CSSObject['color'];
+    border?: CSSObject['border'];
+    borderTop?: CSSObject['borderTop'];
+    borderRight?: CSSObject['borderRight'];
+    borderBottom?: CSSObject['borderBottom'];
+    borderLeft?: CSSObject['borderLeft'];
+    borderRadius?: CSSObject['borderRadius'];
+    boxShadow?: CSSObject['boxShadow'];
+    textAlign?: CSSObject['textAlign'];
+    whiteSpace?: CSSObject['whiteSpace'];
+    overflow?: CSSObject['overflow'];
+    overflowX?: CSSObject['overflowX'];
+    overflowY?: CSSObject['overflowY'];
+    cursor?: CSSObject['cursor'];
+    outline?: CSSObject['outline'];
+    outlineOffset?: CSSObject['outlineOffset'];
+    outlineStyle?: CSSObject['outlineStyle'];
+    outlineWidth?: CSSObject['outlineWidth'];
+    outlineColor?: CSSObject['outlineColor'];
+    disabled?: boolean;
+    fontWeight?: CSSObject['fontWeight'];
+    fontSize?: CSSObject['fontSize'];
+    fontFamily?: CSSObject['fontFamily'];
+    textDecoration?: CSSObject['textDecoration'];
+    textUnderlineOffset?: CSSObject['textUnderlineOffset'];
+    textTransform?: CSSObject['textTransform'];
+};
+export type ButtonProps = PrimitiveButtonProps & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'> & {
+    children?: React.ReactNode;
+};
+declare const PrimitiveButton: React.ForwardRefExoticComponent<StateStyles & {
+    padding?: CSSObject["padding"];
+    paddingX?: CSSObject["padding"];
+    paddingY?: CSSObject["padding"];
+    margin?: CSSObject["margin"];
+    marginX?: CSSObject["margin"];
+    marginY?: CSSObject["margin"];
+    display?: CSSObject["display"];
+    justifyContent?: CSSObject["justifyContent"];
+    alignItems?: CSSObject["alignItems"];
+    gap?: CSSObject["gap"];
+    contentCentered?: boolean;
+    width?: CSSObject["width"];
+    height?: CSSObject["height"];
+    size?: CSSObject["width"] | CSSObject["height"];
+    minWidth?: CSSObject["minWidth"];
+    maxWidth?: CSSObject["maxWidth"];
+    minHeight?: CSSObject["minHeight"];
+    maxHeight?: CSSObject["maxHeight"];
+    flexGrow?: CSSObject["flexGrow"];
+    flexShrink?: CSSObject["flexShrink"];
+    flexBasis?: CSSObject["flexBasis"];
+    position?: CSSObject["position"];
+    top?: CSSObject["top"];
+    right?: CSSObject["right"];
+    bottom?: CSSObject["bottom"];
+    left?: CSSObject["left"];
+    zIndex?: CSSObject["zIndex"];
+    backgroundColor?: CSSObject["backgroundColor"];
+    background?: CSSObject["background"];
+    color?: CSSObject["color"];
+    border?: CSSObject["border"];
+    borderTop?: CSSObject["borderTop"];
+    borderRight?: CSSObject["borderRight"];
+    borderBottom?: CSSObject["borderBottom"];
+    borderLeft?: CSSObject["borderLeft"];
+    borderRadius?: CSSObject["borderRadius"];
+    boxShadow?: CSSObject["boxShadow"];
+    textAlign?: CSSObject["textAlign"];
+    whiteSpace?: CSSObject["whiteSpace"];
+    overflow?: CSSObject["overflow"];
+    overflowX?: CSSObject["overflowX"];
+    overflowY?: CSSObject["overflowY"];
+    cursor?: CSSObject["cursor"];
+    outline?: CSSObject["outline"];
+    outlineOffset?: CSSObject["outlineOffset"];
+    outlineStyle?: CSSObject["outlineStyle"];
+    outlineWidth?: CSSObject["outlineWidth"];
+    outlineColor?: CSSObject["outlineColor"];
+    disabled?: boolean;
+    fontWeight?: CSSObject["fontWeight"];
+    fontSize?: CSSObject["fontSize"];
+    fontFamily?: CSSObject["fontFamily"];
+    textDecoration?: CSSObject["textDecoration"];
+    textUnderlineOffset?: CSSObject["textUnderlineOffset"];
+    textTransform?: CSSObject["textTransform"];
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "color"> & {
+    children?: React.ReactNode;
+} & React.RefAttributes<HTMLButtonElement>>;
+export default PrimitiveButton;

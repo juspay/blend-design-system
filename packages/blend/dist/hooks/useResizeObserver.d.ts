@@ -1,4 +1,1 @@
-export declare function useResizeObserver(
-    targetRef: React.RefObject<HTMLElement>,
-    callback: (rect: DOMRectReadOnly) => void
-): void
+export declare function useResizeObserver(targetRef: React.RefObject<HTMLElement>, callback: (rect: DOMRectReadOnly) => void): void;
