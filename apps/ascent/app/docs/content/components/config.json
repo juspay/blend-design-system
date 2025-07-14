@@ -1,0 +1,30 @@
+{
+    "order": [
+        "button",
+        "button-group",
+        "alert",
+        "tag",
+        "split-tag",
+        "tabs",
+        "breadcrumb",
+        "avatar",
+        "avatar-group",
+        "modal",
+        "tooltip",
+        "accordion",
+        "snackbar",
+        "popover",
+        "checkbox",
+        "radio",
+        "switch",
+        "inputs",
+        "single-select",
+        "multi-select",
+        "menu",
+        "sidebar",
+        "data-table",
+        "charts",
+        "date-range-picker",
+        "stat-card"
+    ]
+}

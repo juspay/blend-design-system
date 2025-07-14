@@ -1,0 +1,377 @@
+---
+title: Modal
+description: The Modal component creates overlay dialogs that focus user attention on specific content or actions, with backdrop blur, animations, and various configuration options.
+category: components
+tags:
+    - modal
+    - component
+    - dialog
+---
+
+<ModalPreview />
+
+## Usage
+
+```tsx
+import { Modal, ButtonTypeV2 } from 'blend-v1'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [isOpen, setIsOpen] = useState(false)
+
+    return (
+        <>
+            <button onClick={() => setIsOpen(true)}>Open Modal</button>
+
+            <Modal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Modal Title"
+                subtitle="Optional subtitle for the modal"
+                primaryAction={{
+                    text: 'Save',
+                    buttonType: ButtonTypeV2.PRIMARY,
+                    onClick: () => {
+                        console.log('Primary action clicked')
+                        setIsOpen(false)
+                    },
+                }}
+                secondaryAction={{
+                    text: 'Cancel',
+                    buttonType: ButtonTypeV2.SECONDARY,
+                    onClick: () => setIsOpen(false),
+                }}
+            >
+                <div>Modal content goes here</div>
+            </Modal>
+        </>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'isOpen',
+                hintText: 'Controls whether the modal is visible',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'onClose',
+                hintText:
+                    'Callback function called when the modal should close',
+            },
+            { content: '() => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'title',
+                hintText: 'The title displayed in the modal header',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subtitle',
+                hintText: 'Optional subtitle displayed below the title',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'The content to display in the modal body',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'primaryAction',
+                hintText: 'Primary action button configuration',
+            },
+            { content: 'ModalButtonAction', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'secondaryAction',
+                hintText: 'Secondary action button configuration',
+            },
+            { content: 'ModalButtonAction', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'className',
+                hintText: 'Additional CSS classes for the modal',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showCloseButton',
+                hintText: 'Whether to show the close button in header',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'closeOnBackdropClick',
+                hintText: 'Whether clicking backdrop closes modal',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'headerRightSlot',
+                hintText: 'Custom content to display in header right area',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showDivider',
+                hintText: 'Whether to show dividers between sections',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## ModalButtonAction Type
+
+The `primaryAction` and `secondaryAction` props accept a `ModalButtonAction` object with the following properties:
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'text', hintText: 'The text displayed on the button' },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'buttonType',
+                hintText: 'The visual type of the button',
+            },
+            { content: 'ButtonTypeV2', hintText: 'enum' },
+            { content: 'ButtonTypeV2.PRIMARY' },
+        ],
+        [
+            { content: 'size', hintText: 'The size of the button' },
+            { content: 'ButtonSizeV2', hintText: 'enum' },
+            { content: 'ButtonSizeV2.MEDIUM' },
+        ],
+        [
+            {
+                content: 'subType',
+                hintText: 'The subtype affecting button styling',
+            },
+            { content: 'ButtonSubTypeV2', hintText: 'enum' },
+            { content: 'ButtonSubTypeV2.DEFAULT' },
+        ],
+        [
+            {
+                content: 'onClick',
+                hintText: 'Callback function when button is clicked',
+            },
+            { content: '() => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            { content: 'disabled', hintText: 'Whether the button is disabled' },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'loading',
+                hintText: 'Whether the button shows loading state',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'leadingIcon',
+                hintText: 'Icon to display before button text',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'trailingIcon',
+                hintText: 'Icon to display after button text',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- Overlay backdrop with blur effect
+- Responsive design with max-width and max-height constraints
+- Scrollable content area
+- Optional header with title and subtitle
+- Optional footer with action buttons
+- Close button in header (configurable)
+- Backdrop click to close (configurable)
+- Custom header right slot
+- Divider lines between sections (configurable)
+- Automatic scroll lock when modal is open
+- Keyboard accessibility support
+
+## Usage Examples
+
+### Basic Modal
+
+Simple modal with title and content
+
+```tsx
+<Modal
+    isOpen={isOpen}
+    onClose={() => setIsOpen(false)}
+    title="Basic Modal"
+    subtitle="Optional subtitle"
+>
+    <div>Your content here</div>
+</Modal>
+```
+
+### Modal with Actions
+
+Modal with primary and secondary action buttons
+
+```tsx
+<Modal
+    isOpen={isOpen}
+    onClose={() => setIsOpen(false)}
+    title="Confirm Action"
+    primaryAction={{
+        text: 'Save',
+        buttonType: ButtonTypeV2.PRIMARY,
+        onClick: handleSave,
+    }}
+    secondaryAction={{
+        text: 'Cancel',
+        buttonType: ButtonTypeV2.SECONDARY,
+        onClick: () => setIsOpen(false),
+    }}
+>
+    <div>Are you sure you want to save?</div>
+</Modal>
+```
+
+### Modal with Loading Action
+
+Modal with a loading primary action
+
+```tsx
+<Modal
+    isOpen={isOpen}
+    onClose={() => setIsOpen(false)}
+    title="Processing"
+    primaryAction={{
+        text: 'Processing...',
+        buttonType: ButtonTypeV2.PRIMARY,
+        loading: true,
+        onClick: handleProcess,
+    }}
+>
+    <div>Please wait while we process your request.</div>
+</Modal>
+```
+
+### Custom Modal
+
+Modal with custom configuration
+
+```tsx
+<Modal
+    isOpen={isOpen}
+    onClose={() => setIsOpen(false)}
+    showCloseButton={false}
+    closeOnBackdropClick={false}
+    showDivider={false}
+>
+    <div className="text-center">
+        <h3>Custom Modal</h3>
+        <p>This modal has custom behavior</p>
+        <button onClick={() => setIsOpen(false)}>Close</button>
+    </div>
+</Modal>
+```
+
+## Component Tokens
+
+You can style the modal component using the following tokens:
+
+```tsx
+export type ModalTokensType = {
+    shadow: CSSObject['boxShadow']
+    zIndex: CSSObject['zIndex']
+    borderRadius: CSSObject['borderRadius']
+    headerContainer: {
+        padding: CSSObject['padding']
+        borderBottom: CSSObject['borderBottom']
+        borderTop: CSSObject['borderTop']
+        borderLeft: CSSObject['borderLeft']
+        borderRight: CSSObject['borderRight']
+        borderRadius: CSSObject['borderRadius']
+        backgroundColor: CSSObject['backgroundColor']
+        header: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+        }
+        subtitle: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+        }
+    }
+    bodyContainer: {
+        padding: CSSObject['padding']
+        borderBottom: CSSObject['borderBottom']
+        borderTop: CSSObject['borderTop']
+        borderLeft: CSSObject['borderLeft']
+        borderRight: CSSObject['borderRight']
+        borderRadius: CSSObject['borderRadius']
+        backgroundColor: CSSObject['backgroundColor']
+    }
+    footerContainer: {
+        padding: CSSObject['padding']
+        borderBottom: CSSObject['borderBottom']
+        borderTop: CSSObject['borderTop']
+        borderLeft: CSSObject['borderLeft']
+        borderRight: CSSObject['borderRight']
+        borderRadius: CSSObject['borderRadius']
+        backgroundColor: CSSObject['backgroundColor']
+        alignItems: CSSObject['alignItems']
+        gap: CSSObject['gap']
+    }
+}
+```

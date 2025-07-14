@@ -1,0 +1,401 @@
+---
+title: Tabs
+description: The Tabs component provides a way to organize content into multiple sections that can be switched between, with support for different styles and configurations.
+category: components
+tags:
+    - tabs
+    - component
+    - navigation
+RepoFolderName: Tabs
+StorybookLink: components-tabs--docs
+---
+
+<TabsPreview />
+
+## Usage
+
+```tsx
+import {
+    Tabs,
+    TabsList,
+    TabsTrigger,
+    TabsContent,
+    TabsVariant,
+    TabsSize,
+} from 'blend-v1'
+
+function MyComponent() {
+    return (
+        <Tabs defaultValue="tab1">
+            <TabsList variant={TabsVariant.UNDERLINE} size={TabsSize.MD}>
+                <TabsTrigger value="tab1">Account</TabsTrigger>
+                <TabsTrigger value="tab2">Password</TabsTrigger>
+                <TabsTrigger value="tab3">Settings</TabsTrigger>
+            </TabsList>
+            <TabsContent value="tab1">Account content goes here</TabsContent>
+            <TabsContent value="tab2">Password content goes here</TabsContent>
+            <TabsContent value="tab3">Settings content goes here</TabsContent>
+        </Tabs>
+    )
+}
+```
+
+## API Reference
+
+### Tabs Props
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'defaultValue',
+                hintText: 'The default selected tab value',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText: 'The currently selected tab value (controlled)',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onValueChange',
+                hintText: 'Callback when tab selection changes',
+            },
+            { content: '(value: string) => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText: 'The visual style variant of the tabs',
+            },
+            { content: 'TabsVariant', hintText: 'enum' },
+            { content: 'TabsVariant.UNDERLINE' },
+        ],
+        [
+            { content: 'size', hintText: 'The size of the tabs' },
+            { content: 'TabsSize', hintText: 'enum' },
+            { content: 'TabsSize.MD' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### TabsList Props
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'variant',
+                hintText: 'The visual style variant of the tabs list',
+            },
+            { content: 'TabsVariant', hintText: 'enum' },
+            { content: 'TabsVariant.UNDERLINE' },
+        ],
+        [
+            { content: 'size', hintText: 'The size of the tabs list' },
+            { content: 'TabsSize', hintText: 'enum' },
+            { content: 'TabsSize.MD' },
+        ],
+        [
+            {
+                content: 'expanded',
+                hintText: 'Whether tabs should expand to fill available width',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'fitContent',
+                hintText: 'Whether tabs should fit their content width',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### TabsTrigger Props
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'The unique value for this tab trigger',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText: 'The visual style variant of the tab trigger',
+            },
+            { content: 'TabsVariant', hintText: 'enum' },
+            { content: 'TabsVariant.UNDERLINE' },
+        ],
+        [
+            { content: 'size', hintText: 'The size of the tab trigger' },
+            { content: 'TabsSize', hintText: 'enum' },
+            { content: 'TabsSize.MD' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText: 'Icon or element to display before the tab text',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText: 'Icon or element to display after the tab text',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'The text content of the tab trigger',
+            },
+            { content: 'string | number', hintText: 'string or number' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### TabsContent Props
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText:
+                    'The value that matches the corresponding TabsTrigger',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'The content to display when this tab is active',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- Multiple visual variants (underline, boxed, floating)
+- Two sizes (medium, large)
+- Support for icons in tab triggers
+- Expandable tabs to fill container width
+- Fit-content option for compact layouts
+- Controlled and uncontrolled modes
+- Accessible keyboard navigation
+- Smooth transitions and hover states
+
+## Usage Examples
+
+### Basic Tabs
+
+Simple tabs with underline variant
+
+```tsx
+<Tabs defaultValue="account">
+    <TabsList>
+        <TabsTrigger value="account">Account</TabsTrigger>
+        <TabsTrigger value="password">Password</TabsTrigger>
+        <TabsTrigger value="settings">Settings</TabsTrigger>
+    </TabsList>
+    <TabsContent value="account">Account content</TabsContent>
+    <TabsContent value="password">Password content</TabsContent>
+    <TabsContent value="settings">Settings content</TabsContent>
+</Tabs>
+```
+
+### Boxed Tabs
+
+Tabs with boxed variant for a more prominent appearance
+
+```tsx
+<Tabs defaultValue="overview">
+    <TabsList variant={TabsVariant.BOXED}>
+        <TabsTrigger value="overview">Overview</TabsTrigger>
+        <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <TabsTrigger value="reports">Reports</TabsTrigger>
+    </TabsList>
+    <TabsContent value="overview">Overview content</TabsContent>
+    <TabsContent value="analytics">Analytics content</TabsContent>
+    <TabsContent value="reports">Reports content</TabsContent>
+</Tabs>
+```
+
+### Tabs with Icons
+
+Tabs with leading and trailing icons
+
+```tsx
+<Tabs defaultValue="dashboard">
+    <TabsList variant={TabsVariant.FLOATING}>
+        <TabsTrigger value="dashboard" leftSlot={<DashboardIcon />}>
+            Dashboard
+        </TabsTrigger>
+        <TabsTrigger
+            value="users"
+            leftSlot={<UsersIcon />}
+            rightSlot={<Badge>3</Badge>}
+        >
+            Users
+        </TabsTrigger>
+        <TabsTrigger value="settings" leftSlot={<SettingsIcon />}>
+            Settings
+        </TabsTrigger>
+    </TabsList>
+    <TabsContent value="dashboard">Dashboard content</TabsContent>
+    <TabsContent value="users">Users content</TabsContent>
+    <TabsContent value="settings">Settings content</TabsContent>
+</Tabs>
+```
+
+### Large Tabs
+
+Tabs with large size for better touch targets
+
+```tsx
+<Tabs defaultValue="profile">
+    <TabsList size={TabsSize.LG}>
+        <TabsTrigger value="profile">Profile</TabsTrigger>
+        <TabsTrigger value="security">Security</TabsTrigger>
+        <TabsTrigger value="notifications">Notifications</TabsTrigger>
+    </TabsList>
+    <TabsContent value="profile">Profile content</TabsContent>
+    <TabsContent value="security">Security content</TabsContent>
+    <TabsContent value="notifications">Notifications content</TabsContent>
+</Tabs>
+```
+
+### Expanded Tabs
+
+Tabs that expand to fill the container width
+
+```tsx
+<Tabs defaultValue="tab1">
+    <TabsList expanded={true}>
+        <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+        <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+        <TabsTrigger value="tab3">Tab 3</TabsTrigger>
+    </TabsList>
+    <TabsContent value="tab1">Content 1</TabsContent>
+    <TabsContent value="tab2">Content 2</TabsContent>
+    <TabsContent value="tab3">Content 3</TabsContent>
+</Tabs>
+```
+
+### Controlled Tabs
+
+Tabs with controlled state management
+
+```tsx
+const [activeTab, setActiveTab] = useState('tab1')
+
+;<Tabs value={activeTab} onValueChange={setActiveTab}>
+    <TabsList>
+        <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+        <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+    </TabsList>
+    <TabsContent value="tab1">Content 1</TabsContent>
+    <TabsContent value="tab2">Content 2</TabsContent>
+</Tabs>
+```
+
+## Component Tokens
+
+You can style the tabs component using the following tokens:
+
+```tsx
+export type TabsState = 'default' | 'hover' | 'active' | 'disabled'
+
+export type TabsTokensType = {
+    gap: {
+        [key in TabsVariant]: CSSObject['gap']
+    }
+
+    list: {
+        padding: {
+            [key in TabsVariant]: CSSObject['padding']
+        }
+        backgroundColor: {
+            [key in TabsVariant]: CSSObject['backgroundColor']
+        }
+        borderRadius: {
+            [key in TabsVariant]: CSSObject['borderRadius']
+        }
+        borderBottom: {
+            [key in TabsVariant]: CSSObject['borderBottom']
+        }
+    }
+
+    trigger: {
+        height: {
+            [key in TabsSize]: CSSObject['height']
+        }
+        padding: {
+            [key in TabsSize]: CSSObject['padding']
+        }
+        fontSize: {
+            [key in TabsSize]: CSSObject['fontSize']
+        }
+        iconGap: CSSObject['gap']
+        fontWeight: {
+            [key in TabsVariant]: {
+                [key in TabsState]?: CSSObject['fontWeight']
+            }
+        }
+        color: {
+            [key in TabsVariant]: {
+                [key in TabsState]?: CSSObject['color']
+            }
+        }
+        backgroundColor: {
+            [key in TabsVariant]: {
+                [key in TabsState]?: CSSObject['backgroundColor']
+            }
+        }
+        borderRadius: {
+            [key in TabsVariant]: CSSObject['borderRadius']
+        }
+    }
+
+    underline: {
+        height: CSSObject['height']
+        color: CSSObject['color']
+    }
+}
+```
