@@ -14,7 +14,7 @@ export enum MultiValueInputState {
 }
 
 export type MultiValueInputProps = {
-    label: string
+    label?: string
     sublabel?: string
     helpIconHintText?: string
     error?: boolean

@@ -16,7 +16,7 @@ export enum DropdownInputState {
 }
 
 export type DropdownInputProps = {
-    label: string
+    label?: string
     sublabel?: string
     helpIconHintText?: string
     error?: boolean

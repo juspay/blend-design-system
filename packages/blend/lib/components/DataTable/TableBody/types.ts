@@ -11,6 +11,8 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     enableInlineEdit?: boolean
     enableColumnManager?: boolean
     enableRowExpansion?: boolean
+    enableRowSelection?: boolean
+    columnFreeze?: number
     renderExpandedRow?: (expandedData: {
         row: T
         index: number
@@ -29,4 +31,6 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
         column: ColumnDefinition<T>,
         index: number
     ) => React.CSSProperties
+    getRowStyle?: (row: T, index: number) => React.CSSProperties
+    getDisplayValue?: (value: unknown, column: ColumnDefinition<T>) => unknown
 }

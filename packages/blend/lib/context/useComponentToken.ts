@@ -1,9 +1,9 @@
 import { SearchInputTokensType } from '../components/Inputs/SearchInput/searchInput.tokens'
 import { TextAreaTokensType } from '../components/Inputs/TextArea/textarea.token'
 import { TagTokensType } from '../components/Tags/tag.tokens'
-import { RadioTokensType } from '../components/Radio/radio.token'
-import { SwitchTokensType } from '../components/Switch/switch.token'
-import { CheckboxTokensType } from '../components/Checkbox/checkbox.token'
+import { ResponsiveRadioTokens } from '../components/Radio/radio.token'
+import { ResponsiveSwitchTokens } from '../components/Switch/switch.token'
+import { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import { TabsTokensType } from '../components/Tabs/tabs.token'
 import { ComponentTokenType, useTheme } from './ThemeContext'
 import { TextInputTokensType } from '../components/Inputs/TextInput/textInput.tokens'
@@ -14,7 +14,7 @@ import { TooltipTokensType } from '../components/Tooltip/tooltip.tokens'
 import { UnitInputTokensType } from '../components/Inputs/UnitInput/unitInput.tokens'
 import { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import { DropdownInputTokensType } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
-import { ButtonTokensType } from '../components/ButtonV2/button.tokens'
+import { ResponsiveButtonTokens } from '../components/ButtonV2/button.tokens'
 import { ModalTokensType } from '../components/Modal/modal.tokens'
 import { BreadcrumbTokenType } from '../components/Breadcrumb/breadcrumb.tokens'
 import { PopoverTokenType } from '../components/Popover/popover.tokens'
@@ -34,16 +34,16 @@ export const useComponentToken = (
     | TextInputTokensType
     | NumberInputTokensType
     | AlertTokenType
-    | RadioTokensType
+    | ResponsiveRadioTokens
     | OTPInputTokensType
     | UnitInputTokensType
     | MultiValueInputTokensType
-    | SwitchTokensType
-    | CheckboxTokensType
+    | ResponsiveSwitchTokens
+    | ResponsiveCheckboxTokens
     | TabsTokensType
     | TooltipTokensType
     | DropdownInputTokensType
-    | ButtonTokensType
+    | ResponsiveButtonTokens
     | ModalTokensType
     | BreadcrumbTokenType
     | PopoverTokenType

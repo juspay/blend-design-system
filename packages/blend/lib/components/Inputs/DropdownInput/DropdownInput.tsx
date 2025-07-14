@@ -140,7 +140,7 @@ const DropdownInput = ({
                     paddingBottom={paddingY}
                     placeholder={placeholder}
                     borderRadius={dropdownInputTokens.input.borderRadius}
-                    boxShadow={dropdownInputTokens.input.boxShadow}
+                    boxShadow={dropdownInputTokens.input.boxShadow.default}
                     border={
                         error
                             ? dropdownInputTokens.input.border.error
@@ -149,7 +149,9 @@ const DropdownInput = ({
                     outline="none"
                     width={'100%'}
                     _hover={{
-                        border: dropdownInputTokens.input.border.hover,
+                        border: dropdownInputTokens.input.border[
+                            error ? 'error' : 'hover'
+                        ],
                     }}
                     color={
                         disabled
@@ -157,7 +159,13 @@ const DropdownInput = ({
                             : dropdownInputTokens.input.color.default
                     }
                     _focus={{
-                        border: dropdownInputTokens.input.border.focus,
+                        border: dropdownInputTokens.input.border[
+                            error ? 'error' : 'focus'
+                        ],
+                        boxShadow:
+                            dropdownInputTokens.input.boxShadow[
+                                error ? 'error' : 'focus'
+                            ],
                         outline: 'none !important',
                     }}
                     disabled={disabled}

@@ -107,6 +107,7 @@ const Text = ({
                 fontWeight={fontWeight}
                 color={color ?? 'inherit'}
                 style={style}
+                {...rest}
             >
                 {children}
             </PrimitiveText>

@@ -120,7 +120,7 @@ const ModalFooter = ({
                     }
                     text={secondaryAction.text}
                     onClick={secondaryAction.onClick}
-                    disabled={secondaryAction.disabled}
+                    isDisabled={secondaryAction.isDisabled}
                     subType={secondaryAction.subType}
                     size={secondaryAction.size}
                     leadingIcon={secondaryAction.leadingIcon}
@@ -135,7 +135,7 @@ const ModalFooter = ({
                     }
                     text={primaryAction.text}
                     onClick={primaryAction.onClick}
-                    disabled={primaryAction.disabled}
+                    isDisabled={primaryAction.isDisabled}
                     subType={primaryAction.subType}
                     size={primaryAction.size}
                     leadingIcon={primaryAction.leadingIcon}

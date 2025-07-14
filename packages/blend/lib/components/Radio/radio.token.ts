@@ -1,6 +1,7 @@
 import { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME, ThemeType } from '../../tokens'
 import { RadioSize } from './types'
+import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type RadioState = 'default' | 'hover' | 'disabled' | 'error'
 export type RadioIndicatorState = 'active' | 'inactive'
@@ -71,108 +72,215 @@ export type RadioTokensType = Readonly<{
     }
 }>
 
-export const getRadioTokens = (foundationToken: ThemeType): RadioTokensType => {
+export type ResponsiveRadioTokens = {
+    [key in keyof BreakpointType]: RadioTokensType
+}
+
+export const getRadioTokens = (
+    foundationToken: ThemeType
+): ResponsiveRadioTokens => {
     return {
-        gap: foundationToken.unit[4],
-        slotGap: foundationToken.unit[8],
-        groupGap: foundationToken.unit[12],
-        indicator: {
-            inactive: {
-                background: {
-                    default: foundationToken.colors.gray[0],
-                    hover: foundationToken.colors.gray[0],
-                    disabled: foundationToken.colors.gray[50],
-                },
-                border: {
-                    default: foundationToken.colors.gray[300],
-                    hover: foundationToken.colors.primary[600],
-                    disabled: foundationToken.colors.gray[200],
-                },
-            },
-            active: {
-                background: {
-                    default: foundationToken.colors.gray[0],
-                    hover: foundationToken.colors.gray[0],
-                    disabled: foundationToken.colors.gray[50],
-                },
-                border: {
-                    default: foundationToken.colors.primary[600],
-                    hover: foundationToken.colors.primary[700],
-                    disabled: foundationToken.colors.gray[200],
-                },
-            },
-        },
-        activeIndicator: {
-            active: {
-                background: {
-                    default: foundationToken.colors.primary[600],
-                    disabled: foundationToken.colors.gray[200],
-                },
-            },
-        },
-        content: {
-            label: {
-                color: {
-                    default: foundationToken.colors.gray[900],
-                    hover: foundationToken.colors.gray[900],
-                    disabled: foundationToken.colors.gray[400],
-                    error: foundationToken.colors.red[600],
-                },
-                font: {
-                    sm: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
+        sm: {
+            gap: foundationToken.unit[4],
+            slotGap: foundationToken.unit[8],
+            groupGap: foundationToken.unit[12],
+            indicator: {
+                inactive: {
+                    background: {
+                        default: foundationToken.colors.gray[0],
+                        hover: foundationToken.colors.gray[0],
+                        disabled: foundationToken.colors.gray[50],
                     },
-                    md: {
-                        fontSize: foundationToken.font.size.body.md.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
+                    border: {
+                        default: foundationToken.colors.gray[300],
+                        hover: foundationToken.colors.primary[600],
+                        disabled: foundationToken.colors.gray[200],
+                    },
+                },
+                active: {
+                    background: {
+                        default: foundationToken.colors.gray[0],
+                        hover: foundationToken.colors.gray[0],
+                        disabled: foundationToken.colors.gray[50],
+                    },
+                    border: {
+                        default: foundationToken.colors.primary[600],
+                        hover: foundationToken.colors.primary[700],
+                        disabled: foundationToken.colors.gray[200],
                     },
                 },
             },
-            sublabel: {
-                color: {
-                    default: foundationToken.colors.gray[400],
-                    hover: foundationToken.colors.gray[400],
-                    disabled: foundationToken.colors.gray[200],
-                    error: foundationToken.colors.gray[400],
-                },
-                font: {
-                    sm: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[400],
-                    },
-                    md: {
-                        fontSize: foundationToken.font.size.body.md.fontSize,
-                        fontWeight: foundationToken.font.weight[400],
+            activeIndicator: {
+                active: {
+                    background: {
+                        default: foundationToken.colors.primary[600],
+                        disabled: foundationToken.colors.gray[200],
                     },
                 },
             },
-        },
-        height: {
-            sm: foundationToken.unit[16],
-            md: foundationToken.unit[20],
-        },
-        borderWidth: {
-            inactive: {
-                default: 1,
-                hover: 1,
-                disabled: 1,
+            content: {
+                label: {
+                    color: {
+                        default: foundationToken.colors.gray[900],
+                        hover: foundationToken.colors.gray[900],
+                        disabled: foundationToken.colors.gray[400],
+                        error: foundationToken.colors.red[600],
+                    },
+                    font: {
+                        sm: {
+                            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                            fontWeight: foundationToken.font.weight[500],
+                        },
+                        md: {
+                            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                            fontWeight: foundationToken.font.weight[500],
+                        },
+                    },
+                },
+                sublabel: {
+                    color: {
+                        default: foundationToken.colors.gray[400],
+                        hover: foundationToken.colors.gray[400],
+                        disabled: foundationToken.colors.gray[200],
+                        error: foundationToken.colors.gray[400],
+                    },
+                    font: {
+                        sm: {
+                            fontSize: `${foundationToken.font.size.body.sm.fontSize}px`,
+                            fontWeight: foundationToken.font.weight[400],
+                        },
+                        md: {
+                            fontSize: `${foundationToken.font.size.body.sm.fontSize}px`,
+                            fontWeight: foundationToken.font.weight[400],
+                        },
+                    },
+                },
             },
-            active: {
-                default: 2,
-                hover: 2,
-                disabled: 1,
+            height: {
+                sm: foundationToken.unit[16],
+                md: foundationToken.unit[20],
+            },
+            borderWidth: {
+                inactive: {
+                    default: 1,
+                    hover: 1,
+                    disabled: 1,
+                },
+                active: {
+                    default: 2,
+                    hover: 2,
+                    disabled: 1,
+                },
+            },
+            slot: {
+                size: {
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[12],
+                },
             },
         },
-        slot: {
-            size: {
-                sm: foundationToken.unit[12],
-                md: foundationToken.unit[12],
+        lg: {
+            gap: foundationToken.unit[4],
+            slotGap: foundationToken.unit[8],
+            groupGap: foundationToken.unit[12],
+            indicator: {
+                inactive: {
+                    background: {
+                        default: foundationToken.colors.gray[0],
+                        hover: foundationToken.colors.gray[0],
+                        disabled: foundationToken.colors.gray[50],
+                    },
+                    border: {
+                        default: foundationToken.colors.gray[300],
+                        hover: foundationToken.colors.primary[600],
+                        disabled: foundationToken.colors.gray[200],
+                    },
+                },
+                active: {
+                    background: {
+                        default: foundationToken.colors.gray[0],
+                        hover: foundationToken.colors.gray[0],
+                        disabled: foundationToken.colors.gray[50],
+                    },
+                    border: {
+                        default: foundationToken.colors.primary[600],
+                        hover: foundationToken.colors.primary[700],
+                        disabled: foundationToken.colors.gray[200],
+                    },
+                },
+            },
+            activeIndicator: {
+                active: {
+                    background: {
+                        default: foundationToken.colors.primary[600],
+                        disabled: foundationToken.colors.gray[200],
+                    },
+                },
+            },
+            content: {
+                label: {
+                    color: {
+                        default: foundationToken.colors.gray[900],
+                        hover: foundationToken.colors.gray[900],
+                        disabled: foundationToken.colors.gray[400],
+                        error: foundationToken.colors.red[600],
+                    },
+                    font: {
+                        sm: {
+                            fontSize: `${foundationToken.font.size.body.sm.fontSize}px`,
+                            fontWeight: foundationToken.font.weight[500],
+                        },
+                        md: {
+                            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                            fontWeight: foundationToken.font.weight[500],
+                        },
+                    },
+                },
+                sublabel: {
+                    color: {
+                        default: foundationToken.colors.gray[400],
+                        hover: foundationToken.colors.gray[400],
+                        disabled: foundationToken.colors.gray[200],
+                        error: foundationToken.colors.gray[400],
+                    },
+                    font: {
+                        sm: {
+                            fontSize: `${foundationToken.font.size.body.sm.fontSize}px`,
+                            fontWeight: foundationToken.font.weight[400],
+                        },
+                        md: {
+                            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                            fontWeight: foundationToken.font.weight[400],
+                        },
+                    },
+                },
+            },
+            height: {
+                sm: foundationToken.unit[14],
+                md: foundationToken.unit[16],
+            },
+            borderWidth: {
+                inactive: {
+                    default: 1,
+                    hover: 1,
+                    disabled: 1,
+                },
+                active: {
+                    default: 2,
+                    hover: 2,
+                    disabled: 1,
+                },
+            },
+            slot: {
+                size: {
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[12],
+                },
             },
         },
     }
 }
 
-const radioTokens: RadioTokensType = getRadioTokens(FOUNDATION_THEME)
+const radioTokens: ResponsiveRadioTokens = getRadioTokens(FOUNDATION_THEME)
 
 export default radioTokens

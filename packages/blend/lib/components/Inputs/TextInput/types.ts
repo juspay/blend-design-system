@@ -12,7 +12,7 @@ export enum TextInputState {
 }
 
 export type TextInputProps = {
-    label: string
+    label?: string
     sublabel?: string
     hintText?: string
     helpIconHintText?: string
