@@ -11,7 +11,7 @@ import {
 } from '../Select'
 import Text from '../Text/Text'
 import SingleSelectMenu from './SingleSelectMenu'
-import { dummyMenuItems } from '../../../src/demos/Menu/MenuDemo'
+// import { dummyMenuItems } from '../../../src/demos/Menu/MenuDemo'
 import { FOUNDATION_THEME } from '../../tokens'
 import selectTokens from '../Select/select.token'
 import { ChevronDown } from 'lucide-react'
@@ -46,7 +46,7 @@ const SingleSelect = ({
     helpIconText,
     placeholder,
     size = SelectMenuSize.MEDIUM,
-    items = dummyMenuItems,
+    items = [],
     name,
     variant = SelectMenuVariant.CONTAINER,
     disabled,
