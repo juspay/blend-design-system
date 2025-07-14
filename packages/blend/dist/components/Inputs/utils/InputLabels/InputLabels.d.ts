@@ -1,5 +1,5 @@
 type InputLabelsProps = {
-    label: string;
+    label?: string;
     sublabel?: string;
     disabled?: boolean;
     helpIconHintText?: string;
@@ -14,5 +14,5 @@ type InputLabelsProps = {
  * @param {string} helpIconHintText - The hint text for the help icon.
  * @param {boolean} required - Whether the input field is required.
  */
-declare const InputLabels: ({ label, sublabel, disabled, helpIconHintText, name, required, }: InputLabelsProps) => import("react/jsx-runtime").JSX.Element;
+declare const InputLabels: ({ label, sublabel, disabled, helpIconHintText, name, required, }: InputLabelsProps) => "" | import("react/jsx-runtime").JSX.Element | undefined;
 export default InputLabels;

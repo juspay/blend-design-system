@@ -7,6 +7,8 @@ export type ShadowTokensType = Readonly<{
     xl: CSSObject['boxShadow'];
     '2xl': CSSObject['boxShadow'];
     full: CSSObject['boxShadow'];
+    focusPrimary: CSSObject['boxShadow'];
+    focusError: CSSObject['boxShadow'];
     [key: string]: CSSObject['boxShadow'];
 }>;
 declare const shadowTokens: ShadowTokensType;

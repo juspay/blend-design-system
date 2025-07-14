@@ -6,7 +6,9 @@ export type TextAreaTokensType = {
     paddingX: CSSObject['padding'];
     paddingY: CSSObject['padding'];
     borderRadius: CSSObject['borderRadius'];
-    boxShadow: CSSObject['boxShadow'];
+    boxShadow: {
+        [key in TextAreaState]: CSSObject['boxShadow'];
+    };
     outline: {
         [key in TextAreaState]: CSSObject['outline'];
     };

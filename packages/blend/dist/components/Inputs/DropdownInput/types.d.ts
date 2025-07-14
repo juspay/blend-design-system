@@ -12,7 +12,7 @@ export declare enum DropdownInputState {
     DISABLED = "disabled"
 }
 export type DropdownInputProps = {
-    label: string;
+    label?: string;
     sublabel?: string;
     helpIconHintText?: string;
     error?: boolean;

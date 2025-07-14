@@ -21,15 +21,17 @@ This is a monorepo built with [Turborepo](https://turbo.build/repo) and [pnpm](h
 
 ### 🚀 Apps
 
-- **`apps/docs`** - Documentation site built with Next.js and Fumadocs
+- **`apps/ascent`** - Documentation site built with Next.js
     - Component documentation and usage examples
-    - Deployable to Firebase hosting
     - MDX-based content with interactive examples
+    - Built-in search functionality
+    - Deployed to Firebase hosting
 
 - **`apps/storybook`** - Component development and testing environment
     - Interactive component playground
     - Visual testing and documentation
     - Component stories for all design system components
+    - Accessible at `/storybook` path in production
 
 - **`apps/site`** - Demo site showcasing the design system
     - Live examples of all components
@@ -59,11 +61,13 @@ pnpm install
 ```bash
 # Development
 pnpm dev                    # Start all development servers
-pnpm docs:dev              # Start documentation site only
+pnpm ascent:dev            # Start documentation site only
 
 # Building
 pnpm build                 # Build all packages and apps
-pnpm docs:build           # Build documentation site only
+pnpm build:ascent          # Build documentation site only
+pnpm build:storybook       # Build Storybook only
+pnpm build:all             # Build both Ascent and Storybook
 
 # Storybook
 pnpm storybook            # Start Storybook development server
@@ -75,9 +79,8 @@ pnpm lint                 # Run linting across all packages
 pnpm clean                # Clean all build artifacts
 
 # Deployment
-pnpm deploy:staging       # Deploy to staging environment
-pnpm deploy:production    # Deploy to production environment
-pnpm deploy:setup         # Setup Firebase hosting targets
+pnpm deploy:dev           # Deploy to staging environment
+pnpm deploy:prod          # Deploy to production environment
 
 # Package Management
 pnpm changeset            # Create a new changeset
@@ -87,8 +90,8 @@ pnpm release              # Build and publish packages
 
 ## 📚 Documentation
 
-- **Component Documentation**: Visit the docs app for comprehensive component documentation
-- **Storybook**: Interactive component playground and testing environment
+- **Component Documentation**: Visit [https://juspay.design](https://juspay.design) for comprehensive component documentation
+- **Storybook**: Interactive component playground at [https://juspay.design/storybook](https://juspay.design/storybook)
 - **Demo Site**: Live examples of all components in action
 
 ## 🎨 Design System Features

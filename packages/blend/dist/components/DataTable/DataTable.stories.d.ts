@@ -13,3 +13,4 @@ export declare const WithCustomHeaderSlots: Story;
 export declare const ServerSideOperations: Story;
 export declare const LoadingState: Story;
 export declare const EmptyState: Story;
+export declare const WithRowStyling: Story;

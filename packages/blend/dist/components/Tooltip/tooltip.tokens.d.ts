@@ -1,6 +1,5 @@
 import { CSSObject } from 'styled-components';
 import { TooltipSize } from './types';
-import { VariantType } from '../Text/Text';
 import { FoundationTokenType } from '../../tokens/theme.token';
 export type TooltipTokensType = {
     background: CSSObject['backgroundColor'];
@@ -18,7 +17,10 @@ export type TooltipTokensType = {
         [key in TooltipSize]: CSSObject['padding'];
     };
     fontSize: {
-        [key in TooltipSize]: VariantType;
+        [key in TooltipSize]: CSSObject['fontSize'];
+    };
+    lineHeight: {
+        [key in TooltipSize]: CSSObject['lineHeight'];
     };
     gap: {
         [key in TooltipSize]: CSSObject['gap'];

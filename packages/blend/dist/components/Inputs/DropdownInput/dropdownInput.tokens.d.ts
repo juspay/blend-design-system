@@ -5,7 +5,9 @@ export type DropdownInputTokensType = {
     input: {
         gap: CSSObject['gap'];
         borderRadius?: CSSObject['borderRadius'];
-        boxShadow: CSSObject['boxShadow'];
+        boxShadow: {
+            [key in DropdownInputState]: CSSObject['boxShadow'];
+        };
         paddingX: {
             [key in DropdownInputSize]: CSSObject['padding'];
         };

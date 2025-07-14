@@ -15,7 +15,7 @@ const SearchProvider: React.FC = () => {
         const fetchSearchIndex = async () => {
             try {
                 setIsLoading(true)
-                const response = await fetch('/api/search')
+                const response = await fetch('/search-index.json')
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch search index')

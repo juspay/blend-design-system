@@ -10,6 +10,41 @@ import { BugIcon } from 'lucide-react'
 import { generateBreadcrumbItems } from '../utils/generateBreadcrumbs'
 import { Metadata } from 'next'
 
+// Generate static params for all MDX files
+export async function generateStaticParams() {
+    const contentDir = path.join(process.cwd(), 'app', 'docs', 'content')
+    const paths: { slug: string[] }[] = []
+
+    const scanDirectory = (dir: string, basePath: string[] = []) => {
+        const entries = fs.readdirSync(dir, { withFileTypes: true })
+
+        for (const entry of entries) {
+            const fullPath = path.join(dir, entry.name)
+
+            if (entry.isDirectory()) {
+                // Recursively scan subdirectories
+                scanDirectory(fullPath, [...basePath, entry.name])
+            } else if (entry.name.endsWith('.mdx')) {
+                if (entry.name === 'page.mdx') {
+                    // For page.mdx files, use the directory path
+                    paths.push({ slug: basePath })
+                } else {
+                    // For other MDX files, add the filename without extension
+                    const fileName = entry.name.replace('.mdx', '')
+                    paths.push({ slug: [...basePath, fileName] })
+                }
+            }
+        }
+    }
+
+    scanDirectory(contentDir)
+
+    // Also add the root path for getting-started.mdx
+    paths.push({ slug: ['getting-started'] })
+
+    return paths
+}
+
 // Generate metadata for the page
 export async function generateMetadata({
     params,
