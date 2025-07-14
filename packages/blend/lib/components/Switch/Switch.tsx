@@ -11,8 +11,9 @@ import {
 import { StyledSwitchRoot, StyledSwitchThumb } from './StyledSwitch'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { useComponentToken } from '../../context/useComponentToken'
 import { SwitchTokensType } from './switch.token'
+
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const Switch = ({
     id,
@@ -29,7 +30,8 @@ export const Switch = ({
     name,
     value,
 }: SwitchProps) => {
-    const tokens = useComponentToken('SWITCH') as SwitchTokensType
+    const tokens = useResponsiveTokens<SwitchTokensType>('SWITCH')
+
     const generatedId = React.useId()
     const uniqueId = id || generatedId
 

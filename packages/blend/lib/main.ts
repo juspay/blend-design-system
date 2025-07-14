@@ -25,6 +25,7 @@ export * from './components/DataTable'
 export * from './components/Sidebar'
 export * from './components/MultiSelect'
 export * from './components/SingleSelect'
+export * from './components/Slider'
 
 // V2 Components with Theme Support
 export * from './components/ButtonGroupV2'

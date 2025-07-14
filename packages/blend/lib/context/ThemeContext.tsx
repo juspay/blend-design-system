@@ -11,11 +11,11 @@ import {
     TextAreaTokensType,
 } from '../components/Inputs/TextArea/textarea.token'
 import {
-    RadioTokensType,
+    ResponsiveRadioTokens,
     getRadioTokens,
 } from '../components/Radio/radio.token'
 import {
-    SwitchTokensType,
+    ResponsiveSwitchTokens,
     getSwitchTokens,
 } from '../components/Switch/switch.token'
 import {
@@ -51,12 +51,12 @@ import {
     getDropdownInputTokens,
 } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import {
-    CheckboxTokensType,
     getCheckboxTokens,
+    ResponsiveCheckboxTokens,
 } from '../components/Checkbox/checkbox.token'
 import { TabsTokensType, getTabsTokens } from '../components/Tabs/tabs.token' // Added TABS
 import {
-    ButtonTokensType,
+    ResponsiveButtonTokens,
     getButtonTokens,
 } from '../components/ButtonV2/button.tokens'
 import {
@@ -92,13 +92,14 @@ import {
     getStatCardToken,
     StatCardTokenType,
 } from '../components/StatCard/statcard.tokens'
+import { BREAKPOINTS, BreakpointType } from '../breakpoints/breakPoints'
 
 export type ComponentTokenType = {
     TAGS?: TagTokensType
     SEARCH_INPUT?: SearchInputTokensType
     TEXT_AREA?: TextAreaTokensType
-    RADIO?: RadioTokensType
-    SWITCH?: SwitchTokensType
+    RADIO?: ResponsiveRadioTokens
+    SWITCH?: ResponsiveSwitchTokens
     TEXT_INPUT?: TextInputTokensType
     NUMBER_INPUT?: NumberInputTokensType
     ALERT?: AlertTokenType
@@ -107,9 +108,9 @@ export type ComponentTokenType = {
     UNIT_INPUT?: UnitInputTokensType
     MULTI_VALUE_INPUT?: MultiValueInputTokensType
     DROPDOWN_INPUT?: DropdownInputTokensType
-    CHECKBOX?: CheckboxTokensType
+    CHECKBOX?: ResponsiveCheckboxTokens
     TABS?: TabsTokensType
-    BUTTON?: ButtonTokensType
+    BUTTON?: ResponsiveButtonTokens
     MODAL?: ModalTokensType
     BREADCRUMB?: BreadcrumbTokenType
     POPOVER?: PopoverTokenType
@@ -124,6 +125,7 @@ export type ComponentTokenType = {
 type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>
+    breakpoints: BreakpointType
 }
 
 const ThemeContext = createContext<ThemeContextType>({
@@ -155,6 +157,7 @@ const ThemeContext = createContext<ThemeContextType>({
         ACCORDION: getAccordionToken(FOUNDATION_THEME),
         STAT_CARD: getStatCardToken(FOUNDATION_THEME),
     },
+    breakpoints: BREAKPOINTS,
 })
 
 export const useTheme = () => {

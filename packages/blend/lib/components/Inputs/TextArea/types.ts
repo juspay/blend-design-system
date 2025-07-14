@@ -10,7 +10,7 @@ export type TextAreaProps = {
     onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void
     rows?: number
     cols?: number
-    label: string
+    label?: string
     sublabel?: string
     hintText?: string
     helpIconHintText?: string

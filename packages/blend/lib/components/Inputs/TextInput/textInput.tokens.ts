@@ -7,7 +7,9 @@ export type TextInputTokensType = {
     input: {
         gap: CSSObject['gap']
         borderRadius?: CSSObject['borderRadius']
-        boxShadow: CSSObject['boxShadow']
+        boxShadow: {
+            [key in TextInputState]: CSSObject['boxShadow']
+        }
         paddingX: {
             [key in TextInputSize]: CSSObject['padding']
         }
@@ -33,7 +35,13 @@ const textInputTokens: Readonly<TextInputTokensType> = {
     input: {
         gap: FOUNDATION_THEME.unit[8],
         borderRadius: FOUNDATION_THEME.unit[10],
-        boxShadow: FOUNDATION_THEME.shadows.sm,
+        boxShadow: {
+            default: FOUNDATION_THEME.shadows.sm,
+            hover: FOUNDATION_THEME.shadows.sm,
+            focus: FOUNDATION_THEME.shadows.focusPrimary,
+            error: FOUNDATION_THEME.shadows.focusError,
+            disabled: FOUNDATION_THEME.shadows.sm,
+        },
         paddingX: {
             md: FOUNDATION_THEME.unit[12],
             lg: FOUNDATION_THEME.unit[14],
@@ -116,7 +124,13 @@ export const getTextInputTokens = (
                 focus: foundationTheme.colors.gray[0],
                 error: foundationTheme.colors.gray[0],
             },
-            boxShadow: foundationTheme.shadows.sm,
+            boxShadow: {
+                default: FOUNDATION_THEME.shadows.sm,
+                hover: FOUNDATION_THEME.shadows.sm,
+                focus: FOUNDATION_THEME.shadows.focusPrimary,
+                error: FOUNDATION_THEME.shadows.focusError,
+                disabled: FOUNDATION_THEME.shadows.sm,
+            },
         },
     }
 }

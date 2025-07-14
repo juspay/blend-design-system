@@ -15,7 +15,9 @@ export type UnitInputTokensType = {
     input: {
         gap: CSSObject['gap']
         borderRadius?: CSSObject['borderRadius']
-        boxShadow: CSSObject['boxShadow']
+        boxShadow: {
+            [key in UnitInputState]: CSSObject['boxShadow']
+        }
         paddingX: {
             [key in UnitInputSize]: CSSObject['padding']
         }
@@ -41,7 +43,13 @@ const unitInputTokens: UnitInputTokensType = {
     input: {
         gap: FOUNDATION_THEME.unit[4],
         borderRadius: FOUNDATION_THEME.border.radius[10],
-        boxShadow: FOUNDATION_THEME.shadows.sm,
+        boxShadow: {
+            default: FOUNDATION_THEME.shadows.sm,
+            hover: FOUNDATION_THEME.shadows.sm,
+            focus: FOUNDATION_THEME.shadows.focusPrimary,
+            error: FOUNDATION_THEME.shadows.focusError,
+            disabled: FOUNDATION_THEME.shadows.sm,
+        },
         paddingX: {
             md: FOUNDATION_THEME.unit[12],
             lg: FOUNDATION_THEME.unit[14],
@@ -88,7 +96,13 @@ export const getUnitInputTokens = (
         input: {
             gap: foundationTheme.unit[4],
             borderRadius: foundationTheme.border.radius[10],
-            boxShadow: foundationTheme.shadows.sm,
+            boxShadow: {
+                default: foundationTheme.shadows.sm,
+                hover: foundationTheme.shadows.sm,
+                focus: foundationTheme.shadows.focusPrimary,
+                error: foundationTheme.shadows.focusError,
+                disabled: foundationTheme.shadows.sm,
+            },
             paddingX: {
                 md: foundationTheme.unit[12],
                 lg: foundationTheme.unit[14],

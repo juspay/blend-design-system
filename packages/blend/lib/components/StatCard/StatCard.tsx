@@ -136,7 +136,9 @@ const StatCard = ({
                     color={statCardToken.chart.tooltip.text.color}
                     variant="body.sm"
                 >
-                    {`${percentage >= 0 ? '+' : ''}${percentage.toFixed(0)}% ${isUp ? 'Up' : 'Down'}`}
+                    {`${percentage >= 0 ? '+' : ''}${percentage.toFixed(0)}% ${
+                        isUp ? 'Up' : 'Down'
+                    }`}
                 </Text>
             </Block>
         )
@@ -160,7 +162,8 @@ const StatCard = ({
             padding={statCardToken.padding}
             display="flex"
             flexDirection="column"
-            gap={statCardToken.gap}
+            // gap={statCardToken.gap}
+            justifyContent="space-between"
             data-statcard-variant={normalizedVariant}
         >
             {effectiveVariant !== StatCardVariant.NUMBER && (
@@ -262,7 +265,7 @@ const StatCard = ({
                             >
                                 <Text
                                     as="span"
-                                    variant="heading.xl"
+                                    variant="heading.lg"
                                     fontWeight={
                                         statCardToken.stats.value[
                                             effectiveVariant
@@ -332,6 +335,7 @@ const StatCard = ({
                     height="100%"
                     alignItems="center"
                     justifyContent="center"
+                    gap={statCardToken.headerStatGap.gap}
                 >
                     <Block
                         display="flex"

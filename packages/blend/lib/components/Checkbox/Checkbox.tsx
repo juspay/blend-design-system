@@ -14,8 +14,8 @@ import {
 import { StyledCheckboxRoot, StyledCheckboxIndicator } from './StyledCheckbox'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { useComponentToken } from '../../context/useComponentToken'
 import { CheckboxTokensType } from './checkbox.token'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
     (
@@ -35,7 +35,8 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         },
         ref
     ) => {
-        const tokens = useComponentToken('CHECKBOX') as CheckboxTokensType
+        const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
+
         const generatedId = React.useId()
         const uniqueId = id || generatedId
 

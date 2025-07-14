@@ -5,8 +5,8 @@ import {
     CheckboxCheckedState,
     CheckboxInteractionState,
 } from './types'
-import { useComponentToken } from '../../context/useComponentToken' // Or '../../context/ThemeContext'
 import { CheckboxTokensType } from './checkbox.token'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const getInteractionState = (
     isDisabled: boolean,
@@ -29,13 +29,14 @@ export const StyledCheckboxRoot = styled(CheckboxPrimitive.Root)<{
     box-sizing: border-box;
 
     ${({ size, $isDisabled, $checked, $error }) => {
-        const tokens = useComponentToken('CHECKBOX') as CheckboxTokensType
+        const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
         const currentCheckedState: CheckboxCheckedState =
             $checked === 'indeterminate'
                 ? 'indeterminate'
                 : $checked
                   ? 'checked'
                   : 'unchecked'
+
         const currentInteractionState = getInteractionState($isDisabled, $error)
 
         return css`
@@ -96,8 +97,7 @@ export const StyledCheckboxIndicator = styled(CheckboxPrimitive.Indicator)<{
     height: 100%;
 
     ${() => {
-        // Removed 'theme' as it's not used and useComponentToken is used instead
-        const tokens = useComponentToken('CHECKBOX') as CheckboxTokensType
+        const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
         return css`
             &[data-state='checked'],
             &[data-state='indeterminate'] {

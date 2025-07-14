@@ -12,7 +12,8 @@ import { StyledRadioInput } from './StyledRadio'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { RadioTokensType } from './radio.token'
-import { useComponentToken } from '../../context/useComponentToken'
+
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const Radio = ({
     id,
@@ -29,7 +30,8 @@ export const Radio = ({
     slot,
     name,
 }: RadioProps) => {
-    const radioTokens = useComponentToken('RADIO') as RadioTokensType
+    const radioTokens = useResponsiveTokens<RadioTokensType>('RADIO')
+
     const generatedId = React.useId()
     const uniqueId = id || generatedId
 

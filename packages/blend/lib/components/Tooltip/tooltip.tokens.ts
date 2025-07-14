@@ -1,7 +1,6 @@
 import { FOUNDATION_THEME } from '../../tokens'
 import { CSSObject } from 'styled-components'
 import { TooltipSize } from './types'
-import { VariantType } from '../Text/Text'
 import { FoundationTokenType } from '../../tokens/theme.token'
 
 export type TooltipTokensType = {
@@ -20,7 +19,10 @@ export type TooltipTokensType = {
         [key in TooltipSize]: CSSObject['padding']
     }
     fontSize: {
-        [key in TooltipSize]: VariantType
+        [key in TooltipSize]: CSSObject['fontSize']
+    }
+    lineHeight: {
+        [key in TooltipSize]: CSSObject['lineHeight']
     }
     gap: {
         [key in TooltipSize]: CSSObject['gap']
@@ -47,8 +49,12 @@ const tooltipTokens: TooltipTokensType = {
         lg: `${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`,
     },
     fontSize: {
-        sm: 'body.xs',
-        lg: 'body.sm',
+        sm: `${FOUNDATION_THEME.font.size.body.xs.fontSize}px`,
+        lg: `${FOUNDATION_THEME.font.size.body.sm.fontSize}px`,
+    },
+    lineHeight: {
+        sm: `${FOUNDATION_THEME.font.size.body.xs.lineHeight}px`,
+        lg: `${FOUNDATION_THEME.font.size.body.sm.lineHeight}px`,
     },
     gap: {
         sm: FOUNDATION_THEME.unit[4],
@@ -79,8 +85,12 @@ export const getTooltipTokens = (
             lg: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
         },
         fontSize: {
-            sm: 'body.xs',
-            lg: 'body.sm',
+            sm: `${foundationToken.font.size.body.xs.fontSize}px`,
+            lg: `${foundationToken.font.size.body.sm.fontSize}px`,
+        },
+        lineHeight: {
+            sm: `${foundationToken.font.size.body.xs.lineHeight}px`,
+            lg: `${foundationToken.font.size.body.sm.lineHeight}px`,
         },
         gap: {
             sm: foundationToken.unit[4],

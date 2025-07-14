@@ -7,11 +7,7 @@ export * from './TableFooter/types'
 export * from './DataTableHeader/types'
 export type { TableTokenType } from './dataTable.tokens'
 
-export {
-    ColumnType,
-    validateColumnData,
-    getColumnTypeConfig,
-} from './columnTypes'
+export { validateColumnData, getColumnTypeConfig } from './columnTypes'
 
 export type {
     ColumnFilterOption,

@@ -80,7 +80,7 @@ const MultiValueInput = ({
                 paddingX={paddingX}
                 paddingY={paddingY}
                 onClick={handleContainerClick}
-                boxShadow={multiValueInputTokens.input.boxShadow}
+                boxShadow={multiValueInputTokens.input.boxShadow.default}
                 border={
                     error
                         ? multiValueInputTokens.input.border.error
@@ -89,7 +89,22 @@ const MultiValueInput = ({
                           : multiValueInputTokens.input.border.default
                 }
                 _hover={{
-                    border: multiValueInputTokens.input.border.hover,
+                    border: multiValueInputTokens.input.border[
+                        error ? 'error' : 'hover'
+                    ],
+                    boxShadow:
+                        multiValueInputTokens.input.boxShadow[
+                            error ? 'error' : 'hover'
+                        ],
+                }}
+                _focus={{
+                    border: multiValueInputTokens.input.border[
+                        error ? 'error' : 'focus'
+                    ],
+                    boxShadow:
+                        multiValueInputTokens.input.boxShadow[
+                            error ? 'error' : 'focus'
+                        ],
                 }}
             >
                 {tags?.map((tag) => (

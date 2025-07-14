@@ -11,15 +11,16 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import Radio from './Radio'
 import { RadioTokensType } from './radio.token'
-import { useComponentToken } from '../../context/useComponentToken'
 import { RadioSize } from './types'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
     (
         { children, label, name, value, defaultValue, onChange, disabled },
         ref
     ) => {
-        const radioTokens = useComponentToken('RADIO') as RadioTokensType
+        const radioTokens = useResponsiveTokens<RadioTokensType>('RADIO')
+
         const handleGroupChange = createGroupChangeHandler(onChange)
 
         const enhancedChildren = React.Children.map(children, (child) => {
