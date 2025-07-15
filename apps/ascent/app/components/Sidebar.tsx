@@ -18,8 +18,6 @@ const SidebarItem = ({
     item: DocItem
     level?: number
 }) => {
-    const paddingLeft = (level - 1) * 16
-
     if (item.children && item.children.length > 0) {
         return (
             <div key={item.slug} className="py-6">

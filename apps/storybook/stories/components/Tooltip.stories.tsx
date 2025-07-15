@@ -16,10 +16,7 @@ import {
     AlertTriangle,
     CheckCircle,
     Settings,
-    Zap,
     Shield,
-    Heart,
-    Trophy,
 } from 'lucide-react'
 
 const meta: Meta<typeof Tooltip> = {
@@ -500,66 +497,71 @@ export const WithSlots: Story = {
 // Controlled tooltip
 export const ControlledTooltip: Story = {
     render: () => {
-        const [isOpen, setIsOpen] = useState(false)
-        const [manualOpen, setManualOpen] = useState(false)
+        const ControlledTooltipComponent = () => {
+            const [isOpen, setIsOpen] = useState(false)
+            const [manualOpen, setManualOpen] = useState(false)
 
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    gap: '24px',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                }}
-            >
+            return (
                 <div
                     style={{
                         display: 'flex',
                         gap: '24px',
                         alignItems: 'center',
+                        flexDirection: 'column',
                     }}
                 >
-                    <Tooltip
-                        content="This tooltip is controlled by hover state"
-                        open={isOpen}
-                        showArrow={true}
-                        size={TooltipSize.LARGE}
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '24px',
+                            alignItems: 'center',
+                        }}
                     >
-                        <Button
-                            buttonType={ButtonType.PRIMARY}
-                            text="Hover Controlled"
-                            onMouseEnter={() => setIsOpen(true)}
-                            onMouseLeave={() => setIsOpen(false)}
-                        />
-                    </Tooltip>
+                        <Tooltip
+                            content="This tooltip is controlled by hover state"
+                            open={isOpen}
+                            showArrow={true}
+                            size={TooltipSize.LARGE}
+                        >
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                text="Hover Controlled"
+                                onMouseEnter={() => setIsOpen(true)}
+                                onMouseLeave={() => setIsOpen(false)}
+                            />
+                        </Tooltip>
 
-                    <Tooltip
-                        content="This tooltip is controlled by click state"
-                        open={manualOpen}
-                        showArrow={true}
-                        size={TooltipSize.LARGE}
-                        side={TooltipSide.RIGHT}
+                        <Tooltip
+                            content="This tooltip is controlled by click state"
+                            open={manualOpen}
+                            showArrow={true}
+                            size={TooltipSize.LARGE}
+                            side={TooltipSide.RIGHT}
+                        >
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                text="Click Controlled"
+                                onClick={() => setManualOpen(!manualOpen)}
+                            />
+                        </Tooltip>
+                    </div>
+
+                    <div
+                        style={{
+                            fontSize: '14px',
+                            color: '#666',
+                            textAlign: 'center',
+                        }}
                     >
-                        <Button
-                            buttonType={ButtonType.SECONDARY}
-                            text="Click Controlled"
-                            onClick={() => setManualOpen(!manualOpen)}
-                        />
-                    </Tooltip>
+                        <div>Hover tooltip: {isOpen ? 'Open' : 'Closed'}</div>
+                        <div>
+                            Click tooltip: {manualOpen ? 'Open' : 'Closed'}
+                        </div>
+                    </div>
                 </div>
-
-                <div
-                    style={{
-                        fontSize: '14px',
-                        color: '#666',
-                        textAlign: 'center',
-                    }}
-                >
-                    <div>Hover tooltip: {isOpen ? 'Open' : 'Closed'}</div>
-                    <div>Click tooltip: {manualOpen ? 'Open' : 'Closed'}</div>
-                </div>
-            </div>
-        )
+            )
+        }
+        return <ControlledTooltipComponent />
     },
     parameters: {
         docs: {

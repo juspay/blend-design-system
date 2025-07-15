@@ -1,5 +1,5 @@
 'use client'
-import { Alert, AlertVariant, AlertStyle, AlertActionPlacement } from 'blend-v1'
+import { Alert, AlertVariant, AlertStyle } from 'blend-v1'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
 

@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import ComponentPreview from './ComponentPreview'
 
 const PopoverPreview = () => {
-    const [open, setOpen] = useState(false)
+    const [, setOpen] = useState(false)
 
     const tsCode = `import { Popover, PopoverSize, ButtonTypeV2, ButtonSizeV2 } from "blend-v1";
 

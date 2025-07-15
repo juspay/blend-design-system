@@ -502,82 +502,87 @@ export const WithIcons: Story = {
 // Interactive Tags
 export const Interactive: Story = {
     render: () => {
-        const [selectedTags, setSelectedTags] = React.useState<string[]>([
-            'React',
-        ])
+        const InteractiveComponent = () => {
+            const [selectedTags, setSelectedTags] = React.useState<string[]>([
+                'React',
+            ])
 
-        const tags = [
-            'React',
-            'TypeScript',
-            'JavaScript',
-            'CSS',
-            'HTML',
-            'Node.js',
-        ]
+            const tags = [
+                'React',
+                'TypeScript',
+                'JavaScript',
+                'CSS',
+                'HTML',
+                'Node.js',
+            ]
 
-        const toggleTag = (tag: string) => {
-            setSelectedTags((prev) =>
-                prev.includes(tag)
-                    ? prev.filter((t) => t !== tag)
-                    : [...prev, tag]
-            )
-        }
+            const toggleTag = (tag: string) => {
+                setSelectedTags((prev) =>
+                    prev.includes(tag)
+                        ? prev.filter((t) => t !== tag)
+                        : [...prev, tag]
+                )
+            }
 
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
-                <div>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#666',
-                        }}
-                    >
-                        Click to Select Tags
-                    </h3>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '8px',
-                            flexWrap: 'wrap',
-                        }}
-                    >
-                        {tags.map((tag) => (
-                            <Tag
-                                key={tag}
-                                text={tag}
-                                variant={
-                                    selectedTags.includes(tag)
-                                        ? TagVariant.ATTENTIVE
-                                        : TagVariant.NO_FILL
-                                }
-                                color={
-                                    selectedTags.includes(tag)
-                                        ? TagColor.PRIMARY
-                                        : TagColor.NEUTRAL
-                                }
-                                leftSlot={
-                                    selectedTags.includes(tag) ? (
-                                        <Check size={12} />
-                                    ) : null
-                                }
-                                onClick={() => toggleTag(tag)}
-                            />
-                        ))}
+            return (
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                    }}
+                >
+                    <div>
+                        <h3
+                            style={{
+                                marginBottom: '12px',
+                                fontSize: '14px',
+                                color: '#666',
+                            }}
+                        >
+                            Click to Select Tags
+                        </h3>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '8px',
+                                flexWrap: 'wrap',
+                            }}
+                        >
+                            {tags.map((tag) => (
+                                <Tag
+                                    key={tag}
+                                    text={tag}
+                                    variant={
+                                        selectedTags.includes(tag)
+                                            ? TagVariant.ATTENTIVE
+                                            : TagVariant.NO_FILL
+                                    }
+                                    color={
+                                        selectedTags.includes(tag)
+                                            ? TagColor.PRIMARY
+                                            : TagColor.NEUTRAL
+                                    }
+                                    leftSlot={
+                                        selectedTags.includes(tag) ? (
+                                            <Check size={12} />
+                                        ) : null
+                                    }
+                                    onClick={() => toggleTag(tag)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#666' }}>
+                        Selected:{' '}
+                        {selectedTags.length > 0
+                            ? selectedTags.join(', ')
+                            : 'None'}
                     </div>
                 </div>
-                <div style={{ fontSize: '12px', color: '#666' }}>
-                    Selected:{' '}
-                    {selectedTags.length > 0 ? selectedTags.join(', ') : 'None'}
-                </div>
-            </div>
-        )
+            )
+        }
+        return <InteractiveComponent />
     },
     parameters: {
         docs: {

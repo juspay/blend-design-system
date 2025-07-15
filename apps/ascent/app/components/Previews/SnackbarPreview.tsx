@@ -1,11 +1,9 @@
 'use client'
 import { Snackbar, addSnackbar, SnackbarVariant } from 'blend-v1'
-import React, { useState } from 'react'
+import React from 'react'
 import ComponentPreview from './ComponentPreview'
 
 const SnackbarPreview = () => {
-    const [isToasterVisible, setIsToasterVisible] = useState(false)
-
     const tsCode = `import { Snackbar, addSnackbar, SnackbarVariant } from "blend-v1";
 
 function MyComponent() {

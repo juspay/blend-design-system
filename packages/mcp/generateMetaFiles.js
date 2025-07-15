@@ -199,11 +199,6 @@ function generateMetaFileContent(componentName, { props, enums, types }) {
     const capitalizedName =
         componentName.charAt(0).toUpperCase() + componentName.slice(1)
 
-    // Generate type definitions
-    const typeDefinitions = [...enums, ...types]
-        .map((item) => item.definition)
-        .join('\n\n')
-
     // Generate props array
     const propsArray = props
         .map((prop) => {

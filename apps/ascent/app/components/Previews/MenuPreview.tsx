@@ -9,15 +9,7 @@ import {
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
 import { ButtonV2, ButtonTypeV2 } from 'blend-v1'
-import {
-    Settings,
-    User,
-    LogOut,
-    ChevronDown,
-    Download,
-    Edit,
-    Trash,
-} from 'lucide-react'
+import { Settings, User, LogOut, ChevronDown } from 'lucide-react'
 
 const MenuPreview = () => {
     const tsCode = `import { Menu, MenuAlignment, MenuSide, MenuItemV2Variant, MenuItemV2ActionType } from "blend-v1";

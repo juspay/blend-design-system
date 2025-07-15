@@ -1,4 +1,4 @@
-const functions = require('@google-cloud/functions-framework')
+import functions from '@google-cloud/functions-framework'
 
 functions.http('ping', (req, res) => {
     // Set CORS headers

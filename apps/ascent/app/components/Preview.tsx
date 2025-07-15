@@ -1,6 +1,5 @@
 'use client'
 import React from 'react'
-import { ButtonV2 } from 'blend-v1'
 
 const Preview = ({ children }: { children: React.ReactNode }) => {
     return (

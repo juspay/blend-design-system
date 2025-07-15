@@ -44,62 +44,22 @@ import {
     Globe,
     Palette,
     User,
-    Calendar,
     Clock,
-    MapPin,
-    Building,
     Briefcase,
-    GraduationCap,
-    Heart,
-    Star,
     Flag,
     Zap,
-    Coffee,
-    Music,
     Camera,
-    Gamepad2,
-    Book,
-    Plane,
-    Car,
-    Home,
-    ShoppingBag,
-    CreditCard,
     DollarSign,
     TrendingUp,
     BarChart3,
-    PieChart,
     FileText,
-    Mail,
     Phone,
-    MessageSquare,
     Video,
-    Mic,
-    Headphones,
-    Wifi,
-    Bluetooth,
-    Battery,
     Settings,
     Shield,
-    Lock,
-    Key,
     Eye,
-    EyeOff,
-    Search,
-    Filter,
-    Download,
-    Upload,
-    Share2,
-    Copy,
-    Trash2,
-    Edit,
-    Save,
-    Plus,
-    Minus,
-    X,
     Check,
     AlertCircle,
-    Info,
-    HelpCircle,
 } from 'lucide-react'
 
 const meta: Meta<typeof SingleSelect> = {
@@ -423,233 +383,257 @@ export const Default: Story = {
         variant: 'container' as any,
     },
     render: (args) => {
-        const [selected, setSelected] = useState(args.selected)
+        const DefaultComponent = () => {
+            const [selected, setSelected] = useState(args.selected)
 
-        // Update local state when args change
-        React.useEffect(() => {
-            setSelected(args.selected)
-        }, [args.selected])
+            // Update local state when args change
+            React.useEffect(() => {
+                setSelected(args.selected)
+            }, [args.selected])
 
-        return (
-            <div style={{ width: '320px' }}>
-                <SingleSelect
-                    {...args}
-                    selected={selected}
-                    onSelect={setSelected}
-                />
-            </div>
-        )
+            return (
+                <div style={{ width: '320px' }}>
+                    <SingleSelect
+                        {...args}
+                        selected={selected}
+                        onSelect={setSelected}
+                    />
+                </div>
+            )
+        }
+        return <DefaultComponent />
     },
 }
 
 // With search
 export const WithSearch: Story = {
     render: () => {
-        const [selected, setSelected] = useState('')
+        const WithSearchComponent = () => {
+            const [selected, setSelected] = useState('')
 
-        return (
-            <div style={{ width: '320px' }}>
-                <SingleSelect
-                    label="Select Country"
-                    placeholder="Search and select a country"
-                    items={countryItems}
-                    selected={selected}
-                    onSelect={setSelected}
-                    enableSearch
-                    helpIconText="Start typing to filter countries"
-                />
-            </div>
-        )
+            return (
+                <div style={{ width: '320px' }}>
+                    <SingleSelect
+                        label="Select Country"
+                        placeholder="Search and select a country"
+                        items={countryItems}
+                        selected={selected}
+                        onSelect={setSelected}
+                        enableSearch
+                        helpIconText="Start typing to filter countries"
+                    />
+                </div>
+            )
+        }
+        return <WithSearchComponent />
     },
 }
 
 // Different sizes
 export const Sizes: Story = {
     render: () => {
-        const [selectedSmall, setSelectedSmall] = useState('')
-        const [selectedMedium, setSelectedMedium] = useState('')
-        const [selectedLarge, setSelectedLarge] = useState('')
+        const SizesComponent = () => {
+            const [selectedSmall, setSelectedSmall] = useState('')
+            const [selectedMedium, setSelectedMedium] = useState('')
+            const [selectedLarge, setSelectedLarge] = useState('')
 
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '320px',
-                }}
-            >
-                <SingleSelect
-                    label="Small Size"
-                    placeholder="Choose an option"
-                    items={departmentItems}
-                    selected={selectedSmall}
-                    onSelect={setSelectedSmall}
-                    size={'sm' as any}
-                />
-                <SingleSelect
-                    label="Medium Size (Default)"
-                    placeholder="Choose an option"
-                    items={departmentItems}
-                    selected={selectedMedium}
-                    onSelect={setSelectedMedium}
-                    size={'md' as any}
-                />
-                <SingleSelect
-                    label="Large Size"
-                    placeholder="Choose an option"
-                    items={departmentItems}
-                    selected={selectedLarge}
-                    onSelect={setSelectedLarge}
-                    size={'lg' as any}
-                />
-            </div>
-        )
+            return (
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '24px',
+                        width: '320px',
+                    }}
+                >
+                    <SingleSelect
+                        label="Small Size"
+                        placeholder="Choose an option"
+                        items={departmentItems}
+                        selected={selectedSmall}
+                        onSelect={setSelectedSmall}
+                        size={'sm' as any}
+                    />
+                    <SingleSelect
+                        label="Medium Size (Default)"
+                        placeholder="Choose an option"
+                        items={departmentItems}
+                        selected={selectedMedium}
+                        onSelect={setSelectedMedium}
+                        size={'md' as any}
+                    />
+                    <SingleSelect
+                        label="Large Size"
+                        placeholder="Choose an option"
+                        items={departmentItems}
+                        selected={selectedLarge}
+                        onSelect={setSelectedLarge}
+                        size={'lg' as any}
+                    />
+                </div>
+            )
+        }
+        return <SizesComponent />
     },
 }
 
 // No container variant
 export const NoContainer: Story = {
     render: () => {
-        const [selected, setSelected] = useState('')
+        const NoContainerComponent = () => {
+            const [selected, setSelected] = useState('')
 
-        return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <span>Filter by:</span>
-                <SingleSelect
-                    label="Department"
-                    placeholder="All departments"
-                    items={departmentItems}
-                    selected={selected}
-                    onSelect={setSelected}
-                    variant={'no-container' as any}
-                    size={'sm' as any}
-                />
-            </div>
-        )
+            return (
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '16px',
+                    }}
+                >
+                    <span>Filter by:</span>
+                    <SingleSelect
+                        label="Department"
+                        placeholder="All departments"
+                        items={departmentItems}
+                        selected={selected}
+                        onSelect={setSelected}
+                        variant={'no-container' as any}
+                        size={'sm' as any}
+                    />
+                </div>
+            )
+        }
+        return <NoContainerComponent />
     },
 }
 
 // With form elements
 export const FormIntegration: Story = {
     render: () => {
-        const [country, setCountry] = useState('')
-        const [timezone, setTimezone] = useState('')
-        const [department, setDepartment] = useState('')
+        const FormIntegrationComponent = () => {
+            const [country, setCountry] = useState('')
+            const [timezone, setTimezone] = useState('')
+            const [department, setDepartment] = useState('')
 
-        return (
-            <form
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
-                <SingleSelect
-                    label="Country"
-                    subLabel="Required"
-                    placeholder="Select your country"
-                    items={countryItems}
-                    selected={country}
-                    onSelect={setCountry}
-                    required
-                    hintText="This will determine your default currency"
-                />
+            return (
+                <form
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '24px',
+                        width: '400px',
+                    }}
+                >
+                    <SingleSelect
+                        label="Country"
+                        subLabel="Required"
+                        placeholder="Select your country"
+                        items={countryItems}
+                        selected={country}
+                        onSelect={setCountry}
+                        required
+                        hintText="This will determine your default currency"
+                    />
 
-                <SingleSelect
-                    label="Timezone"
-                    placeholder="Select your timezone"
-                    items={timezoneItems}
-                    selected={timezone}
-                    onSelect={setTimezone}
-                    enableSearch
-                    helpIconText="Your local timezone for scheduling"
-                />
+                    <SingleSelect
+                        label="Timezone"
+                        placeholder="Select your timezone"
+                        items={timezoneItems}
+                        selected={timezone}
+                        onSelect={setTimezone}
+                        enableSearch
+                        helpIconText="Your local timezone for scheduling"
+                    />
 
-                <SingleSelect
-                    label="Department"
-                    placeholder="Select your department"
-                    items={departmentItems}
-                    selected={department}
-                    onSelect={setDepartment}
-                    hintText="You can change this later in settings"
-                />
-            </form>
-        )
+                    <SingleSelect
+                        label="Department"
+                        placeholder="Select your department"
+                        items={departmentItems}
+                        selected={department}
+                        onSelect={setDepartment}
+                        hintText="You can change this later in settings"
+                    />
+                </form>
+            )
+        }
+        return <FormIntegrationComponent />
     },
 }
 
 // With custom slot
 export const WithCustomSlot: Story = {
     render: () => {
-        const [selected, setSelected] = useState('')
+        const WithCustomSlotComponent = () => {
+            const [selected, setSelected] = useState('')
 
-        const languageItems: SelectMenuGroupType[] = [
-            {
-                label: 'Popular',
-                items: [
-                    {
-                        value: 'en',
-                        label: 'English',
-                        leftSlot: <Globe size={16} />,
-                    },
-                    {
-                        value: 'es',
-                        label: 'Spanish',
-                        leftSlot: <Globe size={16} />,
-                    },
-                    {
-                        value: 'fr',
-                        label: 'French',
-                        leftSlot: <Globe size={16} />,
-                    },
-                    {
-                        value: 'de',
-                        label: 'German',
-                        leftSlot: <Globe size={16} />,
-                    },
-                ],
-            },
-            {
-                label: 'Asian',
-                items: [
-                    {
-                        value: 'zh',
-                        label: 'Chinese',
-                        leftSlot: <Globe size={16} />,
-                    },
-                    {
-                        value: 'ja',
-                        label: 'Japanese',
-                        leftSlot: <Globe size={16} />,
-                    },
-                    {
-                        value: 'ko',
-                        label: 'Korean',
-                        leftSlot: <Globe size={16} />,
-                    },
-                    {
-                        value: 'hi',
-                        label: 'Hindi',
-                        leftSlot: <Globe size={16} />,
-                    },
-                ],
-            },
-        ]
+            const languageItems: SelectMenuGroupType[] = [
+                {
+                    label: 'Popular',
+                    items: [
+                        {
+                            value: 'en',
+                            label: 'English',
+                            leftSlot: <Globe size={16} />,
+                        },
+                        {
+                            value: 'es',
+                            label: 'Spanish',
+                            leftSlot: <Globe size={16} />,
+                        },
+                        {
+                            value: 'fr',
+                            label: 'French',
+                            leftSlot: <Globe size={16} />,
+                        },
+                        {
+                            value: 'de',
+                            label: 'German',
+                            leftSlot: <Globe size={16} />,
+                        },
+                    ],
+                },
+                {
+                    label: 'Asian',
+                    items: [
+                        {
+                            value: 'zh',
+                            label: 'Chinese',
+                            leftSlot: <Globe size={16} />,
+                        },
+                        {
+                            value: 'ja',
+                            label: 'Japanese',
+                            leftSlot: <Globe size={16} />,
+                        },
+                        {
+                            value: 'ko',
+                            label: 'Korean',
+                            leftSlot: <Globe size={16} />,
+                        },
+                        {
+                            value: 'hi',
+                            label: 'Hindi',
+                            leftSlot: <Globe size={16} />,
+                        },
+                    ],
+                },
+            ]
 
-        return (
-            <div style={{ width: '320px' }}>
-                <SingleSelect
-                    label="Language"
-                    placeholder="Select language"
-                    items={languageItems}
-                    selected={selected}
-                    onSelect={setSelected}
-                    slot={<Globe size={16} />}
-                />
-            </div>
-        )
+            return (
+                <div style={{ width: '320px' }}>
+                    <SingleSelect
+                        label="Language"
+                        placeholder="Select language"
+                        items={languageItems}
+                        selected={selected}
+                        onSelect={setSelected}
+                        slot={<Globe size={16} />}
+                    />
+                </div>
+            )
+        }
+        return <WithCustomSlotComponent />
     },
 }
 
@@ -689,215 +673,218 @@ export const DisabledState: Story = {
 // Complex example
 export const ComplexExample: Story = {
     render: () => {
-        const [project, setProject] = useState('')
-        const [assignee, setAssignee] = useState('')
-        const [priority, setPriority] = useState('')
-        const [status, setStatus] = useState('')
+        const ComplexExampleComponent = () => {
+            const [project, setProject] = useState('')
+            const [assignee, setAssignee] = useState('')
+            const [priority, setPriority] = useState('')
+            const [status, setStatus] = useState('')
 
-        const projectItems: SelectMenuGroupType[] = [
-            {
-                label: 'Active Projects',
-                items: [
-                    {
-                        value: 'web-redesign',
-                        label: 'Website Redesign',
-                        subLabel: 'Due in 2 weeks',
-                        leftSlot: <Globe size={16} />,
-                    },
-                    {
-                        value: 'mobile-app',
-                        label: 'Mobile App v2.0',
-                        subLabel: 'Due in 1 month',
-                        leftSlot: <Phone size={16} />,
-                    },
-                    {
-                        value: 'api-migration',
-                        label: 'API Migration',
-                        subLabel: 'Due in 3 weeks',
-                        leftSlot: <Zap size={16} />,
-                    },
-                ],
-            },
-            {
-                label: 'Upcoming Projects',
-                items: [
-                    {
-                        value: 'dashboard',
-                        label: 'Analytics Dashboard',
-                        subLabel: 'Starts next month',
-                        leftSlot: <BarChart3 size={16} />,
-                    },
-                    {
-                        value: 'crm',
-                        label: 'CRM Integration',
-                        subLabel: 'Q2 2024',
-                        leftSlot: <Briefcase size={16} />,
-                    },
-                ],
-            },
-        ]
+            const projectItems: SelectMenuGroupType[] = [
+                {
+                    label: 'Active Projects',
+                    items: [
+                        {
+                            value: 'web-redesign',
+                            label: 'Website Redesign',
+                            subLabel: 'Due in 2 weeks',
+                            leftSlot: <Globe size={16} />,
+                        },
+                        {
+                            value: 'mobile-app',
+                            label: 'Mobile App v2.0',
+                            subLabel: 'Due in 1 month',
+                            leftSlot: <Phone size={16} />,
+                        },
+                        {
+                            value: 'api-migration',
+                            label: 'API Migration',
+                            subLabel: 'Due in 3 weeks',
+                            leftSlot: <Zap size={16} />,
+                        },
+                    ],
+                },
+                {
+                    label: 'Upcoming Projects',
+                    items: [
+                        {
+                            value: 'dashboard',
+                            label: 'Analytics Dashboard',
+                            subLabel: 'Starts next month',
+                            leftSlot: <BarChart3 size={16} />,
+                        },
+                        {
+                            value: 'crm',
+                            label: 'CRM Integration',
+                            subLabel: 'Q2 2024',
+                            leftSlot: <Briefcase size={16} />,
+                        },
+                    ],
+                },
+            ]
 
-        const assigneeItems: SelectMenuGroupType[] = [
-            {
-                label: 'Development Team',
-                items: [
-                    {
-                        value: 'john',
-                        label: 'John Doe',
-                        subLabel: 'Frontend Lead',
-                        leftSlot: <User size={16} />,
-                    },
-                    {
-                        value: 'jane',
-                        label: 'Jane Smith',
-                        subLabel: 'Backend Lead',
-                        leftSlot: <User size={16} />,
-                    },
-                    {
-                        value: 'mike',
-                        label: 'Mike Johnson',
-                        subLabel: 'Full Stack',
-                        leftSlot: <User size={16} />,
-                    },
-                ],
-            },
-            {
-                label: 'Design Team',
-                items: [
-                    {
-                        value: 'sarah',
-                        label: 'Sarah Williams',
-                        subLabel: 'UI/UX Lead',
-                        leftSlot: <User size={16} />,
-                    },
-                    {
-                        value: 'tom',
-                        label: 'Tom Brown',
-                        subLabel: 'Product Designer',
-                        leftSlot: <User size={16} />,
-                    },
-                ],
-            },
-        ]
+            const assigneeItems: SelectMenuGroupType[] = [
+                {
+                    label: 'Development Team',
+                    items: [
+                        {
+                            value: 'john',
+                            label: 'John Doe',
+                            subLabel: 'Frontend Lead',
+                            leftSlot: <User size={16} />,
+                        },
+                        {
+                            value: 'jane',
+                            label: 'Jane Smith',
+                            subLabel: 'Backend Lead',
+                            leftSlot: <User size={16} />,
+                        },
+                        {
+                            value: 'mike',
+                            label: 'Mike Johnson',
+                            subLabel: 'Full Stack',
+                            leftSlot: <User size={16} />,
+                        },
+                    ],
+                },
+                {
+                    label: 'Design Team',
+                    items: [
+                        {
+                            value: 'sarah',
+                            label: 'Sarah Williams',
+                            subLabel: 'UI/UX Lead',
+                            leftSlot: <User size={16} />,
+                        },
+                        {
+                            value: 'tom',
+                            label: 'Tom Brown',
+                            subLabel: 'Product Designer',
+                            leftSlot: <User size={16} />,
+                        },
+                    ],
+                },
+            ]
 
-        const priorityItems: SelectMenuGroupType[] = [
-            {
-                items: [
-                    {
-                        value: 'critical',
-                        label: 'Critical',
-                        leftSlot: <AlertCircle size={16} color="#ef4444" />,
-                    },
-                    {
-                        value: 'high',
-                        label: 'High',
-                        leftSlot: <AlertCircle size={16} color="#f59e0b" />,
-                    },
-                    {
-                        value: 'medium',
-                        label: 'Medium',
-                        leftSlot: <AlertCircle size={16} color="#3b82f6" />,
-                    },
-                    {
-                        value: 'low',
-                        label: 'Low',
-                        leftSlot: <AlertCircle size={16} color="#6b7280" />,
-                    },
-                ],
-            },
-        ]
+            const priorityItems: SelectMenuGroupType[] = [
+                {
+                    items: [
+                        {
+                            value: 'critical',
+                            label: 'Critical',
+                            leftSlot: <AlertCircle size={16} color="#ef4444" />,
+                        },
+                        {
+                            value: 'high',
+                            label: 'High',
+                            leftSlot: <AlertCircle size={16} color="#f59e0b" />,
+                        },
+                        {
+                            value: 'medium',
+                            label: 'Medium',
+                            leftSlot: <AlertCircle size={16} color="#3b82f6" />,
+                        },
+                        {
+                            value: 'low',
+                            label: 'Low',
+                            leftSlot: <AlertCircle size={16} color="#6b7280" />,
+                        },
+                    ],
+                },
+            ]
 
-        const statusItems: SelectMenuGroupType[] = [
-            {
-                items: [
-                    {
-                        value: 'todo',
-                        label: 'To Do',
-                        leftSlot: <Circle size={16} />,
-                    },
-                    {
-                        value: 'in-progress',
-                        label: 'In Progress',
-                        leftSlot: <Clock size={16} color="#3b82f6" />,
-                    },
-                    {
-                        value: 'review',
-                        label: 'In Review',
-                        leftSlot: <Eye size={16} color="#f59e0b" />,
-                    },
-                    {
-                        value: 'done',
-                        label: 'Done',
-                        leftSlot: <Check size={16} color="#10b981" />,
-                    },
-                ],
-            },
-        ]
+            const statusItems: SelectMenuGroupType[] = [
+                {
+                    items: [
+                        {
+                            value: 'todo',
+                            label: 'To Do',
+                            leftSlot: <Circle size={16} />,
+                        },
+                        {
+                            value: 'in-progress',
+                            label: 'In Progress',
+                            leftSlot: <Clock size={16} color="#3b82f6" />,
+                        },
+                        {
+                            value: 'review',
+                            label: 'In Review',
+                            leftSlot: <Eye size={16} color="#f59e0b" />,
+                        },
+                        {
+                            value: 'done',
+                            label: 'Done',
+                            leftSlot: <Check size={16} color="#10b981" />,
+                        },
+                    ],
+                },
+            ]
 
-        return (
-            <div
-                style={{
-                    padding: '24px',
-                    backgroundColor: '#f9fafb',
-                    borderRadius: '8px',
-                    width: '500px',
-                }}
-            >
-                <h3 style={{ marginBottom: '24px' }}>Create New Task</h3>
-                <form
+            return (
+                <div
                     style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '20px',
+                        padding: '24px',
+                        backgroundColor: '#f9fafb',
+                        borderRadius: '8px',
+                        width: '500px',
                     }}
                 >
-                    <SingleSelect
-                        label="Project"
-                        placeholder="Select a project"
-                        items={projectItems}
-                        selected={project}
-                        onSelect={setProject}
-                        required
-                        enableSearch
-                    />
-
-                    <SingleSelect
-                        label="Assignee"
-                        placeholder="Assign to team member"
-                        items={assigneeItems}
-                        selected={assignee}
-                        onSelect={setAssignee}
-                        enableSearch
-                        helpIconText="The person responsible for this task"
-                    />
-
-                    <div
+                    <h3 style={{ marginBottom: '24px' }}>Create New Task</h3>
+                    <form
                         style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 1fr',
-                            gap: '16px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '20px',
                         }}
                     >
                         <SingleSelect
-                            label="Priority"
-                            placeholder="Set priority"
-                            items={priorityItems}
-                            selected={priority}
-                            onSelect={setPriority}
+                            label="Project"
+                            placeholder="Select a project"
+                            items={projectItems}
+                            selected={project}
+                            onSelect={setProject}
                             required
+                            enableSearch
                         />
 
                         <SingleSelect
-                            label="Status"
-                            placeholder="Set status"
-                            items={statusItems}
-                            selected={status}
-                            onSelect={setStatus}
+                            label="Assignee"
+                            placeholder="Assign to team member"
+                            items={assigneeItems}
+                            selected={assignee}
+                            onSelect={setAssignee}
+                            enableSearch
+                            helpIconText="The person responsible for this task"
                         />
-                    </div>
-                </form>
-            </div>
-        )
+
+                        <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '16px',
+                            }}
+                        >
+                            <SingleSelect
+                                label="Priority"
+                                placeholder="Set priority"
+                                items={priorityItems}
+                                selected={priority}
+                                onSelect={setPriority}
+                                required
+                            />
+
+                            <SingleSelect
+                                label="Status"
+                                placeholder="Set status"
+                                items={statusItems}
+                                selected={status}
+                                onSelect={setStatus}
+                            />
+                        </div>
+                    </form>
+                </div>
+            )
+        }
+        return <ComplexExampleComponent />
     },
 }
 

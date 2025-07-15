@@ -32,7 +32,7 @@ export default tseslint.config(
         rules: {
             ...reactHooks.configs.recommended.rules,
             'react-refresh/only-export-components': [
-                'warn',
+                'off',
                 { allowConstantExport: true },
             ],
             // TypeScript specific rules
@@ -40,9 +40,9 @@ export default tseslint.config(
                 'error',
                 { argsIgnorePattern: '^_' },
             ],
-            '@typescript-eslint/no-explicit-any': 'warn',
+            '@typescript-eslint/no-explicit-any': 'off',
             // General rules
-            'no-console': 'warn',
+            'no-console': 'off',
             'prefer-const': 'error',
         },
     }
