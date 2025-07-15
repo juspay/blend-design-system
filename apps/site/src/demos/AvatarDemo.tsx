@@ -2,12 +2,15 @@ import {
     Avatar,
     AvatarSize,
     AvatarShape,
-    AvatarGroup,
-    addSnackbar,
-} from 'blend-v1'
-import { SingleSelect, Switch, TextInput } from 'blend-v1'
+} from '../../../../packages/blend/lib/components/Avatar'
+
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { User, Settings, Bell, Mail, Phone, Camera } from 'lucide-react'
 import { useState } from 'react'
+import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
+import { AvatarGroup } from '../../../../packages/blend/lib/components/AvatarGroup'
 
 const AvatarDemo = () => {
     const [playgroundSrc, setPlaygroundSrc] = useState('')

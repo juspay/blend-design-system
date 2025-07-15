@@ -1,10 +1,12 @@
 import {
-    addSnackbar,
-    SnackbarVariant,
     ButtonV2,
     ButtonSizeV2,
     ButtonTypeV2,
-} from 'blend-v1'
+} from '../../../../packages/blend/lib/components/ButtonV2'
+import {
+    addSnackbar,
+    SnackbarVariant,
+} from '../../../../packages/blend/lib/components/Snackbar'
 
 const SnackbarDemo = () => {
     const showInfoSnackbar = () => {
