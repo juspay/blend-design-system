@@ -1,7 +1,8 @@
 {
     "name": "blend-v1",
     "private": false,
-    "version": "0.2.32",
+    "version": "0.2.43",
+    "description": "A comprehensive React component library and design system by Juspay",
     "type": "module",
     "main": "./dist/main.js",
     "module": "./dist/main.js",
@@ -73,16 +74,19 @@
         "react",
         "ui",
         "components",
-        "blend"
+        "design-system",
+        "blend",
+        "juspay"
     ],
-    "author": "",
+    "author": "Juspay",
     "license": "MIT",
+    "homepage": "https://juspay.design/",
     "repository": {
         "type": "git",
-        "url": "https://github.com/yourusername/blend-v1"
+        "url": "https://github.com/juspay/blend-design-system.git"
     },
     "bugs": {
-        "url": "https://github.com/yourusername/blend-v1/issues"
+        "url": "https://github.com/juspay/blend-design-system/issues"
     },
     "eslintConfig": {
         "extends": [
