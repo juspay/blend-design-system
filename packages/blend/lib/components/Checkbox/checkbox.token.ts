@@ -173,8 +173,8 @@ export const getCheckboxTokens = (
                 background: {
                     unchecked: {
                         default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[50],
+                        hover: foundationToken.colors.gray[150],
+                        disabled: foundationToken.colors.gray[100],
                         error: foundationToken.colors.gray[0],
                     },
                     checked: {
@@ -195,9 +195,9 @@ export const getCheckboxTokens = (
                     width: foundationToken.border.width[1],
                     color: {
                         unchecked: {
-                            default: foundationToken.colors.gray[200],
-                            hover: foundationToken.colors.primary[600],
-                            disabled: foundationToken.colors.gray[100],
+                            default: foundationToken.colors.gray[300],
+                            hover: foundationToken.colors.gray[400],
+                            disabled: foundationToken.colors.gray[200],
                             error: foundationToken.colors.red[500],
                         },
                         checked: {
@@ -251,8 +251,8 @@ export const getCheckboxTokens = (
                 gap: foundationToken.unit[2],
                 label: {
                     color: {
-                        default: foundationToken.colors.gray[600],
-                        disabled: foundationToken.colors.gray[400],
+                        default: foundationToken.colors.gray[700],
+                        disabled: foundationToken.colors.gray[300],
                         error: foundationToken.colors.red[600],
                     },
                     font: {
@@ -321,8 +321,8 @@ export const getCheckboxTokens = (
                 background: {
                     unchecked: {
                         default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[50],
+                        hover: foundationToken.colors.gray[150],
+                        disabled: foundationToken.colors.gray[100],
                         error: foundationToken.colors.gray[0],
                     },
                     checked: {
@@ -343,9 +343,9 @@ export const getCheckboxTokens = (
                     width: foundationToken.border.width[1],
                     color: {
                         unchecked: {
-                            default: foundationToken.colors.gray[200],
-                            hover: foundationToken.colors.primary[600],
-                            disabled: foundationToken.colors.gray[100],
+                            default: foundationToken.colors.gray[300],
+                            hover: foundationToken.colors.gray[400],
+                            disabled: foundationToken.colors.gray[200],
                             error: foundationToken.colors.red[500],
                         },
                         checked: {
@@ -399,8 +399,8 @@ export const getCheckboxTokens = (
                 gap: foundationToken.unit[2],
                 label: {
                     color: {
-                        default: foundationToken.colors.gray[600],
-                        disabled: foundationToken.colors.gray[400],
+                        default: foundationToken.colors.gray[700],
+                        disabled: foundationToken.colors.gray[300],
                         error: foundationToken.colors.red[600],
                     },
                     font: {

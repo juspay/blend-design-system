@@ -69,11 +69,7 @@ export const Switch = ({
                     $isChecked={currentChecked || false}
                 />
             </StyledSwitchRoot>
-            <Block
-                display="flex"
-                flexDirection="column"
-                gap={tokens.contentGap}
-            >
+            <Block display="flex" flexDirection="column">
                 <Block display="flex" alignItems="center">
                     <SwitchContent
                         uniqueId={uniqueId}

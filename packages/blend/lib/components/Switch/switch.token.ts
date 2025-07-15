@@ -162,7 +162,7 @@ export const getSwitchTokens = (
                     background: {
                         default: foundationToken.colors.primary[500],
                         hover: foundationToken.colors.primary[600],
-                        disabled: foundationToken.colors.primary[300],
+                        disabled: foundationToken.colors.primary[200],
                     },
                     border: {
                         default: foundationToken.colors.primary[500],
@@ -172,7 +172,7 @@ export const getSwitchTokens = (
                 },
                 inactive: {
                     background: {
-                        default: foundationToken.colors.gray[150],
+                        default: foundationToken.colors.gray[200],
                         hover: foundationToken.colors.gray[200],
                         disabled: foundationToken.colors.gray[100],
                     },
@@ -185,9 +185,9 @@ export const getSwitchTokens = (
             },
 
             thumb: {
-                background: foundationToken.colors.gray[25],
+                background: foundationToken.colors.gray[0],
                 border: {
-                    color: foundationToken.colors.gray[300],
+                    color: foundationToken.colors.gray[200],
                     width: '0.5px',
                 },
                 size: {
@@ -322,7 +322,7 @@ export const getSwitchTokens = (
                     background: {
                         default: foundationToken.colors.primary[500],
                         hover: foundationToken.colors.primary[600],
-                        disabled: foundationToken.colors.primary[300],
+                        disabled: foundationToken.colors.primary[200],
                     },
                     border: {
                         default: foundationToken.colors.primary[500],
@@ -332,7 +332,7 @@ export const getSwitchTokens = (
                 },
                 inactive: {
                     background: {
-                        default: foundationToken.colors.gray[150],
+                        default: foundationToken.colors.gray[200],
                         hover: foundationToken.colors.gray[200],
                         disabled: foundationToken.colors.gray[100],
                     },
@@ -345,9 +345,9 @@ export const getSwitchTokens = (
             },
 
             thumb: {
-                background: foundationToken.colors.gray[25],
+                background: foundationToken.colors.gray[0],
                 border: {
-                    color: foundationToken.colors.gray[300],
+                    color: foundationToken.colors.gray[200],
                     width: '0.5px',
                 },
                 size: {
