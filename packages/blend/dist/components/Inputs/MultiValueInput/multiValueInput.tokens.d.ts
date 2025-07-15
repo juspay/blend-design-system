@@ -5,7 +5,9 @@ export type MultiValueInputTokensType = {
     input: {
         gap: CSSObject['gap'];
         borderRadius?: CSSObject['borderRadius'];
-        boxShadow: CSSObject['boxShadow'];
+        boxShadow: {
+            [key in MultiValueInputState]: CSSObject['boxShadow'];
+        };
         paddingX: {
             [key in MultiValueInputSize]: CSSObject['padding'];
         };

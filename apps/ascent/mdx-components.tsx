@@ -4,25 +4,32 @@ import { highlight } from 'sugar-high'
 import CodeBlock from './app/components/CodeBlock'
 import DocsTypeTable from './app/components/DocsTypeTable'
 import Preview from './app/components/Preview'
-import ButtonPreview from './app/components/Previews/ButtonPreview'
+import PreviewWrapper from './app/components/PreviewWrapper'
 import { Snippet } from './app/components/Previews/ComponentPreview'
-import AlertPreview from './app/components/Previews/AlertPreview'
-import TagPreview from './app/components/Previews/TagPreview'
-import ButtonGroupV2Preview from './app/components/Previews/ButtonGroupV2Preview'
-import TabsPreview from './app/components/Previews/TabsPreview'
-import SplitTagPreview from './app/components/Previews/SplitTagPreview'
-import ModalPreview from './app/components/Previews/ModalPreview'
-import TooltipPreview from './app/components/Previews/TooltipPreview'
-import AccordionPreview from './app/components/Previews/AccordionPreview'
-import SnackbarPreview from './app/components/Previews/SnackbarPreview'
-import PopoverPreview from './app/components/Previews/PopoverPreview'
-import CheckboxPreview from './app/components/Previews/CheckboxPreview'
-import RadioPreview from './app/components/Previews/RadioPreview'
-import SwitchPreview from './app/components/Previews/SwitchPreview'
-import SingleSelectPreview from './app/components/Previews/SingleSelectPreview'
-import MenuPreview from './app/components/Previews/MenuPreview'
-import StatCardPreview from './app/components/Previews/StatCardPreview'
-import ChartPreview from './app/components/Previews/ChartPreview'
+
+// Create wrapper components for each preview
+const ButtonPreview = () => <PreviewWrapper component="ButtonPreview" />
+const AlertPreview = () => <PreviewWrapper component="AlertPreview" />
+const TagPreview = () => <PreviewWrapper component="TagPreview" />
+const ButtonGroupV2Preview = () => (
+    <PreviewWrapper component="ButtonGroupV2Preview" />
+)
+const TabsPreview = () => <PreviewWrapper component="TabsPreview" />
+const SplitTagPreview = () => <PreviewWrapper component="SplitTagPreview" />
+const ModalPreview = () => <PreviewWrapper component="ModalPreview" />
+const TooltipPreview = () => <PreviewWrapper component="TooltipPreview" />
+const AccordionPreview = () => <PreviewWrapper component="AccordionPreview" />
+const SnackbarPreview = () => <PreviewWrapper component="SnackbarPreview" />
+const PopoverPreview = () => <PreviewWrapper component="PopoverPreview" />
+const CheckboxPreview = () => <PreviewWrapper component="CheckboxPreview" />
+const RadioPreview = () => <PreviewWrapper component="RadioPreview" />
+const SwitchPreview = () => <PreviewWrapper component="SwitchPreview" />
+const SingleSelectPreview = () => (
+    <PreviewWrapper component="SingleSelectPreview" />
+)
+const MenuPreview = () => <PreviewWrapper component="MenuPreview" />
+const StatCardPreview = () => <PreviewWrapper component="StatCardPreview" />
+const ChartPreview = () => <PreviewWrapper component="ChartPreview" />
 
 function generateSlug(text: string): string {
     return text

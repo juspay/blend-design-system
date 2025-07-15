@@ -12,7 +12,9 @@ export type UnitInputTokensType = {
     input: {
         gap: CSSObject['gap'];
         borderRadius?: CSSObject['borderRadius'];
-        boxShadow: CSSObject['boxShadow'];
+        boxShadow: {
+            [key in UnitInputState]: CSSObject['boxShadow'];
+        };
         paddingX: {
             [key in UnitInputSize]: CSSObject['padding'];
         };

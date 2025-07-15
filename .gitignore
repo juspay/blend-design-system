@@ -15,6 +15,7 @@ storybook-static
 .cache
 .temp
 .tmp
+.history
 
 # Auto-generated files
 **/.source/
@@ -26,6 +27,8 @@ storybook-static
 .env.development.local
 .env.test.local
 .env.production.local
+.env.dev
+.env.prod
 
 # OS files
 .DS_Store
@@ -99,3 +102,13 @@ storybook-static
 # Temporary folders
 tmp/
 temp/
+
+# Firebase
+.firebase/
+.firebaserc.local
+
+# Build outputs
+dist/
+apps/ascent/out/
+apps/ascent/.next/
+apps/storybook/storybook-static/

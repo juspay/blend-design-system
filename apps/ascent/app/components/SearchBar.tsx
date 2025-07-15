@@ -381,8 +381,9 @@ const SearchSuggestion = () => {
     ]
     return (
         <div className="flex flex-col items-start  rounded-xl cursor-pointer gap-2">
-            {suggestions.map((suggestion) => (
+            {suggestions.map((suggestion, index) => (
                 <Link
+                    key={`${suggestion.link}-${index}`}
                     href={suggestion.link}
                     className="flex flex-col items-start font-medium gap-2 hover:bg-zinc-100 rounded-xl p-4 cursor-pointer w-full text-left"
                 >

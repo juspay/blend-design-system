@@ -1,26 +1,23 @@
 # 🚀 Deployment Guide
 
-Comprehensive guide for deploying the Blend Design System documentation and Storybook to Firebase Hosting.
+Comprehensive guide for deploying the Blend Design System documentation (Ascent) and Storybook to Firebase Hosting.
 
 ## 🎯 Quick Start
 
 ```bash
-# One-time setup
-pnpm deploy:setup
-
 # Deploy to staging
-pnpm deploy:staging
+npm run deploy:dev
 
 # Deploy to production
-pnpm deploy:production
+npm run deploy:prod
 ```
 
 **URLs:**
 
+- 📚 Production Docs: https://juspay.design
+- 📖 Production Storybook: https://juspay.design/storybook
 - 📚 Staging Docs: https://blend-staging.web.app
 - 📖 Staging Storybook: https://blend-staging.web.app/storybook
-- 📚 Production Docs: https://blend-prod.web.app
-- 📖 Production Storybook: https://blend-prod.web.app/storybook
 
 ## 📋 Table of Contents
 
@@ -29,9 +26,8 @@ pnpm deploy:production
 - [Deployment](#deployment)
 - [Content Management](#content-management)
 - [Security](#security)
-- [CI/CD](#cicd)
 - [Troubleshooting](#troubleshooting)
-- [Advanced Topics](#advanced-topics)
+- [Architecture](#architecture)
 
 ## Overview
 
@@ -40,7 +36,8 @@ pnpm deploy:production
 ```
 ┌─────────────────┐     ┌──────────────────┐
 │  Documentation  │     │    Storybook     │
-│   (Next.js)     │     │  (Storybook 8)   │
+│   (Ascent)      │     │  (Storybook 8)   │
+│   Next.js       │     │                  │
 └────────┬────────┘     └────────┬─────────┘
          │                       │
          └───────────┬───────────┘
@@ -53,18 +50,17 @@ pnpm deploy:production
 
 - **Single Firebase Project**: `storybook-452807`
 - **Path-based Routing**:
-    - `/` → Documentation
+    - `/` → Ascent documentation
     - `/storybook/*` → Storybook
 - **Static Export**: Both apps are built as static sites
 - **Client-side Search**: No server required
 
 ### Environments
 
-| Environment | Branch      | Cache Duration | Purpose          |
-| ----------- | ----------- | -------------- | ---------------- |
-| Staging     | `staging`   | 1 hour         | Testing & Review |
-| Production  | `main`      | 1 year         | Live Site        |
-| Preview     | PR branches | 1 hour         | PR Reviews       |
+| Environment | Target          | URL                           | Purpose          |
+| ----------- | --------------- | ----------------------------- | ---------------- |
+| Production  | `blend-prod`    | https://juspay.design         | Live Site        |
+| Staging     | `blend-staging` | https://blend-staging.web.app | Testing & Review |
 
 ## Setup
 
@@ -90,111 +86,71 @@ pnpm deploy:production
 
 ### Environment Configuration
 
-1. **Copy Environment Template**
+The project uses two environment files:
 
-    ```bash
-    cp .env.example .env.staging
-    cp .env.example .env.production
-    ```
+- `.env.dev` - Staging environment configuration
+- `.env.prod` - Production environment configuration
 
-2. **Configure Environment Variables**
+These files contain:
 
-    Edit `.env.staging`:
+```env
+# Example .env.dev
+FIREBASE_PROJECT_ID=storybook-452807
+FIREBASE_HOSTING_TARGET=blend-staging
+DEPLOY_URL=https://blend-staging.web.app
 
-    ```env
-    FIREBASE_PROJECT_ID=storybook-452807
-    FIREBASE_HOSTING_TARGET_STAGING=blend-staging
-    STAGING_URL=https://blend-staging.web.app
-    STAGING_CACHE_MAX_AGE=3600
-    ENVIRONMENT=staging
-    ```
-
-    Edit `.env.production`:
-
-    ```env
-    FIREBASE_PROJECT_ID=storybook-452807
-    FIREBASE_HOSTING_TARGET_PROD=blend-prod
-    PRODUCTION_URL=https://blend-prod.web.app
-    PRODUCTION_CACHE_MAX_AGE=31536000
-    ENVIRONMENT=production
-    ```
-
-3. **Setup Firebase Hosting Targets**
-    ```bash
-    pnpm deploy:setup
-    ```
-
-### GitHub Actions Setup
-
-1. **Generate Firebase Service Account**
-    - Go to [Firebase Console](https://console.firebase.google.com/project/storybook-452807) → Project Settings → Service Accounts
-    - Click "Generate new private key"
-    - Save the JSON file
-
-2. **Add GitHub Secrets**
-    - Go to your GitHub repo → Settings → Secrets
-    - Add these secrets:
-        ```
-        FIREBASE_SERVICE_ACCOUNT     # The JSON content from step 1
-        FIREBASE_PROJECT_ID          # storybook-452807
-        FIREBASE_HOSTING_TARGET_STAGING  # blend-staging
-        FIREBASE_HOSTING_TARGET_PROD     # blend-prod
-        ```
+# Example .env.prod
+FIREBASE_PROJECT_ID=storybook-452807
+FIREBASE_HOSTING_TARGET=blend-prod
+DEPLOY_URL=https://juspay.design
+```
 
 ## Deployment
 
 ### 🏃 Local Development
 
 ```bash
-# Documentation development
-pnpm docs:dev
+# Ascent documentation development
+npm run ascent:dev
 
 # Storybook development
-pnpm storybook
+npm run storybook
 
 # Build everything
-pnpm build
+npm run build:all
 
 # Build specific apps
-pnpm docs:build
-pnpm storybook:build
+npm run build:ascent
+npm run build:storybook
 ```
 
 ### 🚀 Manual Deployment
 
-#### Deploy Everything (Docs + Storybook)
+The deployment process uses a unified script (`deploy.sh`) that:
+
+1. Loads environment variables from `.env.dev` or `.env.prod`
+2. Builds Ascent documentation (with search index generation)
+3. Builds Storybook
+4. Combines both builds into a single `dist/` directory
+5. Deploys to Firebase Hosting
+
+#### Deploy Commands
 
 ```bash
 # Deploy to staging
-pnpm deploy:staging
+npm run deploy:dev
 
 # Deploy to production
-pnpm deploy:production
+npm run deploy:prod
 ```
-
-The deployment scripts automatically:
-
-- Load environment variables from `.env.staging` or `.env.production`
-- Build both documentation and Storybook
-- Deploy everything to Firebase Hosting
-
-### 🤖 Automated CI/CD
-
-Deployments happen automatically via GitHub Actions:
-
-| Event             | Target     | URL                           |
-| ----------------- | ---------- | ----------------------------- |
-| Push to `staging` | Staging    | https://blend-staging.web.app |
-| Push to `main`    | Production | https://blend-prod.web.app    |
-| Open PR           | Preview    | Dynamic URL (commented on PR) |
 
 ### 📦 What Gets Deployed
 
-1. **Documentation Site** (`/`)
+1. **Ascent Documentation** (`/`)
     - Next.js static export
     - MDX documentation pages
-    - Client-side search index
-    - Component examples
+    - Client-side search with pre-built index
+    - Component examples and previews
 
 2. **Storybook** (`/storybook`)
     - Component stories
@@ -205,7 +161,7 @@ Deployments happen automatically via GitHub Actions:
 3. **Static Assets**
     - Fonts
     - Images
-    - Generated search index (`/static.json`)
+    - Search index (`search-index.json`)
 
 ## Content Management
 
@@ -215,7 +171,7 @@ Deployments happen automatically via GitHub Actions:
 
     ```bash
     # Create new component doc
-    touch apps/docs/content/docs/components/NewComponent.mdx
+    touch apps/ascent/app/docs/content/components/NewComponent.mdx
     ```
 
 2. **MDX Format**
@@ -224,6 +180,8 @@ Deployments happen automatically via GitHub Actions:
     ---
     title: Component Name
     description: Brief description for search
+    category: Components
+    tags: [tag1, tag2]
     ---
 
     # Component Name
@@ -236,43 +194,30 @@ Deployments happen automatically via GitHub Actions:
     import { Component } from 'blend-v1'
     ;<Component prop="value" />
     ```
-    ````
 
     ## Props
 
-    | Prop | Type   | Default | Description |
-    | ---- | ------ | ------- | ----------- |
-    | prop | string | -       | Description |
-
-    ```
-
-    ```
+    <DocsTypeTable>...props documentation...</DocsTypeTable>
+    ````
 
 3. **Update Navigation**
 
-    Edit `apps/docs/content/docs/components/meta.json`:
-
-    ```json
-    {
-        "title": "Components",
-        "pages": ["Button", "Alert", "NewComponent"]
-    }
-    ```
+    Edit `apps/ascent/app/docs/content/config.json` to add your new component to the navigation.
 
 ### 🔍 Search System
 
-The search system automatically indexes all MDX content:
+The search system uses a build-time generated index:
 
-- **What's Indexed**: Titles, headings, paragraphs, code blocks
-- **When**: Build time (static generation)
-- **How**: Client-side search using generated `/static.json`
-- **No Manual Steps**: Just add content and deploy
+- **What's Indexed**: All MDX content including titles, headings, content, and tags
+- **When**: At build time via `prebuild` script
+- **How**: Static JSON file loaded client-side
+- **Script**: `apps/ascent/scripts/generate-search-index.mjs`
 
 ## Security
 
 ### 🔒 Security Headers
 
-All deployments include comprehensive security headers:
+All deployments include comprehensive security headers configured in `firebase.json`:
 
 ```
 X-Content-Type-Options: nosniff
@@ -280,14 +225,13 @@ X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: camera=(), microphone=(), geolocation=()
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Strict-Transport-Security: max-age=31536000; includeSubDomains (production only)
 Content-Security-Policy: [configured for your needs]
 ```
 
 ### 🔐 Environment Variables
 
-- Never commit `.env` files (they're gitignored)
-- Use `.env.example` as a template
+- Never commit `.env.dev` or `.env.prod` files (they're gitignored)
 - Store secrets in GitHub Secrets for CI/CD
 - Rotate credentials regularly
 
@@ -297,69 +241,51 @@ Content-Security-Policy: [configured for your needs]
 | -------- | -------- | ---------- |
 | HTML     | No cache | No cache   |
 | JS/CSS   | 1 hour   | 1 year     |
-| Images   | 1 hour   | 1 day      |
-| Fonts    | 1 hour   | 1 year     |
-
-## CI/CD
-
-### Workflow Features
-
-- ✅ Automated testing before deployment
-- ✅ Preview deployments for PRs
-- ✅ Build artifact caching
-- ✅ Parallel builds
-- ✅ Environment protection rules
-- ✅ Deployment status tracking
-
-### Branch Strategy
-
-```
-main        → Production deployment
-staging     → Staging deployment
-feature/*   → Preview deployment (via PR)
-```
+| Images   | 1 day    | 1 week     |
+| Fonts    | 1 week   | 1 year     |
 
 ## Troubleshooting
 
 ### Common Issues
 
-#### Permission Denied
+#### Build Failures
 
 ```bash
-chmod +x apps/docs/deploy-with-env.sh
-chmod +x apps/docs/deploy-with-storybook.sh
+# Clean everything and try again
+npm run clean
+pnpm install
+npm run build:all
 ```
 
-#### Environment File Not Found
+#### Search Not Working
 
-- Ensure `.env.staging` or `.env.production` exists
-- Check you're in the correct directory
+The search index is generated at build time. If search isn't working:
+
+1. Check if `apps/ascent/public/search-index.json` exists after build
+2. Ensure the `prebuild` script runs: `node scripts/generate-search-index.mjs`
+3. Verify MDX files have proper frontmatter
+
+#### SSR/Window Not Defined Errors
+
+If you encounter "window is not defined" errors during build:
+
+1. Preview components use dynamic imports with `ssr: false` via `PreviewWrapper`
+2. All preview components are wrapped to prevent SSR issues
+3. The `PreviewWrapper` component handles client-side rendering
 
 #### Firebase Authentication Failed
 
 ```bash
-firebase login
-firebase login:ci  # For CI/CD
-```
-
-#### Build Failures
-
-```bash
-# Clear all caches
-pnpm clean
-
-# Reinstall dependencies
-pnpm install
-
-# Try building again
-pnpm build
+firebase login --reauth
+firebase projects:list
 ```
 
 #### Deployment Fails
 
 - Check Firebase Console for quota limits
-- Verify hosting targets are configured
-- Ensure GitHub secrets are set correctly
+- Ensure `.env.dev` and `.env.prod` files exist
+- Verify Firebase hosting targets are configured
+- Make sure `deploy.sh` is executable: `chmod +x deploy.sh`
 
 ### Debug Commands
 
@@ -370,74 +296,100 @@ firebase projects:list
 # Check hosting targets
 firebase target:list
 
-# Test build locally
-pnpm docs:build
-pnpm storybook:build
+# Test builds locally
+npm run build:ascent
+npm run build:storybook
+
+# View Firebase hosting releases
+firebase hosting:releases:list --site blend-staging
+firebase hosting:releases:list --site blend-prod
 ```
 
-## Advanced Topics
+## Architecture
 
-### 🌐 Custom Domains
+### Deployment Structure
 
-1. Go to [Firebase Console](https://console.firebase.google.com/project/storybook-452807) → Hosting
-2. Click "Add custom domain"
-3. Follow DNS configuration steps
-4. Suggested setup:
-    - Production: `docs.yourdomain.com`
-    - Staging: `docs-staging.yourdomain.com`
+```
+blend-design-system/
+├── deploy.sh              # Unified deployment script
+├── .env.dev              # Staging environment config
+├── .env.prod             # Production environment config
+├── dist/                 # Combined deployment directory
+│   ├── index.html        # Ascent root
+│   ├── search-index.json # Search index
+│   ├── [ascent files]    # All Ascent static files
+│   └── storybook/        # Storybook subdirectory
+│       └── index.html    # Storybook root
+└── apps/
+    ├── ascent/           # Main documentation
+    │   ├── out/          # Next.js build output
+    │   └── scripts/      # Build scripts
+    │       └── generate-search-index.mjs
+    └── storybook/        # Component library
+        └── storybook-static/  # Storybook build output
+```
 
-### 📈 Performance Optimization
+### Firebase Configuration
 
-1. **Enable Compression**
-    - Already configured in `firebase.json`
-    - Brotli compression for modern browsers
+**`.firebaserc`**
 
-2. **Optimize Images**
-
-    ```bash
-    # Add image optimization to build
-    pnpm add -D sharp
-    ```
-
-3. **Monitor Performance**
-    - Use Lighthouse CI in GitHub Actions
-    - Track Core Web Vitals
-
-### 🏗️ Infrastructure as Code
-
-Consider using Terraform for Firebase configuration:
-
-```hcl
-resource "google_firebase_hosting_site" "staging" {
-  project = "storybook-452807"
-  site_id = "blend-staging"
+```json
+{
+    "projects": {
+        "default": "storybook-452807"
+    },
+    "targets": {
+        "storybook-452807": {
+            "hosting": {
+                "blend-staging": ["blend-staging"],
+                "blend-prod": ["blend-prod"]
+            }
+        }
+    }
 }
 ```
 
-### 🔄 Rollback Procedure
+**`firebase.json`**
 
-```bash
-# View deployment history
-firebase hosting:releases:list --site blend-staging
+- Configures rewrites for path-based routing
+- Sets security headers
+- Defines cache policies
+- Handles `/storybook` path routing
 
-# Rollback to previous version
-firebase hosting:rollback --site blend-staging
+### NPM Scripts
+
+```json
+{
+    "scripts": {
+        // Development
+        "ascent:dev": "cd apps/ascent && npm run dev",
+        "storybook": "cd apps/storybook && pnpm dev",
+
+        // Building
+        "build:ascent": "cd apps/ascent && npm run build",
+        "build:storybook": "cd apps/storybook && pnpm build-storybook",
+        "build:all": "npm run build:ascent && npm run build:storybook",
+
+        // Deployment
+        "deploy:dev": "./deploy.sh dev",
+        "deploy:prod": "./deploy.sh prod",
+
+        // Utilities
+        "clean": "turbo run clean && rm -rf node_modules dist apps/ascent/out apps/storybook/storybook-static"
+    }
+}
 ```
+
+## 🌐 Custom Domain
+
+The production deployment is configured with the custom domain `juspay.design`. The DNS configuration and SSL certificates are managed through Firebase Hosting.
 
 ## 📚 Resources
 
 - [Firebase Hosting Documentation](https://firebase.google.com/docs/hosting)
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Next.js Static Export](https://nextjs.org/docs/app/building-your-application/deploying/static-exports)
 - [Storybook Deployment](https://storybook.js.org/docs/react/sharing/publish-storybook)
-- [Web Security Headers](https://securityheaders.com/)
-
-## 🆘 Support
-
-- **Firebase Console**: https://console.firebase.google.com/project/storybook-452807
-- **GitHub Repository**: Check issues and discussions
-- **Internal Team**: Reach out in #design-system channel
 
 ---
 
-Last updated: July 2025
+Last updated: January 2025

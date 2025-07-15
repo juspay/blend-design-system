@@ -1,4 +1,4 @@
-import { ColumnDefinition, ColumnFilter, FilterType } from '../types';
+import { ColumnDefinition, FilterType } from '../types';
 export type TableHeaderProps<T extends Record<string, unknown>> = {
     visibleColumns: ColumnDefinition<T>[];
     initialColumns: ColumnDefinition<T>[];
@@ -6,12 +6,16 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     enableInlineEdit?: boolean;
     enableColumnManager?: boolean;
     enableRowExpansion?: boolean;
+    enableRowSelection?: boolean;
     data?: T[];
-    columnFilters?: ColumnFilter[];
+    columnFreeze?: number;
     onSort: (field: keyof T) => void;
     onSelectAll: (checked: boolean | 'indeterminate') => void;
     onColumnChange: (columns: ColumnDefinition<T>[]) => void;
-    onColumnFilter?: (field: keyof T, type: FilterType, value: string | string[], operator?: 'equals' | 'contains' | 'startsWith' | 'endsWith' | 'gt' | 'lt' | 'gte' | 'lte') => void;
+    onColumnFilter?: (field: string, type: FilterType, value: string | string[] | {
+        min: number;
+        max: number;
+    }, operator?: 'equals' | 'contains' | 'startsWith' | 'endsWith' | 'gt' | 'lt' | 'gte' | 'lte' | 'range') => void;
     onHeaderChange?: (field: keyof T, newHeader: string) => void;
     getColumnWidth: (column: ColumnDefinition<T>, index: number) => React.CSSProperties;
 };

@@ -14,7 +14,7 @@ export type UnitInputProps = {
     errorMessage?: string;
     required?: boolean;
     size?: UnitInputSize;
-    label: string;
+    label?: string;
     sublabel?: string;
     helpIconHintText?: string;
     hintText?: string;

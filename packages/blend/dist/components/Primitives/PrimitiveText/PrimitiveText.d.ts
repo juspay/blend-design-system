@@ -15,6 +15,7 @@ export type PrimitiveTextProps = {
     paddingX?: CSSObject['padding'];
     paddingY?: CSSObject['padding'];
     fontSize?: CSSObject['fontSize'];
+    lineHeight?: CSSObject['lineHeight'];
     truncate?: boolean;
     userSelect?: CSSObject['userSelect'];
     name?: CSSObject['name'];

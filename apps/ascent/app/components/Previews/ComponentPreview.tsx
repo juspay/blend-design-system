@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { Tabs } from 'radix-ui'
+import * as Tabs from '@radix-ui/react-tabs'
 import { highlight } from 'sugar-high'
 
 type ComponentPreviewProps = {

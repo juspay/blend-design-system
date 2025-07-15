@@ -3,6 +3,7 @@ import { FoundationTokenType } from '../../tokens/theme.token';
 export type TableTokenType = {
     padding: CSSObject['padding'];
     width: CSSObject['width'];
+    height: CSSObject['height'];
     display: CSSObject['display'];
     flexDirection: CSSObject['flexDirection'];
     position: CSSObject['position'];
@@ -24,7 +25,7 @@ export type TableTokenType = {
         borderRadius: CSSObject['borderRadius'];
         border: CSSObject['border'];
         maxHeight: CSSObject['maxHeight'];
-        minHeight: CSSObject['minHeight'];
+        minHeight?: CSSObject['minHeight'];
         bulkActions: {
             top: CSSObject['top'];
             left: CSSObject['left'];
@@ -41,6 +42,7 @@ export type TableTokenType = {
             minWidth: CSSObject['minWidth'];
             border: CSSObject['border'];
             selectText: CSSObject;
+            height: CSSObject['height'];
         };
         table: {
             width: CSSObject['width'];
@@ -54,10 +56,50 @@ export type TableTokenType = {
                 borderBottom: CSSObject['borderBottom'];
                 height: CSSObject['height'];
                 row: CSSObject;
-                cell: CSSObject;
+                cell: CSSObject & {
+                    width?: CSSObject['width'];
+                    fontSize?: CSSObject['fontSize'];
+                    fontWeight?: CSSObject['fontWeight'];
+                };
                 sortable: {
                     cursor: CSSObject['cursor'];
                     userSelect: CSSObject['userSelect'];
+                };
+                filter: {
+                    backgroundColor: CSSObject['backgroundColor'];
+                    borderRadius: CSSObject['borderRadius'];
+                    border: CSSObject['border'];
+                    cursor: CSSObject['cursor'];
+                    textColor: CSSObject['color'];
+                    maxHeight: CSSObject['maxHeight'];
+                    overflowY: CSSObject['overflowY'];
+                    gap: CSSObject['gap'];
+                    sortOption: {
+                        padding: CSSObject['padding'];
+                        borderRadius: CSSObject['borderRadius'];
+                        hoverBackground: CSSObject['backgroundColor'];
+                        iconColor: CSSObject['color'];
+                        textColor: CSSObject['color'];
+                        fontSize: CSSObject['fontSize'];
+                        fontWeight: CSSObject['fontWeight'];
+                    };
+                    selectedBackground: CSSObject['backgroundColor'];
+                    hoverBackground: CSSObject['backgroundColor'];
+                    selectedTextColor: CSSObject['color'];
+                    normalTextColor: CSSObject['color'];
+                    selectedFontWeight: CSSObject['fontWeight'];
+                    normalFontWeight: CSSObject['fontWeight'];
+                    itemPadding: CSSObject['padding'];
+                    itemGap: CSSObject['gap'];
+                    itemBorderRadius: CSSObject['borderRadius'];
+                    itemFontSize: CSSObject['fontSize'];
+                    groupLabelFontSize: CSSObject['fontSize'];
+                    groupLabelFontWeight: CSSObject['fontWeight'];
+                    groupLabelColor: CSSObject['color'];
+                    groupLabelPadding: CSSObject['padding'];
+                    groupLabelTextTransform: CSSObject['textTransform'];
+                    separatorHeight: CSSObject['height'];
+                    separatorColor: CSSObject['backgroundColor'];
                 };
             };
             body: {

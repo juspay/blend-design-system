@@ -11,7 +11,9 @@ export type OTPInputTokensType = {
     input: {
         gap: CSSObject['gap'];
         borderRadius: CSSObject['borderRadius'];
-        boxShadow: CSSObject['boxShadow'];
+        boxShadow: {
+            [key in OTPInputState]: CSSObject['boxShadow'];
+        };
         padding: CSSObject['padding'];
         outline: {
             [key in OTPInputState]: CSSObject['outline'];
