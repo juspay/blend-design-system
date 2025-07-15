@@ -445,7 +445,7 @@ function generateFintechKpiSummaryWithChart(options, includeImports) {
         chartHeaderSlotString = options.chartTitle || 'Chart Overview',
     } = options
 
-    let kpiCardsString = kpis
+    const kpiCardsString = kpis
         .map((kpi) => {
             const changeTypeVal =
                 kpi.changeDirection === 'positive'
@@ -518,7 +518,7 @@ function generateFintechKpiSummaryWithChart(options, includeImports) {
     const chartDataString = JSON.stringify(transformedChartData)
     const chartTypeVal = `ChartType.${chartType.toUpperCase()}`
 
-    let chartString = `    <Charts
+    const chartString = `    <Charts
       chartHeaderSlot={"${chartHeaderSlotString}"}
       data={${chartDataString}}
       chartType={${chartTypeVal}}
@@ -660,7 +660,7 @@ function generateTransactionListWithControls(options, includeImports) {
             ? data
             : JSON.stringify(data)
 
-    let filterControlsString = filters
+    const filterControlsString = filters
         .map((filter) => {
             const filterProps = Object.entries(filter.props || {})
                 .map(([key, value]) => `${key}=${formatPropValue(value, '')}`)
@@ -675,7 +675,7 @@ function generateTransactionListWithControls(options, includeImports) {
         })
         .join('\n')
 
-    let mainActionsString = mainActions
+    const mainActionsString = mainActions
         .map((action) => {
             const actionProps = Object.entries(action.props || {})
                 .map(([key, value]) => `${key}=${formatPropValue(value, '')}`)
