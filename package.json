@@ -23,7 +23,11 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "fix:all": "prettier --write . && turbo run lint",
-        "prepare": "husky"
+        "prepare": "husky",
+        "build:blend": "cd packages/blend && pnpm build",
+        "publish:blend": "cd packages/blend && npm publish --access public",
+        "publish:blend:dry": "cd packages/blend && npm publish --dry-run --access public",
+        "version:blend": "cd packages/blend && npm version"
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",
