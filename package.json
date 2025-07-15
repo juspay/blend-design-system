@@ -24,6 +24,10 @@
         "format:check": "prettier --check .",
         "fix:all": "prettier --write . && turbo run lint",
         "prepare": "husky",
+        "build:blend": "cd packages/blend && pnpm build",
+        "publish:blend": "cd packages/blend && npm publish --access public",
+        "publish:blend:dry": "cd packages/blend && npm publish --dry-run --access public",
+        "version:blend": "cd packages/blend && npm version",
         "figma:validate": "figma connect validate",
         "figma:publish": "figma connect publish",
         "figma:unpublish": "figma connect unpublish"
