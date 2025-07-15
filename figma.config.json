@@ -1,0 +1,18 @@
+{
+    "codeConnect": {
+        "include": [
+            "apps/storybook/stories/**/*.figma.{ts,tsx}",
+            "apps/storybook/stories/**/*.stories.{ts,tsx}",
+            "packages/blend/lib/**/*.figma.{ts,tsx}"
+        ],
+        "exclude": [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/build/**",
+            "apps/ascent/**",
+            "apps/firebase-app/**",
+            "apps/site/**"
+        ],
+        "parser": "react"
+    }
+}

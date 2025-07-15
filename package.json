@@ -23,12 +23,16 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "fix:all": "prettier --write . && turbo run lint",
-        "prepare": "husky"
+        "prepare": "husky",
+        "figma:validate": "figma connect validate",
+        "figma:publish": "figma connect publish",
+        "figma:unpublish": "figma connect unpublish"
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",
         "@commitlint/cli": "^19.8.1",
         "@commitlint/config-conventional": "^19.8.1",
+        "@figma/code-connect": "^1.3.4",
         "husky": "^9.1.7",
         "prettier": "^3.6.2",
         "turbo": "^2.5.4"

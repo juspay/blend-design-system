@@ -107,7 +107,7 @@ figma.connect(
         links: [
             {
                 name: 'GitHub',
-                url: 'https://github.com/design-juspay/cloved/tree/main/packages/blend/lib/components/Tags',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/Tags',
             },
             {
                 name: 'Storybook',
