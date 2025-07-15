@@ -1,7 +1,8 @@
 import { CSSObject } from 'styled-components';
 import { ThemeType } from '../../tokens';
 import { CheckboxSize, CheckboxCheckedState, CheckboxInteractionState } from './types';
-export type CheckboxTokensType = Readonly<{
+import { BreakpointType } from '../../breakpoints/breakPoints';
+export type CheckboxTokensType = {
     gap: CSSObject['gap'];
     slotGap: CSSObject['gap'];
     checkboxMarginRight: CSSObject['marginRight'];
@@ -86,7 +87,10 @@ export type CheckboxTokensType = Readonly<{
         duration: CSSObject['transitionDuration'];
         easing: CSSObject['transitionTimingFunction'];
     };
-}>;
-export declare const getCheckboxTokens: (foundationToken: ThemeType) => CheckboxTokensType;
-declare const checkboxTokens: CheckboxTokensType;
+};
+export type ResponsiveCheckboxTokens = {
+    [key in keyof BreakpointType]: CheckboxTokensType;
+};
+export declare const getCheckboxTokens: (foundationToken: ThemeType) => ResponsiveCheckboxTokens;
+declare const checkboxTokens: ResponsiveCheckboxTokens;
 export default checkboxTokens;

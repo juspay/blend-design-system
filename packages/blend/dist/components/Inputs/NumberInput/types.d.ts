@@ -9,7 +9,7 @@ export type NumberInputProps = {
     error?: boolean;
     errorMessage?: string;
     size?: NumberInputSize;
-    label: string;
+    label?: string;
     sublabel?: string;
     helpIconHintText?: string;
     hintText?: string;

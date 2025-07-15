@@ -1,9 +1,10 @@
 import { CSSObject } from 'styled-components';
 import { ThemeType } from '../../tokens';
 import { SwitchSize } from './types';
+import { BreakpointType } from '../../breakpoints/breakPoints';
 export type SwitchState = 'default' | 'hover' | 'disabled' | 'error';
 export type SwitchIndicatorState = 'active' | 'inactive';
-export type SwitchTokensType = Readonly<{
+export type SwitchTokensType = {
     gap: CSSObject['gap'];
     slotGap: CSSObject['gap'];
     contentGap: CSSObject['gap'];
@@ -102,7 +103,10 @@ export type SwitchTokensType = Readonly<{
         duration: CSSObject['transitionDuration'];
         easing: CSSObject['transitionTimingFunction'];
     };
-}>;
-export declare const getSwitchTokens: (foundationToken: ThemeType) => SwitchTokensType;
-declare const switchTokens: SwitchTokensType;
+};
+export type ResponsiveSwitchTokens = {
+    [key in keyof BreakpointType]: SwitchTokensType;
+};
+export declare const getSwitchTokens: (foundationToken: ThemeType) => ResponsiveSwitchTokens;
+declare const switchTokens: ResponsiveSwitchTokens;
 export default switchTokens;

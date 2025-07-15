@@ -24,6 +24,7 @@ cjs
 .tmp
 *.tsbuildinfo
 .eslintcache
+.history
 
 # Auto-generated files
 **/.source/
@@ -42,6 +43,8 @@ next-env.d.ts
 .env.test.local
 .env.production.local
 .env.staging
+.env.dev
+.env.prod
 
 # OS files
 .DS_Store
@@ -147,3 +150,12 @@ coverage/
 # Misc
 *.local
 .vscode/settings.json
+# Firebase
+.firebase/
+.firebaserc.local
+
+# Build outputs
+dist/
+apps/ascent/out/
+apps/ascent/.next/
+apps/storybook/storybook-static/

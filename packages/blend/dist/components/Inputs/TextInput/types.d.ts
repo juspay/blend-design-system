@@ -10,7 +10,7 @@ export declare enum TextInputState {
     DISABLED = "disabled"
 }
 export type TextInputProps = {
-    label: string;
+    label?: string;
     sublabel?: string;
     hintText?: string;
     helpIconHintText?: string;

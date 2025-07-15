@@ -1,6 +1,7 @@
 import { CSSObject } from 'styled-components';
 import { ThemeType } from '../../tokens';
 import { RadioSize } from './types';
+import { BreakpointType } from '../../breakpoints/breakPoints';
 export type RadioState = 'default' | 'hover' | 'disabled' | 'error';
 export type RadioIndicatorState = 'active' | 'inactive';
 export type RadioTokensType = Readonly<{
@@ -62,6 +63,9 @@ export type RadioTokensType = Readonly<{
         };
     };
 }>;
-export declare const getRadioTokens: (foundationToken: ThemeType) => RadioTokensType;
-declare const radioTokens: RadioTokensType;
+export type ResponsiveRadioTokens = {
+    [key in keyof BreakpointType]: RadioTokensType;
+};
+export declare const getRadioTokens: (foundationToken: ThemeType) => ResponsiveRadioTokens;
+declare const radioTokens: ResponsiveRadioTokens;
 export default radioTokens;

@@ -15,7 +15,9 @@ export type NumberInputTokensType = {
     input: {
         gap: CSSObject['gap'];
         borderRadius?: CSSObject['borderRadius'];
-        boxShadow: CSSObject['boxShadow'];
+        boxShadow: {
+            [key in TextInputState]: CSSObject['boxShadow'];
+        };
         paddingX: {
             [key in TextInputSize]: CSSObject['padding'];
         };

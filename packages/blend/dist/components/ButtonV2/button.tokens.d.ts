@@ -1,6 +1,7 @@
 import { CSSObject } from 'styled-components';
 import { ButtonSizeV2, ButtonSubTypeV2, ButtonTypeV2 } from './types';
 import { FoundationTokenType } from '../../tokens/theme.token';
+import { BreakpointType } from '../../breakpoints/breakPoints';
 export type ButtonState = 'default' | 'hover' | 'active' | 'disabled';
 export type ButtonTokensType = {
     gap: CSSObject['gap'];
@@ -53,5 +54,8 @@ export type ButtonTokensType = {
     };
 };
 declare const buttonTokens: ButtonTokensType;
-export declare const getButtonTokens: (foundationToken: FoundationTokenType) => ButtonTokensType;
+export type ResponsiveButtonTokens = {
+    [key in keyof BreakpointType]: ButtonTokensType;
+};
+export declare const getButtonTokens: (foundationToken: FoundationTokenType) => ResponsiveButtonTokens;
 export default buttonTokens;

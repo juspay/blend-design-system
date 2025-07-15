@@ -4,7 +4,7 @@ export declare const filterData: <T extends Record<string, unknown>>(data: T[], 
 export declare const searchData: <T extends Record<string, unknown>>(data: T[], searchConfig: SearchConfig, columns: ColumnDefinition<T>[]) => T[];
 export declare const applyColumnFilters: <T extends Record<string, unknown>>(data: T[], filters: ColumnFilter[]) => T[];
 export declare const getUniqueColumnValues: <T extends Record<string, unknown>>(data: T[], field: keyof T) => string[];
-export declare const sortData: <T extends Record<string, unknown>>(data: T[], sortConfig: SortConfig) => T[];
+export declare const sortData: <T extends Record<string, unknown>>(data: T[], sortConfig: SortConfig, columns?: ColumnDefinition<T>[]) => T[];
 export declare const formatCurrency: (amount: number, currency?: string) => string;
 export declare const getDefaultColumnWidth: <T extends Record<string, unknown>>(column: ColumnDefinition<T>) => {
     minWidth: string;
@@ -12,7 +12,10 @@ export declare const getDefaultColumnWidth: <T extends Record<string, unknown>>(
 };
 export declare const getColumnStyles: <T extends Record<string, unknown>>(column: ColumnDefinition<T>) => React.CSSProperties;
 export declare const formatDate: (dateString: string) => string;
-export declare const updateColumnFilter: <T extends Record<string, unknown>>(currentFilters: ColumnFilter[], field: keyof T, type: FilterType, value: string | string[], operator?: "equals" | "contains" | "startsWith" | "endsWith" | "gt" | "lt" | "gte" | "lte") => ColumnFilter[];
+export declare const updateColumnFilter: (currentFilters: ColumnFilter[], field: keyof Record<string, unknown>, type: FilterType, value: string | string[] | {
+    min: number;
+    max: number;
+}, operator?: "equals" | "contains" | "startsWith" | "endsWith" | "gt" | "lt" | "gte" | "lte" | "range") => ColumnFilter[];
 export declare const generateCSVContent: <T extends Record<string, unknown>>(data: T[], columns: ColumnDefinition<T>[]) => string;
 export declare const downloadCSV: (csvContent: string, filename?: string) => void;
 export declare const exportSelectedRowsToCSV: <T extends Record<string, unknown>>(allData: T[], selectedRows: Record<string, boolean>, columns: ColumnDefinition<T>[], idField: string, filename?: string) => void;

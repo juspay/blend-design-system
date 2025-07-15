@@ -11,7 +11,7 @@ export declare enum MultiValueInputState {
     DISABLED = "disabled"
 }
 export type MultiValueInputProps = {
-    label: string;
+    label?: string;
     sublabel?: string;
     helpIconHintText?: string;
     error?: boolean;
