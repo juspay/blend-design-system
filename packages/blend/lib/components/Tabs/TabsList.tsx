@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { TabsListProps, TabsSize, TabsVariant } from './types'
+import type { TabsListProps, TabsSize, TabsVariant } from './types'
 import { StyledTabsList } from './StyledTabs'
 import { useComponentToken } from '../../context/useComponentToken'
 import { TabsTokensType } from './tabs.token'

@@ -1,4 +1,4 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { UnitInputSize } from './types'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { FoundationTokenType } from '../../../tokens/theme.token'

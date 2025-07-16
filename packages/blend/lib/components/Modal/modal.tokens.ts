@@ -1,5 +1,5 @@
 import { FOUNDATION_THEME } from '../../tokens'
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { FoundationTokenType } from '../../tokens/theme.token'
 
 export type ModalTokensType = {

@@ -1,6 +1,6 @@
 //statcard.tokens.ts
 
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { StatCardVariant } from './types'
 import { FoundationTokenType } from '../../tokens/theme.token'
 

@@ -4,10 +4,10 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
-import { NumberInputProps } from './types'
+import type { NumberInputProps } from './types'
 import { NumberInputSize } from './types'
 import { useComponentToken } from '../../../context/useComponentToken'
-import { NumberInputTokensType } from './numberInput.tokens'
+import  type { NumberInputTokensType } from './numberInput.tokens'
 
 const NumberInput = ({
     value,

@@ -1,4 +1,4 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME, ThemeType } from '../../tokens'
 import { SwitchSize } from './types'
 import { BreakpointType } from '../../breakpoints/breakPoints'

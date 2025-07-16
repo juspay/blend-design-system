@@ -22,7 +22,7 @@ import { MenuTokensType } from '../components/Menu/menu.tokens'
 import { MultiSelectTokensType } from '../components/MultiSelect/multiSelect.tokens'
 import { TableTokenType } from '../components/DataTable/dataTable.tokens'
 import { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
-import { AccordionTokenType } from '../components/Accordion/accordion.tokens'
+import type { AccordionTokenType } from '../components/Accordion/accordion.tokens'
 import { StatCardTokenType } from '../components/StatCard/statcard.tokens'
 
 export const useComponentToken = (

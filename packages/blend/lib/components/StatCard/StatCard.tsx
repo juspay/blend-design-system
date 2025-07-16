@@ -16,7 +16,7 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { ChangeType, StatCardVariant, type StatCardProps } from './types'
 import { useComponentToken } from '../../context/useComponentToken'
-import { StatCardTokenType } from './statcard.tokens'
+import type { StatCardTokenType } from './statcard.tokens'
 
 const StatCard = ({
     title,

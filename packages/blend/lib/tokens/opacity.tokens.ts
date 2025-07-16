@@ -1,4 +1,4 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 
 export type OpacityTokensType = Readonly<{
     0: CSSObject['opacity']

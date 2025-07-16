@@ -1,6 +1,6 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { FoundationTokenType } from '../../../tokens/theme.token'
+import type { FoundationTokenType } from '../../../tokens/theme.token'
 import { TextInputSize, TextInputState } from './types'
 
 export type TextInputTokensType = {

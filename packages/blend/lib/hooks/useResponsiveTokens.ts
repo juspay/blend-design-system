@@ -1,8 +1,8 @@
 import { useContext } from 'react'
-import ThemeContext, { ComponentTokenType } from '../context/ThemeContext'
+import ThemeContext, type { ComponentTokenType } from '../context/ThemeContext'
 import { useBreakpoints } from './useBreakPoints'
 import { useComponentToken } from '../context/useComponentToken'
-import { BreakpointType } from '../breakpoints/breakPoints'
+import type { BreakpointType } from '../breakpoints/breakPoints'
 
 export const useResponsiveTokens = <T>(component: keyof ComponentTokenType) => {
     const { breakpoints } = useContext(ThemeContext)

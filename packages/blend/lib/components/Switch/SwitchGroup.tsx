@@ -1,5 +1,5 @@
 import React, { forwardRef, useState } from 'react'
-import { SwitchGroupProps } from './types'
+import type { SwitchGroupProps } from './types'
 import {
     isSwitchElement,
     createSwitchGroupChangeHandler,
