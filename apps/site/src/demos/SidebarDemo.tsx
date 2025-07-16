@@ -50,6 +50,15 @@ import RadioDemo from './RadioDemo'
 import CheckboxDemo from './CheckboxDemo'
 import SwitchDemo from './SwitchDemo'
 import { Snackbar } from '../../../../packages/blend/lib/components/Snackbar'
+import { ThemeProvider } from '../../../../packages/blend/lib/context'
+import ALT_FOUNDATION_TOKENS from '../themes/AIT_FOUNDATION_TOKENS'
+import HDFC_COMPONENT_TOKENS from '../themes/HDFC_COMPONENT_TOKENS'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import {
+    SelectMenuAlignment,
+    SelectMenuVariant,
+} from '../../../../packages/blend/lib/components/Select'
+import MenuDemo from './MenuDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -173,6 +182,8 @@ const SidebarDemo = () => {
                 return <CheckboxDemo />
             case 'switch':
                 return <SwitchDemo />
+            case 'menu':
+                return <MenuDemo />
             default:
                 return <div>No component selected</div>
         }
@@ -476,21 +487,83 @@ const SidebarDemo = () => {
         },
     ]
 
+    const [theme, setTheme] = useState<'EULER' | 'JUSBIZ'>('EULER')
+
+    const breakpoints = {
+        sm: 480,
+        lg: 1440,
+    }
+
+    const themeProps =
+        theme === 'EULER'
+            ? {}
+            : {
+                  foundationTokens: ALT_FOUNDATION_TOKENS,
+                  componentTokens: HDFC_COMPONENT_TOKENS,
+                  breakpoints: breakpoints,
+              }
+
     return (
         <div className="w-screen h-screen">
-            <Snackbar />
-            <Sidebar
-                activeTenant={activeTenant}
-                setActiveTenant={setActiveTenant}
-                tenants={tenants}
-                activeMerchant={activeMerchant}
-                setActiveMerchant={setActiveMerchant}
-                merchants={merchants}
-                data={sampleData}
-                topbar={<div>Topbar</div>}
-            >
-                <div className="w-full h-full">{renderContent()}</div>
-            </Sidebar>
+            <ThemeProvider {...themeProps}>
+                <Snackbar />
+                <Sidebar
+                    activeTenant={activeTenant}
+                    setActiveTenant={setActiveTenant}
+                    tenants={tenants}
+                    activeMerchant={activeMerchant}
+                    setActiveMerchant={setActiveMerchant}
+                    merchants={merchants}
+                    data={sampleData}
+                    topbar={
+                        <div className="flex justify-end">
+                            <div>
+                                <SingleSelect
+                                    slot={
+                                        <kbd
+                                            style={{
+                                                fontSize: 10,
+                                                backgroundColor:
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[25],
+                                                padding: '2px 4px',
+                                                borderRadius: 4,
+                                            }}
+                                        >
+                                            CMD + E
+                                        </kbd>
+                                    }
+                                    label="Theme"
+                                    placeholder="Select Theme"
+                                    minWidth={200}
+                                    alignment={SelectMenuAlignment.END}
+                                    selected={theme}
+                                    onSelect={(value) =>
+                                        setTheme(value as 'EULER' | 'JUSBIZ')
+                                    }
+                                    variant={SelectMenuVariant.NO_CONTAINER}
+                                    items={[
+                                        {
+                                            items: [
+                                                {
+                                                    value: 'EULER',
+                                                    label: 'EULER',
+                                                },
+                                                {
+                                                    value: 'JUSBIZ',
+                                                    label: 'JUSBIZ',
+                                                },
+                                            ],
+                                        },
+                                    ]}
+                                />
+                            </div>
+                        </div>
+                    }
+                >
+                    <div className="w-full h-full">{renderContent()}</div>
+                </Sidebar>
+            </ThemeProvider>
         </div>
     )
 }

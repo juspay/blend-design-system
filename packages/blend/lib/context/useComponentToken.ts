@@ -1,6 +1,6 @@
 import type { SearchInputTokensType } from '../components/Inputs/SearchInput/searchInput.tokens'
 import type { TextAreaTokensType } from '../components/Inputs/TextArea/textarea.token'
-import type { TagTokensType } from '../components/Tags/tag.tokens'
+import type { ResponsiveTagTokens } from '../components/Tags/tag.tokens'
 import type { ResponsiveRadioTokens } from '../components/Radio/radio.token'
 import type { ResponsiveSwitchTokens } from '../components/Switch/switch.token'
 import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
@@ -18,7 +18,7 @@ import type { ResponsiveButtonTokens } from '../components/ButtonV2/button.token
 import type { ModalTokensType } from '../components/Modal/modal.tokens'
 import type { BreadcrumbTokenType } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { PopoverTokenType } from '../components/Popover/popover.tokens'
-import type { MenuTokensType } from '../components/Menu/menu.tokens'
+import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { MultiSelectTokensType } from '../components/MultiSelect/multiSelect.tokens'
 import type { TableTokenType } from '../components/DataTable/dataTable.tokens'
 import type { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
@@ -29,7 +29,7 @@ export const useComponentToken = (
     component: keyof ComponentTokenType
 ):
     | SearchInputTokensType
-    | TagTokensType
+    | ResponsiveTagTokens
     | TextAreaTokensType
     | TextInputTokensType
     | NumberInputTokensType
@@ -47,7 +47,7 @@ export const useComponentToken = (
     | ModalTokensType
     | BreadcrumbTokenType
     | PopoverTokenType
-    | MenuTokensType
+    | ResponsiveMenuTokensType
     | MultiSelectTokensType
     | TableTokenType
     | CalendarTokenType

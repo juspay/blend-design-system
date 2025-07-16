@@ -10,7 +10,7 @@ import SearchInput from '../Inputs/SearchInput/SearchInput'
 import { Search } from 'lucide-react'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { MenuTokensType } from './menu.tokens'
-import { useComponentToken } from '../../context/useComponentToken'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const contentBaseStyle: CSSObject = {
     backgroundColor: 'white',
@@ -45,7 +45,7 @@ const Menu = ({
 }: MenuV2Props) => {
     const [searchText, setSearchText] = useState<string>('')
     const filteredItems = filterMenuGroups(items, searchText)
-    const menuTokens = useComponentToken('MENU') as MenuTokensType
+    const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
     return (
         <RadixMenu.Root modal={asModal}>
             <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>

@@ -12,7 +12,7 @@ import MenuItem from './MenuItem'
 import { ChevronRightIcon } from 'lucide-react'
 import { MenuItemStates, MenuTokensType } from './menu.tokens'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { useComponentToken } from '../../context/useComponentToken'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -147,7 +147,7 @@ export const SubMenu = ({
     item: MenuItemV2Type
     idx: number
 }) => {
-    const menuTokens = useComponentToken('MENU') as MenuTokensType
+    const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
 
     return (
         <RadixMenu.Sub key={idx}>

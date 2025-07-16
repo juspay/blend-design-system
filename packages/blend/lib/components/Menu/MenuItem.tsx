@@ -9,7 +9,7 @@ import { SubMenu } from './SubMenu'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { MenuItemStates, MenuTokensType } from './menu.tokens'
-import { useComponentToken } from '../../context/useComponentToken'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -90,7 +90,7 @@ const getColor = (
 }
 
 const MenuItem = ({ item, idx }: { item: MenuItemV2Type; idx: number }) => {
-    const menuTokens = useComponentToken('MENU') as MenuTokensType
+    const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
     if (item.subMenu) {
         return <SubMenu item={item} idx={idx} />
     }

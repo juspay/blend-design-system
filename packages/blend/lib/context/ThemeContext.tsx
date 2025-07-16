@@ -1,6 +1,9 @@
 import { createContext, useContext } from 'react'
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
-import { type TagTokensType, getTagTokens } from '../components/Tags/tag.tokens'
+import {
+    ResponsiveTagTokens,
+    getTagTokens,
+} from '../components/Tags/tag.tokens'
 import {
     getSearchInputTokens,
     type SearchInputTokensType,
@@ -75,7 +78,7 @@ import {
 } from '../components/Popover/popover.tokens'
 import {
     getMenuTokens,
-    type MenuTokensType,
+    type ResponsiveMenuTokensType,
 } from '../components/Menu/menu.tokens'
 import {
     getMultiSelectTokens,
@@ -100,7 +103,7 @@ import {
 import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
 
 export type ComponentTokenType = {
-    TAGS?: TagTokensType
+    TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: SearchInputTokensType
     TEXT_AREA?: TextAreaTokensType
     RADIO?: ResponsiveRadioTokens
@@ -119,7 +122,7 @@ export type ComponentTokenType = {
     MODAL?: ModalTokensType
     BREADCRUMB?: BreadcrumbTokenType
     POPOVER?: PopoverTokenType
-    MENU?: MenuTokensType
+    MENU?: ResponsiveMenuTokensType
     MULTI_SELECT?: MultiSelectTokensType
     TABLE?: TableTokenType
     CALENDAR?: CalendarTokenType
