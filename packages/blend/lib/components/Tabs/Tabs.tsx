@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { TabsProps } from './types'
+import { type TabsProps } from './types'
 import { StyledTabs } from './StyledTabs'
 
 const Tabs = forwardRef<HTMLDivElement, TabsProps>(

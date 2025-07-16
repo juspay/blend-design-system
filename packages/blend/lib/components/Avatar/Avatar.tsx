@@ -1,5 +1,5 @@
 import { forwardRef, useState } from 'react'
-import { AvatarProps, AvatarSize, AvatarShape } from './types'
+import { type AvatarProps, AvatarSize, AvatarShape } from './types'
 import {
     StyledAvatarContainer,
     StyledAvatarImage,

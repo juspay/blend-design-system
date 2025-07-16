@@ -4,10 +4,10 @@ import {
     AlertVariant,
     AlertStyle,
     AlertActionPlacement,
-    SingleSelect,
-    Switch,
-    TextInput,
-} from 'blend-v1'
+} from '../../../../packages/blend/lib/components/Alert'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import {
     AlertCircle,
     CheckCircle,

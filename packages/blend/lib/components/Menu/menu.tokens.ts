@@ -1,7 +1,7 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 import { MenuItemV2ActionType, MenuItemV2Variant } from './types'
-import { FoundationTokenType } from '../../tokens/theme.token'
+import type { FoundationTokenType } from '../../tokens/theme.token'
 
 export type MenuItemStates =
     | 'default'

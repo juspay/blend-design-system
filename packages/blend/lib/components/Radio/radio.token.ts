@@ -1,7 +1,7 @@
-import { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME, ThemeType } from '../../tokens'
+import type { CSSObject } from 'styled-components'
+import { FOUNDATION_THEME, type ThemeType } from '../../tokens'
 import { RadioSize } from './types'
-import { BreakpointType } from '../../breakpoints/breakPoints'
+import type { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type RadioState = 'default' | 'hover' | 'disabled' | 'error'
 export type RadioIndicatorState = 'active' | 'inactive'
@@ -70,6 +70,10 @@ export type RadioTokensType = Readonly<{
             [key in RadioSize]: CSSObject['width']
         }
     }
+    required: {
+        color: CSSObject['color']
+        spacing: CSSObject['marginLeft']
+    }
 }>
 
 export type ResponsiveRadioTokens = {
@@ -88,42 +92,42 @@ export const getRadioTokens = (
                 inactive: {
                     background: {
                         default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[50],
+                        hover: foundationToken.colors.gray[150],
+                        disabled: foundationToken.colors.gray[100],
                     },
                     border: {
                         default: foundationToken.colors.gray[300],
-                        hover: foundationToken.colors.primary[600],
+                        hover: foundationToken.colors.gray[400],
                         disabled: foundationToken.colors.gray[200],
                     },
                 },
                 active: {
                     background: {
-                        default: foundationToken.colors.gray[0],
+                        default: foundationToken.colors.primary[100],
                         hover: foundationToken.colors.gray[0],
                         disabled: foundationToken.colors.gray[50],
                     },
                     border: {
-                        default: foundationToken.colors.primary[600],
-                        hover: foundationToken.colors.primary[700],
-                        disabled: foundationToken.colors.gray[200],
+                        default: foundationToken.colors.primary[500],
+                        hover: foundationToken.colors.primary[500],
+                        disabled: foundationToken.colors.primary[300],
                     },
                 },
             },
             activeIndicator: {
                 active: {
                     background: {
-                        default: foundationToken.colors.primary[600],
-                        disabled: foundationToken.colors.gray[200],
+                        default: foundationToken.colors.primary[500],
+                        disabled: foundationToken.colors.primary[300],
                     },
                 },
             },
             content: {
                 label: {
                     color: {
-                        default: foundationToken.colors.gray[900],
-                        hover: foundationToken.colors.gray[900],
-                        disabled: foundationToken.colors.gray[400],
+                        default: foundationToken.colors.gray[700],
+                        hover: foundationToken.colors.gray[700],
+                        disabled: foundationToken.colors.gray[300],
                         error: foundationToken.colors.red[600],
                     },
                     font: {
@@ -142,7 +146,7 @@ export const getRadioTokens = (
                         default: foundationToken.colors.gray[400],
                         hover: foundationToken.colors.gray[400],
                         disabled: foundationToken.colors.gray[200],
-                        error: foundationToken.colors.gray[400],
+                        error: foundationToken.colors.red[600],
                     },
                     font: {
                         sm: {
@@ -167,8 +171,8 @@ export const getRadioTokens = (
                     disabled: 1,
                 },
                 active: {
-                    default: 2,
-                    hover: 2,
+                    default: 1,
+                    hover: 1,
                     disabled: 1,
                 },
             },
@@ -177,6 +181,10 @@ export const getRadioTokens = (
                     sm: foundationToken.unit[12],
                     md: foundationToken.unit[12],
                 },
+            },
+            required: {
+                color: foundationToken.colors.red[600],
+                spacing: foundationToken.unit[2],
             },
         },
         lg: {
@@ -187,42 +195,42 @@ export const getRadioTokens = (
                 inactive: {
                     background: {
                         default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[50],
+                        hover: foundationToken.colors.gray[150],
+                        disabled: foundationToken.colors.gray[100],
                     },
                     border: {
                         default: foundationToken.colors.gray[300],
-                        hover: foundationToken.colors.primary[600],
+                        hover: foundationToken.colors.gray[400],
                         disabled: foundationToken.colors.gray[200],
                     },
                 },
                 active: {
                     background: {
-                        default: foundationToken.colors.gray[0],
+                        default: foundationToken.colors.primary[100],
                         hover: foundationToken.colors.gray[0],
                         disabled: foundationToken.colors.gray[50],
                     },
                     border: {
-                        default: foundationToken.colors.primary[600],
-                        hover: foundationToken.colors.primary[700],
-                        disabled: foundationToken.colors.gray[200],
+                        default: foundationToken.colors.primary[500],
+                        hover: foundationToken.colors.primary[500],
+                        disabled: foundationToken.colors.primary[300],
                     },
                 },
             },
             activeIndicator: {
                 active: {
                     background: {
-                        default: foundationToken.colors.primary[600],
-                        disabled: foundationToken.colors.gray[200],
+                        default: foundationToken.colors.primary[500],
+                        disabled: foundationToken.colors.primary[300],
                     },
                 },
             },
             content: {
                 label: {
                     color: {
-                        default: foundationToken.colors.gray[900],
-                        hover: foundationToken.colors.gray[900],
-                        disabled: foundationToken.colors.gray[400],
+                        default: foundationToken.colors.gray[700],
+                        hover: foundationToken.colors.gray[700],
+                        disabled: foundationToken.colors.gray[300],
                         error: foundationToken.colors.red[600],
                     },
                     font: {
@@ -241,7 +249,7 @@ export const getRadioTokens = (
                         default: foundationToken.colors.gray[400],
                         hover: foundationToken.colors.gray[400],
                         disabled: foundationToken.colors.gray[200],
-                        error: foundationToken.colors.gray[400],
+                        error: foundationToken.colors.red[600],
                     },
                     font: {
                         sm: {
@@ -266,8 +274,8 @@ export const getRadioTokens = (
                     disabled: 1,
                 },
                 active: {
-                    default: 2,
-                    hover: 2,
+                    default: 1,
+                    hover: 1,
                     disabled: 1,
                 },
             },
@@ -276,6 +284,10 @@ export const getRadioTokens = (
                     sm: foundationToken.unit[12],
                     md: foundationToken.unit[12],
                 },
+            },
+            required: {
+                color: foundationToken.colors.red[600],
+                spacing: foundationToken.unit[2],
             },
         },
     }

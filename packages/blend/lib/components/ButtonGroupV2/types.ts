@@ -1,5 +1,5 @@
-import { ReactElement } from 'react'
-import { ButtonV2Props } from '../ButtonV2'
+import type { ReactElement } from 'react'
+import type { ButtonV2Props } from '../ButtonV2'
 
 export type ButtonGroupV2Props = {
     stacked?: boolean

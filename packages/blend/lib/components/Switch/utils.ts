@@ -1,7 +1,7 @@
 import React from 'react'
-import { SwitchSize, SwitchProps } from './types'
+import { SwitchSize, type SwitchProps } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
-import { SwitchTokensType } from './switch.token'
+import type { SwitchTokensType } from './switch.token'
 
 export const getSwitchDataState = (checked: boolean): string => {
     return checked ? 'checked' : 'unchecked'
@@ -9,7 +9,7 @@ export const getSwitchDataState = (checked: boolean): string => {
 
 export const extractPixelValue = (tokenValue: string): number => {
     const match = tokenValue.match(/(\d+)/)
-    return match ? parseInt(match[1], 10) : 16
+    return match && match[1] ? parseInt(match[1], 10) : 16
 }
 
 export const getSpacingBySize = (

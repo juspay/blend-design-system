@@ -2,9 +2,9 @@ import { forwardRef, useCallback } from 'react'
 import { X } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import useScrollLock from '../../hooks/useScrollLock'
-import { ModalProps } from './types'
+import type { ModalProps } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
-import { ModalTokensType } from './modal.tokens'
+import type { ModalTokensType } from './modal.tokens'
 import Text from '../Text/Text'
 import { ButtonSubTypeV2, ButtonTypeV2, ButtonV2 } from '../ButtonV2'
 import { useComponentToken } from '../../context/useComponentToken'
@@ -120,7 +120,7 @@ const ModalFooter = ({
                     }
                     text={secondaryAction.text}
                     onClick={secondaryAction.onClick}
-                    isDisabled={secondaryAction.isDisabled}
+                    disabled={secondaryAction.disabled}
                     subType={secondaryAction.subType}
                     size={secondaryAction.size}
                     leadingIcon={secondaryAction.leadingIcon}
@@ -135,7 +135,7 @@ const ModalFooter = ({
                     }
                     text={primaryAction.text}
                     onClick={primaryAction.onClick}
-                    isDisabled={primaryAction.isDisabled}
+                    disabled={primaryAction.disabled}
                     subType={primaryAction.subType}
                     size={primaryAction.size}
                     leadingIcon={primaryAction.leadingIcon}

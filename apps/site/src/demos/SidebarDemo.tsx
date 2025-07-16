@@ -27,7 +27,8 @@ import {
     Weight,
     DecimalsArrowRightIcon,
 } from 'lucide-react'
-import { FOUNDATION_THEME, Sidebar } from 'blend-v1'
+import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
+import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
 import ButtonGroupDemo from './ButtonGroupDemo'
 import TagDemo from './TagDemo'
 import AvatarDemo from './AvatarDemo'
@@ -45,6 +46,10 @@ import SnackbarDemo from './SnackbarDemo'
 import AvatarGroupDemo from './AvatarGroupDemo'
 import TooltipDemo from './TooltipDemo'
 import ModalDemo from './ModalDemo'
+import RadioDemo from './RadioDemo'
+import CheckboxDemo from './CheckboxDemo'
+import SwitchDemo from './SwitchDemo'
+import { Snackbar } from '../../../../packages/blend/lib/components/Snackbar'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -83,7 +88,7 @@ const SidebarDemo = () => {
         | 'theme'
         | 'salesKpiDashboard'
         | 'transactionAnalyticsDashboard'
-    >('alerts')
+    >('buttons')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] = useState<string | undefined>(
@@ -162,6 +167,12 @@ const SidebarDemo = () => {
                 return <TooltipDemo />
             case 'modal':
                 return <ModalDemo />
+            case 'radio':
+                return <RadioDemo />
+            case 'checkbox':
+                return <CheckboxDemo />
+            case 'switch':
+                return <SwitchDemo />
             default:
                 return <div>No component selected</div>
         }
@@ -398,7 +409,7 @@ const SidebarDemo = () => {
         {
             label: 'Form Elements',
             isCollapsible: true,
-            defaultOpen: false,
+            defaultOpen: true,
             items: [
                 {
                     label: 'Date Picker',
@@ -467,6 +478,7 @@ const SidebarDemo = () => {
 
     return (
         <div className="w-screen h-screen">
+            <Snackbar />
             <Sidebar
                 activeTenant={activeTenant}
                 setActiveTenant={setActiveTenant}

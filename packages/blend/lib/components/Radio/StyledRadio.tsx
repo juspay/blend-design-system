@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { RadioSize } from './types'
-import { RadioTokensType } from './radio.token'
+import type { RadioTokensType } from './radio.token'
 
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 

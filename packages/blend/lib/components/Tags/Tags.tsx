@@ -2,9 +2,9 @@ import Block from '../Primitives/Block/Block'
 import { forwardRef } from 'react'
 
 import Text from '../Text/Text'
-import { TagColor, TagProps, TagShape, TagSize, TagVariant } from './types'
+import { TagColor, type TagProps, TagShape, TagSize, TagVariant } from './types'
 import { useComponentToken } from '../../context/useComponentToken'
-import { TagTokensType } from './tag.tokens'
+import type { TagTokensType } from './tag.tokens'
 
 const Tag = forwardRef<HTMLDivElement, TagProps>(
     (

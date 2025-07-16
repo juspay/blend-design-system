@@ -1,12 +1,13 @@
 import {
     ButtonV2,
-    ButtonGroupV2,
     ButtonTypeV2,
     ButtonSizeV2,
     ButtonSubTypeV2,
-    addSnackbar,
-} from 'blend-v1'
-import { SingleSelect, Switch } from 'blend-v1'
+} from '../../../../packages/blend/lib/components/ButtonV2'
+import { ButtonGroupV2 } from '../../../../packages/blend/lib/components/ButtonGroupV2'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import {
     Hash,
     X,

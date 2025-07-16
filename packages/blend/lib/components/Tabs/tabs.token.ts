@@ -1,5 +1,5 @@
-import { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME, ThemeType } from '../../tokens'
+import type { CSSObject } from 'styled-components'
+import { FOUNDATION_THEME, type ThemeType } from '../../tokens'
 import { TabsVariant, TabsSize } from './types'
 
 export type TabsState = 'default' | 'hover' | 'active' | 'disabled'

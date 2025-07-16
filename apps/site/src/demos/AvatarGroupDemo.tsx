@@ -1,6 +1,11 @@
 import { useState } from 'react'
-import { AvatarGroup, AvatarSize, AvatarShape } from 'blend-v1'
+import { AvatarGroup } from '../../../../packages/blend/lib/components/AvatarGroup'
+
 import { Settings, User } from 'lucide-react'
+import {
+    AvatarShape,
+    AvatarSize,
+} from '../../../../packages/blend/lib/components/Avatar'
 
 // Sample avatar data
 const sampleAvatars = [
@@ -90,7 +95,7 @@ const AvatarGroupDemo = () => {
     }
 
     return (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 p-8">
             <div>
                 <h1 className="text-2xl font-semibold mb-4">
                     AvatarGroup Component

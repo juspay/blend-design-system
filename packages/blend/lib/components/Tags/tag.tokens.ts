@@ -1,5 +1,5 @@
-import { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME, ThemeType } from '../../tokens'
+import type { CSSObject } from 'styled-components'
+import { FOUNDATION_THEME, type ThemeType } from '../../tokens'
 import { TagColor, TagShape, TagSize, TagVariant } from './types'
 
 export type TagTokensType = Readonly<{

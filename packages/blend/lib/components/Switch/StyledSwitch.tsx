@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { SwitchSize } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
-import { SwitchTokensType } from './switch.token'
+import type { SwitchTokensType } from './switch.token'
 
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 

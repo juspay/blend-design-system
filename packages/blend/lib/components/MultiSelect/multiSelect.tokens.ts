@@ -1,11 +1,11 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import {
     MultiSelectMenuSize,
     MultiSelectSelectionTagType,
     MultiSelectVariant,
 } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
-import { FoundationTokenType } from '../../tokens/theme.token'
+import type { FoundationTokenType } from '../../tokens/theme.token'
 
 type TriggerStates = 'open' | 'closed' | 'hover' | 'focus'
 

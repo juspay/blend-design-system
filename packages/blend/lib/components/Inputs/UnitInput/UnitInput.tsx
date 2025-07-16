@@ -1,13 +1,13 @@
 import { Weight } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { UnitInputSize, UnitInputProps, UnitPosition } from './types'
+import { UnitInputSize, type UnitInputProps, UnitPosition } from './types'
 import { FOUNDATION_THEME } from '../../../tokens'
 import Text from '../../Text/Text'
 import Block from '../../Primitives/Block/Block'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import InputFooter from '../utils/InputFooter/InputFooter'
-import { UnitInputTokensType } from './unitInput.tokens'
+import type { UnitInputTokensType } from './unitInput.tokens'
 import { useComponentToken } from '../../../context/useComponentToken'
 
 const UnitInput = ({

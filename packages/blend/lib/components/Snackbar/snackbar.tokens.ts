@@ -1,6 +1,6 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
-import { VariantType } from '../Text/Text'
+import type { VariantType } from '../Text/Text'
 
 export type SnackbarTokens = Readonly<{
     icon: {

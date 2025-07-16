@@ -3,8 +3,8 @@ import { useRef, useState } from 'react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 
-import { SearchInputProps } from './types'
-import { SearchInputTokensType } from './searchInput.tokens'
+import type { SearchInputProps } from './types'
+import type { SearchInputTokensType } from './searchInput.tokens'
 import { useComponentToken } from '../../../context/useComponentToken'
 
 const toPixels = (value: string | number | undefined): number => {

@@ -1,98 +1,103 @@
 import { createContext, useContext } from 'react'
-import { FOUNDATION_THEME, ThemeType } from '../tokens'
-import { TagTokensType } from '../components/Tags/tag.tokens'
-import { getTagTokens } from '../components/Tags/tag.tokens'
+import { FOUNDATION_THEME, type ThemeType } from '../tokens'
+import { type TagTokensType, getTagTokens } from '../components/Tags/tag.tokens'
 import {
     getSearchInputTokens,
-    SearchInputTokensType,
+    type SearchInputTokensType,
 } from '../components/Inputs/SearchInput/searchInput.tokens'
 import {
     getTextAreaTokens,
-    TextAreaTokensType,
+    type TextAreaTokensType,
 } from '../components/Inputs/TextArea/textarea.token'
 import {
-    ResponsiveRadioTokens,
+    type ResponsiveRadioTokens,
     getRadioTokens,
 } from '../components/Radio/radio.token'
 import {
-    ResponsiveSwitchTokens,
+    type ResponsiveSwitchTokens,
     getSwitchTokens,
 } from '../components/Switch/switch.token'
 import {
     getTextInputTokens,
-    TextInputTokensType,
+    type TextInputTokensType,
 } from '../components/Inputs/TextInput/textInput.tokens'
 import {
     getNumberInputTokens,
-    NumberInputTokensType,
+    type NumberInputTokensType,
 } from '../components/Inputs/NumberInput/numberInput.tokens'
 import {
-    AlertTokenType,
+    type AlertTokenType,
     getAlertTokens,
 } from '../components/Alert/alert.tokens'
 import {
     getOTPInputTokens,
-    OTPInputTokensType,
+    type OTPInputTokensType,
 } from '../components/Inputs/OTPInput/otpInput.tokens'
 import {
     getTooltipTokens,
-    TooltipTokensType,
+    type TooltipTokensType,
 } from '../components/Tooltip/tooltip.tokens'
 import {
     getUnitInputTokens,
-    UnitInputTokensType,
+    type UnitInputTokensType,
 } from '../components/Inputs/UnitInput/unitInput.tokens'
 import {
     getMultiValueInputTokens,
-    MultiValueInputTokensType,
+    type MultiValueInputTokensType,
 } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import {
-    DropdownInputTokensType,
     getDropdownInputTokens,
+    type DropdownInputTokensType,
 } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import {
     getCheckboxTokens,
-    ResponsiveCheckboxTokens,
+    type ResponsiveCheckboxTokens,
 } from '../components/Checkbox/checkbox.token'
-import { TabsTokensType, getTabsTokens } from '../components/Tabs/tabs.token' // Added TABS
 import {
-    ResponsiveButtonTokens,
+    type TabsTokensType,
+    getTabsTokens,
+} from '../components/Tabs/tabs.token' // Added TABS
+import {
+    type ResponsiveButtonTokens,
     getButtonTokens,
 } from '../components/ButtonV2/button.tokens'
 import {
     getModalComponentTokens,
-    ModalTokensType,
+    type ModalTokensType,
 } from '../components/Modal/modal.tokens'
 import {
-    BreadcrumbTokenType,
+    type BreadcrumbTokenType,
     getBreadcrumbTokens,
 } from '../components/Breadcrumb/breadcrumb.tokens'
 import {
     getPopoverTokens,
-    PopoverTokenType,
+    type PopoverTokenType,
 } from '../components/Popover/popover.tokens'
-import { getMenuTokens, MenuTokensType } from '../components/Menu/menu.tokens'
+import {
+    getMenuTokens,
+    type MenuTokensType,
+} from '../components/Menu/menu.tokens'
 import {
     getMultiSelectTokens,
-    MultiSelectTokensType,
+    type MultiSelectTokensType,
 } from '../components/MultiSelect/multiSelect.tokens'
 import {
     getTableToken,
-    TableTokenType,
+    type TableTokenType,
 } from '../components/DataTable/dataTable.tokens'
 import {
-    CalendarTokenType,
+    type CalendarTokenType,
     getCalendarToken,
 } from '../components/DateRangePicker/dateRangePicker.tokens'
 import {
-    AccordionTokenType,
+    type AccordionTokenType,
     getAccordionToken,
 } from '../components/Accordion/accordion.tokens'
 import {
     getStatCardToken,
-    StatCardTokenType,
+    type StatCardTokenType,
 } from '../components/StatCard/statcard.tokens'
-import { BREAKPOINTS, BreakpointType } from '../breakpoints/breakPoints'
+import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
 
 export type ComponentTokenType = {
     TAGS?: TagTokensType

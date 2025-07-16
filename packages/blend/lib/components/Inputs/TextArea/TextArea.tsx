@@ -2,9 +2,9 @@ import Block from '../../Primitives/Block/Block'
 import PrimitiveTextarea from '../../Primitives/PrimitiveTextArea'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
-import { TextAreaProps } from './types'
+import type { TextAreaProps } from './types'
 import { useComponentToken } from '../../../context/useComponentToken'
-import { TextAreaTokensType } from './textarea.token'
+import type { TextAreaTokensType } from './textarea.token'
 
 const TextArea = ({
     value,

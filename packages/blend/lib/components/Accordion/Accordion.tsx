@@ -2,8 +2,8 @@ import * as React from 'react'
 import * as RadixAccordion from '@radix-ui/react-accordion'
 import { forwardRef } from 'react'
 import { styled } from 'styled-components'
-import { AccordionProps, AccordionType } from './types'
-import { AccordionTokenType } from './accordion.tokens'
+import { type AccordionProps, AccordionType } from './types'
+import type { AccordionTokenType } from './accordion.tokens'
 import { useComponentToken } from '../../context/useComponentToken'
 
 const StyledAccordionRoot = styled(RadixAccordion.Root)<{

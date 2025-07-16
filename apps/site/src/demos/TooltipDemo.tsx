@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
 import { Info, HelpCircle, Check, Settings, MessageCircle } from 'lucide-react'
 import {
-    Tooltip,
-    TooltipSide,
-    TooltipAlign,
-    TooltipSize,
-    TooltipSlotDirection,
     ButtonV2,
     ButtonTypeV2,
     ButtonSizeV2,
-} from 'blend-v1'
+} from '../../../../packages/blend/lib/components/ButtonV2'
+import {
+    Tooltip,
+    TooltipAlign,
+    TooltipSide,
+    TooltipSize,
+    TooltipSlotDirection,
+} from '../../../../packages/blend/lib/components/Tooltip'
 
 const TooltipDemo: React.FC = () => {
     // Configuration state

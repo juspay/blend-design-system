@@ -1,8 +1,8 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 import { ButtonSizeV2, ButtonSubTypeV2, ButtonTypeV2 } from './types'
-import { FoundationTokenType } from '../../tokens/theme.token'
-import { BreakpointType } from '../../breakpoints/breakPoints'
+import type { FoundationTokenType } from '../../tokens/theme.token'
+import type { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type ButtonState = 'default' | 'hover' | 'active' | 'disabled'
 

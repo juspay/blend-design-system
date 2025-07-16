@@ -1,5 +1,5 @@
 import React from 'react'
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 
 export enum ButtonTypeV2 {
     PRIMARY = 'primary',

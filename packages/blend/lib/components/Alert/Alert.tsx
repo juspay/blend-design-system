@@ -1,3 +1,4 @@
+import React from 'react'
 import { X } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -5,12 +6,12 @@ import { foundationToken } from '../../foundationToken'
 import { styled } from 'styled-components'
 import {
     AlertActionPlacement,
-    AlertProps,
+    type AlertProps,
     AlertStyle,
     AlertVariant,
 } from './types'
-import { CSSObject } from 'styled-components'
-import { AlertTokenType } from './alert.tokens'
+import type { CSSObject } from 'styled-components'
+import type { AlertTokenType } from './alert.tokens'
 import Text from '../Text/Text'
 import { forwardRef } from 'react'
 import { useComponentToken } from '../../context/useComponentToken'

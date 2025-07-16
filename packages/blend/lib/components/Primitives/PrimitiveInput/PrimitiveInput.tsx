@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import styled, { css, CSSObject } from 'styled-components'
+import styled, { css, type CSSObject } from 'styled-components'
 
 type StateStyles = {
     _hover?: PrimitiveInputProps

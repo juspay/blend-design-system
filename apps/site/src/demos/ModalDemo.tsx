@@ -1,5 +1,10 @@
+import { Modal } from '../../../../packages/blend/lib/components/Modal'
+import { ButtonV2 } from '../../../../packages/blend/lib/components/ButtonV2'
+import {
+    ButtonTypeV2,
+    ButtonSizeV2,
+} from '../../../../packages/blend/lib/components/ButtonV2'
 import { useState } from 'react'
-import { Modal, ButtonV2, ButtonTypeV2, ButtonSizeV2 } from 'blend-v1'
 
 const ModalDemo = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -745,6 +750,12 @@ const NoActionsModalExample = () => {
                 onClose={() => setIsOpen(false)}
                 title="System Status"
                 subtitle="Current system information"
+                primaryAction={{
+                    text: 'Close',
+                    onClick: () => setIsOpen(false),
+                    buttonType: ButtonTypeV2.PRIMARY,
+                    disabled: true,
+                }}
             >
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">

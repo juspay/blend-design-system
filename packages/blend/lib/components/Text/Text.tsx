@@ -1,8 +1,8 @@
 import React from 'react'
 import PrimitiveText, {
-    PrimitiveTextProps,
+    type PrimitiveTextProps,
 } from '../Primitives/PrimitiveText/PrimitiveText'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 import { FOUNDATION_THEME } from '../../tokens'
 
 export type SemanticTagType = keyof Pick<

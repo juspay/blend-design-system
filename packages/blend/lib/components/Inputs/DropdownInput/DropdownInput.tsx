@@ -7,15 +7,15 @@ import { TextInputSize } from '../TextInput/types'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { ChevronDown } from 'lucide-react'
 import SelectMenu from '../../Select/SelectMenu'
-import {
-    SelectMenuAlignment,
+import type {
     SelectMenuGroupType,
     SelectMenuItemType,
 } from '../../Select/types'
+import { SelectMenuAlignment } from '../../Select/types'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import Text from '../../Text/Text'
-import { DropdownInputProps } from './types'
-import { DropdownInputTokensType } from './dropdownInput.tokens'
+import type { DropdownInputProps } from './types'
+import type { DropdownInputTokensType } from './dropdownInput.tokens'
 import { useComponentToken } from '../../../context/useComponentToken'
 
 const map = function getValueLabelMap(
@@ -193,11 +193,14 @@ const DropdownInput = ({
                         alignOffset={-(paddingX + 2)}
                         sideOffset={paddingX}
                         selected={dropDownValue}
-                        onSelect={(value) =>
-                            onDropDownChange?.(
-                                Array.isArray(value) ? value[0] : value
-                            )
-                        }
+                        onSelect={(value) => {
+                            const selectedValue = Array.isArray(value)
+                                ? value[0]
+                                : value
+                            if (selectedValue !== undefined) {
+                                onDropDownChange?.(selectedValue)
+                            }
+                        }}
                         trigger={
                             <PrimitiveButton
                                 disabled={disabled}

@@ -3,9 +3,9 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import { useRef, useState, useEffect } from 'react'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
-import { TextInputSize, TextInputProps } from './types'
+import { TextInputSize, type TextInputProps } from './types'
 import { useComponentToken } from '../../../context/useComponentToken'
-import { TextInputTokensType } from './textInput.tokens'
+import type { TextInputTokensType } from './textInput.tokens'
 
 const toPixels = (value: string | number | undefined): number => {
     if (typeof value === 'number') {

@@ -1,5 +1,5 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs'
-import { ComponentPropsWithoutRef, ReactNode } from 'react'
+import type { ComponentPropsWithoutRef, ReactNode } from 'react'
 
 export enum TabsVariant {
     BOXED = 'boxed',
