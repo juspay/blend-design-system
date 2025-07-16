@@ -97,6 +97,10 @@ import {
     getStatCardToken,
     type StatCardTokenType,
 } from '../components/StatCard/statcard.tokens'
+import {
+    getDrawerComponentTokens,
+    type DrawerTokensType,
+} from '../components/Drawer/drawer.tokens'
 import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
 
 export type ComponentTokenType = {
@@ -125,6 +129,7 @@ export type ComponentTokenType = {
     CALENDAR?: CalendarTokenType
     ACCORDION?: AccordionTokenType
     STAT_CARD?: StatCardTokenType
+    DRAWER?: DrawerTokensType
 }
 
 type ThemeContextType = {
@@ -161,6 +166,7 @@ const ThemeContext = createContext<ThemeContextType>({
         CALENDAR: getCalendarToken(FOUNDATION_THEME),
         ACCORDION: getAccordionToken(FOUNDATION_THEME),
         STAT_CARD: getStatCardToken(FOUNDATION_THEME),
+        DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

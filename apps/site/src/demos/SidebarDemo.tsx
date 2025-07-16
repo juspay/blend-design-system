@@ -50,6 +50,7 @@ import RadioDemo from './RadioDemo'
 import CheckboxDemo from './CheckboxDemo'
 import SwitchDemo from './SwitchDemo'
 import { Snackbar } from '../../../../packages/blend/lib/components/Snackbar'
+import DrawerDemo from './DrawerDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -83,6 +84,7 @@ const SidebarDemo = () => {
         | 'textArea'
         | 'snackbar'
         | 'dataTable'
+        | 'drawer'
         | 'colorPalette'
         | 'popover'
         | 'theme'
@@ -173,6 +175,8 @@ const SidebarDemo = () => {
                 return <CheckboxDemo />
             case 'switch':
                 return <SwitchDemo />
+            case 'drawer':
+                return <DrawerDemo />
             default:
                 return <div>No component selected</div>
         }
@@ -375,6 +379,11 @@ const SidebarDemo = () => {
                         />
                     ),
                     onClick: () => setActiveComponent('popover'),
+                },
+                {
+                    label: 'Drawer',
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    onClick: () => setActiveComponent('drawer'),
                 },
             ],
         },
