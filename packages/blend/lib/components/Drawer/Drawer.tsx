@@ -17,7 +17,6 @@ import type {
     DrawerCloseProps,
 } from './types'
 
-// Styled Components for Vaul-specific elements
 const StyledOverlay = styled(VaulDrawer.Overlay)<{ tokens: DrawerTokensType }>`
     position: fixed;
     inset: 0;
@@ -95,15 +94,12 @@ const StyledDescription = styled(VaulDrawer.Description)<{
     margin: 4px 0 0 0;
 `
 
-// Main Drawer Component
 const Drawer = ({
     open,
     onOpenChange,
     direction = 'bottom',
     modal = true,
     dismissible = true,
-    showHandle = true,
-    handle,
     nested = false,
     snapPoints,
     activeSnapPoint,
@@ -113,8 +109,7 @@ const Drawer = ({
 }: DrawerProps) => {
     const RootComponent = nested ? VaulDrawer.NestedRoot : VaulDrawer.Root
 
-    // Filter props to only pass what Vaul expects
-    const vaulProps: any = {
+    const vaulProps: Record<string, unknown> = {
         open,
         onOpenChange,
         direction,
@@ -122,7 +117,6 @@ const Drawer = ({
         dismissible,
     }
 
-    // Only add snap-related props if they exist
     if (snapPoints) vaulProps.snapPoints = snapPoints
     if (activeSnapPoint !== undefined)
         vaulProps.activeSnapPoint = activeSnapPoint
@@ -132,8 +126,7 @@ const Drawer = ({
     return <RootComponent {...vaulProps}>{children}</RootComponent>
 }
 
-// Trigger Component
-const DrawerTrigger = forwardRef<any, DrawerTriggerProps>(
+const DrawerTrigger = forwardRef<HTMLButtonElement, DrawerTriggerProps>(
     ({ children, className, disabled, onClick, ...props }, ref) => {
         return (
             <VaulDrawer.Trigger
@@ -152,10 +145,8 @@ const DrawerTrigger = forwardRef<any, DrawerTriggerProps>(
 
 DrawerTrigger.displayName = 'DrawerTrigger'
 
-// Portal Component
 const DrawerPortal = VaulDrawer.Portal
 
-// Overlay Component
 const DrawerOverlay = forwardRef<HTMLDivElement, { className?: string }>(
     ({ className, ...props }, ref) => {
         const tokens = useComponentToken('DRAWER') as DrawerTokensType
@@ -173,7 +164,6 @@ const DrawerOverlay = forwardRef<HTMLDivElement, { className?: string }>(
 
 DrawerOverlay.displayName = 'DrawerOverlay'
 
-// Content Component
 const DrawerContent = forwardRef<
     HTMLDivElement,
     DrawerContentProps & {
@@ -233,7 +223,6 @@ const DrawerContent = forwardRef<
 
 DrawerContent.displayName = 'DrawerContent'
 
-// Header Component
 const DrawerHeader = forwardRef<HTMLDivElement, DrawerHeaderProps>(
     ({ children, className, ...props }, ref) => {
         const tokens = useComponentToken('DRAWER') as DrawerTokensType
@@ -256,7 +245,6 @@ const DrawerHeader = forwardRef<HTMLDivElement, DrawerHeaderProps>(
 
 DrawerHeader.displayName = 'DrawerHeader'
 
-// Title Component
 const DrawerTitle = forwardRef<HTMLHeadingElement, DrawerTitleProps>(
     ({ children, className, ...props }, ref) => {
         const tokens = useComponentToken('DRAWER') as DrawerTokensType
@@ -276,7 +264,6 @@ const DrawerTitle = forwardRef<HTMLHeadingElement, DrawerTitleProps>(
 
 DrawerTitle.displayName = 'DrawerTitle'
 
-// Description Component
 const DrawerDescription = forwardRef<
     HTMLParagraphElement,
     DrawerDescriptionProps
@@ -321,7 +308,6 @@ const DrawerBody = forwardRef<
 
 DrawerBody.displayName = 'DrawerBody'
 
-// Footer Component
 const DrawerFooter = forwardRef<HTMLDivElement, DrawerFooterProps>(
     ({ children, className, ...props }, ref) => {
         const tokens = useComponentToken('DRAWER') as DrawerTokensType
@@ -348,7 +334,6 @@ const DrawerFooter = forwardRef<HTMLDivElement, DrawerFooterProps>(
 
 DrawerFooter.displayName = 'DrawerFooter'
 
-// Close Component
 const DrawerClose = forwardRef<HTMLButtonElement, DrawerCloseProps>(
     ({ children, className, disabled, ...props }, ref) => {
         return (
@@ -366,7 +351,6 @@ const DrawerClose = forwardRef<HTMLButtonElement, DrawerCloseProps>(
 
 DrawerClose.displayName = 'DrawerClose'
 
-// Export all components
 export {
     Drawer,
     DrawerTrigger,
