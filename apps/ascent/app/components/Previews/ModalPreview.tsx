@@ -1,5 +1,5 @@
 'use client'
-import { Modal, ButtonTypeV2, ButtonSizeV2, ButtonSubTypeV2 } from 'blend-v1'
+import { Modal, ButtonTypeV2 } from 'blend-v1'
 import React, { useState } from 'react'
 import ComponentPreview from './ComponentPreview'
 

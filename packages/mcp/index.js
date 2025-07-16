@@ -12,11 +12,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
-import {
-    getComponentMeta,
-    listAvailableComponents,
-    hasComponentMeta,
-} from './metaReader.js'
+import { getComponentMeta, hasComponentMeta } from './metaReader.js'
 
 // Get the directory of the current module
 const __filename = fileURLToPath(import.meta.url)
@@ -208,80 +204,6 @@ async function getBlendComponentPropsFromMeta(componentName) {
     }
 }
 
-async function generateSingleComponentJSXFromMeta(
-    componentName,
-    componentProps,
-    childrenInput
-) {
-    try {
-        const componentMeta = await getComponentMeta(componentName)
-        const propTypesMap = new Map()
-
-        // Build prop types map from meta
-        componentMeta.props.forEach((prop) => {
-            propTypesMap.set(prop.propName, prop.propType)
-        })
-
-        // Use the existing component generation logic with the meta-based prop types
-        let propsString = ''
-        for (const [key, value] of Object.entries(componentProps)) {
-            const propTypeString = propTypesMap.get(key)
-            if (
-                typeof value === 'boolean' &&
-                value === true &&
-                (!propTypeString ||
-                    propTypeString.toLowerCase().includes('boolean'))
-            ) {
-                propsString += ` ${key}`
-            } else {
-                propsString += ` ${key}=${formatPropValue(value, propTypeString)}`
-            }
-        }
-
-        let childrenContent = ''
-        if (typeof childrenInput === 'string') {
-            childrenContent =
-                childrenInput.trim() !== ''
-                    ? `\n  ${childrenInput
-                          .split('\n')
-                          .map((line) => `  ${line}`)
-                          .join('\n')}\n`
-                    : ''
-        } else if (Array.isArray(childrenInput)) {
-            childrenContent =
-                '\n' +
-                childrenInput
-                    .map((childReq) =>
-                        _generateSingleComponentJSX(
-                            childReq.componentName,
-                            childReq.props,
-                            childReq.children
-                        )
-                            .split('\n')
-                            .map((line) => `  ${line}`)
-                            .join('\n')
-                    )
-                    .join('\n') +
-                '\n'
-        }
-
-        let componentCode = `<${componentName}${propsString.trimEnd()}`
-        if (childrenContent) {
-            componentCode += `>${childrenContent}</${componentName}>`
-        } else {
-            componentCode += ` />`
-        }
-        return componentCode
-    } catch (error) {
-        // Fallback to original method if meta fails
-        return _generateSingleComponentJSX(
-            componentName,
-            componentProps,
-            childrenInput
-        )
-    }
-}
-
 function _generateSingleComponentJSX(
     componentName,
     componentProps,
@@ -445,7 +367,7 @@ function generateFintechKpiSummaryWithChart(options, includeImports) {
         chartHeaderSlotString = options.chartTitle || 'Chart Overview',
     } = options
 
-    let kpiCardsString = kpis
+    const kpiCardsString = kpis
         .map((kpi) => {
             const changeTypeVal =
                 kpi.changeDirection === 'positive'
@@ -518,7 +440,7 @@ function generateFintechKpiSummaryWithChart(options, includeImports) {
     const chartDataString = JSON.stringify(transformedChartData)
     const chartTypeVal = `ChartType.${chartType.toUpperCase()}`
 
-    let chartString = `    <Charts
+    const chartString = `    <Charts
       chartHeaderSlot={"${chartHeaderSlotString}"}
       data={${chartDataString}}
       chartType={${chartTypeVal}}
@@ -660,7 +582,7 @@ function generateTransactionListWithControls(options, includeImports) {
             ? data
             : JSON.stringify(data)
 
-    let filterControlsString = filters
+    const filterControlsString = filters
         .map((filter) => {
             const filterProps = Object.entries(filter.props || {})
                 .map(([key, value]) => `${key}=${formatPropValue(value, '')}`)
@@ -675,7 +597,7 @@ function generateTransactionListWithControls(options, includeImports) {
         })
         .join('\n')
 
-    let mainActionsString = mainActions
+    const mainActionsString = mainActions
         .map((action) => {
             const actionProps = Object.entries(action.props || {})
                 .map(([key, value]) => `${key}=${formatPropValue(value, '')}`)

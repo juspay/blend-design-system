@@ -7,7 +7,6 @@ import {
     XCircle,
     Info,
     Settings,
-    Heart,
 } from 'lucide-react'
 
 const meta: Meta<typeof Alert> = {

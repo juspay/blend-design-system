@@ -142,7 +142,7 @@ export const searchContent = (
     const searchTerms = query.toLowerCase().split(/\s+/)
     const results: Array<SearchResult & { score: number }> = []
 
-    for (const [slug, result] of Object.entries(index)) {
+    for (const [, result] of Object.entries(index)) {
         let score = 0
         const searchableText = [
             result.title,
@@ -194,5 +194,5 @@ export const searchContent = (
     return results
         .sort((a, b) => b.score - a.score)
         .slice(0, maxResults)
-        .map(({ score, ...result }) => result)
+        .map(({ ...result }) => result)
 }

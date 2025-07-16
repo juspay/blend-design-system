@@ -1,6 +1,5 @@
 import React from 'react'
 import type { Meta } from '@storybook/react'
-import figma from '@figma/code-connect'
 import {
     Plus,
     Download,

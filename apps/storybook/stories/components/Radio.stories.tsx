@@ -1,14 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
 import { Radio, RadioGroup, RadioSize } from 'blend-v1'
-import {
-    CreditCard,
-    DollarSign,
-    Smartphone,
-    Star,
-    Shield,
-    Clock,
-} from 'lucide-react'
+import { CreditCard, DollarSign, Smartphone, Shield } from 'lucide-react'
 
 const meta: Meta<typeof Radio> = {
     title: 'Components/Radio',
@@ -120,36 +113,43 @@ export const Default: Story = {
 // Radio sizes
 export const RadioSizes: Story = {
     render: () => {
-        const [selectedSize, setSelectedSize] = useState('medium')
+        const RadioSizesComponent = () => {
+            const [selectedSize, setSelectedSize] = useState('medium')
 
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
-                <Radio
-                    name="size-demo"
-                    value="small"
-                    size={RadioSize.SMALL}
-                    checked={selectedSize === 'small'}
-                    onChange={(checked) => checked && setSelectedSize('small')}
+            return (
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                    }}
                 >
-                    Small radio
-                </Radio>
-                <Radio
-                    name="size-demo"
-                    value="medium"
-                    size={RadioSize.MEDIUM}
-                    checked={selectedSize === 'medium'}
-                    onChange={(checked) => checked && setSelectedSize('medium')}
-                >
-                    Medium radio
-                </Radio>
-            </div>
-        )
+                    <Radio
+                        name="size-demo"
+                        value="small"
+                        size={RadioSize.SMALL}
+                        checked={selectedSize === 'small'}
+                        onChange={(checked) =>
+                            checked && setSelectedSize('small')
+                        }
+                    >
+                        Small radio
+                    </Radio>
+                    <Radio
+                        name="size-demo"
+                        value="medium"
+                        size={RadioSize.MEDIUM}
+                        checked={selectedSize === 'medium'}
+                        onChange={(checked) =>
+                            checked && setSelectedSize('medium')
+                        }
+                    >
+                        Medium radio
+                    </Radio>
+                </div>
+            )
+        }
+        return <RadioSizesComponent />
     },
     parameters: {
         docs: {
@@ -163,111 +163,114 @@ export const RadioSizes: Story = {
 // Radio states
 export const RadioStates: Story = {
     render: () => {
-        const [states, setStates] = useState({
-            interactive: 'unchecked' as string,
-        })
+        const RadioStatesComponent = () => {
+            const [states, setStates] = useState({
+                interactive: 'unchecked' as string,
+            })
 
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
+            return (
                 <div
                     style={{
-                        marginBottom: '8px',
-                        fontWeight: '500',
-                        fontSize: '14px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
                     }}
                 >
-                    Interactive States:
-                </div>
-                <Radio
-                    name="interactive-states"
-                    value="unchecked"
-                    checked={states.interactive === 'unchecked'}
-                    onChange={(checked) =>
-                        checked &&
-                        setStates((prev) => ({
-                            ...prev,
-                            interactive: 'unchecked',
-                        }))
-                    }
-                >
-                    Unchecked (Click to select)
-                </Radio>
-                <Radio
-                    name="interactive-states"
-                    value="checked"
-                    checked={states.interactive === 'checked'}
-                    onChange={(checked) =>
-                        checked &&
-                        setStates((prev) => ({
-                            ...prev,
-                            interactive: 'checked',
-                        }))
-                    }
-                >
-                    Checked (Click to select)
-                </Radio>
+                    <div
+                        style={{
+                            marginBottom: '8px',
+                            fontWeight: '500',
+                            fontSize: '14px',
+                        }}
+                    >
+                        Interactive States:
+                    </div>
+                    <Radio
+                        name="interactive-states"
+                        value="unchecked"
+                        checked={states.interactive === 'unchecked'}
+                        onChange={(checked) =>
+                            checked &&
+                            setStates((prev) => ({
+                                ...prev,
+                                interactive: 'unchecked',
+                            }))
+                        }
+                    >
+                        Unchecked (Click to select)
+                    </Radio>
+                    <Radio
+                        name="interactive-states"
+                        value="checked"
+                        checked={states.interactive === 'checked'}
+                        onChange={(checked) =>
+                            checked &&
+                            setStates((prev) => ({
+                                ...prev,
+                                interactive: 'checked',
+                            }))
+                        }
+                    >
+                        Checked (Click to select)
+                    </Radio>
 
-                <div
-                    style={{
-                        marginTop: '16px',
-                        marginBottom: '8px',
-                        fontWeight: '500',
-                        fontSize: '14px',
-                    }}
-                >
-                    Disabled States:
-                </div>
-                <Radio
-                    name="disabled-states"
-                    value="disabled-unchecked"
-                    disabled={true}
-                    defaultChecked={false}
-                >
-                    Disabled unchecked
-                </Radio>
-                <Radio
-                    name="disabled-states"
-                    value="disabled-checked"
-                    disabled={true}
-                    defaultChecked={true}
-                >
-                    Disabled checked
-                </Radio>
+                    <div
+                        style={{
+                            marginTop: '16px',
+                            marginBottom: '8px',
+                            fontWeight: '500',
+                            fontSize: '14px',
+                        }}
+                    >
+                        Disabled States:
+                    </div>
+                    <Radio
+                        name="disabled-states"
+                        value="disabled-unchecked"
+                        disabled={true}
+                        defaultChecked={false}
+                    >
+                        Disabled unchecked
+                    </Radio>
+                    <Radio
+                        name="disabled-states"
+                        value="disabled-checked"
+                        disabled={true}
+                        defaultChecked={true}
+                    >
+                        Disabled checked
+                    </Radio>
 
-                <div
-                    style={{
-                        marginTop: '16px',
-                        marginBottom: '8px',
-                        fontWeight: '500',
-                        fontSize: '14px',
-                    }}
-                >
-                    Other States:
+                    <div
+                        style={{
+                            marginTop: '16px',
+                            marginBottom: '8px',
+                            fontWeight: '500',
+                            fontSize: '14px',
+                        }}
+                    >
+                        Other States:
+                    </div>
+                    <Radio
+                        name="other-states"
+                        value="error"
+                        error={true}
+                        defaultChecked={false}
+                    >
+                        Error state
+                    </Radio>
+                    <Radio
+                        name="other-states"
+                        value="required"
+                        required={true}
+                        defaultChecked={false}
+                    >
+                        Required field
+                    </Radio>
                 </div>
-                <Radio
-                    name="other-states"
-                    value="error"
-                    error={true}
-                    defaultChecked={false}
-                >
-                    Error state
-                </Radio>
-                <Radio
-                    name="other-states"
-                    value="required"
-                    required={true}
-                    defaultChecked={false}
-                >
-                    Required field
-                </Radio>
-            </div>
-        )
+            )
+        }
+        return <RadioStatesComponent />
     },
     parameters: {
         docs: {
@@ -299,40 +302,43 @@ export const BasicRadioGroup: Story = {
 // Controlled Radio Group
 export const ControlledRadioGroup: Story = {
     render: () => {
-        const [selectedPlan, setSelectedPlan] = useState('pro')
+        const ControlledRadioGroupComponent = () => {
+            const [selectedPlan, setSelectedPlan] = useState('pro')
 
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
-                <RadioGroup
-                    name="subscription"
-                    value={selectedPlan}
-                    onChange={setSelectedPlan}
-                    label="Choose Subscription"
-                >
-                    <Radio value="monthly" size={RadioSize.MEDIUM}>
-                        Monthly Billing
-                    </Radio>
-                    <Radio value="yearly" size={RadioSize.MEDIUM}>
-                        Yearly Billing
-                    </Radio>
-                </RadioGroup>
+            return (
                 <div
                     style={{
-                        fontSize: '14px',
-                        color: '#666',
-                        marginTop: '8px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
                     }}
                 >
-                    Selected: {selectedPlan}
+                    <RadioGroup
+                        name="subscription"
+                        value={selectedPlan}
+                        onChange={setSelectedPlan}
+                        label="Choose Subscription"
+                    >
+                        <Radio value="monthly" size={RadioSize.MEDIUM}>
+                            Monthly Billing
+                        </Radio>
+                        <Radio value="yearly" size={RadioSize.MEDIUM}>
+                            Yearly Billing
+                        </Radio>
+                    </RadioGroup>
+                    <div
+                        style={{
+                            fontSize: '14px',
+                            color: '#666',
+                            marginTop: '8px',
+                        }}
+                    >
+                        Selected: {selectedPlan}
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }
+        return <ControlledRadioGroupComponent />
     },
     parameters: {
         docs: {
@@ -438,78 +444,81 @@ export const WithSlots: Story = {
 // Error and validation states
 export const ErrorAndValidation: Story = {
     render: () => {
-        const [selectedOption, setSelectedOption] = useState('')
-        const [showError, setShowError] = useState(false)
+        const ErrorAndValidationComponent = () => {
+            const [selectedOption, setSelectedOption] = useState('')
+            const [showError, setShowError] = useState(false)
 
-        const handleSubmit = () => {
-            if (!selectedOption) {
-                setShowError(true)
-            } else {
-                setShowError(false)
-                alert(`Form submitted with: ${selectedOption}`)
+            const handleSubmit = () => {
+                if (!selectedOption) {
+                    setShowError(true)
+                } else {
+                    setShowError(false)
+                    alert(`Form submitted with: ${selectedOption}`)
+                }
             }
-        }
 
-        return (
-            <div style={{ maxWidth: '400px' }}>
-                <RadioGroup
-                    name="agreement"
-                    label="Terms Agreement"
-                    value={selectedOption}
-                    onChange={(value) => {
-                        setSelectedOption(value)
-                        setShowError(false)
-                    }}
-                >
-                    <Radio
-                        value="accept"
-                        required={true}
-                        error={showError}
-                        subtext={
-                            showError
-                                ? 'You must accept the terms to continue'
-                                : 'Read our complete terms of service'
-                        }
-                    >
-                        I accept the terms and conditions
-                    </Radio>
-                    <Radio
-                        value="decline"
-                        error={showError}
-                        subtext="You will not be able to proceed without accepting"
-                    >
-                        I decline the terms and conditions
-                    </Radio>
-                </RadioGroup>
-
-                <button
-                    onClick={handleSubmit}
-                    style={{
-                        marginTop: '16px',
-                        padding: '8px 16px',
-                        backgroundColor: '#3b82f6',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                    }}
-                >
-                    Submit
-                </button>
-
-                {showError && (
-                    <div
-                        style={{
-                            color: '#ef4444',
-                            fontSize: '14px',
-                            marginTop: '8px',
+            return (
+                <div style={{ maxWidth: '400px' }}>
+                    <RadioGroup
+                        name="agreement"
+                        label="Terms Agreement"
+                        value={selectedOption}
+                        onChange={(value) => {
+                            setSelectedOption(value)
+                            setShowError(false)
                         }}
                     >
-                        Please select an option to continue.
-                    </div>
-                )}
-            </div>
-        )
+                        <Radio
+                            value="accept"
+                            required={true}
+                            error={showError}
+                            subtext={
+                                showError
+                                    ? 'You must accept the terms to continue'
+                                    : 'Read our complete terms of service'
+                            }
+                        >
+                            I accept the terms and conditions
+                        </Radio>
+                        <Radio
+                            value="decline"
+                            error={showError}
+                            subtext="You will not be able to proceed without accepting"
+                        >
+                            I decline the terms and conditions
+                        </Radio>
+                    </RadioGroup>
+
+                    <button
+                        onClick={handleSubmit}
+                        style={{
+                            marginTop: '16px',
+                            padding: '8px 16px',
+                            backgroundColor: '#3b82f6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Submit
+                    </button>
+
+                    {showError && (
+                        <div
+                            style={{
+                                color: '#ef4444',
+                                fontSize: '14px',
+                                marginTop: '8px',
+                            }}
+                        >
+                            Please select an option to continue.
+                        </div>
+                    )}
+                </div>
+            )
+        }
+        return <ErrorAndValidationComponent />
     },
     parameters: {
         docs: {

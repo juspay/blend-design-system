@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { DateRangePicker, Button, ButtonType, TextInput } from 'blend-v1'
+import { DateRangePicker, Button, ButtonType } from 'blend-v1'
 
 // Import types that might not be exported from main
 type DateRange = {
@@ -12,16 +12,10 @@ import {
     Calendar,
     CalendarDays,
     Clock,
-    Settings,
     Filter,
     TrendingUp,
-    Download,
     BarChart,
-    Users,
-    DollarSign,
-    FileText,
     AlertCircle,
-    CheckCircle,
 } from 'lucide-react'
 
 const meta: Meta<typeof DateRangePicker> = {

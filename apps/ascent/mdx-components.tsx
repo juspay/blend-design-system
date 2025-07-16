@@ -5,7 +5,6 @@ import CodeBlock from './app/components/CodeBlock'
 import DocsTypeTable from './app/components/DocsTypeTable'
 import Preview from './app/components/Preview'
 import PreviewWrapper from './app/components/PreviewWrapper'
-import { Snippet } from './app/components/Previews/ComponentPreview'
 
 // Create wrapper components for each preview
 const ButtonPreview = () => <PreviewWrapper component="ButtonPreview" />

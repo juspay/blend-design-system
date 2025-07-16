@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { Check, Copy } from 'lucide-react'
+import { Check } from 'lucide-react'
 import { highlight } from 'sugar-high'
 
 const CodeBlock = ({ code, props }: { code: React.ReactNode; props: any }) => {

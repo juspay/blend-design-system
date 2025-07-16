@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
                 },
                 timestamp: new Date().toISOString(),
             })
-        } catch (error) {
+        } catch {
             return NextResponse.json(
                 { message: 'Unauthorized - Invalid token' },
                 { status: 401 }

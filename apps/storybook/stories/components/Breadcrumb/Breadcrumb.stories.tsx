@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Breadcrumb, BreadcrumbItemType } from 'blend-v1'
+import { Breadcrumb } from 'blend-v1'
 import {
     Home,
     Users,
@@ -16,7 +16,6 @@ import {
     Shield,
     Layers,
     Globe,
-    ChevronRight,
 } from 'lucide-react'
 
 const meta: Meta<typeof Breadcrumb> = {
