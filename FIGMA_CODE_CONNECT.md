@@ -39,6 +39,7 @@
 9. Alert - `apps/storybook/stories/components/Alert/Alert.figma.tsx` ✅
 10. Modal - `apps/storybook/stories/components/Modal/Modal.figma.tsx` ✅
 11. StatCard - `apps/storybook/stories/components/StatCard/StatCard.figma.tsx` ✅
+12. Tabs (TabsTrigger) - `apps/storybook/stories/components/Tabs/Tabs.figma.tsx` ✅
 
 ## Quick Start
 
