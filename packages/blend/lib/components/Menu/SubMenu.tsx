@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import {
     MenuItemV2ActionType,
-    MenuItemV2Type,
+    type MenuItemV2Type,
     MenuItemV2Variant,
 } from './types'
 import Block from '../Primitives/Block/Block'
@@ -10,7 +10,7 @@ import Text from '../Text/Text'
 import { contentBaseStyle } from './Menu'
 import MenuItem from './MenuItem'
 import { ChevronRightIcon } from 'lucide-react'
-import { MenuItemStates, MenuTokensType } from './menu.tokens'
+import { type MenuItemStates, type MenuTokensType } from './menu.tokens'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 

@@ -2,13 +2,13 @@ import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import { FOUNDATION_THEME } from '../../tokens'
 import {
     MenuItemV2ActionType,
-    MenuItemV2Type,
+    type MenuItemV2Type,
     MenuItemV2Variant,
 } from './types'
 import { SubMenu } from './SubMenu'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import { MenuItemStates, MenuTokensType } from './menu.tokens'
+import { type MenuItemStates, type MenuTokensType } from './menu.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {

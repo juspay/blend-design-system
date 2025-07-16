@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import {
-    ResponsiveTagTokens,
+    type ResponsiveTagTokens,
     getTagTokens,
 } from '../components/Tags/tag.tokens'
 import {

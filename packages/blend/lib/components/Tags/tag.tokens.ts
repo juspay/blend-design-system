@@ -1,7 +1,7 @@
 import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME, type ThemeType } from '../../tokens'
 import { TagColor, TagShape, TagSize, TagVariant } from './types'
-import { BreakpointType } from '../../breakpoints/breakPoints'
+import { type BreakpointType } from '../../breakpoints/breakPoints'
 
 export type TagTokensType = Readonly<{
     background: {

@@ -1,7 +1,7 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
-import styled, { CSSObject } from 'styled-components'
+import styled, { type CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
-import { MenuV2Props, MenuAlignment, MenuSide } from './types'
+import { type MenuV2Props, MenuAlignment, MenuSide } from './types'
 import React, { useState } from 'react'
 import { filterMenuGroups } from './utils'
 import MenuItem from './MenuItem'
@@ -9,7 +9,7 @@ import Block from '../Primitives/Block/Block'
 import SearchInput from '../Inputs/SearchInput/SearchInput'
 import { Search } from 'lucide-react'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { MenuTokensType } from './menu.tokens'
+import { type MenuTokensType } from './menu.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const contentBaseStyle: CSSObject = {

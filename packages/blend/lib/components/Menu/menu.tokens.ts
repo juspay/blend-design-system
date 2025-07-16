@@ -2,7 +2,7 @@ import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 import { MenuItemV2ActionType, MenuItemV2Variant } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
-import { BreakpointType } from '../../breakpoints/breakPoints'
+import { type BreakpointType } from '../../breakpoints/breakPoints'
 
 export type MenuItemStates =
     | 'default'
