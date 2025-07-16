@@ -47,7 +47,7 @@ figma.connect(
 
             // Special mappings
             showCloseButton: figma.boolean('hasCloseIcon'),
-            
+
             // Header slot mapping
             headerRightSlot: figma.boolean('hasHeaderSlot', {
                 true: figma.instance('headerSlot'),
@@ -69,7 +69,17 @@ figma.connect(
             // - showDivider (visual option)
         },
 
-        example: ({ title, subtitle, showHeader, showFooter, showCloseButton, headerRightSlot, isOpen, onClose, children }) => (
+        example: ({
+            title,
+            subtitle,
+            showHeader,
+            showFooter,
+            showCloseButton,
+            headerRightSlot,
+            isOpen,
+            onClose,
+            children,
+        }) => (
             <Modal
                 isOpen={isOpen}
                 onClose={onClose}
