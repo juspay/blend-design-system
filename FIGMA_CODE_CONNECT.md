@@ -33,6 +33,9 @@
 3. Breadcrumb - `apps/storybook/stories/components/Breadcrumb/Breadcrumb.figma.tsx`
 4. Tags - `apps/storybook/stories/components/Tags/Tags.figma.tsx`
 5. SplitTag - `apps/storybook/stories/components/Tags/SplitTag.figma.tsx`
+6. Checkbox - `apps/storybook/stories/components/Checkbox/Checkbox.figma.tsx` ✅
+7. Switch - `apps/storybook/stories/components/Switch/Switch.figma.tsx` ✅
+8. Radio - `apps/storybook/stories/components/Radio/Radio.figma.tsx` ✅
 
 ## Quick Start
 
