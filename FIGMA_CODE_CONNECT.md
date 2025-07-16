@@ -38,6 +38,7 @@
 8. Radio - `apps/storybook/stories/components/Radio/Radio.figma.tsx` ✅
 9. Alert - `apps/storybook/stories/components/Alert/Alert.figma.tsx` ✅
 10. Modal - `apps/storybook/stories/components/Modal/Modal.figma.tsx` ✅
+11. StatCard - `apps/storybook/stories/components/StatCard/StatCard.figma.tsx` ✅
 
 ## Quick Start
 
