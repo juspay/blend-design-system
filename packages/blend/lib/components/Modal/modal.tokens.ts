@@ -1,6 +1,6 @@
 import { FOUNDATION_THEME } from '../../tokens'
 import type { CSSObject } from 'styled-components'
-import { FoundationTokenType } from '../../tokens/theme.token'
+import type { FoundationTokenType } from '../../tokens/theme.token'
 
 export type ModalTokensType = {
     shadow: CSSObject['boxShadow']

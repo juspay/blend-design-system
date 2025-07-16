@@ -4,12 +4,12 @@ import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
 import { ChevronDownIcon, HelpCircleIcon, X } from 'lucide-react'
 import {
-    SelectMenuGroupType,
-    SelectMenuItemType,
+    type SelectMenuGroupType,
+    type SelectMenuItemType,
     SelectMenuSize,
     SelectMenuVariant,
 } from './types'
-import Text, { VariantType } from '../Text/Text'
+import Text, { type VariantType } from '../Text/Text'
 import selectTokens from './select.token'
 import { Tooltip, TooltipSize } from '../Tooltip'
 import React from 'react'

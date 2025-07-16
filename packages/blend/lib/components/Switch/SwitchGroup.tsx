@@ -8,7 +8,7 @@ import {
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { Switch } from './Switch'
-import { SwitchTokensType } from './switch.token'
+import type { SwitchTokensType } from './switch.token'
 import { SwitchSize } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 

@@ -1,7 +1,7 @@
 import type { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME, ThemeType } from '../../tokens'
+import { FOUNDATION_THEME, type ThemeType } from '../../tokens'
 import { SwitchSize } from './types'
-import { BreakpointType } from '../../breakpoints/breakPoints'
+import type { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type SwitchState = 'default' | 'hover' | 'disabled' | 'error'
 export type SwitchIndicatorState = 'active' | 'inactive'

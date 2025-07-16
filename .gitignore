@@ -8,6 +8,8 @@ node_modules
 build
 coverage
 dist
+**/dist/
+**/dist
 out
 storybook-static
 lib

@@ -1,5 +1,5 @@
-import React, { forwardRef, JSX } from 'react'
-import styled, { css, CSSObject } from 'styled-components'
+import React, { forwardRef, type JSX } from 'react'
+import styled, { css, type CSSObject } from 'styled-components'
 
 type StateStyles = {
     _hover?: StyledLinkProps

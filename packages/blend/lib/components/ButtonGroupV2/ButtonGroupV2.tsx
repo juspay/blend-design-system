@@ -1,7 +1,7 @@
 import React from 'react'
 import { Children } from 'react'
 import Block from '../Primitives/Block/Block'
-import { ButtonGroupV2Props } from './types'
+import type { ButtonGroupV2Props } from './types'
 
 const ButtonGroupV2: React.FC<ButtonGroupV2Props> = ({
     stacked = false,

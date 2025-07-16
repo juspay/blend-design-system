@@ -5,9 +5,13 @@ import { toast as sonnerToast, Toaster as Snackbar } from 'sonner'
 import { Info, X } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
-import Text, { VariantType } from '../Text/Text'
+import Text, { type VariantType } from '../Text/Text'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
-import { AddToastOptions, CustomToastProps, SnackbarVariant } from './types'
+import {
+    type AddToastOptions,
+    type CustomToastProps,
+    SnackbarVariant,
+} from './types'
 import snackbarTokens from './snackbar.tokens'
 
 const StyledToast: React.FC<CustomToastProps> = ({

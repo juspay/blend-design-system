@@ -1,7 +1,7 @@
-import { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME, ThemeType } from '../../tokens'
+import type { CSSObject } from 'styled-components'
+import { FOUNDATION_THEME, type ThemeType } from '../../tokens'
 import { RadioSize } from './types'
-import { BreakpointType } from '../../breakpoints/breakPoints'
+import type { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type RadioState = 'default' | 'hover' | 'disabled' | 'error'
 export type RadioIndicatorState = 'active' | 'inactive'

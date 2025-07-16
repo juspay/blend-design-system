@@ -1,6 +1,8 @@
-import React, { RefObject } from 'react'
-import { AvatarData } from './types'
-import { AvatarProps, AvatarSize } from '../Avatar/types'
+import React from 'react'
+import type { RefObject } from 'react'
+import type { AvatarData } from './types'
+import type { AvatarProps } from '../Avatar/types'
+import { AvatarSize } from '../Avatar/types'
 
 // Temporary type definition until Menu component is fully implemented
 interface MenuItemProps {

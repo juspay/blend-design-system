@@ -1,5 +1,6 @@
-import { HTMLAttributes } from 'react'
-import { AvatarProps, AvatarSize, AvatarShape } from '../Avatar/types'
+import type { HTMLAttributes } from 'react'
+import type { AvatarProps } from '../Avatar/types'
+import { AvatarSize, AvatarShape } from '../Avatar/types'
 
 export interface AvatarData extends Omit<AvatarProps, 'className' | 'id'> {
     id: string | number

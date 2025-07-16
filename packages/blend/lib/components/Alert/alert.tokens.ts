@@ -1,7 +1,7 @@
 import { FOUNDATION_THEME } from '../../tokens'
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { AlertStyle, AlertVariant } from './types'
-import { FoundationTokenType } from '../../tokens/theme.token'
+import type { FoundationTokenType } from '../../tokens/theme.token'
 
 export type AlertTokenType = {
     padding: CSSObject['padding']

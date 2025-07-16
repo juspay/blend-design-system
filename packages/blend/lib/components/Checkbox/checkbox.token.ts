@@ -1,11 +1,9 @@
-import { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME, ThemeType } from '../../tokens'
-import {
-    CheckboxSize,
-    CheckboxCheckedState,
-    CheckboxInteractionState,
-} from './types'
-import { BreakpointType } from '../../breakpoints/breakPoints'
+import type { CSSObject } from 'styled-components'
+import { FOUNDATION_THEME } from '../../tokens'
+import type { ThemeType } from '../../tokens'
+import type { CheckboxCheckedState, CheckboxInteractionState } from './types'
+import { CheckboxSize } from './types'
+import type { BreakpointType } from '../../breakpoints/breakPoints'
 
 // Token Structure: $component.$target.$property.[$variant].[$type].[$state]
 // $component: CHECKBOX (implied)

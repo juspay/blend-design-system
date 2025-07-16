@@ -7,7 +7,7 @@ import InputFooter from '../utils/InputFooter/InputFooter'
 import type { NumberInputProps } from './types'
 import { NumberInputSize } from './types'
 import { useComponentToken } from '../../../context/useComponentToken'
-import  type { NumberInputTokensType } from './numberInput.tokens'
+import type { NumberInputTokensType } from './numberInput.tokens'
 
 const NumberInput = ({
     value,

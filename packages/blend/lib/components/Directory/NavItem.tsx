@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react'
-import { NavItemProps } from './types'
+import type { NavItemProps } from './types'
 import { ChevronDown } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'

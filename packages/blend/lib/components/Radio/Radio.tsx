@@ -1,5 +1,5 @@
 import React from 'react'
-import { RadioProps, RadioSize } from './types'
+import { type RadioProps, RadioSize } from './types'
 import {
     getRadioDataState,
     createRadioInputProps,
@@ -11,7 +11,7 @@ import {
 import { StyledRadioInput } from './StyledRadio'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { RadioTokensType } from './radio.token'
+import type { RadioTokensType } from './radio.token'
 
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 

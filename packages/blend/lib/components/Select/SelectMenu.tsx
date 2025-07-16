@@ -7,9 +7,9 @@ import { ChevronRightIcon, Check } from 'lucide-react'
 import React, { useState } from 'react'
 import {
     SelectMenuAlignment,
-    SelectMenuGroupType,
-    SelectMenuItemType,
-    SelectMenuProps,
+    type SelectMenuGroupType,
+    type SelectMenuItemType,
+    type SelectMenuProps,
     SelectMenuSide,
 } from './types'
 import SearchInput from '../Inputs/SearchInput/SearchInput'

@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import { RadioGroupProps } from './types'
+import type { RadioGroupProps } from './types'
 import {
     isRadioElement,
     shouldRadioBeChecked,
@@ -10,7 +10,7 @@ import {
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import Radio from './Radio'
-import { RadioTokensType } from './radio.token'
+import type { RadioTokensType } from './radio.token'
 import { RadioSize } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 

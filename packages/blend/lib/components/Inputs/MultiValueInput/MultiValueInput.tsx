@@ -1,13 +1,13 @@
-import { KeyboardEvent, useRef, useState } from 'react'
+import { type KeyboardEvent, useRef, useState } from 'react'
 import Block from '../../Primitives/Block/Block'
 import { Tag, TagShape, TagSize } from '../../Tags'
 import InputFooter from '../utils/InputFooter/InputFooter'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import { TextInputSize } from '../TextInput/types'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
-import { MultiValueInputProps } from './types'
+import type { MultiValueInputProps } from './types'
 import { useComponentToken } from '../../../context/useComponentToken'
-import { MultiValueInputTokensType } from './multiValueInput.tokens'
+import type { MultiValueInputTokensType } from './multiValueInput.tokens'
 
 const MultiValueInput = ({
     label,
@@ -53,7 +53,10 @@ const MultiValueInput = ({
             inputValue === '' &&
             tags.length > 0
         ) {
-            removeTag(tags[tags.length - 1])
+            const lastTag = tags[tags.length - 1]
+            if (lastTag) {
+                removeTag(lastTag)
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 import { SelectMenuAlignment, SelectMenuSide } from '../Select'
 
 import {
-    SelectMenuGroupType,
+    type SelectMenuGroupType,
     SelectMenuSize,
     SelectMenuVariant,
 } from '../Select'

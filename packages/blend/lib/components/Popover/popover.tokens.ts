@@ -1,7 +1,7 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { PopoverSize } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
-import { FoundationTokenType } from '../../tokens/theme.token'
+import type { FoundationTokenType } from '../../tokens/theme.token'
 
 export type PopoverTokenType = {
     background: CSSObject['backgroundColor']

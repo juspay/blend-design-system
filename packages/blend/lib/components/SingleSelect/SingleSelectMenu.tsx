@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import {
     SelectMenuAlignment,
-    SelectMenuItemType,
+    type SelectMenuItemType,
     SelectMenuSide,
 } from '../Select'
-import { SelectMenuGroupType } from '../Select'
+import type { SelectMenuGroupType } from '../Select'
 import { FOUNDATION_THEME } from '../../tokens'
 import styled from 'styled-components'
 import Text from '../Text/Text'

@@ -4,8 +4,8 @@ import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import {
-    SelectMenuGroupType,
-    SelectMenuItemType,
+    type SelectMenuGroupType,
+    type SelectMenuItemType,
     SelectMenuSize,
     SelectMenuVariant,
 } from '../Select'
@@ -15,7 +15,7 @@ import SingleSelectMenu from './SingleSelectMenu'
 import { FOUNDATION_THEME } from '../../tokens'
 import selectTokens from '../Select/select.token'
 import { ChevronDown } from 'lucide-react'
-import { SingleSelectProps } from './types'
+import type { SingleSelectProps } from './types'
 
 const map = function getValueLabelMap(
     groups: SelectMenuGroupType[]

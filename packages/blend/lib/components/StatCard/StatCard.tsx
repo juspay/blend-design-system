@@ -80,7 +80,9 @@ const StatCard = ({
 
     const isTrendingDown = useMemo(() => {
         if (!chartData || chartData.length < 2) return false
-        return chartData[0].value > chartData[chartData.length - 1].value
+        const firstItem = chartData[0]
+        const lastItem = chartData[chartData.length - 1]
+        return firstItem && lastItem && firstItem.value > lastItem.value
     }, [chartData])
 
     const lineColor = isTrendingDown
@@ -112,8 +114,11 @@ const StatCard = ({
     }: TooltipProps<number, string>) => {
         if (!active || !payload || payload.length === 0) return null
 
-        const currentValue = payload[0].value as number
-        const currentIndex = payload[0].payload?.index as number
+        const payloadItem = payload[0]
+        if (!payloadItem) return null
+
+        const currentValue = payloadItem.value as number
+        const currentIndex = payloadItem.payload?.index as number
         const previousIndex = Math.max(0, currentIndex - 1)
         const previousValue = chartData?.[previousIndex]?.value || currentValue
 

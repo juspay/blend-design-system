@@ -1,13 +1,13 @@
 import * as RadixTooltip from '@radix-ui/react-tooltip'
-import styled, { CSSObject } from 'styled-components'
+import styled, { type CSSObject } from 'styled-components'
 import {
-    TooltipProps,
+    type TooltipProps,
     TooltipAlign,
     TooltipSide,
     TooltipSize,
     TooltipSlotDirection,
 } from './types'
-import { TooltipTokensType } from './tooltip.tokens'
+import type { TooltipTokensType } from './tooltip.tokens'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useComponentToken } from '../../context/useComponentToken'

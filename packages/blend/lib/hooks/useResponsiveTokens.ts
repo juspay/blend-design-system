@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import ThemeContext, type { ComponentTokenType } from '../context/ThemeContext'
+import ThemeContext, { type ComponentTokenType } from '../context/ThemeContext'
 import { useBreakpoints } from './useBreakPoints'
 import { useComponentToken } from '../context/useComponentToken'
 import type { BreakpointType } from '../breakpoints/breakPoints'

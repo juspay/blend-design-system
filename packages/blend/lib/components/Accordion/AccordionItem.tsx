@@ -2,12 +2,9 @@ import * as RadixAccordion from '@radix-ui/react-accordion'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { forwardRef } from 'react'
 import { styled } from 'styled-components'
-import {
-    AccordionItemProps,
-    AccordionType,
-    AccordionChevronPosition,
-} from './types'
-import { AccordionTokenType } from './accordion.tokens'
+import type { AccordionItemProps } from './types'
+import { AccordionType, AccordionChevronPosition } from './types'
+import type { AccordionTokenType } from './accordion.tokens'
 import { useComponentToken } from '../../context/useComponentToken'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'

@@ -4,11 +4,11 @@ import React, {
     useEffect,
     useRef,
     useCallback,
-    RefObject,
 } from 'react'
+import type { RefObject } from 'react'
 import { Avatar } from '../Avatar'
 import { AvatarShape, AvatarSize } from '../Avatar/types'
-import { AvatarGroupProps } from './types'
+import type { AvatarGroupProps } from './types'
 import {
     StyledAvatarGroupContainer,
     StyledAvatarWrapper,

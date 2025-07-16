@@ -1,13 +1,9 @@
 import { forwardRef } from 'react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
-import {
-    ButtonV2Props,
-    ButtonSizeV2,
-    ButtonSubTypeV2,
-    ButtonTypeV2,
-} from './types'
-import { ButtonTokensType } from './button.tokens'
+import type { ButtonV2Props } from './types'
+import { ButtonSizeV2, ButtonSubTypeV2, ButtonTypeV2 } from './types'
+import type { ButtonTokensType } from './button.tokens'
 import Text from '../Text/Text'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'

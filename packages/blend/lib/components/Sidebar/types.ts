@@ -1,5 +1,5 @@
-import { ReactNode } from 'react'
-import { DirectoryData } from '../Directory/types'
+import { type ReactNode } from 'react'
+import type { DirectoryData } from '../Directory/types'
 
 export type SidebarNavItem = {
     label: string

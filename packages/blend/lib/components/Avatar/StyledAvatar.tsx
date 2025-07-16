@@ -1,5 +1,8 @@
 import styled from 'styled-components'
-import { StyledAvatarContainerProps, StyledAvatarIndicatorProps } from './types'
+import type {
+    StyledAvatarContainerProps,
+    StyledAvatarIndicatorProps,
+} from './types'
 import avatarTokens from './token'
 import { foundationToken } from '../../foundationToken'
 
