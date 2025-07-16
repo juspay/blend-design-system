@@ -28,7 +28,10 @@
         "build:blend": "cd packages/blend && pnpm build",
         "publish:blend": "cd packages/blend && npm publish --access public",
         "publish:blend:dry": "cd packages/blend && npm publish --dry-run --access public",
-        "version:blend": "cd packages/blend && npm version"
+        "version:blend": "cd packages/blend && npm version",
+        "figma:validate": "figma connect validate",
+        "figma:publish": "figma connect publish",
+        "figma:unpublish": "figma connect unpublish"
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",
@@ -42,6 +45,7 @@
         "eslint-plugin-react-hooks": "^5.2.0",
         "eslint-plugin-react-refresh": "^0.4.20",
         "globals": "^16.3.0",
+        "@figma/code-connect": "^1.3.4",
         "husky": "^9.1.7",
         "prettier": "^3.6.2",
         "turbo": "^2.5.4",
