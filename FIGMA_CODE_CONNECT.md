@@ -36,6 +36,7 @@
 6. Checkbox - `apps/storybook/stories/components/Checkbox/Checkbox.figma.tsx` ✅
 7. Switch - `apps/storybook/stories/components/Switch/Switch.figma.tsx` ✅
 8. Radio - `apps/storybook/stories/components/Radio/Radio.figma.tsx` ✅
+9. Alert - `apps/storybook/stories/components/Alert/Alert.figma.tsx` ✅
 
 ## Quick Start
 
