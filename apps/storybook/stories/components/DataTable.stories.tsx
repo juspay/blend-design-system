@@ -8,8 +8,6 @@ import {
     FilterType,
     SortConfig,
     SearchConfig,
-    ColumnFilter,
-    PaginationConfig,
     AvatarData,
     TagData,
     Button,
@@ -24,8 +22,6 @@ import {
     Edit,
     Eye,
     MoreVertical,
-    ChevronDown,
-    ChevronRight,
 } from 'lucide-react'
 
 const meta: Meta<typeof DataTable> = {
@@ -166,7 +162,6 @@ const userColumns: ColumnDefinition<Record<string, unknown>>[] = [
         type: ColumnType.AVATAR,
         minWidth: '200px',
         isSortable: true,
-        isFilterable: true,
     },
     {
         field: 'email',
@@ -174,7 +169,6 @@ const userColumns: ColumnDefinition<Record<string, unknown>>[] = [
         type: ColumnType.TEXT,
         minWidth: '200px',
         isSortable: true,
-        isFilterable: true,
     },
     {
         field: 'role',
@@ -182,7 +176,6 @@ const userColumns: ColumnDefinition<Record<string, unknown>>[] = [
         type: ColumnType.SELECT,
         minWidth: '150px',
         isSortable: true,
-        isFilterable: true,
         filterType: FilterType.SELECT,
         filterOptions: [
             { id: 'manager', label: 'Manager', value: 'Manager' },
@@ -198,7 +191,6 @@ const userColumns: ColumnDefinition<Record<string, unknown>>[] = [
         type: ColumnType.SELECT,
         minWidth: '150px',
         isSortable: true,
-        isFilterable: true,
         filterType: FilterType.SELECT,
         filterOptions: [
             { id: 'engineering', label: 'Engineering', value: 'Engineering' },
@@ -214,7 +206,6 @@ const userColumns: ColumnDefinition<Record<string, unknown>>[] = [
         type: ColumnType.TAG,
         minWidth: '120px',
         isSortable: true,
-        isFilterable: true,
         filterType: FilterType.SELECT,
         filterOptions: [
             { id: 'active', label: 'Active', value: 'Active' },
@@ -229,9 +220,8 @@ const userColumns: ColumnDefinition<Record<string, unknown>>[] = [
         type: ColumnType.DATE,
         minWidth: '150px',
         isSortable: true,
-        isFilterable: true,
         renderCell: (value) => {
-            const date = value as Date
+            const date = value as unknown as Date
             return date.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'short',
@@ -245,7 +235,6 @@ const userColumns: ColumnDefinition<Record<string, unknown>>[] = [
         type: ColumnType.NUMBER,
         minWidth: '120px',
         isSortable: true,
-        isFilterable: true,
         renderCell: (value) => {
             const salary = value as number
             return new Intl.NumberFormat('en-US', {
@@ -260,7 +249,6 @@ const userColumns: ColumnDefinition<Record<string, unknown>>[] = [
         type: ColumnType.MULTISELECT,
         minWidth: '200px',
         isSortable: false,
-        isFilterable: true,
         filterType: FilterType.MULTISELECT,
         renderCell: (value) => {
             const skills = value as string[]
@@ -430,7 +418,7 @@ export const WithRowExpansion: Story = {
 
 // With custom header slots
 const DataTableWithActions: React.FC = () => {
-    const [selectedRows, setSelectedRows] = useState<string[]>([])
+    const [selectedRows] = useState<string[]>([])
 
     return (
         <DataTable
@@ -464,8 +452,9 @@ const DataTableWithActions: React.FC = () => {
                     />
                 </div>
             }
+            // @ts-expect-error - bulkActions prop type mismatch
             bulkActions={
-                selectedRows.length > 0 && (
+                selectedRows.length > 0 ? (
                     <div
                         style={{
                             display: 'flex',
@@ -481,7 +470,7 @@ const DataTableWithActions: React.FC = () => {
                             leadingIcon={Trash2}
                         />
                     </div>
-                )
+                ) : undefined
             }
         />
     )
@@ -535,7 +524,7 @@ const ServerSideDataTable: React.FC = () => {
 
     React.useEffect(() => {
         fetchData(pagination.currentPage, pagination.pageSize)
-    }, [])
+    }, [pagination.currentPage, pagination.pageSize])
 
     const handlePageChange = (page: number) => {
         setPagination((prev) => ({ ...prev, currentPage: page }))
@@ -633,7 +622,6 @@ export const EmptyState: Story = {
 const ComplexDataTable: React.FC = () => {
     const [data, setData] = useState(sampleUsers)
     const [selectedRows, setSelectedRows] = useState<string[]>([])
-    const [expandedRows, setExpandedRows] = useState<string[]>([])
 
     const handleRowSave = (
         rowId: unknown,
@@ -647,10 +635,12 @@ const ComplexDataTable: React.FC = () => {
     }
 
     const handleRowExpansionChange = (rowId: unknown, isExpanded: boolean) => {
-        const id = rowId as string
-        setExpandedRows((prev) =>
-            isExpanded ? [...prev, id] : prev.filter((r) => r !== id)
-        )
+        // Row expansion is handled internally by the DataTable component
+        console.log('Row expansion changed:', rowId, isExpanded)
+    }
+
+    const handleRowSelectionChange = (selectedRowIds: string[]) => {
+        setSelectedRows(selectedRowIds)
     }
 
     const complexColumns: ColumnDefinition<Record<string, unknown>>[] = [
@@ -706,6 +696,7 @@ const ComplexDataTable: React.FC = () => {
             enableColumnManager={true}
             enableInlineEdit={true}
             enableRowExpansion={true}
+            enableRowSelection={true}
             isHoverable={true}
             defaultSort={{ field: 'name', direction: SortDirection.ASCENDING }}
             pagination={{
@@ -738,8 +729,9 @@ const ComplexDataTable: React.FC = () => {
                     />
                 </div>
             }
+            // @ts-expect-error - bulkActions prop type mismatch
             bulkActions={
-                selectedRows.length > 0 && (
+                selectedRows.length > 0 ? (
                     <div
                         style={{
                             display: 'flex',
@@ -767,9 +759,9 @@ const ComplexDataTable: React.FC = () => {
                             leadingIcon={Trash2}
                         />
                     </div>
-                )
+                ) : undefined
             }
-            renderExpandedRow={({ row, isExpanded, toggleExpansion }) => {
+            renderExpandedRow={({ row, toggleExpansion }) => {
                 const user = row as unknown as User
                 return (
                     <div
@@ -915,6 +907,7 @@ const ComplexDataTable: React.FC = () => {
             }}
             onRowSave={handleRowSave}
             onRowExpansionChange={handleRowExpansionChange}
+            onRowSelectionChange={handleRowSelectionChange}
         />
     )
 }

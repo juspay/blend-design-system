@@ -16,8 +16,6 @@ import {
     TrendingUp,
     Shield,
     Award,
-    Flag,
-    Hash,
     Percent,
     Package,
     GitBranch,

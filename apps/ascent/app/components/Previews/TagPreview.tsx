@@ -1,5 +1,5 @@
 'use client'
-import { Tag, TagVariant, TagColor, TagSize, TagShape } from 'blend-v1'
+import { Tag, TagVariant, TagColor, TagSize } from 'blend-v1'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
 

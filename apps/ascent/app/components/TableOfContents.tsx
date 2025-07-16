@@ -14,10 +14,7 @@ interface TableOfContentsProps {
     isMobile?: boolean
 }
 
-export default function TableOfContents({
-    items,
-    isMobile = false,
-}: TableOfContentsProps) {
+export default function TableOfContents({ items }: TableOfContentsProps) {
     const [activeId, setActiveId] = useState<string>('')
 
     useEffect(() => {

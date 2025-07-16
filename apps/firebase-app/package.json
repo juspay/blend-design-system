@@ -6,7 +6,8 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "eslint . --max-warnings 0",
+        "lint:fix": "eslint . --fix"
     },
     "dependencies": {
         "next": "15.3.5",

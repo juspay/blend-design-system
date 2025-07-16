@@ -1,4 +1,4 @@
-const withMDX = require('@next/mdx')
+import withMDX from '@next/mdx'
 
 const nextConfig = {
     output: 'export',
@@ -8,7 +8,7 @@ const nextConfig = {
     },
 }
 
-module.exports = withMDX({
+export default withMDX({
     extension: /\.mdx?$/,
     options: {
         remarkPlugins: [],

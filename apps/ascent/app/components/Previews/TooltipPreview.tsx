@@ -2,7 +2,6 @@
 import {
     Tooltip,
     TooltipSide,
-    TooltipAlign,
     TooltipSize,
     TooltipSlotDirection,
 } from 'blend-v1'

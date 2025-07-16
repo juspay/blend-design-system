@@ -20,7 +20,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchIndex }) => {
     const [query, setQuery] = useState('')
     const [results, setResults] = useState<SearchResult[]>([])
     const [isOpen, setIsOpen] = useState(false)
-    const [_, setIsSearching] = useState(false)
+    const [, setIsSearching] = useState(false)
     const [windowWidth, setWindowWidth] = useState(0)
 
     useEffect(() => {
@@ -70,7 +70,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchIndex }) => {
         const searchTerms = searchQuery.toLowerCase().split(/\s+/)
         const searchResults: Array<SearchResult & { score: number }> = []
 
-        for (const [slug, result] of Object.entries(searchIndex)) {
+        for (const [, result] of Object.entries(searchIndex)) {
             if (result.category !== 'components') {
                 continue
             }
@@ -109,7 +109,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchIndex }) => {
         const sortedResults = searchResults
             .sort((a, b) => b.score - a.score)
             .slice(0, 8)
-            .map(({ score, ...result }) => result)
+            .map(({ ...result }) => result)
 
         setResults(sortedResults)
         setIsSearching(false)
@@ -153,11 +153,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchIndex }) => {
         setIsOpen(false)
         setQuery('')
     }
-
-    const getInnerWidth = () => {
-        return window.innerWidth
-    }
-
     return (
         <div className="relative">
             <button

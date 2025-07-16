@@ -1,4 +1,9 @@
-const { join } = require('path')
+import { join } from 'path'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 /** @type {import('@storybook/react-vite').StorybookConfig} */
 const config = {
@@ -45,4 +50,4 @@ const config = {
     },
 }
 
-module.exports = config
+export default config

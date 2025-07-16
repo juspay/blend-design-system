@@ -1,33 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { Modal, Button, ButtonType, TextInput } from 'blend-v1'
+import { Modal, Button, ButtonType } from 'blend-v1'
 import {
-    Save,
     Trash2,
     AlertTriangle,
     CheckCircle,
     X,
     Settings,
-    User,
     Mail,
-    Phone,
-    MapPin,
-    Calendar,
-    Clock,
     FileText,
-    Download,
-    Upload,
-    Edit,
-    Plus,
-    Minus,
     Info,
-    HelpCircle,
     Star,
     Heart,
     Share2,
     Copy,
     ExternalLink,
-    Send,
     Image,
 } from 'lucide-react'
 
