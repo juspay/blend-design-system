@@ -1,7 +1,7 @@
-import { BREAKPOINTS, BreakpointType } from '../breakpoints/breakPoints'
-import { FOUNDATION_THEME, ThemeType } from '../tokens'
+import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
+import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import initTokens from './initComponentTokens'
-import ThemeContext, { ComponentTokenType } from './ThemeContext'
+import ThemeContext, { type ComponentTokenType } from './ThemeContext'
 
 type ThemeProviderProps = {
     foundationTokens?: ThemeType
