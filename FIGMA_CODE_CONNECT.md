@@ -40,6 +40,12 @@
 10. Modal - `apps/storybook/stories/components/Modal/Modal.figma.tsx` ✅
 11. StatCard - `apps/storybook/stories/components/StatCard/StatCard.figma.tsx` ✅
 12. Tabs (TabsTrigger) - `apps/storybook/stories/components/Tabs/Tabs.figma.tsx` ✅
+13. Avatar - `apps/storybook/stories/components/Avatar/Avatar.figma.tsx` ✅
+14. AvatarGroup - `apps/storybook/stories/components/Avatar/AvatarGroup.figma.tsx` ✅
+15. Popover - `apps/storybook/stories/components/Popover/Popover.figma.tsx` ✅
+16. Tooltip - `apps/storybook/stories/components/Tooltip/Tooltip.figma.tsx` ✅
+17. TextInput - `apps/storybook/stories/components/TextInput/TextInput.figma.tsx` ✅
+18. DropdownInput - `apps/storybook/stories/components/TextInput/DropdownInput.figma.tsx` ✅
 
 ## Quick Start
 
@@ -502,6 +508,7 @@ The repository migration has been completed. All Code Connect files now use the 
 - **Auto-generated Links**: Manual links may be overridden
 - **Links Point to Wrong Paths**: Known Code Connect limitation
 - Only generated code, imports, and links visible in Figma (no comments)
+- **Snackbar Component**: Not supported due to being a provider component that uses `addSnackbar()` function instead of direct component usage. Causes "Error loading Code Connect" in Figma.
 
 ## Resources
 
