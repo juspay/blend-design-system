@@ -16,9 +16,10 @@ import { OTPInput } from 'blend-v1'
  * 2. SPECIAL MAPPINGS:
  *    - digits (Figma) → Not available in code (hardcoded to 6 digits)
  *      Note: The current implementation only supports 6-digit OTP
+ *    - state=error (Figma) → error=true (Code) - Error state in Figma maps to error prop
  *
  * 3. FIGMA-ONLY PROPERTIES (not needed in code):
- *    - state - Interaction states (hover, focus, etc.) are handled automatically
+ *    - state - Other interaction states (hover, focus, etc.) are handled automatically
  *    - showInfo - Not available in current implementation
  *    - showLabel - Label is shown automatically when label prop is provided
  *    - showSublabel - Sublabel is shown automatically when sublabel prop is provided
@@ -47,11 +48,21 @@ figma.connect(
             sublabel: figma.string('sublabel'),
             hintText: figma.string('hintText'),
 
+            // State to error mapping
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
+
             // Note: digits prop from Figma is not supported in code
             // The component is hardcoded to 6 digits
 
             // Note: The following Figma props are not mapped:
-            // - state: Handled automatically by component interactions
+            // - state: Other states handled automatically by component interactions
             // - showInfo: Not available in current implementation
             // - showLabel: Determined by presence of label
             // - showSublabel: Determined by presence of sublabel
@@ -59,11 +70,12 @@ figma.connect(
             // - showHint: Determined by presence of hintText
         },
 
-        example: ({ label, sublabel, hintText }) => (
+        example: ({ label, sublabel, hintText, error }) => (
             <OTPInput
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
+                error={error}
                 value=""
                 onChange={(value) => console.log(value)}
             />
@@ -94,12 +106,21 @@ figma.connect(
             label: figma.string('label'),
             sublabel: figma.string('sublabel'),
             hintText: figma.string('hintText'),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
         },
-        example: ({ label, sublabel, hintText }) => (
+        example: ({ label, sublabel, hintText, error }) => (
             <OTPInput
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
+                error={error}
                 value=""
                 onChange={(value) => console.log(value)}
             />
@@ -115,10 +136,19 @@ figma.connect(
         variant: { showLabel: false },
         props: {
             hintText: figma.string('hintText'),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
         },
-        example: ({ hintText }) => (
+        example: ({ hintText, error }) => (
             <OTPInput
                 hintText={hintText}
+                error={error}
                 value=""
                 onChange={(value) => console.log(value)}
             />
@@ -136,12 +166,21 @@ figma.connect(
             label: figma.string('label'),
             sublabel: figma.string('sublabel'),
             hintText: figma.string('hintText'),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
         },
-        example: ({ label, sublabel, hintText }) => (
+        example: ({ label, sublabel, hintText, error }) => (
             <OTPInput
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
+                error={error}
                 value=""
                 onChange={(value) => console.log(value)}
             />
@@ -159,12 +198,21 @@ figma.connect(
             label: figma.string('label'),
             sublabel: figma.string('sublabel'),
             hintText: figma.string('hintText'),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
         },
-        example: ({ label, sublabel, hintText }) => (
+        example: ({ label, sublabel, hintText, error }) => (
             <OTPInput
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
+                error={error}
                 value=""
                 onChange={(value) => console.log(value)}
             />

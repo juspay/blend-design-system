@@ -17,10 +17,11 @@ import { DropdownInput, TextInputSize } from 'blend-v1'
  * 2. SPECIAL MAPPINGS:
  *    - placeholder (Figma) → value (Code) - Placeholder text in Figma maps to value prop
  *    - leftSlot (Figma) → slot (Code) - Left slot in Figma maps to slot prop in code
+ *    - state=error (Figma) → error=true (Code) - Error state in Figma maps to error prop
  *
  * 3. FIGMA-ONLY PROPERTIES (not needed in code):
  *    - dropdownPosition - Not available in code implementation
- *    - state - Interaction states (hover, focus, etc.) are handled automatically
+ *    - state - Other interaction states (hover, focus, etc.) are handled automatically
  *    - showInfo - Help icon is shown automatically when helpIconHintText is provided
  *    - showLabel - Label is shown automatically when label prop is provided
  *    - showSublabel - Sublabel is shown automatically when sublabel prop is provided
@@ -68,9 +69,19 @@ figma.connect(
                 false: undefined,
             }),
 
+            // State to error mapping
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
+
             // Note: The following Figma props are not mapped:
             // - dropdownPosition: Not available in code
-            // - state: Handled automatically by component interactions
+            // - state: Other states handled automatically by component interactions
             // - showInfo: Determined by presence of helpIconHintText
             // - showLabel: Determined by presence of label
             // - showSublabel: Determined by presence of sublabel
@@ -80,7 +91,7 @@ figma.connect(
             // - mandatory: Can be passed as 'required' HTML attribute
         },
 
-        example: ({ size, label, sublabel, hintText, value, slot }) => (
+        example: ({ size, label, sublabel, hintText, value, slot, error }) => (
             <DropdownInput
                 size={size}
                 label={label}
@@ -88,6 +99,7 @@ figma.connect(
                 hintText={hintText}
                 value={value}
                 slot={slot}
+                error={error}
                 onChange={() => {}}
                 onDropDownChange={() => {}}
                 dropDownItems={[]}
@@ -129,8 +141,16 @@ figma.connect(
                 true: figma.instance('leftSlot'),
                 false: undefined,
             }),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
         },
-        example: ({ size, label, sublabel, hintText, value, slot }) => (
+        example: ({ size, label, sublabel, hintText, value, slot, error }) => (
             <DropdownInput
                 size={size}
                 label={label}
@@ -138,6 +158,7 @@ figma.connect(
                 hintText={hintText}
                 value={value}
                 slot={slot}
+                error={error}
                 onChange={() => {}}
                 onDropDownChange={() => {}}
                 dropDownItems={[]}
@@ -164,13 +185,22 @@ figma.connect(
                 true: figma.instance('leftSlot'),
                 false: undefined,
             }),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
         },
-        example: ({ size, hintText, value, slot }) => (
+        example: ({ size, hintText, value, slot, error }) => (
             <DropdownInput
                 size={size}
                 hintText={hintText}
                 value={value}
                 slot={slot}
+                error={error}
                 onChange={() => {}}
                 onDropDownChange={() => {}}
                 dropDownItems={[]}
@@ -196,8 +226,16 @@ figma.connect(
             hintText: figma.string('hintText'),
             value: figma.string('placeholder'),
             slot: figma.instance('leftSlot'),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
         },
-        example: ({ size, label, sublabel, hintText, value, slot }) => (
+        example: ({ size, label, sublabel, hintText, value, slot, error }) => (
             <DropdownInput
                 size={size}
                 label={label}
@@ -205,6 +243,7 @@ figma.connect(
                 hintText={hintText}
                 value={value}
                 slot={slot}
+                error={error}
                 onChange={() => {}}
                 onDropDownChange={() => {}}
                 dropDownItems={[]}
@@ -229,8 +268,16 @@ figma.connect(
                 true: figma.instance('leftSlot'),
                 false: undefined,
             }),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
         },
-        example: ({ label, sublabel, hintText, value, slot }) => (
+        example: ({ label, sublabel, hintText, value, slot, error }) => (
             <DropdownInput
                 size={TextInputSize.MEDIUM}
                 label={label}
@@ -238,6 +285,7 @@ figma.connect(
                 hintText={hintText}
                 value={value}
                 slot={slot}
+                error={error}
                 onChange={() => {}}
                 onDropDownChange={() => {}}
                 dropDownItems={[]}
@@ -262,8 +310,16 @@ figma.connect(
                 true: figma.instance('leftSlot'),
                 false: undefined,
             }),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
         },
-        example: ({ label, sublabel, hintText, value, slot }) => (
+        example: ({ label, sublabel, hintText, value, slot, error }) => (
             <DropdownInput
                 size={TextInputSize.LARGE}
                 label={label}
@@ -271,6 +327,7 @@ figma.connect(
                 hintText={hintText}
                 value={value}
                 slot={slot}
+                error={error}
                 onChange={() => {}}
                 onDropDownChange={() => {}}
                 dropDownItems={[]}

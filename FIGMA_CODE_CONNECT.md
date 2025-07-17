@@ -47,6 +47,11 @@
 17. TextInput - `apps/storybook/stories/components/TextInput/TextInput.figma.tsx` ✅
 18. DropdownInput - `apps/storybook/stories/components/TextInput/DropdownInput.figma.tsx` ✅
 19. OTPInput - `apps/storybook/stories/components/TextInput/OTPInput.figma.tsx` ✅
+20. TextArea - `apps/storybook/stories/components/TextInput/TextArea.figma.tsx` ✅
+21. SearchInput - `apps/storybook/stories/components/TextInput/SearchInput.figma.tsx` ✅
+22. NumberInput - `apps/storybook/stories/components/TextInput/NumberInput.figma.tsx` ✅
+23. UnitInput - `apps/storybook/stories/components/TextInput/UnitInput.figma.tsx` ✅
+24. MultiValueInput - `apps/storybook/stories/components/TextInput/MultiValueInput.figma.tsx` ✅
 
 ## Quick Start
 

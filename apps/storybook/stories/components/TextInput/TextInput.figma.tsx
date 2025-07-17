@@ -20,9 +20,10 @@ import { TextInput, TextInputSize } from 'blend-v1'
  * 2. SPECIAL MAPPINGS:
  *    - placeholder (Figma) → value (Code) - Placeholder text in Figma maps to value prop
  *    - mandatory (Figma) → required (Code) - Though not directly exposed in types, it's available via HTML attributes
+ *    - state=error (Figma) → error=true (Code) - Error state in Figma maps to error prop
  *
  * 3. FIGMA-ONLY PROPERTIES (not needed in code):
- *    - state - Interaction states (hover, focus, etc.) are handled automatically
+ *    - state - Other interaction states (hover, focus, etc.) are handled automatically
  *    - showInfo - Help icon is shown automatically when helpIconHintText is provided
  *    - showLabel - Label is shown automatically when label prop is provided
  *    - showSubLabel - Sublabel is shown automatically when sublabel prop is provided
@@ -70,11 +71,21 @@ figma.connect(
                 false: undefined,
             }),
 
+            // State to error mapping
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
+
             // Required onChange handler
             onChange: () => {},
 
             // Note: The following Figma props are not mapped:
-            // - state: Handled automatically by component interactions
+            // - state: Other states handled automatically by component interactions
             // - showInfo: Determined by presence of helpIconHintText
             // - showLabel: Determined by presence of label
             // - showSubLabel: Determined by presence of sublabel
@@ -90,6 +101,7 @@ figma.connect(
             value,
             leftSlot,
             rightSlot,
+            error,
             onChange,
         }) => (
             <TextInput
@@ -101,6 +113,7 @@ figma.connect(
                 onChange={onChange}
                 leftSlot={leftSlot}
                 rightSlot={rightSlot}
+                error={error}
             />
         ),
 
@@ -142,6 +155,14 @@ figma.connect(
                 true: figma.instance('rightSlot'),
                 false: undefined,
             }),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
             onChange: () => {},
         },
         example: ({
@@ -152,6 +173,7 @@ figma.connect(
             value,
             leftSlot,
             rightSlot,
+            error,
             onChange,
         }) => (
             <TextInput
@@ -163,6 +185,7 @@ figma.connect(
                 onChange={onChange}
                 leftSlot={leftSlot}
                 rightSlot={rightSlot}
+                error={error}
             />
         ),
     }
@@ -189,9 +212,25 @@ figma.connect(
                 true: figma.instance('rightSlot'),
                 false: undefined,
             }),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
             onChange: () => {},
         },
-        example: ({ size, hintText, value, leftSlot, rightSlot, onChange }) => (
+        example: ({
+            size,
+            hintText,
+            value,
+            leftSlot,
+            rightSlot,
+            error,
+            onChange,
+        }) => (
             <TextInput
                 size={size}
                 hintText={hintText}
@@ -199,6 +238,7 @@ figma.connect(
                 onChange={onChange}
                 leftSlot={leftSlot}
                 rightSlot={rightSlot}
+                error={error}
             />
         ),
     }
@@ -224,6 +264,14 @@ figma.connect(
                 true: figma.instance('rightSlot'),
                 false: undefined,
             }),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
             onChange: () => {},
         },
         example: ({
@@ -234,6 +282,7 @@ figma.connect(
             value,
             leftSlot,
             rightSlot,
+            error,
             onChange,
         }) => (
             <TextInput
@@ -245,6 +294,7 @@ figma.connect(
                 onChange={onChange}
                 leftSlot={leftSlot}
                 rightSlot={rightSlot}
+                error={error}
             />
         ),
     }
@@ -270,6 +320,14 @@ figma.connect(
                 false: undefined,
             }),
             rightSlot: figma.instance('rightSlot'),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
             onChange: () => {},
         },
         example: ({
@@ -280,6 +338,7 @@ figma.connect(
             value,
             leftSlot,
             rightSlot,
+            error,
             onChange,
         }) => (
             <TextInput
@@ -291,6 +350,7 @@ figma.connect(
                 onChange={onChange}
                 leftSlot={leftSlot}
                 rightSlot={rightSlot}
+                error={error}
             />
         ),
     }
@@ -315,6 +375,14 @@ figma.connect(
                 true: figma.instance('rightSlot'),
                 false: undefined,
             }),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
             onChange: () => {},
         },
         example: ({
@@ -324,6 +392,7 @@ figma.connect(
             value,
             leftSlot,
             rightSlot,
+            error,
             onChange,
         }) => (
             <TextInput
@@ -335,6 +404,7 @@ figma.connect(
                 onChange={onChange}
                 leftSlot={leftSlot}
                 rightSlot={rightSlot}
+                error={error}
             />
         ),
     }
@@ -359,6 +429,14 @@ figma.connect(
                 true: figma.instance('rightSlot'),
                 false: undefined,
             }),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
             onChange: () => {},
         },
         example: ({
@@ -368,6 +446,7 @@ figma.connect(
             value,
             leftSlot,
             rightSlot,
+            error,
             onChange,
         }) => (
             <TextInput
@@ -379,6 +458,7 @@ figma.connect(
                 onChange={onChange}
                 leftSlot={leftSlot}
                 rightSlot={rightSlot}
+                error={error}
             />
         ),
     }
