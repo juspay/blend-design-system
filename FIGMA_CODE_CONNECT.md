@@ -52,7 +52,10 @@
 22. NumberInput - `apps/storybook/stories/components/TextInput/NumberInput.figma.tsx` ✅
 23. UnitInput - `apps/storybook/stories/components/TextInput/UnitInput.figma.tsx` ✅
 24. MultiValueInput - `apps/storybook/stories/components/TextInput/MultiValueInput.figma.tsx` ✅
-25. DateRangePicker - `apps/storybook/stories/components/DateRangePicker.figma.tsx` ✅
+25. DateRangePicker - `apps/storybook/stories/components/DateRangePicker/DateRangePicker.figma.tsx` ✅
+26. Charts - `apps/storybook/stories/components/Charts/Charts.figma.tsx` ✅
+27. DataTable - `apps/storybook/stories/components/DataTable/DataTable.figma.tsx` ✅
+28. Sidebar - `apps/storybook/stories/components/Sidebar/Sidebar.figma.tsx` ✅
 
 ## Quick Start
 
