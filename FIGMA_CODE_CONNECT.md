@@ -46,6 +46,7 @@
 16. Tooltip - `apps/storybook/stories/components/Tooltip/Tooltip.figma.tsx` ✅
 17. TextInput - `apps/storybook/stories/components/TextInput/TextInput.figma.tsx` ✅
 18. DropdownInput - `apps/storybook/stories/components/TextInput/DropdownInput.figma.tsx` ✅
+19. OTPInput - `apps/storybook/stories/components/TextInput/OTPInput.figma.tsx` ✅
 
 ## Quick Start
 
