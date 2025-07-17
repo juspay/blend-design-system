@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react'
 import { useComponents, useCategoryCoverage } from '@/hooks/useRealtimeData'
+import { ComponentInfo } from '@/types'
 import {
     ButtonV2,
     Tag,
@@ -10,8 +11,21 @@ import {
     TagVariant,
     TagColor,
     TagSize,
+    Tabs,
+    TabsList,
+    TabsTrigger,
+    TabsContent,
+    TabsVariant,
+    DataTable,
 } from 'blend-v1'
-import { Package, Check, X, AlertCircle, RefreshCw } from 'lucide-react'
+import {
+    Package,
+    Check,
+    X,
+    AlertCircle,
+    RefreshCw,
+    ArrowRight,
+} from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 export default function CodeConnectPage() {
@@ -47,8 +61,28 @@ export default function CodeConnectPage() {
         }
     }, [filteredComponents])
 
-    // Prepare chart data
-    const chartData = useMemo(() => {
+    // Prepare chart data for pie chart
+    const pieChartData = useMemo(() => {
+        return [
+            {
+                name: 'Coverage',
+                data: {
+                    Integrated: {
+                        primary: { label: 'Components', val: stats.integrated },
+                    },
+                    'Not Integrated': {
+                        primary: {
+                            label: 'Components',
+                            val: stats.total - stats.integrated,
+                        },
+                    },
+                },
+            },
+        ]
+    }, [stats])
+
+    // Prepare chart data for bar chart
+    const barChartData = useMemo(() => {
         const categoryData = Object.entries(categories).map(
             ([category, data]) => ({
                 name: category.charAt(0).toUpperCase() + category.slice(1),
@@ -73,6 +107,35 @@ export default function CodeConnectPage() {
         ]
     }, [categories])
 
+    // Calculate counts for each category
+    const categoryCounts = useMemo(() => {
+        const counts: Record<string, number> = {
+            all: components.length,
+        }
+
+        Object.keys(categories).forEach((category) => {
+            counts[category] = components.filter(
+                (c) => c.category === category
+            ).length
+        })
+
+        return counts
+    }, [components, categories])
+
+    // Button group items with counts
+    const categoryButtons = [
+        { id: 'all', label: `All (${categoryCounts.all || 0})` },
+        { id: 'data', label: `Data (${categoryCounts.data || 0})` },
+        { id: 'display', label: `Display (${categoryCounts.display || 0})` },
+        { id: 'feedback', label: `Feedback (${categoryCounts.feedback || 0})` },
+        { id: 'input', label: `Input (${categoryCounts.input || 0})` },
+        {
+            id: 'navigation',
+            label: `Navigation (${categoryCounts.navigation || 0})`,
+        },
+        { id: 'other', label: `Other (${categoryCounts.other || 0})` },
+    ]
+
     const handleRefresh = async () => {
         setRefreshing(true)
         try {
@@ -96,210 +159,161 @@ export default function CodeConnectPage() {
     }
 
     return (
-        <div className="p-8">
-            <div className="mb-8 flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900">
-                        Code Connect Coverage
-                    </h1>
-                    <p className="text-gray-600 mt-1">
-                        Track Figma Code Connect integration progress
-                    </p>
+        <div className="h-full overflow-y-auto bg-white">
+            <div className="p-8">
+                <div className="mb-8 flex items-center justify-end">
+                    <ButtonV2
+                        text="Refresh"
+                        leadingIcon={
+                            <RefreshCw
+                                className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
+                            />
+                        }
+                        onClick={handleRefresh}
+                        disabled={refreshing}
+                    />
                 </div>
-                <ButtonV2
-                    text="Refresh"
-                    leadingIcon={
-                        <RefreshCw
-                            className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
-                        />
-                    }
-                    onClick={handleRefresh}
-                    disabled={refreshing}
-                />
-            </div>
 
-            {/* Coverage Overview */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div className="lg:col-span-1">
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-lg font-semibold mb-4">
-                            Overall Coverage
-                        </h3>
-                        <div className="text-center">
-                            <div className="relative inline-flex items-center justify-center">
-                                <svg className="w-32 h-32">
-                                    <circle
-                                        cx="64"
-                                        cy="64"
-                                        r="56"
-                                        stroke="#e5e7eb"
-                                        strokeWidth="12"
-                                        fill="none"
-                                    />
-                                    <circle
-                                        cx="64"
-                                        cy="64"
-                                        r="56"
-                                        stroke="#3b82f6"
-                                        strokeWidth="12"
-                                        fill="none"
-                                        strokeDasharray={`${stats.percentage * 3.52} 352`}
-                                        strokeDashoffset="0"
-                                        transform="rotate(-90 64 64)"
-                                    />
-                                </svg>
-                                <div className="absolute">
-                                    <p className="text-3xl font-bold">
-                                        {stats.percentage}%
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                        {stats.integrated}/{stats.total}
+                {/* Coverage Overview */}
+                <div className="flex gap-6 mb-8">
+                    <div className="flex-1 overflow-hidden">
+                        <Charts
+                            chartType={ChartType.PIE}
+                            data={pieChartData}
+                            chartHeaderSlot={
+                                <div className="mb-4">
+                                    <h3 className="text-base font-semibold text-gray-900">
+                                        Overall Coverage
+                                    </h3>
+                                    <p className="text-xs text-gray-600">
+                                        {stats.integrated} of {stats.total}{' '}
+                                        components integrated (
+                                        {stats.percentage}%)
                                     </p>
                                 </div>
-                            </div>
-                        </div>
-                        <div className="mt-6 space-y-2">
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">
-                                    With Storybook
-                                </span>
-                                <span className="font-medium">
-                                    {stats.withStorybook}/{stats.total}
-                                </span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">
-                                    With Tests
-                                </span>
-                                <span className="font-medium">
-                                    {stats.withTests}/{stats.total}
-                                </span>
-                            </div>
-                        </div>
+                            }
+                        />
                     </div>
-                </div>
 
-                <div className="lg:col-span-2">
-                    <div className="bg-white rounded-lg shadow p-6">
+                    <div className="flex-1 overflow-hidden">
                         <Charts
                             chartType={ChartType.BAR}
-                            data={chartData}
+                            data={barChartData}
                             chartHeaderSlot={
-                                <h3 className="text-lg font-semibold mb-4">
-                                    Coverage by Category
-                                </h3>
+                                <div className="mb-4">
+                                    <h3 className="text-base font-semibold text-gray-900">
+                                        Coverage by Category
+                                    </h3>
+                                    <p className="text-xs text-gray-600">
+                                        Integration progress by component type
+                                    </p>
+                                </div>
                             }
                         />
                     </div>
                 </div>
-            </div>
 
-            {/* Category Filter */}
-            <div className="mb-6">
-                <div className="flex items-center gap-2 flex-wrap">
-                    <Tag
-                        text="All"
-                        variant={
-                            selectedCategory === 'all'
-                                ? TagVariant.ATTENTIVE
-                                : TagVariant.SUBTLE
-                        }
-                        color={TagColor.PRIMARY}
-                        size={TagSize.MD}
-                        onClick={() => setSelectedCategory('all')}
-                    />
-                    {Object.keys(categories).map((category) => (
-                        <Tag
-                            key={category}
-                            text={
-                                category.charAt(0).toUpperCase() +
-                                category.slice(1)
-                            }
-                            variant={
-                                selectedCategory === category
-                                    ? TagVariant.ATTENTIVE
-                                    : TagVariant.SUBTLE
-                            }
-                            color={TagColor.NEUTRAL}
-                            size={TagSize.MD}
-                            onClick={() => setSelectedCategory(category)}
-                        />
-                    ))}
-                </div>
-            </div>
+                {/* Category Filter and Components */}
+                <Tabs
+                    value={selectedCategory}
+                    onValueChange={setSelectedCategory}
+                >
+                    <div className="sticky top-0 z-10 bg-white pb-6 -mx-8 px-8 pt-2">
+                        <TabsList variant={TabsVariant.BOXED}>
+                            {categoryButtons.map((button) => (
+                                <TabsTrigger
+                                    key={button.id}
+                                    value={button.id}
+                                    variant={TabsVariant.BOXED}
+                                >
+                                    {button.label}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </div>
 
-            {/* Components Grid */}
-            <div className="bg-white rounded-lg shadow">
-                <div className="p-6 border-b">
-                    <h3 className="text-lg font-semibold">
-                        Components ({filteredComponents.length})
-                    </h3>
-                </div>
-                <div className="divide-y">
-                    {filteredComponents.map((component) => (
-                        <div
-                            key={component.id}
-                            className="p-4 hover:bg-gray-50 cursor-pointer transition-colors"
-                            onClick={() =>
-                                router.push(`/code-connect/${component.id}`)
-                            }
-                        >
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <Package className="w-5 h-5 text-gray-400" />
-                                    <div>
-                                        <h4 className="font-medium text-gray-900">
-                                            {component.name}
-                                        </h4>
-                                        <p className="text-sm text-gray-500">
-                                            {component.category}
-                                        </p>
+                    <TabsContent value={selectedCategory}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                            {filteredComponents.map((component) => (
+                                <div
+                                    key={component.id}
+                                    className="bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-200"
+                                >
+                                    {/* Card Header */}
+                                    <div className="p-4 border-b border-gray-100">
+                                        <div className="flex items-start justify-between">
+                                            <div>
+                                                <h3 className="font-semibold text-gray-900">
+                                                    {component.name}
+                                                </h3>
+                                                <p className="text-xs text-gray-500 mt-0.5">
+                                                    {component.category}
+                                                </p>
+                                            </div>
+                                            <Package className="w-4 h-4 text-gray-400" />
+                                        </div>
+                                    </div>
+
+                                    {/* Card Body */}
+                                    <div className="p-4 space-y-2">
+                                        {/* Integration Status */}
+                                        <div className="flex items-center justify-between text-sm">
+                                            <span className="text-gray-600">
+                                                Code Connect
+                                            </span>
+                                            {component.hasFigmaConnect ? (
+                                                <Check className="w-4 h-4 text-green-500" />
+                                            ) : (
+                                                <X className="w-4 h-4 text-gray-300" />
+                                            )}
+                                        </div>
+
+                                        <div className="flex items-center justify-between text-sm">
+                                            <span className="text-gray-600">
+                                                Storybook
+                                            </span>
+                                            {component.hasStorybook ? (
+                                                <Check className="w-4 h-4 text-green-500" />
+                                            ) : (
+                                                <X className="w-4 h-4 text-gray-300" />
+                                            )}
+                                        </div>
+
+                                        <div className="flex items-center justify-between text-sm">
+                                            <span className="text-gray-600">
+                                                Tests
+                                            </span>
+                                            {component.hasTests ? (
+                                                <Check className="w-4 h-4 text-green-500" />
+                                            ) : (
+                                                <X className="w-4 h-4 text-gray-300" />
+                                            )}
+                                        </div>
+
+                                        {/* Status */}
+                                        <div className="pt-3 mt-3 border-t border-gray-100">
+                                            {component.hasFigmaConnect ? (
+                                                <Tag
+                                                    text="Integrated"
+                                                    variant={TagVariant.SUBTLE}
+                                                    color={TagColor.SUCCESS}
+                                                    size={TagSize.XS}
+                                                />
+                                            ) : (
+                                                <Tag
+                                                    text="Needs Integration"
+                                                    variant={TagVariant.SUBTLE}
+                                                    color={TagColor.WARNING}
+                                                    size={TagSize.XS}
+                                                />
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-6">
-                                    <div className="flex items-center gap-2">
-                                        {component.hasFigmaConnect ? (
-                                            <Check className="w-4 h-4 text-green-500" />
-                                        ) : (
-                                            <X className="w-4 h-4 text-gray-300" />
-                                        )}
-                                        <span className="text-sm text-gray-600">
-                                            Code Connect
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        {component.hasStorybook ? (
-                                            <Check className="w-4 h-4 text-green-500" />
-                                        ) : (
-                                            <X className="w-4 h-4 text-gray-300" />
-                                        )}
-                                        <span className="text-sm text-gray-600">
-                                            Storybook
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        {component.hasTests ? (
-                                            <Check className="w-4 h-4 text-green-500" />
-                                        ) : (
-                                            <X className="w-4 h-4 text-gray-300" />
-                                        )}
-                                        <span className="text-sm text-gray-600">
-                                            Tests
-                                        </span>
-                                    </div>
-                                    {!component.hasFigmaConnect && (
-                                        <Tag
-                                            text="Needs Integration"
-                                            variant={TagVariant.SUBTLE}
-                                            color={TagColor.WARNING}
-                                            size={TagSize.XS}
-                                        />
-                                    )}
-                                </div>
-                            </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    </TabsContent>
+                </Tabs>
             </div>
         </div>
     )

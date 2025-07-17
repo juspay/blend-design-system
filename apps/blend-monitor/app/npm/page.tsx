@@ -6,7 +6,6 @@ import {
     useDownloadTrends,
     useVersionHistory,
 } from '@/hooks/useRealtimeData'
-import { MetricCard } from '@/components/dashboard/MetricCard'
 import {
     Charts,
     ChartType,
@@ -15,6 +14,9 @@ import {
     TagVariant,
     TagColor,
     TagSize,
+    StatCard,
+    StatCardVariant,
+    ChangeType,
 } from 'blend-v1'
 import {
     Package,
@@ -23,7 +25,16 @@ import {
     GitBranch,
     RefreshCw,
     ExternalLink,
+    Calendar,
+    Users,
+    FileText,
+    AlertTriangle,
 } from 'lucide-react'
+import {
+    VerticalTimeline,
+    VerticalTimelineElement,
+} from 'react-vertical-timeline-component'
+import 'react-vertical-timeline-component/style.min.css'
 
 export default function NPMPage() {
     const { packageStats, loading: statsLoading } = usePackageStats()
@@ -35,22 +46,30 @@ export default function NPMPage() {
     const chartData = React.useMemo(() => {
         if (!trends || trends.length === 0) return []
 
+        // Sort trends by date to ensure proper line connection
+        const sortedTrends = [...trends].sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        )
+
+        // Create data object with ordered keys
+        const dataObj = {} as any
+        sortedTrends.forEach((trend) => {
+            const date = new Date(trend.date).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+            })
+            dataObj[date] = {
+                primary: {
+                    label: 'Daily Downloads',
+                    val: trend.downloads,
+                },
+            }
+        })
+
         return [
             {
-                name: 'Downloads',
-                data: trends.reduce((acc, trend) => {
-                    const date = new Date(trend.date).toLocaleDateString(
-                        'en-US',
-                        { month: 'short', day: 'numeric' }
-                    )
-                    acc[date] = {
-                        primary: {
-                            label: 'Downloads',
-                            val: trend.downloads,
-                        },
-                    }
-                    return acc
-                }, {} as any),
+                name: 'Download Trend',
+                data: dataObj,
             },
         ]
     }, [trends])
@@ -92,156 +111,206 @@ export default function NPMPage() {
     }
 
     return (
-        <div className="p-8">
-            <div className="mb-8 flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900">
-                        NPM Package Statistics
-                    </h1>
-                    <p className="text-gray-600 mt-1">
-                        Monitor blend-v1 package performance and adoption
-                    </p>
+        <div className="h-full overflow-y-auto bg-white">
+            <div className="p-8">
+                <div className="mb-8 flex items-center justify-end">
+                    <div className="flex items-center gap-4">
+                        <ButtonV2
+                            text="View on NPM"
+                            trailingIcon={<ExternalLink className="w-4 h-4" />}
+                            onClick={() =>
+                                window.open(
+                                    'https://www.npmjs.com/package/blend-v1',
+                                    '_blank'
+                                )
+                            }
+                        />
+                        <ButtonV2
+                            text="Refresh"
+                            leadingIcon={
+                                <RefreshCw
+                                    className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
+                                />
+                            }
+                            onClick={handleRefresh}
+                            disabled={refreshing}
+                        />
+                    </div>
                 </div>
-                <div className="flex items-center gap-4">
-                    <ButtonV2
-                        text="View on NPM"
-                        trailingIcon={<ExternalLink className="w-4 h-4" />}
-                        onClick={() =>
-                            window.open(
-                                'https://www.npmjs.com/package/blend-v1',
-                                '_blank'
-                            )
+
+                {/* Metrics Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <StatCard
+                        title="Current Version"
+                        value={packageStats?.version || '0.0.0'}
+                        subtitle={
+                            packageStats?.lastPublish
+                                ? `Published ${new Date(packageStats.lastPublish).toLocaleDateString()}`
+                                : ''
                         }
+                        titleIcon={
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                                <Package className="w-5 h-5 text-blue-600" />
+                            </div>
+                        }
+                        variant={StatCardVariant.NUMBER}
                     />
-                    <ButtonV2
-                        text="Refresh"
-                        leadingIcon={
-                            <RefreshCw
-                                className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
-                            />
+                    <StatCard
+                        title="Weekly Downloads"
+                        value={
+                            packageStats?.downloads.weekly.toLocaleString() ||
+                            '0'
                         }
-                        onClick={handleRefresh}
-                        disabled={refreshing}
+                        change={
+                            calculateTrend() !== 0
+                                ? {
+                                      value: Math.abs(calculateTrend()),
+                                      type:
+                                          calculateTrend() > 0
+                                              ? ChangeType.INCREASE
+                                              : ChangeType.DECREASE,
+                                  }
+                                : undefined
+                        }
+                        titleIcon={
+                            <div className="p-2 bg-green-100 rounded-lg">
+                                <Download className="w-5 h-5 text-green-600" />
+                            </div>
+                        }
+                        variant={StatCardVariant.NUMBER}
+                    />
+                    <StatCard
+                        title="Total Downloads"
+                        value={
+                            packageStats?.downloads.total.toLocaleString() ||
+                            '0'
+                        }
+                        titleIcon={
+                            <div className="p-2 bg-amber-100 rounded-lg">
+                                <TrendingUp className="w-5 h-5 text-amber-600" />
+                            </div>
+                        }
+                        variant={StatCardVariant.NUMBER}
+                    />
+                    <StatCard
+                        title="Dependencies"
+                        value={packageStats?.dependencies || 0}
+                        subtitle={`${((packageStats?.size.unpacked || 0) / 1024 / 1024).toFixed(1)}MB unpacked`}
+                        titleIcon={
+                            <div className="p-2 bg-purple-100 rounded-lg">
+                                <GitBranch className="w-5 h-5 text-purple-600" />
+                            </div>
+                        }
+                        variant={StatCardVariant.NUMBER}
                     />
                 </div>
-            </div>
 
-            {/* Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <MetricCard
-                    title="Current Version"
-                    value={packageStats?.version || '0.0.0'}
-                    subtitle={
-                        packageStats?.lastPublish
-                            ? `Published ${new Date(packageStats.lastPublish).toLocaleDateString()}`
-                            : ''
-                    }
-                    icon={<Package className="w-5 h-5" />}
-                    color="primary"
-                />
-                <MetricCard
-                    title="Weekly Downloads"
-                    value={
-                        packageStats?.downloads.weekly.toLocaleString() || '0'
-                    }
-                    trend={calculateTrend()}
-                    icon={<Download className="w-5 h-5" />}
-                    color="success"
-                />
-                <MetricCard
-                    title="Total Downloads"
-                    value={
-                        packageStats?.downloads.total.toLocaleString() || '0'
-                    }
-                    icon={<TrendingUp className="w-5 h-5" />}
-                    color="warning"
-                />
-                <MetricCard
-                    title="Dependencies"
-                    value={packageStats?.dependencies || 0}
-                    subtitle={`${(packageStats?.size.unpacked || 0) / 1024 / 1024}MB unpacked`}
-                    icon={<GitBranch className="w-5 h-5" />}
-                    color="primary"
-                />
-            </div>
-
-            {/* Download Trends Chart */}
-            <div className="bg-white rounded-lg shadow p-6 mb-8">
+                {/* Download Trends Chart */}
                 <Charts
-                    chartType={ChartType.LINE}
+                    chartType={ChartType.BAR}
                     data={chartData}
                     chartHeaderSlot={
                         <div className="mb-4">
-                            <h3 className="text-lg font-semibold">
-                                Download Trends (Last 30 Days)
+                            <h3 className="text-base font-semibold text-gray-900">
+                                Download Trends
                             </h3>
-                            <p className="text-sm text-gray-500">
-                                Daily download count for blend-v1
+                            <p className="text-xs text-gray-600">
+                                Last 30 days - Daily downloads
                             </p>
                         </div>
                     }
                 />
-            </div>
 
-            {/* Version History */}
-            <div className="bg-white rounded-lg shadow">
-                <div className="p-6 border-b">
-                    <h3 className="text-lg font-semibold">Version History</h3>
-                    <p className="text-sm text-gray-500 mt-1">
-                        Recent package releases
-                    </p>
-                </div>
-                <div className="divide-y">
-                    {versions.slice(0, 10).map((version) => (
-                        <div
-                            key={version.version}
-                            className="p-4 hover:bg-gray-50 transition-colors"
-                        >
-                            <div className="flex items-start justify-between">
-                                <div className="flex-1">
+                {/* Version History */}
+                <div className="mt-8">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-8">
+                        Version History
+                    </h3>
+                    <VerticalTimeline lineColor="#e5e7eb">
+                        {versions.slice(0, 10).map((version, index) => (
+                            <VerticalTimelineElement
+                                key={version.version}
+                                className="vertical-timeline-element--work"
+                                contentStyle={{
+                                    background: '#fff',
+                                    color: '#333',
+                                    boxShadow:
+                                        '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                                    border: '1px solid #e5e7eb',
+                                }}
+                                contentArrowStyle={{
+                                    borderRight: '7px solid #e5e7eb',
+                                }}
+                                date={new Date(
+                                    version.publishedAt
+                                ).toLocaleDateString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                })}
+                                iconStyle={{
+                                    background:
+                                        index === 0 ? '#3b82f6' : '#9ca3af',
+                                    color: '#fff',
+                                    width: '24px',
+                                    height: '24px',
+                                    marginLeft: '-12px',
+                                    marginTop: '22px',
+                                }}
+                                icon={<Package className="w-3 h-3" />}
+                            >
+                                <div className="flex items-start justify-between mb-2">
                                     <div className="flex items-center gap-3">
-                                        <h4 className="font-mono font-medium text-gray-900">
+                                        <h4 className="font-mono font-semibold text-lg">
                                             v{version.version}
                                         </h4>
                                         {version.breaking && (
                                             <Tag
-                                                text="Breaking"
+                                                text="Breaking Changes"
                                                 variant={TagVariant.ATTENTIVE}
                                                 color={TagColor.ERROR}
-                                                size={TagSize.XS}
+                                                size={TagSize.SM}
+                                                leftSlot={
+                                                    <AlertTriangle className="w-3 h-3" />
+                                                }
                                             />
                                         )}
                                     </div>
-                                    <p className="text-sm text-gray-600 mt-1">
-                                        {version.changelog}
-                                    </p>
-                                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                                </div>
+
+                                <p className="text-gray-700 mb-3">
+                                    {version.changelog ||
+                                        'No changelog provided'}
+                                </p>
+
+                                <div className="flex items-center gap-4 text-sm text-gray-500">
+                                    <div className="flex items-center gap-1">
+                                        <Users className="w-4 h-4" />
+                                        <span>{version.publisher}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <Download className="w-4 h-4" />
                                         <span>
-                                            Published{' '}
-                                            {new Date(
-                                                version.publishedAt
-                                            ).toLocaleDateString()}
+                                            {version.downloads.toLocaleString()}
                                         </span>
-                                        <span>by {version.publisher}</span>
-                                        <span>
-                                            {version.downloads.toLocaleString()}{' '}
-                                            downloads
-                                        </span>
-                                        {version.size && (
+                                    </div>
+                                    {version.size && (
+                                        <div className="flex items-center gap-1">
+                                            <FileText className="w-4 h-4" />
                                             <span>
                                                 {(
                                                     version.size.unpacked /
                                                     1024 /
                                                     1024
-                                                ).toFixed(2)}
+                                                ).toFixed(1)}{' '}
                                                 MB
                                             </span>
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
-                        </div>
-                    ))}
+                            </VerticalTimelineElement>
+                        ))}
+                    </VerticalTimeline>
                 </div>
             </div>
         </div>

@@ -147,239 +147,256 @@ export default function VersionHistoryPage() {
     }
 
     return (
-        <div className="p-8">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">
-                    Publishing History Timeline
-                </h1>
-                <p className="text-gray-600 mt-1">
-                    Comprehensive publishing audit trail for blend-v1
-                </p>
-            </div>
-
-            {/* Filters */}
-            <div className="bg-white rounded-lg shadow p-6 mb-8">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <Filter className="w-5 h-5 text-gray-400" />
-                        <div className="flex items-center gap-2">
-                            <ButtonV2
-                                text="All"
-                                size={ButtonSizeV2.SMALL}
-                                buttonType={
-                                    filterType === 'all'
-                                        ? ButtonTypeV2.PRIMARY
-                                        : ButtonTypeV2.SECONDARY
-                                }
-                                onClick={() => setFilterType('all')}
-                            />
-                            <ButtonV2
-                                text="Major"
-                                size={ButtonSizeV2.SMALL}
-                                buttonType={
-                                    filterType === 'major'
-                                        ? ButtonTypeV2.PRIMARY
-                                        : ButtonTypeV2.SECONDARY
-                                }
-                                onClick={() => setFilterType('major')}
-                            />
-                            <ButtonV2
-                                text="Minor"
-                                size={ButtonSizeV2.SMALL}
-                                buttonType={
-                                    filterType === 'minor'
-                                        ? ButtonTypeV2.PRIMARY
-                                        : ButtonTypeV2.SECONDARY
-                                }
-                                onClick={() => setFilterType('minor')}
-                            />
-                            <ButtonV2
-                                text="Patch"
-                                size={ButtonSizeV2.SMALL}
-                                buttonType={
-                                    filterType === 'patch'
-                                        ? ButtonTypeV2.PRIMARY
-                                        : ButtonTypeV2.SECONDARY
-                                }
-                                onClick={() => setFilterType('patch')}
-                            />
-                        </div>
-                    </div>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            checked={showPrerelease}
-                            onChange={(e) =>
-                                setShowPrerelease(e.target.checked)
-                            }
-                            className="w-4 h-4 text-blue-600 rounded"
-                        />
-                        <span className="text-sm text-gray-700">
-                            Show pre-releases
-                        </span>
-                    </label>
+        <div className="h-full overflow-y-auto bg-white">
+            <div className="p-8">
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        Publishing History Timeline
+                    </h1>
+                    <p className="text-gray-600 mt-1">
+                        Comprehensive publishing audit trail for blend-v1
+                    </p>
                 </div>
-            </div>
 
-            {/* Version Timeline */}
-            <div className="space-y-4">
-                {filteredVersions.map((version, index) => {
-                    const prevVersion = filteredVersions[index + 1]
-                    const isPrerelease =
-                        version.version.includes('-') ||
-                        version.version.includes('alpha') ||
-                        version.version.includes('beta')
+                {/* Filters */}
+                <div className="bg-white rounded-lg shadow p-6 mb-8">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <Filter className="w-5 h-5 text-gray-400" />
+                            <div className="flex items-center gap-2">
+                                <ButtonV2
+                                    text="All"
+                                    size={ButtonSizeV2.SMALL}
+                                    buttonType={
+                                        filterType === 'all'
+                                            ? ButtonTypeV2.PRIMARY
+                                            : ButtonTypeV2.SECONDARY
+                                    }
+                                    onClick={() => setFilterType('all')}
+                                />
+                                <ButtonV2
+                                    text="Major"
+                                    size={ButtonSizeV2.SMALL}
+                                    buttonType={
+                                        filterType === 'major'
+                                            ? ButtonTypeV2.PRIMARY
+                                            : ButtonTypeV2.SECONDARY
+                                    }
+                                    onClick={() => setFilterType('major')}
+                                />
+                                <ButtonV2
+                                    text="Minor"
+                                    size={ButtonSizeV2.SMALL}
+                                    buttonType={
+                                        filterType === 'minor'
+                                            ? ButtonTypeV2.PRIMARY
+                                            : ButtonTypeV2.SECONDARY
+                                    }
+                                    onClick={() => setFilterType('minor')}
+                                />
+                                <ButtonV2
+                                    text="Patch"
+                                    size={ButtonSizeV2.SMALL}
+                                    buttonType={
+                                        filterType === 'patch'
+                                            ? ButtonTypeV2.PRIMARY
+                                            : ButtonTypeV2.SECONDARY
+                                    }
+                                    onClick={() => setFilterType('patch')}
+                                />
+                            </div>
+                        </div>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={showPrerelease}
+                                onChange={(e) =>
+                                    setShowPrerelease(e.target.checked)
+                                }
+                                className="w-4 h-4 text-blue-600 rounded"
+                            />
+                            <span className="text-sm text-gray-700">
+                                Show pre-releases
+                            </span>
+                        </label>
+                    </div>
+                </div>
 
-                    return (
-                        <div
-                            key={version.version}
-                            className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
-                        >
-                            <div className="p-6">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                        {/* Version Header */}
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <h3 className="text-xl font-mono font-bold text-gray-900">
-                                                v{version.version}
-                                            </h3>
-                                            {getVersionTypeTag(
-                                                version.version,
-                                                prevVersion?.version
-                                            )}
-                                            {isPrerelease && (
-                                                <Tag
-                                                    text="PRE-RELEASE"
-                                                    variant={TagVariant.SUBTLE}
-                                                    color={TagColor.PURPLE}
-                                                    size={TagSize.XS}
-                                                />
-                                            )}
-                                            {version.breaking && (
-                                                <Tag
-                                                    text="BREAKING CHANGES"
-                                                    variant={
-                                                        TagVariant.ATTENTIVE
-                                                    }
-                                                    color={TagColor.ERROR}
-                                                    size={TagSize.XS}
-                                                    leftSlot={
-                                                        <AlertTriangle className="w-3 h-3" />
-                                                    }
-                                                />
-                                            )}
-                                        </div>
+                {/* Version Timeline */}
+                <div className="space-y-4">
+                    {filteredVersions.map((version, index) => {
+                        const prevVersion = filteredVersions[index + 1]
+                        const isPrerelease =
+                            version.version.includes('-') ||
+                            version.version.includes('alpha') ||
+                            version.version.includes('beta')
 
-                                        {/* Changelog */}
-                                        <p className="text-gray-700 mb-4">
-                                            {version.changelog}
-                                        </p>
-
-                                        {/* Metadata */}
-                                        <div className="flex items-center gap-6 text-sm text-gray-500">
-                                            <div className="flex items-center gap-1">
-                                                <Calendar className="w-4 h-4" />
-                                                <span>
-                                                    {new Date(
-                                                        version.publishedAt
-                                                    ).toLocaleDateString()}
-                                                </span>
+                        return (
+                            <div
+                                key={version.version}
+                                className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
+                            >
+                                <div className="p-6">
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex-1">
+                                            {/* Version Header */}
+                                            <div className="flex items-center gap-3 mb-3">
+                                                <h3 className="text-xl font-mono font-bold text-gray-900">
+                                                    v{version.version}
+                                                </h3>
+                                                {getVersionTypeTag(
+                                                    version.version,
+                                                    prevVersion?.version
+                                                )}
+                                                {isPrerelease && (
+                                                    <Tag
+                                                        text="PRE-RELEASE"
+                                                        variant={
+                                                            TagVariant.SUBTLE
+                                                        }
+                                                        color={TagColor.PURPLE}
+                                                        size={TagSize.XS}
+                                                    />
+                                                )}
+                                                {version.breaking && (
+                                                    <Tag
+                                                        text="BREAKING CHANGES"
+                                                        variant={
+                                                            TagVariant.ATTENTIVE
+                                                        }
+                                                        color={TagColor.ERROR}
+                                                        size={TagSize.XS}
+                                                        leftSlot={
+                                                            <AlertTriangle className="w-3 h-3" />
+                                                        }
+                                                    />
+                                                )}
                                             </div>
-                                            <div className="flex items-center gap-1">
-                                                <GitBranch className="w-4 h-4" />
-                                                <span>
-                                                    by {version.publisher}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-1">
-                                                <Download className="w-4 h-4" />
-                                                <span>
-                                                    {formatDownloads(
-                                                        version.downloads
-                                                    )}{' '}
-                                                    downloads
-                                                </span>
-                                            </div>
-                                            {version.size && (
+
+                                            {/* Changelog */}
+                                            <p className="text-gray-700 mb-4">
+                                                {version.changelog}
+                                            </p>
+
+                                            {/* Metadata */}
+                                            <div className="flex items-center gap-6 text-sm text-gray-500">
                                                 <div className="flex items-center gap-1">
-                                                    <Package className="w-4 h-4" />
+                                                    <Calendar className="w-4 h-4" />
                                                     <span>
-                                                        {formatSize(
-                                                            version.size
-                                                                .unpacked
-                                                        )}
+                                                        {new Date(
+                                                            version.publishedAt
+                                                        ).toLocaleDateString()}
                                                     </span>
                                                 </div>
-                                            )}
+                                                <div className="flex items-center gap-1">
+                                                    <GitBranch className="w-4 h-4" />
+                                                    <span>
+                                                        by {version.publisher}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <Download className="w-4 h-4" />
+                                                    <span>
+                                                        {formatDownloads(
+                                                            version.downloads
+                                                        )}{' '}
+                                                        downloads
+                                                    </span>
+                                                </div>
+                                                {version.size && (
+                                                    <div className="flex items-center gap-1">
+                                                        <Package className="w-4 h-4" />
+                                                        <span>
+                                                            {formatSize(
+                                                                version.size
+                                                                    .unpacked
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Special Badges */}
+                                            <div className="flex items-center gap-2 mt-3">
+                                                {version.changelog
+                                                    .toLowerCase()
+                                                    .includes('security') && (
+                                                    <div className="flex items-center gap-1 text-xs bg-red-100 text-red-700 px-2 py-1 rounded">
+                                                        <Shield className="w-3 h-3" />
+                                                        <span>
+                                                            Security Patch
+                                                        </span>
+                                                    </div>
+                                                )}
+                                                {version.changelog
+                                                    .toLowerCase()
+                                                    .includes(
+                                                        'performance'
+                                                    ) && (
+                                                    <div className="flex items-center gap-1 text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                                                        <Zap className="w-3 h-3" />
+                                                        <span>Performance</span>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        {/* Special Badges */}
-                                        <div className="flex items-center gap-2 mt-3">
-                                            {version.changelog
-                                                .toLowerCase()
-                                                .includes('security') && (
-                                                <div className="flex items-center gap-1 text-xs bg-red-100 text-red-700 px-2 py-1 rounded">
-                                                    <Shield className="w-3 h-3" />
-                                                    <span>Security Patch</span>
-                                                </div>
-                                            )}
-                                            {version.changelog
-                                                .toLowerCase()
-                                                .includes('performance') && (
-                                                <div className="flex items-center gap-1 text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                                                    <Zap className="w-3 h-3" />
-                                                    <span>Performance</span>
-                                                </div>
-                                            )}
+                                        {/* Actions */}
+                                        <div className="flex items-center gap-2 ml-4">
+                                            <ButtonV2
+                                                text="View Diff"
+                                                size={ButtonSizeV2.SMALL}
+                                                buttonType={
+                                                    ButtonTypeV2.SECONDARY
+                                                }
+                                            />
                                         </div>
-                                    </div>
-
-                                    {/* Actions */}
-                                    <div className="flex items-center gap-2 ml-4">
-                                        <ButtonV2
-                                            text="View Diff"
-                                            size={ButtonSizeV2.SMALL}
-                                            buttonType={ButtonTypeV2.SECONDARY}
-                                        />
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    )
-                })}
-            </div>
+                        )
+                    })}
+                </div>
 
-            {/* Summary Stats */}
-            <div className="mt-8 bg-gray-100 rounded-lg p-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
-                    <div>
-                        <p className="text-2xl font-bold text-gray-900">
-                            {versions.length}
-                        </p>
-                        <p className="text-sm text-gray-600">Total Releases</p>
-                    </div>
-                    <div>
-                        <p className="text-2xl font-bold text-gray-900">
-                            {versions.filter((v) => v.breaking).length}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            Breaking Changes
-                        </p>
-                    </div>
-                    <div>
-                        <p className="text-2xl font-bold text-gray-900">
-                            {
-                                versions.filter((v) => v.version.includes('-'))
-                                    .length
-                            }
-                        </p>
-                        <p className="text-sm text-gray-600">Pre-releases</p>
-                    </div>
-                    <div>
-                        <p className="text-2xl font-bold text-gray-900">
-                            {versions[0]?.version || 'N/A'}
-                        </p>
-                        <p className="text-sm text-gray-600">Latest Version</p>
+                {/* Summary Stats */}
+                <div className="mt-8 bg-gray-100 rounded-lg p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <p className="text-2xl font-bold text-gray-900">
+                                {versions.length}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                                Total Releases
+                            </p>
+                        </div>
+                        <div>
+                            <p className="text-2xl font-bold text-gray-900">
+                                {versions.filter((v) => v.breaking).length}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                                Breaking Changes
+                            </p>
+                        </div>
+                        <div>
+                            <p className="text-2xl font-bold text-gray-900">
+                                {
+                                    versions.filter((v) =>
+                                        v.version.includes('-')
+                                    ).length
+                                }
+                            </p>
+                            <p className="text-sm text-gray-600">
+                                Pre-releases
+                            </p>
+                        </div>
+                        <div>
+                            <p className="text-2xl font-bold text-gray-900">
+                                {versions[0]?.version || 'N/A'}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                                Latest Version
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
