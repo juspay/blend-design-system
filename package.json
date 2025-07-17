@@ -31,7 +31,9 @@
         "version:blend": "cd packages/blend && npm version",
         "figma:validate": "figma connect validate",
         "figma:publish": "figma connect publish",
-        "figma:unpublish": "figma connect unpublish"
+        "figma:unpublish": "figma connect unpublish",
+        "monitor:dev": "turbo run dev --filter=blend-monitor",
+        "monitor:build": "turbo run build --filter=blend-monitor"
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",
