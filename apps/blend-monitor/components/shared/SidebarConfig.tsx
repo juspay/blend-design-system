@@ -1,7 +1,20 @@
 'use client'
 
 import React from 'react'
-import { Home, BarChart3, Link, Package, Tag, Zap } from 'lucide-react'
+import {
+    Home,
+    BarChart3,
+    Link,
+    Package,
+    Tag,
+    Zap,
+    LogOut,
+    Server,
+    Activity,
+    History,
+    Code,
+    DollarSign,
+} from 'lucide-react'
 
 export const tenants = [
     {
@@ -44,6 +57,41 @@ export const getNavigationData = (router: any, pathname: string) => [
                 leftSlot: <Package className="w-4 h-4" />,
                 onClick: () => router.push('/npm'),
                 isActive: pathname === '/npm',
+            },
+        ],
+    },
+    {
+        label: 'Deployments',
+        items: [
+            {
+                label: 'Hosting Status',
+                leftSlot: <Server className="w-4 h-4" />,
+                onClick: () => router.push('/deployments/hosting'),
+                isActive: pathname === '/deployments/hosting',
+            },
+            {
+                label: 'Performance',
+                leftSlot: <Activity className="w-4 h-4" />,
+                onClick: () => router.push('/deployments/performance'),
+                isActive: pathname === '/deployments/performance',
+            },
+            {
+                label: 'Deploy History',
+                leftSlot: <History className="w-4 h-4" />,
+                onClick: () => router.push('/deployments/history'),
+                isActive: pathname === '/deployments/history',
+            },
+            {
+                label: 'Functions',
+                leftSlot: <Code className="w-4 h-4" />,
+                onClick: () => router.push('/deployments/functions'),
+                isActive: pathname === '/deployments/functions',
+            },
+            {
+                label: 'Usage & Costs',
+                leftSlot: <DollarSign className="w-4 h-4" />,
+                onClick: () => router.push('/deployments/usage'),
+                isActive: pathname === '/deployments/usage',
             },
         ],
     },

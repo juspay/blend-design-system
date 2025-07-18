@@ -6,6 +6,10 @@ import {
     useDownloadTrends,
     useVersionHistory,
 } from '@/hooks/useRealtimeData'
+import Loader, {
+    CardSkeleton,
+    SkeletonLoader,
+} from '@/components/shared/Loader'
 import {
     Charts,
     ChartType,
@@ -139,16 +143,11 @@ export default function NPMPage() {
         return Math.round(((lastWeek - previousWeek) / previousWeek) * 100)
     }
 
-    if (statsLoading) {
+    const isLoading = statsLoading || trendsLoading || versionsLoading
+
+    if (statsLoading && trendsLoading && versionsLoading) {
         return (
-            <div className="flex items-center justify-center h-screen">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">
-                        Loading NPM statistics...
-                    </p>
-                </div>
-            </div>
+            <Loader fullScreen size="large" text="Loading NPM statistics..." />
         )
     }
 
@@ -192,112 +191,130 @@ export default function NPMPage() {
 
                 {/* All Stats Grid - 8 cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <StatCard
-                        title="Current Version"
-                        value={packageStats?.version || '0.0.0'}
-                        subtitle={
-                            packageStats?.lastPublish
-                                ? `Published ${new Date(packageStats.lastPublish).toLocaleDateString()}`
-                                : ''
-                        }
-                        titleIcon={
-                            <div className="p-2 bg-blue-100 rounded-lg">
-                                <Package className="w-5 h-5 text-blue-600" />
-                            </div>
-                        }
-                        variant={StatCardVariant.NUMBER}
-                    />
-                    <StatCard
-                        title="Weekly Downloads"
-                        value={
-                            packageStats?.downloads.weekly.toLocaleString() ||
-                            '0'
-                        }
-                        change={
-                            calculateTrend() !== 0
-                                ? {
-                                      value: Math.abs(calculateTrend()),
-                                      type:
-                                          calculateTrend() > 0
-                                              ? ChangeType.INCREASE
-                                              : ChangeType.DECREASE,
-                                  }
-                                : undefined
-                        }
-                        titleIcon={
-                            <div className="p-2 bg-green-100 rounded-lg">
-                                <Download className="w-5 h-5 text-green-600" />
-                            </div>
-                        }
-                        variant={StatCardVariant.NUMBER}
-                    />
-                    <StatCard
-                        title="Total Downloads"
-                        value={
-                            packageStats?.downloads.total.toLocaleString() ||
-                            '0'
-                        }
-                        titleIcon={
-                            <div className="p-2 bg-amber-100 rounded-lg">
-                                <TrendingUp className="w-5 h-5 text-amber-600" />
-                            </div>
-                        }
-                        variant={StatCardVariant.NUMBER}
-                    />
-                    <StatCard
-                        title="Dependencies"
-                        value={packageStats?.dependencies || 0}
-                        subtitle={`${((packageStats?.size.unpacked || 0) / 1024 / 1024).toFixed(1)}MB unpacked`}
-                        titleIcon={
-                            <div className="p-2 bg-purple-100 rounded-lg">
-                                <GitBranch className="w-5 h-5 text-purple-600" />
-                            </div>
-                        }
-                        variant={StatCardVariant.NUMBER}
-                    />
-                    <StatCard
-                        title="Total Releases"
-                        value={versions.length}
-                        titleIcon={
-                            <div className="p-2 bg-blue-100 rounded-lg">
-                                <History className="w-5 h-5 text-blue-600" />
-                            </div>
-                        }
-                        variant={StatCardVariant.NUMBER}
-                    />
-                    <StatCard
-                        title="Breaking Changes"
-                        value={versions.filter((v) => v.breaking).length}
-                        titleIcon={
-                            <div className="p-2 bg-red-100 rounded-lg">
-                                <AlertCircle className="w-5 h-5 text-red-600" />
-                            </div>
-                        }
-                        variant={StatCardVariant.NUMBER}
-                    />
-                    <StatCard
-                        title="Pre-releases"
-                        value={
-                            versions.filter((v) => v.version.includes('-'))
-                                .length
-                        }
-                        titleIcon={
-                            <div className="p-2 bg-purple-100 rounded-lg">
-                                <GitCommit className="w-5 h-5 text-purple-600" />
-                            </div>
-                        }
-                        variant={StatCardVariant.NUMBER}
-                    />
-                    <StatCard
-                        title="Latest Version"
-                        value={versions[0]?.version || 'N/A'}
-                        titleIcon={
-                            <div className="p-2 bg-green-100 rounded-lg">
-                                <Layers className="w-5 h-5 text-green-600" />
-                            </div>
-                        }
-                        variant={StatCardVariant.NUMBER}
-                    />
+                    {isLoading ? (
+                        <>
+                            <CardSkeleton />
+                            <CardSkeleton />
+                            <CardSkeleton />
+                            <CardSkeleton />
+                            <CardSkeleton />
+                            <CardSkeleton />
+                            <CardSkeleton />
+                            <CardSkeleton />
+                        </>
+                    ) : (
+                        <>
+                            <StatCard
+                                title="Current Version"
+                                value={packageStats?.version || '0.0.0'}
+                                subtitle={
+                                    packageStats?.lastPublish
+                                        ? `Published ${new Date(packageStats.lastPublish).toLocaleDateString()}`
+                                        : ''
+                                }
+                                titleIcon={
+                                    <div className="p-2 bg-blue-100 rounded-lg">
+                                        <Package className="w-5 h-5 text-blue-600" />
+                                    </div>
+                                }
+                                variant={StatCardVariant.NUMBER}
+                            />
+                            <StatCard
+                                title="Weekly Downloads"
+                                value={
+                                    packageStats?.downloads.weekly.toLocaleString() ||
+                                    '0'
+                                }
+                                change={
+                                    calculateTrend() !== 0
+                                        ? {
+                                              value: Math.abs(calculateTrend()),
+                                              type:
+                                                  calculateTrend() > 0
+                                                      ? ChangeType.INCREASE
+                                                      : ChangeType.DECREASE,
+                                          }
+                                        : undefined
+                                }
+                                titleIcon={
+                                    <div className="p-2 bg-green-100 rounded-lg">
+                                        <Download className="w-5 h-5 text-green-600" />
+                                    </div>
+                                }
+                                variant={StatCardVariant.NUMBER}
+                            />
+                            <StatCard
+                                title="Total Downloads"
+                                value={
+                                    packageStats?.downloads.total.toLocaleString() ||
+                                    '0'
+                                }
+                                titleIcon={
+                                    <div className="p-2 bg-amber-100 rounded-lg">
+                                        <TrendingUp className="w-5 h-5 text-amber-600" />
+                                    </div>
+                                }
+                                variant={StatCardVariant.NUMBER}
+                            />
+                            <StatCard
+                                title="Dependencies"
+                                value={packageStats?.dependencies || 0}
+                                subtitle={`${((packageStats?.size.unpacked || 0) / 1024 / 1024).toFixed(1)}MB unpacked`}
+                                titleIcon={
+                                    <div className="p-2 bg-purple-100 rounded-lg">
+                                        <GitBranch className="w-5 h-5 text-purple-600" />
+                                    </div>
+                                }
+                                variant={StatCardVariant.NUMBER}
+                            />
+                            <StatCard
+                                title="Total Releases"
+                                value={versions.length}
+                                titleIcon={
+                                    <div className="p-2 bg-blue-100 rounded-lg">
+                                        <History className="w-5 h-5 text-blue-600" />
+                                    </div>
+                                }
+                                variant={StatCardVariant.NUMBER}
+                            />
+                            <StatCard
+                                title="Breaking Changes"
+                                value={
+                                    versions.filter((v) => v.breaking).length
+                                }
+                                titleIcon={
+                                    <div className="p-2 bg-red-100 rounded-lg">
+                                        <AlertCircle className="w-5 h-5 text-red-600" />
+                                    </div>
+                                }
+                                variant={StatCardVariant.NUMBER}
+                            />
+                            <StatCard
+                                title="Pre-releases"
+                                value={
+                                    versions.filter((v) =>
+                                        v.version.includes('-')
+                                    ).length
+                                }
+                                titleIcon={
+                                    <div className="p-2 bg-purple-100 rounded-lg">
+                                        <GitCommit className="w-5 h-5 text-purple-600" />
+                                    </div>
+                                }
+                                variant={StatCardVariant.NUMBER}
+                            />
+                            <StatCard
+                                title="Latest Version"
+                                value={versions[0]?.version || 'N/A'}
+                                titleIcon={
+                                    <div className="p-2 bg-green-100 rounded-lg">
+                                        <Layers className="w-5 h-5 text-green-600" />
+                                    </div>
+                                }
+                                variant={StatCardVariant.NUMBER}
+                            />
+                        </>
+                    )}
                 </div>
 
                 {/* Download Trends Chart */}

@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react'
 import { useComponents, useCategoryCoverage } from '@/hooks/useRealtimeData'
 import { ComponentInfo } from '@/types'
+import Loader, { CardSkeleton } from '@/components/shared/Loader'
 import {
     ButtonV2,
     Tag,
@@ -148,14 +149,7 @@ export default function CodeConnectPage() {
     }
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">Loading components...</p>
-                </div>
-            </div>
-        )
+        return <Loader fullScreen size="large" text="Loading components..." />
     }
 
     return (
@@ -176,41 +170,55 @@ export default function CodeConnectPage() {
 
                 {/* Coverage Overview */}
                 <div className="flex gap-6 mb-8">
-                    <div className="flex-1 overflow-hidden">
-                        <Charts
-                            chartType={ChartType.PIE}
-                            data={pieChartData}
-                            chartHeaderSlot={
-                                <div className="mb-4">
-                                    <h3 className="text-base font-semibold text-gray-900">
-                                        Overall Coverage
-                                    </h3>
-                                    <p className="text-xs text-gray-600">
-                                        {stats.integrated} of {stats.total}{' '}
-                                        components integrated (
-                                        {stats.percentage}%)
-                                    </p>
-                                </div>
-                            }
-                        />
-                    </div>
+                    {loading ? (
+                        <>
+                            <div className="flex-1">
+                                <CardSkeleton />
+                            </div>
+                            <div className="flex-1">
+                                <CardSkeleton />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="flex-1 overflow-hidden">
+                                <Charts
+                                    chartType={ChartType.PIE}
+                                    data={pieChartData}
+                                    chartHeaderSlot={
+                                        <div className="mb-4">
+                                            <h3 className="text-base font-semibold text-gray-900">
+                                                Overall Coverage
+                                            </h3>
+                                            <p className="text-xs text-gray-600">
+                                                {stats.integrated} of{' '}
+                                                {stats.total} components
+                                                integrated ({stats.percentage}%)
+                                            </p>
+                                        </div>
+                                    }
+                                />
+                            </div>
 
-                    <div className="flex-1 overflow-hidden">
-                        <Charts
-                            chartType={ChartType.BAR}
-                            data={barChartData}
-                            chartHeaderSlot={
-                                <div className="mb-4">
-                                    <h3 className="text-base font-semibold text-gray-900">
-                                        Coverage by Category
-                                    </h3>
-                                    <p className="text-xs text-gray-600">
-                                        Integration progress by component type
-                                    </p>
-                                </div>
-                            }
-                        />
-                    </div>
+                            <div className="flex-1 overflow-hidden">
+                                <Charts
+                                    chartType={ChartType.BAR}
+                                    data={barChartData}
+                                    chartHeaderSlot={
+                                        <div className="mb-4">
+                                            <h3 className="text-base font-semibold text-gray-900">
+                                                Coverage by Category
+                                            </h3>
+                                            <p className="text-xs text-gray-600">
+                                                Integration progress by
+                                                component type
+                                            </p>
+                                        </div>
+                                    }
+                                />
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 {/* Category Filter and Components */}

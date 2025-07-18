@@ -7,6 +7,7 @@ import {
     useRecentActivity,
     useDownloadTrends,
 } from '@/hooks/useRealtimeData'
+import Loader, { CardSkeleton } from '@/components/shared/Loader'
 import {
     Package,
     Link,
@@ -276,71 +277,66 @@ export default function DashboardHome() {
             <div className="p-8">
                 {/* Key Metrics */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <StatCard
-                        title="Total Components"
-                        value={
-                            coverageLoading
-                                ? '...'
-                                : String(coverage?.total || 0)
-                        }
-                        titleIcon={
-                            <Package className="w-5 h-5 text-blue-600" />
-                        }
-                        variant={StatCardVariant.NUMBER}
-                    />
-                    <StatCard
-                        title="Code Connect Coverage"
-                        value={
-                            coverageLoading
-                                ? '...'
-                                : `${coverage?.percentage || 0}%`
-                        }
-                        subtitle={
-                            coverageLoading
-                                ? 'Loading...'
-                                : `${coverage?.integrated || 0} of ${coverage?.total || 0} integrated`
-                        }
-                        change={{
-                            value: 3,
-                            type: ChangeType.INCREASE,
-                        }}
-                        titleIcon={<Link className="w-5 h-5 text-green-600" />}
-                        variant={StatCardVariant.NUMBER}
-                    />
-                    <StatCard
-                        title="Weekly Downloads"
-                        value={
-                            packageLoading
-                                ? '...'
-                                : packageStats?.downloads.weekly.toLocaleString() ||
-                                  '0'
-                        }
-                        change={{
-                            value: 12,
-                            type: ChangeType.INCREASE,
-                        }}
-                        titleIcon={
-                            <Download className="w-5 h-5 text-purple-600" />
-                        }
-                        variant={StatCardVariant.NUMBER}
-                    />
-                    <StatCard
-                        title="Current Version"
-                        value={
-                            packageLoading
-                                ? '...'
-                                : packageStats?.version || '0.0.0'
-                        }
-                        subtitle={
-                            packageLoading
-                                ? 'Loading...'
-                                : packageStats?.lastPublish
-                                  ? `Published ${new Date(packageStats.lastPublish).toLocaleDateString()}`
-                                  : ''
-                        }
-                        titleIcon={<Tag className="w-5 h-5 text-amber-600" />}
-                        variant={StatCardVariant.NUMBER}
-                    />
+                    {coverageLoading || packageLoading ? (
+                        <>
+                            <CardSkeleton />
+                            <CardSkeleton />
+                            <CardSkeleton />
+                            <CardSkeleton />
+                        </>
+                    ) : (
+                        <>
+                            <StatCard
+                                title="Total Components"
+                                value={String(coverage?.total || 0)}
+                                titleIcon={
+                                    <Package className="w-5 h-5 text-blue-600" />
+                                }
+                                variant={StatCardVariant.NUMBER}
+                            />
+                            <StatCard
+                                title="Code Connect Coverage"
+                                value={`${coverage?.percentage || 0}%`}
+                                subtitle={`${coverage?.integrated || 0} of ${coverage?.total || 0} integrated`}
+                                change={{
+                                    value: 3,
+                                    type: ChangeType.INCREASE,
+                                }}
+                                titleIcon={
+                                    <Link className="w-5 h-5 text-green-600" />
+                                }
+                                variant={StatCardVariant.NUMBER}
+                            />
+                            <StatCard
+                                title="Weekly Downloads"
+                                value={
+                                    packageStats?.downloads.weekly.toLocaleString() ||
+                                    '0'
+                                }
+                                change={{
+                                    value: 12,
+                                    type: ChangeType.INCREASE,
+                                }}
+                                titleIcon={
+                                    <Download className="w-5 h-5 text-purple-600" />
+                                }
+                                variant={StatCardVariant.NUMBER}
+                            />
+                            <StatCard
+                                title="Current Version"
+                                value={packageStats?.version || '0.0.0'}
+                                subtitle={
+                                    packageStats?.lastPublish
+                                        ? `Published ${new Date(packageStats.lastPublish).toLocaleDateString()}`
+                                        : ''
+                                }
+                                titleIcon={
+                                    <Tag className="w-5 h-5 text-amber-600" />
+                                }
+                                variant={StatCardVariant.NUMBER}
+                            />
+                        </>
+                    )}
                 </div>
 
                 {/* Charts and Analytics */}
