@@ -45,12 +45,6 @@ export const getNavigationData = (router: any, pathname: string) => [
                 onClick: () => router.push('/npm'),
                 isActive: pathname === '/npm',
             },
-            {
-                label: 'Version History',
-                leftSlot: <Tag className="w-4 h-4" />,
-                onClick: () => router.push('/npm/history'),
-                isActive: pathname === '/npm/history',
-            },
         ],
     },
 ]

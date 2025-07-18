@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import {
     usePackageStats,
     useDownloadTrends,
@@ -10,6 +10,7 @@ import {
     Charts,
     ChartType,
     ButtonV2,
+    ButtonTypeV2,
     Tag,
     TagVariant,
     TagColor,
@@ -17,6 +18,7 @@ import {
     StatCard,
     StatCardVariant,
     ChangeType,
+    SingleSelect,
 } from 'blend-v1'
 import {
     Package,
@@ -29,18 +31,58 @@ import {
     Users,
     FileText,
     AlertTriangle,
+    History,
+    GitCommit,
+    AlertCircle,
+    Layers,
 } from 'lucide-react'
-import {
-    VerticalTimeline,
-    VerticalTimelineElement,
-} from 'react-vertical-timeline-component'
-import 'react-vertical-timeline-component/style.min.css'
 
 export default function NPMPage() {
     const { packageStats, loading: statsLoading } = usePackageStats()
     const { trends, loading: trendsLoading } = useDownloadTrends()
     const { versions, loading: versionsLoading } = useVersionHistory()
     const [refreshing, setRefreshing] = useState(false)
+    const [filterType, setFilterType] = useState<
+        'all' | 'major' | 'minor' | 'patch'
+    >('all')
+
+    // Filter versions based on selected criteria
+    const filteredVersions = useMemo(() => {
+        return versions.filter((version) => {
+            // Filter by version type
+            if (filterType !== 'all') {
+                const versionParts = version.version.split('.')
+                const prevVersion = versions.find(
+                    (v, idx) => idx === versions.indexOf(version) + 1
+                )
+
+                if (prevVersion) {
+                    const prevParts = prevVersion.version.split('.')
+
+                    switch (filterType) {
+                        case 'major':
+                            return (
+                                parseInt(versionParts[0]) >
+                                parseInt(prevParts[0])
+                            )
+                        case 'minor':
+                            return (
+                                versionParts[0] === prevParts[0] &&
+                                parseInt(versionParts[1]) >
+                                    parseInt(prevParts[1])
+                            )
+                        case 'patch':
+                            return (
+                                versionParts[0] === prevParts[0] &&
+                                versionParts[1] === prevParts[1]
+                            )
+                    }
+                }
+            }
+
+            return true
+        })
+    }, [versions, filterType])
 
     // Prepare chart data for download trends
     const chartData = React.useMemo(() => {
@@ -113,10 +155,19 @@ export default function NPMPage() {
     return (
         <div className="h-full overflow-y-auto bg-white">
             <div className="p-8">
-                <div className="mb-8 flex items-center justify-end">
+                <div className="mb-8 flex items-center justify-between">
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900">
+                            NPM Package Stats
+                        </h1>
+                        <p className="text-sm text-gray-600 mt-1">
+                            Monitor blend-v1 package performance and releases
+                        </p>
+                    </div>
                     <div className="flex items-center gap-4">
                         <ButtonV2
                             text="View on NPM"
+                            buttonType={ButtonTypeV2.SECONDARY}
                             trailingIcon={<ExternalLink className="w-4 h-4" />}
                             onClick={() =>
                                 window.open(
@@ -127,6 +178,7 @@ export default function NPMPage() {
                         />
                         <ButtonV2
                             text="Refresh"
+                            buttonType={ButtonTypeV2.PRIMARY}
                             leadingIcon={
                                 <RefreshCw
                                     className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
@@ -138,7 +190,7 @@ export default function NPMPage() {
                     </div>
                 </div>
 
-                {/* Metrics Grid */}
+                {/* All Stats Grid - 8 cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <StatCard
                         title="Current Version"
@@ -203,6 +255,49 @@ export default function NPMPage() {
                         }
                         variant={StatCardVariant.NUMBER}
                     />
+                    <StatCard
+                        title="Total Releases"
+                        value={versions.length}
+                        titleIcon={
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                                <History className="w-5 h-5 text-blue-600" />
+                            </div>
+                        }
+                        variant={StatCardVariant.NUMBER}
+                    />
+                    <StatCard
+                        title="Breaking Changes"
+                        value={versions.filter((v) => v.breaking).length}
+                        titleIcon={
+                            <div className="p-2 bg-red-100 rounded-lg">
+                                <AlertCircle className="w-5 h-5 text-red-600" />
+                            </div>
+                        }
+                        variant={StatCardVariant.NUMBER}
+                    />
+                    <StatCard
+                        title="Pre-releases"
+                        value={
+                            versions.filter((v) => v.version.includes('-'))
+                                .length
+                        }
+                        titleIcon={
+                            <div className="p-2 bg-purple-100 rounded-lg">
+                                <GitCommit className="w-5 h-5 text-purple-600" />
+                            </div>
+                        }
+                        variant={StatCardVariant.NUMBER}
+                    />
+                    <StatCard
+                        title="Latest Version"
+                        value={versions[0]?.version || 'N/A'}
+                        titleIcon={
+                            <div className="p-2 bg-green-100 rounded-lg">
+                                <Layers className="w-5 h-5 text-green-600" />
+                            </div>
+                        }
+                        variant={StatCardVariant.NUMBER}
+                    />
                 </div>
 
                 {/* Download Trends Chart */}
@@ -221,96 +316,207 @@ export default function NPMPage() {
                     }
                 />
 
-                {/* Version History */}
+                {/* Version History Section */}
                 <div className="mt-8">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-8">
-                        Version History
-                    </h3>
-                    <VerticalTimeline lineColor="#e5e7eb">
-                        {versions.slice(0, 10).map((version, index) => (
-                            <VerticalTimelineElement
-                                key={version.version}
-                                className="vertical-timeline-element--work"
-                                contentStyle={{
-                                    background: '#fff',
-                                    color: '#333',
-                                    boxShadow:
-                                        '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                                    border: '1px solid #e5e7eb',
-                                }}
-                                contentArrowStyle={{
-                                    borderRight: '7px solid #e5e7eb',
-                                }}
-                                date={new Date(
-                                    version.publishedAt
-                                ).toLocaleDateString('en-US', {
-                                    month: 'short',
-                                    day: 'numeric',
-                                    year: 'numeric',
-                                })}
-                                iconStyle={{
-                                    background:
-                                        index === 0 ? '#3b82f6' : '#9ca3af',
-                                    color: '#fff',
-                                    width: '24px',
-                                    height: '24px',
-                                    marginLeft: '-12px',
-                                    marginTop: '22px',
-                                }}
-                                icon={<Package className="w-3 h-3" />}
-                            >
-                                <div className="flex items-start justify-between mb-2">
-                                    <div className="flex items-center gap-3">
-                                        <h4 className="font-mono font-semibold text-lg">
-                                            v{version.version}
-                                        </h4>
-                                        {version.breaking && (
-                                            <Tag
-                                                text="Breaking Changes"
-                                                variant={TagVariant.ATTENTIVE}
-                                                color={TagColor.ERROR}
-                                                size={TagSize.SM}
-                                                leftSlot={
-                                                    <AlertTriangle className="w-3 h-3" />
-                                                }
-                                            />
-                                        )}
-                                    </div>
-                                </div>
+                    {/* Filter Section */}
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold text-gray-900">
+                            Versions
+                        </h2>
+                        <div className="w-48">
+                            <SingleSelect
+                                selected={filterType}
+                                onSelect={(value: string) =>
+                                    setFilterType(
+                                        value as
+                                            | 'all'
+                                            | 'major'
+                                            | 'minor'
+                                            | 'patch'
+                                    )
+                                }
+                                label=""
+                                placeholder="Select filter"
+                                items={[
+                                    {
+                                        items: [
+                                            {
+                                                label: 'All Versions',
+                                                value: 'all',
+                                            },
+                                            {
+                                                label: 'Major Releases',
+                                                value: 'major',
+                                            },
+                                            {
+                                                label: 'Minor Releases',
+                                                value: 'minor',
+                                            },
+                                            {
+                                                label: 'Patch Releases',
+                                                value: 'patch',
+                                            },
+                                        ],
+                                    },
+                                ]}
+                            />
+                        </div>
+                    </div>
 
-                                <p className="text-gray-700 mb-3">
-                                    {version.changelog ||
-                                        'No changelog provided'}
-                                </p>
+                    {/* Version List */}
+                    <div className="space-y-3">
+                        {filteredVersions.slice(0, 10).map((version, index) => {
+                            const prevVersion = filteredVersions[index + 1]
+                            const isPrerelease =
+                                version.version.includes('-') ||
+                                version.version.includes('alpha') ||
+                                version.version.includes('beta')
 
-                                <div className="flex items-center gap-4 text-sm text-gray-500">
-                                    <div className="flex items-center gap-1">
-                                        <Users className="w-4 h-4" />
-                                        <span>{version.publisher}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <Download className="w-4 h-4" />
-                                        <span>
-                                            {version.downloads.toLocaleString()}
-                                        </span>
-                                    </div>
-                                    {version.size && (
-                                        <div className="flex items-center gap-1">
-                                            <FileText className="w-4 h-4" />
-                                            <span>
-                                                {(
-                                                    version.size.unpacked /
-                                                    1024 /
-                                                    1024
-                                                ).toFixed(1)}{' '}
-                                                MB
-                                            </span>
+                            const getVersionTypeTag = (
+                                version: string,
+                                prevVersion?: string
+                            ) => {
+                                if (!prevVersion) return null
+
+                                const current = version.split('.')
+                                const prev = prevVersion.split('.')
+
+                                if (parseInt(current[0]) > parseInt(prev[0])) {
+                                    return (
+                                        <Tag
+                                            text="MAJOR"
+                                            variant={TagVariant.ATTENTIVE}
+                                            color={TagColor.ERROR}
+                                            size={TagSize.XS}
+                                        />
+                                    )
+                                } else if (
+                                    current[0] === prev[0] &&
+                                    parseInt(current[1]) > parseInt(prev[1])
+                                ) {
+                                    return (
+                                        <Tag
+                                            text="MINOR"
+                                            variant={TagVariant.ATTENTIVE}
+                                            color={TagColor.WARNING}
+                                            size={TagSize.XS}
+                                        />
+                                    )
+                                } else {
+                                    return (
+                                        <Tag
+                                            text="PATCH"
+                                            variant={TagVariant.SUBTLE}
+                                            color={TagColor.SUCCESS}
+                                            size={TagSize.XS}
+                                        />
+                                    )
+                                }
+                            }
+
+                            return (
+                                <div
+                                    key={version.version}
+                                    className="bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all"
+                                >
+                                    <div className="p-4">
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                {/* Version Header */}
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <h3 className="font-mono font-semibold text-gray-900">
+                                                        v{version.version}
+                                                    </h3>
+                                                    {getVersionTypeTag(
+                                                        version.version,
+                                                        prevVersion?.version
+                                                    )}
+                                                    {isPrerelease && (
+                                                        <Tag
+                                                            text="Pre-release"
+                                                            variant={
+                                                                TagVariant.SUBTLE
+                                                            }
+                                                            color={
+                                                                TagColor.PURPLE
+                                                            }
+                                                            size={TagSize.XS}
+                                                        />
+                                                    )}
+                                                    {version.breaking && (
+                                                        <Tag
+                                                            text="Breaking"
+                                                            variant={
+                                                                TagVariant.ATTENTIVE
+                                                            }
+                                                            color={
+                                                                TagColor.ERROR
+                                                            }
+                                                            size={TagSize.XS}
+                                                        />
+                                                    )}
+                                                </div>
+
+                                                {/* Changelog */}
+                                                {version.changelog && (
+                                                    <p className="text-sm text-gray-600 mb-3">
+                                                        {version.changelog}
+                                                    </p>
+                                                )}
+
+                                                {/* Metadata */}
+                                                <div className="flex items-center gap-4 text-xs text-gray-500">
+                                                    <div className="flex items-center gap-1">
+                                                        <Calendar className="w-3 h-3" />
+                                                        <span>
+                                                            {new Date(
+                                                                version.publishedAt
+                                                            ).toLocaleDateString(
+                                                                'en-US',
+                                                                {
+                                                                    month: 'short',
+                                                                    day: 'numeric',
+                                                                    year: 'numeric',
+                                                                }
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1">
+                                                        <GitBranch className="w-3 h-3" />
+                                                        <span>
+                                                            {version.publisher}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1">
+                                                        <Download className="w-3 h-3" />
+                                                        <span>
+                                                            {version.downloads.toLocaleString()}
+                                                        </span>
+                                                    </div>
+                                                    {version.size && (
+                                                        <div className="flex items-center gap-1">
+                                                            <Package className="w-3 h-3" />
+                                                            <span>
+                                                                {(
+                                                                    version.size
+                                                                        .unpacked /
+                                                                    1024 /
+                                                                    1024
+                                                                ).toFixed(
+                                                                    1
+                                                                )}{' '}
+                                                                MB
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
-                                    )}
+                                    </div>
                                 </div>
-                            </VerticalTimelineElement>
-                        ))}
-                    </VerticalTimeline>
+                            )
+                        })}
+                    </div>
                 </div>
             </div>
         </div>

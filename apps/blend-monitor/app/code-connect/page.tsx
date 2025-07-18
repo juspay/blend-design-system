@@ -218,7 +218,7 @@ export default function CodeConnectPage() {
                     value={selectedCategory}
                     onValueChange={setSelectedCategory}
                 >
-                    <div className="sticky top-0 z-10 bg-white pb-6 -mx-8 px-8 pt-2">
+                    <div className="sticky top-0 z-40 bg-white pb-6 -mx-8 px-8 pt-2">
                         <TabsList variant={TabsVariant.BOXED}>
                             {categoryButtons.map((button) => (
                                 <TabsTrigger
