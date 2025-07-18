@@ -90,7 +90,7 @@ const SidebarDemo = () => {
         | 'theme'
         | 'salesKpiDashboard'
         | 'transactionAnalyticsDashboard'
-    >('buttons')
+    >('drawer')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] = useState<string | undefined>(

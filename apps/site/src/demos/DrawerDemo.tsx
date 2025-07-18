@@ -15,6 +15,7 @@ import {
     DrawerFooter,
     DrawerClose,
 } from '../../../../packages/blend/lib/components/Drawer'
+import ResponsiveSelectDemo from './ResponsiveSelectDemo'
 
 export const BasicDrawerExample = () => {
     return (
@@ -43,7 +44,7 @@ export const BasicDrawerExample = () => {
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent>
+                <DrawerContent hasSnapPoints={true}>
                     <DrawerHeader>
                         <DrawerTitle>Drawer for React.</DrawerTitle>
                         <DrawerDescription>
@@ -512,6 +513,608 @@ export const ControlledDrawerExample = () => {
     )
 }
 
+// Snap Points Example
+export const SnapPointsDrawerExample = () => {
+    const snapPoints = ['148px', '355px', 1]
+    const [snap, setSnap] = useState<number | string | null>(
+        snapPoints[0] as string
+    )
+
+    return (
+        <Drawer
+            snapPoints={snapPoints}
+            activeSnapPoint={snap}
+            onSnapPointChange={setSnap}
+        >
+            <DrawerTrigger>
+                <button
+                    style={{
+                        display: 'flex',
+                        height: '40px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        overflow: 'hidden',
+                        borderRadius: '20px',
+                        backgroundColor: 'white',
+                        padding: '0 16px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                        border: '1px solid #e5e7eb',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Open Snap Points Drawer
+                </button>
+            </DrawerTrigger>
+            <DrawerPortal>
+                <DrawerOverlay />
+                <DrawerContent
+                    hasSnapPoints={true}
+                    style={{ maxWidth: '448px', margin: '0 auto' }}
+                >
+                    <DrawerBody overflowY={snap === 1 ? 'auto' : 'hidden'}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '16px',
+                                padding: '20px 0',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                }}
+                            >
+                                {[...Array(5)].map((_, i) => (
+                                    <svg
+                                        key={i}
+                                        style={{
+                                            color: '#fbbf24',
+                                            height: '20px',
+                                            width: '20px',
+                                        }}
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                ))}
+                            </div>
+                            <h3
+                                style={{
+                                    fontSize: '24px',
+                                    margin: '8px 0',
+                                    fontWeight: '500',
+                                }}
+                            >
+                                The Hidden Details
+                            </h3>
+                            <p
+                                style={{
+                                    fontSize: '14px',
+                                    color: '#6b7280',
+                                    margin: '4px 0 24px 0',
+                                }}
+                            >
+                                40 videos, 20+ exercises
+                            </p>
+                            <p style={{ color: '#6b7280', lineHeight: '1.6' }}>
+                                The world of user interface design is an
+                                intricate landscape filled with hidden details
+                                and nuance. In this course, you will learn
+                                something cool. To the untrained eye, a
+                                beautifully designed UI.
+                            </p>
+                            <button
+                                style={{
+                                    backgroundColor: '#000',
+                                    color: 'white',
+                                    marginTop: '32px',
+                                    borderRadius: '6px',
+                                    height: '48px',
+                                    border: 'none',
+                                    fontWeight: '500',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Buy for $199
+                            </button>
+                            <div style={{ marginTop: '48px' }}>
+                                <h4
+                                    style={{
+                                        fontSize: '20px',
+                                        fontWeight: '500',
+                                        margin: '0 0 16px 0',
+                                    }}
+                                >
+                                    Module 01. The Details
+                                </h4>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '16px',
+                                    }}
+                                >
+                                    <div>
+                                        <div
+                                            style={{
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            Layers of UI
+                                        </div>
+                                        <div style={{ color: '#6b7280' }}>
+                                            A basic introduction to Layers of
+                                            Design.
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            style={{
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            Typography
+                                        </div>
+                                        <div style={{ color: '#6b7280' }}>
+                                            The fundamentals of type.
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            style={{
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            UI Animations
+                                        </div>
+                                        <div style={{ color: '#6b7280' }}>
+                                            Going through the right easings and
+                                            durations.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ marginTop: '48px' }}>
+                                <figure>
+                                    <blockquote
+                                        style={{
+                                            fontStyle: 'italic',
+                                            color: '#374151',
+                                        }}
+                                    >
+                                        "I especially loved the hidden details
+                                        video. That was so useful, learned a lot
+                                        by just reading it. Can't wait for more
+                                        course content!"
+                                    </blockquote>
+                                    <figcaption>
+                                        <span
+                                            style={{
+                                                fontSize: '14px',
+                                                color: '#6b7280',
+                                                marginTop: '8px',
+                                                display: 'block',
+                                            }}
+                                        >
+                                            Yvonne Ray, Frontend Developer
+                                        </span>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                            <div style={{ marginTop: '48px' }}>
+                                <h4
+                                    style={{
+                                        fontSize: '20px',
+                                        fontWeight: '500',
+                                        margin: '0 0 16px 0',
+                                    }}
+                                >
+                                    Module 02. The Process
+                                </h4>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '16px',
+                                    }}
+                                >
+                                    <div>
+                                        <div
+                                            style={{
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            Build
+                                        </div>
+                                        <div style={{ color: '#6b7280' }}>
+                                            Create cool components to practice.
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            style={{
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            User Insight
+                                        </div>
+                                        <div style={{ color: '#6b7280' }}>
+                                            Find out what users think and
+                                            fine-tune.
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            style={{
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            Putting it all together
+                                        </div>
+                                        <div style={{ color: '#6b7280' }}>
+                                            Let's build an app together and
+                                            apply everything.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </DrawerBody>
+                </DrawerContent>
+            </DrawerPortal>
+        </Drawer>
+    )
+}
+
+// Non-Modal Snap Points Example
+export const NonModalSnapPointsExample = () => {
+    const snapPoints = ['148px', '355px', 1]
+    const [snap, setSnap] = useState<number | string | null>(
+        snapPoints[0] as string
+    )
+
+    return (
+        <Drawer
+            snapPoints={snapPoints}
+            activeSnapPoint={snap}
+            onSnapPointChange={setSnap}
+            modal={false}
+        >
+            <DrawerTrigger>
+                <button
+                    style={{
+                        display: 'flex',
+                        height: '40px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        overflow: 'hidden',
+                        borderRadius: '20px',
+                        backgroundColor: 'white',
+                        padding: '0 16px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                        border: '1px solid #e5e7eb',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Non-Modal Snap Points
+                </button>
+            </DrawerTrigger>
+            <DrawerPortal>
+                <DrawerOverlay />
+                <DrawerContent
+                    hasSnapPoints={true}
+                    style={{ maxWidth: '448px', margin: '0 auto' }}
+                >
+                    <DrawerBody overflowY={snap === 1 ? 'auto' : 'hidden'}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                marginBottom: '16px',
+                            }}
+                        >
+                            {[...Array(4)].map((_, i) => (
+                                <svg
+                                    key={i}
+                                    style={{
+                                        color: '#fbbf24',
+                                        height: '20px',
+                                        width: '20px',
+                                    }}
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                            ))}
+                            <svg
+                                style={{
+                                    color: '#d1d5db',
+                                    height: '20px',
+                                    width: '20px',
+                                }}
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+                        </div>
+                        <h3
+                            style={{
+                                fontSize: '24px',
+                                margin: '8px 0',
+                                fontWeight: '500',
+                            }}
+                        >
+                            The Hidden Details
+                        </h3>
+                        <p
+                            style={{
+                                fontSize: '14px',
+                                color: '#6b7280',
+                                margin: '4px 0 24px 0',
+                            }}
+                        >
+                            2 modules, 27 hours of video
+                        </p>
+                        <p style={{ color: '#6b7280', lineHeight: '1.6' }}>
+                            This drawer combines snap points with non-modal
+                            behavior. You can click on other elements on the
+                            page while the drawer is open.
+                        </p>
+                        <p
+                            style={{
+                                color: '#6b7280',
+                                lineHeight: '1.6',
+                                marginTop: '16px',
+                            }}
+                        >
+                            Try dragging the drawer to different snap points and
+                            then clicking on other buttons on the page.
+                        </p>
+                        <button
+                            style={{
+                                backgroundColor: '#000',
+                                color: 'white',
+                                marginTop: '32px',
+                                borderRadius: '6px',
+                                height: '48px',
+                                border: 'none',
+                                fontWeight: '500',
+                                cursor: 'pointer',
+                                width: '100%',
+                            }}
+                        >
+                            Buy for $199
+                        </button>
+                    </DrawerBody>
+                </DrawerContent>
+            </DrawerPortal>
+        </Drawer>
+    )
+}
+
+// Sequential Snap Points Example
+export const SequentialSnapPointsExample = () => {
+    const snapPoints = ['148px', '355px', 1]
+    const [snap, setSnap] = useState<number | string | null>(
+        snapPoints[0] as string
+    )
+
+    return (
+        <Drawer
+            snapPoints={snapPoints}
+            activeSnapPoint={snap}
+            onSnapPointChange={setSnap}
+            snapToSequentialPoint
+        >
+            <DrawerTrigger>
+                <button
+                    style={{
+                        display: 'flex',
+                        height: '40px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        overflow: 'hidden',
+                        borderRadius: '20px',
+                        backgroundColor: 'white',
+                        padding: '0 16px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                        border: '1px solid #e5e7eb',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Sequential Snap Points
+                </button>
+            </DrawerTrigger>
+            <DrawerPortal>
+                <DrawerOverlay />
+                <DrawerContent hasSnapPoints={true}>
+                    <DrawerHeader>
+                        <DrawerTitle>Sequential Snap Points</DrawerTitle>
+                        <DrawerDescription>
+                            This drawer snaps to points sequentially, ignoring
+                            velocity.
+                        </DrawerDescription>
+                    </DrawerHeader>
+                    <DrawerBody>
+                        <p>
+                            With sequential snap points enabled, the drawer will
+                            always snap to the next/previous snap point
+                            regardless of how fast you drag it.
+                        </p>
+                        <p>
+                            This means you can't skip snap points even with a
+                            fast swipe gesture.
+                        </p>
+                    </DrawerBody>
+                </DrawerContent>
+            </DrawerPortal>
+        </Drawer>
+    )
+}
+
+// Custom Fade Index Example
+export const CustomFadeIndexExample = () => {
+    const snapPoints = ['148px', '355px', 1]
+    const [snap, setSnap] = useState<number | string | null>(
+        snapPoints[0] as string
+    )
+
+    return (
+        <Drawer
+            snapPoints={snapPoints}
+            activeSnapPoint={snap}
+            onSnapPointChange={setSnap}
+            fadeFromIndex={1}
+        >
+            <DrawerTrigger>
+                <button
+                    style={{
+                        display: 'flex',
+                        height: '40px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        overflow: 'hidden',
+                        borderRadius: '20px',
+                        backgroundColor: 'white',
+                        padding: '0 16px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                        border: '1px solid #e5e7eb',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Custom Fade Index
+                </button>
+            </DrawerTrigger>
+            <DrawerPortal>
+                <DrawerOverlay />
+                <DrawerContent hasSnapPoints={true}>
+                    <DrawerHeader>
+                        <DrawerTitle>Custom Fade Index</DrawerTitle>
+                        <DrawerDescription>
+                            This drawer starts fading from the second snap point
+                            (index 1).
+                        </DrawerDescription>
+                    </DrawerHeader>
+                    <DrawerBody>
+                        <p>
+                            By setting fadeFromIndex to 1, the drawer will start
+                            fading the overlay from the second snap point
+                            instead of the last one.
+                        </p>
+                        <p>
+                            Try dragging to different snap points to see the
+                            fade effect.
+                        </p>
+                    </DrawerBody>
+                </DrawerContent>
+            </DrawerPortal>
+        </Drawer>
+    )
+}
+
+// Non-Dismissible Example
+export const NonDismissibleExample = () => {
+    const [isOpen, setIsOpen] = useState(false)
+
+    return (
+        <Drawer dismissible={false} open={isOpen} onOpenChange={setIsOpen}>
+            <DrawerTrigger>
+                <button
+                    style={{
+                        display: 'flex',
+                        height: '40px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        overflow: 'hidden',
+                        borderRadius: '20px',
+                        backgroundColor: 'white',
+                        padding: '0 16px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                        border: '1px solid #e5e7eb',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Non-Dismissible Drawer
+                </button>
+            </DrawerTrigger>
+            <DrawerPortal>
+                <DrawerOverlay />
+                <DrawerContent>
+                    <DrawerHeader>
+                        <DrawerTitle>Non-Dismissible Drawer</DrawerTitle>
+                        <DrawerDescription>
+                            This drawer can only be closed programmatically.
+                        </DrawerDescription>
+                    </DrawerHeader>
+                    <DrawerBody>
+                        <p>
+                            This drawer cannot be dismissed by clicking outside,
+                            pressing escape, or dragging down.
+                        </p>
+                        <p>You must use the close button below to close it.</p>
+                    </DrawerBody>
+                    <DrawerFooter>
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            style={{
+                                padding: '8px 16px',
+                                backgroundColor: '#ef4444',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                width: '100%',
+                            }}
+                        >
+                            Close Drawer
+                        </button>
+                    </DrawerFooter>
+                </DrawerContent>
+            </DrawerPortal>
+        </Drawer>
+    )
+}
+
 // All Examples Component
 export const DrawerDemo = () => {
     return (
@@ -519,20 +1122,44 @@ export const DrawerDemo = () => {
             style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '16px',
+                gap: '24px',
                 padding: '20px',
             }}
         >
-            <h2>Drawer Examples</h2>
+            <div>
+                <h2 style={{ marginBottom: '8px' }}>Basic Drawer Examples</h2>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                    <BasicDrawerExample />
+                    <NestedDrawerExample />
+                    <SideDrawerExample />
+                    <LeftSideDrawerExample />
+                    <TopDrawerExample />
+                    <ScrollableDrawerExample />
+                    <ControlledDrawerExample />
+                </div>
+            </div>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                <BasicDrawerExample />
-                <NestedDrawerExample />
-                <SideDrawerExample />
-                <LeftSideDrawerExample />
-                <TopDrawerExample />
-                <ScrollableDrawerExample />
-                <ControlledDrawerExample />
+            <div>
+                <h2 style={{ marginBottom: '8px' }}>Snap Points Examples</h2>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                    <SnapPointsDrawerExample />
+                    <NonModalSnapPointsExample />
+                    <SequentialSnapPointsExample />
+                    <CustomFadeIndexExample />
+                    <NonDismissibleExample />
+                </div>
+            </div>
+
+            <div>
+                <h2 style={{ marginBottom: '8px' }}>
+                    Responsive Select with Drawer
+                </h2>
+                <p style={{ marginBottom: '16px', color: '#6b7280' }}>
+                    These select components automatically switch to drawer mode
+                    on mobile devices, using MenuItem components inside the
+                    drawer for consistent styling.
+                </p>
+                <ResponsiveSelectDemo />
             </div>
         </div>
     )

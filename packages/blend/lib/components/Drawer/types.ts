@@ -45,17 +45,22 @@ export type DrawerProps = {
      */
     snapPoints?: (string | number)[]
     /**
-     * Active snap point index
+     * Active snap point (can be index or the snap point value itself)
      */
-    activeSnapPoint?: number
+    activeSnapPoint?: number | string | null
     /**
      * Callback when snap point changes
      */
-    onSnapPointChange?: (activeSnapPointIndex: number) => void
+    onSnapPointChange?: (activeSnapPoint: number | string | null) => void
     /**
-     * Whether the drawer should fade from the given snap point
+     * Whether the drawer should fade from the given snap point index
      */
     fadeFromIndex?: number
+    /**
+     * Disable velocity-based snapping, ensuring sequential snap point navigation
+     * @default false
+     */
+    snapToSequentialPoint?: boolean
     /**
      * Custom class name for the drawer content
      */

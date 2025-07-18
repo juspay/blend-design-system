@@ -27,8 +27,8 @@ const StyledOverlay = styled(VaulDrawer.Overlay)<{ tokens: DrawerTokensType }>`
 const StyledContent = styled(VaulDrawer.Content)<{
     tokens: DrawerTokensType
     direction: 'top' | 'bottom' | 'left' | 'right'
+    hasSnapPoints?: boolean
 }>`
-    position: fixed;
     z-index: ${({ tokens }) => tokens.content.zIndex};
     background-color: ${({ tokens }) => tokens.content.backgroundColor};
     border: ${({ tokens }) => tokens.content.border};
@@ -37,27 +37,58 @@ const StyledContent = styled(VaulDrawer.Content)<{
     display: flex;
     flex-direction: column;
 
-    ${({ direction, tokens }) => {
+    ${({ direction, tokens, hasSnapPoints }) => {
         if (direction === 'bottom') {
             return `
-                bottom: 0;
-                left: 0;
-                right: 0;
+                ${
+                    !hasSnapPoints
+                        ? `
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 40vh;
+                `
+                        : `
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 100%;
+                    max-height: 97%;
+                `
+                }
                 border-radius: ${tokens.content.borderRadius};
-                height: 40vh;
+                border-bottom: none;
             `
         }
         if (direction === 'top') {
             return `
-                top: 0;
-                left: 0;
-                right: 0;
+                ${
+                    !hasSnapPoints
+                        ? `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 40vh;
+                `
+                        : `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 100%;
+                    max-height: 97%;
+                `
+                }
                 border-radius: ${tokens.content.borderRadius};
-                height: 40vh;
+                border-top: none;
             `
         }
         if (direction === 'left') {
             return `
+                position: fixed;
                 top: 0;
                 bottom: 0;
                 left: 0;
@@ -67,6 +98,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
         }
         if (direction === 'right') {
             return `
+                position: fixed;
                 top: 0;
                 bottom: 0;
                 right: 0;
@@ -105,6 +137,7 @@ const Drawer = ({
     activeSnapPoint,
     onSnapPointChange,
     fadeFromIndex,
+    snapToSequentialPoint = false,
     children,
 }: DrawerProps) => {
     const RootComponent = nested ? VaulDrawer.NestedRoot : VaulDrawer.Root
@@ -120,8 +153,10 @@ const Drawer = ({
     if (snapPoints) vaulProps.snapPoints = snapPoints
     if (activeSnapPoint !== undefined)
         vaulProps.activeSnapPoint = activeSnapPoint
-    if (onSnapPointChange) vaulProps.onSnapPointChange = onSnapPointChange
+    if (onSnapPointChange) vaulProps.setActiveSnapPoint = onSnapPointChange
     if (fadeFromIndex !== undefined) vaulProps.fadeFromIndex = fadeFromIndex
+    if (snapToSequentialPoint)
+        vaulProps.snapToSequentialPoint = snapToSequentialPoint
 
     return <RootComponent {...vaulProps}>{children}</RootComponent>
 }
@@ -170,6 +205,7 @@ const DrawerContent = forwardRef<
         direction?: 'top' | 'bottom' | 'left' | 'right'
         showHandle?: boolean
         handle?: React.ReactNode
+        hasSnapPoints?: boolean
     }
 >(
     (
@@ -180,6 +216,7 @@ const DrawerContent = forwardRef<
             direction = 'bottom',
             showHandle = true,
             handle,
+            hasSnapPoints = false,
             ...props
         },
         ref
@@ -193,6 +230,7 @@ const DrawerContent = forwardRef<
                 style={style}
                 tokens={tokens}
                 direction={direction}
+                hasSnapPoints={hasSnapPoints}
                 {...props}
             >
                 {showHandle &&
@@ -286,8 +324,12 @@ DrawerDescription.displayName = 'DrawerDescription'
 
 const DrawerBody = forwardRef<
     HTMLDivElement,
-    { children: React.ReactNode; className?: string }
->(({ children, className, ...props }, ref) => {
+    {
+        children: React.ReactNode
+        className?: string
+        overflowY?: 'auto' | 'hidden' | 'scroll' | 'visible'
+    }
+>(({ children, className, overflowY, ...props }, ref) => {
     const tokens = useComponentToken('DRAWER') as DrawerTokensType
 
     return (
@@ -297,7 +339,7 @@ const DrawerBody = forwardRef<
             padding={tokens.body.padding}
             backgroundColor={tokens.body.backgroundColor}
             flexGrow={1}
-            overflowY={tokens.body.overflowY}
+            overflowY={overflowY || tokens.body.overflowY}
             maxHeight={tokens.body.maxHeight}
             {...props}
         >
