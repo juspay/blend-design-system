@@ -1,0 +1,71 @@
+import { initializeApp, getApps, cert, App } from 'firebase-admin/app'
+import { getAuth } from 'firebase-admin/auth'
+import { getDatabase } from 'firebase-admin/database'
+import { getFirestore } from 'firebase-admin/firestore'
+
+let adminApp: App | undefined
+
+export function initializeAdmin() {
+    if (getApps().length === 0) {
+        // In production, you would use service account credentials
+        // For now, we'll use environment variables
+        const projectId =
+            process.env.FIREBASE_PROJECT_ID ||
+            process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+        const databaseURL =
+            process.env.FIREBASE_DATABASE_URL ||
+            process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
+
+        if (!projectId || !databaseURL) {
+            console.warn(
+                'Firebase Admin SDK not properly configured. Some features may not work.'
+            )
+            return
+        }
+
+        try {
+            adminApp = initializeApp({
+                projectId,
+                databaseURL,
+                credential: cert({
+                    projectId: process.env.FIREBASE_PROJECT_ID,
+                    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(
+                        /\\n/g,
+                        '\n'
+                    ),
+                }),
+            })
+        } catch (error) {
+            console.error('Error initializing Firebase Admin:', error)
+        }
+    } else {
+        adminApp = getApps()[0]
+    }
+
+    return adminApp
+}
+
+export function getAdminAuth() {
+    initializeAdmin()
+    if (!adminApp) {
+        throw new Error('Firebase Admin not initialized')
+    }
+    return getAuth(adminApp)
+}
+
+export function getAdminDatabase() {
+    initializeAdmin()
+    if (!adminApp) {
+        throw new Error('Firebase Admin not initialized')
+    }
+    return getDatabase(adminApp)
+}
+
+export function getAdminFirestore() {
+    initializeAdmin()
+    if (!adminApp) {
+        throw new Error('Firebase Admin not initialized')
+    }
+    return getFirestore(adminApp)
+}
