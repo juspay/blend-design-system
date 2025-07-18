@@ -1,11 +1,11 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import Block from '../Primitives/Block/Block'
-import { MultiSelectMenuItemType } from './types'
+import { type MultiSelectMenuItemType } from './types'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { Checkbox } from '../Checkbox'
 import MultiSelectSubMenu from './MultiSelectSubMenu'
 import { useComponentToken } from '../../context/useComponentToken'
-import { MultiSelectTokensType } from './multiSelect.tokens'
+import { type MultiSelectTokensType } from './multiSelect.tokens'
 
 const MenuItemSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -92,6 +92,7 @@ const MultiSelectMenuItem = ({
                             .focusVisible,
                 }}
                 cursor={item.disabled ? 'not-allowed' : 'pointer'}
+                style={{ userSelect: 'none' }}
             >
                 <Block
                     display="flex"

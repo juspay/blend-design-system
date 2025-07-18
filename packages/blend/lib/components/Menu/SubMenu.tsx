@@ -180,6 +180,7 @@ export const SubMenu = ({
                             item
                         ),
                     }}
+                    style={{ userSelect: 'none' }}
                 >
                     <Block
                         display="flex"

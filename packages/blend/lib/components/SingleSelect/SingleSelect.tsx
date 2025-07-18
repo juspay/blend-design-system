@@ -16,6 +16,8 @@ import { FOUNDATION_THEME } from '../../tokens'
 import selectTokens from '../Select/select.token'
 import { ChevronDown } from 'lucide-react'
 import type { SingleSelectProps } from './types'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
 
 const map = function getValueLabelMap(
     groups: SelectMenuGroupType[]
@@ -64,6 +66,8 @@ const SingleSelect = ({
 }: SingleSelectProps) => {
     const [open, setOpen] = useState(false)
     const valueLabelMap = map(items)
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakPointLabel === 'sm'
     return (
         <Block
             width="100%"
@@ -72,16 +76,17 @@ const SingleSelect = ({
             gap={8}
             maxWidth={'100%'}
         >
-            {variant === SelectMenuVariant.CONTAINER && (
-                <InputLabels
-                    label={label}
-                    sublabel={subLabel}
-                    disabled={disabled}
-                    helpIconHintText={helpIconText}
-                    name={name}
-                    required={required}
-                />
-            )}
+            {variant === SelectMenuVariant.CONTAINER &&
+                (!isSmallScreen || size !== SelectMenuSize.LARGE) && (
+                    <InputLabels
+                        label={label}
+                        sublabel={subLabel}
+                        disabled={disabled}
+                        helpIconHintText={helpIconText}
+                        name={name}
+                        required={required}
+                    />
+                )}
             <Block display="flex">
                 <Block
                     width={
@@ -103,6 +108,7 @@ const SingleSelect = ({
                         items={items}
                         selected={selected}
                         onSelect={onSelect}
+                        disabled={disabled}
                         minWidth={minWidth}
                         maxWidth={maxWidth}
                         maxHeight={maxHeight}
@@ -161,21 +167,67 @@ const SingleSelect = ({
                                     {slot && (
                                         <Block contentCentered>{slot}</Block>
                                     )}
-                                    <Text
-                                        variant="body.md"
-                                        color={
-                                            selected
-                                                ? FOUNDATION_THEME.colors
-                                                      .gray[700]
-                                                : FOUNDATION_THEME.colors
-                                                      .gray[600]
-                                        }
-                                        fontWeight={500}
-                                    >
-                                        {selected
-                                            ? valueLabelMap[selected]
-                                            : placeholder}
-                                    </Text>
+                                    {isSmallScreen &&
+                                    size === SelectMenuSize.LARGE &&
+                                    variant === SelectMenuVariant.CONTAINER ? (
+                                        <Block>
+                                            <Block
+                                                display="flex"
+                                                alignItems="center"
+                                                gap={4}
+                                                width={'100%'}
+                                            >
+                                                <Text
+                                                    variant="body.sm"
+                                                    fontWeight={500}
+                                                    color={
+                                                        FOUNDATION_THEME.colors
+                                                            .gray[400]
+                                                    }
+                                                >
+                                                    {label}
+                                                </Text>
+                                                {required && (
+                                                    <span
+                                                        style={{
+                                                            color: FOUNDATION_THEME
+                                                                .colors
+                                                                .red[500],
+                                                        }}
+                                                    >
+                                                        *
+                                                    </span>
+                                                )}
+                                            </Block>
+                                            {selected && (
+                                                <Text
+                                                    variant="body.md"
+                                                    color={
+                                                        FOUNDATION_THEME.colors
+                                                            .gray[600]
+                                                    }
+                                                >
+                                                    {valueLabelMap[selected]}
+                                                </Text>
+                                            )}
+                                        </Block>
+                                    ) : (
+                                        <Text
+                                            variant="body.md"
+                                            color={
+                                                selected
+                                                    ? FOUNDATION_THEME.colors
+                                                          .gray[700]
+                                                    : FOUNDATION_THEME.colors
+                                                          .gray[600]
+                                            }
+                                            fontWeight={500}
+                                        >
+                                            {selected
+                                                ? valueLabelMap[selected]
+                                                : placeholder}
+                                        </Text>
+                                    )}
                                 </Block>
                                 <Block contentCentered>
                                     <ChevronDown
