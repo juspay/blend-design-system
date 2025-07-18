@@ -11,6 +11,8 @@ import { ButtonV2 } from '../../../../packages/blend/lib/components/ButtonV2'
 import { ButtonTypeV2 } from '../../../../packages/blend/lib/components/ButtonV2/types'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
+import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import {
     User,
     Settings,
@@ -407,6 +409,46 @@ export const MenuDemo: React.FC = () => {
     const [isControlledMenuOpen, setIsControlledMenuOpen] = useState(false)
     const boundaryRef = useRef<HTMLDivElement>(null)
 
+    // Playground state
+    const [playgroundAlignment, setPlaygroundAlignment] =
+        useState<MenuAlignment>(MenuAlignment.CENTER)
+    const [playgroundSide, setPlaygroundSide] = useState<MenuSide>(
+        MenuSide.BOTTOM
+    )
+    const [playgroundMaxHeight, setPlaygroundMaxHeight] = useState(400)
+    const [playgroundMinWidth, setPlaygroundMinWidth] = useState(200)
+    const [playgroundMaxWidth, setPlaygroundMaxWidth] = useState(280)
+    const [playgroundSideOffset, setPlaygroundSideOffset] = useState(8)
+    const [playgroundAlignOffset, setPlaygroundAlignOffset] = useState(0)
+    const [playgroundEnableSearch, setPlaygroundEnableSearch] = useState(false)
+    const [playgroundSearchPlaceholder, setPlaygroundSearchPlaceholder] =
+        useState('Search actions...')
+    const [playgroundAsModal, setPlaygroundAsModal] = useState(false)
+    const [playgroundControlledOpen, setPlaygroundControlledOpen] =
+        useState(false)
+
+    // Options for select components
+    const alignmentOptions = [
+        {
+            items: [
+                { label: 'Start', value: MenuAlignment.START },
+                { label: 'Center', value: MenuAlignment.CENTER },
+                { label: 'End', value: MenuAlignment.END },
+            ],
+        },
+    ]
+
+    const sideOptions = [
+        {
+            items: [
+                { label: 'Top', value: MenuSide.TOP },
+                { label: 'Bottom', value: MenuSide.BOTTOM },
+                { label: 'Left', value: MenuSide.LEFT },
+                { label: 'Right', value: MenuSide.RIGHT },
+            ],
+        },
+    ]
+
     return (
         <Block padding="32px" backgroundColor="gray.50" minHeight="100vh">
             {/* Header */}
@@ -420,6 +462,268 @@ export const MenuDemo: React.FC = () => {
                     Comprehensive demonstration of all Menu component features,
                     props, and variations
                 </Text>
+            </Block>
+
+            {/* Playground Section */}
+            <Block marginBottom="48px">
+                <Block marginBottom="16px">
+                    <Text fontSize={28} fontWeight="semibold">
+                        Menu Playground
+                    </Text>
+                </Block>
+                <Block marginBottom="24px">
+                    <Text fontSize={14} color="gray.600">
+                        Test and adjust Menu component props interactively
+                    </Text>
+                </Block>
+
+                <Block display="flex" gap="32px" flexWrap="wrap">
+                    {/* Controls */}
+                    <Block
+                        width="400px"
+                        display="flex"
+                        flexDirection="column"
+                        gap="16px"
+                    >
+                        <Text fontSize={18} fontWeight="medium">
+                            Controls
+                        </Text>
+
+                        <Block display="flex" gap="16px">
+                            <TextInput
+                                label="Max Height"
+                                type="number"
+                                value={playgroundMaxHeight.toString()}
+                                onChange={(e) =>
+                                    setPlaygroundMaxHeight(
+                                        Number(e.target.value)
+                                    )
+                                }
+                                placeholder="400"
+                            />
+                            <TextInput
+                                label="Min Width"
+                                type="number"
+                                value={playgroundMinWidth.toString()}
+                                onChange={(e) =>
+                                    setPlaygroundMinWidth(
+                                        Number(e.target.value)
+                                    )
+                                }
+                                placeholder="200"
+                            />
+                        </Block>
+
+                        <Block display="flex" gap="16px">
+                            <TextInput
+                                label="Max Width"
+                                type="number"
+                                value={playgroundMaxWidth.toString()}
+                                onChange={(e) =>
+                                    setPlaygroundMaxWidth(
+                                        Number(e.target.value)
+                                    )
+                                }
+                                placeholder="280"
+                            />
+                            <TextInput
+                                label="Side Offset"
+                                type="number"
+                                value={playgroundSideOffset.toString()}
+                                onChange={(e) =>
+                                    setPlaygroundSideOffset(
+                                        Number(e.target.value)
+                                    )
+                                }
+                                placeholder="8"
+                            />
+                        </Block>
+
+                        <TextInput
+                            label="Align Offset"
+                            type="number"
+                            value={playgroundAlignOffset.toString()}
+                            onChange={(e) =>
+                                setPlaygroundAlignOffset(Number(e.target.value))
+                            }
+                            placeholder="0"
+                        />
+
+                        <TextInput
+                            label="Search Placeholder"
+                            value={playgroundSearchPlaceholder}
+                            onChange={(e) =>
+                                setPlaygroundSearchPlaceholder(e.target.value)
+                            }
+                            placeholder="Search actions..."
+                        />
+
+                        <Block display="flex" gap="16px">
+                            <Switch
+                                label="Enable Search"
+                                checked={playgroundEnableSearch}
+                                onChange={setPlaygroundEnableSearch}
+                            />
+                            <Switch
+                                label="As Modal"
+                                checked={playgroundAsModal}
+                                onChange={setPlaygroundAsModal}
+                            />
+                        </Block>
+
+                        <Block marginBottom="8px">
+                            <Text fontSize={14} fontWeight="medium">
+                                Alignment
+                            </Text>
+                        </Block>
+                        <Block display="flex" gap="8px">
+                            <ButtonV2
+                                text="Start"
+                                buttonType={
+                                    playgroundAlignment === MenuAlignment.START
+                                        ? ButtonTypeV2.PRIMARY
+                                        : ButtonTypeV2.SECONDARY
+                                }
+                                onClick={() =>
+                                    setPlaygroundAlignment(MenuAlignment.START)
+                                }
+                            />
+                            <ButtonV2
+                                text="Center"
+                                buttonType={
+                                    playgroundAlignment === MenuAlignment.CENTER
+                                        ? ButtonTypeV2.PRIMARY
+                                        : ButtonTypeV2.SECONDARY
+                                }
+                                onClick={() =>
+                                    setPlaygroundAlignment(MenuAlignment.CENTER)
+                                }
+                            />
+                            <ButtonV2
+                                text="End"
+                                buttonType={
+                                    playgroundAlignment === MenuAlignment.END
+                                        ? ButtonTypeV2.PRIMARY
+                                        : ButtonTypeV2.SECONDARY
+                                }
+                                onClick={() =>
+                                    setPlaygroundAlignment(MenuAlignment.END)
+                                }
+                            />
+                        </Block>
+
+                        <Block marginBottom="8px">
+                            <Text fontSize={14} fontWeight="medium">
+                                Side
+                            </Text>
+                        </Block>
+                        <Block display="flex" gap="8px" flexWrap="wrap">
+                            <ButtonV2
+                                text="Top"
+                                buttonType={
+                                    playgroundSide === MenuSide.TOP
+                                        ? ButtonTypeV2.PRIMARY
+                                        : ButtonTypeV2.SECONDARY
+                                }
+                                onClick={() => setPlaygroundSide(MenuSide.TOP)}
+                            />
+                            <ButtonV2
+                                text="Bottom"
+                                buttonType={
+                                    playgroundSide === MenuSide.BOTTOM
+                                        ? ButtonTypeV2.PRIMARY
+                                        : ButtonTypeV2.SECONDARY
+                                }
+                                onClick={() =>
+                                    setPlaygroundSide(MenuSide.BOTTOM)
+                                }
+                            />
+                            <ButtonV2
+                                text="Left"
+                                buttonType={
+                                    playgroundSide === MenuSide.LEFT
+                                        ? ButtonTypeV2.PRIMARY
+                                        : ButtonTypeV2.SECONDARY
+                                }
+                                onClick={() => setPlaygroundSide(MenuSide.LEFT)}
+                            />
+                            <ButtonV2
+                                text="Right"
+                                buttonType={
+                                    playgroundSide === MenuSide.RIGHT
+                                        ? ButtonTypeV2.PRIMARY
+                                        : ButtonTypeV2.SECONDARY
+                                }
+                                onClick={() =>
+                                    setPlaygroundSide(MenuSide.RIGHT)
+                                }
+                            />
+                        </Block>
+                    </Block>
+
+                    {/* Preview */}
+                    <Block width="400px">
+                        <Block marginBottom="16px">
+                            <Text fontSize={18} fontWeight="medium">
+                                Preview
+                            </Text>
+                        </Block>
+
+                        <Block
+                            padding="24px"
+                            backgroundColor="white"
+                            borderRadius="8px"
+                            border="1px solid #e2e8f0"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            minHeight="200px"
+                        >
+                            <Menu
+                                trigger={
+                                    <ButtonV2
+                                        buttonType={ButtonTypeV2.PRIMARY}
+                                        text="Interactive Menu"
+                                    />
+                                }
+                                items={searchableMenuItems}
+                                alignment={playgroundAlignment}
+                                side={playgroundSide}
+                                maxHeight={playgroundMaxHeight}
+                                minWidth={playgroundMinWidth}
+                                maxWidth={playgroundMaxWidth}
+                                sideOffset={playgroundSideOffset}
+                                alignOffset={playgroundAlignOffset}
+                                enableSearch={playgroundEnableSearch}
+                                searchPlaceholder={playgroundSearchPlaceholder}
+                                asModal={playgroundAsModal}
+                            />
+                        </Block>
+
+                        <Block
+                            marginTop="16px"
+                            padding="12px"
+                            backgroundColor="blue.50"
+                            borderRadius="6px"
+                        >
+                            <Text
+                                fontSize={14}
+                                fontWeight="medium"
+                                color="blue.700"
+                            >
+                                Current Settings:
+                            </Text>
+                            <Text fontSize={12} color="blue.600">
+                                Alignment: {playgroundAlignment} | Side:{' '}
+                                {playgroundSide} | Search:{' '}
+                                {playgroundEnableSearch
+                                    ? 'Enabled'
+                                    : 'Disabled'}{' '}
+                                | Modal: {playgroundAsModal ? 'Yes' : 'No'}
+                            </Text>
+                        </Block>
+                    </Block>
+                </Block>
             </Block>
 
             {/* 1. Basic Menu Types */}
