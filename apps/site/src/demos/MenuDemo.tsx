@@ -424,30 +424,6 @@ export const MenuDemo: React.FC = () => {
     const [playgroundSearchPlaceholder, setPlaygroundSearchPlaceholder] =
         useState('Search actions...')
     const [playgroundAsModal, setPlaygroundAsModal] = useState(false)
-    const [playgroundControlledOpen, setPlaygroundControlledOpen] =
-        useState(false)
-
-    // Options for select components
-    const alignmentOptions = [
-        {
-            items: [
-                { label: 'Start', value: MenuAlignment.START },
-                { label: 'Center', value: MenuAlignment.CENTER },
-                { label: 'End', value: MenuAlignment.END },
-            ],
-        },
-    ]
-
-    const sideOptions = [
-        {
-            items: [
-                { label: 'Top', value: MenuSide.TOP },
-                { label: 'Bottom', value: MenuSide.BOTTOM },
-                { label: 'Left', value: MenuSide.LEFT },
-                { label: 'Right', value: MenuSide.RIGHT },
-            ],
-        },
-    ]
 
     return (
         <Block padding="32px" backgroundColor="gray.50" minHeight="100vh">
