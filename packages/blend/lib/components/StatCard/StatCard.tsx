@@ -12,6 +12,11 @@ import {
 } from 'recharts'
 import { ArrowDown, ArrowUp, CircleHelp } from 'lucide-react'
 import { Tooltip } from '../Tooltip'
+import {
+    ProgressBar,
+    ProgressBarVariant,
+    ProgressBarSize,
+} from '../ProgressBar'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { ChangeType, StatCardVariant, type StatCardProps } from './types'
@@ -600,70 +605,13 @@ const StatCard = ({
                         )}
 
                     {effectiveVariant === StatCardVariant.PROGRESS_BAR &&
-                        progressValue && (
-                            <Block
-                                width="100%"
-                                height={statCardToken.chart.progressBar.height}
-                                display="flex"
-                                alignItems="center"
-                                gap={statCardToken.chart.progressBar.gap}
-                            >
-                                <Block
-                                    width="100%"
-                                    height="100%"
-                                    display="flex"
-                                    flexGrow={1}
-                                    borderRadius={
-                                        statCardToken.chart.progressBar
-                                            .borderRadius
-                                    }
-                                    overflow="hidden"
-                                >
-                                    <Block
-                                        backgroundColor={
-                                            statCardToken.chart.progressBar
-                                                .background.fill
-                                        }
-                                        height="100%"
-                                        width={`${progressValue}%`}
-                                    />
-                                    <Block
-                                        backgroundColor={
-                                            statCardToken.chart.progressBar
-                                                .background.empty
-                                        }
-                                        height="100%"
-                                        backgroundImage={`repeating-linear-gradient(
-                        to right,
-                        ${statCardToken.chart.progressBar.background.pattern.color},
-                        ${statCardToken.chart.progressBar.background.pattern.color} 5px,
-                        transparent 1px,
-                        transparent
-                      )`}
-                                        backgroundSize={
-                                            statCardToken.chart.progressBar
-                                                .background.pattern.size
-                                        }
-                                        style={{
-                                            width: `${100 - progressValue}%`,
-                                        }}
-                                    />
-                                </Block>
-                                <Text
-                                    as="span"
-                                    variant="body.md"
-                                    fontWeight={
-                                        statCardToken.chart.progressBar.label
-                                            .fontWeight
-                                    }
-                                    color={
-                                        statCardToken.chart.progressBar.label
-                                            .color
-                                    }
-                                >
-                                    {progressValue}%
-                                </Text>
-                            </Block>
+                        progressValue !== undefined && (
+                            <ProgressBar
+                                value={progressValue}
+                                size={ProgressBarSize.SMALL}
+                                variant={ProgressBarVariant.SEGMENTED}
+                                showLabel={true}
+                            />
                         )}
                 </Block>
             )}
