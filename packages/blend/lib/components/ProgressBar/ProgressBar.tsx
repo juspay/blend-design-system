@@ -1,7 +1,8 @@
 import React from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import { ProgressBarProps, ProgressBarSize, ProgressBarVariant } from './types'
+import { ProgressBarSize, ProgressBarVariant } from './types'
+import type { ProgressBarProps } from './types'
 import { useComponentToken } from '../../context/useComponentToken'
 import type { ProgressBarTokenType } from './progressbar.tokens'
 

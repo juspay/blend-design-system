@@ -24,7 +24,7 @@ import type { TableTokenType } from '../components/DataTable/dataTable.tokens'
 import type { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { AccordionTokenType } from '../components/Accordion/accordion.tokens'
 import type { StatCardTokenType } from '../components/StatCard/statcard.tokens'
-import { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
+import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
