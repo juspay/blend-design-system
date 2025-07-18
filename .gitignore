@@ -12,7 +12,6 @@ dist
 **/dist
 out
 storybook-static
-lib
 esm
 cjs
 
