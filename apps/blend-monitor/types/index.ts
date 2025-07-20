@@ -200,6 +200,20 @@ export interface FirebaseUsage {
         gbSeconds: { used: number; limit: number; unit: string }
         outboundData: { used: number; limit: number; unit: string }
     }
+    database?: {
+        storage: { used: number; limit: number; unit: string }
+        bandwidth: { used: number; limit: number; unit: string }
+        connections: { used: number; limit: number; unit: string }
+    }
+    storage?: {
+        storage: { used: number; limit: number; unit: string }
+        bandwidth: { used: number; limit: number; unit: string }
+        objects: { used: number; limit: number; unit: string }
+    }
+    auth?: {
+        users: { used: number; limit: number; unit: string }
+        activeUsers: { used: number; limit: number; unit: string }
+    }
     billing: {
         currentCost: number
         projectedCost: number

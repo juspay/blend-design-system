@@ -45,6 +45,9 @@ A comprehensive monitoring dashboard for the Blend Design System, providing real
     FIREBASE_CLIENT_EMAIL=your-service-account-email
     FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 
+    # Firebase Usage Monitoring (optional)
+    USE_REAL_FIREBASE_USAGE=false  # Set to 'true' for real usage data
+
     # Google OAuth
     GOOGLE_CLIENT_ID=your-google-client-id
     GOOGLE_CLIENT_SECRET=your-google-client-secret
@@ -111,7 +114,12 @@ A comprehensive monitoring dashboard for the Blend Design System, providing real
 - **Hosting Status**: Monitor Firebase Hosting deployments
 - **Cloud Functions**: Track function health and metrics
 - **Performance Metrics**: Real-time performance data
-- **Usage & Billing**: Firebase usage and cost tracking
+- **Usage & Billing**: Real Firebase usage data with cost estimation
+    - Realtime Database storage and bandwidth
+    - Firestore documents and storage
+    - Cloud Storage usage
+    - Authentication statistics
+    - Estimated monthly costs
 - **Deployment History**: Complete deployment timeline
 
 ### 4. **Authentication**
@@ -146,6 +154,17 @@ apps/blend-monitor/
 - `npm run populate-data` - Populate Firebase with sample data
 
 ## 🔄 Data Integration
+
+### Real Firebase Usage Data
+
+Enable real-time Firebase usage monitoring by setting `USE_REAL_FIREBASE_USAGE=true` in your `.env.local` file. This will:
+
+- Fetch actual usage metrics from Firebase Admin SDK
+- Calculate estimated costs based on current pricing
+- Show usage alerts when approaching limits
+- Display real authentication statistics
+
+See [FIREBASE_USAGE_MONITORING.md](./FIREBASE_USAGE_MONITORING.md) for detailed setup instructions.
 
 ### Automatic Data Updates
 
@@ -218,6 +237,12 @@ firebase deploy --only hosting
 ### Debug Mode
 
 Set `NODE_ENV=development` for detailed error messages.
+
+## 📚 Additional Documentation
+
+- [Firebase Usage Monitoring Setup](./FIREBASE_USAGE_MONITORING.md) - Configure real usage data
+- [Firebase Admin Setup](./FIREBASE_ADMIN_SETUP.md) - Service account configuration
+- [Deployment Monitoring](./DEPLOYMENT_MONITORING_COMPLETE.md) - Deployment features
 
 ## 📝 License
 

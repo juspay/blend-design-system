@@ -1,4 +1,7 @@
 {
+    "database": {
+        "rules": "apps/blend-monitor/database.rules.json"
+    },
     "hosting": [
         {
             "target": "blend-prod",

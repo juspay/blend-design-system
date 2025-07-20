@@ -22,10 +22,11 @@ import {
     TagSize,
     StatCard,
     StatCardVariant,
-    Button,
-    ButtonType,
-    ButtonSize,
-    ButtonSubType,
+    ButtonV2,
+    ButtonTypeV2,
+    ButtonSizeV2,
+    ButtonSubTypeV2,
+    Tooltip,
 } from 'blend-v1'
 import { useAllEnvironmentStatuses } from '@/hooks/useDeploymentStatus'
 
@@ -175,21 +176,67 @@ export default function HostingStatusPage() {
                                     ([envName, env]) => {
                                         if (!env) return null
 
+                                        const getEnvironmentIcon = (
+                                            name: string
+                                        ) => {
+                                            if (name === 'production')
+                                                return '🚀'
+                                            if (name === 'staging') return '🧪'
+                                            if (name === 'development')
+                                                return '🛠️'
+                                            return '📦'
+                                        }
+
+                                        const getEnvironmentBgColor = (
+                                            name: string
+                                        ) => {
+                                            if (name === 'production')
+                                                return 'bg-blue-50'
+                                            if (name === 'staging')
+                                                return 'bg-purple-50'
+                                            if (name === 'development')
+                                                return 'bg-green-50'
+                                            return 'bg-gray-50'
+                                        }
+
                                         return (
                                             <div
                                                 key={envName}
-                                                className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+                                                className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
                                             >
+                                                {/* Status Bar */}
+                                                <div
+                                                    className={`h-1 ${
+                                                        env.status === 'healthy'
+                                                            ? 'bg-green-500'
+                                                            : env.status ===
+                                                                'degraded'
+                                                              ? 'bg-yellow-500'
+                                                              : 'bg-red-500'
+                                                    }`}
+                                                />
+
                                                 <div className="p-6">
                                                     {/* Header */}
                                                     <div className="flex items-center justify-between mb-6">
                                                         <div className="flex items-center gap-3">
-                                                            <div className="p-2 bg-gray-100 rounded-lg">
-                                                                <Server className="w-5 h-5 text-gray-700" />
+                                                            <div
+                                                                className={`p-3 ${getEnvironmentBgColor(envName)} rounded-xl`}
+                                                            >
+                                                                <span className="text-2xl">
+                                                                    {getEnvironmentIcon(
+                                                                        envName
+                                                                    )}
+                                                                </span>
                                                             </div>
-                                                            <h3 className="text-lg font-semibold text-gray-900 capitalize">
-                                                                {envName}
-                                                            </h3>
+                                                            <div>
+                                                                <h3 className="text-lg font-semibold text-gray-900 capitalize">
+                                                                    {envName}
+                                                                </h3>
+                                                                <p className="text-xs text-gray-500">
+                                                                    Environment
+                                                                </p>
+                                                            </div>
                                                         </div>
                                                         <BlendTag
                                                             text={getStatusText(
@@ -209,51 +256,81 @@ export default function HostingStatusPage() {
                                                     <div className="space-y-4">
                                                         {/* URL */}
                                                         {env.url && (
-                                                            <div className="flex items-start justify-between gap-2">
-                                                                <span className="text-sm font-medium text-gray-500 flex items-center gap-1.5 min-w-fit">
-                                                                    <Globe className="w-4 h-4" />
-                                                                    URL
-                                                                </span>
-                                                                <a
-                                                                    href={
-                                                                        env.url
-                                                                    }
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1 truncate"
-                                                                    title={
-                                                                        env.url
-                                                                    }
-                                                                >
-                                                                    <span className="truncate">
-                                                                        {env.url.replace(
-                                                                            'https://',
-                                                                            ''
-                                                                        )}
+                                                            <div className="bg-gray-50 rounded-lg p-3">
+                                                                <div className="flex items-start justify-between gap-2">
+                                                                    <span className="text-xs font-medium text-gray-500 flex items-center gap-1.5 min-w-fit">
+                                                                        <Globe className="w-3.5 h-3.5" />
+                                                                        URL
                                                                     </span>
-                                                                    <ExternalLink className="w-3 h-3 flex-shrink-0" />
-                                                                </a>
+                                                                    <a
+                                                                        href={
+                                                                            env.url
+                                                                        }
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1 truncate max-w-[180px]"
+                                                                        title={
+                                                                            env.url
+                                                                        }
+                                                                    >
+                                                                        <span className="truncate">
+                                                                            {env.url.replace(
+                                                                                'https://',
+                                                                                ''
+                                                                            )}
+                                                                        </span>
+                                                                        <ExternalLink className="w-3 h-3 flex-shrink-0" />
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                         )}
 
                                                         {/* Version */}
-                                                        <div className="flex items-center justify-between">
-                                                            <span className="text-sm font-medium text-gray-500">
+                                                        <div className="flex items-start justify-between gap-2 px-1">
+                                                            <span className="text-sm font-medium text-gray-600 min-w-fit flex items-center gap-1.5">
+                                                                <div className="w-2 h-2 bg-gray-400 rounded-full" />
                                                                 Version
                                                             </span>
-                                                            <span className="text-sm font-semibold text-gray-900">
-                                                                {env.currentVersion ||
-                                                                    'N/A'}
-                                                            </span>
+                                                            {env.currentVersion &&
+                                                            env.currentVersion
+                                                                .length > 20 ? (
+                                                                <Tooltip
+                                                                    content={
+                                                                        env.currentVersion
+                                                                    }
+                                                                >
+                                                                    <span className="text-sm font-mono text-gray-900 text-right">
+                                                                        {env.currentVersion.includes(
+                                                                            'release-real'
+                                                                        )
+                                                                            ? env.currentVersion
+                                                                                  .split(
+                                                                                      '_'
+                                                                                  )
+                                                                                  .pop()
+                                                                                  ?.substring(
+                                                                                      0,
+                                                                                      8
+                                                                                  ) +
+                                                                              '...'
+                                                                            : `${env.currentVersion.substring(0, 20)}...`}
+                                                                    </span>
+                                                                </Tooltip>
+                                                            ) : (
+                                                                <span className="text-sm font-mono text-gray-900 text-right">
+                                                                    {env.currentVersion ||
+                                                                        'N/A'}
+                                                                </span>
+                                                            )}
                                                         </div>
 
                                                         {/* Last Deployment */}
-                                                        <div className="flex items-center justify-between">
-                                                            <span className="text-sm font-medium text-gray-500 flex items-center gap-1.5">
-                                                                <Clock className="w-4 h-4" />
+                                                        <div className="flex items-center justify-between px-1">
+                                                            <span className="text-sm font-medium text-gray-600 flex items-center gap-1.5">
+                                                                <Clock className="w-3.5 h-3.5" />
                                                                 Last Deploy
                                                             </span>
-                                                            <span className="text-sm font-medium text-gray-700">
+                                                            <span className="text-sm font-medium text-gray-900">
                                                                 {formatDate(
                                                                     env.lastDeployment
                                                                 )}
@@ -261,31 +338,52 @@ export default function HostingStatusPage() {
                                                         </div>
 
                                                         {/* Uptime */}
-                                                        {env.uptime && (
-                                                            <div className="flex items-center justify-between">
-                                                                <span className="text-sm font-medium text-gray-500 flex items-center gap-1.5">
-                                                                    <Activity className="w-4 h-4" />
+                                                        {env.uptime !==
+                                                            undefined && (
+                                                            <div className="flex items-center justify-between px-1">
+                                                                <span className="text-sm font-medium text-gray-600 flex items-center gap-1.5">
+                                                                    <Activity className="w-3.5 h-3.5" />
                                                                     Uptime
                                                                 </span>
-                                                                <span className="text-sm font-semibold text-gray-900">
-                                                                    {env.uptime}
-                                                                    %
-                                                                </span>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-sm font-semibold text-gray-900">
+                                                                        {
+                                                                            env.uptime
+                                                                        }
+                                                                        %
+                                                                    </span>
+                                                                    <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                                        <div
+                                                                            className={`h-full transition-all duration-500 ${
+                                                                                env.uptime >=
+                                                                                99
+                                                                                    ? 'bg-green-500'
+                                                                                    : env.uptime >=
+                                                                                        95
+                                                                                      ? 'bg-yellow-500'
+                                                                                      : 'bg-red-500'
+                                                                            }`}
+                                                                            style={{
+                                                                                width: `${env.uptime}%`,
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         )}
                                                     </div>
 
                                                     {/* Actions */}
-                                                    <div className="mt-6 pt-4 border-t border-gray-100">
-                                                        <Button
+                                                    <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
+                                                        <ButtonV2
                                                             buttonType={
-                                                                ButtonType.SECONDARY
+                                                                ButtonTypeV2.SECONDARY
                                                             }
                                                             size={
-                                                                ButtonSize.SMALL
+                                                                ButtonSizeV2.SMALL
                                                             }
                                                             subType={
-                                                                ButtonSubType.DEFAULT
+                                                                ButtonSubTypeV2.DEFAULT
                                                             }
                                                             text="View History →"
                                                             onClick={() =>
@@ -293,6 +391,17 @@ export default function HostingStatusPage() {
                                                                     '/deployments/history')
                                                             }
                                                         />
+                                                        {env.url && (
+                                                            <a
+                                                                href={env.url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors"
+                                                            >
+                                                                Visit Site
+                                                                <ExternalLink className="w-3.5 h-3.5" />
+                                                            </a>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>

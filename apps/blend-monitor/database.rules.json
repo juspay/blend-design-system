@@ -1,92 +1,18 @@
 {
     "rules": {
-        "blend-monitor": {
-            ".read": "auth != null",
-            ".write": "auth != null",
-            "components": {
-                ".read": "auth != null",
-                ".write": "auth != null",
-                "$componentId": {
-                    ".validate": "newData.hasChildren(['name', 'path', 'instances'])"
-                }
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "deployments": {
+            "history": {
+                ".indexOn": ["environment", "startTime", "timestamp"]
             },
-            "coverage": {
-                ".read": "auth != null",
-                ".write": "auth != null",
-                "$coverageId": {
-                    ".validate": "newData.hasChildren(['timestamp', 'percentage'])"
-                }
-            },
-            "publishing": {
-                ".read": "auth != null",
-                ".write": "auth != null",
-                "npm": {
-                    "stats": {
-                        ".read": "auth != null",
-                        ".write": "auth != null"
-                    },
-                    "versions": {
-                        ".read": "auth != null",
-                        ".write": "auth != null"
-                    },
-                    "trends": {
-                        ".read": "auth != null",
-                        ".write": "auth != null"
-                    }
-                }
-            },
-            "activity": {
-                ".read": "auth != null",
-                ".write": "auth != null",
-                "$activityId": {
-                    ".validate": "newData.hasChildren(['timestamp', 'type', 'description'])"
-                }
-            },
+            "environments": {
+                ".indexOn": ["name", "status"]
+            }
+        },
+        "audit_logs": {
             "deployments": {
-                "environments": {
-                    ".read": "auth != null",
-                    ".write": "auth != null",
-                    "$environment": {
-                        ".validate": "newData.hasChildren(['status', 'currentVersion', 'lastDeployment'])"
-                    }
-                },
-                "history": {
-                    ".read": "auth != null",
-                    ".write": "auth != null",
-                    ".indexOn": ["startTime", "environment"],
-                    "$deploymentId": {
-                        ".validate": "newData.hasChildren(['environment', 'version', 'startTime', 'status'])"
-                    }
-                },
-                "functions": {
-                    ".read": "auth != null",
-                    ".write": "auth != null",
-                    "$functionName": {
-                        ".validate": "newData.hasChildren(['status', 'lastUpdated'])"
-                    }
-                },
-                "usage": {
-                    ".read": "auth != null",
-                    ".write": "auth != null",
-                    "current": {
-                        ".validate": "newData.hasChildren(['hosting', 'firestore', 'functions', 'billing'])"
-                    }
-                }
-            },
-            "audit_logs": {
-                "deployments": {
-                    ".read": "auth != null",
-                    ".write": "auth != null",
-                    ".indexOn": ["timestamp", "action"],
-                    "$logId": {
-                        ".validate": "newData.hasChildren(['action', 'user', 'timestamp', 'result'])"
-                    }
-                }
-            },
-            "performance_metrics": {
-                ".read": "auth != null",
-                ".write": "auth != null",
-                ".indexOn": ["environment", "timestamp"]
+                ".indexOn": ["timestamp", "action"]
             }
         }
     }

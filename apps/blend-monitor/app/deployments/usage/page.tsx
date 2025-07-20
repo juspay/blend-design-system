@@ -121,25 +121,117 @@ export default function UsagePage() {
         )
     }
 
-    if (!usage) {
+    if (
+        !usage ||
+        (usage.hosting.bandwidth.used === 0 &&
+            usage.hosting.storage.used === 0 &&
+            usage.hosting.requests.used === 0 &&
+            usage.firestore.reads.used === 0 &&
+            usage.firestore.writes.used === 0 &&
+            usage.firestore.storage.used === 0 &&
+            usage.functions.invocations.used === 0 &&
+            usage.functions.gbSeconds.used === 0 &&
+            usage.functions.outboundData.used === 0)
+    ) {
         return (
             <div className="h-full overflow-y-auto bg-white">
                 <div className="p-8">
                     <div className="bg-white border border-gray-200 rounded-lg p-8">
                         <EmptyState
                             icon={BarChart3}
-                            title="No usage data available"
-                            description="Usage data will appear here once your Firebase services start generating metrics. This includes hosting bandwidth, database operations, and function invocations."
+                            title="Set up Firebase Usage Monitoring"
+                            description="Enable real-time usage monitoring to track your Firebase services. Monitor hosting bandwidth, database operations, function invocations, and estimated costs."
                             action={{
-                                label: 'Learn about Firebase pricing',
+                                label: 'Enable Usage Monitoring',
                                 onClick: () => {
                                     window.open(
-                                        'https://firebase.google.com/pricing',
+                                        '/FIREBASE_USAGE_MONITORING.md',
                                         '_blank'
                                     )
                                 },
                             }}
                         />
+                    </div>
+
+                    {/* What you'll be able to monitor */}
+                    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="bg-gray-50 rounded-lg p-6">
+                            <div className="flex items-center gap-3 mb-3">
+                                <Server className="w-5 h-5 text-blue-600" />
+                                <h3 className="font-semibold text-gray-900">
+                                    Hosting Metrics
+                                </h3>
+                            </div>
+                            <p className="text-sm text-gray-600">
+                                Track bandwidth usage, storage consumption, and
+                                request counts for your hosted applications.
+                            </p>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-lg p-6">
+                            <div className="flex items-center gap-3 mb-3">
+                                <Database className="w-5 h-5 text-purple-600" />
+                                <h3 className="font-semibold text-gray-900">
+                                    Database Usage
+                                </h3>
+                            </div>
+                            <p className="text-sm text-gray-600">
+                                Monitor Firestore reads, writes, and storage.
+                                Track Realtime Database size and bandwidth.
+                            </p>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-lg p-6">
+                            <div className="flex items-center gap-3 mb-3">
+                                <Wifi className="w-5 h-5 text-green-600" />
+                                <h3 className="font-semibold text-gray-900">
+                                    Function Analytics
+                                </h3>
+                            </div>
+                            <p className="text-sm text-gray-600">
+                                View invocation counts, execution times, and
+                                resource consumption for Cloud Functions.
+                            </p>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-lg p-6">
+                            <div className="flex items-center gap-3 mb-3">
+                                <DollarSign className="w-5 h-5 text-emerald-600" />
+                                <h3 className="font-semibold text-gray-900">
+                                    Cost Estimation
+                                </h3>
+                            </div>
+                            <p className="text-sm text-gray-600">
+                                Get estimated costs based on current usage and
+                                Firebase pricing tiers.
+                            </p>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-lg p-6">
+                            <div className="flex items-center gap-3 mb-3">
+                                <AlertCircle className="w-5 h-5 text-amber-600" />
+                                <h3 className="font-semibold text-gray-900">
+                                    Usage Alerts
+                                </h3>
+                            </div>
+                            <p className="text-sm text-gray-600">
+                                Receive alerts when approaching usage limits or
+                                budget thresholds.
+                            </p>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-lg p-6">
+                            <div className="flex items-center gap-3 mb-3">
+                                <TrendingUp className="w-5 h-5 text-indigo-600" />
+                                <h3 className="font-semibold text-gray-900">
+                                    Trend Analysis
+                                </h3>
+                            </div>
+                            <p className="text-sm text-gray-600">
+                                Track usage trends over time to optimize
+                                resource allocation.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

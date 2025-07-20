@@ -69,30 +69,30 @@ export const getNavigationData = (router: any, pathname: string) => [
                 onClick: () => router.push('/deployments/hosting'),
                 isActive: pathname === '/deployments/hosting',
             },
-            {
-                label: 'Performance',
-                leftSlot: <Activity className="w-4 h-4" />,
-                onClick: () => router.push('/deployments/performance'),
-                isActive: pathname === '/deployments/performance',
-            },
+            // {
+            //     label: 'Performance',
+            //     leftSlot: <Activity className="w-4 h-4" />,
+            //     onClick: () => router.push('/deployments/performance'),
+            //     isActive: pathname === '/deployments/performance',
+            // },
             {
                 label: 'Deploy History',
                 leftSlot: <History className="w-4 h-4" />,
                 onClick: () => router.push('/deployments/history'),
                 isActive: pathname === '/deployments/history',
             },
-            {
-                label: 'Functions',
-                leftSlot: <Code className="w-4 h-4" />,
-                onClick: () => router.push('/deployments/functions'),
-                isActive: pathname === '/deployments/functions',
-            },
-            {
-                label: 'Usage & Costs',
-                leftSlot: <DollarSign className="w-4 h-4" />,
-                onClick: () => router.push('/deployments/usage'),
-                isActive: pathname === '/deployments/usage',
-            },
+            // {
+            //     label: 'Functions',
+            //     leftSlot: <Code className="w-4 h-4" />,
+            //     onClick: () => router.push('/deployments/functions'),
+            //     isActive: pathname === '/deployments/functions',
+            // },
+            // {
+            //     label: 'Usage & Costs',
+            //     leftSlot: <DollarSign className="w-4 h-4" />,
+            //     onClick: () => router.push('/deployments/usage'),
+            //     isActive: pathname === '/deployments/usage',
+            // },
         ],
     },
 ]

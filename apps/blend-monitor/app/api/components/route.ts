@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { ComponentScanner } from '@/lib/scanners/component-scanner'
-import { ref, set, get } from 'firebase/database'
-import { database } from '@/lib/firebase'
+import { getAdminDatabase } from '@/lib/firebase-admin'
 
 export async function GET() {
     try {
@@ -84,8 +83,9 @@ export async function GET() {
             },
         }
 
-        // Save to Firebase
-        await set(ref(database, 'blend-monitor'), updates)
+        // Save to Firebase using Admin SDK
+        const db = getAdminDatabase()
+        await db.ref('blend-monitor').set(updates)
 
         return NextResponse.json({
             success: true,
@@ -120,12 +120,9 @@ export async function POST() {
         const scanner = new ComponentScanner()
         const components = await scanner.scanComponents()
 
-        // Update activity log
-        const activityRef = ref(
-            database,
-            `blend-monitor/activity/recent/${Date.now()}`
-        )
-        await set(activityRef, {
+        // Update activity log using Admin SDK
+        const db = getAdminDatabase()
+        await db.ref(`blend-monitor/activity/recent/${Date.now()}`).set({
             type: 'component_scan',
             timestamp: new Date().toISOString(),
             componentsFound: components.length,

@@ -11,6 +11,8 @@ import type {
     PerformanceMetrics,
     AuditLog,
 } from '@/types'
+import { firebaseUsageClient } from './firebase-usage-client'
+import { firebaseHostingClient } from './firebase-hosting-client'
 
 // Get access token for Firebase APIs
 async function getAccessToken(): Promise<string> {
@@ -32,6 +34,31 @@ export async function getEnvironmentStatus(
     environmentName: string
 ): Promise<Environment | null> {
     try {
+        // Check if we should use real Firebase data
+        const useRealHostingData =
+            process.env.USE_REAL_FIREBASE_HOSTING === 'true'
+
+        if (useRealHostingData) {
+            // Try to get real data from Firebase Hosting API
+            const realStatus =
+                await firebaseHostingClient.getRealEnvironmentStatus(
+                    environmentName
+                )
+            if (realStatus) {
+                // Optionally store this in the database for caching
+                const db = getAdminDatabase()
+                await db
+                    .ref(`deployments/environments/${environmentName}`)
+                    .update({
+                        ...realStatus,
+                        lastUpdated: Date.now(),
+                        isRealData: true,
+                    })
+                return realStatus
+            }
+        }
+
+        // Fallback to database data
         const db = getAdminDatabase()
         const snapshot = await db
             .ref(`deployments/environments/${environmentName}`)
@@ -246,14 +273,44 @@ export async function getPerformanceMetrics(
 // Firebase Usage & Billing
 export async function getFirebaseUsage(): Promise<FirebaseUsage | null> {
     try {
-        // In a real implementation, this would call Firebase's billing API
-        // For now, we'll fetch from our database
-        const db = getAdminDatabase()
-        const snapshot = await db.ref('deployments/usage/current').once('value')
-        return snapshot.val()
+        // Check if we should use real data or fallback to stored data
+        const useRealData = process.env.USE_REAL_FIREBASE_USAGE === 'true'
+
+        if (useRealData) {
+            // Get real usage data from Firebase Admin SDK
+            const usage = await firebaseUsageClient.getAllUsageMetrics()
+
+            // Optionally store this data for historical tracking
+            const db = getAdminDatabase()
+            await db.ref('deployments/usage/current').set({
+                ...usage,
+                lastUpdated: Date.now(),
+                isRealData: true,
+            })
+
+            return usage
+        } else {
+            // Fallback to stored data
+            const db = getAdminDatabase()
+            const snapshot = await db
+                .ref('deployments/usage/current')
+                .once('value')
+            return snapshot.val()
+        }
     } catch (error) {
         console.error('Error fetching Firebase usage:', error)
-        return null
+
+        // If real data fetch fails, try to get stored data
+        try {
+            const db = getAdminDatabase()
+            const snapshot = await db
+                .ref('deployments/usage/current')
+                .once('value')
+            return snapshot.val()
+        } catch (fallbackError) {
+            console.error('Error fetching fallback usage data:', fallbackError)
+            return null
+        }
     }
 }
 

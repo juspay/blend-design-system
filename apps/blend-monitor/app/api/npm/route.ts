@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { NPMClient } from '@/lib/data/npm-client'
-import { ref, set } from 'firebase/database'
-import { database } from '@/lib/firebase'
+import { getAdminDatabase } from '@/lib/firebase-admin'
 
 export async function GET() {
     try {
@@ -63,15 +62,12 @@ export async function GET() {
             },
         }
 
-        // Save to Firebase
-        await set(ref(database, 'blend-monitor/publishing'), updates.publishing)
+        // Save to Firebase using Admin SDK
+        const db = getAdminDatabase()
+        await db.ref('blend-monitor/publishing').set(updates.publishing)
 
-        // Update activity log
-        const activityRef = ref(
-            database,
-            `blend-monitor/activity/recent/${Date.now()}`
-        )
-        await set(activityRef, {
+        // Update activity log using Admin SDK
+        await db.ref(`blend-monitor/activity/recent/${Date.now()}`).set({
             type: 'npm_stats_updated',
             timestamp: new Date().toISOString(),
             version: packageStats.version,
@@ -112,12 +108,9 @@ export async function POST() {
             throw new Error('Failed to fetch package stats')
         }
 
-        // Update activity log
-        const activityRef = ref(
-            database,
-            `blend-monitor/activity/recent/${Date.now()}`
-        )
-        await set(activityRef, {
+        // Update activity log using Admin SDK
+        const db = getAdminDatabase()
+        await db.ref(`blend-monitor/activity/recent/${Date.now()}`).set({
             type: 'npm_data_refresh',
             timestamp: new Date().toISOString(),
             version: packageStats.version,

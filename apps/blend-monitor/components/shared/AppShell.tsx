@@ -1,21 +1,49 @@
 'use client'
 
 import React from 'react'
-import { Sidebar } from 'blend-v1'
+import { Sidebar, ButtonV2, ButtonTypeV2, ButtonSizeV2 } from 'blend-v1'
 import { useRouter, usePathname } from 'next/navigation'
 import { tenants, merchants, getNavigationData } from './SidebarConfig'
-import UserAvatar from './UserAvatar'
 import { useAuth } from '@/contexts/AuthContext'
-import { LogOut } from 'lucide-react'
+import { LogOut, User } from 'lucide-react'
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
     const router = useRouter()
     const pathname = usePathname()
-    const { logout } = useAuth()
+    const { logout, user } = useAuth()
     const navigationData = getNavigationData(router, pathname)
 
+    // User account footer content
+    const userFooter = user ? (
+        <div className="flex items-center gap-3 w-full px-2">
+            <div className="flex-shrink-0">
+                {user.photoURL ? (
+                    <img
+                        src={user.photoURL}
+                        alt={user.displayName || 'User'}
+                        className="w-10 h-10 rounded-full border-2 border-gray-200"
+                        referrerPolicy="no-referrer"
+                    />
+                ) : (
+                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                        <User className="w-6 h-6 text-gray-600" />
+                    </div>
+                )}
+            </div>
+            <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 truncate">
+                    {user.displayName || 'User'}
+                </p>
+                <p className="text-xs text-gray-500 truncate">{user.email}</p>
+            </div>
+        </div>
+    ) : null
+
     return (
-        <div className="h-screen w-screen overflow-hidden">
+        <div
+            className="h-screen w-screen overflow-hidden"
+            style={{ display: 'flex' }}
+        >
             <Sidebar
                 tenants={tenants}
                 merchants={merchants}
@@ -26,25 +54,25 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                             <h2 className="text-lg font-semibold text-gray-900">
                                 Blend Monitoring
                             </h2>
-                            <div className="flex items-center gap-3">
-                                <UserAvatar />
-                                <button
-                                    onClick={logout}
-                                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors group cursor-pointer"
-                                    title="Logout"
-                                >
-                                    <LogOut className="w-4 h-4 text-gray-600 group-hover:text-gray-900" />
-                                </button>
-                            </div>
+                            <ButtonV2
+                                buttonType={ButtonTypeV2.SECONDARY}
+                                size={ButtonSizeV2.SMALL}
+                                text="Logout"
+                                leadingIcon={<LogOut className="w-4 h-4" />}
+                                onClick={logout}
+                            />
                         </div>
                     </div>
                 }
+                footer={userFooter}
                 activeTenant="blend-monitor"
                 setActiveTenant={() => {}}
                 activeMerchant=""
                 setActiveMerchant={() => {}}
             >
-                <div className="h-full overflow-hidden">{children}</div>
+                <div className="h-full overflow-hidden" style={{ flex: 1 }}>
+                    {children}
+                </div>
             </Sidebar>
         </div>
     )

@@ -210,162 +210,51 @@ async function populateHostingData() {
     return hostingDeployments
 }
 
-// Populate Cloud Functions data
+// Skip populating Cloud Functions data (removed sample data)
 async function populateFunctionsData() {
-    console.log('\n⚡ Populating Cloud Functions Data...')
+    console.log('\n⚡ Skipping Cloud Functions Data (no sample data)...')
 
-    const functions = {
-        'api-getData': {
-            name: 'api-getData',
-            status: 'active',
-            runtime: 'nodejs18',
-            region: 'us-central1',
-            memorySize: 256,
-            timeout: 60,
-            lastUpdated: Date.now(),
-            metrics: {
-                invocations: 15234,
-                errors: 12,
-                avgDuration: 145,
-                successRate: 99.92,
-            },
-        },
-        'auth-createUser': {
-            name: 'auth-createUser',
-            status: 'active',
-            runtime: 'nodejs18',
-            region: 'us-central1',
-            memorySize: 512,
-            timeout: 120,
-            lastUpdated: Date.now(),
-            metrics: {
-                invocations: 8456,
-                errors: 5,
-                avgDuration: 230,
-                successRate: 99.94,
-            },
-        },
-        'scheduled-cleanup': {
-            name: 'scheduled-cleanup',
-            status: 'active',
-            runtime: 'nodejs18',
-            region: 'us-central1',
-            memorySize: 128,
-            timeout: 540,
-            lastUpdated: Date.now(),
-            metrics: {
-                invocations: 720,
-                errors: 0,
-                avgDuration: 1250,
-                successRate: 100,
-            },
-        },
-        'storage-processImage': {
-            name: 'storage-processImage',
-            status: 'inactive',
-            runtime: 'nodejs18',
-            region: 'us-central1',
-            memorySize: 1024,
-            timeout: 300,
-            lastUpdated: Date.now() - 86400000, // 1 day ago
-            metrics: {
-                invocations: 0,
-                errors: 0,
-                avgDuration: 0,
-                successRate: 0,
-            },
-        },
-    }
+    // Clear any existing functions data
+    await db.ref('deployments/functions').remove()
+    console.log('✅ Cleared Cloud Functions data')
 
-    await db.ref('deployments/functions').set(functions)
-    console.log('✅ Stored Cloud Functions data')
-
-    // Generate function deployment history
-    const functionDeployments = []
-    Object.keys(functions).forEach((funcName, index) => {
-        const deployTime = new Date(Date.now() - index * 3 * 60 * 60 * 1000)
-        functionDeployments.push({
-            id: `function_${funcName}_deploy_${Date.now()}`,
-            environment: 'production',
-            version: `${funcName}@1.0.${index}`,
-            status: 'success',
-            deployer: {
-                name: 'Firebase CLI',
-                email: 'developer@example.com',
-            },
-            startTime: deployTime.toISOString(),
-            endTime: new Date(deployTime.getTime() + 180000).toISOString(),
-            duration: 180,
-            rollbackAvailable: true,
-            commitSha: Math.random().toString(36).substring(2, 9),
-            commitMessage: `Deploy function ${funcName}`,
-            source: 'functions',
-            service: `Functions: ${funcName}`,
-        })
-    })
-
-    return functionDeployments
+    // Return empty array for deployment history
+    return []
 }
 
-// Populate Performance Metrics data
+// Skip populating Performance Metrics data (removed sample data)
 async function populatePerformanceData() {
-    console.log('\n📊 Populating Performance Metrics...')
+    console.log('\n📊 Skipping Performance Metrics (no sample data)...')
 
-    const environments = ['production', 'staging']
-    const performanceData = {}
+    // Clear any existing performance data
+    await db.ref('deployments/performance').remove()
+    console.log('✅ Cleared performance metrics data')
+}
 
-    // Generate performance metrics for the last 24 hours
-    for (const env of environments) {
-        performanceData[env] = {
-            current: {
-                responseTime: {
-                    p50: 120 + Math.random() * 50,
-                    p95: 250 + Math.random() * 100,
-                    p99: 500 + Math.random() * 200,
-                },
-                errorRate: Math.random() * 2,
-                requestsPerSecond: 50 + Math.random() * 30,
-                cpuUsage: 30 + Math.random() * 40,
-                memoryUsage: 40 + Math.random() * 30,
-                activeConnections: Math.floor(100 + Math.random() * 50),
-                timestamp: Date.now(),
-            },
-            history: [],
-        }
+// Skip populating Usage data (removed sample data)
+async function populateUsageData() {
+    console.log('\n💰 Skipping Usage & Billing Data (no sample data)...')
 
-        // Add historical data points
-        for (let i = 0; i < 24; i++) {
-            const timestamp = Date.now() - i * 60 * 60 * 1000
-
-            performanceData[env].history.push({
-                timestamp,
-                responseTime: {
-                    p50: 120 + Math.random() * 50,
-                    p95: 250 + Math.random() * 100,
-                    p99: 500 + Math.random() * 200,
-                },
-                errorRate: Math.random() * 2,
-                requestsPerSecond: 50 + Math.random() * 30,
-                cpuUsage: 30 + Math.random() * 40,
-                memoryUsage: 40 + Math.random() * 30,
-                activeConnections: Math.floor(100 + Math.random() * 50),
-            })
-        }
-    }
-
-    // Store in Realtime Database instead of Firestore
-    await db.ref('deployments/performance').set(performanceData)
-    console.log('✅ Stored performance metrics in Realtime Database')
+    // Clear any existing usage data
+    await db.ref('deployments/usage').remove()
+    console.log('✅ Cleared usage and billing data')
 }
 
 // Populate environment status
-async function populateEnvironmentStatus() {
+async function populateEnvironmentStatus(hostingSites) {
     console.log('\n🌍 Populating Environment Status...')
 
-    const environments = {
-        production: {
+    // Map actual hosting sites to environments
+    const environments = {}
+
+    // Check if we have actual hosting sites
+    const siteIds = Object.keys(hostingSites)
+
+    // Map blend-prod to production
+    if (hostingSites['blend-prod']) {
+        environments.production = {
             status: 'healthy',
-            url: 'https://storybook-452807.web.app',
+            url: hostingSites['blend-prod'].defaultUrl,
             currentVersion: 'v1.0.5',
             lastDeployment: new Date().toISOString(),
             uptime: 99.95,
@@ -374,10 +263,15 @@ async function populateEnvironmentStatus() {
                 database: 'passing',
                 storage: 'passing',
             },
-        },
-        staging: {
+            siteId: 'blend-prod',
+        }
+    }
+
+    // Map blend-staging to staging
+    if (hostingSites['blend-staging']) {
+        environments.staging = {
             status: 'degraded',
-            url: 'https://staging.example.com',
+            url: hostingSites['blend-staging'].defaultUrl,
             currentVersion: 'v1.0.6-beta',
             lastDeployment: new Date(Date.now() - 3600000).toISOString(),
             uptime: 98.5,
@@ -386,10 +280,15 @@ async function populateEnvironmentStatus() {
                 database: 'warning',
                 storage: 'passing',
             },
-        },
-        development: {
+            siteId: 'blend-staging',
+        }
+    }
+
+    // Map storybook site to development or create a development environment
+    if (hostingSites['storybook-452807']) {
+        environments.development = {
             status: 'healthy',
-            url: 'https://dev.example.com',
+            url: hostingSites['storybook-452807'].defaultUrl,
             currentVersion: 'v1.0.7-dev',
             lastDeployment: new Date(Date.now() - 7200000).toISOString(),
             uptime: 95.2,
@@ -398,46 +297,28 @@ async function populateEnvironmentStatus() {
                 database: 'passing',
                 storage: 'passing',
             },
-        },
+            siteId: 'storybook-452807',
+        }
+    }
+
+    // If no environments were created, use defaults
+    if (Object.keys(environments).length === 0) {
+        environments.production = {
+            status: 'healthy',
+            url: 'https://example.web.app',
+            currentVersion: 'v1.0.5',
+            lastDeployment: new Date().toISOString(),
+            uptime: 99.95,
+            healthChecks: {
+                api: 'passing',
+                database: 'passing',
+                storage: 'passing',
+            },
+        }
     }
 
     await db.ref('deployments/environments').set(environments)
     console.log('✅ Stored environment status')
-}
-
-// Populate usage data
-async function populateUsageData() {
-    console.log('\n💰 Populating Usage & Billing Data...')
-
-    const now = new Date()
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-
-    const usageData = {
-        hosting: {
-            bandwidth: { used: 12.5, limit: 100, unit: 'GB' },
-            storage: { used: 3.2, limit: 50, unit: 'GB' },
-            requests: { used: 125000, limit: 1000000, unit: 'K' },
-        },
-        firestore: {
-            reads: { used: 45000, limit: 1000000, unit: 'K' },
-            writes: { used: 12000, limit: 500000, unit: 'K' },
-            storage: { used: 0.8, limit: 10, unit: 'GB' },
-        },
-        functions: {
-            invocations: { used: 8500, limit: 200000, unit: 'K' },
-            gbSeconds: { used: 1200, limit: 100000, unit: '' },
-            outboundData: { used: 0.5, limit: 20, unit: 'GB' },
-        },
-        billing: {
-            currentCost: 15.23,
-            projectedCost: 28.45,
-            budget: 250,
-            billingPeriodEnd: endOfMonth.toISOString(),
-        },
-    }
-
-    await db.ref('deployments/usage/current').set(usageData)
-    console.log('✅ Stored usage and billing data')
 }
 
 // Main execution
@@ -465,6 +346,11 @@ async function main() {
         const hostingDeployments = await populateHostingData()
         allDeployments.push(...hostingDeployments)
 
+        // Get hosting sites for environment mapping
+        const hostingSites =
+            (await db.ref('deployments/hosting_sites').once('value')).val() ||
+            {}
+
         // 2. Populate Cloud Functions Data
         const functionDeployments = await populateFunctionsData()
         allDeployments.push(...functionDeployments)
@@ -472,8 +358,8 @@ async function main() {
         // 3. Populate Performance Metrics
         await populatePerformanceData()
 
-        // 4. Populate Environment Status
-        await populateEnvironmentStatus()
+        // 4. Populate Environment Status with actual hosting sites
+        await populateEnvironmentStatus(hostingSites)
 
         // 5. Populate Usage Data
         await populateUsageData()
@@ -502,13 +388,13 @@ async function main() {
         await db.ref('deployments/history').set(mergedDeployments)
         console.log('✅ Stored deployment history')
 
-        console.log('\n🎉 Successfully populated all deployment data!')
+        console.log('\n🎉 Successfully populated deployment data!')
         console.log('\nSummary:')
         console.log(`- Hosting sites and deployments`)
-        console.log(`- Cloud Functions status and metrics`)
-        console.log(`- Performance metrics (in Realtime Database)`)
+        console.log(`- Cloud Functions data cleared (no sample data)`)
+        console.log(`- Performance metrics cleared (no sample data)`)
         console.log(`- Environment status`)
-        console.log(`- Usage and billing data`)
+        console.log(`- Usage and billing data cleared (no sample data)`)
         console.log(
             `- Total deployments in history: ${Object.keys(mergedDeployments).length}`
         )
