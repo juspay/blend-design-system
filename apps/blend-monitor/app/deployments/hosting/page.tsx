@@ -29,9 +29,11 @@ import {
     Tooltip,
 } from 'blend-v1'
 import { useAllEnvironmentStatuses } from '@/hooks/useDeploymentStatus'
+import { useRouter } from 'next/navigation'
 
 export default function HostingStatusPage() {
     const { statuses, loading, error } = useAllEnvironmentStatuses()
+    const router = useRouter()
 
     const getStatusColor = (status: string): TagColor => {
         switch (status) {
@@ -119,6 +121,22 @@ export default function HostingStatusPage() {
                     </div>
                 ) : (
                     <>
+                        {/* Header with Deploy Button */}
+                        <div className="flex items-center justify-between mb-8">
+                            <h1 className="text-2xl font-bold text-gray-900">
+                                Hosting Environments
+                            </h1>
+                            <ButtonV2
+                                buttonType={ButtonTypeV2.PRIMARY}
+                                size={ButtonSizeV2.MEDIUM}
+                                subType={ButtonSubTypeV2.DEFAULT}
+                                text="Deploy New Version"
+                                onClick={() =>
+                                    router.push('/deployments/deploy')
+                                }
+                            />
+                        </div>
+
                         {/* Quick Stats using StatCard - Moved to top */}
                         <div className="space-y-6 mb-8">
                             <h2 className="text-lg font-semibold text-gray-900">

@@ -14,6 +14,7 @@ import {
     History,
     Code,
     DollarSign,
+    Rocket,
 } from 'lucide-react'
 
 export const tenants = [
@@ -68,6 +69,12 @@ export const getNavigationData = (router: any, pathname: string) => [
                 leftSlot: <Server className="w-4 h-4" />,
                 onClick: () => router.push('/deployments/hosting'),
                 isActive: pathname === '/deployments/hosting',
+            },
+            {
+                label: 'Deploy',
+                leftSlot: <Rocket className="w-4 h-4" />,
+                onClick: () => router.push('/deployments/deploy'),
+                isActive: pathname === '/deployments/deploy',
             },
             // {
             //     label: 'Performance',

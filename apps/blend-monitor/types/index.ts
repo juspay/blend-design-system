@@ -160,7 +160,16 @@ export interface Deployment {
     }
     startTime: string
     endTime?: string
-    status: 'in_progress' | 'success' | 'failed' | 'rolled_back'
+    status:
+        | 'in_progress'
+        | 'success'
+        | 'failed'
+        | 'rolled_back'
+        | 'pending_approval'
+        | 'approved'
+        | 'rejected'
+        | 'building'
+        | 'deploying'
     duration?: number // in seconds
     commitSha: string
     buildLogsUrl?: string
@@ -169,6 +178,72 @@ export interface Deployment {
     source?: 'database' | 'hosting' // Source of deployment
     service?: string // Service name (e.g., "Realtime Database", "Hosting: site-name")
     siteUrl?: string // URL for hosting sites
+    branch?: string // Git branch
+    buildLogs?: string[] // Build output logs
+    deploymentLogs?: string[] // Deployment output logs
+    approval?: DeploymentApproval
+    buildCacheKey?: string // For build caching
+    previewUrl?: string // For preview deployments
+    scheduledFor?: string // For scheduled deployments
+}
+
+export interface DeploymentApproval {
+    id: string
+    deploymentId: string
+    requestedBy: string
+    requestedAt: string
+    approvedBy?: string
+    approvedAt?: string
+    rejectedBy?: string
+    rejectedAt?: string
+    status: 'pending' | 'approved' | 'rejected' | 'expired'
+    comments?: string
+    expiresAt: string
+}
+
+export interface DeploymentRequest {
+    target: 'blend-prod' | 'blend-staging' | string // Allow custom preview targets
+    branch?: string
+    commitSha?: string
+    requireApproval?: boolean
+    scheduledFor?: string
+    isPreview?: boolean
+    previewExpiry?: string
+    buildOptions?: {
+        clean?: boolean
+        cache?: boolean
+        parallel?: boolean
+    }
+}
+
+export interface BuildCache {
+    id: string
+    commitSha: string
+    target: string
+    createdAt: string
+    expiresAt: string
+    size: number
+    artifactPath: string
+    buildLogs: string[]
+}
+
+export interface DeploymentNotification {
+    id: string
+    type:
+        | 'deployment_started'
+        | 'build_progress'
+        | 'approval_required'
+        | 'deployment_success'
+        | 'deployment_failed'
+        | 'rollback_available'
+    deploymentId: string
+    title: string
+    message: string
+    severity: 'info' | 'warning' | 'error' | 'success'
+    timestamp: string
+    read: boolean
+    actionUrl?: string
+    progress?: number // For build progress
 }
 
 export interface CloudFunction {
