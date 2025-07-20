@@ -19,11 +19,17 @@ export class DeploymentService {
     private db: any
     private auth: any
     private deploymentQueue: Map<string, Deployment> = new Map()
-    private buildCacheDir = path.join(process.cwd(), '.build-cache')
+    private buildCacheDir: string
+    private projectRoot: string
 
     constructor() {
         this.db = getAdminDatabase()
         this.auth = getAdminAuth()
+
+        // Set project root and build cache directory
+        this.projectRoot = path.resolve(process.cwd(), '../..')
+        this.buildCacheDir = path.join(this.projectRoot, '.build-cache')
+
         this.initializeBuildCache()
     }
 
@@ -146,6 +152,9 @@ export class DeploymentService {
         const buildId = uuidv4()
         const buildPath = path.join(this.buildCacheDir, buildId)
 
+        // Get the project root directory (two levels up from apps/blend-monitor)
+        const projectRoot = path.resolve(process.cwd(), '../..')
+
         try {
             await this.addBuildLog(deployment.id, 'Starting build process...')
 
@@ -158,7 +167,7 @@ export class DeploymentService {
                     deployment.id,
                     'Cleaning previous builds...'
                 )
-                await execAsync('rm -rf dist')
+                await execAsync(`rm -rf ${projectRoot}/dist`)
             }
 
             // Checkout specific branch if provided
@@ -167,7 +176,9 @@ export class DeploymentService {
                     deployment.id,
                     `Checking out branch: ${request.branch}`
                 )
-                await execAsync(`git checkout ${request.branch}`)
+                await execAsync(
+                    `cd ${projectRoot} && git checkout ${request.branch}`
+                )
             }
 
             // Build Ascent
@@ -177,7 +188,7 @@ export class DeploymentService {
             )
             await this.updateBuildProgress(deployment.id, 25)
 
-            const ascentBuildCmd = `cd apps/ascent && npm run build`
+            const ascentBuildCmd = `cd ${projectRoot}/apps/ascent && npm run build`
             const { stdout: ascentOut, stderr: ascentErr } =
                 await execAsync(ascentBuildCmd)
             if (ascentErr)
@@ -190,7 +201,7 @@ export class DeploymentService {
             await this.addBuildLog(deployment.id, 'Building Storybook...')
             await this.updateBuildProgress(deployment.id, 50)
 
-            const storybookBuildCmd = `cd apps/storybook && pnpm build-storybook`
+            const storybookBuildCmd = `cd ${projectRoot}/apps/storybook && pnpm build-storybook`
             const { stdout: sbOut, stderr: sbErr } =
                 await execAsync(storybookBuildCmd)
             if (sbErr)
@@ -208,10 +219,12 @@ export class DeploymentService {
 
             // Copy builds to cache directory
             await execAsync(`mkdir -p ${buildPath}/dist`)
-            await execAsync(`cp -r apps/ascent/out/* ${buildPath}/dist/`)
+            await execAsync(
+                `cp -r ${projectRoot}/apps/ascent/out/* ${buildPath}/dist/`
+            )
             await execAsync(`mkdir -p ${buildPath}/dist/storybook`)
             await execAsync(
-                `cp -r apps/storybook/storybook-static/* ${buildPath}/dist/storybook/`
+                `cp -r ${projectRoot}/apps/storybook/storybook-static/* ${buildPath}/dist/storybook/`
             )
 
             await this.updateBuildProgress(deployment.id, 100)
@@ -255,12 +268,15 @@ export class DeploymentService {
                 'Starting deployment to Firebase...'
             )
 
-            // Copy build to dist directory
-            await execAsync('rm -rf dist')
-            await execAsync(`cp -r ${buildPath}/dist .`)
+            // Get the project root directory
+            const projectRoot = path.resolve(process.cwd(), '../..')
 
-            // Deploy to Firebase
-            const deployCmd = `firebase deploy --only hosting:${request.target} --project ${process.env.FIREBASE_PROJECT_ID}`
+            // Copy build to dist directory
+            await execAsync(`rm -rf ${projectRoot}/dist`)
+            await execAsync(`cp -r ${buildPath}/dist ${projectRoot}/`)
+
+            // Deploy to Firebase from project root
+            const deployCmd = `cd ${projectRoot} && firebase deploy --only hosting:${request.target} --project ${process.env.FIREBASE_PROJECT_ID}`
             await this.addDeploymentLog(
                 deployment.id,
                 `Executing: ${deployCmd}`
@@ -336,7 +352,10 @@ export class DeploymentService {
         let commitSha = request.commitSha
         if (!commitSha) {
             try {
-                const { stdout } = await execAsync('git rev-parse HEAD')
+                const projectRoot = path.resolve(process.cwd(), '../..')
+                const { stdout } = await execAsync(
+                    `cd ${projectRoot} && git rev-parse HEAD`
+                )
                 commitSha = stdout.trim()
             } catch (error) {
                 commitSha = 'unknown'
