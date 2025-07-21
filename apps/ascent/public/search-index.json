@@ -254,7 +254,7 @@
     },
     "button-group": {
         "title": "Button Group V2",
-        "description": "The ButtonGroupV2 component is a container that groups multiple Button components together with flexible layout options and automatic positioning.",
+        "description": "The ButtonGroup component is a container that groups multiple Button components together with flexible layout options and automatic positioning.",
         "path": "components/button-group",
         "slug": "button-group",
         "category": "components",

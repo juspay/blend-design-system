@@ -10,6 +10,9 @@ import PreviewWrapper from './app/components/PreviewWrapper'
 const ButtonPreview = () => <PreviewWrapper component="ButtonPreview" />
 const AlertPreview = () => <PreviewWrapper component="AlertPreview" />
 const TagPreview = () => <PreviewWrapper component="TagPreview" />
+const ButtonGroupPreview = () => (
+    <PreviewWrapper component="ButtonGroupV2Preview" />
+)
 const ButtonGroupV2Preview = () => (
     <PreviewWrapper component="ButtonGroupV2Preview" />
 )
@@ -218,6 +221,7 @@ const components = {
     ButtonPreview,
     AlertPreview,
     TagPreview,
+    ButtonGroupPreview,
     ButtonGroupV2Preview,
     SplitTagPreview,
     TabsPreview,

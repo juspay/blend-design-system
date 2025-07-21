@@ -1,7 +1,8 @@
 import progressBarTokens from './progressbar.tokens'
 import { ProgressBarSize, ProgressBarVariant } from './types'
+import type { CSSObject } from 'styled-components'
 
-export const getProgressBarStyles = (size: ProgressBarSize) => {
+export const getProgressBarStyles = (size: ProgressBarSize): CSSObject => {
     return {
         height: progressBarTokens.height[size],
         borderRadius: progressBarTokens.container.borderRadius,
@@ -9,7 +10,9 @@ export const getProgressBarStyles = (size: ProgressBarSize) => {
     }
 }
 
-export const getProgressBarFillStyles = (variant: ProgressBarVariant) => {
+export const getProgressBarFillStyles = (
+    variant: ProgressBarVariant
+): CSSObject => {
     const fillStyles =
         variant === ProgressBarVariant.SOLID
             ? progressBarTokens.fill.solid
@@ -23,7 +26,9 @@ export const getProgressBarFillStyles = (variant: ProgressBarVariant) => {
     }
 }
 
-export const getProgressBarEmptyStyles = (variant: ProgressBarVariant) => {
+export const getProgressBarEmptyStyles = (
+    variant: ProgressBarVariant
+): CSSObject => {
     const emptyStyles =
         variant === ProgressBarVariant.SOLID
             ? progressBarTokens.empty.solid
@@ -35,7 +40,7 @@ export const getProgressBarEmptyStyles = (variant: ProgressBarVariant) => {
     }
 }
 
-export const getProgressBarLabelStyles = () => {
+export const getProgressBarLabelStyles = (): CSSObject => {
     return {
         fontSize: progressBarTokens.label.fontSize,
         fontWeight: progressBarTokens.label.fontWeight,
