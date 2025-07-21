@@ -130,6 +130,9 @@ const SwitchDemo = () => {
                             onChange={() =>
                                 setPlaygroundChecked(!playgroundChecked)
                             }
+                            data-bool-for="redirectModeOnly"
+                            data-toggle-status="enabled"
+                            data-bool-value="on"
                         />
                         <Switch
                             label="Disabled"
@@ -210,6 +213,9 @@ const SwitchDemo = () => {
                                         header: `Small switch ${checked ? 'enabled' : 'disabled'}!`,
                                     })
                                 }}
+                                data-bool-for="redirectModeOnly"
+                                data-toggle-status="enabled"
+                                data-bool-value="on"
                             />
                             <Switch
                                 label="With Subtext"

@@ -29,7 +29,9 @@ export const Radio = ({
     subtext,
     slot,
     name,
+    ...rest
 }: RadioProps) => {
+    console.log(rest)
     const radioTokens = useResponsiveTokens<RadioTokensType>('RADIO')
 
     const generatedId = React.useId()
@@ -60,6 +62,7 @@ export const Radio = ({
                     $isDisabled={disabled}
                     $isChecked={currentChecked}
                     $error={error}
+                    {...rest}
                 />
 
                 <RadioContent
