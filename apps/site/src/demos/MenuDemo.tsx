@@ -553,34 +553,34 @@ export const MenuDemo: React.FC = () => {
                             </Text>
                         </Block>
                         <Block display="flex" gap="8px">
-                            <ButtonV2
+                            <Button
                                 text="Start"
                                 buttonType={
                                     playgroundAlignment === MenuAlignment.START
-                                        ? ButtonTypeV2.PRIMARY
-                                        : ButtonTypeV2.SECONDARY
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
                                 }
                                 onClick={() =>
                                     setPlaygroundAlignment(MenuAlignment.START)
                                 }
                             />
-                            <ButtonV2
+                            <Button
                                 text="Center"
                                 buttonType={
                                     playgroundAlignment === MenuAlignment.CENTER
-                                        ? ButtonTypeV2.PRIMARY
-                                        : ButtonTypeV2.SECONDARY
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
                                 }
                                 onClick={() =>
                                     setPlaygroundAlignment(MenuAlignment.CENTER)
                                 }
                             />
-                            <ButtonV2
+                            <Button
                                 text="End"
                                 buttonType={
                                     playgroundAlignment === MenuAlignment.END
-                                        ? ButtonTypeV2.PRIMARY
-                                        : ButtonTypeV2.SECONDARY
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
                                 }
                                 onClick={() =>
                                     setPlaygroundAlignment(MenuAlignment.END)
@@ -594,41 +594,41 @@ export const MenuDemo: React.FC = () => {
                             </Text>
                         </Block>
                         <Block display="flex" gap="8px" flexWrap="wrap">
-                            <ButtonV2
+                            <Button
                                 text="Top"
                                 buttonType={
                                     playgroundSide === MenuSide.TOP
-                                        ? ButtonTypeV2.PRIMARY
-                                        : ButtonTypeV2.SECONDARY
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
                                 }
                                 onClick={() => setPlaygroundSide(MenuSide.TOP)}
                             />
-                            <ButtonV2
+                            <Button
                                 text="Bottom"
                                 buttonType={
                                     playgroundSide === MenuSide.BOTTOM
-                                        ? ButtonTypeV2.PRIMARY
-                                        : ButtonTypeV2.SECONDARY
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
                                 }
                                 onClick={() =>
                                     setPlaygroundSide(MenuSide.BOTTOM)
                                 }
                             />
-                            <ButtonV2
+                            <Button
                                 text="Left"
                                 buttonType={
                                     playgroundSide === MenuSide.LEFT
-                                        ? ButtonTypeV2.PRIMARY
-                                        : ButtonTypeV2.SECONDARY
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
                                 }
                                 onClick={() => setPlaygroundSide(MenuSide.LEFT)}
                             />
-                            <ButtonV2
+                            <Button
                                 text="Right"
                                 buttonType={
                                     playgroundSide === MenuSide.RIGHT
-                                        ? ButtonTypeV2.PRIMARY
-                                        : ButtonTypeV2.SECONDARY
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
                                 }
                                 onClick={() =>
                                     setPlaygroundSide(MenuSide.RIGHT)
@@ -657,8 +657,8 @@ export const MenuDemo: React.FC = () => {
                         >
                             <Menu
                                 trigger={
-                                    <ButtonV2
-                                        buttonType={ButtonTypeV2.PRIMARY}
+                                    <Button
+                                        buttonType={ButtonType.PRIMARY}
                                         text="Interactive Menu"
                                     />
                                 }

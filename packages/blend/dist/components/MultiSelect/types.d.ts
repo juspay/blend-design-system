@@ -56,6 +56,10 @@ export type MultiSelectProps = {
     hintText?: string;
     placeholder: string;
     size?: MultiSelectMenuSize;
+    enableSearch?: boolean;
+    searchPlaceholder?: string;
+    enableSelectAll?: boolean;
+    selectAllText?: string;
     minWidth?: number;
     maxWidth?: number;
     maxHeight?: number;
@@ -72,6 +76,12 @@ export type MultiSelectMenuProps = {
     minWidth?: number;
     maxWidth?: number;
     maxHeight?: number;
+    disabled?: boolean;
+    enableSearch?: boolean;
+    searchPlaceholder?: string;
+    enableSelectAll?: boolean;
+    selectAllText?: string;
+    onSelectAll?: (selectAll: boolean) => void;
     alignment?: MultiSelectMenuAlignment;
     side?: MultiSelectMenuSide;
     sideOffset?: number;

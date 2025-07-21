@@ -7,8 +7,8 @@ import {
     MenuItemV2ActionType,
     MenuV2GroupType,
 } from './types'
-import { ButtonV2 } from '../ButtonV2'
-import { ButtonTypeV2 } from '../ButtonV2/types'
+import { Button } from '../Button'
+import { ButtonType } from '../Button/types'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import {
@@ -296,25 +296,25 @@ export const MenuPlayground: React.FC = () => {
                 <Block display="flex" gap="16px" flexWrap="wrap">
                     <Menu
                         trigger={
-                            <ButtonV2 buttonType={ButtonTypeV2.SECONDARY}>
+                            <Button buttonType={ButtonType.SECONDARY}>
                                 Basic Menu
-                            </ButtonV2>
+                            </Button>
                         }
                         items={basicMenuItems}
                     />
 
                     <Menu
                         trigger={
-                            <ButtonV2 buttonType={ButtonTypeV2.PRIMARY}>
+                            <Button buttonType={ButtonType.PRIMARY}>
                                 Action Menu
-                            </ButtonV2>
+                            </Button>
                         }
                         items={actionMenuItems}
                         maxHeight={300}
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="With Sub-menus" />}
+                        trigger={<Button text="With Sub-menus" />}
                         items={subMenuItems}
                         maxWidth={250}
                     />
@@ -337,8 +337,8 @@ export const MenuPlayground: React.FC = () => {
                 >
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.SECONDARY}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
                                 text="Start Aligned"
                             />
                         }
@@ -348,8 +348,8 @@ export const MenuPlayground: React.FC = () => {
 
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.SECONDARY}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
                                 text="Center Aligned"
                             />
                         }
@@ -359,8 +359,8 @@ export const MenuPlayground: React.FC = () => {
 
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.SECONDARY}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
                                 text="End Aligned"
                             />
                         }
@@ -371,25 +371,25 @@ export const MenuPlayground: React.FC = () => {
 
                 <Block display="flex" flexWrap="wrap" gap="16px">
                     <Menu
-                        trigger={<ButtonV2 text="Top Side" />}
+                        trigger={<Button text="Top Side" />}
                         items={basicMenuItems}
                         side={MenuSide.TOP}
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Bottom Side" />}
+                        trigger={<Button text="Bottom Side" />}
                         items={basicMenuItems}
                         side={MenuSide.BOTTOM}
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Left Side" />}
+                        trigger={<Button text="Left Side" />}
                         items={basicMenuItems}
                         side={MenuSide.LEFT}
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Right Side" />}
+                        trigger={<Button text="Right Side" />}
                         items={basicMenuItems}
                         side={MenuSide.RIGHT}
                     />
@@ -407,8 +407,8 @@ export const MenuPlayground: React.FC = () => {
                 <Block display="flex" gap="16px" flexWrap="wrap">
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.PRIMARY}
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
                                 text="Searchable Menu"
                             />
                         }
@@ -421,8 +421,8 @@ export const MenuPlayground: React.FC = () => {
 
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.SECONDARY}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
                                 text="Custom Size"
                             />
                         }
@@ -433,7 +433,7 @@ export const MenuPlayground: React.FC = () => {
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Compact Menu" />}
+                        trigger={<Button text="Compact Menu" />}
                         items={basicMenuItems}
                         minWidth={150}
                         maxWidth={200}
@@ -452,8 +452,8 @@ export const MenuPlayground: React.FC = () => {
                 <Block display="flex" gap="16px" flexWrap="wrap">
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.SECONDARY}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
                                 text="Disabled Items"
                             />
                         }
@@ -462,8 +462,8 @@ export const MenuPlayground: React.FC = () => {
 
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.PRIMARY}
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
                                 text="Modal Menu"
                             />
                         }
@@ -474,7 +474,7 @@ export const MenuPlayground: React.FC = () => {
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Custom Offset" />}
+                        trigger={<Button text="Custom Offset" />}
                         items={basicMenuItems}
                         sideOffset={20}
                         alignOffset={10}
@@ -493,8 +493,8 @@ export const MenuPlayground: React.FC = () => {
                 <Block display="flex" gap="16px" flexWrap="wrap">
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.DANGER}
+                            <Button
+                                buttonType={ButtonType.DANGER}
                                 text="Empty Menu"
                             />
                         }
@@ -503,8 +503,8 @@ export const MenuPlayground: React.FC = () => {
 
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.SECONDARY}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
                                 text="Single Item"
                             />
                         }
@@ -523,7 +523,7 @@ export const MenuPlayground: React.FC = () => {
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Long Content" />}
+                        trigger={<Button text="Long Content" />}
                         items={[
                             {
                                 label: 'Long Labels Section',

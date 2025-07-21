@@ -9,6 +9,7 @@ type SingleSelectMenuProps = {
     maxWidth?: number;
     maxHeight?: number;
     enableSearch?: boolean;
+    disabled?: boolean;
     alignment?: SelectMenuAlignment;
     side?: SelectMenuSide;
     sideOffset?: number;
@@ -16,5 +17,5 @@ type SingleSelectMenuProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
 };
-declare const SingleSelectMenu: ({ items, selected, onSelect, trigger, minWidth, maxWidth, maxHeight, enableSearch, alignment, side, sideOffset, alignOffset, open, onOpenChange, }: SingleSelectMenuProps) => import("react/jsx-runtime").JSX.Element;
+declare const SingleSelectMenu: ({ items, selected, onSelect, trigger, minWidth, maxWidth, maxHeight, enableSearch, disabled, alignment, side, sideOffset, alignOffset, open, onOpenChange, }: SingleSelectMenuProps) => import("react/jsx-runtime").JSX.Element;
 export default SingleSelectMenu;
