@@ -71,6 +71,9 @@ const DropdownInput = ({
     dropDownValue,
     onDropDownChange,
     dropDownItems,
+    dropdownName,
+    onDropdownOpen,
+    onDropdownClose,
     ...rest
 }: DropdownInputProps) => {
     const dropdownInputTokens = useComponentToken(
@@ -201,6 +204,13 @@ const DropdownInput = ({
                                 onDropDownChange?.(selectedValue)
                             }
                         }}
+                        onOpenChange={(open) => {
+                            if (open) {
+                                onDropdownOpen?.()
+                            } else {
+                                onDropdownClose?.()
+                            }
+                        }}
                         trigger={
                             <PrimitiveButton
                                 disabled={disabled}
@@ -209,6 +219,7 @@ const DropdownInput = ({
                                 justifyContent="center"
                                 gap={4}
                                 backgroundColor={'transparent'}
+                                name={dropdownName}
                             >
                                 {dropDownValue ? (
                                     <Text

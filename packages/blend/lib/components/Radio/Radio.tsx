@@ -31,7 +31,6 @@ export const Radio = ({
     name,
     ...rest
 }: RadioProps) => {
-    console.log(rest)
     const radioTokens = useResponsiveTokens<RadioTokensType>('RADIO')
 
     const generatedId = React.useId()

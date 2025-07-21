@@ -62,6 +62,7 @@ import {
 import MenuDemo from './MenuDemo'
 import SingleSelectDemo from './SingleSelectDemo'
 import MultiSelectDemo from './MultiSelectDemo'
+import DropdownInputDemo from './DropdownInputDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -103,6 +104,7 @@ const SidebarDemo = () => {
         | 'transactionAnalyticsDashboard'
         | 'singleSelect'
         | 'multiSelect'
+        | 'dropdownInput'
     >('buttons')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -196,6 +198,8 @@ const SidebarDemo = () => {
                 return <MultiSelectDemo />
             case 'progressBar':
                 return <ProgressBarDemo />
+            case 'dropdownInput':
+                return <DropdownInputDemo />
             default:
                 return <div>No component selected</div>
         }
@@ -276,6 +280,15 @@ const SidebarDemo = () => {
                         />
                     ),
                     onClick: () => setActiveComponent('numberInput'),
+                },
+                {
+                    label: 'Dropdown Input',
+                    leftSlot: (
+                        <DecimalsArrowRightIcon
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    onClick: () => setActiveComponent('dropdownInput'),
                 },
                 {
                     label: 'Text Area',
