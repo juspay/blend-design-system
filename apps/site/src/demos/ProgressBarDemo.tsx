@@ -3,6 +3,7 @@ import {
     ProgressBar,
     ProgressBarSize,
     ProgressBarVariant,
+    ProgressBarType,
 } from '../../../../packages/blend/lib/components/ProgressBar'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
@@ -21,14 +22,34 @@ const ProgressBarDemo = () => {
 
     // Options for selects
     const sizeOptions = [
-        { value: ProgressBarSize.SMALL, label: 'Small (12px)' },
-        { value: ProgressBarSize.MEDIUM, label: 'Medium (20px)' },
+        {
+            value: ProgressBarSize.SMALL,
+            label: 'Small (40px circular / 12px linear)',
+        },
+        {
+            value: ProgressBarSize.MEDIUM,
+            label: 'Medium (60px circular / 20px linear)',
+        },
+        {
+            value: ProgressBarSize.LARGE,
+            label: 'Large (80px circular / 24px linear)',
+        },
     ]
 
     const variantOptions = [
         { value: ProgressBarVariant.SOLID, label: 'Solid' },
         { value: ProgressBarVariant.SEGMENTED, label: 'Segmented' },
+        { value: ProgressBarVariant.CIRCULAR, label: 'Circular' },
     ]
+
+    const typeOptions = [
+        { value: ProgressBarType.SOLID, label: 'Solid' },
+        { value: ProgressBarType.SEGMENTED, label: 'Segmented' },
+    ]
+
+    const [playgroundType, setPlaygroundType] = useState<ProgressBarType>(
+        ProgressBarType.SOLID
+    )
 
     return (
         <div className="p-8 space-y-12">
@@ -72,6 +93,18 @@ const ProgressBarDemo = () => {
                             }
                             placeholder="Select variant"
                         />
+
+                        {playgroundVariant === ProgressBarVariant.CIRCULAR && (
+                            <SingleSelect
+                                label="Type"
+                                items={[{ items: typeOptions }]}
+                                selected={playgroundType}
+                                onSelect={(value) =>
+                                    setPlaygroundType(value as ProgressBarType)
+                                }
+                                placeholder="Select type"
+                            />
+                        )}
                     </div>
 
                     <div className="flex items-center gap-6">
@@ -84,12 +117,25 @@ const ProgressBarDemo = () => {
 
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
                         <div className="w-full max-w-md">
-                            <ProgressBar
-                                value={playgroundValue}
-                                size={playgroundSize}
-                                variant={playgroundVariant}
-                                showLabel={showLabel}
-                            />
+                            {playgroundVariant ===
+                            ProgressBarVariant.CIRCULAR ? (
+                                <div className="flex justify-center">
+                                    <ProgressBar
+                                        value={playgroundValue}
+                                        size={playgroundSize}
+                                        variant={playgroundVariant}
+                                        type={playgroundType}
+                                        showLabel={showLabel}
+                                    />
+                                </div>
+                            ) : (
+                                <ProgressBar
+                                    value={playgroundValue}
+                                    size={playgroundSize}
+                                    variant={playgroundVariant}
+                                    showLabel={showLabel}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -98,9 +144,11 @@ const ProgressBarDemo = () => {
             {/* Sizes */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Sizes</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Small (12px)</h3>
+                        <h3 className="text-lg font-semibold">
+                            Small (12px linear / 40px circular)
+                        </h3>
                         <div className="space-y-4">
                             <ProgressBar
                                 value={25}
@@ -118,7 +166,9 @@ const ProgressBarDemo = () => {
                     </div>
 
                     <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Medium (20px)</h3>
+                        <h3 className="text-lg font-semibold">
+                            Medium (20px linear / 60px circular)
+                        </h3>
                         <div className="space-y-4">
                             <ProgressBar
                                 value={75}
@@ -129,6 +179,26 @@ const ProgressBarDemo = () => {
                             <ProgressBar
                                 value={90}
                                 size={ProgressBarSize.MEDIUM}
+                                variant={ProgressBarVariant.SEGMENTED}
+                                showLabel={true}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Large (24px linear / 80px circular)
+                        </h3>
+                        <div className="space-y-4">
+                            <ProgressBar
+                                value={60}
+                                size={ProgressBarSize.LARGE}
+                                variant={ProgressBarVariant.SOLID}
+                                showLabel={true}
+                            />
+                            <ProgressBar
+                                value={85}
+                                size={ProgressBarSize.LARGE}
                                 variant={ProgressBarVariant.SEGMENTED}
                                 showLabel={true}
                             />
@@ -180,6 +250,221 @@ const ProgressBarDemo = () => {
                                 variant={ProgressBarVariant.SEGMENTED}
                                 showLabel={true}
                             />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Circular Progress Bars */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Circular Progress Bars</h2>
+                <div className="space-y-8">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Circular Types
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                                <h4 className="text-sm font-medium">
+                                    Solid Circular
+                                </h4>
+                                <div className="flex justify-center space-x-6">
+                                    <div className="text-center space-y-2">
+                                        <ProgressBar
+                                            value={25}
+                                            variant={
+                                                ProgressBarVariant.CIRCULAR
+                                            }
+                                            type={ProgressBarType.SOLID}
+                                            size={ProgressBarSize.SMALL}
+                                            showLabel={true}
+                                        />
+                                        <p className="text-xs text-gray-600">
+                                            Small (40px)
+                                        </p>
+                                    </div>
+                                    <div className="text-center space-y-2">
+                                        <ProgressBar
+                                            value={65}
+                                            variant={
+                                                ProgressBarVariant.CIRCULAR
+                                            }
+                                            type={ProgressBarType.SOLID}
+                                            size={ProgressBarSize.MEDIUM}
+                                            showLabel={true}
+                                        />
+                                        <p className="text-xs text-gray-600">
+                                            Medium (60px)
+                                        </p>
+                                    </div>
+                                    <div className="text-center space-y-2">
+                                        <ProgressBar
+                                            value={85}
+                                            variant={
+                                                ProgressBarVariant.CIRCULAR
+                                            }
+                                            type={ProgressBarType.SOLID}
+                                            size={ProgressBarSize.LARGE}
+                                            showLabel={true}
+                                        />
+                                        <p className="text-xs text-gray-600">
+                                            Large (80px)
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <h4 className="text-sm font-medium">
+                                    Segmented Circular
+                                </h4>
+                                <div className="flex justify-center space-x-6">
+                                    <div className="text-center space-y-2">
+                                        <ProgressBar
+                                            value={40}
+                                            variant={
+                                                ProgressBarVariant.CIRCULAR
+                                            }
+                                            type={ProgressBarType.SEGMENTED}
+                                            size={ProgressBarSize.SMALL}
+                                            showLabel={true}
+                                        />
+                                        <p className="text-xs text-gray-600">
+                                            Small (40px)
+                                        </p>
+                                    </div>
+                                    <div className="text-center space-y-2">
+                                        <ProgressBar
+                                            value={70}
+                                            variant={
+                                                ProgressBarVariant.CIRCULAR
+                                            }
+                                            type={ProgressBarType.SEGMENTED}
+                                            size={ProgressBarSize.MEDIUM}
+                                            showLabel={true}
+                                        />
+                                        <p className="text-xs text-gray-600">
+                                            Medium (60px)
+                                        </p>
+                                    </div>
+                                    <div className="text-center space-y-2">
+                                        <ProgressBar
+                                            value={90}
+                                            variant={
+                                                ProgressBarVariant.CIRCULAR
+                                            }
+                                            type={ProgressBarType.SEGMENTED}
+                                            size={ProgressBarSize.LARGE}
+                                            showLabel={true}
+                                        />
+                                        <p className="text-xs text-gray-600">
+                                            Large (80px)
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Circular Progress Examples
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div className="text-center space-y-3">
+                                <ProgressBar
+                                    value={15}
+                                    variant={ProgressBarVariant.CIRCULAR}
+                                    type={ProgressBarType.SOLID}
+                                    showLabel={true}
+                                />
+                                <p className="text-sm text-gray-600">
+                                    Low Progress
+                                </p>
+                            </div>
+
+                            <div className="text-center space-y-3">
+                                <ProgressBar
+                                    value={45}
+                                    variant={ProgressBarVariant.CIRCULAR}
+                                    type={ProgressBarType.SEGMENTED}
+                                    showLabel={true}
+                                />
+                                <p className="text-sm text-gray-600">
+                                    Medium Progress
+                                </p>
+                            </div>
+
+                            <div className="text-center space-y-3">
+                                <ProgressBar
+                                    value={75}
+                                    variant={ProgressBarVariant.CIRCULAR}
+                                    type={ProgressBarType.SOLID}
+                                    showLabel={true}
+                                />
+                                <p className="text-sm text-gray-600">
+                                    High Progress
+                                </p>
+                            </div>
+
+                            <div className="text-center space-y-3">
+                                <ProgressBar
+                                    value={100}
+                                    variant={ProgressBarVariant.CIRCULAR}
+                                    type={ProgressBarType.SEGMENTED}
+                                    showLabel={true}
+                                />
+                                <p className="text-sm text-gray-600">
+                                    Complete
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Circular with Different Labels
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                                <h4 className="text-sm font-medium">
+                                    With Labels
+                                </h4>
+                                <div className="flex justify-center space-x-8">
+                                    <ProgressBar
+                                        value={60}
+                                        variant={ProgressBarVariant.CIRCULAR}
+                                        type={ProgressBarType.SOLID}
+                                        showLabel={true}
+                                    />
+                                    <ProgressBar
+                                        value={85}
+                                        variant={ProgressBarVariant.CIRCULAR}
+                                        type={ProgressBarType.SEGMENTED}
+                                        showLabel={true}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <h4 className="text-sm font-medium">
+                                    Without Labels
+                                </h4>
+                                <div className="flex justify-center space-x-8">
+                                    <ProgressBar
+                                        value={60}
+                                        variant={ProgressBarVariant.CIRCULAR}
+                                        type={ProgressBarType.SOLID}
+                                        showLabel={false}
+                                    />
+                                    <ProgressBar
+                                        value={85}
+                                        variant={ProgressBarVariant.CIRCULAR}
+                                        type={ProgressBarType.SEGMENTED}
+                                        showLabel={false}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -474,7 +759,7 @@ const AnimatedProgressExample = () => {
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-6">
             <div className="flex gap-4">
                 <button
                     onClick={startAnimation}
@@ -492,17 +777,78 @@ const AnimatedProgressExample = () => {
                 </button>
             </div>
 
-            <div className="space-y-2">
-                <ProgressBar
-                    value={progress}
-                    variant={ProgressBarVariant.SOLID}
-                    showLabel={true}
-                />
-                <ProgressBar
-                    value={progress}
-                    variant={ProgressBarVariant.SEGMENTED}
-                    showLabel={true}
-                />
+            <div className="space-y-6">
+                <div className="space-y-3">
+                    <h4 className="text-sm font-medium">
+                        Linear Progress Bars
+                    </h4>
+                    <div className="space-y-2">
+                        <ProgressBar
+                            value={progress}
+                            variant={ProgressBarVariant.SOLID}
+                            showLabel={true}
+                        />
+                        <ProgressBar
+                            value={progress}
+                            variant={ProgressBarVariant.SEGMENTED}
+                            showLabel={true}
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-3">
+                    <h4 className="text-sm font-medium">
+                        Circular Progress Bars
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 justify-items-center">
+                        <div className="text-center space-y-2">
+                            <ProgressBar
+                                value={progress}
+                                variant={ProgressBarVariant.CIRCULAR}
+                                type={ProgressBarType.SOLID}
+                                size={ProgressBarSize.SMALL}
+                                showLabel={true}
+                            />
+                            <p className="text-xs text-gray-600">Small Solid</p>
+                        </div>
+                        <div className="text-center space-y-2">
+                            <ProgressBar
+                                value={progress}
+                                variant={ProgressBarVariant.CIRCULAR}
+                                type={ProgressBarType.SEGMENTED}
+                                size={ProgressBarSize.SMALL}
+                                showLabel={true}
+                            />
+                            <p className="text-xs text-gray-600">
+                                Small Segmented
+                            </p>
+                        </div>
+                        <div className="text-center space-y-2">
+                            <ProgressBar
+                                value={progress}
+                                variant={ProgressBarVariant.CIRCULAR}
+                                type={ProgressBarType.SOLID}
+                                size={ProgressBarSize.MEDIUM}
+                                showLabel={true}
+                            />
+                            <p className="text-xs text-gray-600">
+                                Medium Solid
+                            </p>
+                        </div>
+                        <div className="text-center space-y-2">
+                            <ProgressBar
+                                value={progress}
+                                variant={ProgressBarVariant.CIRCULAR}
+                                type={ProgressBarType.SEGMENTED}
+                                size={ProgressBarSize.LARGE}
+                                showLabel={true}
+                            />
+                            <p className="text-xs text-gray-600">
+                                Large Segmented
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )

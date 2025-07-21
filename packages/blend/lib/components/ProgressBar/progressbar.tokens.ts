@@ -10,6 +10,7 @@ export type ProgressBarTokenType = {
     height: {
         [ProgressBarSize.SMALL]: CSSObject['height']
         [ProgressBarSize.MEDIUM]: CSSObject['height']
+        [ProgressBarSize.LARGE]: CSSObject['height']
     }
     fill: {
         solid: {
@@ -31,6 +32,28 @@ export type ProgressBarTokenType = {
             backgroundSize: CSSObject['backgroundSize']
         }
     }
+    circular: {
+        size: {
+            [ProgressBarSize.SMALL]: CSSObject['width']
+            [ProgressBarSize.MEDIUM]: CSSObject['width']
+            [ProgressBarSize.LARGE]: CSSObject['width']
+        }
+        strokeWidth: {
+            [ProgressBarSize.SMALL]: number
+            [ProgressBarSize.MEDIUM]: number
+            [ProgressBarSize.LARGE]: number
+        }
+        solid: {
+            stroke: CSSObject['stroke']
+            background: CSSObject['stroke']
+        }
+        segmented: {
+            stroke: CSSObject['stroke']
+            background: CSSObject['stroke']
+            dashArray: string
+            dashOffset: string
+        }
+    }
     label: {
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
@@ -47,6 +70,7 @@ const progressBarTokens: ProgressBarTokenType = {
     height: {
         [ProgressBarSize.SMALL]: FOUNDATION_THEME.unit[12],
         [ProgressBarSize.MEDIUM]: FOUNDATION_THEME.unit[20],
+        [ProgressBarSize.LARGE]: FOUNDATION_THEME.unit[24],
     },
     fill: {
         solid: {
@@ -72,6 +96,28 @@ const progressBarTokens: ProgressBarTokenType = {
                 transparent ${FOUNDATION_THEME.unit[8]}
             )`,
             backgroundSize: `${FOUNDATION_THEME.unit[10]} 100%`,
+        },
+    },
+    circular: {
+        size: {
+            [ProgressBarSize.SMALL]: FOUNDATION_THEME.unit[40],
+            [ProgressBarSize.MEDIUM]: FOUNDATION_THEME.unit[60],
+            [ProgressBarSize.LARGE]: FOUNDATION_THEME.unit[80],
+        },
+        strokeWidth: {
+            [ProgressBarSize.SMALL]: 3,
+            [ProgressBarSize.MEDIUM]: 4,
+            [ProgressBarSize.LARGE]: 6,
+        },
+        solid: {
+            stroke: String(FOUNDATION_THEME.colors.primary[500]),
+            background: String(FOUNDATION_THEME.colors.gray[150]),
+        },
+        segmented: {
+            stroke: String(FOUNDATION_THEME.colors.primary[500]),
+            background: String(FOUNDATION_THEME.colors.gray[150]),
+            dashArray: '4 2',
+            dashOffset: '0',
         },
     },
     label: {
