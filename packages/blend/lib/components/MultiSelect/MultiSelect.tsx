@@ -8,14 +8,12 @@ import { FOUNDATION_THEME } from '../../tokens'
 import Text from '../Text/Text'
 import { ChevronDown, X } from 'lucide-react'
 import {
-    MultiSelectMenuGroupType,
-    MultiSelectMenuItemType,
     MultiSelectMenuSize,
-    MultiSelectProps,
+    type MultiSelectProps,
     MultiSelectSelectionTagType,
     MultiSelectVariant,
 } from './types'
-import { MultiSelectTokensType } from './multiSelect.tokens'
+import { type MultiSelectTokensType } from './multiSelect.tokens'
 import { useComponentToken } from '../../context/useComponentToken'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import {
@@ -29,28 +27,9 @@ import {
     DrawerBody,
     DrawerClose,
 } from '../Drawer'
-import { ButtonV2, ButtonTypeV2, ButtonSizeV2 } from '../ButtonV2'
-
-const map = function getValueLabelMap(
-    groups: MultiSelectMenuGroupType[]
-): Record<string, string> {
-    const map: Record<string, string> = {}
-
-    function traverse(items: MultiSelectMenuItemType[]) {
-        for (const item of items) {
-            map[item.value] = item.label
-            if (item.subMenu) {
-                traverse(item.subMenu)
-            }
-        }
-    }
-
-    for (const group of groups) {
-        traverse(group.items)
-    }
-
-    return map
-}
+import { Button, ButtonType, ButtonSize } from '../../main'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { handleSelectAll, map } from './utils'
 
 const MultiSelect = ({
     selectedValues,
@@ -68,6 +47,10 @@ const MultiSelect = ({
     hintText,
     placeholder,
     size = MultiSelectMenuSize.MEDIUM,
+    enableSearch = false,
+    searchPlaceholder = 'Search options...',
+    enableSelectAll = false,
+    selectAllText = 'Select All',
     minWidth,
     maxWidth,
     maxHeight,
@@ -76,6 +59,9 @@ const MultiSelect = ({
     sideOffset,
     alignOffset,
 }: MultiSelectProps) => {
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakPointLabel === 'sm'
+
     const multiSelectTokens = useComponentToken(
         'MULTI_SELECT'
     ) as MultiSelectTokensType
@@ -415,13 +401,11 @@ const MultiSelect = ({
                                                     >
                                                         {valueLabelMap[value]}
                                                     </Text>
-                                                    <ButtonV2
+                                                    <Button
                                                         buttonType={
-                                                            ButtonTypeV2.SECONDARY
+                                                            ButtonType.SECONDARY
                                                         }
-                                                        size={
-                                                            ButtonSizeV2.SMALL
-                                                        }
+                                                        size={ButtonSize.SMALL}
                                                         leadingIcon={
                                                             <X size={12} />
                                                         }
@@ -454,16 +438,17 @@ const MultiSelect = ({
             gap={8}
             maxWidth={'100%'}
         >
-            {variant === MultiSelectVariant.CONTAINER && (
-                <InputLabels
-                    label={label}
-                    sublabel={sublabel}
-                    disabled={disabled}
-                    helpIconHintText={helpIconHintText}
-                    name={name}
-                    required={required}
-                />
-            )}
+            {variant === MultiSelectVariant.CONTAINER &&
+                (!isSmallScreen || size !== MultiSelectMenuSize.LARGE) && (
+                    <InputLabels
+                        label={label}
+                        sublabel={sublabel}
+                        disabled={disabled}
+                        helpIconHintText={helpIconHintText}
+                        name={name}
+                        required={required}
+                    />
+                )}
             <Block display="flex">
                 <Block
                     width={
@@ -483,6 +468,22 @@ const MultiSelect = ({
                         items={items}
                         selected={selectedValues}
                         onSelect={onChange}
+                        disabled={disabled}
+                        enableSearch={enableSearch}
+                        searchPlaceholder={searchPlaceholder}
+                        enableSelectAll={enableSelectAll}
+                        selectAllText={selectAllText}
+                        onSelectAll={
+                            enableSelectAll
+                                ? (selectAll: boolean) =>
+                                      handleSelectAll(
+                                          selectAll,
+                                          items,
+                                          selectedValues,
+                                          onChange
+                                      )
+                                : undefined
+                        }
                         minWidth={minWidth}
                         maxWidth={maxWidth}
                         maxHeight={maxHeight}
@@ -542,7 +543,6 @@ const MultiSelect = ({
                                 )}
                                 <Block
                                     as="span"
-                                    height={20}
                                     textAlign="left"
                                     style={{
                                         textAlign: 'left',
@@ -568,11 +568,45 @@ const MultiSelect = ({
                                         </Text>
                                     )}
 
-                                    {/* Variant == Container - always show the placeholder*/}
-                                    {variant ===
-                                        MultiSelectVariant.NO_CONTAINER ||
-                                        (variant ===
+                                    {isSmallScreen &&
+                                        size === MultiSelectMenuSize.LARGE &&
+                                        variant ===
                                             MultiSelectVariant.CONTAINER && (
+                                            <Block
+                                                display="flex"
+                                                alignItems="center"
+                                                gap={4}
+                                            >
+                                                <Text
+                                                    as="span"
+                                                    variant="body.sm"
+                                                    color={
+                                                        FOUNDATION_THEME.colors
+                                                            .gray[400]
+                                                    }
+                                                    fontWeight={500}
+                                                >
+                                                    {label}
+                                                </Text>
+                                                {required && (
+                                                    <span
+                                                        style={{
+                                                            color: FOUNDATION_THEME
+                                                                .colors
+                                                                .red[500],
+                                                        }}
+                                                    >
+                                                        *
+                                                    </span>
+                                                )}
+                                            </Block>
+                                        )}
+                                    {/* Variant == Container - always show the placeholder*/}
+                                    {variant === MultiSelectVariant.CONTAINER &&
+                                        (selectedValues.length > 0 ||
+                                            !isSmallScreen ||
+                                            size !==
+                                                MultiSelectMenuSize.LARGE) && (
                                             <Text
                                                 as="span"
                                                 variant="body.md"
@@ -582,12 +616,9 @@ const MultiSelect = ({
                                                 }
                                                 fontWeight={500}
                                             >
-                                                {variant ===
-                                                MultiSelectVariant.CONTAINER
-                                                    ? placeholder
-                                                    : label}
+                                                {placeholder}
                                             </Text>
-                                        ))}
+                                        )}
                                     {selectedValues.length > 0 && (
                                         <Text
                                             as="span"

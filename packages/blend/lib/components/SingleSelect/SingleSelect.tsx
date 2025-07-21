@@ -15,6 +15,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import selectTokens from '../Select/select.token'
 import { ChevronDown, X } from 'lucide-react'
 import type { SingleSelectProps } from './types'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import {
     Drawer,
@@ -27,7 +28,7 @@ import {
     DrawerBody,
     DrawerClose,
 } from '../Drawer'
-import { ButtonV2, ButtonTypeV2, ButtonSizeV2 } from '../ButtonV2'
+import { Button, ButtonType, ButtonSize } from '../Button'
 
 const map = function getValueLabelMap(
     groups: SelectMenuGroupType[]
@@ -79,6 +80,8 @@ const SingleSelect = ({
     const { innerWidth } = useBreakpoints()
     const isMobile = innerWidth < 1024
     const valueLabelMap = map(items)
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakPointLabel === 'sm'
 
     const getDisplayText = () => {
         if (!selected) {
@@ -386,11 +389,11 @@ const SingleSelect = ({
                                             >
                                                 {valueLabelMap[selected]}
                                             </Text>
-                                            <ButtonV2
+                                            <Button
                                                 buttonType={
-                                                    ButtonTypeV2.SECONDARY
+                                                    ButtonType.SECONDARY
                                                 }
-                                                size={ButtonSizeV2.SMALL}
+                                                size={ButtonSize.SMALL}
                                                 leadingIcon={<X size={12} />}
                                                 onClick={() => onSelect('')}
                                             />
@@ -417,16 +420,17 @@ const SingleSelect = ({
             gap={8}
             maxWidth={'100%'}
         >
-            {variant === SelectMenuVariant.CONTAINER && (
-                <InputLabels
-                    label={label}
-                    sublabel={subLabel}
-                    disabled={disabled}
-                    helpIconHintText={helpIconText}
-                    name={name}
-                    required={required}
-                />
-            )}
+            {variant === SelectMenuVariant.CONTAINER &&
+                (!isSmallScreen || size !== SelectMenuSize.LARGE) && (
+                    <InputLabels
+                        label={label}
+                        sublabel={subLabel}
+                        disabled={disabled}
+                        helpIconHintText={helpIconText}
+                        name={name}
+                        required={required}
+                    />
+                )}
             <Block display="flex">
                 <Block
                     width={
@@ -448,6 +452,7 @@ const SingleSelect = ({
                         items={items}
                         selected={selected}
                         onSelect={onSelect}
+                        disabled={disabled}
                         minWidth={minWidth}
                         maxWidth={maxWidth}
                         maxHeight={maxHeight}
@@ -506,21 +511,67 @@ const SingleSelect = ({
                                     {slot && (
                                         <Block contentCentered>{slot}</Block>
                                     )}
-                                    <Text
-                                        variant="body.md"
-                                        color={
-                                            selected
-                                                ? FOUNDATION_THEME.colors
-                                                      .gray[700]
-                                                : FOUNDATION_THEME.colors
-                                                      .gray[600]
-                                        }
-                                        fontWeight={500}
-                                    >
-                                        {selected
-                                            ? valueLabelMap[selected]
-                                            : placeholder}
-                                    </Text>
+                                    {isSmallScreen &&
+                                    size === SelectMenuSize.LARGE &&
+                                    variant === SelectMenuVariant.CONTAINER ? (
+                                        <Block>
+                                            <Block
+                                                display="flex"
+                                                alignItems="center"
+                                                gap={4}
+                                                width={'100%'}
+                                            >
+                                                <Text
+                                                    variant="body.sm"
+                                                    fontWeight={500}
+                                                    color={
+                                                        FOUNDATION_THEME.colors
+                                                            .gray[400]
+                                                    }
+                                                >
+                                                    {label}
+                                                </Text>
+                                                {required && (
+                                                    <span
+                                                        style={{
+                                                            color: FOUNDATION_THEME
+                                                                .colors
+                                                                .red[500],
+                                                        }}
+                                                    >
+                                                        *
+                                                    </span>
+                                                )}
+                                            </Block>
+                                            {selected && (
+                                                <Text
+                                                    variant="body.md"
+                                                    color={
+                                                        FOUNDATION_THEME.colors
+                                                            .gray[600]
+                                                    }
+                                                >
+                                                    {valueLabelMap[selected]}
+                                                </Text>
+                                            )}
+                                        </Block>
+                                    ) : (
+                                        <Text
+                                            variant="body.md"
+                                            color={
+                                                selected
+                                                    ? FOUNDATION_THEME.colors
+                                                          .gray[700]
+                                                    : FOUNDATION_THEME.colors
+                                                          .gray[600]
+                                            }
+                                            fontWeight={500}
+                                        >
+                                            {selected
+                                                ? valueLabelMap[selected]
+                                                : placeholder}
+                                        </Text>
+                                    )}
                                 </Block>
                                 <Block contentCentered>
                                     <ChevronDown

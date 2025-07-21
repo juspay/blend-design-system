@@ -35,7 +35,7 @@ import AvatarDemo from './AvatarDemo'
 import BreadcrumbDemo from './BreadcrumbDemo'
 import InputDemo from './TextInputDemo'
 import UnitInputDemo from './UnitInputDemo'
-import type { DirectoryData } from '../../../../packages/blend/dist/components/Directory/types'
+import type { DirectoryData } from '../../../../packages/blend/lib/components/Directory/types'
 import NumberInputDemo from './NumberInputDemo'
 import TextAreaDemo from './TextAreaDemo'
 import AlertDemo from './AlertDemo'
@@ -60,6 +60,8 @@ import {
     SelectMenuVariant,
 } from '../../../../packages/blend/lib/components/Select'
 import MenuDemo from './MenuDemo'
+import SingleSelectDemo from './SingleSelectDemo'
+import MultiSelectDemo from './MultiSelectDemo'
 import DrawerDemo from './DrawerDemo'
 
 const SidebarDemo = () => {
@@ -101,6 +103,8 @@ const SidebarDemo = () => {
         | 'theme'
         | 'salesKpiDashboard'
         | 'transactionAnalyticsDashboard'
+        | 'singleSelect'
+        | 'multiSelect'
     >('drawer')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -188,6 +192,10 @@ const SidebarDemo = () => {
                 return <SwitchDemo />
             case 'menu':
                 return <MenuDemo />
+            case 'singleSelect':
+                return <SingleSelectDemo />
+            case 'multiSelect':
+                return <MultiSelectDemo />
             case 'progressBar':
                 return <ProgressBarDemo />
             case 'drawer':
@@ -338,6 +346,20 @@ const SidebarDemo = () => {
                             ),
                         },
                     ],
+                },
+                {
+                    label: 'Single Select',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('singleSelect'),
+                },
+                {
+                    label: 'Multi Select',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('multiSelect'),
                 },
                 {
                     label: 'Tabs',
