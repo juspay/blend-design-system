@@ -130,9 +130,6 @@ const SwitchDemo = () => {
                             onChange={() =>
                                 setPlaygroundChecked(!playgroundChecked)
                             }
-                            data-bool-for="redirectModeOnly"
-                            data-toggle-status="enabled"
-                            data-bool-value="on"
                         />
                         <Switch
                             label="Disabled"
@@ -189,6 +186,9 @@ const SwitchDemo = () => {
                                     <Bell size={16} className="text-blue-500" />
                                 ) : undefined
                             }
+                            data-bool-for="redirectModeOnly"
+                            data-toggle-status="enabled"
+                            data-bool-value="on"
                         />
                     </div>
                 </div>
