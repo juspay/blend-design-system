@@ -2,6 +2,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import type { CSSObject } from 'styled-components'
 import { AlertStyle, AlertVariant } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
+import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type AlertTokenType = {
     padding: CSSObject['padding']
@@ -17,6 +18,10 @@ export type AlertTokenType = {
     button: {
         [key in AlertVariant]: CSSObject['color']
     }
+}
+
+export type ResponsiveAlertTokens = {
+    [key in keyof BreakpointType]: AlertTokenType
 }
 
 const alertTokens: AlertTokenType = {
@@ -74,57 +79,111 @@ const alertTokens: AlertTokenType = {
 
 export const getAlertTokens = (
     foundationToken: FoundationTokenType
-): AlertTokenType => {
+): ResponsiveAlertTokens => {
     return {
-        padding: foundationToken.unit[16],
-        borderRadius: foundationToken.border.radius[8],
-        background: {
-            primary: {
-                subtle: foundationToken.colors.primary[50],
-                noFill: foundationToken.colors.gray[0],
+        sm: {
+            padding: foundationToken.unit[16],
+            borderRadius: foundationToken.border.radius[8],
+            background: {
+                primary: {
+                    subtle: foundationToken.colors.primary[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+                warning: {
+                    subtle: foundationToken.colors.yellow[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+                success: {
+                    subtle: foundationToken.colors.green[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+                purple: {
+                    subtle: foundationToken.colors.purple[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+                neutral: {
+                    subtle: foundationToken.colors.gray[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+                error: {
+                    subtle: foundationToken.colors.red[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+                orange: {
+                    subtle: foundationToken.colors.orange[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
             },
-            warning: {
-                subtle: foundationToken.colors.yellow[50],
-                noFill: foundationToken.colors.gray[0],
+            border: {
+                primary: `1px solid ${foundationToken.colors.primary[500]}`,
+                warning: `1px solid ${foundationToken.colors.yellow[500]}`,
+                success: `1px solid ${foundationToken.colors.green[500]}`,
+                purple: `1px solid ${foundationToken.colors.purple[500]}`,
+                neutral: `1px solid ${foundationToken.colors.gray[500]}`,
+                error: `1px solid ${foundationToken.colors.red[500]}`,
+                orange: `1px solid ${foundationToken.colors.orange[500]}`,
             },
-            success: {
-                subtle: foundationToken.colors.green[50],
-                noFill: foundationToken.colors.gray[0],
-            },
-            purple: {
-                subtle: foundationToken.colors.purple[50],
-                noFill: foundationToken.colors.gray[0],
-            },
-            neutral: {
-                subtle: foundationToken.colors.gray[50],
-                noFill: foundationToken.colors.gray[0],
-            },
-            error: {
-                subtle: foundationToken.colors.red[50],
-                noFill: foundationToken.colors.gray[0],
-            },
-            orange: {
-                subtle: foundationToken.colors.orange[50],
-                noFill: foundationToken.colors.gray[0],
+            button: {
+                primary: foundationToken.colors.primary[700],
+                warning: foundationToken.colors.yellow[700],
+                success: foundationToken.colors.green[700],
+                purple: foundationToken.colors.purple[700],
+                neutral: foundationToken.colors.gray[700],
+                error: foundationToken.colors.red[700],
+                orange: foundationToken.colors.orange[700],
             },
         },
-        border: {
-            primary: `1px solid ${foundationToken.colors.primary[500]}`,
-            warning: `1px solid ${foundationToken.colors.yellow[500]}`,
-            success: `1px solid ${foundationToken.colors.green[500]}`,
-            purple: `1px solid ${foundationToken.colors.purple[500]}`,
-            neutral: `1px solid ${foundationToken.colors.gray[500]}`,
-            error: `1px solid ${foundationToken.colors.red[500]}`,
-            orange: `1px solid ${foundationToken.colors.orange[500]}`,
-        },
-        button: {
-            primary: foundationToken.colors.primary[700],
-            warning: foundationToken.colors.yellow[700],
-            success: foundationToken.colors.green[700],
-            purple: foundationToken.colors.purple[700],
-            neutral: foundationToken.colors.gray[700],
-            error: foundationToken.colors.red[700],
-            orange: foundationToken.colors.orange[700],
+        lg: {
+            padding: foundationToken.unit[16],
+            borderRadius: foundationToken.border.radius[8],
+            background: {
+                primary: {
+                    subtle: foundationToken.colors.primary[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+                warning: {
+                    subtle: foundationToken.colors.yellow[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+                success: {
+                    subtle: foundationToken.colors.green[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+                purple: {
+                    subtle: foundationToken.colors.purple[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+                neutral: {
+                    subtle: foundationToken.colors.gray[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+                error: {
+                    subtle: foundationToken.colors.red[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+                orange: {
+                    subtle: foundationToken.colors.orange[50],
+                    noFill: foundationToken.colors.gray[0],
+                },
+            },
+            border: {
+                primary: `1px solid ${foundationToken.colors.primary[500]}`,
+                warning: `1px solid ${foundationToken.colors.yellow[500]}`,
+                success: `1px solid ${foundationToken.colors.green[500]}`,
+                purple: `1px solid ${foundationToken.colors.purple[500]}`,
+                neutral: `1px solid ${foundationToken.colors.gray[500]}`,
+                error: `1px solid ${foundationToken.colors.red[500]}`,
+                orange: `1px solid ${foundationToken.colors.orange[500]}`,
+            },
+            button: {
+                primary: foundationToken.colors.primary[700],
+                warning: foundationToken.colors.yellow[700],
+                success: foundationToken.colors.green[700],
+                purple: foundationToken.colors.purple[700],
+                neutral: foundationToken.colors.gray[700],
+                error: foundationToken.colors.red[700],
+                orange: foundationToken.colors.orange[700],
+            },
         },
     }
 }

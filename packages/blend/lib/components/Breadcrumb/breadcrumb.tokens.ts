@@ -1,6 +1,7 @@
 import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { FoundationTokenType } from '../../tokens/theme.token'
+import { BreakpointType } from '../../breakpoints/breakPoints'
 
 type BreadcrumbItemType = 'active' | 'inactive'
 
@@ -24,6 +25,10 @@ export type BreadcrumbTokenType = {
             [key in BreadcrumbItemType]: CSSObject['background']
         }
     }
+}
+
+export type ResponsiveBreadcrumbTokens = {
+    [key in keyof BreakpointType]: BreadcrumbTokenType
 }
 
 const breadcrumbTokens: BreadcrumbTokenType = {
@@ -54,29 +59,56 @@ const breadcrumbTokens: BreadcrumbTokenType = {
 
 export const getBreadcrumbTokens = (
     foundationToken: FoundationTokenType
-): BreadcrumbTokenType => {
+): ResponsiveBreadcrumbTokens => {
     return {
-        height: foundationToken.unit[32],
-        padding: foundationToken.unit[0],
-        gap: foundationToken.unit[8],
-        item: {
-            padding: `${foundationToken.unit[4]} ${foundationToken.unit[8]}`,
+        sm: {
+            height: foundationToken.unit[32],
+            padding: foundationToken.unit[0],
             gap: foundationToken.unit[8],
-            fontSize: {
-                active: '12px',
-                inactive: '12px',
+            item: {
+                padding: `${foundationToken.unit[4]} ${foundationToken.unit[8]}`,
+                gap: foundationToken.unit[8],
+                fontSize: {
+                    active: '12px',
+                    inactive: '12px',
+                },
+                fontWeight: {
+                    active: 500,
+                    inactive: 500,
+                },
+                color: {
+                    active: foundationToken.colors.gray[700],
+                    inactive: foundationToken.colors.gray[400],
+                },
+                background: {
+                    active: 'none',
+                    inactive: 'none',
+                },
             },
-            fontWeight: {
-                active: 500,
-                inactive: 500,
-            },
-            color: {
-                active: foundationToken.colors.gray[700],
-                inactive: foundationToken.colors.gray[400],
-            },
-            background: {
-                active: 'none',
-                inactive: 'none',
+        },
+        lg: {
+            height: foundationToken.unit[32],
+            padding: foundationToken.unit[0],
+            gap: foundationToken.unit[8],
+            item: {
+                padding: `${foundationToken.unit[4]} ${foundationToken.unit[8]}`,
+                gap: foundationToken.unit[8],
+                fontSize: {
+                    active: '12px',
+                    inactive: '12px',
+                },
+                fontWeight: {
+                    active: 500,
+                    inactive: 500,
+                },
+                color: {
+                    active: foundationToken.colors.gray[700],
+                    inactive: foundationToken.colors.gray[400],
+                },
+                background: {
+                    active: 'none',
+                    inactive: 'none',
+                },
             },
         },
     }

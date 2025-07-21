@@ -29,8 +29,8 @@ import {
     type NumberInputTokensType,
 } from '../components/Inputs/NumberInput/numberInput.tokens'
 import {
-    type AlertTokenType,
     getAlertTokens,
+    ResponsiveAlertTokens,
 } from '../components/Alert/alert.tokens'
 import {
     getOTPInputTokens,
@@ -69,8 +69,8 @@ import {
     type ModalTokensType,
 } from '../components/Modal/modal.tokens'
 import {
-    type BreadcrumbTokenType,
     getBreadcrumbTokens,
+    type ResponsiveBreadcrumbTokens,
 } from '../components/Breadcrumb/breadcrumb.tokens'
 import {
     getPopoverTokens,
@@ -113,7 +113,7 @@ export type ComponentTokenType = {
     SWITCH?: ResponsiveSwitchTokens
     TEXT_INPUT?: TextInputTokensType
     NUMBER_INPUT?: NumberInputTokensType
-    ALERT?: AlertTokenType
+    ALERT?: ResponsiveAlertTokens
     OTP_INPUT?: OTPInputTokensType
     TOOLTIP?: TooltipTokensType
     UNIT_INPUT?: UnitInputTokensType
@@ -123,7 +123,7 @@ export type ComponentTokenType = {
     TABS?: TabsTokensType
     BUTTON?: ResponsiveButtonTokens
     MODAL?: ModalTokensType
-    BREADCRUMB?: BreadcrumbTokenType
+    BREADCRUMB?: ResponsiveBreadcrumbTokens
     POPOVER?: PopoverTokenType
     MENU?: ResponsiveMenuTokensType
     MULTI_SELECT?: MultiSelectTokensType
