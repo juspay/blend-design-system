@@ -26,10 +26,11 @@ export * from './components/Sidebar'
 export * from './components/MultiSelect'
 export * from './components/SingleSelect'
 export * from './components/Slider'
+export * from './components/ProgressBar'
 
 // V2 Components with Theme Support
-export * from './components/ButtonGroupV2'
-export * from './components/ButtonV2'
+export * from './components/ButtonGroup'
+export * from './components/Button'
 
 export * from './context'
 export * from './tokens'

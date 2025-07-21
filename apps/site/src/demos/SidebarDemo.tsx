@@ -49,6 +49,7 @@ import ModalDemo from './ModalDemo'
 import RadioDemo from './RadioDemo'
 import CheckboxDemo from './CheckboxDemo'
 import SwitchDemo from './SwitchDemo'
+import ProgressBarDemo from './ProgressBarDemo'
 import { Snackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { ThemeProvider } from '../../../../packages/blend/lib/context'
 import ALT_FOUNDATION_TOKENS from '../themes/AIT_FOUNDATION_TOKENS'
@@ -96,6 +97,7 @@ const SidebarDemo = () => {
         | 'dataTable'
         | 'colorPalette'
         | 'popover'
+        | 'progressBar'
         | 'theme'
         | 'salesKpiDashboard'
         | 'transactionAnalyticsDashboard'
@@ -192,6 +194,8 @@ const SidebarDemo = () => {
                 return <SingleSelectDemo />
             case 'multiSelect':
                 return <MultiSelectDemo />
+            case 'progressBar':
+                return <ProgressBarDemo />
             default:
                 return <div>No component selected</div>
         }
@@ -429,6 +433,13 @@ const SidebarDemo = () => {
                         <FileText style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('statCard'),
+                },
+                {
+                    label: 'Progress Bar',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('progressBar'),
                 },
                 {
                     label: 'Data Table',

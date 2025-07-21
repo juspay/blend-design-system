@@ -1,5 +1,5 @@
 const buttonv2Meta = {
-    componentName: 'ButtonV2',
+    componentName: 'Button',
     componentDescription:
         'An enhanced button component with comprehensive styling options, multiple variants, loading states, and flexible layout configurations for modern user interfaces.',
     features: [
@@ -17,42 +17,42 @@ const buttonv2Meta = {
     props: [
         {
             propName: 'buttonType',
-            propType: 'ButtonTypeV2',
-            typeDefinition: `enum ButtonTypeV2 {
+            propType: 'ButtonType',
+            typeDefinition: `enum ButtonType {
         PRIMARY = "primary",
         SECONDARY = "secondary",
         DANGER = "danger",
         SUCCESS = "success",
       }`,
             propDescription: 'The visual type/variant of the button',
-            propDefault: 'ButtonTypeV2.PRIMARY',
+            propDefault: 'ButtonType.PRIMARY',
             category: 'Appearance',
             required: false,
         },
         {
             propName: 'size',
-            propType: 'ButtonSizeV2',
-            typeDefinition: `enum ButtonSizeV2 {
+            propType: 'ButtonSize',
+            typeDefinition: `enum ButtonSize {
         SMALL = "sm",
         MEDIUM = "md",
         LARGE = "lg",
       }`,
             propDescription: 'The size of the button',
-            propDefault: 'ButtonSizeV2.SMALL',
+            propDefault: 'ButtonSize.SMALL',
             category: 'Appearance',
             required: false,
         },
         {
             propName: 'subType',
-            propType: 'ButtonSubTypeV2',
-            typeDefinition: `enum ButtonSubTypeV2 {
+            propType: 'ButtonSubType',
+            typeDefinition: `enum ButtonSubType {
         DEFAULT = "default",
         ICON_ONLY = "iconOnly",
         INLINE = "inline",
       }`,
             propDescription:
                 'The subtype that affects button styling and behavior',
-            propDefault: 'ButtonSubTypeV2.DEFAULT',
+            propDefault: 'ButtonSubType.DEFAULT',
             category: 'Appearance',
             required: false,
         },

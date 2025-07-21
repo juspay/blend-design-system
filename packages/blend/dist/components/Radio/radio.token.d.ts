@@ -62,6 +62,10 @@ export type RadioTokensType = Readonly<{
             [key in RadioSize]: CSSObject['width'];
         };
     };
+    required: {
+        color: CSSObject['color'];
+        spacing: CSSObject['marginLeft'];
+    };
 }>;
 export type ResponsiveRadioTokens = {
     [key in keyof BreakpointType]: RadioTokensType;

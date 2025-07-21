@@ -28,7 +28,7 @@
 
 ### Existing Code Connect Components
 
-1. ButtonV2 - `apps/storybook/stories/components/Button/ButtonV2.figma.tsx`
+1. Button - `apps/storybook/stories/components/Button/Button.figma.tsx`
 2. ButtonGroupV2 - `apps/storybook/stories/components/Button/ButtonGroupV2.figma.tsx`
 3. Breadcrumb - `apps/storybook/stories/components/Breadcrumb/Breadcrumb.figma.tsx`
 4. Tags - `apps/storybook/stories/components/Tags/Tags.figma.tsx`
@@ -281,26 +281,26 @@ subType: figma.enum('subType', {
 
 ```typescript
 import { figma } from '@figma/code-connect'
-import { ButtonV2, ButtonTypeV2, ButtonSizeV2, ButtonSubTypeV2 } from 'blend-v1'
+import { Button, ButtonType, ButtonSize, ButtonSubType } from 'blend-v1'
 
 figma.connect(
-  ButtonV2,
+  Button,
   'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=14667-834',
   {
     props: {
       text: figma.string('text'),
 
       buttonType: figma.enum('buttonType', {
-        'primary': ButtonTypeV2.PRIMARY,
-        'secondary': ButtonTypeV2.SECONDARY,
-        'danger': ButtonTypeV2.DANGER,
-        'success': ButtonTypeV2.SUCCESS
+        'primary': ButtonType.PRIMARY,
+        'secondary': ButtonType.SECONDARY,
+        'danger': ButtonType.DANGER,
+        'success': ButtonType.SUCCESS
       }),
 
       size: figma.enum('size', {
-        'sm': ButtonSizeV2.SMALL,
-        'md': ButtonSizeV2.MEDIUM,
-        'lg': ButtonSizeV2.LARGE
+        'sm': ButtonSize.SMALL,
+        'md': ButtonSize.MEDIUM,
+        'lg': ButtonSize.LARGE
       }),
 
       disabled: figma.enum('state', {
@@ -323,7 +323,7 @@ figma.connect(
     },
 
     example: ({ text, buttonType, size, disabled, leftIcon, rightIcon }) => (
-      <ButtonV2
+      <Button
         text={text}
         buttonType={buttonType}
         size={size}
@@ -333,12 +333,12 @@ figma.connect(
       />
     ),
 
-    imports: ["import { ButtonV2 } from 'blend-v1'"],
+    imports: ["import { Button } from 'blend-v1'"],
 
     links: [
       {
         name: "GitHub",
-        url: "https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/ButtonV2"
+        url: "https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/Button"
       },
       {
         name: "Storybook",
@@ -523,4 +523,4 @@ The repository migration has been completed. All Code Connect files now use the 
 ## Resources
 
 - [Figma Code Connect Docs](https://www.figma.com/developers/code-connect)
-- [Example: ButtonV2.figma.tsx](apps/storybook/stories/components/Button/ButtonV2.figma.tsx)
+- [Example: Button.figma.tsx](apps/storybook/stories/components/Button/Button.figma.tsx)

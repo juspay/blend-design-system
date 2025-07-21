@@ -8,12 +8,12 @@ import {
 } from 'blend-v1'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
-import { ButtonV2, ButtonTypeV2 } from 'blend-v1'
+import { Button, ButtonType } from 'blend-v1'
 import { Settings, User, LogOut, ChevronDown } from 'lucide-react'
 
 const MenuPreview = () => {
     const tsCode = `import { Menu, MenuAlignment, MenuSide, MenuItemV2Variant, MenuItemV2ActionType } from "blend-v1";
-import { ButtonV2, ButtonTypeV2 } from "blend-v1";
+import { Button, ButtonType } from "blend-v1";
 import { Settings, User, LogOut, ChevronDown } from "lucide-react";
 
 function MyComponent() {
@@ -39,7 +39,7 @@ function MyComponent() {
 
   return (
     <Menu
-      trigger={<ButtonV2 text="Open Menu" buttonType={ButtonTypeV2.SECONDARY} trailingIcon={<ChevronDown size={16} />} />}
+      trigger={<Button text="Open Menu" buttonType={ButtonType.SECONDARY} trailingIcon={<ChevronDown size={16} />} />}
       items={[{ items: menuItems }]}
       alignment={MenuAlignment.CENTER}
       side={MenuSide.BOTTOM}
@@ -95,7 +95,7 @@ let make = () => {
   ]
 
   <Menu
-    trigger={<ButtonV2 text="Open Menu" buttonType=#secondary trailingIcon=Some(<ChevronDown size=16 />) />}
+    trigger={<Button text="Open Menu" buttonType=#secondary trailingIcon=Some(<ChevronDown size=16 />) />}
     items=[{items: menuItems}]
     alignment=#center
     side=#bottom
@@ -150,9 +150,9 @@ external make: (
         >
             <Menu
                 trigger={
-                    <ButtonV2
+                    <Button
                         text="Open Menu"
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                         trailingIcon={<ChevronDown size={16} />}
                     />
                 }

@@ -6,7 +6,7 @@ import type { ModalProps } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { ModalTokensType } from './modal.tokens'
 import Text from '../Text/Text'
-import { ButtonSubTypeV2, ButtonTypeV2, ButtonV2 } from '../ButtonV2'
+import { ButtonSubType, ButtonType, Button } from '../Button'
 import { useComponentToken } from '../../context/useComponentToken'
 
 const ModalHeader = ({
@@ -76,9 +76,9 @@ const ModalHeader = ({
                 )}
             </Block>
             {showCloseButton && (
-                <ButtonV2
-                    subType={ButtonSubTypeV2.INLINE}
-                    buttonType={ButtonTypeV2.SECONDARY}
+                <Button
+                    subType={ButtonSubType.INLINE}
+                    buttonType={ButtonType.SECONDARY}
                     leadingIcon={<X size={16} />}
                     onClick={onClose}
                     // ariaLabel="Close"
@@ -114,9 +114,9 @@ const ModalFooter = ({
             borderRadius={modalTokens.footerContainer.borderRadius}
         >
             {secondaryAction && (
-                <ButtonV2
+                <Button
                     buttonType={
-                        secondaryAction.buttonType || ButtonTypeV2.SECONDARY
+                        secondaryAction.buttonType || ButtonType.SECONDARY
                     }
                     text={secondaryAction.text}
                     onClick={secondaryAction.onClick}
@@ -129,10 +129,8 @@ const ModalFooter = ({
                 />
             )}
             {primaryAction && (
-                <ButtonV2
-                    buttonType={
-                        primaryAction.buttonType || ButtonTypeV2.PRIMARY
-                    }
+                <Button
+                    buttonType={primaryAction.buttonType || ButtonType.PRIMARY}
                     text={primaryAction.text}
                     onClick={primaryAction.onClick}
                     disabled={primaryAction.disabled}

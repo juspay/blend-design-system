@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 import { Popover, PopoverSize } from 'blend-v1'
-import { ButtonV2, ButtonTypeV2, ButtonSizeV2 } from 'blend-v1'
+import { Button, ButtonType, ButtonSize } from 'blend-v1'
 import {
     Settings,
     User,
@@ -44,10 +44,10 @@ A flexible popover component for displaying contextual content, forms, and actio
 
 \`\`\`tsx
 import { Popover, PopoverSize } from 'blend-v1';
-import { ButtonV2 } from 'blend-v1';
+import { Button } from 'blend-v1';
 
 <Popover
-  trigger={<ButtonV2>Open Popover</ButtonV2>}
+  trigger={<Button>Open Popover</Button>}
   heading="Popover Title"
   description="This is a popover description"
   size={PopoverSize.MEDIUM}
@@ -147,8 +147,8 @@ export const Default: Story = {
             <Popover
                 {...args}
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.PRIMARY}
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
                         text="Open Popover"
                     />
                 }
@@ -178,8 +178,8 @@ export const PopoverSizes: Story = {
         <div style={{ display: 'flex', gap: '24px', padding: '100px' }}>
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.PRIMARY}
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
                         text="Small Popover"
                     />
                 }
@@ -204,8 +204,8 @@ export const PopoverSizes: Story = {
 
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.PRIMARY}
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
                         text="Medium Popover"
                     />
                 }
@@ -253,7 +253,7 @@ export const Positioning: Story = {
         >
             <Popover
                 trigger={
-                    <ButtonV2 buttonType={ButtonTypeV2.SECONDARY} text="Top" />
+                    <Button buttonType={ButtonType.SECONDARY} text="Top" />
                 }
                 heading="Top Position"
                 description="Popover positioned above the trigger"
@@ -275,10 +275,7 @@ export const Positioning: Story = {
 
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        text="Right"
-                    />
+                    <Button buttonType={ButtonType.SECONDARY} text="Right" />
                 }
                 heading="Right Position"
                 description="Popover positioned to the right"
@@ -300,10 +297,7 @@ export const Positioning: Story = {
 
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        text="Bottom"
-                    />
+                    <Button buttonType={ButtonType.SECONDARY} text="Bottom" />
                 }
                 heading="Bottom Position"
                 description="Popover positioned below the trigger"
@@ -325,7 +319,7 @@ export const Positioning: Story = {
 
             <Popover
                 trigger={
-                    <ButtonV2 buttonType={ButtonTypeV2.SECONDARY} text="Left" />
+                    <Button buttonType={ButtonType.SECONDARY} text="Left" />
                 }
                 heading="Left Position"
                 description="Popover positioned to the left"
@@ -361,8 +355,8 @@ export const WithActions: Story = {
         <div style={{ display: 'flex', gap: '24px', padding: '100px' }}>
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.PRIMARY}
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
                         text="Settings"
                         leadingIcon={<Settings size={16} />}
                     />
@@ -371,12 +365,12 @@ export const WithActions: Story = {
                 description="Are you sure you want to delete this item? This action cannot be undone."
                 primaryAction={{
                     text: 'Delete',
-                    buttonType: ButtonTypeV2.DANGER,
+                    buttonType: ButtonType.DANGER,
                     onClick: () => console.log('Delete clicked'),
                 }}
                 secondaryAction={{
                     text: 'Cancel',
-                    buttonType: ButtonTypeV2.SECONDARY,
+                    buttonType: ButtonType.SECONDARY,
                     onClick: () => console.log('Cancel clicked'),
                 }}
             >
@@ -405,8 +399,8 @@ export const WithActions: Story = {
 
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
                         text="Profile"
                         leadingIcon={<User size={16} />}
                     />
@@ -415,12 +409,12 @@ export const WithActions: Story = {
                 description="Make changes to your profile information"
                 primaryAction={{
                     text: 'Save Changes',
-                    buttonType: ButtonTypeV2.PRIMARY,
+                    buttonType: ButtonType.PRIMARY,
                     onClick: () => console.log('Save clicked'),
                 }}
                 secondaryAction={{
                     text: 'Cancel',
-                    buttonType: ButtonTypeV2.SECONDARY,
+                    buttonType: ButtonType.SECONDARY,
                     onClick: () => console.log('Cancel clicked'),
                 }}
             >
@@ -505,8 +499,8 @@ export const ContentVariations: Story = {
         >
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
                         text="Info"
                         leadingIcon={<Info size={16} />}
                     />
@@ -570,8 +564,8 @@ export const ContentVariations: Story = {
 
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
                         text="Filters"
                         leadingIcon={<Filter size={16} />}
                     />
@@ -661,8 +655,8 @@ export const ContentVariations: Story = {
 
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
                         text="Share"
                         leadingIcon={<Share size={16} />}
                     />
@@ -761,8 +755,8 @@ export const WithoutHeader: Story = {
         <div style={{ display: 'flex', gap: '24px', padding: '100px' }}>
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
                         text="Quick Edit"
                         leadingIcon={<Edit size={16} />}
                     />
@@ -805,14 +799,14 @@ export const WithoutHeader: Story = {
                                 justifyContent: 'flex-end',
                             }}
                         >
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.SECONDARY}
-                                size={ButtonSizeV2.SMALL}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
                                 text="Cancel"
                             />
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.PRIMARY}
-                                size={ButtonSizeV2.SMALL}
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
                                 text="Save"
                             />
                         </div>
@@ -822,8 +816,8 @@ export const WithoutHeader: Story = {
 
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
                         text="Quick Actions"
                         leadingIcon={<Plus size={16} />}
                     />
@@ -892,8 +886,8 @@ export const ModalMode: Story = {
         <div style={{ padding: '100px' }}>
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.PRIMARY}
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
                         text="Open Modal Popover"
                     />
                 }
@@ -902,12 +896,12 @@ export const ModalMode: Story = {
                 asModal={true}
                 primaryAction={{
                     text: 'Confirm',
-                    buttonType: ButtonTypeV2.PRIMARY,
+                    buttonType: ButtonType.PRIMARY,
                     onClick: () => console.log('Confirmed'),
                 }}
                 secondaryAction={{
                     text: 'Cancel',
-                    buttonType: ButtonTypeV2.SECONDARY,
+                    buttonType: ButtonType.SECONDARY,
                     onClick: () => console.log('Cancelled'),
                 }}
             >
@@ -963,8 +957,8 @@ export const ComplexExample: Story = {
         >
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.PRIMARY}
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
                         text="User Profile"
                         leadingIcon={<User size={16} />}
                     />
@@ -975,12 +969,12 @@ export const ComplexExample: Story = {
                 maxWidth={350}
                 primaryAction={{
                     text: 'Send Message',
-                    buttonType: ButtonTypeV2.PRIMARY,
+                    buttonType: ButtonType.PRIMARY,
                     onClick: () => console.log('Send message'),
                 }}
                 secondaryAction={{
                     text: 'View Profile',
-                    buttonType: ButtonTypeV2.SECONDARY,
+                    buttonType: ButtonType.SECONDARY,
                     onClick: () => console.log('View profile'),
                 }}
             >
@@ -1202,8 +1196,8 @@ export const ComplexExample: Story = {
 
             <Popover
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
                         text="Help & Support"
                         leadingIcon={<HelpCircle size={16} />}
                     />

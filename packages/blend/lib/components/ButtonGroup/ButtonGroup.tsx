@@ -1,87 +1,34 @@
-'use client'
+import React from 'react'
+import { Children } from 'react'
+import Block from '../Primitives/Block/Block'
+import type { ButtonGroupProps } from './types'
 
-import * as React from 'react'
-import { ButtonProps, ButtonSize } from '../Button/types'
-import { ButtonGroupProps, ButtonGroupMode } from './types'
-import {
-    getButtonPosition,
-    findPrimaryButtonIndex,
-    getTransformedButtonType,
-} from './buttonGroupUtils'
-import {
-    StyledButtonGroupContainer,
-    StyledButtonWrapper,
-} from './StyledButtonGroup'
-
-const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
-    (
-        {
-            size = ButtonSize.MEDIUM,
-            isStacked = true,
-            mode = ButtonGroupMode.SINGLE_PRIMARY,
-            children,
-            ...props
-        },
-        ref
-    ) => {
-        const childrenArray = React.Children.toArray(children).filter(
-            React.isValidElement
-        ) as React.ReactElement[]
-        const totalChildren = childrenArray.length
-
-        const primaryButtonIndex =
-            mode === ButtonGroupMode.SINGLE_PRIMARY
-                ? findPrimaryButtonIndex(childrenArray)
-                : -1
-
+const ButtonGroupV2: React.FC<ButtonGroupProps> = ({
+    stacked = false,
+    children,
+}) => {
+    if (!stacked) {
         return (
-            <StyledButtonGroupContainer
-                ref={ref}
-                $isStacked={isStacked}
-                $size={size}
-                role="group"
-                {...props}
-            >
-                {React.Children.map(children, (child, index) => {
-                    if (!React.isValidElement(child)) {
-                        return child
-                    }
-
-                    const childProps = child.props as Partial<ButtonProps>
-
-                    const finalButtonType = getTransformedButtonType(
-                        childProps.buttonType,
-                        mode,
-                        index,
-                        primaryButtonIndex
-                    )
-
-                    const position = getButtonPosition(index, totalChildren)
-
-                    const buttonElement = React.cloneElement(child, {
-                        ...childProps,
-                        buttonType: finalButtonType,
-                        size: size,
-                    } as React.HTMLAttributes<HTMLElement>)
-
-                    if (isStacked) {
-                        return (
-                            <StyledButtonWrapper
-                                $position={position}
-                                $isStacked={isStacked}
-                            >
-                                {buttonElement}
-                            </StyledButtonWrapper>
-                        )
-                    }
-
-                    return buttonElement
-                })}
-            </StyledButtonGroupContainer>
+            <Block display="flex" gap={10}>
+                {children}
+            </Block>
         )
     }
-)
+    return (
+        <Block display="flex" gap={0}>
+            {Children.map(children, (child, index) => {
+                return React.cloneElement(child, {
+                    key: child.key || index,
+                    buttonGroupPosition:
+                        index === 0
+                            ? 'left'
+                            : index === Children.count(children) - 1
+                              ? 'right'
+                              : 'center',
+                })
+            })}
+        </Block>
+    )
+}
 
-ButtonGroup.displayName = 'ButtonGroup'
-
-export default ButtonGroup
+export default ButtonGroupV2

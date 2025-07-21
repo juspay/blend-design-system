@@ -1,12 +1,12 @@
 'use client'
-import { Popover, PopoverSize, ButtonTypeV2, ButtonSizeV2 } from 'blend-v1'
+import { Popover, PopoverSize, ButtonType, ButtonSize } from 'blend-v1'
 import React, { useState } from 'react'
 import ComponentPreview from './ComponentPreview'
 
 const PopoverPreview = () => {
     const [, setOpen] = useState(false)
 
-    const tsCode = `import { Popover, PopoverSize, ButtonTypeV2, ButtonSizeV2 } from "blend-v1";
+    const tsCode = `import { Popover, PopoverSize, ButtonType, ButtonSize } from "blend-v1";
 
 function MyComponent() {
   const [open, setOpen] = useState(false);
@@ -21,14 +21,14 @@ function MyComponent() {
       onOpenChange={setOpen}
       primaryAction={{
         text: "Save",
-        buttonType: ButtonTypeV2.PRIMARY,
-        size: ButtonSizeV2.SMALL,
+        buttonType: ButtonType.PRIMARY,
+        size: ButtonSize.SMALL,
         onClick: () => console.log("Saved"),
       }}
       secondaryAction={{
         text: "Cancel",
-        buttonType: ButtonTypeV2.SECONDARY,
-        size: ButtonSizeV2.SMALL,
+        buttonType: ButtonType.SECONDARY,
+        size: ButtonSize.SMALL,
         onClick: () => setOpen(false),
       }}
     >
@@ -145,14 +145,14 @@ external make: (
                         onOpenChange={setOpen}
                         primaryAction={{
                             text: 'Confirm',
-                            buttonType: ButtonTypeV2.PRIMARY,
-                            size: ButtonSizeV2.SMALL,
+                            buttonType: ButtonType.PRIMARY,
+                            size: ButtonSize.SMALL,
                             onClick: () => console.log('Confirmed'),
                         }}
                         secondaryAction={{
                             text: 'Cancel',
-                            buttonType: ButtonTypeV2.SECONDARY,
-                            size: ButtonSizeV2.SMALL,
+                            buttonType: ButtonType.SECONDARY,
+                            size: ButtonSize.SMALL,
                             onClick: () => setOpen(false),
                         }}
                     >
@@ -182,8 +182,8 @@ external make: (
                         showCloseButton={true}
                         primaryAction={{
                             text: 'Save',
-                            buttonType: ButtonTypeV2.PRIMARY,
-                            size: ButtonSizeV2.SMALL,
+                            buttonType: ButtonType.PRIMARY,
+                            size: ButtonSize.SMALL,
                             onClick: () => console.log('Saved'),
                         }}
                     >
@@ -237,8 +237,8 @@ external make: (
                         showCloseButton={true}
                         primaryAction={{
                             text: 'OK',
-                            buttonType: ButtonTypeV2.PRIMARY,
-                            size: ButtonSizeV2.SMALL,
+                            buttonType: ButtonType.PRIMARY,
+                            size: ButtonSize.SMALL,
                             onClick: () => console.log('OK clicked'),
                         }}
                     >
@@ -267,14 +267,14 @@ external make: (
                         showCloseButton={true}
                         primaryAction={{
                             text: 'Apply',
-                            buttonType: ButtonTypeV2.PRIMARY,
-                            size: ButtonSizeV2.SMALL,
+                            buttonType: ButtonType.PRIMARY,
+                            size: ButtonSize.SMALL,
                             onClick: () => console.log('Settings applied'),
                         }}
                         secondaryAction={{
                             text: 'Reset',
-                            buttonType: ButtonTypeV2.SECONDARY,
-                            size: ButtonSizeV2.SMALL,
+                            buttonType: ButtonType.SECONDARY,
+                            size: ButtonSize.SMALL,
                             onClick: () => console.log('Settings reset'),
                         }}
                     >

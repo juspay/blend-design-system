@@ -6,8 +6,8 @@ import {
     TooltipSide,
     TooltipAlign,
     TooltipSlotDirection,
-    ButtonV2,
-    ButtonSizeV2,
+    Button,
+    ButtonSize,
 } from 'blend-v1'
 
 /**
@@ -141,12 +141,12 @@ figma.connect(
                     slotDirection={slotDirection}
                     slot={slot}
                 >
-                    <ButtonV2 text="Hover me" />
+                    <Button text="Hover me" />
                 </Tooltip>
             )
         },
 
-        imports: ["import { Tooltip, ButtonV2 } from 'blend-v1'"],
+        imports: ["import { Tooltip, Button } from 'blend-v1'"],
 
         links: [
             {
@@ -188,7 +188,7 @@ figma.connect(
                     slotDirection={slotDirection}
                     slot={slot}
                 >
-                    <ButtonV2 text="Small trigger" size={ButtonSizeV2.SMALL} />
+                    <Button text="Small trigger" size={ButtonSize.SMALL} />
                 </Tooltip>
             )
         },
@@ -222,7 +222,7 @@ figma.connect(
                     slotDirection={slotDirection}
                     slot={slot}
                 >
-                    <ButtonV2 text="Large trigger" size={ButtonSizeV2.LARGE} />
+                    <Button text="Large trigger" size={ButtonSize.LARGE} />
                 </Tooltip>
             )
         },
@@ -256,7 +256,7 @@ figma.connect(
                     slotDirection={TooltipSlotDirection.LEFT}
                     slot={slot}
                 >
-                    <ButtonV2 text="Hover for info" />
+                    <Button text="Hover for info" />
                 </Tooltip>
             )
         },
@@ -290,7 +290,7 @@ figma.connect(
                     slotDirection={TooltipSlotDirection.RIGHT}
                     slot={slot}
                 >
-                    <ButtonV2 text="Hover for info" />
+                    <Button text="Hover for info" />
                 </Tooltip>
             )
         },
@@ -324,7 +324,7 @@ figma.connect(
                 slotDirection={slotDirection}
                 slot={slot}
             >
-                <ButtonV2 text="Top tooltip" />
+                <Button text="Top tooltip" />
             </Tooltip>
         ),
     }
@@ -357,7 +357,7 @@ figma.connect(
                 slotDirection={slotDirection}
                 slot={slot}
             >
-                <ButtonV2 text="Bottom tooltip" />
+                <Button text="Bottom tooltip" />
             </Tooltip>
         ),
     }
@@ -390,7 +390,7 @@ figma.connect(
                 slotDirection={slotDirection}
                 slot={slot}
             >
-                <ButtonV2 text="No arrow" />
+                <Button text="No arrow" />
             </Tooltip>
         ),
     }
@@ -405,6 +405,6 @@ figma.connect(
  *   offset={10} // 10px offset from trigger
  *   open={isOpen} // Controlled state
  * >
- *   <ButtonV2 text="Advanced tooltip" />
+ *   <Button text="Advanced tooltip" />
  * </Tooltip>
  */

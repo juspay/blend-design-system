@@ -1,11 +1,11 @@
 import { Hash, X, Plus, Download, Upload, Settings } from 'lucide-react'
 import { useState } from 'react'
 import {
-    ButtonV2,
-    ButtonTypeV2,
-    ButtonSizeV2,
-    ButtonSubTypeV2,
-} from '../../../../packages/blend/lib/components/ButtonV2'
+    Button,
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+} from '../../../../packages/blend/lib/components/Button'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
@@ -13,14 +13,14 @@ import { Switch } from '../../../../packages/blend/lib/components/Switch'
 
 const ButtonDemo = () => {
     const [playgroundText, setPlaygroundText] = useState('Click me')
-    const [playgroundType, setPlaygroundType] = useState<ButtonTypeV2>(
-        ButtonTypeV2.PRIMARY
+    const [playgroundType, setPlaygroundType] = useState<ButtonType>(
+        ButtonType.PRIMARY
     )
-    const [playgroundSize, setPlaygroundSize] = useState<ButtonSizeV2>(
-        ButtonSizeV2.MEDIUM
+    const [playgroundSize, setPlaygroundSize] = useState<ButtonSize>(
+        ButtonSize.MEDIUM
     )
-    const [playgroundSubType, setPlaygroundSubType] = useState<ButtonSubTypeV2>(
-        ButtonSubTypeV2.DEFAULT
+    const [playgroundSubType, setPlaygroundSubType] = useState<ButtonSubType>(
+        ButtonSubType.DEFAULT
     )
     const [showLeadingIcon, setShowLeadingIcon] = useState(false)
     const [showTrailingIcon, setShowTrailingIcon] = useState(false)
@@ -30,22 +30,22 @@ const ButtonDemo = () => {
 
     // Options for selects
     const typeOptions = [
-        { value: ButtonTypeV2.PRIMARY, label: 'Primary' },
-        { value: ButtonTypeV2.SECONDARY, label: 'Secondary' },
-        { value: ButtonTypeV2.DANGER, label: 'Danger' },
-        { value: ButtonTypeV2.SUCCESS, label: 'Success' },
+        { value: ButtonType.PRIMARY, label: 'Primary' },
+        { value: ButtonType.SECONDARY, label: 'Secondary' },
+        { value: ButtonType.DANGER, label: 'Danger' },
+        { value: ButtonType.SUCCESS, label: 'Success' },
     ]
 
     const sizeOptions = [
-        { value: ButtonSizeV2.SMALL, label: 'Small' },
-        { value: ButtonSizeV2.MEDIUM, label: 'Medium' },
-        { value: ButtonSizeV2.LARGE, label: 'Large' },
+        { value: ButtonSize.SMALL, label: 'Small' },
+        { value: ButtonSize.MEDIUM, label: 'Medium' },
+        { value: ButtonSize.LARGE, label: 'Large' },
     ]
 
     const subTypeOptions = [
-        { value: ButtonSubTypeV2.DEFAULT, label: 'Default' },
-        { value: ButtonSubTypeV2.ICON_ONLY, label: 'Icon Only' },
-        { value: ButtonSubTypeV2.INLINE, label: 'Inline' },
+        { value: ButtonSubType.DEFAULT, label: 'Default' },
+        { value: ButtonSubType.ICON_ONLY, label: 'Icon Only' },
+        { value: ButtonSubType.INLINE, label: 'Inline' },
     ]
 
     return (
@@ -67,7 +67,7 @@ const ButtonDemo = () => {
                             items={[{ items: typeOptions }]}
                             selected={playgroundType}
                             onSelect={(value) =>
-                                setPlaygroundType(value as ButtonTypeV2)
+                                setPlaygroundType(value as ButtonType)
                             }
                             placeholder="Select type"
                         />
@@ -77,7 +77,7 @@ const ButtonDemo = () => {
                             items={[{ items: sizeOptions }]}
                             selected={playgroundSize}
                             onSelect={(value) =>
-                                setPlaygroundSize(value as ButtonSizeV2)
+                                setPlaygroundSize(value as ButtonSize)
                             }
                             placeholder="Select size"
                         />
@@ -87,7 +87,7 @@ const ButtonDemo = () => {
                             items={[{ items: subTypeOptions }]}
                             selected={playgroundSubType}
                             onSelect={(value) =>
-                                setPlaygroundSubType(value as ButtonSubTypeV2)
+                                setPlaygroundSubType(value as ButtonSubType)
                             }
                             placeholder="Select sub type"
                         />
@@ -126,9 +126,9 @@ const ButtonDemo = () => {
                     </div>
 
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
-                        <ButtonV2
+                        <Button
                             text={
-                                playgroundSubType === ButtonSubTypeV2.ICON_ONLY
+                                playgroundSubType === ButtonSubType.ICON_ONLY
                                     ? undefined
                                     : playgroundText
                             }
@@ -158,13 +158,13 @@ const ButtonDemo = () => {
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Button Types</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {Object.values(ButtonTypeV2).map((type) => (
+                    {Object.values(ButtonType).map((type) => (
                         <div key={type} className="space-y-3">
                             <h3 className="text-sm font-medium capitalize">
                                 {type}
                             </h3>
                             <div className="space-y-2">
-                                <ButtonV2
+                                <Button
                                     text="Button"
                                     buttonType={type}
                                     onClick={() => {
@@ -173,7 +173,7 @@ const ButtonDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     text="With Icon"
                                     buttonType={type}
                                     leadingIcon={<Plus size={16} />}
@@ -183,7 +183,7 @@ const ButtonDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     buttonType={type}
                                     leadingIcon={<Settings size={16} />}
                                     onClick={() => {
@@ -202,13 +202,13 @@ const ButtonDemo = () => {
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Sizes</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {Object.values(ButtonSizeV2).map((size) => (
+                    {Object.values(ButtonSize).map((size) => (
                         <div key={size} className="space-y-3">
                             <h3 className="text-sm font-medium capitalize">
                                 {size}
                             </h3>
                             <div className="space-y-2">
-                                <ButtonV2
+                                <Button
                                     text="Button"
                                     size={size}
                                     onClick={() => {
@@ -217,16 +217,15 @@ const ButtonDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     text="With Icon"
                                     size={size}
                                     leadingIcon={
                                         <Download
                                             size={
-                                                size === ButtonSizeV2.SMALL
+                                                size === ButtonSize.SMALL
                                                     ? 14
-                                                    : size ===
-                                                        ButtonSizeV2.MEDIUM
+                                                    : size === ButtonSize.MEDIUM
                                                       ? 16
                                                       : 18
                                             }
@@ -238,15 +237,14 @@ const ButtonDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     size={size}
                                     leadingIcon={
                                         <Upload
                                             size={
-                                                size === ButtonSizeV2.SMALL
+                                                size === ButtonSize.SMALL
                                                     ? 14
-                                                    : size ===
-                                                        ButtonSizeV2.MEDIUM
+                                                    : size === ButtonSize.MEDIUM
                                                       ? 16
                                                       : 18
                                             }
@@ -268,22 +266,21 @@ const ButtonDemo = () => {
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Sub Types</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {Object.values(ButtonSubTypeV2).map((subType) => (
+                    {Object.values(ButtonSubType).map((subType) => (
                         <div key={subType} className="space-y-3">
                             <h3 className="text-sm font-medium capitalize">
                                 {subType.replace(/([A-Z])/g, ' $1').trim()}
                             </h3>
                             <div className="space-y-2">
-                                <ButtonV2
+                                <Button
                                     text={
-                                        subType === ButtonSubTypeV2.ICON_ONLY
+                                        subType === ButtonSubType.ICON_ONLY
                                             ? undefined
                                             : 'Button'
                                     }
                                     subType={subType}
                                     leadingIcon={
-                                        subType ===
-                                        ButtonSubTypeV2.ICON_ONLY ? (
+                                        subType === ButtonSubType.ICON_ONLY ? (
                                             <Settings size={16} />
                                         ) : (
                                             <Plus size={16} />
@@ -295,17 +292,16 @@ const ButtonDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     text={
-                                        subType === ButtonSubTypeV2.ICON_ONLY
+                                        subType === ButtonSubType.ICON_ONLY
                                             ? undefined
                                             : 'Danger'
                                     }
-                                    buttonType={ButtonTypeV2.DANGER}
+                                    buttonType={ButtonType.DANGER}
                                     subType={subType}
                                     leadingIcon={
-                                        subType ===
-                                        ButtonSubTypeV2.ICON_ONLY ? (
+                                        subType === ButtonSubType.ICON_ONLY ? (
                                             <X size={16} />
                                         ) : (
                                             <X size={16} />
@@ -329,7 +325,7 @@ const ButtonDemo = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Default</h3>
-                        <ButtonV2
+                        <Button
                             text="Button"
                             onClick={() => {
                                 addSnackbar({
@@ -341,17 +337,17 @@ const ButtonDemo = () => {
 
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Loading</h3>
-                        <ButtonV2 text="Loading" loading={true} />
+                        <Button text="Loading" loading={true} />
                     </div>
 
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Disabled</h3>
-                        <ButtonV2 text="Disabled" disabled={true} />
+                        <Button text="Disabled" disabled={true} />
                     </div>
 
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Full Width</h3>
-                        <ButtonV2
+                        <Button
                             text="Full Width"
                             fullWidth={true}
                             onClick={() => {
@@ -368,7 +364,7 @@ const ButtonDemo = () => {
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Interactive Examples</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <ButtonV2
+                    <Button
                         text="Download"
                         leadingIcon={<Download size={16} />}
                         onClick={() => {
@@ -377,7 +373,7 @@ const ButtonDemo = () => {
                             })
                         }}
                     />
-                    <ButtonV2
+                    <Button
                         text="Upload"
                         trailingIcon={<Upload size={16} />}
                         onClick={() => {
@@ -386,9 +382,9 @@ const ButtonDemo = () => {
                             })
                         }}
                     />
-                    <ButtonV2
+                    <Button
                         text="Settings"
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                         leadingIcon={<Settings size={16} />}
                         onClick={() => {
                             addSnackbar({
@@ -396,9 +392,9 @@ const ButtonDemo = () => {
                             })
                         }}
                     />
-                    <ButtonV2
+                    <Button
                         text="Delete"
-                        buttonType={ButtonTypeV2.DANGER}
+                        buttonType={ButtonType.DANGER}
                         leadingIcon={<X size={16} />}
                         onClick={() => {
                             addSnackbar({
@@ -413,19 +409,19 @@ const ButtonDemo = () => {
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">All Combinations</h2>
                 <div className="space-y-8">
-                    {Object.values(ButtonTypeV2).map((type) => (
+                    {Object.values(ButtonType).map((type) => (
                         <div key={type} className="space-y-4">
                             <h3 className="text-lg font-semibold capitalize">
                                 {type} Type
                             </h3>
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                {Object.values(ButtonSizeV2).map((size) => (
+                                {Object.values(ButtonSize).map((size) => (
                                     <div key={size} className="space-y-2">
                                         <h4 className="text-xs font-medium capitalize text-gray-600">
                                             {size}
                                         </h4>
                                         <div className="space-y-1">
-                                            <ButtonV2
+                                            <Button
                                                 text="S"
                                                 buttonType={type}
                                                 size={size}
@@ -435,7 +431,7 @@ const ButtonDemo = () => {
                                                     })
                                                 }}
                                             />
-                                            <ButtonV2
+                                            <Button
                                                 text="M"
                                                 buttonType={type}
                                                 size={size}
@@ -443,10 +439,10 @@ const ButtonDemo = () => {
                                                     <Plus
                                                         size={
                                                             size ===
-                                                            ButtonSizeV2.SMALL
+                                                            ButtonSize.SMALL
                                                                 ? 14
                                                                 : size ===
-                                                                    ButtonSizeV2.MEDIUM
+                                                                    ButtonSize.MEDIUM
                                                                   ? 16
                                                                   : 18
                                                         }
@@ -458,17 +454,17 @@ const ButtonDemo = () => {
                                                     })
                                                 }}
                                             />
-                                            <ButtonV2
+                                            <Button
                                                 buttonType={type}
                                                 size={size}
                                                 leadingIcon={
                                                     <Settings
                                                         size={
                                                             size ===
-                                                            ButtonSizeV2.SMALL
+                                                            ButtonSize.SMALL
                                                                 ? 14
                                                                 : size ===
-                                                                    ButtonSizeV2.MEDIUM
+                                                                    ButtonSize.MEDIUM
                                                                   ? 16
                                                                   : 18
                                                         }

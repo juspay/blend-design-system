@@ -1,5 +1,5 @@
 'use client'
-import { Modal, ButtonTypeV2 } from 'blend-v1'
+import { Modal, ButtonType } from 'blend-v1'
 import React, { useState } from 'react'
 import ComponentPreview from './ComponentPreview'
 
@@ -8,7 +8,7 @@ const ModalPreview = () => {
     const [isOpenWithActions, setIsOpenWithActions] = useState(false)
     const [isOpenSimple, setIsOpenSimple] = useState(false)
 
-    const tsCode = `import { Modal, ButtonTypeV2, ButtonSizeV2, ButtonSubTypeV2 } from "blend-v1";
+    const tsCode = `import { Modal, ButtonType, ButtonSize, ButtonSubType } from "blend-v1";
 import { useState } from "react";
 
 function MyComponent() {
@@ -25,7 +25,7 @@ function MyComponent() {
         subtitle="Optional subtitle for the modal"
         primaryAction={{
           text: "Save",
-          buttonType: ButtonTypeV2.PRIMARY,
+          buttonType: ButtonType.PRIMARY,
           onClick: () => {
             console.log("Primary action clicked");
             setIsOpen(false);
@@ -33,7 +33,7 @@ function MyComponent() {
         }}
         secondaryAction={{
           text: "Cancel",
-          buttonType: ButtonTypeV2.SECONDARY,
+          buttonType: ButtonType.SECONDARY,
           onClick: () => setIsOpen(false),
         }}
       >
@@ -184,7 +184,7 @@ external make: (
                         subtitle="This modal has primary and secondary actions"
                         primaryAction={{
                             text: 'Save Changes',
-                            buttonType: ButtonTypeV2.PRIMARY,
+                            buttonType: ButtonType.PRIMARY,
                             onClick: () => {
                                 console.log('Primary action clicked')
                                 setIsOpenWithActions(false)
@@ -192,7 +192,7 @@ external make: (
                         }}
                         secondaryAction={{
                             text: 'Cancel',
-                            buttonType: ButtonTypeV2.SECONDARY,
+                            buttonType: ButtonType.SECONDARY,
                             onClick: () => setIsOpenWithActions(false),
                         }}
                     >

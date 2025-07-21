@@ -14,7 +14,7 @@ import type { TooltipTokensType } from '../components/Tooltip/tooltip.tokens'
 import type { UnitInputTokensType } from '../components/Inputs/UnitInput/unitInput.tokens'
 import type { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { DropdownInputTokensType } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
-import type { ResponsiveButtonTokens } from '../components/ButtonV2/button.tokens'
+import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
 import type { ModalTokensType } from '../components/Modal/modal.tokens'
 import type { BreadcrumbTokenType } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { PopoverTokenType } from '../components/Popover/popover.tokens'
@@ -24,6 +24,7 @@ import type { TableTokenType } from '../components/DataTable/dataTable.tokens'
 import type { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { AccordionTokenType } from '../components/Accordion/accordion.tokens'
 import type { StatCardTokenType } from '../components/StatCard/statcard.tokens'
+import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -52,7 +53,8 @@ export const useComponentToken = (
     | TableTokenType
     | CalendarTokenType
     | AccordionTokenType
-    | StatCardTokenType => {
+    | StatCardTokenType
+    | ProgressBarTokenType => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -105,6 +107,8 @@ export const useComponentToken = (
             return componentTokens.MULTI_VALUE_INPUT
         case 'STAT_CARD':
             return componentTokens.STAT_CARD
+        case 'PROGRESS_BAR':
+            return componentTokens.PROGRESS_BAR
         default:
             throw new Error(`Unknown component token: ${component}`)
     }
