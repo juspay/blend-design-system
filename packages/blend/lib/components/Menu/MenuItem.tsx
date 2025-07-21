@@ -102,7 +102,7 @@ const MenuItem = ({ item, idx }: { item: MenuItemV2Type; idx: number }) => {
         <RadixMenu.Item
             asChild
             disabled={item.disabled}
-            style={{ outline: 'none', border: 'none' }}
+            style={{ outline: 'none', border: 'none', userSelect: 'none' }}
         >
             <Block
                 key={idx}
