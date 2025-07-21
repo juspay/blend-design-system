@@ -186,6 +186,9 @@ const SwitchDemo = () => {
                                     <Bell size={16} className="text-blue-500" />
                                 ) : undefined
                             }
+                            data-bool-for="redirectModeOnly"
+                            data-toggle-status="enabled"
+                            data-bool-value="on"
                         />
                     </div>
                 </div>
@@ -210,6 +213,9 @@ const SwitchDemo = () => {
                                         header: `Small switch ${checked ? 'enabled' : 'disabled'}!`,
                                     })
                                 }}
+                                data-bool-for="redirectModeOnly"
+                                data-toggle-status="enabled"
+                                data-bool-value="on"
                             />
                             <Switch
                                 label="With Subtext"
