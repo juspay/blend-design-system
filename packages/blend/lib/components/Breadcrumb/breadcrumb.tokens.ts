@@ -1,7 +1,7 @@
 import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { FoundationTokenType } from '../../tokens/theme.token'
-import { BreakpointType } from '../../breakpoints/breakPoints'
+import { type BreakpointType } from '../../breakpoints/breakPoints'
 
 type BreadcrumbItemType = 'active' | 'inactive'
 

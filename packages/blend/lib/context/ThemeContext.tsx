@@ -30,7 +30,7 @@ import {
 } from '../components/Inputs/NumberInput/numberInput.tokens'
 import {
     getAlertTokens,
-    ResponsiveAlertTokens,
+    type ResponsiveAlertTokens,
 } from '../components/Alert/alert.tokens'
 import {
     getOTPInputTokens,
