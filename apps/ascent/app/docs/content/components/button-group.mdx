@@ -1,28 +1,28 @@
 ---
 title: Button Group V2
-description: The ButtonGroupV2 component is a container that groups multiple Button components together with flexible layout options and automatic positioning.
+description: The ButtonGroup component is a container that groups multiple Button components together with flexible layout options and automatic positioning.
 category: components
 tags:
     - button-group
     - component
     - layout
-RepoFolderName: ButtonGroupV2
+RepoFolderName: ButtonGroup
 StorybookLink: components-button-buttonv2--docs
 ---
 
-<ButtonGroupV2Preview />
+<ButtonGroupPreview />
 
 ## Usage
 
 ```tsx
-import { ButtonGroupV2, Button, ButtonType } from 'blend-v1'
+import { ButtonGroup, Button, ButtonType } from 'blend-v1'
 
 function MyComponent() {
     return (
-        <ButtonGroupV2 stacked={false}>
+        <ButtonGroup stacked={false}>
             <Button text="Cancel" buttonType={ButtonType.SUCCESS} />
             <Button text="Save" buttonType={ButtonType.PRIMARY} />
-        </ButtonGroupV2>
+        </ButtonGroup>
     )
 }
 ```
@@ -75,10 +75,10 @@ function MyComponent() {
 Simple horizontal button group with two buttons
 
 ```tsx
-<ButtonGroupV2>
+<ButtonGroup>
     <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
     <Button text="Save" buttonType={ButtonType.PRIMARY} />
-</ButtonGroupV2>
+</ButtonGroup>
 ```
 
 ### Stacked Button Group
@@ -86,11 +86,11 @@ Simple horizontal button group with two buttons
 Vertical button group with stacked layout
 
 ```tsx
-<ButtonGroupV2 stacked={true}>
+<ButtonGroup stacked={true}>
     <Button text="Option 1" buttonType={ButtonType.PRIMARY} />
     <Button text="Option 2" buttonType={ButtonType.SECONDARY} />
     <Button text="Option 3" buttonType={ButtonType.DANGER} />
-</ButtonGroupV2>
+</ButtonGroup>
 ```
 
 ### Multiple Buttons
@@ -98,11 +98,11 @@ Vertical button group with stacked layout
 Button group with more than two buttons
 
 ```tsx
-<ButtonGroupV2>
+<ButtonGroup>
     <Button text="Previous" buttonType={ButtonType.SECONDARY} />
     <Button text="Next" buttonType={ButtonType.PRIMARY} />
     <Button text="Skip" buttonType={ButtonType.SECONDARY} />
-</ButtonGroupV2>
+</ButtonGroup>
 ```
 
 ### Form Actions
@@ -110,7 +110,7 @@ Button group with more than two buttons
 Common use case for form action buttons
 
 ```tsx
-<ButtonGroupV2>
+<ButtonGroup>
     <Button
         text="Reset"
         buttonType={ButtonType.SECONDARY}
@@ -121,7 +121,7 @@ Common use case for form action buttons
         buttonType={ButtonType.PRIMARY}
         onClick={() => console.log('Submit clicked')}
     />
-</ButtonGroupV2>
+</ButtonGroup>
 ```
 
 ### Stacked Navigation
@@ -129,12 +129,12 @@ Common use case for form action buttons
 Vertical navigation with stacked buttons
 
 ```tsx
-<ButtonGroupV2 stacked={true}>
+<ButtonGroup stacked={true}>
     <Button text="Home" buttonType={ButtonType.PRIMARY} />
     <Button text="Profile" buttonType={ButtonType.SECONDARY} />
     <Button text="Settings" buttonType={ButtonType.SECONDARY} />
     <Button text="Logout" buttonType={ButtonType.DANGER} />
-</ButtonGroupV2>
+</ButtonGroup>
 ```
 
 ### Mixed Button Types
@@ -142,7 +142,7 @@ Vertical navigation with stacked buttons
 Group with different button types and states
 
 ```tsx
-<ButtonGroupV2>
+<ButtonGroup>
     <Button
         text="Delete"
         buttonType={ButtonType.DANGER}
@@ -158,7 +158,7 @@ Group with different button types and states
         buttonType={ButtonType.SUCCESS}
         onClick={() => console.log('Save clicked')}
     />
-</ButtonGroupV2>
+</ButtonGroup>
 ```
 
 ## Component Tokens

@@ -1,5 +1,5 @@
 'use client'
-import { ButtonGroupV2, Button, ButtonType } from 'blend-v1'
+import { ButtonGroup, Button, ButtonType } from 'blend-v1'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
 
@@ -42,10 +42,10 @@ external make: (
             rescript={reCode}
             rescriptBinding={bindingCode}
         >
-            <ButtonGroupV2 stacked={true}>
+            <ButtonGroup stacked={true}>
                 <Button text="Cancel" buttonType={ButtonType.SUCCESS} />
                 <Button text="Save" buttonType={ButtonType.PRIMARY} />
-            </ButtonGroupV2>
+            </ButtonGroup>
         </ComponentPreview>
     )
 }

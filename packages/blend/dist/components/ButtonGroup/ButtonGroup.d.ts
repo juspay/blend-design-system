@@ -1,4 +1,4 @@
+import { default as React } from 'react';
 import { ButtonGroupProps } from './types';
-import * as React from 'react';
-declare const ButtonGroup: React.ForwardRefExoticComponent<ButtonGroupProps & React.RefAttributes<HTMLDivElement>>;
-export default ButtonGroup;
+declare const ButtonGroupV2: React.FC<ButtonGroupProps>;
+export default ButtonGroupV2;

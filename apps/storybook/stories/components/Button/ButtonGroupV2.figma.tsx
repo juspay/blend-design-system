@@ -1,9 +1,9 @@
 import React from 'react'
-import { ButtonGroupV2, Button, ButtonType } from 'blend-v1'
+import { ButtonGroup, Button, ButtonType } from 'blend-v1'
 import figma from '@figma/code-connect'
 
 /**
- * ButtonGroupV2 Figma Code Connect
+ * ButtonGroup Figma Code Connect
  *
  * Props mapping:
  * - number (Figma only): Determines number of buttons to render
@@ -12,7 +12,7 @@ import figma from '@figma/code-connect'
  */
 
 figma.connect(
-    ButtonGroupV2,
+    ButtonGroup,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=6692-3066',
     {
         props: {
@@ -46,7 +46,7 @@ figma.connect(
             }),
 
             // size prop is noted but not used in current implementation
-            // Will be implemented when size prop is added to ButtonGroupV2
+            // Will be implemented when size prop is added to ButtonGroup
             // size: figma.enum("size", {
             //   "small": "small",
             //   "medium": "medium",
@@ -55,14 +55,14 @@ figma.connect(
         },
 
         example: ({ stacked, children }) => (
-            <ButtonGroupV2 stacked={stacked}>{children}</ButtonGroupV2>
+            <ButtonGroup stacked={stacked}>{children}</ButtonGroup>
         ),
     }
 )
 
 // Variant for horizontal button group (stacked = false)
 figma.connect(
-    ButtonGroupV2,
+    ButtonGroup,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=6692-3066',
     {
         variant: { stacked: 'false' },
@@ -93,14 +93,14 @@ figma.connect(
             }),
         },
         example: ({ children }) => (
-            <ButtonGroupV2 stacked={false}>{children}</ButtonGroupV2>
+            <ButtonGroup stacked={false}>{children}</ButtonGroup>
         ),
     }
 )
 
 // Variant for stacked button group (stacked = true)
 figma.connect(
-    ButtonGroupV2,
+    ButtonGroup,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=6692-3066',
     {
         variant: { stacked: 'true' },
@@ -131,7 +131,7 @@ figma.connect(
             }),
         },
         example: ({ children }) => (
-            <ButtonGroupV2 stacked={true}>{children}</ButtonGroupV2>
+            <ButtonGroup stacked={true}>{children}</ButtonGroup>
         ),
     }
 )
@@ -139,7 +139,7 @@ figma.connect(
 // Common patterns with specific number of buttons
 // 2-button group
 figma.connect(
-    ButtonGroupV2,
+    ButtonGroup,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=6692-3066',
     {
         variant: { number: '2' },
@@ -147,17 +147,17 @@ figma.connect(
             stacked: figma.boolean('stacked'),
         },
         example: ({ stacked }) => (
-            <ButtonGroupV2 stacked={stacked}>
+            <ButtonGroup stacked={stacked}>
                 <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
                 <Button text="Save" buttonType={ButtonType.PRIMARY} />
-            </ButtonGroupV2>
+            </ButtonGroup>
         ),
     }
 )
 
 // 3-button group
 figma.connect(
-    ButtonGroupV2,
+    ButtonGroup,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=6692-3066',
     {
         variant: { number: '3' },
@@ -165,19 +165,19 @@ figma.connect(
             stacked: figma.boolean('stacked'),
         },
         example: ({ stacked }) => (
-            <ButtonGroupV2 stacked={stacked}>
+            <ButtonGroup stacked={stacked}>
                 <Button text="Previous" buttonType={ButtonType.SECONDARY} />
                 <Button text="Current" buttonType={ButtonType.PRIMARY} />
                 <Button text="Next" buttonType={ButtonType.SECONDARY} />
-            </ButtonGroupV2>
+            </ButtonGroup>
         ),
     }
 )
 
-// Future implementation when size prop is added to ButtonGroupV2
+// Future implementation when size prop is added to ButtonGroup
 // This is commented out but shows how it would be implemented
 /*
-figma.connect(ButtonGroupV2, "https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=14667-1234", {
+figma.connect(ButtonGroup, "https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=14667-1234", {
   variant: { size: figma.enum("size") },
   props: {
     stacked: figma.boolean("stacked"),
@@ -199,9 +199,9 @@ figma.connect(ButtonGroupV2, "https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG
     }),
   },
   example: ({ stacked, size, children }) => (
-    <ButtonGroupV2 stacked={stacked}>
+    <ButtonGroup stacked={stacked}>
       {children(size)}
-    </ButtonGroupV2>
+    </ButtonGroup>
   ),
 });
 */
