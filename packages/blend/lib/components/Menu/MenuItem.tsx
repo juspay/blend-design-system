@@ -2,14 +2,14 @@ import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import { FOUNDATION_THEME } from '../../tokens'
 import {
     MenuItemV2ActionType,
-    MenuItemV2Type,
+    type MenuItemV2Type,
     MenuItemV2Variant,
 } from './types'
 import { SubMenu } from './SubMenu'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import { MenuItemStates, MenuTokensType } from './menu.tokens'
-import { useComponentToken } from '../../context/useComponentToken'
+import { type MenuItemStates, type MenuTokensType } from './menu.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -89,15 +89,15 @@ const getColor = (
     }
 }
 
-const MenuItemContent = ({
-    item,
-    idx,
-    menuTokens,
-}: {
-    item: MenuItemV2Type
-    idx: number
-    menuTokens: MenuTokensType
-}) => {
+const MenuItem = ({ item, idx }: { item: MenuItemV2Type; idx: number }) => {
+    const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
+    if (item.subMenu) {
+        return <SubMenu item={item} idx={idx} />
+    }
+    if (item.variant === undefined) {
+        item.variant = MenuItemV2Variant.DEFAULT
+    }
+
     return (
         <Block
             key={idx}

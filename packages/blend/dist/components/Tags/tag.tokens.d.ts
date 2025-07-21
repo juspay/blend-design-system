@@ -1,6 +1,7 @@
 import { CSSObject } from 'styled-components';
 import { ThemeType } from '../../tokens';
 import { TagColor, TagShape, TagSize, TagVariant } from './types';
+import { BreakpointType } from '../../breakpoints/breakPoints';
 export type TagTokensType = Readonly<{
     background: {
         [key in TagVariant]: {
@@ -48,6 +49,9 @@ export type TagTokensType = Readonly<{
         };
     };
 }>;
+export type ResponsiveTagTokens = {
+    [key in keyof BreakpointType]: TagTokensType;
+};
 declare const tagTokens: TagTokensType;
-export declare const getTagTokens: (foundationToken: ThemeType) => TagTokensType;
+export declare const getTagTokens: (foundationToken: ThemeType) => ResponsiveTagTokens;
 export default tagTokens;

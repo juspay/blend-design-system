@@ -1,17 +1,18 @@
-import { ButtonType, ButtonSize, ButtonSubType } from './types';
-export declare const Button: import('react').ForwardRefExoticComponent<Omit<import('react').DetailedHTMLProps<import('react').ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "ref"> & {
+import { ButtonSize, ButtonSubType, ButtonType } from './types';
+declare const Button: import('react').ForwardRefExoticComponent<{
     buttonType?: ButtonType;
     size?: ButtonSize;
     subType?: ButtonSubType;
     text?: string;
-    leadingIcon?: import('react').ElementType;
-    trailingIcon?: import('react').ElementType;
+    leadingIcon?: React.ReactNode;
+    trailingIcon?: React.ReactNode;
     isLoading?: boolean;
     isDisabled?: boolean;
-    ariaLabel?: string;
-    ariaExpanded?: boolean;
-    ariaControls?: string;
-    ariaPressed?: boolean | "mixed";
-    ariaHasPopup?: boolean | "menu" | "listbox" | "tree" | "grid" | "dialog";
-} & import('react').RefAttributes<HTMLButtonElement>>;
+    disabled?: boolean;
+    onClick?: () => void;
+    loading?: boolean;
+    buttonGroupPosition?: "center" | "left" | "right";
+    fullWidth?: boolean;
+    justifyContent?: import('styled-components').CSSObject["justifyContent"];
+} & Omit<import('react').ButtonHTMLAttributes<HTMLButtonElement>, "style" | "className"> & import('react').RefAttributes<HTMLButtonElement>>;
 export default Button;

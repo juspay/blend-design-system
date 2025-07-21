@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 import { Download } from 'lucide-react'
-import Button from '../../Button/Button'
+import { Button } from '../../../main'
 import { ButtonSize, ButtonType } from '../../Button/types'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
@@ -69,7 +69,7 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
 
                 <Button
                     buttonType={ButtonType.SECONDARY}
-                    leadingIcon={Download}
+                    leadingIcon={<Download />}
                     size={ButtonSize.SMALL}
                     onClick={onExport}
                 >

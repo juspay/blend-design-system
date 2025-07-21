@@ -1,4 +1,4 @@
-import { MenuItemV2Type, MenuV2GroupType } from './types'
+import { type MenuItemV2Type, type MenuV2GroupType } from './types'
 
 // Utility: Recursively filter menu items and groups by search text
 export const filterMenuGroups = (

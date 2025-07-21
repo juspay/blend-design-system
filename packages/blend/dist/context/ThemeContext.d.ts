@@ -1,5 +1,5 @@
 import { ThemeType } from '../tokens';
-import { TagTokensType } from '../components/Tags/tag.tokens';
+import { ResponsiveTagTokens } from '../components/Tags/tag.tokens';
 import { SearchInputTokensType } from '../components/Inputs/SearchInput/searchInput.tokens';
 import { TextAreaTokensType } from '../components/Inputs/TextArea/textarea.token';
 import { ResponsiveRadioTokens } from '../components/Radio/radio.token';
@@ -14,19 +14,20 @@ import { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/
 import { DropdownInputTokensType } from '../components/Inputs/DropdownInput/dropdownInput.tokens';
 import { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token';
 import { TabsTokensType } from '../components/Tabs/tabs.token';
-import { ResponsiveButtonTokens } from '../components/ButtonV2/button.tokens';
+import { ResponsiveButtonTokens } from '../components/Button/button.tokens';
 import { ModalTokensType } from '../components/Modal/modal.tokens';
 import { BreadcrumbTokenType } from '../components/Breadcrumb/breadcrumb.tokens';
 import { PopoverTokenType } from '../components/Popover/popover.tokens';
-import { MenuTokensType } from '../components/Menu/menu.tokens';
+import { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens';
 import { MultiSelectTokensType } from '../components/MultiSelect/multiSelect.tokens';
 import { TableTokenType } from '../components/DataTable/dataTable.tokens';
 import { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens';
 import { AccordionTokenType } from '../components/Accordion/accordion.tokens';
 import { StatCardTokenType } from '../components/StatCard/statcard.tokens';
+import { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens';
 import { BreakpointType } from '../breakpoints/breakPoints';
 export type ComponentTokenType = {
-    TAGS?: TagTokensType;
+    TAGS?: ResponsiveTagTokens;
     SEARCH_INPUT?: SearchInputTokensType;
     TEXT_AREA?: TextAreaTokensType;
     RADIO?: ResponsiveRadioTokens;
@@ -45,12 +46,13 @@ export type ComponentTokenType = {
     MODAL?: ModalTokensType;
     BREADCRUMB?: BreadcrumbTokenType;
     POPOVER?: PopoverTokenType;
-    MENU?: MenuTokensType;
+    MENU?: ResponsiveMenuTokensType;
     MULTI_SELECT?: MultiSelectTokensType;
     TABLE?: TableTokenType;
     CALENDAR?: CalendarTokenType;
     ACCORDION?: AccordionTokenType;
     STAT_CARD?: StatCardTokenType;
+    PROGRESS_BAR?: ProgressBarTokenType;
 };
 type ThemeContextType = {
     foundationTokens: ThemeType;

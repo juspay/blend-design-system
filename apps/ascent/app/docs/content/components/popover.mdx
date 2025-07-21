@@ -17,7 +17,7 @@ StorybookLink: components-popover-popover--docs
 ## Usage
 
 ```tsx
-import { Popover, PopoverSize, ButtonTypeV2, ButtonSizeV2 } from 'blend-v1'
+import { Popover, PopoverSize, ButtonType, ButtonSize } from 'blend-v1'
 
 function MyComponent() {
     const [open, setOpen] = useState(false)
@@ -32,14 +32,14 @@ function MyComponent() {
             onOpenChange={setOpen}
             primaryAction={{
                 text: 'Save',
-                buttonType: ButtonTypeV2.PRIMARY,
-                size: ButtonSizeV2.SMALL,
+                buttonType: ButtonType.PRIMARY,
+                size: ButtonSize.SMALL,
                 onClick: () => console.log('Saved'),
             }}
             secondaryAction={{
                 text: 'Cancel',
-                buttonType: ButtonTypeV2.SECONDARY,
-                size: ButtonSizeV2.SMALL,
+                buttonType: ButtonType.SECONDARY,
+                size: ButtonSize.SMALL,
                 onClick: () => setOpen(false),
             }}
         >
@@ -246,7 +246,7 @@ function MyComponent() {
 Simple popover with header and content
 
 ```tsx
-import { Popover, PopoverSize, ButtonTypeV2, ButtonSizeV2 } from 'blend-v1'
+import { Popover, PopoverSize, ButtonType, ButtonSize } from 'blend-v1'
 
 function MyComponent() {
     return (
@@ -273,14 +273,14 @@ Popover with primary and secondary action buttons
     trigger={<button>Show Confirmation</button>}
     primaryAction={{
         text: 'Confirm',
-        buttonType: ButtonTypeV2.PRIMARY,
-        size: ButtonSizeV2.SMALL,
+        buttonType: ButtonType.PRIMARY,
+        size: ButtonSize.SMALL,
         onClick: () => console.log('Confirmed'),
     }}
     secondaryAction={{
         text: 'Cancel',
-        buttonType: ButtonTypeV2.SECONDARY,
-        size: ButtonSizeV2.SMALL,
+        buttonType: ButtonType.SECONDARY,
+        size: ButtonSize.SMALL,
         onClick: () => console.log('Cancelled'),
     }}
 >
@@ -365,14 +365,14 @@ Complex popover with forms and interactive elements
     showCloseButton={true}
     primaryAction={{
         text: 'Apply',
-        buttonType: ButtonTypeV2.PRIMARY,
-        size: ButtonSizeV2.SMALL,
+        buttonType: ButtonType.PRIMARY,
+        size: ButtonSize.SMALL,
         onClick: () => console.log('Settings applied'),
     }}
     secondaryAction={{
         text: 'Reset',
-        buttonType: ButtonTypeV2.SECONDARY,
-        size: ButtonSizeV2.SMALL,
+        buttonType: ButtonType.SECONDARY,
+        size: ButtonSize.SMALL,
         onClick: () => console.log('Settings reset'),
     }}
 >
@@ -478,4 +478,4 @@ export type PopoverActionType = Omit<
 >
 ```
 
-This means you can use most ButtonV2 props for popover actions, except for `buttonGroupPosition` and `subType` which are automatically set by the popover component.
+This means you can use most Button props for popover actions, except for `buttonGroupPosition` and `subType` which are automatically set by the popover component.

@@ -69,7 +69,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     <Button
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
-                        leadingIcon={Plus}
+                        leadingIcon={<Plus />}
                     />
                 }
                 items={menuItems}

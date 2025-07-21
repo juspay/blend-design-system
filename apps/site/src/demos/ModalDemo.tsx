@@ -1,9 +1,9 @@
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
-import { ButtonV2 } from '../../../../packages/blend/lib/components/ButtonV2'
+import { Button } from '../../../../packages/blend/lib/components/Button'
 import {
-    ButtonTypeV2,
-    ButtonSizeV2,
-} from '../../../../packages/blend/lib/components/ButtonV2'
+    ButtonType,
+    ButtonSize,
+} from '../../../../packages/blend/lib/components/Button'
 import { useState } from 'react'
 
 const ModalDemo = () => {
@@ -15,8 +15,8 @@ const ModalDemo = () => {
         subtitle: 'One line description of the modal',
         primaryButtonText: 'Confirm',
         secondaryButtonText: 'Cancel',
-        primaryButtonType: ButtonTypeV2.PRIMARY,
-        secondaryButtonType: ButtonTypeV2.SECONDARY,
+        primaryButtonType: ButtonType.PRIMARY,
+        secondaryButtonType: ButtonType.SECONDARY,
         showCloseButton: true,
         showDivider: true,
         closeOnBackdropClick: true,
@@ -226,7 +226,7 @@ const ModalDemo = () => {
                                 )}
                                 className="w-full px-3 py-2 rounded border border-gray-300 text-sm bg-white focus:border-blue-500 focus:outline-none"
                             >
-                                {Object.values(ButtonTypeV2).map((type) => (
+                                {Object.values(ButtonType).map((type) => (
                                     <option key={type} value={type}>
                                         {type}
                                     </option>
@@ -245,7 +245,7 @@ const ModalDemo = () => {
                                 )}
                                 className="w-full px-3 py-2 rounded border border-gray-300 text-sm bg-white focus:border-blue-500 focus:outline-none"
                             >
-                                {Object.values(ButtonTypeV2).map((type) => (
+                                {Object.values(ButtonType).map((type) => (
                                     <option key={type} value={type}>
                                         {type}
                                     </option>
@@ -356,11 +356,11 @@ const ModalDemo = () => {
                 </div>
 
                 <div className="flex justify-center">
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.PRIMARY}
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
                         text="Open Configured Modal"
                         onClick={() => setIsModalOpen(true)}
-                        size={ButtonSizeV2.MEDIUM}
+                        size={ButtonSize.MEDIUM}
                     />
                 </div>
             </div>
@@ -488,10 +488,10 @@ const ConfirmationModalExample = () => {
 
     return (
         <>
-            <ButtonV2
+            <Button
                 text="Open Confirmation"
-                buttonType={ButtonTypeV2.PRIMARY}
-                size={ButtonSizeV2.SMALL}
+                buttonType={ButtonType.PRIMARY}
+                size={ButtonSize.SMALL}
                 onClick={() => setIsOpen(true)}
             />
             <Modal
@@ -505,12 +505,12 @@ const ConfirmationModalExample = () => {
                         alert('Item deleted!')
                         setIsOpen(false)
                     },
-                    buttonType: ButtonTypeV2.DANGER,
+                    buttonType: ButtonType.DANGER,
                 }}
                 secondaryAction={{
                     text: 'Cancel',
                     onClick: () => setIsOpen(false),
-                    buttonType: ButtonTypeV2.SECONDARY,
+                    buttonType: ButtonType.SECONDARY,
                 }}
             >
                 <p className="text-gray-600">
@@ -527,10 +527,10 @@ const FormModalExample = () => {
 
     return (
         <>
-            <ButtonV2
+            <Button
                 text="Open Form"
-                buttonType={ButtonTypeV2.PRIMARY}
-                size={ButtonSizeV2.SMALL}
+                buttonType={ButtonType.PRIMARY}
+                size={ButtonSize.SMALL}
                 onClick={() => setIsOpen(true)}
             />
             <Modal
@@ -544,12 +544,12 @@ const FormModalExample = () => {
                         alert('Project created!')
                         setIsOpen(false)
                     },
-                    buttonType: ButtonTypeV2.PRIMARY,
+                    buttonType: ButtonType.PRIMARY,
                 }}
                 secondaryAction={{
                     text: 'Cancel',
                     onClick: () => setIsOpen(false),
-                    buttonType: ButtonTypeV2.SECONDARY,
+                    buttonType: ButtonType.SECONDARY,
                 }}
             >
                 <div className="space-y-4">
@@ -595,10 +595,10 @@ const InfoModalExample = () => {
 
     return (
         <>
-            <ButtonV2
+            <Button
                 text="Show Info"
-                buttonType={ButtonTypeV2.PRIMARY}
-                size={ButtonSizeV2.SMALL}
+                buttonType={ButtonType.PRIMARY}
+                size={ButtonSize.SMALL}
                 onClick={() => setIsOpen(true)}
             />
             <Modal
@@ -609,7 +609,7 @@ const InfoModalExample = () => {
                 primaryAction={{
                     text: 'Got it',
                     onClick: () => setIsOpen(false),
-                    buttonType: ButtonTypeV2.PRIMARY,
+                    buttonType: ButtonType.PRIMARY,
                 }}
             >
                 <div className="space-y-3">
@@ -634,10 +634,10 @@ const WarningModalExample = () => {
 
     return (
         <>
-            <ButtonV2
+            <Button
                 text="Show Warning"
-                buttonType={ButtonTypeV2.DANGER}
-                size={ButtonSizeV2.SMALL}
+                buttonType={ButtonType.DANGER}
+                size={ButtonSize.SMALL}
                 onClick={() => setIsOpen(true)}
             />
             <Modal
@@ -651,12 +651,12 @@ const WarningModalExample = () => {
                         alert('Redirecting to account settings...')
                         setIsOpen(false)
                     },
-                    buttonType: ButtonTypeV2.DANGER,
+                    buttonType: ButtonType.DANGER,
                 }}
                 secondaryAction={{
                     text: 'Dismiss',
                     onClick: () => setIsOpen(false),
-                    buttonType: ButtonTypeV2.SECONDARY,
+                    buttonType: ButtonType.SECONDARY,
                 }}
             >
                 <div className="space-y-3">
@@ -683,10 +683,10 @@ const LongContentModalExample = () => {
 
     return (
         <>
-            <ButtonV2
+            <Button
                 text="Show Long Content"
-                buttonType={ButtonTypeV2.PRIMARY}
-                size={ButtonSizeV2.SMALL}
+                buttonType={ButtonType.PRIMARY}
+                size={ButtonSize.SMALL}
                 onClick={() => setIsOpen(true)}
             />
             <Modal
@@ -700,12 +700,12 @@ const LongContentModalExample = () => {
                         alert('Terms accepted!')
                         setIsOpen(false)
                     },
-                    buttonType: ButtonTypeV2.PRIMARY,
+                    buttonType: ButtonType.PRIMARY,
                 }}
                 secondaryAction={{
                     text: 'Decline',
                     onClick: () => setIsOpen(false),
-                    buttonType: ButtonTypeV2.SECONDARY,
+                    buttonType: ButtonType.SECONDARY,
                 }}
             >
                 <div className="space-y-4 max-h-96 overflow-y-auto">
@@ -739,10 +739,10 @@ const NoActionsModalExample = () => {
 
     return (
         <>
-            <ButtonV2
+            <Button
                 text="Show Info Only"
-                buttonType={ButtonTypeV2.PRIMARY}
-                size={ButtonSizeV2.SMALL}
+                buttonType={ButtonType.PRIMARY}
+                size={ButtonSize.SMALL}
                 onClick={() => setIsOpen(true)}
             />
             <Modal
@@ -753,7 +753,7 @@ const NoActionsModalExample = () => {
                 primaryAction={{
                     text: 'Close',
                     onClick: () => setIsOpen(false),
-                    buttonType: ButtonTypeV2.PRIMARY,
+                    buttonType: ButtonType.PRIMARY,
                     disabled: true,
                 }}
             >

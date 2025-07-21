@@ -5,7 +5,7 @@ category: components
 tags:
     - button
     - component
-RepoFolderName: ButtonV2
+RepoFolderName: Button
 StorybookLink: components-button-buttonv2--docs
 ---
 
@@ -37,13 +37,13 @@ function MyComponent() {
                 content: 'buttonType',
                 hintText: 'The visual type/variant of the button',
             },
-            { content: 'ButtonTypeV2', hintText: 'enum' },
-            { content: 'ButtonTypeV2.PRIMARY' },
+            { content: 'ButtonType', hintText: 'enum' },
+            { content: 'ButtonType.PRIMARY' },
         ],
         [
             { content: 'size', hintText: 'The size of the button' },
-            { content: 'ButtonSizeV2', hintText: 'enum' },
-            { content: 'ButtonSizeV2.SMALL' },
+            { content: 'ButtonSize', hintText: 'enum' },
+            { content: 'ButtonSize.SMALL' },
         ],
         [
             {
@@ -51,8 +51,8 @@ function MyComponent() {
                 hintText:
                     'The subtype that affects button styling and behavior',
             },
-            { content: 'ButtonSubTypeV2', hintText: 'enum' },
-            { content: 'ButtonSubTypeV2.DEFAULT' },
+            { content: 'ButtonSubType', hintText: 'enum' },
+            { content: 'ButtonSubType.DEFAULT' },
         ],
         [
             {
@@ -155,7 +155,7 @@ function MyComponent() {
 Simple button with text
 
 ```tsx
-<Button text="Click me" buttonType={ButtonTypeV2.PRIMARY} />
+<Button text="Click me" buttonType={ButtonType.PRIMARY} />
 ```
 
 ### Button with Icons
@@ -166,7 +166,7 @@ Button with leading and trailing icons
 <Button
     text="Save"
     leadingIcon={<SaveIcon />}
-    buttonType={ButtonTypeV2.SUCCESS}
+    buttonType={ButtonType.SUCCESS}
 />
 ```
 
@@ -175,7 +175,7 @@ Button with leading and trailing icons
 Button in loading state
 
 ```tsx
-<Button text="Processing..." loading={true} buttonType={ButtonTypeV2.PRIMARY} />
+<Button text="Processing..." loading={true} buttonType={ButtonType.PRIMARY} />
 ```
 
 ### Full Width Button
@@ -183,11 +183,7 @@ Button in loading state
 Button that takes full width of container
 
 ```tsx
-<Button
-    text="Full Width"
-    fullWidth={true}
-    buttonType={ButtonTypeV2.SECONDARY}
-/>
+<Button text="Full Width" fullWidth={true} buttonType={ButtonType.SECONDARY} />
 ```
 
 ## Component Tokens
@@ -200,48 +196,48 @@ export type ButtonState = 'default' | 'hover' | 'active' | 'disabled'
 export type ButtonTokensType = {
     gap: CSSObject['gap']
     backgroundColor: {
-        [key in ButtonTypeV2]: {
-            [key in ButtonSubTypeV2]: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['background']
             }
         }
     }
     color: {
-        [key in ButtonTypeV2]: {
-            [key in ButtonSubTypeV2]: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['color']
             }
         }
     }
     borderRadius: {
-        [key in ButtonTypeV2]: {
-            [key in ButtonSubTypeV2]: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['borderRadius']
             }
         }
     }
     padding: {
-        [key in ButtonSizeV2]: {
-            [key in ButtonSubTypeV2]: CSSObject['padding']
+        [key in ButtonSize]: {
+            [key in ButtonSubType]: CSSObject['padding']
         }
     }
     border: {
-        [key in ButtonTypeV2]: {
-            [key in ButtonSubTypeV2]: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['border']
             }
         }
     }
     shadow: {
-        [key in ButtonTypeV2]: {
-            [key in ButtonSubTypeV2]: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['boxShadow']
             }
         }
     }
     outline: {
-        [key in ButtonTypeV2]: {
-            [key in ButtonSubTypeV2]: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['outline']
             }
         }

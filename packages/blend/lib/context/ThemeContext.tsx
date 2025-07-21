@@ -1,6 +1,9 @@
 import { createContext, useContext } from 'react'
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
-import { type TagTokensType, getTagTokens } from '../components/Tags/tag.tokens'
+import {
+    type ResponsiveTagTokens,
+    getTagTokens,
+} from '../components/Tags/tag.tokens'
 import {
     getSearchInputTokens,
     type SearchInputTokensType,
@@ -60,7 +63,7 @@ import {
 import {
     type ResponsiveButtonTokens,
     getButtonTokens,
-} from '../components/ButtonV2/button.tokens'
+} from '../components/Button/button.tokens'
 import {
     getModalComponentTokens,
     type ModalTokensType,
@@ -75,7 +78,7 @@ import {
 } from '../components/Popover/popover.tokens'
 import {
     getMenuTokens,
-    type MenuTokensType,
+    type ResponsiveMenuTokensType,
 } from '../components/Menu/menu.tokens'
 import {
     getMultiSelectTokens,
@@ -97,6 +100,9 @@ import {
     getStatCardToken,
     type StatCardTokenType,
 } from '../components/StatCard/statcard.tokens'
+import progressBarTokens, {
+    type ProgressBarTokenType,
+} from '../components/ProgressBar/progressbar.tokens'
 import {
     getDrawerComponentTokens,
     type DrawerTokensType,
@@ -104,7 +110,7 @@ import {
 import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
 
 export type ComponentTokenType = {
-    TAGS?: TagTokensType
+    TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: SearchInputTokensType
     TEXT_AREA?: TextAreaTokensType
     RADIO?: ResponsiveRadioTokens
@@ -123,12 +129,13 @@ export type ComponentTokenType = {
     MODAL?: ModalTokensType
     BREADCRUMB?: BreadcrumbTokenType
     POPOVER?: PopoverTokenType
-    MENU?: MenuTokensType
+    MENU?: ResponsiveMenuTokensType
     MULTI_SELECT?: MultiSelectTokensType
     TABLE?: TableTokenType
     CALENDAR?: CalendarTokenType
     ACCORDION?: AccordionTokenType
     STAT_CARD?: StatCardTokenType
+    PROGRESS_BAR?: ProgressBarTokenType
     DRAWER?: DrawerTokensType
 }
 
@@ -166,6 +173,7 @@ const ThemeContext = createContext<ThemeContextType>({
         CALENDAR: getCalendarToken(FOUNDATION_THEME),
         ACCORDION: getAccordionToken(FOUNDATION_THEME),
         STAT_CARD: getStatCardToken(FOUNDATION_THEME),
+        PROGRESS_BAR: progressBarTokens,
         DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,

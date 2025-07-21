@@ -1,6 +1,6 @@
 import type { SearchInputTokensType } from '../components/Inputs/SearchInput/searchInput.tokens'
 import type { TextAreaTokensType } from '../components/Inputs/TextArea/textarea.token'
-import type { TagTokensType } from '../components/Tags/tag.tokens'
+import type { ResponsiveTagTokens } from '../components/Tags/tag.tokens'
 import type { ResponsiveRadioTokens } from '../components/Radio/radio.token'
 import type { ResponsiveSwitchTokens } from '../components/Switch/switch.token'
 import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
@@ -14,23 +14,24 @@ import type { TooltipTokensType } from '../components/Tooltip/tooltip.tokens'
 import type { UnitInputTokensType } from '../components/Inputs/UnitInput/unitInput.tokens'
 import type { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { DropdownInputTokensType } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
-import type { ResponsiveButtonTokens } from '../components/ButtonV2/button.tokens'
+import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
 import type { ModalTokensType } from '../components/Modal/modal.tokens'
 import type { BreadcrumbTokenType } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { PopoverTokenType } from '../components/Popover/popover.tokens'
-import type { MenuTokensType } from '../components/Menu/menu.tokens'
+import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { MultiSelectTokensType } from '../components/MultiSelect/multiSelect.tokens'
 import type { TableTokenType } from '../components/DataTable/dataTable.tokens'
 import type { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { AccordionTokenType } from '../components/Accordion/accordion.tokens'
 import type { StatCardTokenType } from '../components/StatCard/statcard.tokens'
+import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
 import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
 ):
     | SearchInputTokensType
-    | TagTokensType
+    | ResponsiveTagTokens
     | TextAreaTokensType
     | TextInputTokensType
     | NumberInputTokensType
@@ -48,12 +49,13 @@ export const useComponentToken = (
     | ModalTokensType
     | BreadcrumbTokenType
     | PopoverTokenType
-    | MenuTokensType
+    | ResponsiveMenuTokensType
     | MultiSelectTokensType
     | TableTokenType
     | CalendarTokenType
     | AccordionTokenType
     | StatCardTokenType
+    | ProgressBarTokenType
     | DrawerTokensType => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -107,6 +109,8 @@ export const useComponentToken = (
             return componentTokens.MULTI_VALUE_INPUT
         case 'STAT_CARD':
             return componentTokens.STAT_CARD
+        case 'PROGRESS_BAR':
+            return componentTokens.PROGRESS_BAR
         case 'DRAWER':
             return componentTokens.DRAWER
         default:

@@ -1,6 +1,6 @@
 import { X } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../tokens'
-import { ButtonSubTypeV2, ButtonTypeV2, ButtonV2 } from '../ButtonV2'
+import { ButtonSubType, ButtonType, Button } from '../Button'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { PopoverTokenType } from './popover.tokens'
@@ -65,12 +65,12 @@ const PopoverHeader = ({
                 {heading ? <Header /> : description ? <Description /> : null}
                 {showCloseButton && (
                     <Block size={18} contentCentered>
-                        <ButtonV2
-                            subType={ButtonSubTypeV2.INLINE}
-                            buttonType={ButtonTypeV2.SECONDARY}
+                        <Button
+                            subType={ButtonSubType.INLINE}
+                            buttonType={ButtonType.SECONDARY}
                             leadingIcon={<X size={FOUNDATION_THEME.unit[12]} />}
                             onClick={onClose}
-                        ></ButtonV2>
+                        ></Button>
                     </Block>
                 )}
             </Block>

@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Info, HelpCircle, Check, Settings, MessageCircle } from 'lucide-react'
 import {
-    ButtonV2,
-    ButtonTypeV2,
-    ButtonSizeV2,
-} from '../../../../packages/blend/lib/components/ButtonV2'
+    Button,
+    ButtonType,
+    ButtonSize,
+} from '../../../../packages/blend/lib/components/Button'
 import {
     Tooltip,
     TooltipAlign,
@@ -286,10 +286,10 @@ const TooltipDemo: React.FC = () => {
                     offset={config.offset}
                     open={config.forceVisible || undefined}
                 >
-                    <ButtonV2
+                    <Button
                         text="Hover Me"
-                        buttonType={ButtonTypeV2.PRIMARY}
-                        size={ButtonSizeV2.MEDIUM}
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.MEDIUM}
                         leadingIcon={<Settings size={16} />}
                     />
                 </Tooltip>
@@ -311,10 +311,10 @@ const TooltipDemo: React.FC = () => {
 
                     <Tooltip content="No corporates available. Please add a corporate to proceed">
                         <div>
-                            <ButtonV2
+                            <Button
                                 text="Add Threshold Rule"
-                                buttonType={ButtonTypeV2.PRIMARY}
-                                size={ButtonSizeV2.SMALL}
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
                                 leadingIcon={<Settings size={16} />}
                                 disabled={false}
                             />
@@ -393,10 +393,10 @@ const TooltipDemo: React.FC = () => {
                     <div className="flex flex-col items-center gap-2">
                         <span className="text-sm text-gray-600">Top</span>
                         <Tooltip content="Top tooltip" side={TooltipSide.TOP}>
-                            <ButtonV2
+                            <Button
                                 text="Top"
-                                buttonType={ButtonTypeV2.SECONDARY}
-                                size={ButtonSizeV2.SMALL}
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
                             />
                         </Tooltip>
                     </div>
@@ -407,10 +407,10 @@ const TooltipDemo: React.FC = () => {
                             content="Right tooltip"
                             side={TooltipSide.RIGHT}
                         >
-                            <ButtonV2
+                            <Button
                                 text="Right"
-                                buttonType={ButtonTypeV2.SECONDARY}
-                                size={ButtonSizeV2.SMALL}
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
                             />
                         </Tooltip>
                     </div>
@@ -421,10 +421,10 @@ const TooltipDemo: React.FC = () => {
                             content="Bottom tooltip"
                             side={TooltipSide.BOTTOM}
                         >
-                            <ButtonV2
+                            <Button
                                 text="Bottom"
-                                buttonType={ButtonTypeV2.SECONDARY}
-                                size={ButtonSizeV2.SMALL}
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
                             />
                         </Tooltip>
                     </div>
@@ -432,10 +432,10 @@ const TooltipDemo: React.FC = () => {
                     <div className="flex flex-col items-center gap-2">
                         <span className="text-sm text-gray-600">Left</span>
                         <Tooltip content="Left tooltip" side={TooltipSide.LEFT}>
-                            <ButtonV2
+                            <Button
                                 text="Left"
-                                buttonType={ButtonTypeV2.SECONDARY}
-                                size={ButtonSizeV2.SMALL}
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
                             />
                         </Tooltip>
                     </div>
@@ -453,10 +453,10 @@ const TooltipDemo: React.FC = () => {
 
                 <div className="flex flex-wrap gap-6">
                     <Tooltip content="Small tooltip" size={TooltipSize.SMALL}>
-                        <ButtonV2
+                        <Button
                             text="Small"
-                            buttonType={ButtonTypeV2.PRIMARY}
-                            size={ButtonSizeV2.SMALL}
+                            buttonType={ButtonType.PRIMARY}
+                            size={ButtonSize.SMALL}
                         />
                     </Tooltip>
 
@@ -464,10 +464,10 @@ const TooltipDemo: React.FC = () => {
                         content="Large tooltip with more content to show the difference in size and how it handles longer text and provides more space for detailed information"
                         size={TooltipSize.LARGE}
                     >
-                        <ButtonV2
+                        <Button
                             text="Large"
-                            buttonType={ButtonTypeV2.PRIMARY}
-                            size={ButtonSizeV2.SMALL}
+                            buttonType={ButtonType.PRIMARY}
+                            size={ButtonSize.SMALL}
                         />
                     </Tooltip>
                 </div>
@@ -491,10 +491,10 @@ const TooltipDemo: React.FC = () => {
                             content="Appears immediately"
                             delayDuration={0}
                         >
-                            <ButtonV2
+                            <Button
                                 text="No Delay"
-                                buttonType={ButtonTypeV2.SECONDARY}
-                                size={ButtonSizeV2.SMALL}
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
                             />
                         </Tooltip>
                     </div>
@@ -507,10 +507,10 @@ const TooltipDemo: React.FC = () => {
                             content="Appears after 1 second"
                             delayDuration={1000}
                         >
-                            <ButtonV2
+                            <Button
                                 text="1s Delay"
-                                buttonType={ButtonTypeV2.SECONDARY}
-                                size={ButtonSizeV2.SMALL}
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
                             />
                         </Tooltip>
                     </div>
@@ -523,10 +523,10 @@ const TooltipDemo: React.FC = () => {
                             content="Further away from trigger"
                             offset={15}
                         >
-                            <ButtonV2
+                            <Button
                                 text="Custom Offset"
-                                buttonType={ButtonTypeV2.SECONDARY}
-                                size={ButtonSizeV2.SMALL}
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
                             />
                         </Tooltip>
                     </div>
