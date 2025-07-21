@@ -1,8 +1,8 @@
 import {
-    ButtonV2,
-    ButtonSizeV2,
-    ButtonTypeV2,
-} from '../../../../packages/blend/lib/components/ButtonV2'
+    Button,
+    ButtonSize,
+    ButtonType,
+} from '../../../../packages/blend/lib/components/Button'
 import {
     addSnackbar,
     SnackbarVariant,
@@ -84,27 +84,27 @@ const SnackbarDemo = () => {
             <div className="flex flex-col gap-4">
                 <h2 className="text-lg font-semibold">Snackbar Variants</h2>
                 <div className="flex gap-4 flex-wrap">
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.PRIMARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.MEDIUM}
                         onClick={showInfoSnackbar}
                         text="Info Snackbar"
                     />
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.PRIMARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.MEDIUM}
                         onClick={showSuccessSnackbar}
                         text="Success Snackbar"
                     />
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.PRIMARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.MEDIUM}
                         onClick={showWarningSnackbar}
                         text="Warning Snackbar"
                     />
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.PRIMARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.MEDIUM}
                         onClick={showErrorSnackbar}
                         text="Error Snackbar"
                     />
@@ -115,15 +115,15 @@ const SnackbarDemo = () => {
             <div className="flex flex-col gap-4">
                 <h2 className="text-lg font-semibold">Advanced Usage</h2>
                 <div className="flex gap-4 flex-wrap">
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
                         onClick={showSnackbarWithAction}
                         text="Snackbar with Action"
                     />
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
                         onClick={showSnackbarWithCustomClose}
                         text="Custom Close Handler"
                     />
@@ -141,9 +141,9 @@ const SnackbarDemo = () => {
                         <p className="text-sm text-gray-600 mb-3">
                             Simple notification with header and description.
                         </p>
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.SECONDARY}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
                             onClick={() =>
                                 addSnackbar({
                                     header: 'Basic Notification',
@@ -164,9 +164,9 @@ const SnackbarDemo = () => {
                             Notification with an action button for user
                             interaction.
                         </p>
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.SECONDARY}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
                             onClick={() =>
                                 addSnackbar({
                                     header: 'Action Required',
@@ -194,9 +194,9 @@ const SnackbarDemo = () => {
                             Notification that automatically disappears after a
                             set time.
                         </p>
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.SECONDARY}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
                             onClick={() =>
                                 addSnackbar({
                                     header: 'Auto Dismiss',
@@ -219,9 +219,9 @@ const SnackbarDemo = () => {
                     sequence.
                 </p>
                 <div className="flex gap-4 flex-wrap">
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
                         onClick={() => {
                             addSnackbar({
                                 header: 'First Notification',
@@ -261,9 +261,9 @@ const SnackbarDemo = () => {
                         <p className="text-sm text-blue-600 mb-3">
                             Used for general information and neutral messages.
                         </p>
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.PRIMARY}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.PRIMARY}
+                            size={ButtonSize.SMALL}
                             onClick={showInfoSnackbar}
                             text="Show Info"
                         />
@@ -277,9 +277,9 @@ const SnackbarDemo = () => {
                             Used for successful operations and positive
                             feedback.
                         </p>
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.SUCCESS}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.SUCCESS}
+                            size={ButtonSize.SMALL}
                             onClick={showSuccessSnackbar}
                             text="Show Success"
                         />
@@ -292,9 +292,9 @@ const SnackbarDemo = () => {
                         <p className="text-sm text-yellow-600 mb-3">
                             Used for warnings and cautionary messages.
                         </p>
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.SECONDARY}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
                             onClick={showWarningSnackbar}
                             text="Show Warning"
                         />
@@ -307,9 +307,9 @@ const SnackbarDemo = () => {
                         <p className="text-sm text-red-600 mb-3">
                             Used for errors and critical messages.
                         </p>
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.DANGER}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.DANGER}
+                            size={ButtonSize.SMALL}
                             onClick={showErrorSnackbar}
                             text="Show Error"
                         />

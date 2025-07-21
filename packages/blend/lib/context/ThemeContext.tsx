@@ -63,7 +63,7 @@ import {
 import {
     type ResponsiveButtonTokens,
     getButtonTokens,
-} from '../components/ButtonV2/button.tokens'
+} from '../components/Button/button.tokens'
 import {
     getModalComponentTokens,
     type ModalTokensType,

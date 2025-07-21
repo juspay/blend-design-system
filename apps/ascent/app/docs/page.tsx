@@ -13,7 +13,7 @@ const components = [
         slug: 'button-group',
         title: 'Button Group V2',
         description:
-            'The ButtonGroupV2 component is a container that groups multiple ButtonV2 components together with flexible layout options and automatic positioning.',
+            'The ButtonGroupV2 component is a container that groups multiple Button components together with flexible layout options and automatic positioning.',
     },
     {
         slug: 'alert',

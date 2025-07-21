@@ -1,12 +1,6 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import {
-    Popover,
-    PopoverSize,
-    ButtonV2,
-    ButtonTypeV2,
-    ButtonSizeV2,
-} from 'blend-v1'
+import { Popover, PopoverSize, Button, ButtonType, ButtonSize } from 'blend-v1'
 
 /**
  * FIGMA CODE CONNECT FOR POPOVER COMPONENT
@@ -81,7 +75,7 @@ figma.connect(
 
             return (
                 <Popover
-                    trigger={<ButtonV2 text="Open Popover" />}
+                    trigger={<Button text="Open Popover" />}
                     size={size}
                     showCloseButton={showCloseButton}
                     heading="Popover Title"
@@ -96,7 +90,7 @@ figma.connect(
             )
         },
 
-        imports: ["import { Popover, ButtonV2 } from 'blend-v1'"],
+        imports: ["import { Popover, Button } from 'blend-v1'"],
 
         links: [
             {
@@ -127,7 +121,7 @@ figma.connect(
         example: ({ size, showCloseButton }) => (
             <Popover
                 trigger={
-                    <ButtonV2 text="Info" buttonType={ButtonTypeV2.SECONDARY} />
+                    <Button text="Info" buttonType={ButtonType.SECONDARY} />
                 }
                 size={size}
                 showCloseButton={showCloseButton}
@@ -157,7 +151,7 @@ figma.connect(
         },
         example: ({ size, showCloseButton }) => (
             <Popover
-                trigger={<ButtonV2 text="Open Popover" />}
+                trigger={<Button text="Open Popover" />}
                 size={size}
                 showCloseButton={showCloseButton}
                 heading="Popover Title"
@@ -186,7 +180,7 @@ figma.connect(
         },
         example: ({ size, showCloseButton }) => (
             <Popover
-                trigger={<ButtonV2 text="Show Options" />}
+                trigger={<Button text="Show Options" />}
                 size={size}
                 showCloseButton={showCloseButton}
                 heading="Confirm Action"
@@ -219,14 +213,14 @@ figma.connect(
         },
         example: ({ size, showCloseButton }) => (
             <Popover
-                trigger={<ButtonV2 text="View Details" />}
+                trigger={<Button text="View Details" />}
                 size={size}
                 showCloseButton={showCloseButton}
                 heading="Additional Information"
                 description="Here are some details you might find useful."
                 secondaryAction={{
                     children: 'Dismiss',
-                    buttonType: ButtonTypeV2.SECONDARY,
+                    buttonType: ButtonType.SECONDARY,
                     onClick: () => console.log('Dismissed'),
                 }}
             >
@@ -253,7 +247,7 @@ figma.connect(
         },
         example: ({ size, showCloseButton }) => (
             <Popover
-                trigger={<ButtonV2 text="Edit Settings" />}
+                trigger={<Button text="Edit Settings" />}
                 size={size}
                 showCloseButton={showCloseButton}
                 heading="Edit Preferences"
@@ -264,7 +258,7 @@ figma.connect(
                 }}
                 secondaryAction={{
                     children: 'Cancel',
-                    buttonType: ButtonTypeV2.SECONDARY,
+                    buttonType: ButtonType.SECONDARY,
                     onClick: () => console.log('Cancelled'),
                 }}
             >
@@ -287,7 +281,7 @@ figma.connect(
         variant: { size: 'sm', close: true, actions: false },
         example: () => (
             <Popover
-                trigger={<ButtonV2 text="Help" size={ButtonSizeV2.SMALL} />}
+                trigger={<Button text="Help" size={ButtonSize.SMALL} />}
                 size={PopoverSize.SMALL}
                 showCloseButton={true}
                 heading="Quick Tip"
@@ -316,20 +310,20 @@ figma.connect(
             if (primary) {
                 actionProps.primaryAction = {
                     children: 'OK',
-                    size: ButtonSizeV2.SMALL,
+                    size: ButtonSize.SMALL,
                 }
             }
             if (secondary) {
                 actionProps.secondaryAction = {
                     children: 'Cancel',
-                    size: ButtonSizeV2.SMALL,
-                    buttonType: ButtonTypeV2.SECONDARY,
+                    size: ButtonSize.SMALL,
+                    buttonType: ButtonType.SECONDARY,
                 }
             }
 
             return (
                 <Popover
-                    trigger={<ButtonV2 text="Help" size={ButtonSizeV2.SMALL} />}
+                    trigger={<Button text="Help" size={ButtonSize.SMALL} />}
                     size={PopoverSize.SMALL}
                     showCloseButton={true}
                     heading="Quick Tip"
@@ -348,7 +342,7 @@ figma.connect(
  * Example of Popover with additional features not in Figma:
  *
  * <Popover
- *   trigger={<ButtonV2 text="Advanced" />}
+ *   trigger={<Button text="Advanced" />}
  *   size={PopoverSize.MEDIUM}
  *   side="bottom"
  *   align="start"

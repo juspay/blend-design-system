@@ -1,4 +1,4 @@
-import type { ButtonV2Props } from '../ButtonV2'
+import type { ButtonV2Props } from '../Button'
 
 export type PopoverActionType = Omit<
     ButtonV2Props,

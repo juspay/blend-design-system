@@ -22,7 +22,7 @@ import {
     MenuItemV2Variant,
     MenuItemV2ActionType,
 } from 'blend-v1'
-import { ButtonV2, ButtonTypeV2 } from 'blend-v1'
+import { Button, ButtonType } from 'blend-v1'
 import { Settings, User, LogOut, ChevronDown } from 'lucide-react'
 
 function MyComponent() {
@@ -49,9 +49,9 @@ function MyComponent() {
     return (
         <Menu
             trigger={
-                <ButtonV2
+                <Button
                     text="Open Menu"
-                    buttonType={ButtonTypeV2.SECONDARY}
+                    buttonType={ButtonType.SECONDARY}
                     trailingIcon={<ChevronDown size={16} />}
                 />
             }
@@ -325,7 +325,7 @@ const menuItems = [
 ]
 
 ;<Menu
-    trigger={<ButtonV2 text="Open Menu" buttonType={ButtonTypeV2.SECONDARY} />}
+    trigger={<Button text="Open Menu" buttonType={ButtonType.SECONDARY} />}
     items={[{ items: menuItems }]}
 />
 ```
@@ -349,7 +349,7 @@ const menuItems = [
 ]
 
 ;<Menu
-    trigger={<ButtonV2 text="Open Menu" buttonType={ButtonTypeV2.SECONDARY} />}
+    trigger={<Button text="Open Menu" buttonType={ButtonType.SECONDARY} />}
     items={[{ items: menuItems }]}
 />
 ```
@@ -382,7 +382,7 @@ const menuGroups = [
 ]
 
 ;<Menu
-    trigger={<ButtonV2 text="Open Menu" buttonType={ButtonTypeV2.SECONDARY} />}
+    trigger={<Button text="Open Menu" buttonType={ButtonType.SECONDARY} />}
     items={menuGroups}
 />
 ```
@@ -393,9 +393,7 @@ Menu with search functionality
 
 ```tsx
 <Menu
-    trigger={
-        <ButtonV2 text="Search Menu" buttonType={ButtonTypeV2.SECONDARY} />
-    }
+    trigger={<Button text="Search Menu" buttonType={ButtonType.SECONDARY} />}
     items={[{ items: menuItems }]}
     enableSearch={true}
     searchPlaceholder="Search options..."
@@ -424,7 +422,7 @@ const menuItems = [
 ]
 
 ;<Menu
-    trigger={<ButtonV2 text="Sub Menu" buttonType={ButtonTypeV2.SECONDARY} />}
+    trigger={<Button text="Sub Menu" buttonType={ButtonType.SECONDARY} />}
     items={[{ items: menuItems }]}
 />
 ```

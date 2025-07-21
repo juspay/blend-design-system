@@ -1,6 +1,6 @@
 import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
-import { ButtonSizeV2, ButtonSubTypeV2, ButtonTypeV2 } from './types'
+import { ButtonSize, ButtonSubType, ButtonType } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 
@@ -9,48 +9,48 @@ export type ButtonState = 'default' | 'hover' | 'active' | 'disabled'
 export type ButtonTokensType = {
     gap: CSSObject['gap']
     backgroundColor: {
-        [key in ButtonTypeV2]: {
-            [key in ButtonSubTypeV2]: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['background']
             }
         }
     }
     color: {
-        [key in ButtonTypeV2]: {
-            [key in ButtonSubTypeV2]: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['color']
             }
         }
     }
     borderRadius: {
-        [key in ButtonTypeV2]: {
-            [key in ButtonSubTypeV2]: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['borderRadius']
             }
         }
     }
     padding: {
-        [key in ButtonSizeV2]: {
-            [key in ButtonSubTypeV2]: CSSObject['padding']
+        [key in ButtonSize]: {
+            [key in ButtonSubType]: CSSObject['padding']
         }
     }
     border: {
-        [key in ButtonTypeV2]: {
-            [key in ButtonSubTypeV2]: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['border']
             }
         }
     }
     shadow: {
-        [key in ButtonTypeV2]: {
-            [key in ButtonSubTypeV2]: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['boxShadow']
             }
         }
     }
     outline: {
-        [key in ButtonTypeV2]: {
-            [key in ButtonSubTypeV2]: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['outline']
             }
         }

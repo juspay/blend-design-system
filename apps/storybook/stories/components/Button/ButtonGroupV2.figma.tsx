@@ -1,5 +1,5 @@
 import React from 'react'
-import { ButtonGroupV2, ButtonV2, ButtonTypeV2 } from 'blend-v1'
+import { ButtonGroupV2, Button, ButtonType } from 'blend-v1'
 import figma from '@figma/code-connect'
 
 /**
@@ -22,26 +22,26 @@ figma.connect(
             // number prop is used to generate children
             children: figma.enum('number', {
                 '2': [
-                    <ButtonV2 key={0} text="Button 1" />,
-                    <ButtonV2 key={1} text="Button 2" />,
+                    <Button key={0} text="Button 1" />,
+                    <Button key={1} text="Button 2" />,
                 ],
                 '3': [
-                    <ButtonV2 key={0} text="Button 1" />,
-                    <ButtonV2 key={1} text="Button 2" />,
-                    <ButtonV2 key={2} text="Button 3" />,
+                    <Button key={0} text="Button 1" />,
+                    <Button key={1} text="Button 2" />,
+                    <Button key={2} text="Button 3" />,
                 ],
                 '4': [
-                    <ButtonV2 key={0} text="Button 1" />,
-                    <ButtonV2 key={1} text="Button 2" />,
-                    <ButtonV2 key={2} text="Button 3" />,
-                    <ButtonV2 key={3} text="Button 4" />,
+                    <Button key={0} text="Button 1" />,
+                    <Button key={1} text="Button 2" />,
+                    <Button key={2} text="Button 3" />,
+                    <Button key={3} text="Button 4" />,
                 ],
                 '5': [
-                    <ButtonV2 key={0} text="Button 1" />,
-                    <ButtonV2 key={1} text="Button 2" />,
-                    <ButtonV2 key={2} text="Button 3" />,
-                    <ButtonV2 key={3} text="Button 4" />,
-                    <ButtonV2 key={4} text="Button 5" />,
+                    <Button key={0} text="Button 1" />,
+                    <Button key={1} text="Button 2" />,
+                    <Button key={2} text="Button 3" />,
+                    <Button key={3} text="Button 4" />,
+                    <Button key={4} text="Button 5" />,
                 ],
             }),
 
@@ -69,26 +69,26 @@ figma.connect(
         props: {
             children: figma.enum('number', {
                 '2': [
-                    <ButtonV2 key={0} text="Button 1" />,
-                    <ButtonV2 key={1} text="Button 2" />,
+                    <Button key={0} text="Button 1" />,
+                    <Button key={1} text="Button 2" />,
                 ],
                 '3': [
-                    <ButtonV2 key={0} text="Button 1" />,
-                    <ButtonV2 key={1} text="Button 2" />,
-                    <ButtonV2 key={2} text="Button 3" />,
+                    <Button key={0} text="Button 1" />,
+                    <Button key={1} text="Button 2" />,
+                    <Button key={2} text="Button 3" />,
                 ],
                 '4': [
-                    <ButtonV2 key={0} text="Button 1" />,
-                    <ButtonV2 key={1} text="Button 2" />,
-                    <ButtonV2 key={2} text="Button 3" />,
-                    <ButtonV2 key={3} text="Button 4" />,
+                    <Button key={0} text="Button 1" />,
+                    <Button key={1} text="Button 2" />,
+                    <Button key={2} text="Button 3" />,
+                    <Button key={3} text="Button 4" />,
                 ],
                 '5': [
-                    <ButtonV2 key={0} text="Button 1" />,
-                    <ButtonV2 key={1} text="Button 2" />,
-                    <ButtonV2 key={2} text="Button 3" />,
-                    <ButtonV2 key={3} text="Button 4" />,
-                    <ButtonV2 key={4} text="Button 5" />,
+                    <Button key={0} text="Button 1" />,
+                    <Button key={1} text="Button 2" />,
+                    <Button key={2} text="Button 3" />,
+                    <Button key={3} text="Button 4" />,
+                    <Button key={4} text="Button 5" />,
                 ],
             }),
         },
@@ -107,26 +107,26 @@ figma.connect(
         props: {
             children: figma.enum('number', {
                 '2': [
-                    <ButtonV2 key={0} text="Button 1" />,
-                    <ButtonV2 key={1} text="Button 2" />,
+                    <Button key={0} text="Button 1" />,
+                    <Button key={1} text="Button 2" />,
                 ],
                 '3': [
-                    <ButtonV2 key={0} text="Button 1" />,
-                    <ButtonV2 key={1} text="Button 2" />,
-                    <ButtonV2 key={2} text="Button 3" />,
+                    <Button key={0} text="Button 1" />,
+                    <Button key={1} text="Button 2" />,
+                    <Button key={2} text="Button 3" />,
                 ],
                 '4': [
-                    <ButtonV2 key={0} text="Button 1" />,
-                    <ButtonV2 key={1} text="Button 2" />,
-                    <ButtonV2 key={2} text="Button 3" />,
-                    <ButtonV2 key={3} text="Button 4" />,
+                    <Button key={0} text="Button 1" />,
+                    <Button key={1} text="Button 2" />,
+                    <Button key={2} text="Button 3" />,
+                    <Button key={3} text="Button 4" />,
                 ],
                 '5': [
-                    <ButtonV2 key={0} text="Button 1" />,
-                    <ButtonV2 key={1} text="Button 2" />,
-                    <ButtonV2 key={2} text="Button 3" />,
-                    <ButtonV2 key={3} text="Button 4" />,
-                    <ButtonV2 key={4} text="Button 5" />,
+                    <Button key={0} text="Button 1" />,
+                    <Button key={1} text="Button 2" />,
+                    <Button key={2} text="Button 3" />,
+                    <Button key={3} text="Button 4" />,
+                    <Button key={4} text="Button 5" />,
                 ],
             }),
         },
@@ -148,8 +148,8 @@ figma.connect(
         },
         example: ({ stacked }) => (
             <ButtonGroupV2 stacked={stacked}>
-                <ButtonV2 text="Cancel" buttonType={ButtonTypeV2.SECONDARY} />
-                <ButtonV2 text="Save" buttonType={ButtonTypeV2.PRIMARY} />
+                <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                <Button text="Save" buttonType={ButtonType.PRIMARY} />
             </ButtonGroupV2>
         ),
     }
@@ -166,9 +166,9 @@ figma.connect(
         },
         example: ({ stacked }) => (
             <ButtonGroupV2 stacked={stacked}>
-                <ButtonV2 text="Previous" buttonType={ButtonTypeV2.SECONDARY} />
-                <ButtonV2 text="Current" buttonType={ButtonTypeV2.PRIMARY} />
-                <ButtonV2 text="Next" buttonType={ButtonTypeV2.SECONDARY} />
+                <Button text="Previous" buttonType={ButtonType.SECONDARY} />
+                <Button text="Current" buttonType={ButtonType.PRIMARY} />
+                <Button text="Next" buttonType={ButtonType.SECONDARY} />
             </ButtonGroupV2>
         ),
     }
@@ -188,13 +188,13 @@ figma.connect(ButtonGroupV2, "https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG
     }),
     children: figma.enum("number", {
       "2": (size) => [
-        <ButtonV2 key={0} text="Button 1" size={size} />,
-        <ButtonV2 key={1} text="Button 2" size={size} />
+        <Button key={0} text="Button 1" size={size} />,
+        <Button key={1} text="Button 2" size={size} />
       ],
       "3": (size) => [
-        <ButtonV2 key={0} text="Button 1" size={size} />,
-        <ButtonV2 key={1} text="Button 2" size={size} />,
-        <ButtonV2 key={2} text="Button 3" size={size} />
+        <Button key={0} text="Button 1" size={size} />,
+        <Button key={1} text="Button 2" size={size} />,
+        <Button key={2} text="Button 3" size={size} />
       ],
     }),
   },

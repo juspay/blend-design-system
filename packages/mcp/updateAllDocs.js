@@ -8,7 +8,7 @@ const DOCS_COMPONENTS_PATH = '../../apps/docs/content/docs/components/'
 
 // Component name mappings for cases where file names differ from component names
 const COMPONENT_NAME_MAPPINGS = {
-    ButtonV2: 'buttonv2',
+    Button: 'buttonv2',
     ButtonGroupV2: 'buttongroupv2',
     AvatarGroup: 'avatargroup',
     ButtonGroup: 'buttongroup',
