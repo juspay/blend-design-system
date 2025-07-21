@@ -67,6 +67,7 @@ const SingleSelect = ({
     onSelect,
     enableSearch,
     slot,
+    useDrawerOnMobile = true,
     alignment,
     side,
     sideOffset,
@@ -90,7 +91,7 @@ const SingleSelect = ({
         return valueLabelMap[selected]
     }
 
-    if (isMobile) {
+    if (isMobile && useDrawerOnMobile) {
         return (
             <Block width="100%" display="flex" flexDirection="column" gap={8}>
                 {variant === SelectMenuVariant.CONTAINER && (

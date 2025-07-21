@@ -14,6 +14,12 @@ export type DrawerTokensType = {
         zIndex: CSSObject['zIndex']
         border: CSSObject['border']
     }
+    mobileOffset: {
+        top: CSSObject['top']
+        bottom: CSSObject['bottom']
+        left: CSSObject['left']
+        right: CSSObject['right']
+    }
     handle: {
         backgroundColor: CSSObject['backgroundColor']
         borderRadius: CSSObject['borderRadius']
@@ -54,7 +60,7 @@ export type DrawerTokensType = {
 
 export const drawerTokens: DrawerTokensType = {
     overlay: {
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
         zIndex: 9998,
     },
     content: {
@@ -63,6 +69,12 @@ export const drawerTokens: DrawerTokensType = {
         boxShadow: FOUNDATION_THEME.shadows.xl,
         zIndex: 9999,
         border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+    },
+    mobileOffset: {
+        top: '74px',
+        bottom: '16px',
+        left: '16px',
+        right: '16px',
     },
     handle: {
         backgroundColor: FOUNDATION_THEME.colors.gray[300],
@@ -107,7 +119,7 @@ export const getDrawerComponentTokens = (
 ): DrawerTokensType => {
     return {
         overlay: {
-            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
             zIndex: 9998,
         },
         content: {
@@ -116,6 +128,12 @@ export const getDrawerComponentTokens = (
             boxShadow: foundationToken.shadows.xl,
             zIndex: 9999,
             border: `1px solid ${foundationToken.colors.gray[200]}`,
+        },
+        mobileOffset: {
+            top: '74px',
+            bottom: '16px',
+            left: '16px',
+            right: '16px',
         },
         handle: {
             backgroundColor: foundationToken.colors.gray[300],

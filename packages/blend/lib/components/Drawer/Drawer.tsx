@@ -28,6 +28,12 @@ const StyledContent = styled(VaulDrawer.Content)<{
     tokens: DrawerTokensType
     direction: 'top' | 'bottom' | 'left' | 'right'
     hasSnapPoints?: boolean
+    mobileOffset?: {
+        top?: string
+        bottom?: string
+        left?: string
+        right?: string
+    }
 }>`
     z-index: ${({ tokens }) => tokens.content.zIndex};
     background-color: ${({ tokens }) => tokens.content.backgroundColor};
@@ -37,29 +43,47 @@ const StyledContent = styled(VaulDrawer.Content)<{
     display: flex;
     flex-direction: column;
 
-    ${({ direction, tokens, hasSnapPoints }) => {
+    ${({ direction, tokens, hasSnapPoints, mobileOffset }) => {
+        const offset = {
+            top: mobileOffset?.top ?? tokens.mobileOffset.top,
+            bottom: mobileOffset?.bottom ?? tokens.mobileOffset.bottom,
+            left: mobileOffset?.left ?? tokens.mobileOffset.left,
+            right: mobileOffset?.right ?? tokens.mobileOffset.right,
+        }
+
         if (direction === 'bottom') {
             return `
+                position: fixed;
+                bottom: ${offset.bottom};
+                left: ${offset.left};
+                right: ${offset.right};
                 ${
-                    !hasSnapPoints
-                        ? `
-                    position: fixed;
-                    bottom: 0;
-                    left: 0;
-                    right: 0;
-                    height: 40vh;
-                `
-                        : `
-                    position: fixed;
-                    bottom: 0;
-                    left: 0;
-                    right: 0;
-                    height: 100%;
-                    max-height: 97%;
-                `
+                    hasSnapPoints
+                        ? `height: calc(100% - calc(${offset.top} + ${offset.bottom}));
+                           max-height: calc(97% - calc(${offset.top} + ${offset.bottom}));`
+                        : `top: ${offset.top};`
                 }
                 border-radius: ${tokens.content.borderRadius};
-                border-bottom: none;
+                
+                @media (min-width: 1024px) {
+                    ${
+                        !hasSnapPoints
+                            ? `
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        top: auto;
+                    `
+                            : `
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        height: 100%;
+                        max-height: 97%;
+                        top: 0;
+                    `
+                    }
+                }
             `
         }
         if (direction === 'top') {
@@ -68,42 +92,74 @@ const StyledContent = styled(VaulDrawer.Content)<{
                     !hasSnapPoints
                         ? `
                     position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    height: 40vh;
+                    top: ${offset.top};
+                    left: ${offset.left};
+                    right: ${offset.right};
                 `
                         : `
                     position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    height: 100%;
-                    max-height: 97%;
+                    top: ${offset.top};
+                    left: ${offset.left};
+                    right: ${offset.right};
+                    height: calc(100% - calc(${offset.top} + ${offset.bottom}));
+                    max-height: calc(97% - calc(${offset.top} + ${offset.bottom}));
                 `
                 }
                 border-radius: ${tokens.content.borderRadius};
-                border-top: none;
+                
+                @media (min-width: 1024px) {
+                    ${
+                        !hasSnapPoints
+                            ? `
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                    `
+                            : `
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        height: 100%;
+                        max-height: 97%;
+                    `
+                    }
+                }
             `
         }
         if (direction === 'left') {
             return `
                 position: fixed;
-                top: 0;
-                bottom: 0;
-                left: 0;
+                top: ${offset.top};
+                bottom: ${offset.bottom};
+                left: ${offset.left};
                 border-radius: ${tokens.content.borderRadius};
-                width: 400px;
+                width: calc(100% - calc(${offset.left} + ${offset.right}));
+                max-width: 400px;
+                
+                @media (min-width: 1024px) {
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    width: 400px;
+                }
             `
         }
         if (direction === 'right') {
             return `
                 position: fixed;
-                top: 0;
-                bottom: 0;
-                right: 0;
+                top: ${offset.top};
+                bottom: ${offset.bottom};
+                right: ${offset.right};
                 border-radius: ${tokens.content.borderRadius};
-                width: 400px;
+                width: calc(100% - calc(${offset.left} + ${offset.right}));
+                max-width: 400px;
+                
+                @media (min-width: 1024px) {
+                    top: 0;
+                    bottom: 0;
+                    right: 0;
+                    width: 400px;
+                }
             `
         }
     }}
@@ -206,6 +262,12 @@ const DrawerContent = forwardRef<
         showHandle?: boolean
         handle?: React.ReactNode
         hasSnapPoints?: boolean
+        mobileOffset?: {
+            top?: string
+            bottom?: string
+            left?: string
+            right?: string
+        }
     }
 >(
     (
@@ -217,6 +279,7 @@ const DrawerContent = forwardRef<
             showHandle = true,
             handle,
             hasSnapPoints = false,
+            mobileOffset,
             ...props
         },
         ref
@@ -231,6 +294,7 @@ const DrawerContent = forwardRef<
                 tokens={tokens}
                 direction={direction}
                 hasSnapPoints={hasSnapPoints}
+                mobileOffset={mobileOffset}
                 {...props}
             >
                 {showHandle &&

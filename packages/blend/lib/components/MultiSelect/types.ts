@@ -71,6 +71,9 @@ export type MultiSelectProps = {
     enableSelectAll?: boolean
     selectAllText?: string
 
+    // responsive behavior
+    useDrawerOnMobile?: boolean
+
     // dim
     minWidth?: number
     maxWidth?: number

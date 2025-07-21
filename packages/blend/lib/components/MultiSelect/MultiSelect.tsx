@@ -51,6 +51,7 @@ const MultiSelect = ({
     searchPlaceholder = 'Search options...',
     enableSelectAll = false,
     selectAllText = 'Select All',
+    useDrawerOnMobile = true,
     minWidth,
     maxWidth,
     maxHeight,
@@ -86,7 +87,7 @@ const MultiSelect = ({
         return `${selectedValues.length} selected`
     }
 
-    if (isMobile) {
+    if (isMobile && useDrawerOnMobile) {
         return (
             <Block width="100%" display="flex" flexDirection="column" gap={8}>
                 {variant === MultiSelectVariant.CONTAINER && (

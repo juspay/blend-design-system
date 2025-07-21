@@ -62,6 +62,15 @@ export type DrawerProps = {
      */
     snapToSequentialPoint?: boolean
     /**
+     * Custom mobile offset values (overrides token defaults)
+     */
+    mobileOffset?: {
+        top?: string
+        bottom?: string
+        left?: string
+        right?: string
+    }
+    /**
      * Custom class name for the drawer content
      */
     className?: string

@@ -22,6 +22,8 @@ export type SingleSelectProps = {
     slot?: React.ReactNode
     disabled?: boolean
     name?: string
+    // responsive behavior
+    useDrawerOnMobile?: boolean
     // alignment
     alignment?: SelectMenuAlignment
     side?: SelectMenuSide

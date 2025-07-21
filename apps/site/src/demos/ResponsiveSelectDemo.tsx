@@ -120,9 +120,21 @@ export const ResponsiveSelectDemo = () => {
     const [selectedCountry, setSelectedCountry] = useState('')
     const [selectedSkills, setSelectedSkills] = useState<string[]>([])
     const [selectedPriority, setSelectedPriority] = useState('')
+    const [selectedCountryNoDrawer, setSelectedCountryNoDrawer] = useState('')
+    const [selectedSkillsNoDrawer, setSelectedSkillsNoDrawer] = useState<
+        string[]
+    >([])
 
     const handleSkillChange = (value: string) => {
         setSelectedSkills((prev) =>
+            prev.includes(value)
+                ? prev.filter((skill) => skill !== value)
+                : [...prev, value]
+        )
+    }
+
+    const handleSkillChangeNoDrawer = (value: string) => {
+        setSelectedSkillsNoDrawer((prev) =>
             prev.includes(value)
                 ? prev.filter((skill) => skill !== value)
                 : [...prev, value]
@@ -238,6 +250,96 @@ export const ResponsiveSelectDemo = () => {
 
             <div
                 style={{
+                    marginTop: '32px',
+                    padding: '16px',
+                    backgroundColor: '#fef3c7',
+                    borderRadius: '8px',
+                    border: '1px solid #f59e0b',
+                }}
+            >
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '18px',
+                        fontWeight: '600',
+                        color: '#92400e',
+                    }}
+                >
+                    🎛️ Custom Responsive Behavior
+                </h3>
+                <p
+                    style={{
+                        color: '#92400e',
+                        marginBottom: '16px',
+                        fontSize: '14px',
+                    }}
+                >
+                    You can control whether to use drawer on mobile with the
+                    `useDrawerOnMobile` prop. These selects below will always
+                    use dropdown menus, even on mobile:
+                </p>
+
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                    }}
+                >
+                    <SingleSelect
+                        label="Country (No Drawer)"
+                        placeholder="Select your country"
+                        items={countryOptions}
+                        selected={selectedCountryNoDrawer}
+                        onSelect={setSelectedCountryNoDrawer}
+                        hintText="This select uses dropdown even on mobile"
+                        useDrawerOnMobile={false}
+                    />
+
+                    <MultiSelect
+                        label="Skills (No Drawer)"
+                        placeholder="Select your skills"
+                        items={skillOptions}
+                        selectedValues={selectedSkillsNoDrawer}
+                        onChange={handleSkillChangeNoDrawer}
+                        hintText="This multi-select uses dropdown even on mobile"
+                        useDrawerOnMobile={false}
+                    />
+                </div>
+
+                <div
+                    style={{
+                        marginTop: '16px',
+                        padding: '12px',
+                        backgroundColor: '#fbbf24',
+                        borderRadius: '6px',
+                    }}
+                >
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '8px',
+                            fontSize: '14px',
+                            color: '#92400e',
+                        }}
+                    >
+                        <div>
+                            <strong>Country (No Drawer):</strong>{' '}
+                            {selectedCountryNoDrawer || 'None selected'}
+                        </div>
+                        <div>
+                            <strong>Skills (No Drawer):</strong>{' '}
+                            {selectedSkillsNoDrawer.length > 0
+                                ? selectedSkillsNoDrawer.join(', ')
+                                : 'None selected'}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                style={{
                     marginTop: '16px',
                     padding: '16px',
                     backgroundColor: '#eff6ff',
@@ -264,19 +366,25 @@ export const ResponsiveSelectDemo = () => {
                     }}
                 >
                     <li>
-                        On desktop (≥1024px): Shows regular dropdown selects
+                        <strong>
+                            Default behavior (useDrawerOnMobile=true):
+                        </strong>{' '}
+                        On desktop (≥1024px) shows dropdown, on mobile
+                        (&lt;1024px) shows drawer
                     </li>
                     <li>
-                        On mobile (&lt;1024px): Shows button that opens drawer
-                        with menu items
+                        <strong>
+                            Custom behavior (useDrawerOnMobile=false):
+                        </strong>{' '}
+                        Always shows dropdown menu regardless of screen size
                     </li>
                     <li>
                         Uses MenuItem components inside the drawer for
                         consistent styling
                     </li>
                     <li>
-                        Automatically handles responsive behavior based on
-                        screen size
+                        Drawer respects the 74px top offset and 16px margins as
+                        configured in tokens
                     </li>
                 </ul>
             </div>

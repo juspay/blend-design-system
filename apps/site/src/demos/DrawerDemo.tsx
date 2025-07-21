@@ -1115,6 +1115,77 @@ export const NonDismissibleExample = () => {
     )
 }
 
+// Custom Mobile Offset Example
+export const CustomMobileOffsetExample = () => {
+    return (
+        <Drawer
+            mobileOffset={{
+                top: '100px',
+                bottom: '32px',
+                left: '24px',
+                right: '24px',
+            }}
+        >
+            <DrawerTrigger>
+                <button
+                    style={{
+                        display: 'flex',
+                        height: '40px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        overflow: 'hidden',
+                        borderRadius: '20px',
+                        backgroundColor: 'white',
+                        padding: '0 16px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                        border: '1px solid #e5e7eb',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Custom Mobile Offset
+                </button>
+            </DrawerTrigger>
+            <DrawerPortal>
+                <DrawerOverlay />
+                <DrawerContent
+                    mobileOffset={{
+                        top: '100px',
+                        bottom: '32px',
+                        left: '24px',
+                        right: '24px',
+                    }}
+                >
+                    <DrawerHeader>
+                        <DrawerTitle>Custom Mobile Offset</DrawerTitle>
+                        <DrawerDescription>
+                            This drawer has custom mobile offset values: top:
+                            100px, bottom: 32px, left/right: 24px
+                        </DrawerDescription>
+                    </DrawerHeader>
+                    <DrawerBody>
+                        <p>
+                            You can customize the mobile offset by passing the
+                            `mobileOffset` prop to both the Drawer and
+                            DrawerContent components.
+                        </p>
+                        <p>
+                            Default values are: top: 74px, bottom/left/right:
+                            16px
+                        </p>
+                        <p>
+                            This example uses larger offsets to demonstrate the
+                            customization capability.
+                        </p>
+                    </DrawerBody>
+                </DrawerContent>
+            </DrawerPortal>
+        </Drawer>
+    )
+}
+
 // All Examples Component
 export const DrawerDemo = () => {
     return (
@@ -1136,6 +1207,7 @@ export const DrawerDemo = () => {
                     <TopDrawerExample />
                     <ScrollableDrawerExample />
                     <ControlledDrawerExample />
+                    <CustomMobileOffsetExample />
                 </div>
             </div>
 
