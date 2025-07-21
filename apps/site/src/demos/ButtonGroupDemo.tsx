@@ -1,10 +1,10 @@
 import {
-    ButtonV2,
-    ButtonTypeV2,
-    ButtonSizeV2,
-    ButtonSubTypeV2,
-} from '../../../../packages/blend/lib/components/ButtonV2'
-import { ButtonGroupV2 } from '../../../../packages/blend/lib/components/ButtonGroupV2'
+    Button,
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+} from '../../../../packages/blend/lib/components/Button'
+import { ButtonGroup } from '../../../../packages/blend/lib/components/ButtonGroup'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
@@ -25,33 +25,33 @@ import { useState } from 'react'
 const ButtonGroupDemo = () => {
     const [playgroundStacked, setPlaygroundStacked] = useState(false)
     const [playgroundButtonType, setPlaygroundButtonType] =
-        useState<ButtonTypeV2>(ButtonTypeV2.PRIMARY)
-    const [playgroundSize, setPlaygroundSize] = useState<ButtonSizeV2>(
-        ButtonSizeV2.MEDIUM
+        useState<ButtonType>(ButtonType.PRIMARY)
+    const [playgroundSize, setPlaygroundSize] = useState<ButtonSize>(
+        ButtonSize.MEDIUM
     )
-    const [playgroundSubType, setPlaygroundSubType] = useState<ButtonSubTypeV2>(
-        ButtonSubTypeV2.DEFAULT
+    const [playgroundSubType, setPlaygroundSubType] = useState<ButtonSubType>(
+        ButtonSubType.DEFAULT
     )
     const [playgroundCount, setPlaygroundCount] = useState('3')
 
     // Options for selects
     const typeOptions = [
-        { value: ButtonTypeV2.PRIMARY, label: 'Primary' },
-        { value: ButtonTypeV2.SECONDARY, label: 'Secondary' },
-        { value: ButtonTypeV2.DANGER, label: 'Danger' },
-        { value: ButtonTypeV2.SUCCESS, label: 'Success' },
+        { value: ButtonType.PRIMARY, label: 'Primary' },
+        { value: ButtonType.SECONDARY, label: 'Secondary' },
+        { value: ButtonType.DANGER, label: 'Danger' },
+        { value: ButtonType.SUCCESS, label: 'Success' },
     ]
 
     const sizeOptions = [
-        { value: ButtonSizeV2.SMALL, label: 'Small' },
-        { value: ButtonSizeV2.MEDIUM, label: 'Medium' },
-        { value: ButtonSizeV2.LARGE, label: 'Large' },
+        { value: ButtonSize.SMALL, label: 'Small' },
+        { value: ButtonSize.MEDIUM, label: 'Medium' },
+        { value: ButtonSize.LARGE, label: 'Large' },
     ]
 
     const subTypeOptions = [
-        { value: ButtonSubTypeV2.DEFAULT, label: 'Default' },
-        { value: ButtonSubTypeV2.ICON_ONLY, label: 'Icon Only' },
-        { value: ButtonSubTypeV2.INLINE, label: 'Inline' },
+        { value: ButtonSubType.DEFAULT, label: 'Default' },
+        { value: ButtonSubType.ICON_ONLY, label: 'Icon Only' },
+        { value: ButtonSubType.INLINE, label: 'Inline' },
     ]
 
     const countOptions = [
@@ -68,10 +68,10 @@ const ButtonGroupDemo = () => {
         for (let i = 0; i < Number(playgroundCount); i++) {
             const IconComponent = icons[i]
             buttons.push(
-                <ButtonV2
+                <Button
                     key={i}
                     text={
-                        playgroundSubType === ButtonSubTypeV2.ICON_ONLY
+                        playgroundSubType === ButtonSubType.ICON_ONLY
                             ? undefined
                             : `Button ${i + 1}`
                     }
@@ -79,7 +79,7 @@ const ButtonGroupDemo = () => {
                     size={playgroundSize}
                     subType={playgroundSubType}
                     leadingIcon={
-                        playgroundSubType === ButtonSubTypeV2.ICON_ONLY &&
+                        playgroundSubType === ButtonSubType.ICON_ONLY &&
                         IconComponent ? (
                             <IconComponent size={16} />
                         ) : undefined
@@ -107,7 +107,7 @@ const ButtonGroupDemo = () => {
                             items={[{ items: typeOptions }]}
                             selected={playgroundButtonType}
                             onSelect={(value) =>
-                                setPlaygroundButtonType(value as ButtonTypeV2)
+                                setPlaygroundButtonType(value as ButtonType)
                             }
                             placeholder="Select type"
                         />
@@ -117,7 +117,7 @@ const ButtonGroupDemo = () => {
                             items={[{ items: sizeOptions }]}
                             selected={playgroundSize}
                             onSelect={(value) =>
-                                setPlaygroundSize(value as ButtonSizeV2)
+                                setPlaygroundSize(value as ButtonSize)
                             }
                             placeholder="Select size"
                         />
@@ -127,7 +127,7 @@ const ButtonGroupDemo = () => {
                             items={[{ items: subTypeOptions }]}
                             selected={playgroundSubType}
                             onSelect={(value) =>
-                                setPlaygroundSubType(value as ButtonSubTypeV2)
+                                setPlaygroundSubType(value as ButtonSubType)
                             }
                             placeholder="Select sub type"
                         />
@@ -152,9 +152,9 @@ const ButtonGroupDemo = () => {
                     </div>
 
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
-                        <ButtonGroupV2 stacked={playgroundStacked}>
+                        <ButtonGroup stacked={playgroundStacked}>
                             {renderPlaygroundButtons()}
-                        </ButtonGroupV2>
+                        </ButtonGroup>
                     </div>
                 </div>
             </div>
@@ -168,8 +168,8 @@ const ButtonGroupDemo = () => {
                             Horizontal Group
                         </h3>
                         <div className="space-y-4">
-                            <ButtonGroupV2>
-                                <ButtonV2
+                            <ButtonGroup>
+                                <Button
                                     text="Save"
                                     leadingIcon={<Download size={16} />}
                                     onClick={() => {
@@ -178,21 +178,21 @@ const ButtonGroupDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     text="Cancel"
-                                    buttonType={ButtonTypeV2.SECONDARY}
+                                    buttonType={ButtonType.SECONDARY}
                                     onClick={() => {
                                         addSnackbar({
                                             header: 'Cancel clicked!',
                                         })
                                     }}
                                 />
-                            </ButtonGroupV2>
+                            </ButtonGroup>
 
-                            <ButtonGroupV2>
-                                <ButtonV2
+                            <ButtonGroup>
+                                <Button
                                     text="Edit"
-                                    buttonType={ButtonTypeV2.PRIMARY}
+                                    buttonType={ButtonType.PRIMARY}
                                     leadingIcon={<Edit size={16} />}
                                     onClick={() => {
                                         addSnackbar({
@@ -200,9 +200,9 @@ const ButtonGroupDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     text="View"
-                                    buttonType={ButtonTypeV2.SECONDARY}
+                                    buttonType={ButtonType.SECONDARY}
                                     leadingIcon={<Eye size={16} />}
                                     onClick={() => {
                                         addSnackbar({
@@ -210,9 +210,9 @@ const ButtonGroupDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     text="Delete"
-                                    buttonType={ButtonTypeV2.DANGER}
+                                    buttonType={ButtonType.DANGER}
                                     leadingIcon={<Trash2 size={16} />}
                                     onClick={() => {
                                         addSnackbar({
@@ -220,15 +220,15 @@ const ButtonGroupDemo = () => {
                                         })
                                     }}
                                 />
-                            </ButtonGroupV2>
+                            </ButtonGroup>
                         </div>
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Stacked Group</h3>
                         <div className="space-y-4">
-                            <ButtonGroupV2 stacked>
-                                <ButtonV2
+                            <ButtonGroup stacked>
+                                <Button
                                     text="Left"
                                     onClick={() => {
                                         addSnackbar({
@@ -236,7 +236,7 @@ const ButtonGroupDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     text="Center"
                                     onClick={() => {
                                         addSnackbar({
@@ -244,7 +244,7 @@ const ButtonGroupDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     text="Right"
                                     onClick={() => {
                                         addSnackbar({
@@ -252,10 +252,10 @@ const ButtonGroupDemo = () => {
                                         })
                                     }}
                                 />
-                            </ButtonGroupV2>
+                            </ButtonGroup>
 
-                            <ButtonGroupV2 stacked>
-                                <ButtonV2
+                            <ButtonGroup stacked>
+                                <Button
                                     leadingIcon={<Hash size={16} />}
                                     onClick={() => {
                                         addSnackbar({
@@ -263,7 +263,7 @@ const ButtonGroupDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     leadingIcon={<Plus size={16} />}
                                     onClick={() => {
                                         addSnackbar({
@@ -271,7 +271,7 @@ const ButtonGroupDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     leadingIcon={<Star size={16} />}
                                     onClick={() => {
                                         addSnackbar({
@@ -279,7 +279,7 @@ const ButtonGroupDemo = () => {
                                         })
                                     }}
                                 />
-                                <ButtonV2
+                                <Button
                                     leadingIcon={<Settings size={16} />}
                                     onClick={() => {
                                         addSnackbar({
@@ -287,7 +287,7 @@ const ButtonGroupDemo = () => {
                                         })
                                     }}
                                 />
-                            </ButtonGroupV2>
+                            </ButtonGroup>
                         </div>
                     </div>
                 </div>
@@ -297,14 +297,14 @@ const ButtonGroupDemo = () => {
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Button Types</h2>
                 <div className="space-y-6">
-                    {Object.values(ButtonTypeV2).map((type) => (
+                    {Object.values(ButtonType).map((type) => (
                         <div key={type} className="space-y-4">
                             <h3 className="text-lg font-semibold capitalize">
                                 {type}
                             </h3>
                             <div className="space-y-4">
-                                <ButtonGroupV2>
-                                    <ButtonV2
+                                <ButtonGroup>
+                                    <Button
                                         text="First"
                                         buttonType={type}
                                         onClick={() => {
@@ -313,7 +313,7 @@ const ButtonGroupDemo = () => {
                                             })
                                         }}
                                     />
-                                    <ButtonV2
+                                    <Button
                                         text="Second"
                                         buttonType={type}
                                         onClick={() => {
@@ -322,7 +322,7 @@ const ButtonGroupDemo = () => {
                                             })
                                         }}
                                     />
-                                    <ButtonV2
+                                    <Button
                                         text="Third"
                                         buttonType={type}
                                         onClick={() => {
@@ -331,10 +331,10 @@ const ButtonGroupDemo = () => {
                                             })
                                         }}
                                     />
-                                </ButtonGroupV2>
+                                </ButtonGroup>
 
-                                <ButtonGroupV2 stacked>
-                                    <ButtonV2
+                                <ButtonGroup stacked>
+                                    <Button
                                         text="Left"
                                         buttonType={type}
                                         onClick={() => {
@@ -343,7 +343,7 @@ const ButtonGroupDemo = () => {
                                             })
                                         }}
                                     />
-                                    <ButtonV2
+                                    <Button
                                         text="Center"
                                         buttonType={type}
                                         onClick={() => {
@@ -352,7 +352,7 @@ const ButtonGroupDemo = () => {
                                             })
                                         }}
                                     />
-                                    <ButtonV2
+                                    <Button
                                         text="Right"
                                         buttonType={type}
                                         onClick={() => {
@@ -361,7 +361,7 @@ const ButtonGroupDemo = () => {
                                             })
                                         }}
                                     />
-                                </ButtonGroupV2>
+                                </ButtonGroup>
                             </div>
                         </div>
                     ))}
@@ -372,14 +372,14 @@ const ButtonGroupDemo = () => {
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Sizes</h2>
                 <div className="space-y-6">
-                    {Object.values(ButtonSizeV2).map((size) => (
+                    {Object.values(ButtonSize).map((size) => (
                         <div key={size} className="space-y-4">
                             <h3 className="text-lg font-semibold capitalize">
                                 {size}
                             </h3>
                             <div className="space-y-4">
-                                <ButtonGroupV2>
-                                    <ButtonV2
+                                <ButtonGroup>
+                                    <Button
                                         text="Small"
                                         size={size}
                                         onClick={() => {
@@ -388,7 +388,7 @@ const ButtonGroupDemo = () => {
                                             })
                                         }}
                                     />
-                                    <ButtonV2
+                                    <Button
                                         text="Medium"
                                         size={size}
                                         onClick={() => {
@@ -397,7 +397,7 @@ const ButtonGroupDemo = () => {
                                             })
                                         }}
                                     />
-                                    <ButtonV2
+                                    <Button
                                         text="Large"
                                         size={size}
                                         onClick={() => {
@@ -406,10 +406,10 @@ const ButtonGroupDemo = () => {
                                             })
                                         }}
                                     />
-                                </ButtonGroupV2>
+                                </ButtonGroup>
 
-                                <ButtonGroupV2 stacked>
-                                    <ButtonV2
+                                <ButtonGroup stacked>
+                                    <Button
                                         text="Left"
                                         size={size}
                                         onClick={() => {
@@ -418,7 +418,7 @@ const ButtonGroupDemo = () => {
                                             })
                                         }}
                                     />
-                                    <ButtonV2
+                                    <Button
                                         text="Center"
                                         size={size}
                                         onClick={() => {
@@ -427,7 +427,7 @@ const ButtonGroupDemo = () => {
                                             })
                                         }}
                                     />
-                                    <ButtonV2
+                                    <Button
                                         text="Right"
                                         size={size}
                                         onClick={() => {
@@ -436,7 +436,7 @@ const ButtonGroupDemo = () => {
                                             })
                                         }}
                                     />
-                                </ButtonGroupV2>
+                                </ButtonGroup>
                             </div>
                         </div>
                     ))}
@@ -451,36 +451,36 @@ const ButtonGroupDemo = () => {
                         <h3 className="text-lg font-semibold">
                             Primary + Secondary
                         </h3>
-                        <ButtonGroupV2>
-                            <ButtonV2
+                        <ButtonGroup>
+                            <Button
                                 text="Primary Action"
-                                buttonType={ButtonTypeV2.PRIMARY}
+                                buttonType={ButtonType.PRIMARY}
                                 onClick={() => {
                                     addSnackbar({
                                         header: 'Primary action clicked!',
                                     })
                                 }}
                             />
-                            <ButtonV2
+                            <Button
                                 text="Secondary Action"
-                                buttonType={ButtonTypeV2.SECONDARY}
+                                buttonType={ButtonType.SECONDARY}
                                 onClick={() => {
                                     addSnackbar({
                                         header: 'Secondary action clicked!',
                                     })
                                 }}
                             />
-                        </ButtonGroupV2>
+                        </ButtonGroup>
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
                             Success + Danger
                         </h3>
-                        <ButtonGroupV2>
-                            <ButtonV2
+                        <ButtonGroup>
+                            <Button
                                 text="Approve"
-                                buttonType={ButtonTypeV2.SUCCESS}
+                                buttonType={ButtonType.SUCCESS}
                                 leadingIcon={<Plus size={16} />}
                                 onClick={() => {
                                     addSnackbar({
@@ -488,9 +488,9 @@ const ButtonGroupDemo = () => {
                                     })
                                 }}
                             />
-                            <ButtonV2
+                            <Button
                                 text="Reject"
-                                buttonType={ButtonTypeV2.DANGER}
+                                buttonType={ButtonType.DANGER}
                                 leadingIcon={<X size={16} />}
                                 onClick={() => {
                                     addSnackbar({
@@ -498,17 +498,17 @@ const ButtonGroupDemo = () => {
                                     })
                                 }}
                             />
-                        </ButtonGroupV2>
+                        </ButtonGroup>
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
                             Mixed with Icons
                         </h3>
-                        <ButtonGroupV2>
-                            <ButtonV2
+                        <ButtonGroup>
+                            <Button
                                 text="Download"
-                                buttonType={ButtonTypeV2.PRIMARY}
+                                buttonType={ButtonType.PRIMARY}
                                 leadingIcon={<Download size={16} />}
                                 onClick={() => {
                                     addSnackbar({
@@ -516,9 +516,9 @@ const ButtonGroupDemo = () => {
                                     })
                                 }}
                             />
-                            <ButtonV2
+                            <Button
                                 text="Upload"
-                                buttonType={ButtonTypeV2.SECONDARY}
+                                buttonType={ButtonType.SECONDARY}
                                 leadingIcon={<Upload size={16} />}
                                 onClick={() => {
                                     addSnackbar({
@@ -526,8 +526,8 @@ const ButtonGroupDemo = () => {
                                     })
                                 }}
                             />
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.DANGER}
+                            <Button
+                                buttonType={ButtonType.DANGER}
                                 leadingIcon={<Trash2 size={16} />}
                                 onClick={() => {
                                     addSnackbar({
@@ -535,7 +535,7 @@ const ButtonGroupDemo = () => {
                                     })
                                 }}
                             />
-                        </ButtonGroupV2>
+                        </ButtonGroup>
                     </div>
                 </div>
             </div>
@@ -546,10 +546,10 @@ const ButtonGroupDemo = () => {
                 <div className="space-y-6">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">File Actions</h3>
-                        <ButtonGroupV2>
-                            <ButtonV2
+                        <ButtonGroup>
+                            <Button
                                 text="New File"
-                                buttonType={ButtonTypeV2.PRIMARY}
+                                buttonType={ButtonType.PRIMARY}
                                 leadingIcon={<Plus size={16} />}
                                 onClick={() => {
                                     addSnackbar({
@@ -557,9 +557,9 @@ const ButtonGroupDemo = () => {
                                     })
                                 }}
                             />
-                            <ButtonV2
+                            <Button
                                 text="Open"
-                                buttonType={ButtonTypeV2.SECONDARY}
+                                buttonType={ButtonType.SECONDARY}
                                 leadingIcon={<Eye size={16} />}
                                 onClick={() => {
                                     addSnackbar({
@@ -567,9 +567,9 @@ const ButtonGroupDemo = () => {
                                     })
                                 }}
                             />
-                            <ButtonV2
+                            <Button
                                 text="Save"
-                                buttonType={ButtonTypeV2.SUCCESS}
+                                buttonType={ButtonType.SUCCESS}
                                 leadingIcon={<Download size={16} />}
                                 onClick={() => {
                                     addSnackbar({
@@ -577,15 +577,15 @@ const ButtonGroupDemo = () => {
                                     })
                                 }}
                             />
-                        </ButtonGroupV2>
+                        </ButtonGroup>
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">User Actions</h3>
-                        <ButtonGroupV2 stacked>
-                            <ButtonV2
+                        <ButtonGroup stacked>
+                            <Button
                                 text="View Profile"
-                                buttonType={ButtonTypeV2.PRIMARY}
+                                buttonType={ButtonType.PRIMARY}
                                 leadingIcon={<Eye size={16} />}
                                 onClick={() => {
                                     addSnackbar({
@@ -593,9 +593,9 @@ const ButtonGroupDemo = () => {
                                     })
                                 }}
                             />
-                            <ButtonV2
+                            <Button
                                 text="Edit Profile"
-                                buttonType={ButtonTypeV2.SECONDARY}
+                                buttonType={ButtonType.SECONDARY}
                                 leadingIcon={<Edit size={16} />}
                                 onClick={() => {
                                     addSnackbar({
@@ -603,9 +603,9 @@ const ButtonGroupDemo = () => {
                                     })
                                 }}
                             />
-                            <ButtonV2
+                            <Button
                                 text="Delete Account"
-                                buttonType={ButtonTypeV2.DANGER}
+                                buttonType={ButtonType.DANGER}
                                 leadingIcon={<Trash2 size={16} />}
                                 onClick={() => {
                                     addSnackbar({
@@ -613,7 +613,7 @@ const ButtonGroupDemo = () => {
                                     })
                                 }}
                             />
-                        </ButtonGroupV2>
+                        </ButtonGroup>
                     </div>
                 </div>
             </div>

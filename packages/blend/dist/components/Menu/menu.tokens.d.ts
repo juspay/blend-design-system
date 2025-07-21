@@ -1,6 +1,7 @@
 import { CSSObject } from 'styled-components';
 import { MenuItemV2ActionType, MenuItemV2Variant } from './types';
 import { FoundationTokenType } from '../../tokens/theme.token';
+import { BreakpointType } from '../../breakpoints/breakPoints';
 export type MenuItemStates = 'default' | 'hover' | 'active' | 'focus' | 'focusVisible' | 'disabled';
 export type MenuTokensType = {
     shadow: CSSObject['boxShadow'];
@@ -91,6 +92,9 @@ export type MenuTokensType = {
         margin: CSSObject['margin'];
     };
 };
+export type ResponsiveMenuTokensType = {
+    [key in keyof BreakpointType]: MenuTokensType;
+};
 declare const menuTokens: MenuTokensType;
-export declare const getMenuTokens: (foundationToken: FoundationTokenType) => MenuTokensType;
+export declare const getMenuTokens: (foundationToken: FoundationTokenType) => ResponsiveMenuTokensType;
 export default menuTokens;

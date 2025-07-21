@@ -1,16 +1,16 @@
 'use client'
-import { ButtonGroupV2, ButtonV2, ButtonTypeV2 } from 'blend-v1'
+import { ButtonGroup, Button, ButtonType } from 'blend-v1'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
 
 const ButtonGroupV2Preview = () => {
-    const tsCode = `import { ButtonGroupV2, ButtonV2, ButtonTypeV2 } from "blend-v1";
+    const tsCode = `import { ButtonGroupV2, Button, ButtonType } from "blend-v1";
 
 function MyComponent() {
   return (
     <ButtonGroupV2 stacked={true}>
-      <ButtonV2 text="Cancel" buttonType={ButtonTypeV2.SUCCESS} />
-      <ButtonV2 text="Save" buttonType={ButtonTypeV2.PRIMARY} />
+      <Button text="Cancel" buttonType={ButtonType.SUCCESS} />
+      <Button text="Save" buttonType={ButtonType.PRIMARY} />
     </ButtonGroupV2>
   );
 }`
@@ -42,10 +42,10 @@ external make: (
             rescript={reCode}
             rescriptBinding={bindingCode}
         >
-            <ButtonGroupV2 stacked={true}>
-                <ButtonV2 text="Cancel" buttonType={ButtonTypeV2.SUCCESS} />
-                <ButtonV2 text="Save" buttonType={ButtonTypeV2.PRIMARY} />
-            </ButtonGroupV2>
+            <ButtonGroup stacked={true}>
+                <Button text="Cancel" buttonType={ButtonType.SUCCESS} />
+                <Button text="Save" buttonType={ButtonType.PRIMARY} />
+            </ButtonGroup>
         </ComponentPreview>
     )
 }

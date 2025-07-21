@@ -1,6 +1,6 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { ButtonV2, ButtonTypeV2, ButtonSizeV2, ButtonSubTypeV2 } from 'blend-v1'
+import { Button, ButtonType, ButtonSize, ButtonSubType } from 'blend-v1'
 
 /**
  * FIGMA CODE CONNECT FOR BUTTONV2 COMPONENT
@@ -15,7 +15,7 @@ import { ButtonV2, ButtonTypeV2, ButtonSizeV2, ButtonSubTypeV2 } from 'blend-v1'
  *
  * 2. SIZE MAPPING:
  *    - Figma: 'sm', 'md', 'lg'
- *    - Code: ButtonSizeV2.SMALL, ButtonSizeV2.MEDIUM, ButtonSizeV2.LARGE
+ *    - Code: ButtonSize.SMALL, ButtonSize.MEDIUM, ButtonSize.LARGE
  *
  * 3. STATE vs DISABLED:
  *    - Figma: Uses 'state' variant (default, hover, active, focussed, disabled)
@@ -39,7 +39,7 @@ import { ButtonV2, ButtonTypeV2, ButtonSizeV2, ButtonSubTypeV2 } from 'blend-v1'
  */
 
 figma.connect(
-    ButtonV2,
+    Button,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=14667-834&t=IFWLvwV2QQMus9fh-11',
     {
         props: {
@@ -48,24 +48,24 @@ figma.connect(
 
             // Button type mapping - direct correlation
             buttonType: figma.enum('buttonType', {
-                primary: ButtonTypeV2.PRIMARY,
-                secondary: ButtonTypeV2.SECONDARY,
-                danger: ButtonTypeV2.DANGER,
-                success: ButtonTypeV2.SUCCESS,
+                primary: ButtonType.PRIMARY,
+                secondary: ButtonType.SECONDARY,
+                danger: ButtonType.DANGER,
+                success: ButtonType.SUCCESS,
             }),
 
             // Size mapping - Figma uses lowercase, code uses uppercase enum
             size: figma.enum('size', {
-                sm: ButtonSizeV2.SMALL,
-                md: ButtonSizeV2.MEDIUM,
-                lg: ButtonSizeV2.LARGE,
+                sm: ButtonSize.SMALL,
+                md: ButtonSize.MEDIUM,
+                lg: ButtonSize.LARGE,
             }),
 
             // SubType mapping - NOTE: 'plainIcon' exists in Figma but not in code
             subType: figma.enum('subType', {
-                default: ButtonSubTypeV2.DEFAULT,
-                iconOnly: ButtonSubTypeV2.ICON_ONLY,
-                inline: ButtonSubTypeV2.INLINE,
+                default: ButtonSubType.DEFAULT,
+                iconOnly: ButtonSubType.ICON_ONLY,
+                inline: ButtonSubType.INLINE,
                 // 'plainIcon' is intentionally excluded - Figma only variant
             }),
 
@@ -104,7 +104,7 @@ figma.connect(
             leftIcon,
             rightIcon,
         }) => (
-            <ButtonV2
+            <Button
                 text={text}
                 buttonType={buttonType}
                 size={size}
@@ -115,12 +115,12 @@ figma.connect(
             />
         ),
 
-        imports: ["import { ButtonV2 } from 'blend-v1'"],
+        imports: ["import { Button } from 'blend-v1'"],
 
         links: [
             {
                 name: 'GitHub',
-                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/ButtonV2',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/Button',
             },
             {
                 name: 'Storybook',

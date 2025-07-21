@@ -1,6 +1,6 @@
 import { CSSObject } from 'styled-components';
 import { ThemeType } from '../../tokens';
-import { CheckboxSize, CheckboxCheckedState, CheckboxInteractionState } from './types';
+import { CheckboxCheckedState, CheckboxInteractionState, CheckboxSize } from './types';
 import { BreakpointType } from '../../breakpoints/breakPoints';
 export type CheckboxTokensType = {
     gap: CSSObject['gap'];

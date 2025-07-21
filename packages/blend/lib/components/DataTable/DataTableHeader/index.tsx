@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import { Filter } from 'lucide-react'
 import { DataTableHeaderProps } from './types'
-import Button from '../../Button/Button'
+import { Button } from '../../../main'
 import { ButtonSize, ButtonType } from '../../Button/types'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
@@ -145,7 +145,7 @@ const DataTableHeader = forwardRef<
                                                                 ? ButtonType.PRIMARY
                                                                 : ButtonType.SECONDARY
                                                         }
-                                                        leadingIcon={Filter}
+                                                        leadingIcon={<Filter />}
                                                         size={ButtonSize.SMALL}
                                                     >
                                                         Advanced Filters{' '}
