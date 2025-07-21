@@ -15,6 +15,7 @@ import {
     Code,
     DollarSign,
     Rocket,
+    Users,
 } from 'lucide-react'
 
 export const tenants = [
@@ -100,6 +101,17 @@ export const getNavigationData = (router: any, pathname: string) => [
             //     onClick: () => router.push('/deployments/usage'),
             //     isActive: pathname === '/deployments/usage',
             // },
+        ],
+    },
+    {
+        label: 'Administration',
+        items: [
+            {
+                label: 'Users',
+                leftSlot: <Users className="w-4 h-4" />,
+                onClick: () => router.push('/users'),
+                isActive: pathname === '/users',
+            },
         ],
     },
 ]

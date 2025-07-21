@@ -4,6 +4,10 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth } from '@/lib/firebase'
 import Loader from '@/components/shared/Loader'
+import ProtectedRoute from '@/components/auth/ProtectedRoute'
+import PermissionGuard, {
+    usePermissions,
+} from '@/components/auth/PermissionGuard'
 import {
     ButtonV2,
     ButtonTypeV2,
@@ -26,6 +30,7 @@ import {
     CheckCircle,
     Clock,
     Settings,
+    Shield,
 } from 'lucide-react'
 import type { DeploymentRequest } from '@/types'
 
@@ -35,6 +40,56 @@ const targetOptions = [
 ]
 
 export default function DeploymentPage() {
+    return (
+        <ProtectedRoute>
+            <PermissionGuard
+                resource="deployments"
+                action="deploy"
+                fallback={<DeploymentAccessDenied />}
+                showFallback={true}
+            >
+                <DeploymentForm />
+            </PermissionGuard>
+        </ProtectedRoute>
+    )
+}
+
+function DeploymentAccessDenied() {
+    const router = useRouter()
+    const { userData, userRole } = usePermissions()
+
+    return (
+        <div className="h-full flex items-center justify-center bg-gray-50">
+            <div className="max-w-md w-full bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+                <div className="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center mb-4">
+                    <Shield className="w-8 h-8 text-red-600" />
+                </div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                    Access Denied
+                </h2>
+                <p className="text-gray-600 mb-4">
+                    You don't have permission to deploy applications. Your
+                    current role is{' '}
+                    <span className="font-medium">
+                        {userRole?.name || userData?.role}
+                    </span>
+                    .
+                </p>
+                <p className="text-sm text-gray-500 mb-6">
+                    Contact an administrator to request deployment permissions.
+                </p>
+                <ButtonV2
+                    buttonType={ButtonTypeV2.PRIMARY}
+                    size={ButtonSizeV2.MEDIUM}
+                    text="Go to Dashboard"
+                    onClick={() => router.push('/')}
+                />
+            </div>
+        </div>
+    )
+}
+
+function DeploymentForm() {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [deploying, setDeploying] = useState(false)
@@ -50,6 +105,7 @@ export default function DeploymentPage() {
     const [currentBranch, setCurrentBranch] = useState<string>('')
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
+    const { canDeploy, userData, userRole } = usePermissions()
 
     useEffect(() => {
         // Get current git branch
@@ -133,6 +189,9 @@ export default function DeploymentPage() {
                         <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Rocket className="w-5 h-5" />
                             Target Environment
+                            <span className="ml-auto text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                                {userRole?.name} Access
+                            </span>
                         </h2>
 
                         <div className="space-y-4">

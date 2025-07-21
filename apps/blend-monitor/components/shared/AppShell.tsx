@@ -40,10 +40,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     ) : null
 
     return (
-        <div
-            className="h-screen w-screen overflow-hidden"
-            style={{ display: 'flex' }}
-        >
+        <div className="h-screen w-screen overflow-hidden flex">
             <Sidebar
                 tenants={tenants}
                 merchants={merchants}
@@ -70,9 +67,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 activeMerchant=""
                 setActiveMerchant={() => {}}
             >
-                <div className="h-full overflow-hidden" style={{ flex: 1 }}>
-                    {children}
-                </div>
+                <div className="h-full overflow-hidden flex-1">{children}</div>
             </Sidebar>
         </div>
     )
