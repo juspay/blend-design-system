@@ -42,6 +42,7 @@ export type SelectMenuProps = {
     onSelect?: (value: string | string[]) => void
     allowMultiSelect?: boolean
     enableSearch?: boolean
+    onOpenChange?: (open: boolean) => void
 }
 
 export type SelectMenuItemType = {

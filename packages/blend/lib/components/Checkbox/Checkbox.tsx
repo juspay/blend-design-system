@@ -33,6 +33,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
             children,
             subtext,
             slot,
+            ...rest
         },
         ref
     ) => {
@@ -60,6 +61,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                     $isDisabled={disabled}
                     $checked={currentChecked || false}
                     $error={error}
+                    {...rest}
                 >
                     <CheckboxIndicator
                         checked={currentChecked}
