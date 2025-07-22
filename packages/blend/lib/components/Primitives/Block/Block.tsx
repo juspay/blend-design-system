@@ -1,5 +1,5 @@
-import React, { JSX, forwardRef } from 'react'
-import styled, { css, CSSObject } from 'styled-components'
+import React, { type JSX, forwardRef } from 'react'
+import styled, { css, type CSSObject } from 'styled-components'
 
 type SpacingValue = string | number
 

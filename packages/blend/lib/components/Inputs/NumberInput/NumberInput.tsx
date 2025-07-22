@@ -4,10 +4,10 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
-import { NumberInputProps } from './types'
+import type { NumberInputProps } from './types'
 import { NumberInputSize } from './types'
 import { useComponentToken } from '../../../context/useComponentToken'
-import { NumberInputTokensType } from './numberInput.tokens'
+import type { NumberInputTokensType } from './numberInput.tokens'
 
 const NumberInput = ({
     value,
@@ -15,7 +15,7 @@ const NumberInput = ({
     min,
     max,
     step,
-    error = true,
+    error = false,
     errorMessage,
     required,
     disabled,
@@ -63,7 +63,7 @@ const NumberInput = ({
                     paddingX={paddingX}
                     paddingY={paddingY}
                     borderRadius={numberInputTokens.input.borderRadius}
-                    boxShadow={numberInputTokens.input.boxShadow}
+                    boxShadow={numberInputTokens.input.boxShadow.default}
                     border={
                         numberInputTokens.input.border[
                             error ? 'error' : 'default'
@@ -72,7 +72,9 @@ const NumberInput = ({
                     outline="none"
                     width={'100%'}
                     _hover={{
-                        border: numberInputTokens.input.border.hover,
+                        border: numberInputTokens.input.border[
+                            error ? 'error' : 'hover'
+                        ],
                     }}
                     color={
                         numberInputTokens.input.color[
@@ -80,8 +82,13 @@ const NumberInput = ({
                         ]
                     }
                     _focus={{
-                        border: numberInputTokens.input.border.focus,
-                        outline: numberInputTokens.input.outline.focus,
+                        border: numberInputTokens.input.border[
+                            error ? 'error' : 'focus'
+                        ],
+                        boxShadow:
+                            numberInputTokens.input.boxShadow[
+                                error ? 'error' : 'focus'
+                            ],
                     }}
                     disabled={disabled}
                     _disabled={{

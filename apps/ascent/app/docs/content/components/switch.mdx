@@ -1,0 +1,708 @@
+---
+title: Switch
+description: The Switch component provides a toggle control for enabling or disabling features, with smooth animations and clear visual feedback for binary state changes.
+category: components
+tags:
+    - switch
+    - component
+    - toggle
+    - form
+    - input
+RepoFolderName: Switch
+StorybookLink: components-switch-switch--docs
+---
+
+<SwitchPreview />
+
+## Usage
+
+```tsx
+import { Switch, SwitchGroup, SwitchSize } from 'blend-v1'
+
+function MyComponent() {
+    const [isEnabled, setIsEnabled] = useState(false)
+
+    return (
+        <Switch
+            checked={isEnabled}
+            onChange={setIsEnabled}
+            label="Enable notifications"
+            size={SwitchSize.MEDIUM}
+        />
+    )
+}
+```
+
+## API Reference
+
+### Switch Props
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'id', hintText: 'Unique identifier for the switch' },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'checked',
+                hintText: 'Whether the switch is in the on/checked state',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'defaultChecked',
+                hintText: 'The default checked state for uncontrolled usage',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback when the switch state changes',
+            },
+            { content: '(checked: boolean) => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'Whether the switch is disabled and non-interactive',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText: 'Whether the switch is required (shows asterisk)',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'Whether the switch is in an error state',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            { content: 'size', hintText: 'The size variant of the switch' },
+            { content: 'SwitchSize', hintText: 'enum' },
+            { content: 'SwitchSize.MEDIUM' },
+        ],
+        [
+            { content: 'label', hintText: 'The label text for the switch' },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subtext',
+                hintText: 'Optional descriptive text displayed below the label',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot',
+                hintText: 'Optional element to display alongside the label',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'name',
+                hintText: 'The name attribute for form grouping',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText: 'The value associated with the switch',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### SwitchGroup Props
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'id',
+                hintText: 'Unique identifier for the switch group',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'The label text for the switch group',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'name',
+                hintText: 'The name attribute for the switch group',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'The switch components to render',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'Whether all switches in the group are disabled',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText: 'The controlled selected values array',
+            },
+            { content: 'string[]', hintText: 'array' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'defaultValue',
+                hintText: 'The default selected values for uncontrolled usage',
+            },
+            { content: 'string[]', hintText: 'array' },
+            { content: '[]' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback when the selected values change',
+            },
+            { content: '(value: string[]) => void', hintText: 'function' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- Two size variants (small, medium)
+- Switch group management with multiple selections
+- Optional subtext for additional context
+- Optional slot for badges, icons, or other elements
+- Required field indicator (asterisk)
+- Error state styling
+- Disabled state support
+- Controlled and uncontrolled modes
+- Smooth animations and transitions
+- Accessible by default
+- Built on native HTML button elements
+- Customizable styling through tokens
+
+## Usage Examples
+
+### Basic Switch
+
+Simple switch with label
+
+```tsx
+import { Switch } from 'blend-v1'
+
+function MyComponent() {
+    const [isEnabled, setIsEnabled] = useState(false)
+
+    return (
+        <Switch
+            checked={isEnabled}
+            onChange={setIsEnabled}
+            label="Enable notifications"
+        />
+    )
+}
+```
+
+### Switch with Subtext
+
+Switch with additional descriptive text
+
+```tsx
+<Switch
+    checked={darkMode}
+    onChange={setDarkMode}
+    label="Dark mode"
+    subtext="Use dark theme for better viewing in low light"
+/>
+```
+
+### Switch with Slot
+
+Switch with additional elements (badges, icons, etc.)
+
+```tsx
+<Switch
+    checked={autoSave}
+    onChange={setAutoSave}
+    label="Auto save"
+    slot={<span className="text-green-500 text-sm">Recommended</span>}
+/>
+```
+
+### Different Sizes
+
+Switches with different size variants
+
+```tsx
+// Small size
+<Switch
+  checked={isEnabled}
+  onChange={setIsEnabled}
+  label="Small switch"
+  size={SwitchSize.SMALL}
+/>
+
+// Medium size (default)
+<Switch
+  checked={isEnabled}
+  onChange={setIsEnabled}
+  label="Medium switch"
+  size={SwitchSize.MEDIUM}
+/>
+```
+
+### Switch States
+
+Switches in various states
+
+```tsx
+<Switch
+  checked={true}
+  onChange={() => {}}
+  label="Normal state (checked)"
+/>
+
+<Switch
+  checked={false}
+  onChange={() => {}}
+  label="Normal state (unchecked)"
+/>
+
+<Switch
+  checked={true}
+  onChange={() => {}}
+  label="Required field"
+  required={true}
+/>
+
+<Switch
+  checked={false}
+  onChange={() => {}}
+  label="Disabled switch"
+  disabled={true}
+/>
+
+<Switch
+  checked={true}
+  onChange={() => {}}
+  label="Error state"
+  error={true}
+/>
+```
+
+### Switch Group
+
+Group of switches with multiple selections
+
+```tsx
+import { Switch, SwitchGroup } from 'blend-v1'
+
+function MyComponent() {
+    const [selectedFeatures, setSelectedFeatures] = useState<string[]>([
+        'feature1',
+        'feature3',
+    ])
+
+    return (
+        <SwitchGroup
+            label="Feature toggles"
+            value={selectedFeatures}
+            onChange={setSelectedFeatures}
+        >
+            <Switch
+                value="feature1"
+                label="Real-time updates"
+                subtext="Get instant notifications when data changes"
+            />
+            <Switch
+                value="feature2"
+                label="Advanced analytics"
+                subtext="Access detailed performance metrics"
+            />
+            <Switch
+                value="feature3"
+                label="Dark mode"
+                subtext="Switch to dark theme"
+            />
+            <Switch
+                value="feature4"
+                label="Auto-sync"
+                subtext="Automatically sync data across devices"
+            />
+        </SwitchGroup>
+    )
+}
+```
+
+### Controlled vs Uncontrolled
+
+Switches with different state management approaches
+
+```tsx
+// Controlled switch
+const [isEnabled, setIsEnabled] = useState(false);
+
+<Switch
+  checked={isEnabled}
+  onChange={setIsEnabled}
+  label="Controlled switch"
+/>
+
+// Uncontrolled switch
+<Switch
+  defaultChecked={true}
+  label="Uncontrolled switch"
+/>
+```
+
+### Individual Switches
+
+Switches used outside of a group
+
+```tsx
+const [notifications, setNotifications] = useState(false);
+const [darkMode, setDarkMode] = useState(true);
+
+<Switch
+  checked={notifications}
+  onChange={setNotifications}
+  label="Individual switch 1"
+  subtext="This is an individual switch control"
+/>
+
+<Switch
+  checked={darkMode}
+  onChange={setDarkMode}
+  label="Individual switch 2"
+  slot={<span className="text-purple-500 text-sm">Beta</span>}
+/>
+```
+
+### Complex Form Example
+
+Complete form with switch group
+
+```tsx
+function EmailPreferencesForm() {
+    const [emailSettings, setEmailSettings] = useState<string[]>([
+        'marketing',
+        'updates',
+    ])
+
+    return (
+        <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Email Preferences</h3>
+
+            <SwitchGroup
+                label="Email notifications"
+                value={emailSettings}
+                onChange={setEmailSettings}
+            >
+                <Switch
+                    value="marketing"
+                    label="Marketing emails"
+                    subtext="Receive promotional offers and updates"
+                    slot={<span className="text-blue-500 text-sm">Weekly</span>}
+                />
+
+                <Switch
+                    value="updates"
+                    label="Product updates"
+                    subtext="Get notified about new features and improvements"
+                    slot={
+                        <span className="text-green-500 text-sm">
+                            Important
+                        </span>
+                    }
+                />
+
+                <Switch
+                    value="security"
+                    label="Security alerts"
+                    subtext="Critical security notifications"
+                    slot={
+                        <span className="text-red-500 text-sm">Critical</span>
+                    }
+                />
+
+                <Switch
+                    value="newsletter"
+                    label="Newsletter"
+                    subtext="Monthly newsletter with industry insights"
+                />
+            </SwitchGroup>
+        </div>
+    )
+}
+```
+
+### Disabled Switch Group
+
+Switch group with all options disabled
+
+```tsx
+<SwitchGroup
+    label="Disabled Options"
+    value={selectedFeatures}
+    onChange={setSelectedFeatures}
+    disabled={true}
+>
+    <Switch
+        value="feature1"
+        label="Feature 1"
+        subtext="This feature is currently unavailable"
+    />
+    <Switch value="feature2" label="Feature 2" subtext="Coming soon" />
+    <Switch value="feature3" label="Feature 3" subtext="Under maintenance" />
+</SwitchGroup>
+```
+
+### Switch with Different Content
+
+Switches with various content types
+
+```tsx
+<Switch
+  checked={true}
+  onChange={() => {}}
+  label="Switch with icon"
+  slot={<span>🔔</span>}
+/>
+
+<Switch
+  checked={false}
+  onChange={() => {}}
+  label="Switch with badge"
+  slot={<span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">New</span>}
+/>
+
+<Switch
+  checked={true}
+  onChange={() => {}}
+  label="Switch with status"
+  slot={<span className="text-green-500 text-sm">Active</span>}
+  subtext="This feature is currently enabled"
+/>
+```
+
+## Component Tokens
+
+You can style the switch component using the following tokens:
+
+```tsx
+export type SwitchSize = 'sm' | 'md'
+export type SwitchState = 'default' | 'hover' | 'disabled' | 'error'
+export type SwitchIndicatorState = 'active' | 'inactive'
+
+export type SwitchTokensType = {
+    // Base spacing
+    gap: CSSObject['gap']
+    slotGap: CSSObject['gap']
+    contentGap: CSSObject['gap']
+
+    // Core dimensions
+    height: {
+        [key in SwitchSize]: CSSObject['height']
+    }
+    width: {
+        [key in SwitchSize]: CSSObject['width']
+    }
+
+    // Border radius
+    borderRadius: {
+        base: CSSObject['borderRadius']
+        thumb: CSSObject['borderRadius']
+    }
+
+    // Indicator (main switch)
+    indicator: {
+        [key in SwitchIndicatorState]: {
+            background: {
+                [key in Exclude<
+                    SwitchState,
+                    'error'
+                >]: CSSObject['backgroundColor']
+            }
+            border: {
+                [key in Exclude<SwitchState, 'error'>]: CSSObject['borderColor']
+            }
+        }
+    }
+
+    // Thumb (moving circle)
+    thumb: {
+        background: CSSObject['backgroundColor']
+        border: {
+            color: CSSObject['borderColor']
+            width: CSSObject['borderWidth']
+        }
+        size: {
+            [key in SwitchSize]: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+                top: CSSObject['top']
+                left: CSSObject['left']
+                offset: {
+                    active: CSSObject['left']
+                    inactive: CSSObject['left']
+                }
+            }
+        }
+    }
+
+    // Content styling
+    content: {
+        label: {
+            color: {
+                [key in SwitchState]: CSSObject['color']
+            }
+            font: {
+                [key in SwitchSize]: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+            }
+        }
+        sublabel: {
+            color: {
+                [key in SwitchState]: CSSObject['color']
+            }
+            font: {
+                [key in SwitchSize]: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+            }
+            spacing: {
+                left: {
+                    [key in SwitchSize]: CSSObject['marginLeft']
+                }
+                top: CSSObject['marginTop']
+            }
+        }
+    }
+
+    // Border properties
+    borderWidth: {
+        [key in SwitchIndicatorState]: {
+            [key in Exclude<SwitchState, 'error'>]: number
+        }
+    }
+
+    // Focus state
+    focus: {
+        outline: {
+            width: CSSObject['borderWidth']
+            color: CSSObject['borderColor']
+            offset: CSSObject['outlineOffset']
+        }
+    }
+
+    // Slot (additional content)
+    slot: {
+        size: {
+            [key in SwitchSize]: CSSObject['width']
+        }
+        spacing: CSSObject['margin']
+    }
+
+    // Required indicator
+    required: {
+        color: CSSObject['color']
+        spacing: CSSObject['margin']
+    }
+
+    // Animation
+    transition: {
+        duration: CSSObject['transitionDuration']
+        easing: CSSObject['transitionTimingFunction']
+    }
+}
+```
+
+## Enums
+
+### SwitchSize
+
+```tsx
+enum SwitchSize {
+    SMALL = 'sm',
+    MEDIUM = 'md',
+}
+```
+
+## Type Definitions
+
+### SwitchState
+
+```tsx
+type SwitchState = 'default' | 'hover' | 'disabled' | 'error'
+```
+
+### SwitchIndicatorState
+
+```tsx
+type SwitchIndicatorState = 'active' | 'inactive'
+```
+
+## Accessibility Features
+
+The Switch component includes several accessibility features:
+
+- **Proper ARIA attributes**: Uses `role="switch"` and `aria-checked` for screen readers
+- **Keyboard navigation**: Supports keyboard interaction (Space, Enter, Arrow keys)
+- **Screen reader support**: Proper labeling and state announcements
+- **Focus management**: Clear focus indicators and keyboard focus
+- **Required field indication**: Visual and programmatic indication of required fields
+- **Error state communication**: Clear error state communication to assistive technologies
+- **Group semantics**: Proper switch group semantics for screen readers
+- **Smooth animations**: Provides visual feedback for state changes
+- **High contrast support**: Maintains accessibility in high contrast modes

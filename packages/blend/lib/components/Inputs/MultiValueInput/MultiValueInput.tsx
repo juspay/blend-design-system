@@ -1,13 +1,13 @@
-import { KeyboardEvent, useRef, useState } from 'react'
+import { type KeyboardEvent, useRef, useState } from 'react'
 import Block from '../../Primitives/Block/Block'
 import { Tag, TagShape, TagSize } from '../../Tags'
 import InputFooter from '../utils/InputFooter/InputFooter'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import { TextInputSize } from '../TextInput/types'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
-import { MultiValueInputProps } from './types'
+import type { MultiValueInputProps } from './types'
 import { useComponentToken } from '../../../context/useComponentToken'
-import { MultiValueInputTokensType } from './multiValueInput.tokens'
+import type { MultiValueInputTokensType } from './multiValueInput.tokens'
 
 const MultiValueInput = ({
     label,
@@ -53,7 +53,10 @@ const MultiValueInput = ({
             inputValue === '' &&
             tags.length > 0
         ) {
-            removeTag(tags[tags.length - 1])
+            const lastTag = tags[tags.length - 1]
+            if (lastTag) {
+                removeTag(lastTag)
+            }
         }
     }
 
@@ -80,7 +83,7 @@ const MultiValueInput = ({
                 paddingX={paddingX}
                 paddingY={paddingY}
                 onClick={handleContainerClick}
-                boxShadow={multiValueInputTokens.input.boxShadow}
+                boxShadow={multiValueInputTokens.input.boxShadow.default}
                 border={
                     error
                         ? multiValueInputTokens.input.border.error
@@ -89,7 +92,22 @@ const MultiValueInput = ({
                           : multiValueInputTokens.input.border.default
                 }
                 _hover={{
-                    border: multiValueInputTokens.input.border.hover,
+                    border: multiValueInputTokens.input.border[
+                        error ? 'error' : 'hover'
+                    ],
+                    boxShadow:
+                        multiValueInputTokens.input.boxShadow[
+                            error ? 'error' : 'hover'
+                        ],
+                }}
+                _focus={{
+                    border: multiValueInputTokens.input.border[
+                        error ? 'error' : 'focus'
+                    ],
+                    boxShadow:
+                        multiValueInputTokens.input.boxShadow[
+                            error ? 'error' : 'focus'
+                        ],
                 }}
             >
                 {tags?.map((tag) => (

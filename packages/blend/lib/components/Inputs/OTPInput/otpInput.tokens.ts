@@ -1,6 +1,6 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { FoundationTokenType } from '../../../tokens/theme.token'
+import type { FoundationTokenType } from '../../../tokens/theme.token'
 
 enum OTPInputState {
     DEFAULT = 'default',
@@ -14,7 +14,9 @@ export type OTPInputTokensType = {
     input: {
         gap: CSSObject['gap']
         borderRadius: CSSObject['borderRadius']
-        boxShadow: CSSObject['boxShadow']
+        boxShadow: {
+            [key in OTPInputState]: CSSObject['boxShadow']
+        }
         padding: CSSObject['padding']
         outline: {
             [key in OTPInputState]: CSSObject['outline']
@@ -35,7 +37,13 @@ const otpInputTokens: OTPInputTokensType = {
     input: {
         gap: FOUNDATION_THEME.unit[8],
         borderRadius: FOUNDATION_THEME.border.radius[12],
-        boxShadow: FOUNDATION_THEME.shadows.sm,
+        boxShadow: {
+            default: FOUNDATION_THEME.shadows.sm,
+            hover: FOUNDATION_THEME.shadows.sm,
+            focus: FOUNDATION_THEME.shadows.focusPrimary,
+            error: FOUNDATION_THEME.shadows.focusError,
+            disabled: FOUNDATION_THEME.shadows.sm,
+        },
         padding: 8,
         border: {
             default: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
@@ -75,7 +83,13 @@ export const getOTPInputTokens = (
         input: {
             gap: foundationToken.unit[8],
             borderRadius: foundationToken.border.radius[12],
-            boxShadow: foundationToken.shadows.sm,
+            boxShadow: {
+                default: foundationToken.shadows.sm,
+                hover: foundationToken.shadows.sm,
+                focus: foundationToken.shadows.focusPrimary,
+                error: foundationToken.shadows.focusError,
+                disabled: foundationToken.shadows.sm,
+            },
             padding: 8,
             border: {
                 default: `1px solid ${foundationToken.colors.gray[200]}`,

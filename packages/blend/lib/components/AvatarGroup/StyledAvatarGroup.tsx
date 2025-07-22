@@ -1,11 +1,11 @@
 import styled from 'styled-components'
-import {
+import { foundationToken } from '../../foundationToken'
+import type {
     StyledAvatarGroupContainerProps,
     StyledAvatarWrapperProps,
     StyledOverflowCounterProps,
 } from './types'
 import avatarGroupTokens from './token'
-import { foundationToken } from '../../foundationToken'
 
 export const StyledAvatarGroupContainer = styled.div<StyledAvatarGroupContainerProps>`
     display: flex;

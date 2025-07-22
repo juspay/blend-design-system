@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
                 userId: newUserRef.key,
                 user: userData,
             })
-        } catch (error) {
+        } catch {
             return NextResponse.json(
                 { message: 'Unauthorized - Invalid token' },
                 { status: 401 }
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
 
         try {
             // Verify the Firebase token
-            const decodedToken = await adminAuth.verifyIdToken(token)
+            await adminAuth.verifyIdToken(token)
 
             // Get users from Firebase Realtime Database
             const usersRef = adminDatabase.ref('users')
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
                     users: {},
                 })
             }
-        } catch (error) {
+        } catch {
             return NextResponse.json(
                 { message: 'Unauthorized - Invalid token' },
                 { status: 401 }

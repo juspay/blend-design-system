@@ -1,32 +1,52 @@
 # Dependencies
 node_modules
+**/node_modules
+.pnpm-store
+.pnpm-debug.log*
 
 # Build artifacts
 build
 coverage
 dist
+**/dist/
+**/dist
 out
 storybook-static
+esm
+cjs
+dist
 
 # Cache and temporary files
 .turbo
-apps/firebase-app/.turbo
-apps/nextdocs/.turbo
+**/.turbo
 .next
+**/.next
 .cache
 .temp
 .tmp
+*.tsbuildinfo
+.eslintcache
+.history
 
 # Auto-generated files
 **/.source/
 **/generated/
 
+# Next.js auto-generated files
+next-env.d.ts
+
 # Environment files
 .env
+.env.*
+!.env.example
+!.env.template
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.staging
+.env.dev
+.env.prod
 
 # OS files
 .DS_Store
@@ -36,9 +56,13 @@ apps/nextdocs/.turbo
 .Trashes
 ehthumbs.db
 Thumbs.db
+*.swp
+*.swo
+*~
 
 # IDE files
 .vscode/settings.json
+.vscode/launch.json
 .idea/
 *.swp
 *.swo
@@ -100,3 +124,43 @@ storybook-static
 # Temporary folders
 tmp/
 temp/
+
+# TypeScript
+*.tsbuildinfo
+
+# Firebase
+.firebase/
+.firebaserc
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+
+# Testing
+.nyc_output
+coverage/
+*.lcov
+
+# Changeset
+.changeset/pre.json
+
+# Vercel
+.vercel
+
+# Sentry
+.sentryclirc
+
+# Misc
+*.local
+.vscode/settings.json
+# Firebase
+.firebase/
+.firebaserc.local
+
+# Build outputs
+dist/
+apps/ascent/out/
+apps/ascent/.next/
+apps/storybook/storybook-static/
+
+packages/blend/dist/*
+**/dist

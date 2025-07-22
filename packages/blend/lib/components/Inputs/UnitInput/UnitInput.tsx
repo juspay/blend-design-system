@@ -1,13 +1,13 @@
 import { Weight } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { UnitInputSize, UnitInputProps, UnitPosition } from './types'
+import { UnitInputSize, type UnitInputProps, UnitPosition } from './types'
 import { FOUNDATION_THEME } from '../../../tokens'
 import Text from '../../Text/Text'
 import Block from '../../Primitives/Block/Block'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import InputFooter from '../utils/InputFooter/InputFooter'
-import { UnitInputTokensType } from './unitInput.tokens'
+import type { UnitInputTokensType } from './unitInput.tokens'
 import { useComponentToken } from '../../../context/useComponentToken'
 
 const UnitInput = ({
@@ -200,7 +200,7 @@ const UnitInput = ({
                     paddingBottom={paddingY}
                     required={required}
                     borderRadius={unitInputTokens.input.borderRadius}
-                    boxShadow={unitInputTokens.input.boxShadow}
+                    boxShadow={unitInputTokens.input.boxShadow.default}
                     border={
                         unitInputTokens.input.border[
                             error ? 'error' : 'default'
@@ -209,7 +209,9 @@ const UnitInput = ({
                     outline="none"
                     width={'100%'}
                     _hover={{
-                        border: unitInputTokens.input.border.hover,
+                        border: unitInputTokens.input.border[
+                            error ? 'error' : 'hover'
+                        ],
                     }}
                     color={
                         unitInputTokens.input.color[
@@ -217,11 +219,23 @@ const UnitInput = ({
                         ]
                     }
                     _focusVisible={{
-                        border: unitInputTokens.input.border.focus,
+                        border: unitInputTokens.input.border[
+                            error ? 'error' : 'focus'
+                        ],
+                        boxShadow:
+                            unitInputTokens.input.boxShadow[
+                                error ? 'error' : 'focus'
+                            ],
                         outline: 'none !important',
                     }}
                     _focus={{
-                        border: unitInputTokens.input.border.focus,
+                        border: unitInputTokens.input.border[
+                            error ? 'error' : 'focus'
+                        ],
+                        boxShadow:
+                            unitInputTokens.input.boxShadow[
+                                error ? 'error' : 'focus'
+                            ],
                         outline: 'none !important',
                     }}
                     disabled={disabled}

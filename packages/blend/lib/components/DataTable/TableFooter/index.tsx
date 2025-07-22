@@ -35,7 +35,9 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
                     currentPage={currentPage}
                     pageSize={pageSize}
                     totalRows={totalRows}
-                    pageSizeOptions={pagination.pageSizeOptions}
+                    pageSizeOptions={
+                        pagination.pageSizeOptions || [10, 20, 50, 100]
+                    }
                     isLoading={isLoading}
                     onPageChange={onPageChange}
                     onPageSizeChange={onPageSizeChange}

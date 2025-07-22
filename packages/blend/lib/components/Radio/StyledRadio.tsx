@@ -1,7 +1,8 @@
 import styled, { css } from 'styled-components'
 import { RadioSize } from './types'
-import { RadioTokensType } from './radio.token'
-import { useComponentToken } from '../../context/useComponentToken'
+import type { RadioTokensType } from './radio.token'
+
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const StyledRadioInput = styled.input<{
     size: RadioSize
@@ -21,7 +22,8 @@ export const StyledRadioInput = styled.input<{
     flex-shrink: 0;
 
     ${({ size, $isChecked, $isDisabled }) => {
-        const radioTokens = useComponentToken('RADIO') as RadioTokensType
+        const radioTokens = useResponsiveTokens<RadioTokensType>('RADIO')
+
         const state = $isDisabled ? 'disabled' : 'default'
         const indicatorState = $isChecked ? 'active' : 'inactive'
 

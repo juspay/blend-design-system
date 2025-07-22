@@ -2,14 +2,15 @@
     "name": "storybook",
     "private": true,
     "version": "0.1.0",
-    "type": "module",
     "scripts": {
         "dev": "storybook dev -p 6006",
         "build-storybook": "storybook build",
-        "preview-storybook": "npx serve storybook-static -p 6006"
+        "preview-storybook": "npx serve storybook-static -p 6006",
+        "lint": "eslint . --max-warnings 0",
+        "lint:fix": "eslint . --fix"
     },
     "dependencies": {
-        "blend-v1": "workspace:*",
+        "@juspay/blend-design-system": "workspace:*",
         "lucide-react": "^0.511.0",
         "react": "^19.1.0",
         "react-dom": "^19.1.0"

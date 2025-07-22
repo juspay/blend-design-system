@@ -7,9 +7,9 @@ import { ChevronRightIcon, Check } from 'lucide-react'
 import React, { useState } from 'react'
 import {
     SelectMenuAlignment,
-    SelectMenuGroupType,
-    SelectMenuItemType,
-    SelectMenuProps,
+    type SelectMenuGroupType,
+    type SelectMenuItemType,
+    type SelectMenuProps,
     SelectMenuSide,
 } from './types'
 import SearchInput from '../Inputs/SearchInput/SearchInput'
@@ -442,6 +442,7 @@ const SelectMenu = ({
     onSelect,
     allowMultiSelect = false,
     enableSearch = false,
+    onOpenChange,
 }: SelectMenuProps) => {
     const [searchText, setSearchText] = useState<string>('')
 
@@ -450,7 +451,7 @@ const SelectMenu = ({
     const filteredItems = filterMenuGroups(itemsWithOnClick, searchText)
 
     return (
-        <RadixMenu.Root modal={asModal}>
+        <RadixMenu.Root modal={asModal} onOpenChange={onOpenChange}>
             <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>
             <Content
                 sideOffset={sideOffset}

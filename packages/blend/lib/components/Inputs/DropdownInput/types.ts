@@ -1,6 +1,6 @@
 import { TextInputSize } from '../TextInput/types'
 
-import { SelectMenuGroupType } from '../../Select/types'
+import type { SelectMenuGroupType } from '../../Select/types'
 
 export enum DropdownInputSize {
     MD = 'md',
@@ -16,7 +16,7 @@ export enum DropdownInputState {
 }
 
 export type DropdownInputProps = {
-    label: string
+    label?: string
     sublabel?: string
     helpIconHintText?: string
     error?: boolean
@@ -29,6 +29,9 @@ export type DropdownInputProps = {
     dropDownValue?: string
     onDropDownChange?: (value: string) => void
     dropDownItems: SelectMenuGroupType[]
+    dropdownName?: string
+    onDropdownOpen?: () => void
+    onDropdownClose?: () => void
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
     'size' | 'style' | 'className'

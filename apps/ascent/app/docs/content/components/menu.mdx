@@ -1,0 +1,532 @@
+---
+title: Menu
+description: The Menu component provides dropdown navigation and action lists with support for icons, submenus, and various interaction patterns for organizing application functions.
+category: components
+tags:
+    - menu
+    - component
+    - navigation
+RepoFolderName: Menu
+StorybookLink: components-menu-menu--docs
+---
+
+<MenuPreview />
+
+## Usage
+
+```tsx
+import {
+    Menu,
+    MenuAlignment,
+    MenuSide,
+    MenuItemV2Variant,
+    MenuItemV2ActionType,
+} from 'blend-v1'
+import { Button, ButtonType } from 'blend-v1'
+import { Settings, User, LogOut, ChevronDown } from 'lucide-react'
+
+function MyComponent() {
+    const menuItems = [
+        {
+            label: 'Profile',
+            slot1: <User size={16} />,
+            onClick: () => console.log('Profile clicked'),
+        },
+        {
+            label: 'Settings',
+            slot1: <Settings size={16} />,
+            onClick: () => console.log('Settings clicked'),
+        },
+        {
+            label: 'Logout',
+            slot1: <LogOut size={16} />,
+            variant: MenuItemV2Variant.ACTION,
+            actionType: MenuItemV2ActionType.DANGER,
+            onClick: () => console.log('Logout clicked'),
+        },
+    ]
+
+    return (
+        <Menu
+            trigger={
+                <Button
+                    text="Open Menu"
+                    buttonType={ButtonType.SECONDARY}
+                    trailingIcon={<ChevronDown size={16} />}
+                />
+            }
+            items={[{ items: menuItems }]}
+            alignment={MenuAlignment.CENTER}
+            side={MenuSide.BOTTOM}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'trigger',
+                hintText: 'The element that triggers the menu to open',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'items',
+                hintText: 'Array of menu groups containing menu items',
+            },
+            { content: 'MenuV2GroupType[]', hintText: 'array' },
+            { content: '[]' },
+        ],
+        [
+            {
+                content: 'maxHeight',
+                hintText: 'Maximum height of the menu in pixels',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minHeight',
+                hintText: 'Minimum height of the menu in pixels',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width of the menu in pixels',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '280' },
+        ],
+        [
+            {
+                content: 'minWidth',
+                hintText: 'Minimum width of the menu in pixels',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '200' },
+        ],
+        [
+            {
+                content: 'enableSearch',
+                hintText: 'Whether to show a search input in the menu',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'searchPlaceholder',
+                hintText: 'Placeholder text for the search input',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: 'Search' },
+        ],
+        [
+            { content: 'open', hintText: 'Controlled open state of the menu' },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onOpenChange',
+                hintText: 'Callback when the open state changes',
+            },
+            { content: '(open: boolean) => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'asModal',
+                hintText: 'Whether the menu should be rendered as a modal',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'alignment',
+                hintText: 'Alignment of the menu relative to the trigger',
+            },
+            { content: 'MenuAlignment', hintText: 'enum' },
+            { content: 'MenuAlignment.CENTER' },
+        ],
+        [
+            {
+                content: 'side',
+                hintText: 'Side of the trigger where the menu appears',
+            },
+            { content: 'MenuSide', hintText: 'enum' },
+            { content: 'MenuSide.BOTTOM' },
+        ],
+        [
+            {
+                content: 'sideOffset',
+                hintText: 'Distance between the trigger and menu',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '8' },
+        ],
+        [
+            {
+                content: 'alignOffset',
+                hintText: 'Offset for alignment positioning',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '0' },
+        ],
+        [
+            {
+                content: 'collisonBoundaryRef',
+                hintText: 'Element to use as collision boundary',
+            },
+            {
+                content: 'Element | null | Array<Element | null>',
+                hintText: 'union type',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## MenuItem API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'label', hintText: 'The text label for the menu item' },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subLabel',
+                hintText: 'Secondary text displayed below the main label',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot1',
+                hintText: 'Icon or element displayed before the label',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot2',
+                hintText: 'Icon or element displayed after the label',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot3',
+                hintText: 'Additional slot for custom elements',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot4',
+                hintText: 'Additional slot for custom elements',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            { content: 'variant', hintText: 'Visual variant of the menu item' },
+            { content: 'MenuItemV2Variant', hintText: 'enum' },
+            { content: 'MenuItemV2Variant.DEFAULT' },
+        ],
+        [
+            {
+                content: 'actionType',
+                hintText: 'Action type for action variant items',
+            },
+            { content: 'MenuItemV2ActionType', hintText: 'enum' },
+            { content: 'MenuItemV2ActionType.PRIMARY' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'Whether the menu item is disabled',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'onClick',
+                hintText: 'Callback function when the item is clicked',
+            },
+            { content: '() => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subMenu',
+                hintText: 'Array of sub-menu items for nested menus',
+            },
+            { content: 'MenuItemV2Type[]', hintText: 'array' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- Dropdown menu with customizable positioning
+- Support for menu groups with labels and separators
+- Icon support with multiple slot positions
+- Sub-menu support for nested navigation
+- Search functionality for filtering menu items
+- Action variants with primary and danger types
+- Disabled state support
+- Keyboard navigation and accessibility
+- Customizable dimensions and styling
+- Modal and non-modal rendering modes
+
+## Usage Examples
+
+### Basic Menu
+
+Simple menu with basic items
+
+```tsx
+const menuItems = [
+    {
+        label: 'Profile',
+        onClick: () => console.log('Profile clicked'),
+    },
+    {
+        label: 'Settings',
+        onClick: () => console.log('Settings clicked'),
+    },
+]
+
+;<Menu
+    trigger={<Button text="Open Menu" buttonType={ButtonType.SECONDARY} />}
+    items={[{ items: menuItems }]}
+/>
+```
+
+### Menu with Icons
+
+Menu items with leading icons
+
+```tsx
+const menuItems = [
+    {
+        label: 'Profile',
+        slot1: <User size={16} />,
+        onClick: () => console.log('Profile clicked'),
+    },
+    {
+        label: 'Settings',
+        slot1: <Settings size={16} />,
+        onClick: () => console.log('Settings clicked'),
+    },
+]
+
+;<Menu
+    trigger={<Button text="Open Menu" buttonType={ButtonType.SECONDARY} />}
+    items={[{ items: menuItems }]}
+/>
+```
+
+### Menu with Groups
+
+Menu organized into groups with labels
+
+```tsx
+const menuGroups = [
+    {
+        label: 'Account',
+        items: [
+            { label: 'Profile', slot1: <User size={16} /> },
+            { label: 'Settings', slot1: <Settings size={16} /> },
+        ],
+    },
+    {
+        label: 'Actions',
+        items: [
+            {
+                label: 'Logout',
+                slot1: <LogOut size={16} />,
+                variant: MenuItemV2Variant.ACTION,
+                actionType: MenuItemV2ActionType.DANGER,
+            },
+        ],
+        showSeparator: true,
+    },
+]
+
+;<Menu
+    trigger={<Button text="Open Menu" buttonType={ButtonType.SECONDARY} />}
+    items={menuGroups}
+/>
+```
+
+### Menu with Search
+
+Menu with search functionality
+
+```tsx
+<Menu
+    trigger={<Button text="Search Menu" buttonType={ButtonType.SECONDARY} />}
+    items={[{ items: menuItems }]}
+    enableSearch={true}
+    searchPlaceholder="Search options..."
+/>
+```
+
+### Sub-menu
+
+Menu with nested sub-menus
+
+```tsx
+const menuItems = [
+    {
+        label: 'More Options',
+        slot1: <Settings size={16} />,
+        subMenu: [
+            { label: 'Edit', slot1: <Edit size={16} /> },
+            {
+                label: 'Delete',
+                slot1: <Trash size={16} />,
+                variant: MenuItemV2Variant.ACTION,
+                actionType: MenuItemV2ActionType.DANGER,
+            },
+        ],
+    },
+]
+
+;<Menu
+    trigger={<Button text="Sub Menu" buttonType={ButtonType.SECONDARY} />}
+    items={[{ items: menuItems }]}
+/>
+```
+
+## Component Tokens
+
+You can style the menu component using the following tokens:
+
+```tsx
+export type MenuItemStates =
+    | 'default'
+    | 'hover'
+    | 'active'
+    | 'focus'
+    | 'focusVisible'
+    | 'disabled'
+
+export type MenuTokensType = {
+    shadow: CSSObject['boxShadow']
+    backgroundColor: CSSObject['backgroundColor']
+    paddingTop: CSSObject['paddingTop']
+    paddingBottom: CSSObject['paddingBottom']
+    border: CSSObject['border']
+    outline: CSSObject['outline']
+    borderRadius: CSSObject['borderRadius']
+    item: {
+        padding: CSSObject['padding']
+        margin: CSSObject['margin']
+        borderRadius: CSSObject['borderRadius']
+        backgroundColor: {
+            [MenuItemV2Variant.DEFAULT]: {
+                enabled: {
+                    [key in MenuItemStates]: CSSObject['backgroundColor']
+                }
+                disabled: {
+                    [key in MenuItemStates]: CSSObject['backgroundColor']
+                }
+            }
+            [MenuItemV2Variant.ACTION]: {
+                [key in MenuItemV2ActionType]: {
+                    enabled: {
+                        [key in MenuItemStates]: CSSObject['backgroundColor']
+                    }
+                    disabled: {
+                        [key in MenuItemStates]: CSSObject['backgroundColor']
+                    }
+                }
+            }
+        }
+        cursor: CSSObject['cursor']
+        gap: CSSObject['gap']
+        label: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: {
+                [MenuItemV2Variant.DEFAULT]: {
+                    enabled: {
+                        [key in MenuItemStates]: CSSObject['color']
+                    }
+                    disabled: {
+                        [key in MenuItemStates]: CSSObject['color']
+                    }
+                }
+                [MenuItemV2Variant.ACTION]: {
+                    [key in MenuItemV2ActionType]: {
+                        enabled: {
+                            [key in MenuItemStates]: CSSObject['color']
+                        }
+                        disabled: {
+                            [key in MenuItemStates]: CSSObject['color']
+                        }
+                    }
+                }
+            }
+        }
+        subLabel: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: {
+                [MenuItemV2Variant.DEFAULT]: {
+                    enabled: {
+                        [key in MenuItemStates]: CSSObject['color']
+                    }
+                    disabled: {
+                        [key in MenuItemStates]: CSSObject['color']
+                    }
+                }
+                [MenuItemV2Variant.ACTION]: {
+                    [key in MenuItemV2ActionType]: {
+                        enabled: {
+                            [key in MenuItemStates]: CSSObject['color']
+                        }
+                        disabled: {
+                            [key in MenuItemStates]: CSSObject['color']
+                        }
+                    }
+                }
+            }
+        }
+    }
+    seperator: {
+        color: CSSObject['color']
+        height: CSSObject['height']
+        margin: CSSObject['margin']
+    }
+}
+```

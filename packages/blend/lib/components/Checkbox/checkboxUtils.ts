@@ -1,5 +1,5 @@
 import { CheckboxSize } from './types'
-import { CheckboxTokensType } from './checkbox.token'
+import type { CheckboxTokensType } from './checkbox.token'
 
 export const getCheckboxDataState = (
     checked: boolean | 'indeterminate'

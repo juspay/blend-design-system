@@ -1,4 +1,4 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 
 export type TextAreaProps = {
     value: string
@@ -10,7 +10,7 @@ export type TextAreaProps = {
     onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void
     rows?: number
     cols?: number
-    label: string
+    label?: string
     sublabel?: string
     hintText?: string
     helpIconHintText?: string

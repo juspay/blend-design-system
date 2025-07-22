@@ -1,5 +1,8 @@
-import { Breadcrumb, type BreadcrumbItemType } from 'blend-v1'
-import { Switch } from 'blend-v1'
+import {
+    Breadcrumb,
+    type BreadcrumbItemType,
+} from '../../../../packages/blend/lib/components/Breadcrumb'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import {
     Home,
     Folder,

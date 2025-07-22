@@ -1,8 +1,8 @@
 'use client'
 
-import type React from 'react'
+import React from 'react'
 import { createRef, useEffect, useRef } from 'react'
-import { DirectoryProps } from './types'
+import type { DirectoryProps } from './types'
 import Section from './Section'
 import Block from '../Primitives/Block/Block'
 import styled from 'styled-components'

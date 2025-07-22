@@ -1,7 +1,7 @@
 import React from 'react'
-import { RadioSize, RadioProps } from './types'
+import { RadioSize, type RadioProps } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
-import { RadioTokensType } from './radio.token'
+import type { RadioTokensType } from './radio.token'
 
 export const getRadioDataState = (checked: boolean): string => {
     return checked ? 'checked' : 'unchecked'
@@ -9,7 +9,7 @@ export const getRadioDataState = (checked: boolean): string => {
 
 export const extractPixelValue = (tokenValue: string): number => {
     const match = tokenValue.match(/(\d+)/)
-    return match ? parseInt(match[1], 10) : 16
+    return match && match[1] ? parseInt(match[1], 10) : 16
 }
 
 export const getSpacingBySize = (

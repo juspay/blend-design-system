@@ -1,15 +1,15 @@
 import * as RadixTooltip from '@radix-ui/react-tooltip'
-import styled, { CSSObject } from 'styled-components'
+import styled, { type CSSObject } from 'styled-components'
 import {
-    TooltipProps,
+    type TooltipProps,
     TooltipAlign,
     TooltipSide,
     TooltipSize,
     TooltipSlotDirection,
 } from './types'
-import { TooltipTokensType } from './tooltip.tokens'
+import type { TooltipTokensType } from './tooltip.tokens'
 import Block from '../Primitives/Block/Block'
-import Text from '../Text/Text'
+import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useComponentToken } from '../../context/useComponentToken'
 
 const Arrow = styled(RadixTooltip.Arrow)<{
@@ -59,13 +59,14 @@ export const Tooltip = ({
                                 </Block>
                             )}
                         <Block flexGrow={1} overflow="hidden">
-                            <Text
+                            <PrimitiveText
                                 color={tooltipTokens.color}
-                                variant={tooltipTokens.fontSize[size]}
+                                fontSize={tooltipTokens.fontSize[size]}
                                 fontWeight={tooltipTokens.fontWeight[size]}
+                                lineHeight={tooltipTokens.lineHeight[size]}
                             >
                                 {content}
-                            </Text>
+                            </PrimitiveText>
                         </Block>
 
                         {slot &&

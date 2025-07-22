@@ -1,6 +1,7 @@
-import { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME, ThemeType } from '../../tokens'
+import type { CSSObject } from 'styled-components'
+import { FOUNDATION_THEME, type ThemeType } from '../../tokens'
 import { TagColor, TagShape, TagSize, TagVariant } from './types'
+import { type BreakpointType } from '../../breakpoints/breakPoints'
 
 export type TagTokensType = Readonly<{
     background: {
@@ -49,6 +50,10 @@ export type TagTokensType = Readonly<{
         }
     }
 }>
+
+export type ResponsiveTagTokens = {
+    [key in keyof BreakpointType]: TagTokensType
+}
 
 const tagTokens: TagTokensType = {
     background: {
@@ -215,168 +220,336 @@ const tagTokens: TagTokensType = {
     },
 }
 
-export const getTagTokens = (foundationToken: ThemeType): TagTokensType => {
+export const getTagTokens = (
+    foundationToken: ThemeType
+): ResponsiveTagTokens => {
     return {
-        background: {
-            noFill: {
-                neutral: foundationToken.colors.gray[0],
-                primary: foundationToken.colors.gray[0],
-                success: foundationToken.colors.gray[0],
-                error: foundationToken.colors.gray[0],
-                warning: foundationToken.colors.gray[0],
-                purple: foundationToken.colors.gray[0],
+        sm: {
+            background: {
+                noFill: {
+                    neutral: foundationToken.colors.gray[0],
+                    primary: foundationToken.colors.gray[0],
+                    success: foundationToken.colors.gray[0],
+                    error: foundationToken.colors.gray[0],
+                    warning: foundationToken.colors.gray[0],
+                    purple: foundationToken.colors.gray[0],
+                },
+                attentive: {
+                    neutral: foundationToken.colors.gray[950],
+                    primary: foundationToken.colors.primary[600],
+                    success: foundationToken.colors.green[600],
+                    error: foundationToken.colors.red[600],
+                    warning: foundationToken.colors.orange[500],
+                    purple: foundationToken.colors.purple[500],
+                },
+                subtle: {
+                    neutral: foundationToken.colors.gray[50],
+                    primary: foundationToken.colors.primary[50],
+                    success: foundationToken.colors.green[50],
+                    error: foundationToken.colors.red[50],
+                    warning: foundationToken.colors.orange[50],
+                    purple: foundationToken.colors.purple[50],
+                },
             },
-            attentive: {
-                neutral: foundationToken.colors.gray[950],
-                primary: foundationToken.colors.primary[600],
-                success: foundationToken.colors.green[600],
-                error: foundationToken.colors.red[600],
-                warning: foundationToken.colors.orange[500],
-                purple: foundationToken.colors.purple[500],
+            color: {
+                noFill: {
+                    neutral: foundationToken.colors.gray[950],
+                    primary: foundationToken.colors.primary[800],
+                    success: foundationToken.colors.green[600],
+                    error: foundationToken.colors.red[600],
+                    warning: foundationToken.colors.orange[500],
+                    purple: foundationToken.colors.purple[500],
+                },
+                attentive: {
+                    neutral: foundationToken.colors.gray[0],
+                    primary: foundationToken.colors.gray[0],
+                    success: foundationToken.colors.gray[0],
+                    error: foundationToken.colors.gray[0],
+                    warning: foundationToken.colors.gray[0],
+                    purple: foundationToken.colors.gray[0],
+                },
+                subtle: {
+                    neutral: foundationToken.colors.gray[950],
+                    primary: foundationToken.colors.primary[600],
+                    success: foundationToken.colors.green[600],
+                    error: foundationToken.colors.red[600],
+                    warning: foundationToken.colors.orange[600],
+                    purple: foundationToken.colors.purple[600],
+                },
             },
-            subtle: {
-                neutral: foundationToken.colors.gray[50],
-                primary: foundationToken.colors.primary[50],
-                success: foundationToken.colors.green[50],
-                error: foundationToken.colors.red[50],
-                warning: foundationToken.colors.orange[50],
-                purple: foundationToken.colors.purple[50],
+            borderColor: {
+                noFill: {
+                    neutral: foundationToken.colors.gray[950],
+                    primary: foundationToken.colors.primary[600],
+                    success: foundationToken.colors.green[600],
+                    error: foundationToken.colors.red[600],
+                    warning: foundationToken.colors.orange[500],
+                    purple: foundationToken.colors.purple[500],
+                },
+                subtle: {
+                    neutral: foundationToken.colors.gray[200],
+                    primary: foundationToken.colors.primary[100],
+                    success: foundationToken.colors.green[100],
+                    error: foundationToken.colors.red[100],
+                    warning: foundationToken.colors.orange[100],
+                    purple: foundationToken.colors.purple[100],
+                },
+                attentive: {
+                    neutral: foundationToken.colors.gray[950],
+                    primary: foundationToken.colors.primary[600],
+                    success: foundationToken.colors.green[600],
+                    error: foundationToken.colors.red[600],
+                    warning: foundationToken.colors.orange[500],
+                    purple: foundationToken.colors.purple[500],
+                },
+            },
+            borderRadius: {
+                squarical: {
+                    xs: foundationToken.border.radius[6],
+                    sm: foundationToken.border.radius[6],
+                    md: foundationToken.border.radius[6],
+                    lg: foundationToken.border.radius[8],
+                },
+                rounded: {
+                    xs: foundationToken.border.radius.full,
+                    sm: foundationToken.border.radius.full,
+                    md: foundationToken.border.radius.full,
+                    lg: foundationToken.border.radius.full,
+                },
+            },
+            borderWidth: {
+                noFill: {
+                    neutral: 1,
+                    primary: 1,
+                    success: 1,
+                    error: 1,
+                    warning: 1,
+                    purple: 1,
+                },
+                subtle: {
+                    neutral: 1,
+                    primary: 1,
+                    success: 1,
+                    error: 1,
+                    warning: 1,
+                    purple: 1,
+                },
+                attentive: {
+                    neutral: 1,
+                    primary: 1,
+                    success: 1,
+                    error: 1,
+                    warning: 1,
+                    purple: 1,
+                },
+            },
+            font: {
+                xs: {
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
+                    fontWeight: foundationToken.font.weight[600],
+                },
+                sm: {
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
+                    fontWeight: foundationToken.font.weight[600],
+                },
+                md: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[600],
+                },
+                lg: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[600],
+                },
+            },
+            gap: {
+                xs: foundationToken.unit[6],
+                sm: foundationToken.unit[6],
+                md: foundationToken.unit[6],
+                lg: foundationToken.unit[6],
+            },
+            padding: {
+                xs: `${foundationToken.unit[2]} ${foundationToken.unit[6]}`,
+                sm: `${foundationToken.unit[3]} ${foundationToken.unit[8]}`,
+                md: `${foundationToken.unit[4]} ${foundationToken.unit[10]}`,
+                lg: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
+            },
+            height: {
+                xs: foundationToken.unit[20],
+                sm: foundationToken.unit[22],
+                md: foundationToken.unit[24],
+                lg: foundationToken.unit[28],
+            },
+            slot: {
+                size: {
+                    xs: foundationToken.unit[12],
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[12],
+                },
             },
         },
-        color: {
-            noFill: {
-                neutral: foundationToken.colors.gray[950],
-                primary: foundationToken.colors.primary[800],
-                success: foundationToken.colors.green[600],
-                error: foundationToken.colors.red[600],
-                warning: foundationToken.colors.orange[500],
-                purple: foundationToken.colors.purple[500],
+        lg: {
+            background: {
+                noFill: {
+                    neutral: foundationToken.colors.gray[0],
+                    primary: foundationToken.colors.gray[0],
+                    success: foundationToken.colors.gray[0],
+                    error: foundationToken.colors.gray[0],
+                    warning: foundationToken.colors.gray[0],
+                    purple: foundationToken.colors.gray[0],
+                },
+                attentive: {
+                    neutral: foundationToken.colors.gray[950],
+                    primary: foundationToken.colors.primary[600],
+                    success: foundationToken.colors.green[600],
+                    error: foundationToken.colors.red[600],
+                    warning: foundationToken.colors.orange[500],
+                    purple: foundationToken.colors.purple[500],
+                },
+                subtle: {
+                    neutral: foundationToken.colors.gray[50],
+                    primary: foundationToken.colors.primary[50],
+                    success: foundationToken.colors.green[50],
+                    error: foundationToken.colors.red[50],
+                    warning: foundationToken.colors.orange[50],
+                    purple: foundationToken.colors.purple[50],
+                },
             },
-            attentive: {
-                neutral: foundationToken.colors.gray[0],
-                primary: foundationToken.colors.gray[0],
-                success: foundationToken.colors.gray[0],
-                error: foundationToken.colors.gray[0],
-                warning: foundationToken.colors.gray[0],
-                purple: foundationToken.colors.gray[0],
+            color: {
+                noFill: {
+                    neutral: foundationToken.colors.gray[950],
+                    primary: foundationToken.colors.primary[800],
+                    success: foundationToken.colors.green[600],
+                    error: foundationToken.colors.red[600],
+                    warning: foundationToken.colors.orange[500],
+                    purple: foundationToken.colors.purple[500],
+                },
+                attentive: {
+                    neutral: foundationToken.colors.gray[0],
+                    primary: foundationToken.colors.gray[0],
+                    success: foundationToken.colors.gray[0],
+                    error: foundationToken.colors.gray[0],
+                    warning: foundationToken.colors.gray[0],
+                    purple: foundationToken.colors.gray[0],
+                },
+                subtle: {
+                    neutral: foundationToken.colors.gray[950],
+                    primary: foundationToken.colors.primary[600],
+                    success: foundationToken.colors.green[600],
+                    error: foundationToken.colors.red[600],
+                    warning: foundationToken.colors.orange[600],
+                    purple: foundationToken.colors.purple[600],
+                },
             },
-            subtle: {
-                neutral: foundationToken.colors.gray[950],
-                primary: foundationToken.colors.primary[600],
-                success: foundationToken.colors.green[600],
-                error: foundationToken.colors.red[600],
-                warning: foundationToken.colors.orange[600],
-                purple: foundationToken.colors.purple[600],
+            borderColor: {
+                noFill: {
+                    neutral: foundationToken.colors.gray[950],
+                    primary: foundationToken.colors.primary[600],
+                    success: foundationToken.colors.green[600],
+                    error: foundationToken.colors.red[600],
+                    warning: foundationToken.colors.orange[500],
+                    purple: foundationToken.colors.purple[500],
+                },
+                subtle: {
+                    neutral: foundationToken.colors.gray[200],
+                    primary: foundationToken.colors.primary[100],
+                    success: foundationToken.colors.green[100],
+                    error: foundationToken.colors.red[100],
+                    warning: foundationToken.colors.orange[100],
+                    purple: foundationToken.colors.purple[100],
+                },
+                attentive: {
+                    neutral: foundationToken.colors.gray[950],
+                    primary: foundationToken.colors.primary[600],
+                    success: foundationToken.colors.green[600],
+                    error: foundationToken.colors.red[600],
+                    warning: foundationToken.colors.orange[500],
+                    purple: foundationToken.colors.purple[500],
+                },
             },
-        },
-        borderColor: {
-            noFill: {
-                neutral: foundationToken.colors.gray[950],
-                primary: foundationToken.colors.primary[600],
-                success: foundationToken.colors.green[600],
-                error: foundationToken.colors.red[600],
-                warning: foundationToken.colors.orange[500],
-                purple: foundationToken.colors.purple[500],
+            borderRadius: {
+                squarical: {
+                    xs: foundationToken.border.radius[6],
+                    sm: foundationToken.border.radius[6],
+                    md: foundationToken.border.radius[6],
+                    lg: foundationToken.border.radius[8],
+                },
+                rounded: {
+                    xs: foundationToken.border.radius.full,
+                    sm: foundationToken.border.radius.full,
+                    md: foundationToken.border.radius.full,
+                    lg: foundationToken.border.radius.full,
+                },
             },
-            subtle: {
-                neutral: foundationToken.colors.gray[200],
-                primary: foundationToken.colors.primary[100],
-                success: foundationToken.colors.green[100],
-                error: foundationToken.colors.red[100],
-                warning: foundationToken.colors.orange[100],
-                purple: foundationToken.colors.purple[100],
+            borderWidth: {
+                noFill: {
+                    neutral: 1,
+                    primary: 1,
+                    success: 1,
+                    error: 1,
+                    warning: 1,
+                    purple: 1,
+                },
+                subtle: {
+                    neutral: 1,
+                    primary: 1,
+                    success: 1,
+                    error: 1,
+                    warning: 1,
+                    purple: 1,
+                },
+                attentive: {
+                    neutral: 1,
+                    primary: 1,
+                    success: 1,
+                    error: 1,
+                    warning: 1,
+                    purple: 1,
+                },
             },
-            attentive: {
-                neutral: foundationToken.colors.gray[950],
-                primary: foundationToken.colors.primary[600],
-                success: foundationToken.colors.green[600],
-                error: foundationToken.colors.red[600],
-                warning: foundationToken.colors.orange[500],
-                purple: foundationToken.colors.purple[500],
+            font: {
+                xs: {
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
+                    fontWeight: foundationToken.font.weight[600],
+                },
+                sm: {
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
+                    fontWeight: foundationToken.font.weight[600],
+                },
+                md: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[600],
+                },
+                lg: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[600],
+                },
             },
-        },
-        borderRadius: {
-            squarical: {
-                xs: foundationToken.border.radius[6],
-                sm: foundationToken.border.radius[6],
-                md: foundationToken.border.radius[6],
-                lg: foundationToken.border.radius[8],
+            gap: {
+                xs: foundationToken.unit[6],
+                sm: foundationToken.unit[6],
+                md: foundationToken.unit[6],
+                lg: foundationToken.unit[6],
             },
-            rounded: {
-                xs: foundationToken.border.radius.full,
-                sm: foundationToken.border.radius.full,
-                md: foundationToken.border.radius.full,
-                lg: foundationToken.border.radius.full,
+            padding: {
+                xs: `${foundationToken.unit[2]} ${foundationToken.unit[6]}`,
+                sm: `${foundationToken.unit[3]} ${foundationToken.unit[8]}`,
+                md: `${foundationToken.unit[4]} ${foundationToken.unit[10]}`,
+                lg: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
             },
-        },
-        borderWidth: {
-            noFill: {
-                neutral: 1,
-                primary: 1,
-                success: 1,
-                error: 1,
-                warning: 1,
-                purple: 1,
+            height: {
+                xs: foundationToken.unit[20],
+                sm: foundationToken.unit[22],
+                md: foundationToken.unit[24],
+                lg: foundationToken.unit[28],
             },
-            subtle: {
-                neutral: 1,
-                primary: 1,
-                success: 1,
-                error: 1,
-                warning: 1,
-                purple: 1,
-            },
-            attentive: {
-                neutral: 1,
-                primary: 1,
-                success: 1,
-                error: 1,
-                warning: 1,
-                purple: 1,
-            },
-        },
-        font: {
-            xs: {
-                fontSize: foundationToken.font.size.body.sm.fontSize,
-                fontWeight: foundationToken.font.weight[600],
-            },
-            sm: {
-                fontSize: foundationToken.font.size.body.sm.fontSize,
-                fontWeight: foundationToken.font.weight[600],
-            },
-            md: {
-                fontSize: foundationToken.font.size.body.md.fontSize,
-                fontWeight: foundationToken.font.weight[600],
-            },
-            lg: {
-                fontSize: foundationToken.font.size.body.md.fontSize,
-                fontWeight: foundationToken.font.weight[600],
-            },
-        },
-        gap: {
-            xs: foundationToken.unit[6],
-            sm: foundationToken.unit[6],
-            md: foundationToken.unit[6],
-            lg: foundationToken.unit[6],
-        },
-        padding: {
-            xs: `${foundationToken.unit[2]} ${foundationToken.unit[6]}`,
-            sm: `${foundationToken.unit[3]} ${foundationToken.unit[8]}`,
-            md: `${foundationToken.unit[4]} ${foundationToken.unit[10]}`,
-            lg: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
-        },
-        height: {
-            xs: foundationToken.unit[20],
-            sm: foundationToken.unit[22],
-            md: foundationToken.unit[24],
-            lg: foundationToken.unit[28],
-        },
-        slot: {
-            size: {
-                xs: foundationToken.unit[12],
-                sm: foundationToken.unit[12],
-                md: foundationToken.unit[12],
-                lg: foundationToken.unit[12],
+            slot: {
+                size: {
+                    xs: foundationToken.unit[12],
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[12],
+                },
             },
         },
     }

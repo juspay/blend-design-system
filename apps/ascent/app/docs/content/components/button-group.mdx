@@ -1,0 +1,221 @@
+---
+title: Button Group V2
+description: The ButtonGroup component is a container that groups multiple Button components together with flexible layout options and automatic positioning.
+category: components
+tags:
+    - button-group
+    - component
+    - layout
+RepoFolderName: ButtonGroup
+StorybookLink: components-button-buttonv2--docs
+---
+
+<ButtonGroupPreview />
+
+## Usage
+
+```tsx
+import { ButtonGroup, Button, ButtonType } from 'blend-v1'
+
+function MyComponent() {
+    return (
+        <ButtonGroup stacked={false}>
+            <Button text="Cancel" buttonType={ButtonType.SUCCESS} />
+            <Button text="Save" buttonType={ButtonType.PRIMARY} />
+        </ButtonGroup>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'stacked',
+                hintText: 'Whether buttons should be stacked or side by side',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'Button components to be grouped together',
+            },
+            {
+                content:
+                    'ReactElement<ButtonV2Props> | ReactElement<ButtonV2Props>[]',
+                hintText: 'React elements',
+            },
+            { content: '' },
+        ],
+    ]}
+    isHoverable={true}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- Flexible layout options (horizontal or stacked)
+- Automatic button positioning within the group
+- Seamless integration with Button components
+- Responsive design with proper spacing
+- Automatic gap management between buttons
+- Support for any number of Button children
+- Clean and consistent visual grouping
+
+## Usage Examples
+
+### Basic Button Group
+
+Simple horizontal button group with two buttons
+
+```tsx
+<ButtonGroup>
+    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+    <Button text="Save" buttonType={ButtonType.PRIMARY} />
+</ButtonGroup>
+```
+
+### Stacked Button Group
+
+Vertical button group with stacked layout
+
+```tsx
+<ButtonGroup stacked={true}>
+    <Button text="Option 1" buttonType={ButtonType.PRIMARY} />
+    <Button text="Option 2" buttonType={ButtonType.SECONDARY} />
+    <Button text="Option 3" buttonType={ButtonType.DANGER} />
+</ButtonGroup>
+```
+
+### Multiple Buttons
+
+Button group with more than two buttons
+
+```tsx
+<ButtonGroup>
+    <Button text="Previous" buttonType={ButtonType.SECONDARY} />
+    <Button text="Next" buttonType={ButtonType.PRIMARY} />
+    <Button text="Skip" buttonType={ButtonType.SECONDARY} />
+</ButtonGroup>
+```
+
+### Form Actions
+
+Common use case for form action buttons
+
+```tsx
+<ButtonGroup>
+    <Button
+        text="Reset"
+        buttonType={ButtonType.SECONDARY}
+        onClick={() => console.log('Reset clicked')}
+    />
+    <Button
+        text="Submit"
+        buttonType={ButtonType.PRIMARY}
+        onClick={() => console.log('Submit clicked')}
+    />
+</ButtonGroup>
+```
+
+### Stacked Navigation
+
+Vertical navigation with stacked buttons
+
+```tsx
+<ButtonGroup stacked={true}>
+    <Button text="Home" buttonType={ButtonType.PRIMARY} />
+    <Button text="Profile" buttonType={ButtonType.SECONDARY} />
+    <Button text="Settings" buttonType={ButtonType.SECONDARY} />
+    <Button text="Logout" buttonType={ButtonType.DANGER} />
+</ButtonGroup>
+```
+
+### Mixed Button Types
+
+Group with different button types and states
+
+```tsx
+<ButtonGroup>
+    <Button
+        text="Delete"
+        buttonType={ButtonType.DANGER}
+        onClick={() => console.log('Delete clicked')}
+    />
+    <Button
+        text="Edit"
+        buttonType={ButtonType.SECONDARY}
+        onClick={() => console.log('Edit clicked')}
+    />
+    <Button
+        text="Save"
+        buttonType={ButtonType.SUCCESS}
+        onClick={() => console.log('Save clicked')}
+    />
+</ButtonGroup>
+```
+
+## Component Tokens
+
+ButtonGroup uses Button Component. So you can style the button group component using the same tokens as the Button Component.
+
+```tsx
+export type ButtonState = 'default' | 'hover' | 'active' | 'disabled'
+
+export type ButtonTokensType = {
+    gap: CSSObject['gap']
+    backgroundColor: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in ButtonState]: CSSObject['background']
+            }
+        }
+    }
+    color: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in ButtonState]: CSSObject['color']
+            }
+        }
+    }
+    borderRadius: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in ButtonState]: CSSObject['borderRadius']
+            }
+        }
+    }
+    padding: {
+        [key in ButtonSize]: {
+            [key in ButtonSubType]: CSSObject['padding']
+        }
+    }
+    border: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in ButtonState]: CSSObject['border']
+            }
+        }
+    }
+    shadow: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in ButtonState]: CSSObject['boxShadow']
+            }
+        }
+    }
+    outline: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in ButtonState]: CSSObject['outline']
+            }
+        }
+    }
+}
+```

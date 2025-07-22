@@ -1,6 +1,6 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { FoundationTokenType } from '../../../tokens/theme.token'
+import type { FoundationTokenType } from '../../../tokens/theme.token'
 
 type TextAreaState = 'default' | 'hover' | 'focus' | 'error' | 'disabled'
 
@@ -9,7 +9,9 @@ export type TextAreaTokensType = {
     paddingX: CSSObject['padding']
     paddingY: CSSObject['padding']
     borderRadius: CSSObject['borderRadius']
-    boxShadow: CSSObject['boxShadow']
+    boxShadow: {
+        [key in TextAreaState]: CSSObject['boxShadow']
+    }
     outline: {
         [key in TextAreaState]: CSSObject['outline']
     }
@@ -29,7 +31,13 @@ export const textAreaTokens: TextAreaTokensType = {
     paddingX: FOUNDATION_THEME.unit[14],
     paddingY: FOUNDATION_THEME.unit[10],
     borderRadius: FOUNDATION_THEME.unit[8],
-    boxShadow: FOUNDATION_THEME.shadows.sm,
+    boxShadow: {
+        default: FOUNDATION_THEME.shadows.sm,
+        hover: FOUNDATION_THEME.shadows.sm,
+        focus: FOUNDATION_THEME.shadows.focusPrimary,
+        error: FOUNDATION_THEME.shadows.focusError,
+        disabled: FOUNDATION_THEME.shadows.sm,
+    },
     outline: {
         default: 'none',
         hover: 'none',
@@ -68,7 +76,13 @@ export const getTextAreaTokens = (
         paddingX: foundationTokens.unit[14],
         paddingY: foundationTokens.unit[10],
         borderRadius: foundationTokens.unit[8],
-        boxShadow: foundationTokens.shadows.sm,
+        boxShadow: {
+            default: foundationTokens.shadows.sm,
+            hover: foundationTokens.shadows.sm,
+            focus: foundationTokens.shadows.focusPrimary,
+            error: foundationTokens.shadows.focusError,
+            disabled: foundationTokens.shadows.sm,
+        },
         outline: {
             default: 'none',
             hover: 'none',

@@ -1,12 +1,5 @@
 import { useState } from 'react'
-import {
-    Accordion,
-    AccordionItem,
-    AccordionType,
-    AccordionChevronPosition,
-    SingleSelect,
-    Switch,
-} from 'blend-v1'
+
 import {
     Home,
     User,
@@ -22,7 +15,14 @@ import {
     AlertCircle,
     CheckCircle,
 } from 'lucide-react'
-
+import {
+    Accordion,
+    AccordionItem,
+    AccordionType,
+    AccordionChevronPosition,
+} from '../../../../packages/blend/lib/components/Accordion'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 const AccordionDemo = () => {
     // Playground state
     const [playgroundType, setPlaygroundType] = useState<AccordionType>(

@@ -1,6 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Tag, TagVariant, TagColor, TagSize, TagShape } from 'blend-v1'
+import {
+    Tag,
+    TagVariant,
+    TagColor,
+    TagSize,
+    TagShape,
+} from '@juspay/blend-design-system'
 import {
     X,
     Check,
@@ -23,6 +29,8 @@ import {
     DollarSign,
     Percent,
 } from 'lucide-react'
+
+// Figma Code Connect is configured in Tags.figma.tsx
 
 const meta: Meta<typeof Tag> = {
     title: 'Components/Tags/Tag',
@@ -48,7 +56,7 @@ A versatile tag component for labeling, categorizing, and displaying metadata wi
 ## Usage
 
 \`\`\`tsx
-import { Tag, TagVariant, TagColor, TagSize } from 'blend-v1';
+import { Tag, TagVariant, TagColor, TagSize } from '@juspay/blend-design-system';
 
 <Tag
   text="New Feature"
@@ -500,82 +508,87 @@ export const WithIcons: Story = {
 // Interactive Tags
 export const Interactive: Story = {
     render: () => {
-        const [selectedTags, setSelectedTags] = React.useState<string[]>([
-            'React',
-        ])
+        const InteractiveComponent = () => {
+            const [selectedTags, setSelectedTags] = React.useState<string[]>([
+                'React',
+            ])
 
-        const tags = [
-            'React',
-            'TypeScript',
-            'JavaScript',
-            'CSS',
-            'HTML',
-            'Node.js',
-        ]
+            const tags = [
+                'React',
+                'TypeScript',
+                'JavaScript',
+                'CSS',
+                'HTML',
+                'Node.js',
+            ]
 
-        const toggleTag = (tag: string) => {
-            setSelectedTags((prev) =>
-                prev.includes(tag)
-                    ? prev.filter((t) => t !== tag)
-                    : [...prev, tag]
-            )
-        }
+            const toggleTag = (tag: string) => {
+                setSelectedTags((prev) =>
+                    prev.includes(tag)
+                        ? prev.filter((t) => t !== tag)
+                        : [...prev, tag]
+                )
+            }
 
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
-                <div>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#666',
-                        }}
-                    >
-                        Click to Select Tags
-                    </h3>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '8px',
-                            flexWrap: 'wrap',
-                        }}
-                    >
-                        {tags.map((tag) => (
-                            <Tag
-                                key={tag}
-                                text={tag}
-                                variant={
-                                    selectedTags.includes(tag)
-                                        ? TagVariant.ATTENTIVE
-                                        : TagVariant.NO_FILL
-                                }
-                                color={
-                                    selectedTags.includes(tag)
-                                        ? TagColor.PRIMARY
-                                        : TagColor.NEUTRAL
-                                }
-                                leftSlot={
-                                    selectedTags.includes(tag) ? (
-                                        <Check size={12} />
-                                    ) : null
-                                }
-                                onClick={() => toggleTag(tag)}
-                            />
-                        ))}
+            return (
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                    }}
+                >
+                    <div>
+                        <h3
+                            style={{
+                                marginBottom: '12px',
+                                fontSize: '14px',
+                                color: '#666',
+                            }}
+                        >
+                            Click to Select Tags
+                        </h3>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '8px',
+                                flexWrap: 'wrap',
+                            }}
+                        >
+                            {tags.map((tag) => (
+                                <Tag
+                                    key={tag}
+                                    text={tag}
+                                    variant={
+                                        selectedTags.includes(tag)
+                                            ? TagVariant.ATTENTIVE
+                                            : TagVariant.NO_FILL
+                                    }
+                                    color={
+                                        selectedTags.includes(tag)
+                                            ? TagColor.PRIMARY
+                                            : TagColor.NEUTRAL
+                                    }
+                                    leftSlot={
+                                        selectedTags.includes(tag) ? (
+                                            <Check size={12} />
+                                        ) : null
+                                    }
+                                    onClick={() => toggleTag(tag)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#666' }}>
+                        Selected:{' '}
+                        {selectedTags.length > 0
+                            ? selectedTags.join(', ')
+                            : 'None'}
                     </div>
                 </div>
-                <div style={{ fontSize: '12px', color: '#666' }}>
-                    Selected:{' '}
-                    {selectedTags.length > 0 ? selectedTags.join(', ') : 'None'}
-                </div>
-            </div>
-        )
+            )
+        }
+        return <InteractiveComponent />
     },
     parameters: {
         docs: {

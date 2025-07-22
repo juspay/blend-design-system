@@ -1,4 +1,7 @@
-import { TextArea, SingleSelect, Switch, addSnackbar } from 'blend-v1'
+import { TextArea } from '../../../../packages/blend/lib/components/Inputs/TextArea'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { useState } from 'react'
 
 const TextAreaDemo = () => {

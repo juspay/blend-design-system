@@ -1,12 +1,12 @@
-import Block from '../Primitives/Block/Block'
-import { FOUNDATION_THEME } from '../../tokens'
-import PrimitiveLink from '../Primitives/PrimitiveLink'
 import { Ellipsis } from 'lucide-react'
+import Block from '../Primitives/Block/Block'
+import PrimitiveLink from '../Primitives/PrimitiveLink'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { BreadcrumbTokenType } from './breadcrumb.tokens'
-import { useComponentToken } from '../../context/useComponentToken'
-import { BreadcrumbItemType } from './types'
+import { FOUNDATION_THEME } from '../../tokens'
+import type { BreadcrumbTokenType } from './breadcrumb.tokens'
+import type { BreadcrumbItemType } from './types'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const MAX_ITEMS = 4
 
@@ -17,9 +17,8 @@ const BreadcrumbItem = ({
     item: BreadcrumbItemType
     isActive: boolean
 }) => {
-    const breadcrumbTokens = useComponentToken(
-        'BREADCRUMB'
-    ) as BreadcrumbTokenType
+    const breadcrumbTokens =
+        useResponsiveTokens<BreadcrumbTokenType>('BREADCRUMB')
     return (
         <>
             <PrimitiveLink
@@ -65,9 +64,8 @@ const BreadcrumbItem = ({
 }
 
 const Breadcrumb = ({ items }: { items: BreadcrumbItemType[] }) => {
-    const breadcrumbTokens = useComponentToken(
-        'BREADCRUMB'
-    ) as BreadcrumbTokenType
+    const breadcrumbTokens =
+        useResponsiveTokens<BreadcrumbTokenType>('BREADCRUMB')
     if (items.length === 0) return null
 
     const baseItem = items[0]

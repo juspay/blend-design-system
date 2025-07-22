@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import * as RadixPopover from '@radix-ui/react-popover'
 import Block from '../Primitives/Block/Block'
 import { PopoverProps, PopoverSize } from './types'
@@ -32,8 +32,14 @@ const Popover = ({
     size = PopoverSize.MEDIUM,
     onClose,
 }: PopoverProps) => {
-    const [isOpen, setIsOpen] = useState(open)
+    const [isOpen, setIsOpen] = useState(open || false)
     const popoverTokens = useComponentToken('POPOVER') as PopoverTokenType
+
+    useEffect(() => {
+        if (open !== undefined) {
+            setIsOpen(open)
+        }
+    }, [open])
     return (
         <RadixPopover.Root
             open={isOpen}

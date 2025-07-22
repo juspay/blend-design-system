@@ -1,0 +1,237 @@
+---
+title: Alert
+description: The Alert component is a versatile notification element used to display important messages to users with multiple variants, styles, and interactive options.
+category: components
+tags:
+    - alert
+    - component
+    - notification
+RepoFolderName: Alert
+StorybookLink: components-alert--docs
+---
+
+<AlertPreview />
+
+## Usage
+
+```tsx
+import { Alert, AlertVariant, AlertStyle } from 'blend-v1'
+
+function MyComponent() {
+    return (
+        <Alert
+            heading="Success!"
+            description="Your changes have been saved successfully."
+            variant={AlertVariant.SUCCESS}
+            style={AlertStyle.SUBTLE}
+            onClose={() => console.log('closed')}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'heading',
+                hintText: 'The main title text of the alert',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'description',
+                hintText: 'The descriptive text content of the alert',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            { content: 'variant', hintText: 'The visual variant of the alert' },
+            { content: 'AlertVariant', hintText: 'enum' },
+            { content: 'PRIMARY' },
+        ],
+        [
+            { content: 'style', hintText: 'The visual style of the alert' },
+            { content: 'AlertStyle', hintText: 'enum' },
+            { content: 'SUBTLE' },
+        ],
+        [
+            {
+                content: 'primaryAction',
+                hintText: 'Primary action button configuration',
+            },
+            { content: 'AlertAction', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'secondaryAction',
+                hintText: 'Secondary action button configuration',
+            },
+            { content: 'AlertAction', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClose',
+                hintText: 'Callback function when close button is clicked',
+            },
+            { content: '() => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'icon',
+                hintText: 'Icon displayed at the start of the alert',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'actionPlacement',
+                hintText: 'Position of action buttons relative to content',
+            },
+            { content: 'AlertActionPlacement', hintText: 'enum' },
+            { content: 'RIGHT' },
+        ],
+    ]}
+    isHoverable={true}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- Multiple alert variants (primary, success, warning, error, purple, orange, neutral)
+- Two visual styles (subtle, noFill)
+- Optional close button functionality
+- Primary and secondary action buttons
+- Custom icon support
+- Flexible action button placement (right or bottom)
+- Responsive design with proper spacing
+- Accessible keyboard navigation
+
+## Usage Examples
+
+### Basic Alert
+
+Simple alert with heading and description
+
+```tsx
+<Alert
+    heading="Information"
+    description="This is an informational message."
+    variant={AlertVariant.PRIMARY}
+/>
+```
+
+### Success Alert with Close Button
+
+Alert with success styling and close functionality
+
+```tsx
+<Alert
+    heading="Success!"
+    description="Your changes have been saved successfully."
+    variant={AlertVariant.SUCCESS}
+    onClose={() => console.log('Alert closed')}
+/>
+```
+
+### Warning Alert with Actions
+
+Alert with warning styling and action buttons
+
+```tsx
+<Alert
+    heading="Warning"
+    description="Are you sure you want to delete this item?"
+    variant={AlertVariant.WARNING}
+    primaryAction={{
+        label: 'Delete',
+        onClick: () => console.log('Delete clicked'),
+    }}
+    secondaryAction={{
+        label: 'Cancel',
+        onClick: () => console.log('Cancel clicked'),
+    }}
+/>
+```
+
+### Error Alert with Icon
+
+Alert with error styling and custom icon
+
+```tsx
+import { AlertCircle } from 'lucide-react'
+;<Alert
+    heading="Error"
+    description="Something went wrong. Please try again."
+    variant={AlertVariant.ERROR}
+    icon={<AlertCircle size={16} />}
+    onClose={() => console.log('Error alert closed')}
+/>
+```
+
+### Alert with Bottom Actions
+
+Alert with action buttons positioned at the bottom
+
+```tsx
+<Alert
+    heading="Update Available"
+    description="A new version is available for download."
+    variant={AlertVariant.PURPLE}
+    primaryAction={{
+        label: 'Update Now',
+        onClick: () => console.log('Update clicked'),
+    }}
+    secondaryAction={{
+        label: 'Later',
+        onClick: () => console.log('Later clicked'),
+    }}
+    actionPlacement={AlertActionPlacement.BOTTOM}
+/>
+```
+
+### No Fill Style Alert
+
+Alert with no background fill styling
+
+```tsx
+<Alert
+    heading="Neutral Message"
+    description="This alert uses the no-fill style."
+    variant={AlertVariant.NEUTRAL}
+    style={AlertStyle.NO_FILL}
+/>
+```
+
+## Component Tokens
+
+You can style the alert component using the following tokens:
+
+```tsx
+export type AlertTokenType = {
+    padding: CSSObject['padding']
+    borderRadius: CSSObject['borderRadius']
+    background: {
+        [key in AlertVariant]: {
+            [key in AlertStyle]: CSSObject['color']
+        }
+    }
+    border: {
+        [key in AlertVariant]: CSSObject['color']
+    }
+    button: {
+        [key in AlertVariant]: CSSObject['color']
+    }
+}
+```

@@ -4,9 +4,9 @@ import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import Button from '../Button/Button'
-import { ButtonSize, ButtonSubType, ButtonType } from '../Button'
+import { ButtonSize, ButtonSubType, ButtonType } from '../Button/types'
 import Directory from '../Directory/Directory'
-import { SidebarProps } from './types'
+import type { SidebarProps } from './types'
 import GradientBlur from '../GradientBlur/GradientBlur'
 import { FOUNDATION_THEME } from '../../tokens'
 import { Select } from '../Select'
@@ -204,14 +204,13 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                         </Text>
                                     )}
                                     <Button
-                                        style={{ flexShrink: 0 }}
                                         onClick={() =>
                                             setIsExpanded(!isExpanded)
                                         }
                                         buttonType={ButtonType.SECONDARY}
                                         subType={ButtonSubType.ICON_ONLY}
                                         size={ButtonSize.SMALL}
-                                        leadingIcon={PanelsTopLeft}
+                                        leadingIcon={<PanelsTopLeft />}
                                     />
                                 </Block>
 
@@ -254,11 +253,10 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             >
                                 <Button
                                     onClick={() => setIsExpanded(!isExpanded)}
-                                    style={{ flexShrink: 0 }}
                                     buttonType={ButtonType.SECONDARY}
                                     subType={ButtonSubType.ICON_ONLY}
                                     size={ButtonSize.SMALL}
-                                    leadingIcon={PanelsTopLeft}
+                                    leadingIcon={<PanelsTopLeft />}
                                 />
                                 {merchants.length > 1 ? (
                                     <Select

@@ -1,6 +1,7 @@
-import React from 'react'
+import { forwardRef, useId } from 'react'
 import { Check, Minus } from 'lucide-react'
-import { CheckboxProps, CheckboxSize } from './types'
+import type { CheckboxProps } from './types'
+import { CheckboxSize } from './types'
 import {
     getCheckboxDataState,
     extractPixelValue,
@@ -14,10 +15,10 @@ import {
 import { StyledCheckboxRoot, StyledCheckboxIndicator } from './StyledCheckbox'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { useComponentToken } from '../../context/useComponentToken'
-import { CheckboxTokensType } from './checkbox.token'
+import type { CheckboxTokensType } from './checkbox.token'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
-export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
+export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
     (
         {
             id,
@@ -32,11 +33,13 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
             children,
             subtext,
             slot,
+            ...rest
         },
         ref
     ) => {
-        const tokens = useComponentToken('CHECKBOX') as CheckboxTokensType
-        const generatedId = React.useId()
+        const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
+
+        const generatedId = useId()
         const uniqueId = id || generatedId
 
         const inputProps = createCheckboxInputProps(checked, defaultChecked)
@@ -58,6 +61,7 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
                     $isDisabled={disabled}
                     $checked={currentChecked || false}
                     $error={error}
+                    {...rest}
                 >
                     <CheckboxIndicator
                         checked={currentChecked}

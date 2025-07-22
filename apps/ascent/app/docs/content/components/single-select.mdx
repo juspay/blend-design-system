@@ -1,0 +1,771 @@
+---
+title: Single Select
+description: The SingleSelect component provides a dropdown selection interface for choosing a single option from a list, with search, keyboard navigation, and customizable styling options.
+category: components
+tags:
+    - single-select
+    - component
+    - form
+    - dropdown
+    - selection
+RepoFolderName: SingleSelect
+StorybookLink: components-singleselect-singleselect--docs
+---
+
+## Usage
+
+```tsx
+import { SingleSelect, SelectMenuSize, SelectMenuVariant } from 'blend-v1'
+
+function MyComponent() {
+    const [selectedValue, setSelectedValue] = useState('')
+
+    const items = [
+        {
+            items: [
+                { label: 'Option 1', value: 'option1' },
+                { label: 'Option 2', value: 'option2' },
+                { label: 'Option 3', value: 'option3' },
+            ],
+        },
+    ]
+
+    return (
+        <SingleSelect
+            label="Select an option"
+            placeholder="Choose an option"
+            items={items}
+            selected={selectedValue}
+            onSelect={setSelectedValue}
+            size={SelectMenuSize.MEDIUM}
+            variant={SelectMenuVariant.CONTAINER}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'label',
+                hintText: 'The label text for the select component',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subLabel',
+                hintText:
+                    'Optional sub-label text displayed below the main label',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hintText',
+                hintText: 'Optional hint text displayed below the select',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText: 'Whether the select is required (shows asterisk)',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'helpIconText',
+                hintText: 'Optional help text displayed with an info icon',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'The placeholder text when no option is selected',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'The size variant of the select component',
+            },
+            { content: 'SelectMenuSize', hintText: 'enum' },
+            { content: 'SelectMenuSize.MEDIUM' },
+        ],
+        [
+            {
+                content: 'items',
+                hintText: 'Array of menu groups containing selectable items',
+            },
+            { content: 'SelectMenuGroupType[]', hintText: 'array' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText: 'The visual variant of the select component',
+            },
+            { content: 'SelectMenuVariant', hintText: 'enum' },
+            { content: 'SelectMenuVariant.CONTAINER' },
+        ],
+        [
+            { content: 'selected', hintText: 'The currently selected value' },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSelect',
+                hintText: 'Callback when a value is selected',
+            },
+            { content: '(value: string) => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'enableSearch',
+                hintText:
+                    'Whether to enable search functionality in the dropdown',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'slot',
+                hintText: 'Optional element to display alongside the trigger',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'Whether the select is disabled and non-interactive',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'name',
+                hintText: 'The name attribute for form integration',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'alignment',
+                hintText:
+                    'The alignment of the dropdown menu relative to the trigger',
+            },
+            { content: 'SelectMenuAlignment', hintText: 'enum' },
+            { content: 'SelectMenuAlignment.CENTER' },
+        ],
+        [
+            {
+                content: 'side',
+                hintText: 'The side where the dropdown menu appears',
+            },
+            { content: 'SelectMenuSide', hintText: 'enum' },
+            { content: 'SelectMenuSide.BOTTOM' },
+        ],
+        [
+            {
+                content: 'sideOffset',
+                hintText: 'The offset distance from the trigger',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '8' },
+        ],
+        [
+            {
+                content: 'alignOffset',
+                hintText: 'The offset distance for alignment',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '0' },
+        ],
+        [
+            {
+                content: 'minWidth',
+                hintText: 'The minimum width of the dropdown menu',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'The maximum width of the dropdown menu',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxHeight',
+                hintText: 'The maximum height of the dropdown menu',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- Three size variants (small, medium, large)
+- Two visual variants (container, no-container)
+- Optional search functionality
+- Grouped menu items with labels
+- Sub-menu support for nested options
+- Multiple slot positions for additional content
+- Required field indicator
+- Help text with info icon
+- Customizable positioning and alignment
+- Keyboard navigation support
+- Accessible by default
+- Built on Radix UI primitives
+- Customizable dimensions
+
+## Usage Examples
+
+### Basic SingleSelect
+
+Simple select with basic options
+
+```tsx
+import { SingleSelect } from 'blend-v1'
+
+function MyComponent() {
+    const [selectedValue, setSelectedValue] = useState('')
+
+    const items = [
+        {
+            items: [
+                { label: 'Option 1', value: 'option1' },
+                { label: 'Option 2', value: 'option2' },
+                { label: 'Option 3', value: 'option3' },
+            ],
+        },
+    ]
+
+    return (
+        <SingleSelect
+            label="Select an option"
+            placeholder="Choose an option"
+            items={items}
+            selected={selectedValue}
+            onSelect={setSelectedValue}
+        />
+    )
+}
+```
+
+### SingleSelect with Search
+
+Select with search functionality
+
+```tsx
+const items = [
+    {
+        items: [
+            { label: 'English', value: 'en', slot1: '🇺🇸' },
+            { label: 'Spanish', value: 'es', slot1: '🇪🇸' },
+            { label: 'French', value: 'fr', slot1: '🇫🇷' },
+            { label: 'German', value: 'de', slot1: '🇩🇪' },
+        ],
+    },
+]
+
+;<SingleSelect
+    label="Select Language"
+    placeholder="Choose a language"
+    items={items}
+    selected={selectedLanguage}
+    onSelect={setSelectedLanguage}
+    enableSearch={true}
+/>
+```
+
+### SingleSelect with Groups
+
+Select with grouped menu items
+
+```tsx
+const countries = [
+    {
+        groupLabel: 'Popular Countries',
+        items: [
+            { label: 'United States', value: 'us', slot1: '🇺🇸' },
+            { label: 'United Kingdom', value: 'uk', slot1: '🇬🇧' },
+            { label: 'Canada', value: 'ca', slot1: '🇨🇦' },
+        ],
+    },
+    {
+        groupLabel: 'Other Countries',
+        items: [
+            { label: 'Germany', value: 'de', slot1: '🇩🇪' },
+            { label: 'France', value: 'fr', slot1: '🇫🇷' },
+            { label: 'Japan', value: 'jp', slot1: '🇯🇵' },
+        ],
+    },
+]
+
+;<SingleSelect
+    label="Select Country"
+    placeholder="Choose a country"
+    items={countries}
+    selected={selectedCountry}
+    onSelect={setSelectedCountry}
+/>
+```
+
+### SingleSelect with SubLabels
+
+Select with additional descriptive text
+
+```tsx
+const categories = [
+    {
+        groupLabel: 'Technology',
+        items: [
+            {
+                label: 'Web Development',
+                value: 'web-dev',
+                subLabel: 'HTML, CSS, JavaScript',
+            },
+            {
+                label: 'Mobile Development',
+                value: 'mobile-dev',
+                subLabel: 'iOS, Android, React Native',
+            },
+            {
+                label: 'Data Science',
+                value: 'data-science',
+                subLabel: 'Python, R, Machine Learning',
+            },
+        ],
+    },
+]
+
+;<SingleSelect
+    label="Select Category"
+    placeholder="Choose a category"
+    items={categories}
+    selected={selectedCategory}
+    onSelect={setSelectedCategory}
+    enableSearch={true}
+/>
+```
+
+### SingleSelect with Slots
+
+Select with additional content elements
+
+```tsx
+const users = [
+    {
+        groupLabel: 'Active Users',
+        items: [
+            {
+                label: 'John Doe',
+                value: 'john',
+                slot1: '👤',
+                slot2: <span className="text-green-500 text-xs">Online</span>,
+                subLabel: 'john.doe@example.com',
+            },
+            {
+                label: 'Jane Smith',
+                value: 'jane',
+                slot1: '👤',
+                slot2: <span className="text-gray-500 text-xs">Away</span>,
+                subLabel: 'jane.smith@example.com',
+            },
+        ],
+    },
+]
+
+;<SingleSelect
+    label="Select User"
+    placeholder="Choose a user"
+    items={users}
+    selected={selectedUser}
+    onSelect={setSelectedUser}
+    enableSearch={true}
+/>
+```
+
+### Different Sizes
+
+Select with different size variants
+
+```tsx
+// Small size
+<SingleSelect
+  label="Small Select"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  size={SelectMenuSize.SMALL}
+/>
+
+// Medium size (default)
+<SingleSelect
+  label="Medium Select"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  size={SelectMenuSize.MEDIUM}
+/>
+
+// Large size
+<SingleSelect
+  label="Large Select"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  size={SelectMenuSize.LARGE}
+/>
+```
+
+### Different Variants
+
+Select with different visual variants
+
+```tsx
+// Container variant (default)
+<SingleSelect
+  label="Container Variant"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  variant={SelectMenuVariant.CONTAINER}
+/>
+
+// No container variant
+<SingleSelect
+  label="No Container Variant"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  variant={SelectMenuVariant.NO_CONTAINER}
+/>
+```
+
+### Different Alignments
+
+Select with different dropdown alignments
+
+```tsx
+// Start alignment
+<SingleSelect
+  label="Start Alignment"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  alignment={SelectMenuAlignment.START}
+/>
+
+// Center alignment (default)
+<SingleSelect
+  label="Center Alignment"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  alignment={SelectMenuAlignment.CENTER}
+/>
+
+// End alignment
+<SingleSelect
+  label="End Alignment"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  alignment={SelectMenuAlignment.END}
+/>
+```
+
+### Different Sides
+
+Select with different dropdown positions
+
+```tsx
+// Bottom side (default)
+<SingleSelect
+  label="Bottom Side"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  side={SelectMenuSide.BOTTOM}
+/>
+
+// Top side
+<SingleSelect
+  label="Top Side"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  side={SelectMenuSide.TOP}
+/>
+
+// Left side
+<SingleSelect
+  label="Left Side"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  side={SelectMenuSide.LEFT}
+/>
+
+// Right side
+<SingleSelect
+  label="Right Side"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  side={SelectMenuSide.RIGHT}
+/>
+```
+
+### SingleSelect with Custom Slot
+
+Select with additional trigger content
+
+```tsx
+<SingleSelect
+    label="Select with Icon"
+    placeholder="Choose an option"
+    items={items}
+    selected={selectedValue}
+    onSelect={setSelectedValue}
+    slot={<span className="text-blue-500">🌐</span>}
+/>
+```
+
+### SingleSelect with Required Field
+
+Select with required field indicator
+
+```tsx
+<SingleSelect
+    label="Required Field"
+    placeholder="Choose an option"
+    items={items}
+    selected={selectedValue}
+    onSelect={setSelectedValue}
+    required={true}
+    hintText="This field is required"
+/>
+```
+
+### SingleSelect with Help Text
+
+Select with help information
+
+```tsx
+<SingleSelect
+    label="Select with Help"
+    placeholder="Choose an option"
+    items={items}
+    selected={selectedValue}
+    onSelect={setSelectedValue}
+    helpIconText="This will help you choose the right option for your needs"
+/>
+```
+
+### Disabled SingleSelect
+
+Select in disabled state
+
+```tsx
+<SingleSelect
+    label="Disabled Select"
+    placeholder="Choose an option"
+    items={items}
+    selected={selectedValue}
+    onSelect={setSelectedValue}
+    disabled={true}
+/>
+```
+
+### SingleSelect with Custom Dimensions
+
+Select with custom sizing
+
+```tsx
+<SingleSelect
+    label="Custom Dimensions"
+    placeholder="Choose an option"
+    items={items}
+    selected={selectedValue}
+    onSelect={setSelectedValue}
+    minWidth={300}
+    maxWidth={400}
+    maxHeight={200}
+/>
+```
+
+### Complex Form Example
+
+Complete form with multiple selects
+
+```tsx
+function UserProfileForm() {
+    const [selectedCountry, setSelectedCountry] = useState('')
+    const [selectedLanguage, setSelectedLanguage] = useState('')
+    const [selectedCategory, setSelectedCategory] = useState('')
+
+    return (
+        <div className="space-y-4">
+            <h3 className="text-lg font-semibold">User Profile Settings</h3>
+
+            <SingleSelect
+                label="Country"
+                placeholder="Select your country"
+                items={countries}
+                selected={selectedCountry}
+                onSelect={setSelectedCountry}
+                required={true}
+                helpIconText="This helps us provide localized content"
+            />
+
+            <SingleSelect
+                label="Language"
+                placeholder="Select your preferred language"
+                items={languages}
+                selected={selectedLanguage}
+                onSelect={setSelectedLanguage}
+                enableSearch={true}
+                subLabel="Choose the language for the interface"
+            />
+
+            <SingleSelect
+                label="Category"
+                placeholder="Select your interest category"
+                items={categories}
+                selected={selectedCategory}
+                onSelect={setSelectedCategory}
+                enableSearch={true}
+                slot={<span className="text-purple-500">📚</span>}
+            />
+        </div>
+    )
+}
+```
+
+## Data Structure
+
+### SelectMenuGroupType
+
+```tsx
+type SelectMenuGroupType = {
+    groupLabel?: string
+    items: SelectMenuItemType[]
+    showSeparator?: boolean
+}
+```
+
+### SelectMenuItemType
+
+```tsx
+type SelectMenuItemType = {
+    label: string
+    value: string
+    checked?: boolean
+    subLabel?: string
+    slot1?: React.ReactNode
+    slot2?: React.ReactNode
+    slot3?: React.ReactNode
+    slot4?: React.ReactNode
+    disabled?: boolean
+    onClick?: () => void
+    subMenu?: SelectMenuItemType[]
+}
+```
+
+## Enums
+
+### SelectMenuSize
+
+```tsx
+enum SelectMenuSize {
+    SMALL = 'sm',
+    MEDIUM = 'md',
+    LARGE = 'lg',
+}
+```
+
+### SelectMenuVariant
+
+```tsx
+enum SelectMenuVariant {
+    CONTAINER = 'container',
+    NO_CONTAINER = 'no-container',
+}
+```
+
+### SelectMenuAlignment
+
+```tsx
+enum SelectMenuAlignment {
+    START = 'start',
+    CENTER = 'center',
+    END = 'end',
+}
+```
+
+### SelectMenuSide
+
+```tsx
+enum SelectMenuSide {
+    TOP = 'top',
+    LEFT = 'left',
+    RIGHT = 'right',
+    BOTTOM = 'bottom',
+}
+```
+
+## Accessibility Features
+
+The SingleSelect component includes several accessibility features:
+
+- **Proper ARIA attributes**: Uses appropriate ARIA roles and states
+- **Keyboard navigation**: Supports keyboard interaction (Arrow keys, Enter, Escape, Tab)
+- **Screen reader support**: Proper labeling and announcements
+- **Focus management**: Clear focus indicators and keyboard focus
+- **Required field indication**: Visual and programmatic indication of required fields
+- **Help text integration**: Accessible help information
+- **Group semantics**: Proper group labeling for screen readers
+- **Search functionality**: Accessible search with proper announcements
+- **Built on Radix UI**: Leverages Radix UI primitives for robust accessibility

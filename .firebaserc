@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "storybook-452807",
+    "dev": "storybook-452807",
+    "prod": "storybook-452807"
+  },
+  "targets": {
+    "storybook-452807": {
+      "hosting": {
+        "blend-staging": ["blend-staging"],
+        "blend-prod": ["blend-prod"]
+      }
+    }
+  }
+}

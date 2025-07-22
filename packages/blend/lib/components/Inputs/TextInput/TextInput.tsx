@@ -3,9 +3,9 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import { useRef, useState, useEffect } from 'react'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
-import { TextInputSize, TextInputProps } from './types'
+import { TextInputSize, type TextInputProps } from './types'
 import { useComponentToken } from '../../../context/useComponentToken'
-import { TextInputTokensType } from './textInput.tokens'
+import type { TextInputTokensType } from './textInput.tokens'
 
 const toPixels = (value: string | number | undefined): number => {
     if (typeof value === 'number') {
@@ -110,7 +110,7 @@ const TextInput = ({
                     paddingTop={paddingY}
                     paddingBottom={paddingY}
                     borderRadius={textInputTokens.input.borderRadius}
-                    boxShadow={textInputTokens.input.boxShadow}
+                    boxShadow={textInputTokens.input.boxShadow.default}
                     border={
                         textInputTokens.input.border[
                             error ? 'error' : 'default'
@@ -118,7 +118,9 @@ const TextInput = ({
                     }
                     outline="none"
                     _hover={{
-                        border: textInputTokens.input.border.hover,
+                        border: textInputTokens.input.border[
+                            error ? 'error' : 'hover'
+                        ],
                     }}
                     color={
                         textInputTokens.input.color[
@@ -126,8 +128,13 @@ const TextInput = ({
                         ]
                     }
                     _focus={{
-                        border: textInputTokens.input.border.focus,
-                        outline: textInputTokens.input.outline.focus,
+                        border: textInputTokens.input.border[
+                            error ? 'error' : 'focus'
+                        ],
+                        boxShadow:
+                            textInputTokens.input.boxShadow[
+                                error ? 'error' : 'focus'
+                            ],
                     }}
                     _disabled={{
                         backgroundColor:

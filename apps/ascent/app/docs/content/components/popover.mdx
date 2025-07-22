@@ -1,0 +1,481 @@
+---
+title: Popover
+description: The Popover component displays floating content that appears when triggered by a user action, providing contextual information, forms, or actions without navigating away from the current page.
+category: components
+tags:
+    - popover
+    - component
+    - floating
+    - contextual
+    - overlay
+RepoFolderName: Popover
+StorybookLink: components-popover-popover--docs
+---
+
+<PopoverPreview />
+
+## Usage
+
+```tsx
+import { Popover, PopoverSize, ButtonType, ButtonSize } from 'blend-v1'
+
+function MyComponent() {
+    const [open, setOpen] = useState(false)
+
+    return (
+        <Popover
+            heading="Settings"
+            description="Configure your preferences"
+            trigger={<button>Open Popover</button>}
+            size={PopoverSize.MEDIUM}
+            showCloseButton={true}
+            onOpenChange={setOpen}
+            primaryAction={{
+                text: 'Save',
+                buttonType: ButtonType.PRIMARY,
+                size: ButtonSize.SMALL,
+                onClick: () => console.log('Saved'),
+            }}
+            secondaryAction={{
+                text: 'Cancel',
+                buttonType: ButtonType.SECONDARY,
+                size: ButtonSize.SMALL,
+                onClick: () => setOpen(false),
+            }}
+        >
+            <div>Your popover content goes here</div>
+        </Popover>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'heading',
+                hintText: 'The main title text displayed in the popover header',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'description',
+                hintText:
+                    'Optional descriptive text displayed below the heading',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'trigger',
+                hintText: 'The element that triggers the popover to open',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'The content to display inside the popover',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showCloseButton',
+                hintText: 'Whether to show the close button in the header',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'onOpenChange',
+                hintText: 'Callback when the popover open state changes',
+            },
+            { content: '(open: boolean) => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'open',
+                hintText: 'Controlled state for the popover visibility',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'asModal',
+                hintText: 'Whether the popover should behave as a modal',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'primaryAction',
+                hintText: 'Configuration for the primary action button',
+            },
+            { content: 'PopoverActionType', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'secondaryAction',
+                hintText: 'Configuration for the secondary action button',
+            },
+            { content: 'PopoverActionType', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'sideOffset',
+                hintText: 'Distance between the popover and trigger element',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '8' },
+        ],
+        [
+            {
+                content: 'side',
+                hintText: 'The side of the trigger where the popover appears',
+            },
+            {
+                content: "'top' | 'right' | 'bottom' | 'left'",
+                hintText: 'union type',
+            },
+            { content: 'bottom' },
+        ],
+        [
+            {
+                content: 'align',
+                hintText:
+                    'The alignment of the popover relative to the trigger',
+            },
+            { content: "'start' | 'center' | 'end'", hintText: 'union type' },
+            { content: 'center' },
+        ],
+        [
+            {
+                content: 'alignOffset',
+                hintText: 'Offset for the alignment position',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '0' },
+        ],
+        [
+            { content: 'width', hintText: 'Fixed width of the popover' },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            { content: 'minWidth', hintText: 'Minimum width of the popover' },
+            { content: 'number', hintText: 'number' },
+            { content: '320' },
+        ],
+        [
+            { content: 'maxWidth', hintText: 'Maximum width of the popover' },
+            { content: 'number', hintText: 'number' },
+            { content: '400' },
+        ],
+        [
+            { content: 'height', hintText: 'Fixed height of the popover' },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            { content: 'minHeight', hintText: 'Minimum height of the popover' },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            { content: 'maxHeight', hintText: 'Maximum height of the popover' },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            { content: 'zIndex', hintText: 'Z-index for the popover overlay' },
+            { content: 'number', hintText: 'number' },
+            { content: '1000' },
+        ],
+        [
+            { content: 'size', hintText: 'The size variant of the popover' },
+            { content: 'PopoverSize', hintText: 'enum' },
+            { content: 'PopoverSize.MEDIUM' },
+        ],
+        [
+            {
+                content: 'onClose',
+                hintText: 'Callback function called when the popover is closed',
+            },
+            { content: '() => void', hintText: 'function' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- Two size variants (small, medium)
+- Flexible positioning (top, right, bottom, left)
+- Multiple alignment options (start, center, end)
+- Optional header with title and description
+- Optional action buttons (primary and secondary)
+- Close button support
+- Controlled and uncontrolled modes
+- Modal behavior option
+- Customizable dimensions
+- Accessible by default
+- Built on Radix UI Popover
+- Customizable styling through tokens
+
+## Usage Examples
+
+### Basic Popover
+
+Simple popover with header and content
+
+```tsx
+import { Popover, PopoverSize, ButtonType, ButtonSize } from 'blend-v1'
+
+function MyComponent() {
+    return (
+        <Popover
+            heading="Basic Popover"
+            description="This is a simple popover"
+            trigger={<button>Open Popover</button>}
+            showCloseButton={true}
+        >
+            <div>Your content goes here</div>
+        </Popover>
+    )
+}
+```
+
+### Popover with Actions
+
+Popover with primary and secondary action buttons
+
+```tsx
+<Popover
+    heading="Confirm Action"
+    description="Are you sure you want to proceed?"
+    trigger={<button>Show Confirmation</button>}
+    primaryAction={{
+        text: 'Confirm',
+        buttonType: ButtonType.PRIMARY,
+        size: ButtonSize.SMALL,
+        onClick: () => console.log('Confirmed'),
+    }}
+    secondaryAction={{
+        text: 'Cancel',
+        buttonType: ButtonType.SECONDARY,
+        size: ButtonSize.SMALL,
+        onClick: () => console.log('Cancelled'),
+    }}
+>
+    <div>This action cannot be undone.</div>
+</Popover>
+```
+
+### Small Popover
+
+Compact popover variant
+
+```tsx
+<Popover
+    heading="Quick Info"
+    description="Brief information"
+    trigger={<button>Show Info</button>}
+    size={PopoverSize.SMALL}
+    showCloseButton={true}
+>
+    <div>Compact content here</div>
+</Popover>
+```
+
+### Popover with Custom Positioning
+
+Popover positioned on top of the trigger
+
+```tsx
+<Popover
+    heading="Top Positioned"
+    description="This appears on top"
+    trigger={<button>Open Top</button>}
+    side="top"
+    align="center"
+    showCloseButton={true}
+>
+    <div>Content positioned on top</div>
+</Popover>
+```
+
+### Controlled Popover
+
+Popover with controlled state management
+
+```tsx
+const [open, setOpen] = useState(false)
+
+;<Popover
+    heading="Controlled Popover"
+    description="This popover is controlled externally"
+    trigger={<button>Toggle Popover</button>}
+    open={open}
+    onOpenChange={setOpen}
+    showCloseButton={true}
+>
+    <div>This popover is controlled by external state.</div>
+</Popover>
+```
+
+### Popover without Header
+
+Popover with only content and no header
+
+```tsx
+<Popover trigger={<button>Open Content Only</button>} showCloseButton={false}>
+    <div className="p-4">
+        <h3 className="font-medium mb-2">Custom Header</h3>
+        <p>This popover has no built-in header.</p>
+    </div>
+</Popover>
+```
+
+### Popover with Rich Content
+
+Complex popover with forms and interactive elements
+
+```tsx
+<Popover
+    heading="Settings"
+    description="Configure your preferences"
+    trigger={<button>Open Settings</button>}
+    showCloseButton={true}
+    primaryAction={{
+        text: 'Apply',
+        buttonType: ButtonType.PRIMARY,
+        size: ButtonSize.SMALL,
+        onClick: () => console.log('Settings applied'),
+    }}
+    secondaryAction={{
+        text: 'Reset',
+        buttonType: ButtonType.SECONDARY,
+        size: ButtonSize.SMALL,
+        onClick: () => console.log('Settings reset'),
+    }}
+>
+    <div className="p-4 space-y-4">
+        <div>
+            <h4 className="font-medium mb-2">Theme</h4>
+            <div className="space-y-2">
+                <label className="flex items-center">
+                    <input
+                        type="radio"
+                        name="theme"
+                        value="light"
+                        className="mr-2"
+                    />
+                    Light
+                </label>
+                <label className="flex items-center">
+                    <input
+                        type="radio"
+                        name="theme"
+                        value="dark"
+                        className="mr-2"
+                    />
+                    Dark
+                </label>
+            </div>
+        </div>
+        <div>
+            <h4 className="font-medium mb-2">Notifications</h4>
+            <label className="flex items-center">
+                <input type="checkbox" className="mr-2" />
+                Enable notifications
+            </label>
+        </div>
+    </div>
+</Popover>
+```
+
+## Component Tokens
+
+You can style the popover component using the following tokens:
+
+```tsx
+export type PopoverSize = 'small' | 'medium'
+
+export type PopoverTokenType = {
+    background: CSSObject['backgroundColor']
+    border: CSSObject['border']
+    shadow: CSSObject['boxShadow']
+    gap: CSSObject['gap']
+    zIndex: CSSObject['zIndex']
+    borderRadius: CSSObject['borderRadius']
+    headerContainer: {
+        heading: {
+            fontSize: {
+                [key in PopoverSize]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in PopoverSize]: CSSObject['fontWeight']
+            }
+            color: {
+                [key in PopoverSize]: CSSObject['color']
+            }
+        }
+        description: {
+            fontSize: {
+                [key in PopoverSize]: CSSObject['fontSize']
+            }
+            color: {
+                [key in PopoverSize]: CSSObject['color']
+            }
+            fontWeight: {
+                [key in PopoverSize]: CSSObject['fontWeight']
+            }
+        }
+    }
+    footer: {
+        justifyContent: CSSObject['justifyContent']
+        gap: CSSObject['gap']
+    }
+}
+```
+
+## Enums
+
+### PopoverSize
+
+```tsx
+enum PopoverSize {
+    SMALL = 'small',
+    MEDIUM = 'medium',
+}
+```
+
+## PopoverActionType
+
+The `PopoverActionType` is an extension of `ButtonV2Props` with some properties omitted:
+
+```tsx
+export type PopoverActionType = Omit<
+    ButtonV2Props,
+    'buttonGroupPosition' | 'subType'
+>
+```
+
+This means you can use most Button props for popover actions, except for `buttonGroupPosition` and `subType` which are automatically set by the popover component.

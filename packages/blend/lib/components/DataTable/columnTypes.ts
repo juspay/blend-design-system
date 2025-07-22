@@ -1,21 +1,15 @@
-import { FilterType } from './types'
-
-export enum ColumnType {
-    TEXT = 'text',
-    NUMBER = 'number',
-    SELECT = 'select',
-    MULTISELECT = 'multiselect',
-    DATE = 'date',
-    DATE_RANGE = 'date_range',
-    AVATAR = 'avatar',
-    TAG = 'tag',
-    CUSTOM = 'custom',
-}
+import { FilterType, ColumnType } from './types'
 
 export type ColumnFilterOption = {
     id: string
     label: string
     value: string
+}
+
+export type DropdownData = {
+    options: Array<{ id: string; label: string; value: unknown }>
+    selectedValue?: unknown
+    placeholder?: string
 }
 
 export type AvatarData = {
@@ -69,7 +63,11 @@ export type ColumnDataTypeMap = {
     [ColumnType.DATE_RANGE]: DateRangeData
     [ColumnType.AVATAR]: AvatarData
     [ColumnType.TAG]: TagData
+    [ColumnType.SLIDER]: number
     [ColumnType.CUSTOM]: unknown
+    [ColumnType.PROGRESS]: number
+    [ColumnType.DROPDOWN]: DropdownData
+    [ColumnType.REACT_ELEMENT]: unknown
 }
 
 export type GetColumnDataType<T extends ColumnType> = ColumnDataTypeMap[T]
@@ -152,7 +150,37 @@ export const validateColumnData = {
         return false
     },
 
+    [ColumnType.SLIDER]: (data: unknown): data is number => {
+        return typeof data === 'number' && !isNaN(data)
+    },
+
     [ColumnType.CUSTOM]: (_data: unknown): _data is unknown => {
+        return true
+    },
+
+    [ColumnType.PROGRESS]: (data: unknown): data is number => {
+        return typeof data === 'number' && data >= 0 && data <= 100
+    },
+
+    [ColumnType.DROPDOWN]: (data: unknown): data is DropdownData => {
+        if (typeof data === 'object' && data !== null) {
+            const dropdownData = data as Record<string, unknown>
+            return (
+                Array.isArray(dropdownData.options) &&
+                dropdownData.options.every(
+                    (option) =>
+                        typeof option === 'object' &&
+                        option !== null &&
+                        'id' in option &&
+                        'label' in option &&
+                        'value' in option
+                )
+            )
+        }
+        return false
+    },
+
+    [ColumnType.REACT_ELEMENT]: (_data: unknown): _data is unknown => {
         return true
     },
 }
@@ -170,6 +198,7 @@ export type ColumnTypeConfig = {
         | 'multiselect'
         | 'dateRange'
         | 'numberRange'
+        | 'slider'
 }
 
 export const getColumnTypeConfig = (type: ColumnType): ColumnTypeConfig => {
@@ -179,18 +208,16 @@ export const getColumnTypeConfig = (type: ColumnType): ColumnTypeConfig => {
                 type,
                 filterType: FilterType.TEXT,
                 supportsSorting: true,
-                supportsFiltering: true,
-                enableSearch: true,
-                filterComponent: 'search',
+                supportsFiltering: false,
+                enableSearch: false,
             }
         case ColumnType.NUMBER:
             return {
                 type,
                 filterType: FilterType.NUMBER,
                 supportsSorting: true,
-                supportsFiltering: true,
-                enableSearch: true,
-                filterComponent: 'search',
+                supportsFiltering: false,
+                enableSearch: false,
             }
         case ColumnType.SELECT:
             return {
@@ -215,9 +242,8 @@ export const getColumnTypeConfig = (type: ColumnType): ColumnTypeConfig => {
                 type,
                 filterType: FilterType.TEXT,
                 supportsSorting: true,
-                supportsFiltering: true,
-                enableSearch: true,
-                filterComponent: 'search',
+                supportsFiltering: false,
+                enableSearch: false,
             }
         case ColumnType.TAG:
             return {
@@ -246,11 +272,45 @@ export const getColumnTypeConfig = (type: ColumnType): ColumnTypeConfig => {
                 enableSearch: false,
                 filterComponent: 'dateRange',
             }
+        case ColumnType.PROGRESS:
+            return {
+                type,
+                filterType: FilterType.NUMBER,
+                supportsSorting: true,
+                supportsFiltering: false,
+                enableSearch: false,
+            }
+        case ColumnType.DROPDOWN:
+            return {
+                type,
+                filterType: FilterType.SELECT,
+                supportsSorting: true,
+                supportsFiltering: true,
+                enableSearch: false,
+                filterComponent: 'select',
+            }
+        case ColumnType.SLIDER:
+            return {
+                type,
+                filterType: FilterType.SLIDER,
+                supportsSorting: true,
+                supportsFiltering: true,
+                enableSearch: false,
+                filterComponent: 'slider',
+            }
+        case ColumnType.REACT_ELEMENT:
+            return {
+                type,
+                filterType: FilterType.TEXT,
+                supportsSorting: false,
+                supportsFiltering: false,
+                enableSearch: false,
+            }
         case ColumnType.CUSTOM:
             return {
                 type,
                 filterType: FilterType.TEXT,
-                supportsSorting: true,
+                supportsSorting: false,
                 supportsFiltering: false,
                 enableSearch: false,
             }
@@ -259,9 +319,41 @@ export const getColumnTypeConfig = (type: ColumnType): ColumnTypeConfig => {
                 type: ColumnType.TEXT,
                 filterType: FilterType.TEXT,
                 supportsSorting: true,
-                supportsFiltering: true,
-                enableSearch: true,
-                filterComponent: 'search',
+                supportsFiltering: false,
+                enableSearch: false,
             }
+    }
+}
+
+export const getExpectedTypeDescription = (type: ColumnType): string => {
+    switch (type) {
+        case ColumnType.TEXT:
+            return 'string or number'
+        case ColumnType.NUMBER:
+            return 'number'
+        case ColumnType.SELECT:
+            return 'string or SelectData object'
+        case ColumnType.MULTISELECT:
+            return 'string array or MultiSelectData object'
+        case ColumnType.DATE:
+            return 'Date, string, or DateData object'
+        case ColumnType.DATE_RANGE:
+            return 'DateRangeData object'
+        case ColumnType.AVATAR:
+            return 'AvatarData object with label'
+        case ColumnType.TAG:
+            return 'TagData object with text'
+        case ColumnType.PROGRESS:
+            return 'number (0-100)'
+        case ColumnType.DROPDOWN:
+            return 'DropdownData object with options array'
+        case ColumnType.SLIDER:
+            return 'number (for slider range filtering)'
+        case ColumnType.REACT_ELEMENT:
+            return 'any React element'
+        case ColumnType.CUSTOM:
+            return 'any value'
+        default:
+            return 'unknown'
     }
 }

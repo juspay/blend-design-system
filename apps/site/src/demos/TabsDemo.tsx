@@ -6,9 +6,9 @@ import {
     TabsContent,
     TabsVariant,
     TabsSize,
-    SingleSelect,
-    Switch,
-} from 'blend-v1'
+} from '../../../../packages/blend/lib/components/Tabs'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import {
     Home,
     User,

@@ -1,13 +1,15 @@
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { FoundationTokenType } from '../../../tokens/theme.token'
+import type { FoundationTokenType } from '../../../tokens/theme.token'
 import { MultiValueInputSize, MultiValueInputState } from './types'
 
 export type MultiValueInputTokensType = {
     input: {
         gap: CSSObject['gap']
         borderRadius?: CSSObject['borderRadius']
-        boxShadow: CSSObject['boxShadow']
+        boxShadow: {
+            [key in MultiValueInputState]: CSSObject['boxShadow']
+        }
         paddingX: {
             [key in MultiValueInputSize]: CSSObject['padding']
         }
@@ -33,7 +35,13 @@ const multiValueInputTokens: Readonly<MultiValueInputTokensType> = {
     input: {
         gap: FOUNDATION_THEME.unit[8],
         borderRadius: FOUNDATION_THEME.unit[10],
-        boxShadow: FOUNDATION_THEME.shadows.sm,
+        boxShadow: {
+            default: FOUNDATION_THEME.shadows.sm,
+            hover: FOUNDATION_THEME.shadows.sm,
+            focus: FOUNDATION_THEME.shadows.focusPrimary,
+            error: FOUNDATION_THEME.shadows.focusError,
+            disabled: FOUNDATION_THEME.shadows.sm,
+        },
         paddingX: {
             md: FOUNDATION_THEME.unit[12],
             lg: FOUNDATION_THEME.unit[14],
@@ -116,7 +124,13 @@ export const getMultiValueInputTokens = (
                 focus: foundationTheme.colors.gray[0],
                 error: foundationTheme.colors.gray[0],
             },
-            boxShadow: foundationTheme.shadows.sm,
+            boxShadow: {
+                default: foundationTheme.shadows.sm,
+                hover: foundationTheme.shadows.sm,
+                focus: foundationTheme.shadows.focusPrimary,
+                error: foundationTheme.shadows.focusError,
+                disabled: foundationTheme.shadows.sm,
+            },
         },
     }
 }

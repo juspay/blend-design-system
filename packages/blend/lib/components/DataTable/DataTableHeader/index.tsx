@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import { Filter } from 'lucide-react'
 import { DataTableHeaderProps } from './types'
-import Button from '../../Button/Button'
+import { Button } from '../../../main'
 import { ButtonSize, ButtonType } from '../../Button/types'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
@@ -46,17 +46,19 @@ const DataTableHeader = forwardRef<
                 ref={ref}
                 display={tableToken.header.display}
                 justifyContent={tableToken.header.justifyContent}
-                alignItems={tableToken.header.alignItems}
+                alignItems="center"
                 marginBottom={tableToken.header.marginBottom}
                 gap={tableToken.header.gap}
                 maxWidth={tableToken.header.maxWidth}
                 overflowX={tableToken.header.overflowX}
+                overflowY="hidden"
+                style={{ minWidth: 0, height: 'auto' }}
             >
                 <Block
                     display="flex"
                     flexDirection="column"
                     gap={FOUNDATION_THEME.unit[10]}
-                    maxWidth={'60%'}
+                    style={{ minWidth: 0, flexShrink: 1, maxWidth: '40%' }}
                 >
                     {title && (
                         <PrimitiveText
@@ -64,6 +66,8 @@ const DataTableHeader = forwardRef<
                             fontSize={tableToken.header.title.fontSize}
                             fontWeight={tableToken.header.title.fontWeight}
                             color={tableToken.header.title.color}
+                            style={{ minWidth: 0, lineHeight: '1.2' }}
+                            truncate
                         >
                             {title}
                         </PrimitiveText>
@@ -73,12 +77,7 @@ const DataTableHeader = forwardRef<
                             as="p"
                             fontSize={tableToken.header.description.fontSize}
                             color={tableToken.header.description.color}
-                            style={{
-                                maxWidth:
-                                    tableToken.header.description.maxWidth,
-                                lineHeight:
-                                    tableToken.header.description.lineHeight,
-                            }}
+                            style={{ lineHeight: '1.4', minWidth: 0 }}
                             truncate
                         >
                             {description}
@@ -90,21 +89,34 @@ const DataTableHeader = forwardRef<
                     <Block
                         display="flex"
                         alignItems="center"
-                        gap={FOUNDATION_THEME.unit[12]}
+                        gap={FOUNDATION_THEME.unit[8]}
+                        style={{
+                            flex: 1,
+                            minWidth: 0,
+                            justifyContent: 'flex-end',
+                        }}
                     >
                         {(enableSearch || enableAdvancedFilter) && (
                             <Block
                                 display="flex"
                                 alignItems="center"
-                                gap={FOUNDATION_THEME.unit[12]}
-                                style={{ flex: 1 }}
+                                gap={FOUNDATION_THEME.unit[8]}
+                                style={{
+                                    flex: 1,
+                                    minWidth: 0,
+                                    justifyContent: 'flex-end',
+                                }}
                             >
                                 {enableSearch && (
                                     <Block
                                         display="flex"
                                         alignItems="center"
                                         gap={FOUNDATION_THEME.unit[8]}
-                                        style={{ minWidth: '300px' }}
+                                        style={{
+                                            minWidth: '150px',
+                                            maxWidth: '250px',
+                                            flex: 1,
+                                        }}
                                     >
                                         <SearchInput
                                             placeholder={searchPlaceholder}
@@ -122,6 +134,7 @@ const DataTableHeader = forwardRef<
                                             display="flex"
                                             alignItems="center"
                                             gap={FOUNDATION_THEME.unit[8]}
+                                            style={{ flexShrink: 0 }}
                                         >
                                             <Popover
                                                 trigger={
@@ -132,7 +145,7 @@ const DataTableHeader = forwardRef<
                                                                 ? ButtonType.PRIMARY
                                                                 : ButtonType.SECONDARY
                                                         }
-                                                        leadingIcon={Filter}
+                                                        leadingIcon={<Filter />}
                                                         size={ButtonSize.SMALL}
                                                     >
                                                         Advanced Filters{' '}
@@ -190,9 +203,8 @@ const DataTableHeader = forwardRef<
                                 maxHeight={
                                     tableToken.header.headerSlot1.maxHeight
                                 }
-                                flexShrink={
-                                    tableToken.header.headerSlot1.flexShrink
-                                }
+                                flexShrink={0}
+                                style={{ minWidth: 0 }}
                             >
                                 {headerSlot1}
                             </Block>
@@ -205,9 +217,8 @@ const DataTableHeader = forwardRef<
                                 maxHeight={
                                     tableToken.header.headerSlot2.maxHeight
                                 }
-                                flexShrink={
-                                    tableToken.header.headerSlot2.flexShrink
-                                }
+                                flexShrink={0}
+                                style={{ minWidth: 0 }}
                             >
                                 {headerSlot2}
                             </Block>
@@ -220,9 +231,8 @@ const DataTableHeader = forwardRef<
                                 maxHeight={
                                     tableToken.header.headerSlot3.maxHeight
                                 }
-                                flexShrink={
-                                    tableToken.header.headerSlot3.flexShrink
-                                }
+                                flexShrink={0}
+                                style={{ minWidth: 0 }}
                             >
                                 {headerSlot3}
                             </Block>

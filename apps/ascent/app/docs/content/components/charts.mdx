@@ -1,0 +1,381 @@
+---
+title: Charts
+description: The Charts component provides various data visualization options including line charts, bar charts, and other graph types for displaying complex data in an intuitive format.
+category: components
+tags:
+    - charts
+    - component
+    - data-visualization
+RepoFolderName: Charts
+StorybookLink: components-charts--docs
+---
+
+<ChartPreview />
+
+## Usage
+
+```tsx
+import { Charts, ChartType, ChartLegendPosition } from 'blend-v1'
+
+function MyComponent() {
+    const data = [
+        {
+            name: 'Jan',
+            data: {
+                sales: { primary: { label: 'Sales', val: 400 } },
+                revenue: { primary: { label: 'Revenue', val: 240 } },
+            },
+        },
+        // ... more data points
+    ]
+
+    return (
+        <Charts
+            chartType={ChartType.LINE}
+            data={data}
+            xAxisLabel="Month"
+            yAxisLabel="Value"
+            legendPosition={ChartLegendPosition.TOP}
+            chartHeaderSlot={<div>Monthly Performance</div>}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'chartType', hintText: 'The type of chart to render' },
+            { content: 'ChartType', hintText: 'enum' },
+            { content: 'ChartType.LINE' },
+        ],
+        [
+            { content: 'data', hintText: 'Array of data points for the chart' },
+            { content: 'NewNestedDataPoint[]', hintText: 'array' },
+            { content: 'required' },
+        ],
+        [
+            { content: 'xAxisLabel', hintText: 'Label for the x-axis' },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            { content: 'yAxisLabel', hintText: 'Label for the y-axis' },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'colors',
+                hintText: 'Array of colors for chart elements',
+            },
+            { content: 'string[]', hintText: 'array' },
+            { content: 'DEFAULT_COLORS' },
+        ],
+        [
+            {
+                content: 'metrics',
+                hintText: 'Array of metric names to display',
+            },
+            { content: 'string[]', hintText: 'array' },
+            { content: '' },
+        ],
+        [
+            { content: 'slot1', hintText: 'First slot in the chart header' },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            { content: 'slot2', hintText: 'Second slot in the chart header' },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            { content: 'slot3', hintText: 'Third slot in the chart header' },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'legendPosition',
+                hintText: 'Position of the chart legend',
+            },
+            { content: 'ChartLegendPosition', hintText: 'enum' },
+            { content: 'ChartLegendPosition.TOP' },
+        ],
+        [
+            {
+                content: 'chartHeaderSlot',
+                hintText: 'Main header content for the chart',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: 'required' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Data Structure
+
+The Charts component expects data in a specific nested format that allows for flexible data representation across different chart types. Understanding this structure is crucial for proper implementation.
+
+### Core Data Types
+
+```tsx
+// Main data point structure
+type DataPoint = {
+    primary: {
+        label: string // Display label for the data point
+        val: number // Numeric value for the data point
+    }
+    aux?: {
+        // Optional auxiliary data points
+        label: string
+        val: number
+    }[]
+}
+
+// Nested data structure for the chart
+type NewNestedDataPoint = {
+    name: string // Category or time period name (e.g., "Jan", "Q1")
+    data: {
+        [key: string]: DataPoint // Key-value pairs for different data series
+    }
+}
+```
+
+### Data Format Examples
+
+#### Line/Bar Chart Data
+
+For line and bar charts, each data point represents a category with multiple series:
+
+```tsx
+const lineChartData = [
+    {
+        name: 'Jan',
+        data: {
+            sales: {
+                primary: { label: 'Sales', val: 400 },
+            },
+            revenue: {
+                primary: { label: 'Revenue', val: 240 },
+            },
+            profit: {
+                primary: { label: 'Profit', val: 180 },
+            },
+        },
+    },
+    {
+        name: 'Feb',
+        data: {
+            sales: {
+                primary: { label: 'Sales', val: 300 },
+            },
+            revenue: {
+                primary: { label: 'Revenue', val: 139 },
+            },
+            profit: {
+                primary: { label: 'Profit', val: 120 },
+            },
+        },
+    },
+]
+```
+
+#### Pie Chart Data
+
+For pie charts, the structure remains the same but typically uses a single data series:
+
+```tsx
+const pieChartData = [
+    {
+        name: 'Market Share',
+        data: {
+            productA: {
+                primary: { label: 'Product A', val: 35 },
+            },
+            productB: {
+                primary: { label: 'Product B', val: 25 },
+            },
+            productC: {
+                primary: { label: 'Product C', val: 20 },
+            },
+            productD: {
+                primary: { label: 'Product D', val: 20 },
+            },
+        },
+    },
+]
+```
+
+### Data Transformation
+
+The component internally transforms the nested data structure into a flattened format for rendering:
+
+```tsx
+// Internal transformation
+type FlattenedDataPoint = {
+    name: string
+    [key: string]: number | string // Dynamic keys for each data series
+}
+
+// Example transformation
+// Input: { name: "Jan", data: { sales: { primary: { val: 400 } } } }
+// Output: { name: "Jan", sales: 400 }
+```
+
+### Key Considerations
+
+1. **Consistent Keys**: All data points should have the same keys in their `data` object for proper legend generation
+2. **Numeric Values**: The `val` property must be a number for proper chart rendering
+3. **Labels**: The `label` property is used for tooltips and legend display
+4. **Auxiliary Data**: The optional `aux` array allows for additional data points (useful for complex visualizations)
+5. **Empty Data**: Handle cases where some data points might be missing or null
+
+### Data Validation
+
+Ensure your data follows these rules:
+
+- All `val` properties are numbers
+- All `label` properties are strings
+- Each data point has a unique `name`
+- Data series keys are consistent across all data points
+- Handle missing or null values appropriately
+
+## Features
+
+- Multiple chart types (line, bar, pie)
+- Interactive legends with hover and click functionality
+- Customizable colors and styling
+- Responsive design
+- Axis labels support
+- Header slots for additional content
+- Legend positioning options
+- Data filtering and selection
+
+## Usage Examples
+
+### Line Chart
+
+Basic line chart with multiple data series
+
+```tsx
+const data = [
+    {
+        name: 'Jan',
+        data: {
+            sales: { primary: { label: 'Sales', val: 400 } },
+            revenue: { primary: { label: 'Revenue', val: 240 } },
+        },
+    },
+    // ... more data
+]
+
+;<Charts
+    chartType={ChartType.LINE}
+    data={data}
+    xAxisLabel="Month"
+    yAxisLabel="Value"
+    chartHeaderSlot={<div>Monthly Performance</div>}
+/>
+```
+
+### Bar Chart
+
+Bar chart with custom colors
+
+```tsx
+<Charts
+    chartType={ChartType.BAR}
+    data={data}
+    colors={['#8884d8', '#82ca9d', '#ffc658']}
+    legendPosition={ChartLegendPosition.RIGHT}
+    chartHeaderSlot={<div>Revenue Analysis</div>}
+/>
+```
+
+### Pie Chart
+
+Pie chart with right-positioned legend
+
+```tsx
+<Charts
+    chartType={ChartType.PIE}
+    data={data}
+    legendPosition={ChartLegendPosition.RIGHT}
+    chartHeaderSlot={<div>Market Share</div>}
+/>
+```
+
+### Chart with Header Slots
+
+Chart with custom header content
+
+```tsx
+<Charts
+    chartType={ChartType.LINE}
+    data={data}
+    slot1={<div>Total Sales</div>}
+    slot2={<div>$12,450</div>}
+    slot3={<div>+15% from last month</div>}
+    chartHeaderSlot={<div>Sales Dashboard</div>}
+/>
+```
+
+## Data Structure
+
+The Charts component expects data in a specific nested format:
+
+```tsx
+type NewNestedDataPoint = {
+    name: string
+    data: {
+        [key: string]: DataPoint
+    }
+}
+
+type DataPoint = {
+    primary: {
+        label: string
+        val: number
+    }
+    aux?: {
+        label: string
+        val: number
+    }[]
+}
+```
+
+## Component Tokens
+
+You can style the charts component using the following tokens:
+
+```tsx
+export type ChartTokensType = {
+    container: {
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        backgroundColor: CSSObject['backgroundColor']
+        padding: CSSObject['padding']
+    }
+    header: {
+        padding: CSSObject['padding']
+        gap: CSSObject['gap']
+    }
+    legend: {
+        gap: CSSObject['gap']
+        padding: CSSObject['padding']
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+    }
+    chart: {
+        height: CSSObject['height']
+        width: CSSObject['width']
+    }
+}
+```

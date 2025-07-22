@@ -1,5 +1,5 @@
 import React from 'react'
-import { SectionProps } from './types'
+import type { SectionProps } from './types'
 import { ChevronRight } from 'lucide-react'
 import NavItem from './NavItem'
 import Block from '../Primitives/Block/Block'

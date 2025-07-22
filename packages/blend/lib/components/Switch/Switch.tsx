@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { SwitchProps, SwitchSize } from './types'
+import { type SwitchProps, SwitchSize } from './types'
 import {
     getSwitchDataState,
     isControlledSwitch,
@@ -11,8 +11,9 @@ import {
 import { StyledSwitchRoot, StyledSwitchThumb } from './StyledSwitch'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { useComponentToken } from '../../context/useComponentToken'
-import { SwitchTokensType } from './switch.token'
+import type { SwitchTokensType } from './switch.token'
+
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const Switch = ({
     id,
@@ -28,8 +29,10 @@ export const Switch = ({
     slot,
     name,
     value,
+    ...rest
 }: SwitchProps) => {
-    const tokens = useComponentToken('SWITCH') as SwitchTokensType
+    const tokens = useResponsiveTokens<SwitchTokensType>('SWITCH')
+
     const generatedId = React.useId()
     const uniqueId = id || generatedId
 
@@ -61,17 +64,14 @@ export const Switch = ({
                 $error={error}
                 value={value}
                 name={name}
+                {...rest}
             >
                 <StyledSwitchThumb
                     size={size}
                     $isChecked={currentChecked || false}
                 />
             </StyledSwitchRoot>
-            <Block
-                display="flex"
-                flexDirection="column"
-                gap={tokens.contentGap}
-            >
+            <Block display="flex" flexDirection="column">
                 <Block display="flex" alignItems="center">
                     <SwitchContent
                         uniqueId={uniqueId}

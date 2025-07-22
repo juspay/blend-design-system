@@ -2,9 +2,9 @@ import Block from '../../Primitives/Block/Block'
 import PrimitiveTextarea from '../../Primitives/PrimitiveTextArea'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
-import { TextAreaProps } from './types'
+import type { TextAreaProps } from './types'
 import { useComponentToken } from '../../../context/useComponentToken'
-import { TextAreaTokensType } from './textarea.token'
+import type { TextAreaTokensType } from './textarea.token'
 
 const TextArea = ({
     value,
@@ -53,17 +53,18 @@ const TextArea = ({
                 resize={resize}
                 paddingX={textAreaTokens.paddingX}
                 paddingY={textAreaTokens.paddingY}
-                boxShadow={textAreaTokens.boxShadow}
+                boxShadow={textAreaTokens.boxShadow.default}
                 fontFamily={textAreaTokens.fontFamily}
                 border={textAreaTokens.border[error ? 'error' : 'default']}
                 outline={textAreaTokens.outline[error ? 'error' : 'default']}
                 _hover={{
-                    border: textAreaTokens.border.hover,
+                    border: textAreaTokens.border[error ? 'error' : 'hover'],
                 }}
                 color={textAreaTokens.color[disabled ? 'disabled' : 'default']}
                 _focus={{
-                    border: textAreaTokens.border.focus,
-                    outline: textAreaTokens.outline.focus,
+                    border: textAreaTokens.border[error ? 'error' : 'focus'],
+                    boxShadow:
+                        textAreaTokens.boxShadow[error ? 'error' : 'focus'],
                 }}
                 disabled={disabled}
                 _disabled={{

@@ -3,10 +3,11 @@ import {
     StatCard,
     StatCardVariant,
     ChangeType,
-    SingleSelect,
-    Switch,
-    TextInput,
-} from 'blend-v1'
+} from '../../../../packages/blend/lib/components/StatCard'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
+
 import {
     DollarSign,
     Users,

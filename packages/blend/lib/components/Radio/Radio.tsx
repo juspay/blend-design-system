@@ -1,5 +1,5 @@
 import React from 'react'
-import { RadioProps, RadioSize } from './types'
+import { type RadioProps, RadioSize } from './types'
 import {
     getRadioDataState,
     createRadioInputProps,
@@ -11,8 +11,9 @@ import {
 import { StyledRadioInput } from './StyledRadio'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { RadioTokensType } from './radio.token'
-import { useComponentToken } from '../../context/useComponentToken'
+import type { RadioTokensType } from './radio.token'
+
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const Radio = ({
     id,
@@ -28,8 +29,10 @@ export const Radio = ({
     subtext,
     slot,
     name,
+    ...rest
 }: RadioProps) => {
-    const radioTokens = useComponentToken('RADIO') as RadioTokensType
+    const radioTokens = useResponsiveTokens<RadioTokensType>('RADIO')
+
     const generatedId = React.useId()
     const uniqueId = id || generatedId
 
@@ -58,6 +61,7 @@ export const Radio = ({
                     $isDisabled={disabled}
                     $isChecked={currentChecked}
                     $error={error}
+                    {...rest}
                 />
 
                 <RadioContent
@@ -108,7 +112,7 @@ const RadioContent: React.FC<{
     )
 
     return (
-        <Block display="flex" flexDirection="column" gap={radioTokens.gap}>
+        <Block display="flex" flexDirection="column">
             {children && (
                 <Block
                     display="flex"
@@ -126,10 +130,11 @@ const RadioContent: React.FC<{
                             {required && (
                                 <PrimitiveText
                                     as="span"
-                                    fontSize={textProps.fontSize}
-                                    fontWeight={textProps.fontWeight}
-                                    color={textProps.color}
-                                    style={{ marginLeft: radioTokens.slotGap }}
+                                    color={radioTokens.required.color}
+                                    style={{
+                                        marginLeft:
+                                            radioTokens.required.spacing,
+                                    }}
                                 >
                                     *
                                 </PrimitiveText>

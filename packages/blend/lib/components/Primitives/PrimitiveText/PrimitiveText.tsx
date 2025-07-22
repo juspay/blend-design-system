@@ -1,5 +1,5 @@
-import React, { JSX } from 'react'
-import styled, { css, CSSObject } from 'styled-components'
+import React, { type JSX } from 'react'
+import styled, { css, type CSSObject } from 'styled-components'
 
 // --------------------
 // Types
@@ -34,6 +34,7 @@ export type PrimitiveTextProps = {
     paddingX?: CSSObject['padding']
     paddingY?: CSSObject['padding']
     fontSize?: CSSObject['fontSize']
+    lineHeight?: CSSObject['lineHeight']
     truncate?: boolean
     userSelect?: CSSObject['userSelect']
     name?: CSSObject['name']
@@ -65,6 +66,7 @@ const blockedProps = [
     'paddingX',
     'paddingY',
     'fontSize',
+    'lineHeight',
     'truncate',
     'userSelect',
     'textTransform',
@@ -81,12 +83,14 @@ const getStyles = (props: PrimitiveTextProps): CSSObject => {
         letterSpacing = 'normal',
         opacity = 1,
         fontSize,
+        lineHeight,
         textTransform,
     } = props
 
     const styles: CSSObject = {}
 
     if (fontSize !== undefined) styles.fontSize = fontSize
+    if (lineHeight !== undefined) styles.lineHeight = lineHeight
     if (fontWeight !== undefined) styles.fontWeight = fontWeight
     if (letterSpacing !== undefined) styles.letterSpacing = letterSpacing
     if (textAlign !== undefined) styles.textAlign = textAlign

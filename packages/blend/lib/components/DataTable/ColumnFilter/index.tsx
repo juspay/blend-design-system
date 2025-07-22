@@ -258,24 +258,6 @@ const ColumnFilter = forwardRef<
                 />
             )}
 
-            {columnConfig.filterComponent === 'dateRange' && (
-                <Block
-                    display="flex"
-                    flexDirection="column"
-                    gap={FOUNDATION_THEME.unit[4]}
-                >
-                    <PrimitiveText
-                        style={{
-                            fontSize:
-                                FOUNDATION_THEME.font.size.body.xs.fontSize,
-                            color: FOUNDATION_THEME.colors.gray[600],
-                        }}
-                    >
-                        Date range filtering coming soon...
-                    </PrimitiveText>
-                </Block>
-            )}
-
             {columnConfig.filterComponent === 'numberRange' && (
                 <Block
                     display="flex"

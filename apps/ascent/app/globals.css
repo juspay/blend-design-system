@@ -1,0 +1,160 @@
+@import 'tailwindcss';
+
+:root {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --navbar-height: 48px;
+
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --surface: oklch(0.98 0 0);
+
+    --code: var(--surface);
+    --code-foreground: var(--surface-foreground);
+    --code-highlight: oklch(0.96 0 0);
+    --code-number: oklch(0.56 0 0);
+
+    --sh-class: #144f9e;
+    --sh-identifier: #b01b1b;
+    --sh-sign: #465462;
+    --sh-property: #0550ae;
+    --sh-entity: #1a6e6b;
+    --sh-jsxliterals: #3438b4;
+    --sh-string: #00766c;
+    --sh-keyword: #f53527;
+    --sh-comment: #a19595;
+    --sh-background: #f6f8fa;
+    --code-background: #fefefe;
+    --code-border: #e0e0e0;
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: oklch(0.145 0 0);
+        --foreground: oklch(0.985 0 0);
+
+        --primary: oklch(0.922 0 0);
+        --primary-foreground: oklch(0.205 0 0);
+        --secondary: oklch(0.269 0 0);
+        --secondary-foreground: oklch(0.985 0 0);
+        --muted: oklch(0.269 0 0);
+        --muted-foreground: oklch(0.708 0 0);
+        --surface: oklch(0.2 0 0);
+
+        --code: var(--surface);
+        --code-foreground: var(--surface-foreground);
+        --code-highlight: oklch(0.27 0 0);
+        --code-number: oklch(0.72 0 0);
+
+        --sh-class: #78bced;
+        --sh-identifier: #76a4ef;
+        --sh-sign: #8996a3;
+        --sh-property: #4dc4ff;
+        --sh-entity: #34edb1;
+        --sh-jsxliterals: #8790eb;
+        --sh-string: #3ac9b0;
+        --sh-keyword: #ff7b72;
+        --sh-comment: #8b949e;
+        --sh-background: #0d1117;
+        --code-background: #161616;
+        --code-border: #262626;
+    }
+}
+
+body {
+    scrollbar-gutter: stable;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+    display: none;
+}
+
+.debug {
+    outline: 1px solid red;
+}
+
+@media (max-width: 1260px) {
+    .doc-toc-ctr {
+        display: none;
+    }
+}
+
+.sidebar-drawer-trigger {
+    display: none;
+}
+
+@media (max-width: 800px) {
+    .doc-sidebar {
+        display: none;
+    }
+    .sidebar-drawer-trigger {
+        display: block;
+    }
+}
+
+pre,
+code {
+    font-family:
+        var(--font-geist-mono), 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-size: 14px;
+}
+
+/* Code block specific styles */
+div[data-code-block] {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+div[data-code-block] code {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+div[data-code-block] .overflow-x-auto {
+    max-width: 100%;
+}
+
+/* Code snippet specific styles */
+pre[data-code-snippet] {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+pre[data-code-snippet] .overflow-x-auto {
+    max-width: 100%;
+}
+
+pre:has(div[data-code-block]) {
+    margin: 1rem 0;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}

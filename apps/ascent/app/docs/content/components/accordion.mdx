@@ -1,0 +1,404 @@
+---
+title: Accordion
+description: The Accordion component creates collapsible content sections that can expand and collapse, helping to organize information hierarchically and save screen space.
+category: components
+tags:
+    - accordion
+    - component
+    - collapsible
+    - expandable
+    - hierarchical
+RepoFolderName: Accordion
+StorybookLink: components-accordion-accordion--docs
+---
+
+<AccordionPreview />
+
+## Usage
+
+```tsx
+import {
+    Accordion,
+    AccordionItem,
+    AccordionType,
+    AccordionChevronPosition,
+} from 'blend-v1'
+
+function MyComponent() {
+    return (
+        <Accordion accordionType={AccordionType.BORDER} isMultiple={false}>
+            <AccordionItem value="item-1" title="Accordion Item 1">
+                <p>This is the content of the first accordion item.</p>
+            </AccordionItem>
+            <AccordionItem value="item-2" title="Accordion Item 2">
+                <p>This is the content of the second accordion item.</p>
+            </AccordionItem>
+        </Accordion>
+    )
+}
+```
+
+## API Reference
+
+### Accordion Props
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'children', hintText: 'The accordion items to render' },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'accordionType',
+                hintText: 'The visual style variant of the accordion',
+            },
+            { content: 'AccordionType', hintText: 'enum' },
+            { content: 'AccordionType.NO_BORDER' },
+        ],
+        [
+            {
+                content: 'defaultValue',
+                hintText: 'The default value(s) for the accordion',
+            },
+            { content: 'string | string[]', hintText: 'string or array' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText: 'The controlled value(s) for the accordion',
+            },
+            { content: 'string | string[]', hintText: 'string or array' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isMultiple',
+                hintText:
+                    'Whether multiple items can be expanded simultaneously',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'onValueChange',
+                hintText: 'Callback when the accordion value changes',
+            },
+            {
+                content: '(value: string | string[]) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### AccordionItem Props
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Unique identifier for the accordion item',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'title',
+                hintText: 'The title text displayed in the accordion trigger',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText:
+                    'The content to display when the accordion item is expanded',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subtext',
+                hintText: 'Optional subtitle text displayed below the title',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText:
+                    'Optional element to display on the left side of the trigger',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText:
+                    'Optional element to display on the right side of the trigger',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subtextSlot',
+                hintText: 'Optional element to display alongside the subtext',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isDisabled',
+                hintText:
+                    'Whether the accordion item is disabled and non-interactive',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'chevronPosition',
+                hintText:
+                    'Position of the chevron icon relative to the trigger',
+            },
+            { content: 'AccordionChevronPosition', hintText: 'enum' },
+            { content: 'AccordionChevronPosition.RIGHT' },
+        ],
+        [
+            {
+                content: 'className',
+                hintText: 'Additional CSS class name for the accordion item',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- Two visual variants (border and no-border)
+- Single and multiple selection modes
+- Flexible chevron positioning (left or right)
+- Rich content slots (left, right, subtext)
+- Disabled state support
+- Controlled and uncontrolled modes
+- Accessible by default
+- Smooth animations and transitions
+- Customizable styling through tokens
+
+## Usage Examples
+
+### Basic Accordion
+
+Simple accordion with border styling
+
+```tsx
+<Accordion accordionType={AccordionType.BORDER}>
+    <AccordionItem value="item-1" title="What is Blend Design System?">
+        <p>
+            Blend is a comprehensive design system that provides reusable
+            components.
+        </p>
+    </AccordionItem>
+    <AccordionItem value="item-2" title="How to get started?">
+        <p>Install the package and import the components you need.</p>
+    </AccordionItem>
+</Accordion>
+```
+
+### No Border Accordion
+
+Accordion without border styling for a cleaner look
+
+```tsx
+<Accordion accordionType={AccordionType.NO_BORDER}>
+    <AccordionItem value="item-1" title="Getting Started">
+        <p>Learn the basics of using Blend Design System.</p>
+    </AccordionItem>
+    <AccordionItem value="item-2" title="Components">
+        <p>Explore all available components and their usage examples.</p>
+    </AccordionItem>
+</Accordion>
+```
+
+### Multiple Selection Accordion
+
+Allow multiple items to be expanded simultaneously
+
+```tsx
+<Accordion accordionType={AccordionType.BORDER} isMultiple={true}>
+    <AccordionItem value="item-1" title="React Development">
+        <p>Modern React development with hooks and functional components.</p>
+    </AccordionItem>
+    <AccordionItem value="item-2" title="TypeScript">
+        <p>Type-safe JavaScript development with TypeScript.</p>
+    </AccordionItem>
+    <AccordionItem value="item-3" title="Design Systems">
+        <p>Building scalable and maintainable design systems.</p>
+    </AccordionItem>
+</Accordion>
+```
+
+### Accordion with Icons and Slots
+
+Rich accordion items with icons and additional content
+
+```tsx
+<Accordion accordionType={AccordionType.BORDER}>
+    <AccordionItem
+        value="item-1"
+        title="Documentation"
+        subtext="Comprehensive guides and examples"
+        leftSlot={<span>📚</span>}
+        rightSlot={<span className="text-green-500">New</span>}
+    >
+        <p>
+            Access comprehensive documentation with examples and API references.
+        </p>
+    </AccordionItem>
+    <AccordionItem
+        value="item-2"
+        title="Components"
+        subtext="Reusable UI components"
+        leftSlot={<span>🧩</span>}
+        chevronPosition={AccordionChevronPosition.LEFT}
+    >
+        <p>Explore our collection of reusable components.</p>
+    </AccordionItem>
+</Accordion>
+```
+
+### Controlled Accordion
+
+Accordion with controlled state management
+
+```tsx
+const [value, setValue] = useState<string>('item-1')
+
+;<Accordion
+    accordionType={AccordionType.BORDER}
+    value={value}
+    onValueChange={setValue}
+>
+    <AccordionItem value="item-1" title="Controlled Item 1">
+        <p>This item is controlled by external state.</p>
+    </AccordionItem>
+    <AccordionItem value="item-2" title="Controlled Item 2">
+        <p>This item is also controlled by external state.</p>
+    </AccordionItem>
+</Accordion>
+```
+
+### Disabled Accordion Item
+
+Accordion item that cannot be expanded
+
+```tsx
+<Accordion accordionType={AccordionType.BORDER}>
+    <AccordionItem value="item-1" title="Enabled Item">
+        <p>This item can be expanded and collapsed.</p>
+    </AccordionItem>
+    <AccordionItem value="item-2" title="Disabled Item" isDisabled={true}>
+        <p>This item is disabled and cannot be expanded.</p>
+    </AccordionItem>
+</Accordion>
+```
+
+## Component Tokens
+
+You can style the accordion component using the following tokens:
+
+```tsx
+export type AccordionState =
+    | 'default'
+    | 'hover'
+    | 'active'
+    | 'disabled'
+    | 'open'
+    | 'closed'
+
+export type AccordionTokenType = {
+    gap: {
+        [key in AccordionType]: CSSObject['gap']
+    }
+    borderRadius: {
+        [key in AccordionType]: CSSObject['borderRadius']
+    }
+    item: {
+        trigger: {
+            border: {
+                [key in AccordionType]: {
+                    [key in AccordionState]?: CSSObject['border']
+                }
+            }
+            padding: {
+                [key in AccordionType]: CSSObject['padding']
+            }
+            backgroundColor: {
+                [key in AccordionType]: {
+                    [key in AccordionState]?: CSSObject['backgroundColor']
+                }
+            }
+            title: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: {
+                    [key in AccordionState]?: CSSObject['color']
+                }
+            }
+            subtext: {
+                fontSize: CSSObject['fontSize']
+                gap: CSSObject['gap']
+                color: {
+                    [key in AccordionState]?: CSSObject['color']
+                }
+            }
+        }
+        separator: {
+            color: {
+                [key in AccordionType]: CSSObject['color']
+            }
+        }
+    }
+}
+```
+
+## Enums
+
+### AccordionType
+
+```tsx
+enum AccordionType {
+    BORDER = 'border',
+    NO_BORDER = 'noBorder',
+}
+```
+
+### AccordionChevronPosition
+
+```tsx
+enum AccordionChevronPosition {
+    LEFT = 'left',
+    RIGHT = 'right',
+}
+```

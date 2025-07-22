@@ -1,5 +1,5 @@
 import React, { forwardRef, useState } from 'react'
-import { SwitchGroupProps } from './types'
+import type { SwitchGroupProps } from './types'
 import {
     isSwitchElement,
     createSwitchGroupChangeHandler,
@@ -8,9 +8,9 @@ import {
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { Switch } from './Switch'
-import { useComponentToken } from '../../context/useComponentToken'
-import { SwitchTokensType } from './switch.token'
+import type { SwitchTokensType } from './switch.token'
 import { SwitchSize } from './types'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const SwitchGroup = forwardRef<HTMLDivElement, SwitchGroupProps>(
     (
@@ -26,7 +26,8 @@ const SwitchGroup = forwardRef<HTMLDivElement, SwitchGroupProps>(
         },
         ref
     ) => {
-        const tokens = useComponentToken('SWITCH') as SwitchTokensType
+        const tokens = useResponsiveTokens<SwitchTokensType>('SWITCH')
+
         const [internalValues, setInternalValues] =
             useState<string[]>(defaultValue)
 

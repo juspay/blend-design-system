@@ -4,12 +4,13 @@ import {
     TagVariant,
     TagSize,
     TagShape,
-    addSnackbar,
-} from 'blend-v1'
-import { SingleSelect, TextInput, Switch } from 'blend-v1'
+} from '../../../../packages/blend/lib/components/Tags'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { Hash, X, Plus, Star } from 'lucide-react'
 import { useState } from 'react'
-
+import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 const TagDemo = () => {
     const [playgroundText, setPlaygroundText] = useState('Playground Tag')
     const [playgroundColor, setPlaygroundColor] = useState<TagColor>(

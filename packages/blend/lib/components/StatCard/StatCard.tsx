@@ -12,11 +12,16 @@ import {
 } from 'recharts'
 import { ArrowDown, ArrowUp, CircleHelp } from 'lucide-react'
 import { Tooltip } from '../Tooltip'
+import {
+    ProgressBar,
+    ProgressBarVariant,
+    ProgressBarSize,
+} from '../ProgressBar'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { ChangeType, StatCardVariant, type StatCardProps } from './types'
 import { useComponentToken } from '../../context/useComponentToken'
-import { StatCardTokenType } from './statcard.tokens'
+import type { StatCardTokenType } from './statcard.tokens'
 
 const StatCard = ({
     title,
@@ -80,7 +85,9 @@ const StatCard = ({
 
     const isTrendingDown = useMemo(() => {
         if (!chartData || chartData.length < 2) return false
-        return chartData[0].value > chartData[chartData.length - 1].value
+        const firstItem = chartData[0]
+        const lastItem = chartData[chartData.length - 1]
+        return firstItem && lastItem && firstItem.value > lastItem.value
     }, [chartData])
 
     const lineColor = isTrendingDown
@@ -112,8 +119,11 @@ const StatCard = ({
     }: TooltipProps<number, string>) => {
         if (!active || !payload || payload.length === 0) return null
 
-        const currentValue = payload[0].value as number
-        const currentIndex = payload[0].payload?.index as number
+        const payloadItem = payload[0]
+        if (!payloadItem) return null
+
+        const currentValue = payloadItem.value as number
+        const currentIndex = payloadItem.payload?.index as number
         const previousIndex = Math.max(0, currentIndex - 1)
         const previousValue = chartData?.[previousIndex]?.value || currentValue
 
@@ -136,7 +146,9 @@ const StatCard = ({
                     color={statCardToken.chart.tooltip.text.color}
                     variant="body.sm"
                 >
-                    {`${percentage >= 0 ? '+' : ''}${percentage.toFixed(0)}% ${isUp ? 'Up' : 'Down'}`}
+                    {`${percentage >= 0 ? '+' : ''}${percentage.toFixed(0)}% ${
+                        isUp ? 'Up' : 'Down'
+                    }`}
                 </Text>
             </Block>
         )
@@ -160,7 +172,8 @@ const StatCard = ({
             padding={statCardToken.padding}
             display="flex"
             flexDirection="column"
-            gap={statCardToken.gap}
+            // gap={statCardToken.gap}
+            justifyContent="space-between"
             data-statcard-variant={normalizedVariant}
         >
             {effectiveVariant !== StatCardVariant.NUMBER && (
@@ -262,7 +275,7 @@ const StatCard = ({
                             >
                                 <Text
                                     as="span"
-                                    variant="heading.xl"
+                                    variant="heading.lg"
                                     fontWeight={
                                         statCardToken.stats.value[
                                             effectiveVariant
@@ -332,6 +345,7 @@ const StatCard = ({
                     height="100%"
                     alignItems="center"
                     justifyContent="center"
+                    gap={statCardToken.headerStatGap.gap}
                 >
                     <Block
                         display="flex"
@@ -591,70 +605,13 @@ const StatCard = ({
                         )}
 
                     {effectiveVariant === StatCardVariant.PROGRESS_BAR &&
-                        progressValue && (
-                            <Block
-                                width="100%"
-                                height={statCardToken.chart.progressBar.height}
-                                display="flex"
-                                alignItems="center"
-                                gap={statCardToken.chart.progressBar.gap}
-                            >
-                                <Block
-                                    width="100%"
-                                    height="100%"
-                                    display="flex"
-                                    flexGrow={1}
-                                    borderRadius={
-                                        statCardToken.chart.progressBar
-                                            .borderRadius
-                                    }
-                                    overflow="hidden"
-                                >
-                                    <Block
-                                        backgroundColor={
-                                            statCardToken.chart.progressBar
-                                                .background.fill
-                                        }
-                                        height="100%"
-                                        width={`${progressValue}%`}
-                                    />
-                                    <Block
-                                        backgroundColor={
-                                            statCardToken.chart.progressBar
-                                                .background.empty
-                                        }
-                                        height="100%"
-                                        backgroundImage={`repeating-linear-gradient(
-                        to right,
-                        ${statCardToken.chart.progressBar.background.pattern.color},
-                        ${statCardToken.chart.progressBar.background.pattern.color} 5px,
-                        transparent 1px,
-                        transparent
-                      )`}
-                                        backgroundSize={
-                                            statCardToken.chart.progressBar
-                                                .background.pattern.size
-                                        }
-                                        style={{
-                                            width: `${100 - progressValue}%`,
-                                        }}
-                                    />
-                                </Block>
-                                <Text
-                                    as="span"
-                                    variant="body.md"
-                                    fontWeight={
-                                        statCardToken.chart.progressBar.label
-                                            .fontWeight
-                                    }
-                                    color={
-                                        statCardToken.chart.progressBar.label
-                                            .color
-                                    }
-                                >
-                                    {progressValue}%
-                                </Text>
-                            </Block>
+                        progressValue !== undefined && (
+                            <ProgressBar
+                                value={progressValue}
+                                size={ProgressBarSize.SMALL}
+                                variant={ProgressBarVariant.SEGMENTED}
+                                showLabel={true}
+                            />
                         )}
                 </Block>
             )}

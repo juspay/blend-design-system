@@ -1,6 +1,9 @@
-import { NumberInput, SingleSelect, Switch, addSnackbar } from 'blend-v1'
-import { NumberInputSize } from '../../../../packages/blend/lib/components/Inputs/NumberInput/types'
 import { useState } from 'react'
+import { NumberInputSize } from '../../../../packages/blend/lib/components/Inputs/NumberInput/types'
+import { NumberInput } from '../../../../packages/blend/lib/components/Inputs/NumberInput'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 
 const NumberInputDemo = () => {
     const [playgroundValue, setPlaygroundValue] = useState(42)
@@ -167,6 +170,10 @@ const NumberInputDemo = () => {
                             value={0}
                             onChange={() => {}}
                             placeholder="Enter number..."
+                            error={hasError}
+                            errorMessage={
+                                hasError ? 'This field has an error' : undefined
+                            }
                         />
                     </div>
 

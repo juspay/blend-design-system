@@ -1,4 +1,7 @@
-import { TextInput, SingleSelect, Switch, addSnackbar } from 'blend-v1'
+import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { TextInputSize } from '../../../../packages/blend/lib/components/Inputs/TextInput/types'
 import { Search, Eye, EyeOff, User, Mail, Lock, Phone } from 'lucide-react'
 import { useState } from 'react'

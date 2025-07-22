@@ -7,15 +7,15 @@ import { TextInputSize } from '../TextInput/types'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { ChevronDown } from 'lucide-react'
 import SelectMenu from '../../Select/SelectMenu'
-import {
-    SelectMenuAlignment,
+import type {
     SelectMenuGroupType,
     SelectMenuItemType,
 } from '../../Select/types'
+import { SelectMenuAlignment } from '../../Select/types'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import Text from '../../Text/Text'
-import { DropdownInputProps } from './types'
-import { DropdownInputTokensType } from './dropdownInput.tokens'
+import type { DropdownInputProps } from './types'
+import type { DropdownInputTokensType } from './dropdownInput.tokens'
 import { useComponentToken } from '../../../context/useComponentToken'
 
 const map = function getValueLabelMap(
@@ -71,6 +71,9 @@ const DropdownInput = ({
     dropDownValue,
     onDropDownChange,
     dropDownItems,
+    dropdownName,
+    onDropdownOpen,
+    onDropdownClose,
     ...rest
 }: DropdownInputProps) => {
     const dropdownInputTokens = useComponentToken(
@@ -140,7 +143,7 @@ const DropdownInput = ({
                     paddingBottom={paddingY}
                     placeholder={placeholder}
                     borderRadius={dropdownInputTokens.input.borderRadius}
-                    boxShadow={dropdownInputTokens.input.boxShadow}
+                    boxShadow={dropdownInputTokens.input.boxShadow.default}
                     border={
                         error
                             ? dropdownInputTokens.input.border.error
@@ -149,7 +152,9 @@ const DropdownInput = ({
                     outline="none"
                     width={'100%'}
                     _hover={{
-                        border: dropdownInputTokens.input.border.hover,
+                        border: dropdownInputTokens.input.border[
+                            error ? 'error' : 'hover'
+                        ],
                     }}
                     color={
                         disabled
@@ -157,7 +162,13 @@ const DropdownInput = ({
                             : dropdownInputTokens.input.color.default
                     }
                     _focus={{
-                        border: dropdownInputTokens.input.border.focus,
+                        border: dropdownInputTokens.input.border[
+                            error ? 'error' : 'focus'
+                        ],
+                        boxShadow:
+                            dropdownInputTokens.input.boxShadow[
+                                error ? 'error' : 'focus'
+                            ],
                         outline: 'none !important',
                     }}
                     disabled={disabled}
@@ -185,11 +196,21 @@ const DropdownInput = ({
                         alignOffset={-(paddingX + 2)}
                         sideOffset={paddingX}
                         selected={dropDownValue}
-                        onSelect={(value) =>
-                            onDropDownChange?.(
-                                Array.isArray(value) ? value[0] : value
-                            )
-                        }
+                        onSelect={(value) => {
+                            const selectedValue = Array.isArray(value)
+                                ? value[0]
+                                : value
+                            if (selectedValue !== undefined) {
+                                onDropDownChange?.(selectedValue)
+                            }
+                        }}
+                        onOpenChange={(open) => {
+                            if (open) {
+                                onDropdownOpen?.()
+                            } else {
+                                onDropdownClose?.()
+                            }
+                        }}
                         trigger={
                             <PrimitiveButton
                                 disabled={disabled}
@@ -198,6 +219,7 @@ const DropdownInput = ({
                                 justifyContent="center"
                                 gap={4}
                                 backgroundColor={'transparent'}
+                                name={dropdownName}
                             >
                                 {dropDownValue ? (
                                     <Text

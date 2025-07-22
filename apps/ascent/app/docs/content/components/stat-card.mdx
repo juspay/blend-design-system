@@ -1,0 +1,498 @@
+---
+title: Stat Card
+description: The StatCard component displays key metrics and statistics in a card format, with support for icons, trends, and various styling options for dashboard and analytics interfaces.
+category: components
+tags:
+    - stat-card
+    - component
+    - metrics
+RepoFolderName: StatCard
+StorybookLink: components-statcard-statcard--docs
+---
+
+<StatCardPreview />
+
+## Usage
+
+```tsx
+import { StatCard, StatCardVariant, ChangeType } from 'blend-v1'
+import { TrendingUp, Users, DollarSign } from 'lucide-react'
+
+function MyComponent() {
+    const chartData = [
+        { value: 100, label: 'Jan', date: '2024-01' },
+        { value: 120, label: 'Feb', date: '2024-02' },
+        { value: 110, label: 'Mar', date: '2024-03' },
+        { value: 140, label: 'Apr', date: '2024-04' },
+        { value: 130, label: 'May', date: '2024-05' },
+        { value: 160, label: 'Jun', date: '2024-06' },
+    ]
+
+    return (
+        <div
+            style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                gap: '16px',
+            }}
+        >
+            <StatCard
+                title="Total Revenue"
+                value="$12,345"
+                subtitle="Last 30 days"
+                variant={StatCardVariant.LINE}
+                chartData={chartData}
+                titleIcon={<DollarSign size={20} />}
+                change={{ value: 12.5, type: ChangeType.INCREASE }}
+            />
+
+            <StatCard
+                title="Active Users"
+                value="1,234"
+                subtitle="Current month"
+                variant={StatCardVariant.BAR}
+                chartData={chartData}
+                titleIcon={<Users size={20} />}
+                change={{ value: 8.2, type: ChangeType.INCREASE }}
+            />
+
+            <StatCard
+                title="Conversion Rate"
+                value="85%"
+                subtitle="Target: 90%"
+                variant={StatCardVariant.PROGRESS_BAR}
+                progressValue={85}
+                titleIcon={<TrendingUp size={20} />}
+                change={{ value: 5.3, type: ChangeType.INCREASE }}
+            />
+
+            <StatCard
+                title="Total Orders"
+                value="456"
+                subtitle="This week"
+                variant={StatCardVariant.NUMBER}
+                titleIcon={<Activity size={20} />}
+                change={{ value: 2.1, type: ChangeType.DECREASE }}
+            />
+        </div>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'title',
+                hintText: 'The title text displayed in the stat card',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText: 'The main value displayed in the stat card',
+            },
+            { content: 'string | number', hintText: 'union type' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'change',
+                hintText:
+                    'Change indicator showing percentage increase or decrease',
+            },
+            { content: 'StatCardChange', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subtitle',
+                hintText: 'Secondary text displayed below the main value',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText: 'The visual variant of the stat card',
+            },
+            { content: 'StatCardVariant', hintText: 'enum' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'chartData',
+                hintText: 'Data points for line and bar chart variants',
+            },
+            { content: 'ChartDataPoint[]', hintText: 'array' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'progressValue',
+                hintText:
+                    'Progress percentage for progress bar variant (0-100)',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'titleIcon',
+                hintText: 'Icon element displayed next to the title',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'actionIcon',
+                hintText:
+                    'Icon element displayed on the right side of the header',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconText',
+                hintText: 'Tooltip text for the help icon',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## StatCardChange API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'value', hintText: 'The percentage change value' },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'type',
+                hintText: 'Whether the change is an increase or decrease',
+            },
+            { content: 'ChangeType', hintText: 'enum' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## ChartDataPoint API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'The numeric value for the data point',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            { content: 'label', hintText: 'The label for the data point' },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'date',
+                hintText: 'Optional date string for the data point',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- Four visual variants: Line chart, Bar chart, Progress bar, and Number only
+- Built-in chart rendering with Recharts integration
+- Change indicators with increase/decrease arrows and percentages
+- Icon support for title and action areas
+- Help tooltip functionality
+- Responsive design with customizable dimensions
+- Progress bar with pattern background
+- Interactive tooltips for chart data
+- Automatic color theming based on trend direction
+- Flexible layout with header and chart sections
+
+## Usage Examples
+
+### Basic Number Stat Card
+
+Simple stat card showing only a number value
+
+```tsx
+<StatCard
+    title="Total Orders"
+    value="456"
+    subtitle="This week"
+    variant={StatCardVariant.NUMBER}
+    titleIcon={<Activity size={20} />}
+    change={{ value: 2.1, type: ChangeType.DECREASE }}
+/>
+```
+
+### Line Chart Stat Card
+
+Stat card with line chart visualization
+
+```tsx
+const chartData = [
+    { value: 100, label: 'Jan', date: '2024-01' },
+    { value: 120, label: 'Feb', date: '2024-02' },
+    { value: 110, label: 'Mar', date: '2024-03' },
+    { value: 140, label: 'Apr', date: '2024-04' },
+    { value: 130, label: 'May', date: '2024-05' },
+    { value: 160, label: 'Jun', date: '2024-06' },
+]
+
+;<StatCard
+    title="Total Revenue"
+    value="$12,345"
+    subtitle="Last 30 days"
+    variant={StatCardVariant.LINE}
+    chartData={chartData}
+    titleIcon={<DollarSign size={20} />}
+    change={{ value: 12.5, type: ChangeType.INCREASE }}
+/>
+```
+
+### Bar Chart Stat Card
+
+Stat card with bar chart visualization
+
+```tsx
+<StatCard
+    title="Active Users"
+    value="1,234"
+    subtitle="Current month"
+    variant={StatCardVariant.BAR}
+    chartData={chartData}
+    titleIcon={<Users size={20} />}
+    change={{ value: 8.2, type: ChangeType.INCREASE }}
+/>
+```
+
+### Progress Bar Stat Card
+
+Stat card with progress bar showing completion percentage
+
+```tsx
+<StatCard
+    title="Conversion Rate"
+    value="85%"
+    subtitle="Target: 90%"
+    variant={StatCardVariant.PROGRESS_BAR}
+    progressValue={85}
+    titleIcon={<TrendingUp size={20} />}
+    change={{ value: 5.3, type: ChangeType.INCREASE }}
+/>
+```
+
+### Stat Card with Help Tooltip
+
+Stat card with help icon and tooltip
+
+```tsx
+<StatCard
+    title="Revenue Growth"
+    value="$45,678"
+    subtitle="Year over year"
+    variant={StatCardVariant.LINE}
+    chartData={chartData}
+    titleIcon={<DollarSign size={20} />}
+    helpIconText="Revenue growth calculated as percentage increase from previous year"
+    change={{ value: 15.7, type: ChangeType.INCREASE }}
+/>
+```
+
+### Stat Card with Action Icon
+
+Stat card with action icon in the header
+
+```tsx
+import { MoreVertical } from 'lucide-react'
+;<StatCard
+    title="Monthly Sales"
+    value="$23,456"
+    subtitle="This month"
+    variant={StatCardVariant.BAR}
+    chartData={chartData}
+    titleIcon={<DollarSign size={20} />}
+    actionIcon={<MoreVertical size={16} />}
+    change={{ value: 3.2, type: ChangeType.INCREASE }}
+/>
+```
+
+## Component Tokens
+
+You can style the stat card component using the following tokens:
+
+```tsx
+export type StatCardState = 'default' | 'hover' | 'loading'
+
+export type StatCardTokenType = {
+    height: CSSObject['height']
+    border: {
+        [key in StatCardState]?: CSSObject['border']
+    }
+    borderRadius: CSSObject['borderRadius']
+    backgroundColor: {
+        [key in StatCardState]?: CSSObject['backgroundColor']
+    }
+    boxShadow: CSSObject['boxShadow']
+    padding: CSSObject['padding']
+    gap: CSSObject['gap']
+    header: {
+        gap: CSSObject['gap']
+        titleIcon: {
+            width: CSSObject['width']
+            height: CSSObject['height']
+            marginBottom: CSSObject['marginBottom']
+        }
+        title: {
+            [key in StatCardVariant]: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+        }
+        helpIcon: {
+            width: CSSObject['width']
+            height: CSSObject['height']
+            color: CSSObject['color']
+        }
+    }
+    headerStatGap: {
+        gap: CSSObject['gap']
+    }
+    stats: {
+        gap: CSSObject['gap']
+        value: {
+            [key in StatCardVariant]: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+        }
+        change: {
+            marginLeft: CSSObject['marginLeft']
+            arrow: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+                marginRight: CSSObject['marginRight']
+            }
+            text: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                increase: {
+                    color: CSSObject['color']
+                }
+                decrease: {
+                    color: CSSObject['color']
+                }
+            }
+        }
+        subtitle: {
+            [key in StatCardVariant]: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+        }
+    }
+    chart: {
+        height: CSSObject['height']
+        colors: {
+            line: {
+                increase: CSSObject['color']
+                decrease: CSSObject['color']
+            }
+            area: {
+                increase: CSSObject['color']
+                decrease: CSSObject['color']
+            }
+            gradient: {
+                end: CSSObject['color']
+                startOpacity: number
+                endOpacity: number
+            }
+        }
+        line: {
+            strokeWidth: CSSObject['strokeWidth']
+            activeDot: {
+                radius: number
+                fill: CSSObject['fill']
+            }
+        }
+        bar: {
+            radius: number[]
+            fill: CSSObject['fill']
+            activeBar: {
+                fill: CSSObject['fill']
+            }
+        }
+        progressBar: {
+            height: CSSObject['height']
+            borderRadius: CSSObject['borderRadius']
+            gap: CSSObject['gap']
+            background: {
+                fill: CSSObject['backgroundColor']
+                empty: CSSObject['backgroundColor']
+                pattern: {
+                    color: CSSObject['color']
+                    size: CSSObject['backgroundSize']
+                }
+            }
+            label: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+        }
+        tooltip: {
+            cursor: {
+                strokeDasharray: string
+                stroke: CSSObject['stroke']
+            }
+            container: {
+                backgroundColor: CSSObject['backgroundColor']
+                padding: CSSObject['padding']
+                borderRadius: CSSObject['borderRadius']
+            }
+            text: {
+                color: CSSObject['color']
+            }
+            bar: {
+                cursor: {
+                    fill: CSSObject['fill']
+                }
+            }
+        }
+    }
+}
+```

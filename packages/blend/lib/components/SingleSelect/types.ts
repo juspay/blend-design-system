@@ -1,7 +1,7 @@
 import { SelectMenuAlignment, SelectMenuSide } from '../Select'
 
 import {
-    SelectMenuGroupType,
+    type SelectMenuGroupType,
     SelectMenuSize,
     SelectMenuVariant,
 } from '../Select'
@@ -22,6 +22,8 @@ export type SingleSelectProps = {
     slot?: React.ReactNode
     disabled?: boolean
     name?: string
+    // responsive behavior
+    useDrawerOnMobile?: boolean
     // alignment
     alignment?: SelectMenuAlignment
     side?: SelectMenuSide

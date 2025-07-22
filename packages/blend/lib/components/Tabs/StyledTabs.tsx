@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 import { TabsVariant, TabsSize } from './types'
-import { TabsTokensType } from './tabs.token'
+import type { TabsTokensType } from './tabs.token'
 import { foundationToken } from '../../foundationToken'
 
 export const StyledTabs = styled(TabsPrimitive.Root)`

@@ -27,20 +27,43 @@ import {
     Weight,
     DecimalsArrowRightIcon,
 } from 'lucide-react'
-import { FOUNDATION_THEME, Sidebar } from 'blend-v1'
+import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
+import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
 import ButtonGroupDemo from './ButtonGroupDemo'
 import TagDemo from './TagDemo'
 import AvatarDemo from './AvatarDemo'
 import BreadcrumbDemo from './BreadcrumbDemo'
 import InputDemo from './TextInputDemo'
 import UnitInputDemo from './UnitInputDemo'
-import type { DirectoryData } from '../../../../packages/blend/dist/components/Directory/types'
+import type { DirectoryData } from '../../../../packages/blend/lib/components/Directory/types'
 import NumberInputDemo from './NumberInputDemo'
 import TextAreaDemo from './TextAreaDemo'
 import AlertDemo from './AlertDemo'
 import TabsDemo from './TabsDemo'
 import AccordionDemo from './AccordionDemo'
 import StatCardDemo from './StatCardDemo'
+import SnackbarDemo from './SnackbarDemo'
+import AvatarGroupDemo from './AvatarGroupDemo'
+import TooltipDemo from './TooltipDemo'
+import ModalDemo from './ModalDemo'
+import RadioDemo from './RadioDemo'
+import CheckboxDemo from './CheckboxDemo'
+import SwitchDemo from './SwitchDemo'
+import ProgressBarDemo from './ProgressBarDemo'
+import { Snackbar } from '../../../../packages/blend/lib/components/Snackbar'
+import { ThemeProvider } from '../../../../packages/blend/lib/context'
+import ALT_FOUNDATION_TOKENS from '../themes/AIT_FOUNDATION_TOKENS'
+import HDFC_COMPONENT_TOKENS from '../themes/HDFC_COMPONENT_TOKENS'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import {
+    SelectMenuAlignment,
+    SelectMenuVariant,
+} from '../../../../packages/blend/lib/components/Select'
+import MenuDemo from './MenuDemo'
+import SingleSelectDemo from './SingleSelectDemo'
+import MultiSelectDemo from './MultiSelectDemo'
+import DropdownInputDemo from './DropdownInputDemo'
+import DrawerDemo from './DrawerDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -74,12 +97,17 @@ const SidebarDemo = () => {
         | 'textArea'
         | 'snackbar'
         | 'dataTable'
+        | 'drawer'
         | 'colorPalette'
         | 'popover'
+        | 'progressBar'
         | 'theme'
         | 'salesKpiDashboard'
         | 'transactionAnalyticsDashboard'
-    >('alerts')
+        | 'singleSelect'
+        | 'multiSelect'
+        | 'dropdownInput'
+    >('drawer')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] = useState<string | undefined>(
@@ -150,6 +178,32 @@ const SidebarDemo = () => {
                 return <AccordionDemo />
             case 'statCard':
                 return <StatCardDemo />
+            case 'avatarGroup':
+                return <AvatarGroupDemo />
+            case 'snackbar':
+                return <SnackbarDemo />
+            case 'tooltips':
+                return <TooltipDemo />
+            case 'modal':
+                return <ModalDemo />
+            case 'radio':
+                return <RadioDemo />
+            case 'checkbox':
+                return <CheckboxDemo />
+            case 'switch':
+                return <SwitchDemo />
+            case 'menu':
+                return <MenuDemo />
+            case 'singleSelect':
+                return <SingleSelectDemo />
+            case 'multiSelect':
+                return <MultiSelectDemo />
+            case 'progressBar':
+                return <ProgressBarDemo />
+            case 'drawer':
+                return <DrawerDemo />
+            case 'dropdownInput':
+                return <DropdownInputDemo />
             default:
                 return <div>No component selected</div>
         }
@@ -232,6 +286,15 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('numberInput'),
                 },
                 {
+                    label: 'Dropdown Input',
+                    leftSlot: (
+                        <DecimalsArrowRightIcon
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    onClick: () => setActiveComponent('dropdownInput'),
+                },
+                {
                     label: 'Text Area',
                     leftSlot: (
                         <FileText style={{ width: '16px', height: '16px' }} />
@@ -298,6 +361,20 @@ const SidebarDemo = () => {
                     ],
                 },
                 {
+                    label: 'Single Select',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('singleSelect'),
+                },
+                {
+                    label: 'Multi Select',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('multiSelect'),
+                },
+                {
                     label: 'Tabs',
                     leftSlot: (
                         <Layout style={{ width: '16px', height: '16px' }} />
@@ -353,6 +430,11 @@ const SidebarDemo = () => {
                     ),
                     onClick: () => setActiveComponent('popover'),
                 },
+                {
+                    label: 'Drawer',
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    onClick: () => setActiveComponent('drawer'),
+                },
             ],
         },
         {
@@ -375,6 +457,13 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('statCard'),
                 },
                 {
+                    label: 'Progress Bar',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('progressBar'),
+                },
+                {
                     label: 'Data Table',
                     leftSlot: (
                         <Table style={{ width: '16px', height: '16px' }} />
@@ -386,7 +475,7 @@ const SidebarDemo = () => {
         {
             label: 'Form Elements',
             isCollapsible: true,
-            defaultOpen: false,
+            defaultOpen: true,
             items: [
                 {
                     label: 'Date Picker',
@@ -453,20 +542,83 @@ const SidebarDemo = () => {
         },
     ]
 
+    const [theme, setTheme] = useState<'EULER' | 'JUSBIZ'>('EULER')
+
+    const breakpoints = {
+        sm: 480,
+        lg: 1440,
+    }
+
+    const themeProps =
+        theme === 'EULER'
+            ? {}
+            : {
+                  foundationTokens: ALT_FOUNDATION_TOKENS,
+                  componentTokens: HDFC_COMPONENT_TOKENS,
+                  breakpoints: breakpoints,
+              }
+
     return (
         <div className="w-screen h-screen">
-            <Sidebar
-                activeTenant={activeTenant}
-                setActiveTenant={setActiveTenant}
-                tenants={tenants}
-                activeMerchant={activeMerchant}
-                setActiveMerchant={setActiveMerchant}
-                merchants={merchants}
-                data={sampleData}
-                topbar={<div>Topbar</div>}
-            >
-                <div className="w-full h-full">{renderContent()}</div>
-            </Sidebar>
+            <ThemeProvider {...themeProps}>
+                <Snackbar />
+                <Sidebar
+                    activeTenant={activeTenant}
+                    setActiveTenant={setActiveTenant}
+                    tenants={tenants}
+                    activeMerchant={activeMerchant}
+                    setActiveMerchant={setActiveMerchant}
+                    merchants={merchants}
+                    data={sampleData}
+                    topbar={
+                        <div className="flex justify-end">
+                            <div>
+                                <SingleSelect
+                                    slot={
+                                        <kbd
+                                            style={{
+                                                fontSize: 10,
+                                                backgroundColor:
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[25],
+                                                padding: '2px 4px',
+                                                borderRadius: 4,
+                                            }}
+                                        >
+                                            CMD + E
+                                        </kbd>
+                                    }
+                                    label="Theme"
+                                    placeholder="Select Theme"
+                                    minWidth={200}
+                                    alignment={SelectMenuAlignment.END}
+                                    selected={theme}
+                                    onSelect={(value) =>
+                                        setTheme(value as 'EULER' | 'JUSBIZ')
+                                    }
+                                    variant={SelectMenuVariant.NO_CONTAINER}
+                                    items={[
+                                        {
+                                            items: [
+                                                {
+                                                    value: 'EULER',
+                                                    label: 'EULER',
+                                                },
+                                                {
+                                                    value: 'JUSBIZ',
+                                                    label: 'JUSBIZ',
+                                                },
+                                            ],
+                                        },
+                                    ]}
+                                />
+                            </div>
+                        </div>
+                    }
+                >
+                    <div className="w-full h-full">{renderContent()}</div>
+                </Sidebar>
+            </ThemeProvider>
         </div>
     )
 }

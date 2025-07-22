@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 import {
-    ButtonGroupV2,
-    ButtonV2,
-    ButtonTypeV2,
-    ButtonSizeV2,
-    ButtonSubTypeV2,
-} from 'blend-v1'
+    ButtonGroup,
+    Button,
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+} from '@juspay/blend-design-system'
 import {
     Plus,
     Download,
@@ -19,33 +19,33 @@ import {
     Copy,
 } from 'lucide-react'
 
-const meta: Meta<typeof ButtonGroupV2> = {
-    title: 'Components/Button/ButtonGroupV2',
-    component: ButtonGroupV2,
+const meta: Meta<typeof ButtonGroup> = {
+    title: 'Components/Button/ButtonGroup',
+    component: ButtonGroup,
     parameters: {
         layout: 'centered',
         docs: {
             description: {
                 component: `
 
-A modern container component for grouping ButtonV2 components with automatic positioning and spacing.
+A modern container component for grouping Button components with automatic positioning and spacing.
 
 ## Features
 - Automatic button group positioning (left, center, right)
 - Stacked and non-stacked layouts
-- Works seamlessly with ButtonV2 components
+- Works seamlessly with Button components
 - Automatic border radius adjustment for connected buttons
 - Simple and clean API
 
 ## Usage
 
 \`\`\`tsx
-import { ButtonGroupV2, ButtonV2, ButtonTypeV2 } from 'blend-v1';
+import { ButtonGroup, Button, ButtonType } from '@juspay/blend-design-system';
 
-<ButtonGroupV2 stacked={true}>
-  <ButtonV2 text="Save" buttonType={ButtonTypeV2.PRIMARY} />
-  <ButtonV2 text="Cancel" buttonType={ButtonTypeV2.SECONDARY} />
-</ButtonGroupV2>
+<ButtonGroup stacked={true}>
+  <Button text="Save" buttonType={ButtonType.PRIMARY} />
+  <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+</ButtonGroup>
 \`\`\`
         `,
             },
@@ -62,7 +62,7 @@ import { ButtonGroupV2, ButtonV2, ButtonTypeV2 } from 'blend-v1';
 }
 
 export default meta
-type Story = StoryObj<typeof ButtonGroupV2>
+type Story = StoryObj<typeof ButtonGroup>
 
 // Default story
 export const Default: Story = {
@@ -70,10 +70,10 @@ export const Default: Story = {
         stacked: true,
     },
     render: (args) => (
-        <ButtonGroupV2 {...args}>
-            <ButtonV2 text="Save" buttonType={ButtonTypeV2.PRIMARY} />
-            <ButtonV2 text="Cancel" buttonType={ButtonTypeV2.SECONDARY} />
-        </ButtonGroupV2>
+        <ButtonGroup {...args}>
+            <Button text="Save" buttonType={ButtonType.PRIMARY} />
+            <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+        </ButtonGroup>
     ),
 }
 
@@ -91,17 +91,14 @@ export const StackedVsNonStacked: Story = {
                 >
                     Stacked (Connected)
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2 text="Save" buttonType={ButtonTypeV2.PRIMARY} />
-                    <ButtonV2
+                <ButtonGroup stacked={true}>
+                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
+                    <Button
                         text="Save & Continue"
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                     />
-                    <ButtonV2
-                        text="Cancel"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                </ButtonGroupV2>
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
             </div>
 
             <div>
@@ -114,17 +111,14 @@ export const StackedVsNonStacked: Story = {
                 >
                     Non-Stacked (Spaced)
                 </h4>
-                <ButtonGroupV2 stacked={false}>
-                    <ButtonV2 text="Save" buttonType={ButtonTypeV2.PRIMARY} />
-                    <ButtonV2
+                <ButtonGroup stacked={false}>
+                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
+                    <Button
                         text="Save & Continue"
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                     />
-                    <ButtonV2
-                        text="Cancel"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                </ButtonGroupV2>
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
             </div>
         </div>
     ),
@@ -151,17 +145,14 @@ export const ButtonTypes: Story = {
                 >
                     Primary Actions
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2 text="Save" buttonType={ButtonTypeV2.PRIMARY} />
-                    <ButtonV2
+                <ButtonGroup stacked={true}>
+                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
+                    <Button
                         text="Save & Continue"
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                     />
-                    <ButtonV2
-                        text="Cancel"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                </ButtonGroupV2>
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
             </div>
 
             <div>
@@ -174,14 +165,11 @@ export const ButtonTypes: Story = {
                 >
                     Mixed Types
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2 text="Save" buttonType={ButtonTypeV2.SUCCESS} />
-                    <ButtonV2 text="Delete" buttonType={ButtonTypeV2.DANGER} />
-                    <ButtonV2
-                        text="Cancel"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                </ButtonGroupV2>
+                <ButtonGroup stacked={true}>
+                    <Button text="Save" buttonType={ButtonType.SUCCESS} />
+                    <Button text="Delete" buttonType={ButtonType.DANGER} />
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
             </div>
 
             <div>
@@ -194,20 +182,11 @@ export const ButtonTypes: Story = {
                 >
                     All Secondary
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2
-                        text="Option 1"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                    <ButtonV2
-                        text="Option 2"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                    <ButtonV2
-                        text="Option 3"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                </ButtonGroupV2>
+                <ButtonGroup stacked={true}>
+                    <Button text="Option 1" buttonType={ButtonType.SECONDARY} />
+                    <Button text="Option 2" buttonType={ButtonType.SECONDARY} />
+                    <Button text="Option 3" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
             </div>
         </div>
     ),
@@ -234,18 +213,18 @@ export const ButtonSizes: Story = {
                 >
                     Small
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2
+                <ButtonGroup stacked={true}>
+                    <Button
                         text="Save"
-                        buttonType={ButtonTypeV2.PRIMARY}
-                        size={ButtonSizeV2.SMALL}
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.SMALL}
                     />
-                    <ButtonV2
+                    <Button
                         text="Cancel"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.SMALL}
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.SMALL}
                     />
-                </ButtonGroupV2>
+                </ButtonGroup>
             </div>
 
             <div>
@@ -258,18 +237,18 @@ export const ButtonSizes: Story = {
                 >
                     Medium
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2
+                <ButtonGroup stacked={true}>
+                    <Button
                         text="Save"
-                        buttonType={ButtonTypeV2.PRIMARY}
-                        size={ButtonSizeV2.MEDIUM}
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.MEDIUM}
                     />
-                    <ButtonV2
+                    <Button
                         text="Cancel"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.MEDIUM}
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
                     />
-                </ButtonGroupV2>
+                </ButtonGroup>
             </div>
 
             <div>
@@ -282,18 +261,18 @@ export const ButtonSizes: Story = {
                 >
                     Large
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2
+                <ButtonGroup stacked={true}>
+                    <Button
                         text="Save"
-                        buttonType={ButtonTypeV2.PRIMARY}
-                        size={ButtonSizeV2.LARGE}
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.LARGE}
                     />
-                    <ButtonV2
+                    <Button
                         text="Cancel"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.LARGE}
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.LARGE}
                     />
-                </ButtonGroupV2>
+                </ButtonGroup>
             </div>
         </div>
     ),
@@ -320,18 +299,18 @@ export const WithIcons: Story = {
                 >
                     Action Buttons
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2
+                <ButtonGroup stacked={true}>
+                    <Button
                         text="Save"
                         leadingIcon={<Save size={16} />}
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                     />
-                    <ButtonV2
+                    <Button
                         text="Cancel"
                         leadingIcon={<X size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                </ButtonGroupV2>
+                </ButtonGroup>
             </div>
 
             <div>
@@ -344,23 +323,23 @@ export const WithIcons: Story = {
                 >
                     CRUD Operations
                 </h4>
-                <ButtonGroupV2 stacked={false}>
-                    <ButtonV2
+                <ButtonGroup stacked={false}>
+                    <Button
                         text="Add"
                         leadingIcon={<Plus size={16} />}
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                     />
-                    <ButtonV2
+                    <Button
                         text="Edit"
                         leadingIcon={<Edit size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                    <ButtonV2
+                    <Button
                         text="Delete"
                         leadingIcon={<Trash2 size={16} />}
-                        buttonType={ButtonTypeV2.DANGER}
+                        buttonType={ButtonType.DANGER}
                     />
-                </ButtonGroupV2>
+                </ButtonGroup>
             </div>
 
             <div>
@@ -373,23 +352,23 @@ export const WithIcons: Story = {
                 >
                     File Operations
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2
+                <ButtonGroup stacked={true}>
+                    <Button
                         text="Download"
                         leadingIcon={<Download size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                    <ButtonV2
+                    <Button
                         text="Copy"
                         leadingIcon={<Copy size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                    <ButtonV2
+                    <Button
                         text="Settings"
                         leadingIcon={<Settings size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                </ButtonGroupV2>
+                </ButtonGroup>
             </div>
         </div>
     ),
@@ -416,23 +395,23 @@ export const IconOnlyButtons: Story = {
                 >
                     Toolbar Actions
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2
-                        subType={ButtonSubTypeV2.ICON_ONLY}
+                <ButtonGroup stacked={true}>
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
                         leadingIcon={<Plus size={16} />}
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                     />
-                    <ButtonV2
-                        subType={ButtonSubTypeV2.ICON_ONLY}
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
                         leadingIcon={<Edit size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                    <ButtonV2
-                        subType={ButtonSubTypeV2.ICON_ONLY}
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
                         leadingIcon={<Trash2 size={16} />}
-                        buttonType={ButtonTypeV2.DANGER}
+                        buttonType={ButtonType.DANGER}
                     />
-                </ButtonGroupV2>
+                </ButtonGroup>
             </div>
 
             <div>
@@ -445,23 +424,23 @@ export const IconOnlyButtons: Story = {
                 >
                     Media Controls
                 </h4>
-                <ButtonGroupV2 stacked={false}>
-                    <ButtonV2
-                        subType={ButtonSubTypeV2.ICON_ONLY}
+                <ButtonGroup stacked={false}>
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
                         leadingIcon={<Search size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                    <ButtonV2
-                        subType={ButtonSubTypeV2.ICON_ONLY}
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
                         leadingIcon={<Download size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                    <ButtonV2
-                        subType={ButtonSubTypeV2.ICON_ONLY}
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
                         leadingIcon={<Settings size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                </ButtonGroupV2>
+                </ButtonGroup>
             </div>
         </div>
     ),
@@ -488,17 +467,14 @@ export const CommonUseCases: Story = {
                 >
                     Form Actions
                 </h4>
-                <ButtonGroupV2 stacked={false}>
-                    <ButtonV2 text="Save" buttonType={ButtonTypeV2.PRIMARY} />
-                    <ButtonV2
+                <ButtonGroup stacked={false}>
+                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
+                    <Button
                         text="Save as Draft"
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                    <ButtonV2
-                        text="Cancel"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                </ButtonGroupV2>
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
             </div>
 
             <div>
@@ -511,13 +487,10 @@ export const CommonUseCases: Story = {
                 >
                     Modal Actions
                 </h4>
-                <ButtonGroupV2 stacked={false}>
-                    <ButtonV2 text="Confirm" buttonType={ButtonTypeV2.DANGER} />
-                    <ButtonV2
-                        text="Cancel"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                </ButtonGroupV2>
+                <ButtonGroup stacked={false}>
+                    <Button text="Confirm" buttonType={ButtonType.DANGER} />
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
             </div>
 
             <div>
@@ -530,13 +503,10 @@ export const CommonUseCases: Story = {
                 >
                     Navigation
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2
-                        text="Previous"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                    <ButtonV2 text="Next" buttonType={ButtonTypeV2.PRIMARY} />
-                </ButtonGroupV2>
+                <ButtonGroup stacked={true}>
+                    <Button text="Previous" buttonType={ButtonType.SECONDARY} />
+                    <Button text="Next" buttonType={ButtonType.PRIMARY} />
+                </ButtonGroup>
             </div>
 
             <div>
@@ -549,17 +519,11 @@ export const CommonUseCases: Story = {
                 >
                     Filter Options
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2 text="All" buttonType={ButtonTypeV2.PRIMARY} />
-                    <ButtonV2
-                        text="Active"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                    <ButtonV2
-                        text="Inactive"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                </ButtonGroupV2>
+                <ButtonGroup stacked={true}>
+                    <Button text="All" buttonType={ButtonType.PRIMARY} />
+                    <Button text="Active" buttonType={ButtonType.SECONDARY} />
+                    <Button text="Inactive" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
             </div>
         </div>
     ),
@@ -586,13 +550,10 @@ export const ButtonStates: Story = {
                 >
                     Normal State
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2 text="Save" buttonType={ButtonTypeV2.PRIMARY} />
-                    <ButtonV2
-                        text="Cancel"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                </ButtonGroupV2>
+                <ButtonGroup stacked={true}>
+                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
             </div>
 
             <div>
@@ -605,17 +566,14 @@ export const ButtonStates: Story = {
                 >
                     With Loading
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2
+                <ButtonGroup stacked={true}>
+                    <Button
                         text="Saving..."
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                         loading={true}
                     />
-                    <ButtonV2
-                        text="Cancel"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                </ButtonGroupV2>
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
             </div>
 
             <div>
@@ -628,17 +586,14 @@ export const ButtonStates: Story = {
                 >
                     With Disabled
                 </h4>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2
+                <ButtonGroup stacked={true}>
+                    <Button
                         text="Save"
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                         disabled={true}
                     />
-                    <ButtonV2
-                        text="Cancel"
-                        buttonType={ButtonTypeV2.SECONDARY}
-                    />
-                </ButtonGroupV2>
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
             </div>
         </div>
     ),
@@ -654,10 +609,10 @@ export const ButtonStates: Story = {
 // Two button groups
 export const TwoButtonGroups: Story = {
     render: () => (
-        <ButtonGroupV2 stacked={true}>
-            <ButtonV2 text="Save" buttonType={ButtonTypeV2.PRIMARY} />
-            <ButtonV2 text="Cancel" buttonType={ButtonTypeV2.SECONDARY} />
-        </ButtonGroupV2>
+        <ButtonGroup stacked={true}>
+            <Button text="Save" buttonType={ButtonType.PRIMARY} />
+            <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+        </ButtonGroup>
     ),
     parameters: {
         docs: {
@@ -671,14 +626,11 @@ export const TwoButtonGroups: Story = {
 // Three button groups
 export const ThreeButtonGroups: Story = {
     render: () => (
-        <ButtonGroupV2 stacked={true}>
-            <ButtonV2 text="Save" buttonType={ButtonTypeV2.PRIMARY} />
-            <ButtonV2
-                text="Save & Continue"
-                buttonType={ButtonTypeV2.SECONDARY}
-            />
-            <ButtonV2 text="Cancel" buttonType={ButtonTypeV2.SECONDARY} />
-        </ButtonGroupV2>
+        <ButtonGroup stacked={true}>
+            <Button text="Save" buttonType={ButtonType.PRIMARY} />
+            <Button text="Save & Continue" buttonType={ButtonType.SECONDARY} />
+            <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+        </ButtonGroup>
     ),
     parameters: {
         docs: {
@@ -692,13 +644,13 @@ export const ThreeButtonGroups: Story = {
 // Many button groups
 export const ManyButtonGroups: Story = {
     render: () => (
-        <ButtonGroupV2 stacked={true}>
-            <ButtonV2 text="1" buttonType={ButtonTypeV2.SECONDARY} />
-            <ButtonV2 text="2" buttonType={ButtonTypeV2.SECONDARY} />
-            <ButtonV2 text="3" buttonType={ButtonTypeV2.SECONDARY} />
-            <ButtonV2 text="4" buttonType={ButtonTypeV2.SECONDARY} />
-            <ButtonV2 text="5" buttonType={ButtonTypeV2.PRIMARY} />
-        </ButtonGroupV2>
+        <ButtonGroup stacked={true}>
+            <Button text="1" buttonType={ButtonType.SECONDARY} />
+            <Button text="2" buttonType={ButtonType.SECONDARY} />
+            <Button text="3" buttonType={ButtonType.SECONDARY} />
+            <Button text="4" buttonType={ButtonType.SECONDARY} />
+            <Button text="5" buttonType={ButtonType.PRIMARY} />
+        </ButtonGroup>
     ),
     parameters: {
         docs: {
@@ -737,27 +689,24 @@ export const Showcase: Story = {
                         gap: '16px',
                     }}
                 >
-                    <ButtonGroupV2 stacked={true}>
-                        <ButtonV2
+                    <ButtonGroup stacked={true}>
+                        <Button
                             text="Stacked"
-                            buttonType={ButtonTypeV2.PRIMARY}
+                            buttonType={ButtonType.PRIMARY}
                         />
-                        <ButtonV2
+                        <Button
                             text="Connected"
-                            buttonType={ButtonTypeV2.SECONDARY}
+                            buttonType={ButtonType.SECONDARY}
                         />
-                    </ButtonGroupV2>
+                    </ButtonGroup>
 
-                    <ButtonGroupV2 stacked={false}>
-                        <ButtonV2
-                            text="Spaced"
-                            buttonType={ButtonTypeV2.PRIMARY}
-                        />
-                        <ButtonV2
+                    <ButtonGroup stacked={false}>
+                        <Button text="Spaced" buttonType={ButtonType.PRIMARY} />
+                        <Button
                             text="Separated"
-                            buttonType={ButtonTypeV2.SECONDARY}
+                            buttonType={ButtonType.SECONDARY}
                         />
-                    </ButtonGroupV2>
+                    </ButtonGroup>
                 </div>
             </div>
 
@@ -778,24 +727,21 @@ export const Showcase: Story = {
                         gap: '16px',
                     }}
                 >
-                    <ButtonGroupV2 stacked={true}>
-                        <ButtonV2
+                    <ButtonGroup stacked={true}>
+                        <Button
                             text="Primary"
-                            buttonType={ButtonTypeV2.PRIMARY}
+                            buttonType={ButtonType.PRIMARY}
                         />
-                        <ButtonV2
+                        <Button
                             text="Secondary"
-                            buttonType={ButtonTypeV2.SECONDARY}
+                            buttonType={ButtonType.SECONDARY}
                         />
-                        <ButtonV2
+                        <Button
                             text="Success"
-                            buttonType={ButtonTypeV2.SUCCESS}
+                            buttonType={ButtonType.SUCCESS}
                         />
-                        <ButtonV2
-                            text="Danger"
-                            buttonType={ButtonTypeV2.DANGER}
-                        />
-                    </ButtonGroupV2>
+                        <Button text="Danger" buttonType={ButtonType.DANGER} />
+                    </ButtonGroup>
                 </div>
             </div>
 
@@ -809,23 +755,23 @@ export const Showcase: Story = {
                 >
                     With Icons
                 </h3>
-                <ButtonGroupV2 stacked={false}>
-                    <ButtonV2
+                <ButtonGroup stacked={false}>
+                    <Button
                         text="Add"
                         leadingIcon={<Plus size={16} />}
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                     />
-                    <ButtonV2
+                    <Button
                         text="Edit"
                         leadingIcon={<Edit size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                    <ButtonV2
+                    <Button
                         text="Delete"
                         leadingIcon={<Trash2 size={16} />}
-                        buttonType={ButtonTypeV2.DANGER}
+                        buttonType={ButtonType.DANGER}
                     />
-                </ButtonGroupV2>
+                </ButtonGroup>
             </div>
 
             <div>
@@ -838,30 +784,30 @@ export const Showcase: Story = {
                 >
                     Icon Only
                 </h3>
-                <ButtonGroupV2 stacked={true}>
-                    <ButtonV2
-                        subType={ButtonSubTypeV2.ICON_ONLY}
+                <ButtonGroup stacked={true}>
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
                         leadingIcon={<Search size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                    <ButtonV2
-                        subType={ButtonSubTypeV2.ICON_ONLY}
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
                         leadingIcon={<Download size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                    <ButtonV2
-                        subType={ButtonSubTypeV2.ICON_ONLY}
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
                         leadingIcon={<Settings size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                </ButtonGroupV2>
+                </ButtonGroup>
             </div>
         </div>
     ),
     parameters: {
         docs: {
             description: {
-                story: 'A comprehensive showcase of ButtonGroupV2 capabilities and variations.',
+                story: 'A comprehensive showcase of ButtonGroup capabilities and variations.',
             },
         },
     },

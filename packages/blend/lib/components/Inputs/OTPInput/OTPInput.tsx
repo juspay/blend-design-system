@@ -1,6 +1,6 @@
 import React, {
-    ChangeEvent,
-    KeyboardEvent,
+    type ChangeEvent,
+    type KeyboardEvent,
     useEffect,
     useRef,
     useState,
@@ -11,10 +11,10 @@ import InputFooter from '../utils/InputFooter/InputFooter'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 
 import { FOUNDATION_THEME } from '../../../tokens'
-import { OTPProps } from './types'
+import type { OTPProps } from './types'
 // import otpInputTokens from "./otpInput.tokens";
 import { useComponentToken } from '../../../context/useComponentToken'
-import { OTPInputTokensType } from './otpInput.tokens'
+import type { OTPInputTokensType } from './otpInput.tokens'
 
 const OTPInput = ({
     label,
@@ -180,8 +180,13 @@ const OTPInput = ({
                         //   cursor: "not-allowed",
                         // }}
                         _focus={{
-                            border: otpInputTokens.input.border.focus,
-                            outline: otpInputTokens.input.outline.focus,
+                            border: otpInputTokens.input.border[
+                                error ? 'error' : 'focus'
+                            ],
+                            boxShadow:
+                                otpInputTokens.input.boxShadow[
+                                    error ? 'error' : 'focus'
+                                ],
                         }}
                         disabled={disabled}
                         _disabled={{

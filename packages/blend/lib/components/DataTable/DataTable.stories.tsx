@@ -7,7 +7,8 @@ import {
     SearchConfig,
     ColumnFilter,
 } from './types'
-import { ColumnType, AvatarData, TagData } from './columnTypes'
+import { ColumnType } from './types'
+import { AvatarData, TagData } from './columnTypes'
 import { Avatar } from '../Avatar'
 import Tag from '../Tags/Tags'
 import { TagColor, TagVariant, TagSize } from '../Tags/types'
@@ -379,7 +380,7 @@ const userColumns: ColumnDefinition<User>[] = [
         field: 'name',
         header: 'Employee',
         type: ColumnType.AVATAR,
-        renderCell: (value) => {
+        renderCell: (value: unknown) => {
             const avatarData = value as AvatarData
             return (
                 <div
@@ -402,7 +403,6 @@ const userColumns: ColumnDefinition<User>[] = [
             )
         },
         isSortable: true,
-        isFilterable: true,
         filterType: FilterType.TEXT,
         minWidth: '220px',
         maxWidth: '300px',
@@ -413,7 +413,6 @@ const userColumns: ColumnDefinition<User>[] = [
         type: ColumnType.TEXT,
         isSortable: true,
         isEditable: true,
-        isFilterable: true,
         filterType: FilterType.TEXT,
         minWidth: '180px',
         maxWidth: '250px',
@@ -424,7 +423,6 @@ const userColumns: ColumnDefinition<User>[] = [
         type: ColumnType.SELECT,
         isSortable: true,
         isEditable: true,
-        isFilterable: true,
         filterType: FilterType.SELECT,
         filterOptions: [
             { id: 'admin', label: 'Admin', value: 'Admin' },
@@ -442,7 +440,6 @@ const userColumns: ColumnDefinition<User>[] = [
         type: ColumnType.SELECT,
         isSortable: true,
         isEditable: true,
-        isFilterable: true,
         filterType: FilterType.SELECT,
         filterOptions: [
             { id: 'engineering', label: 'Engineering', value: 'Engineering' },
@@ -463,7 +460,7 @@ const userColumns: ColumnDefinition<User>[] = [
         field: 'status',
         header: 'Status',
         type: ColumnType.TAG,
-        renderCell: (value) => {
+        renderCell: (value: unknown) => {
             const tagData = value as TagData
             const getStatusColor = (status: string): TagColor => {
                 switch (status) {
@@ -490,7 +487,6 @@ const userColumns: ColumnDefinition<User>[] = [
             )
         },
         isSortable: true,
-        isFilterable: true,
         filterType: FilterType.SELECT,
         filterOptions: [
             { id: 'active', label: 'Active', value: 'Active' },
@@ -505,7 +501,7 @@ const userColumns: ColumnDefinition<User>[] = [
         field: 'salary',
         header: 'Salary',
         type: ColumnType.NUMBER,
-        renderCell: (value) => {
+        renderCell: (value: unknown) => {
             return new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',
@@ -513,7 +509,6 @@ const userColumns: ColumnDefinition<User>[] = [
         },
         isSortable: true,
         isEditable: true,
-        isFilterable: true,
         filterType: FilterType.NUMBER,
         minWidth: '100px',
         maxWidth: '140px',
@@ -523,7 +518,6 @@ const userColumns: ColumnDefinition<User>[] = [
         header: 'Join Date',
         type: ColumnType.DATE,
         isSortable: true,
-        isFilterable: true,
         filterType: FilterType.DATE,
         minWidth: '120px',
         maxWidth: '150px',
@@ -1469,7 +1463,7 @@ export const WithCustomHeaderSlots: Story = {
         headerSlot1: (
             <Button
                 buttonType={ButtonType.SECONDARY}
-                leadingIcon={RefreshCw}
+                leadingIcon={<RefreshCw />}
                 size={ButtonSize.SMALL}
                 onClick={() => console.log('Refresh clicked')}
             >
@@ -1477,20 +1471,18 @@ export const WithCustomHeaderSlots: Story = {
             </Button>
         ),
         headerSlot2: (
-            <Button
-                buttonType={ButtonType.SECONDARY}
-                leadingIcon={Download}
-                size={ButtonSize.SMALL}
-                onClick={() => console.log('Export clicked')}
-            >
-                Export All
-            </Button>
-        ),
-        headerSlot3: (
             <div style={{ display: 'flex', gap: '8px' }}>
                 <Button
                     buttonType={ButtonType.SECONDARY}
-                    leadingIcon={Settings}
+                    leadingIcon={<Download />}
+                    size={ButtonSize.SMALL}
+                    onClick={() => console.log('Export clicked')}
+                >
+                    Export All
+                </Button>
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    leadingIcon={<Settings />}
                     size={ButtonSize.SMALL}
                     onClick={() => console.log('Settings clicked')}
                 >
@@ -1498,7 +1490,7 @@ export const WithCustomHeaderSlots: Story = {
                 </Button>
                 <Button
                     buttonType={ButtonType.PRIMARY}
-                    leadingIcon={Plus}
+                    leadingIcon={<Plus />}
                     size={ButtonSize.SMALL}
                     onClick={() => console.log('Add employee clicked')}
                 >
@@ -1515,8 +1507,7 @@ export const WithCustomHeaderSlots: Story = {
 
 This story demonstrates custom header slots:
 - **headerSlot1**: Left side of the toolbar (Refresh button)
-- **headerSlot2**: Center of the toolbar (Export button)
-- **headerSlot3**: Right side of the toolbar (Settings and Add buttons)
+- **headerSlot2**: Right side of the toolbar (Export, Settings and Add buttons)
 - **Flexible content**: Any React component can be placed in header slots
 - **Responsive layout**: Slots adapt to available space
 
@@ -1805,6 +1796,124 @@ Empty states occur when:
 - Search/filter results in no matches
 - All data has been deleted
 - API returns empty results
+        `,
+            },
+        },
+    },
+}
+
+const WithRowStylingComponent = (args: typeof WithRowStyling.args) => {
+    // Example: How to implement dynamic row styling based on data values
+    const getRowStyle = (
+        row: Record<string, unknown>,
+        index: number
+    ): React.CSSProperties => {
+        const user = row as User
+        const statusData = user.status as TagData
+
+        // High priority: Suspended users
+        if (statusData.text === 'Suspended') {
+            return {
+                backgroundColor: '#fef2f2',
+                borderLeft: '4px solid #dc2626',
+            }
+        }
+
+        // Admin users
+        if (user.role === 'Admin') {
+            return {
+                backgroundColor: '#f0f9ff',
+                borderLeft: '4px solid #2563eb',
+            }
+        }
+
+        // High salary (above 100k)
+        if (user.salary > 100000) {
+            return {
+                backgroundColor: '#f0fdf4',
+                borderLeft: '3px solid #16a34a',
+            }
+        }
+
+        return index % 2 === 0 ? { backgroundColor: '#fafafa' } : {}
+    }
+
+    return (
+        <div>
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                }}
+            >
+                <h4>🎨 Row Styling Legend:</h4>
+                <p>
+                    <span style={{ color: '#dc2626' }}>■</span> Red = Suspended
+                    users
+                </p>
+                <p>
+                    <span style={{ color: '#2563eb' }}>■</span> Blue = Admin
+                    users
+                </p>
+                <p>
+                    <span style={{ color: '#16a34a' }}>■</span> Green = High
+                    salary ($100k+)
+                </p>
+                <p>Gray = Alternating rows</p>
+            </div>
+            <DataTable
+                {...args}
+                data={sampleUsers as Record<string, unknown>[]}
+                columns={
+                    userColumns as unknown as ColumnDefinition<
+                        Record<string, unknown>
+                    >[]
+                }
+                idField="id"
+                getRowStyle={getRowStyle}
+            />
+        </div>
+    )
+}
+
+export const WithRowStyling: Story = {
+    render: WithRowStylingComponent,
+    args: {
+        data: sampleUsers,
+        columns: userColumns as unknown as ColumnDefinition<
+            Record<string, unknown>
+        >[],
+        idField: 'id',
+        title: 'Employee Directory with Dynamic Styling',
+        description:
+            'Complete row styling based on data conditions: suspended users (red), admins (blue), high earners (green). Colors apply to entire row including frozen columns. Smart hover behavior: rows with custom colors maintain their color on hover, while default rows show normal hover effects.',
+        isHoverable: true,
+        enableSearch: true,
+        enableFiltering: true,
+        enableColumnManager: true,
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `
+### DataTable with Complete Row Styling
+
+Dynamic row styling based on data conditions with complete row coverage:
+- **getRowStyle**: Function that returns CSS styles for each row
+- **Complete row styling**: Colors apply to entire row including frozen columns
+- **Conditional styling**: Different colors based on user status, role, and salary
+- **Visual hierarchy**: Priority-based styling system
+- **Smart hover behavior**: Rows with custom colors maintain their color on hover (preserving your styling intention), while default rows show normal hover effects
+
+Row styling conditions:
+1. Suspended users - Red background (highest priority)
+2. Admin users - Blue background  
+3. High salary users ($100k+) - Green background
+4. Default - Alternating gray/white rows
+
+The styling automatically applies to all columns including frozen columns (checkbox, expansion, and frozen data columns), ensuring a consistent visual experience across the entire row width. Hover over different rows to see how the smart hover behavior preserves custom colors while still providing hover feedback for default rows.
         `,
             },
         },
