@@ -1,11 +1,6 @@
-import type { StorybookConfig } from '@storybook/react-vite'
-import path from 'path'
-import { fileURLToPath } from 'url'
+const path = require('path')
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const config: StorybookConfig = {
+const config = {
     stories: [
         '../stories/**/*.stories.@(js|jsx|ts|tsx|mdx)',
         '../stories/**/*.mdx',
@@ -49,4 +44,4 @@ const config: StorybookConfig = {
     },
 }
 
-export default config
+module.exports = config

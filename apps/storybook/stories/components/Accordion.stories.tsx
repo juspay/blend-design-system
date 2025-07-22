@@ -5,7 +5,7 @@ import {
     AccordionItem,
     AccordionType,
     AccordionChevronPosition,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import {
     User,
     Shield,
@@ -47,7 +47,7 @@ An accordion component that allows users to show and hide sections of related co
 ## Usage
 
 \`\`\`tsx
-import { Accordion, AccordionItem, AccordionType } from 'blend-v1';
+import { Accordion, AccordionItem, AccordionType } from '@juspay/blend-design-system';
 
 <Accordion accordionType={AccordionType.BORDER}>
   <AccordionItem value="item-1" title="Section 1">

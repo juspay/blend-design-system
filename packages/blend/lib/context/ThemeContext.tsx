@@ -103,6 +103,10 @@ import {
 import progressBarTokens, {
     type ProgressBarTokenType,
 } from '../components/ProgressBar/progressbar.tokens'
+import {
+    getDrawerComponentTokens,
+    type DrawerTokensType,
+} from '../components/Drawer/drawer.tokens'
 import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
 
 export type ComponentTokenType = {
@@ -132,6 +136,7 @@ export type ComponentTokenType = {
     ACCORDION?: AccordionTokenType
     STAT_CARD?: StatCardTokenType
     PROGRESS_BAR?: ProgressBarTokenType
+    DRAWER?: DrawerTokensType
 }
 
 type ThemeContextType = {
@@ -169,6 +174,7 @@ const ThemeContext = createContext<ThemeContextType>({
         ACCORDION: getAccordionToken(FOUNDATION_THEME),
         STAT_CARD: getStatCardToken(FOUNDATION_THEME),
         PROGRESS_BAR: progressBarTokens,
+        DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

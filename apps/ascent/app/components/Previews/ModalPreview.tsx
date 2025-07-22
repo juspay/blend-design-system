@@ -1,5 +1,5 @@
 'use client'
-import { Modal, ButtonType } from 'blend-v1'
+import { Modal, ButtonType } from '@juspay/blend-design-system'
 import React, { useState } from 'react'
 import ComponentPreview from './ComponentPreview'
 
@@ -8,7 +8,7 @@ const ModalPreview = () => {
     const [isOpenWithActions, setIsOpenWithActions] = useState(false)
     const [isOpenSimple, setIsOpenSimple] = useState(false)
 
-    const tsCode = `import { Modal, ButtonType, ButtonSize, ButtonSubType } from "blend-v1";
+    const tsCode = `import { Modal, ButtonType, ButtonSize, ButtonSubType } from "@juspay/blend-design-system";
 import { useState } from "react";
 
 function MyComponent() {
@@ -90,7 +90,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~isOpen: bool,
   ~onClose: unit => unit,

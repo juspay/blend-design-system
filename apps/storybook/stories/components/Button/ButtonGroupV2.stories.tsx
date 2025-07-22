@@ -6,7 +6,7 @@ import {
     ButtonType,
     ButtonSize,
     ButtonSubType,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import {
     Plus,
     Download,
@@ -40,7 +40,7 @@ A modern container component for grouping Button components with automatic posit
 ## Usage
 
 \`\`\`tsx
-import { ButtonGroup, Button, ButtonType } from 'blend-v1';
+import { ButtonGroup, Button, ButtonType } from '@juspay/blend-design-system';
 
 <ButtonGroup stacked={true}>
   <Button text="Save" buttonType={ButtonType.PRIMARY} />

@@ -8,7 +8,7 @@ import {
     TooltipSlotDirection,
     Button,
     ButtonType,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import {
     Info,
     HelpCircle,
@@ -44,7 +44,7 @@ A flexible tooltip component for displaying contextual information on hover or f
 ## Usage
 
 \`\`\`tsx
-import { Tooltip, TooltipSide, TooltipAlign, TooltipSize } from 'blend-v1';
+import { Tooltip, TooltipSide, TooltipAlign, TooltipSize } from '@juspay/blend-design-system';
 
 <Tooltip 
   content="This is a helpful tooltip"

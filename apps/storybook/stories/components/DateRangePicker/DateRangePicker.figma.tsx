@@ -1,5 +1,5 @@
 import { figma } from '@figma/code-connect'
-import { DateRangePicker, DateRangePreset } from 'blend-v1'
+import { DateRangePicker, DateRangePreset } from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR DATERANGEPICKER COMPONENT
@@ -64,7 +64,9 @@ figma.connect(
             />
         ),
 
-        imports: ["import { DateRangePicker } from 'blend-v1'"],
+        imports: [
+            "import { DateRangePicker } from '@juspay/blend-design-system'",
+        ],
 
         links: [
             {

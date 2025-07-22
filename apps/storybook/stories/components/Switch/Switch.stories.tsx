@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { Switch, SwitchGroup, SwitchSize } from 'blend-v1'
+import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system'
 import { Settings, Wifi, Bluetooth, Bell, Moon, Star } from 'lucide-react'
 
 const meta: Meta<typeof Switch> = {
@@ -28,7 +28,7 @@ A toggle switch component for binary on/off states with support for controlled a
 ## Usage
 
 \`\`\`tsx
-import { Switch, SwitchGroup, SwitchSize } from 'blend-v1';
+import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system';
 
 <Switch 
   size={SwitchSize.MEDIUM}

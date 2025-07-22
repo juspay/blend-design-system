@@ -25,6 +25,7 @@ import type { CalendarTokenType } from '../components/DateRangePicker/dateRangeP
 import type { AccordionTokenType } from '../components/Accordion/accordion.tokens'
 import type { StatCardTokenType } from '../components/StatCard/statcard.tokens'
 import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
+import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -54,7 +55,8 @@ export const useComponentToken = (
     | CalendarTokenType
     | AccordionTokenType
     | StatCardTokenType
-    | ProgressBarTokenType => {
+    | ProgressBarTokenType
+    | DrawerTokensType => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -109,6 +111,8 @@ export const useComponentToken = (
             return componentTokens.STAT_CARD
         case 'PROGRESS_BAR':
             return componentTokens.PROGRESS_BAR
+        case 'DRAWER':
+            return componentTokens.DRAWER
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

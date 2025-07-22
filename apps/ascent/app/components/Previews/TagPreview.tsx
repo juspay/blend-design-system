@@ -1,10 +1,10 @@
 'use client'
-import { Tag, TagVariant, TagColor, TagSize } from 'blend-v1'
+import { Tag, TagVariant, TagColor, TagSize } from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
 
 const TagPreview = () => {
-    const tsCode = `import { Tag, TagVariant, TagColor, TagSize } from "blend-v1";
+    const tsCode = `import { Tag, TagVariant, TagColor, TagSize } from "@juspay/blend-design-system";
 
 function MyComponent() {
   return (
@@ -48,7 +48,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~text: string,
   ~variant: [#noFill | #attentive | #subtle]=?,

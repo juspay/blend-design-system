@@ -1,5 +1,5 @@
 import { figma } from '@figma/code-connect'
-import { DataTable, ColumnType } from 'blend-v1'
+import { DataTable, ColumnType } from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR DATATABLE COMPONENT
@@ -137,7 +137,9 @@ figma.connect(
             />
         ),
 
-        imports: ["import { DataTable, ColumnType } from 'blend-v1'"],
+        imports: [
+            "import { DataTable, ColumnType } from '@juspay/blend-design-system'",
+        ],
 
         links: [
             {

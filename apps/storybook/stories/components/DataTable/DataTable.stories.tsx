@@ -13,7 +13,7 @@ import {
     Button,
     ButtonType,
     ButtonSize,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import {
     Download,
     Filter,
@@ -51,7 +51,7 @@ A comprehensive data table component with advanced features including sorting, f
 ## Usage
 
 \`\`\`tsx
-import { DataTable, ColumnDefinition, ColumnType } from 'blend-v1';
+import { DataTable, ColumnDefinition, ColumnType } from '@juspay/blend-design-system';
 
 const columns: ColumnDefinition<User>[] = [
   {

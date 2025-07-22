@@ -1,6 +1,12 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { Tag, TagVariant, TagColor, TagSize, TagShape } from 'blend-v1'
+import {
+    Tag,
+    TagVariant,
+    TagColor,
+    TagSize,
+    TagShape,
+} from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR TAGS COMPONENT
@@ -102,7 +108,7 @@ figma.connect(
             />
         ),
 
-        imports: ["import { Tag } from 'blend-v1'"],
+        imports: ["import { Tag } from '@juspay/blend-design-system'"],
 
         links: [
             {

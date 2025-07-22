@@ -7,7 +7,7 @@ import {
     TabsContent,
     TabsVariant,
     TabsSize,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import {
     Settings,
     User,
@@ -39,7 +39,7 @@ A flexible tabs component for organizing content into multiple panels with vario
 ## Usage
 
 \`\`\`tsx
-import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant } from 'blend-v1';
+import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant } from '@juspay/blend-design-system';
 
 <Tabs defaultValue="tab1" variant={TabsVariant.BOXED}>
   <TabsList>

@@ -1,6 +1,11 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { Alert, AlertVariant, AlertStyle, AlertActionPlacement } from 'blend-v1'
+import {
+    Alert,
+    AlertVariant,
+    AlertStyle,
+    AlertActionPlacement,
+} from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR ALERT COMPONENT
@@ -119,7 +124,7 @@ figma.connect(
             />
         ),
 
-        imports: ["import { Alert } from 'blend-v1'"],
+        imports: ["import { Alert } from '@juspay/blend-design-system'"],
 
         links: [
             {

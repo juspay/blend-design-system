@@ -1,12 +1,17 @@
 'use client'
-import { Popover, PopoverSize, ButtonType, ButtonSize } from 'blend-v1'
+import {
+    Popover,
+    PopoverSize,
+    ButtonType,
+    ButtonSize,
+} from '@juspay/blend-design-system'
 import React, { useState } from 'react'
 import ComponentPreview from './ComponentPreview'
 
 const PopoverPreview = () => {
     const [, setOpen] = useState(false)
 
-    const tsCode = `import { Popover, PopoverSize, ButtonType, ButtonSize } from "blend-v1";
+    const tsCode = `import { Popover, PopoverSize, ButtonType, ButtonSize } from "@juspay/blend-design-system";
 
 function MyComponent() {
   const [open, setOpen] = useState(false);
@@ -94,7 +99,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~heading: string=?,
   ~description: string=?,

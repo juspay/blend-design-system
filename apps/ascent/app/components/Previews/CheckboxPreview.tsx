@@ -1,5 +1,5 @@
 'use client'
-import { Checkbox, CheckboxSize } from 'blend-v1'
+import { Checkbox, CheckboxSize } from '@juspay/blend-design-system'
 import React, { useState } from 'react'
 import ComponentPreview from './ComponentPreview'
 
@@ -16,7 +16,7 @@ const CheckboxPreview = () => {
     const [checked15, setChecked15] = useState(false)
     const [checked16, setChecked16] = useState(false)
 
-    const tsCode = `import { Checkbox, CheckboxSize } from "blend-v1";
+    const tsCode = `import { Checkbox, CheckboxSize } from "@juspay/blend-design-system";
 
 function MyComponent() {
   const [checked, setChecked] = useState(false);
@@ -66,7 +66,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~id: string=?,
   ~value: string=?,

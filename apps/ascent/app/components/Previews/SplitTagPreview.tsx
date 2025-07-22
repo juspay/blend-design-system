@@ -1,10 +1,16 @@
 'use client'
-import { SplitTag, TagColor, TagSize, TagShape, TagVariant } from 'blend-v1'
+import {
+    SplitTag,
+    TagColor,
+    TagSize,
+    TagShape,
+    TagVariant,
+} from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
 
 const SplitTagPreview = () => {
-    const tsCode = `import { SplitTag, TagColor, TagSize, TagShape, TagVariant } from "blend-v1";
+    const tsCode = `import { SplitTag, TagColor, TagSize, TagShape, TagVariant } from "@juspay/blend-design-system";
 
 function MyComponent() {
   return (
@@ -56,7 +62,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~primaryTag: tagConfig,
   ~secondaryTag: option<tagConfig>=?,

@@ -9,7 +9,7 @@ import {
     NumberInputSize,
     Button,
     ButtonType,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import {
     User,
     Mail,
@@ -52,7 +52,7 @@ A comprehensive collection of input components for form building including TextI
 ## Usage
 
 \`\`\`tsx
-import { TextInput, NumberInput, SearchInput, TextArea, TextInputSize } from 'blend-v1';
+import { TextInput, NumberInput, SearchInput, TextArea, TextInputSize } from '@juspay/blend-design-system';
 
 // Basic text input
 <TextInput 

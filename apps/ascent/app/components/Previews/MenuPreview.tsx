@@ -5,15 +5,15 @@ import {
     MenuSide,
     MenuItemV2Variant,
     MenuItemV2ActionType,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
-import { Button, ButtonType } from 'blend-v1'
+import { Button, ButtonType } from '@juspay/blend-design-system'
 import { Settings, User, LogOut, ChevronDown } from 'lucide-react'
 
 const MenuPreview = () => {
-    const tsCode = `import { Menu, MenuAlignment, MenuSide, MenuItemV2Variant, MenuItemV2ActionType } from "blend-v1";
-import { Button, ButtonType } from "blend-v1";
+    const tsCode = `import { Menu, MenuAlignment, MenuSide, MenuItemV2Variant, MenuItemV2ActionType } from "@juspay/blend-design-system";
+import { Button, ButtonType } from "@juspay/blend-design-system";
 import { Settings, User, LogOut, ChevronDown } from "lucide-react";
 
 function MyComponent() {
@@ -102,7 +102,7 @@ let make = () => {
   />
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~trigger: React.element,
   ~items: option<array<menuGroup>>=?,

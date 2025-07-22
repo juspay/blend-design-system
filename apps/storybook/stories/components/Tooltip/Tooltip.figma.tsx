@@ -8,7 +8,7 @@ import {
     TooltipSlotDirection,
     Button,
     ButtonSize,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR TOOLTIP COMPONENT
@@ -146,7 +146,9 @@ figma.connect(
             )
         },
 
-        imports: ["import { Tooltip, Button } from 'blend-v1'"],
+        imports: [
+            "import { Tooltip, Button } from '@juspay/blend-design-system'",
+        ],
 
         links: [
             {

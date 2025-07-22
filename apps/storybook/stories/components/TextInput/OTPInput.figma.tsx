@@ -1,5 +1,5 @@
 import { figma } from '@figma/code-connect'
-import { OTPInput } from 'blend-v1'
+import { OTPInput } from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR OTPINPUT COMPONENT
@@ -81,7 +81,7 @@ figma.connect(
             />
         ),
 
-        imports: ["import { OTPInput } from 'blend-v1'"],
+        imports: ["import { OTPInput } from '@juspay/blend-design-system'"],
 
         links: [
             {

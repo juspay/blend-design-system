@@ -1,4 +1,4 @@
-import { Snackbar } from 'blend-v1'
+import { Snackbar } from '@juspay/blend-design-system'
 import SidebarDemo from './demos/SidebarDemo'
 
 function App() {

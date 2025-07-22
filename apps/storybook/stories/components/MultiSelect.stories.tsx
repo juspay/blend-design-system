@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { MultiSelect, MultiSelectSelectionTagType } from 'blend-v1'
+import {
+    MultiSelect,
+    MultiSelectSelectionTagType,
+} from '@juspay/blend-design-system'
 import {
     Palette,
     User,
@@ -92,7 +95,7 @@ A multi-selection dropdown component that allows users to select multiple option
 ## Usage
 
 \`\`\`tsx
-import { MultiSelect, MultiSelectSelectionTagType } from 'blend-v1';
+import { MultiSelect, MultiSelectSelectionTagType } from '@juspay/blend-design-system';
 
 const [selectedValues, setSelectedValues] = useState<string[]>([]);
 

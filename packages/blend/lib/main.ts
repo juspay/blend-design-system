@@ -27,6 +27,7 @@ export * from './components/MultiSelect'
 export * from './components/SingleSelect'
 export * from './components/Slider'
 export * from './components/ProgressBar'
+export * from './components/Drawer'
 
 // V2 Components with Theme Support
 export * from './components/ButtonGroup'

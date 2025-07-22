@@ -26,6 +26,7 @@ import { getCalendarToken } from '../components/DateRangePicker/dateRangePicker.
 import { getAccordionToken } from '../components/Accordion/accordion.tokens'
 import { getStatCardToken } from '../components/StatCard/statcard.tokens'
 import progressBarTokens from '../components/ProgressBar/progressbar.tokens'
+import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -78,6 +79,9 @@ const initTokens = (
         STAT_CARD:
             componentTokens.STAT_CARD ?? getStatCardToken(foundationTokens),
         PROGRESS_BAR: componentTokens.PROGRESS_BAR ?? progressBarTokens,
+        DRAWER:
+            componentTokens.DRAWER ??
+            getDrawerComponentTokens(foundationTokens),
     }
 }
 

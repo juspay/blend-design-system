@@ -1,5 +1,5 @@
 import React from 'react'
-import { Breadcrumb } from 'blend-v1'
+import { Breadcrumb } from '@juspay/blend-design-system'
 import figma from '@figma/code-connect'
 
 /**

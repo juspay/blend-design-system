@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { StatCard, StatCardVariant, ChangeType, ChartDataPoint } from 'blend-v1'
+import {
+    StatCard,
+    StatCardVariant,
+    ChangeType,
+    ChartDataPoint,
+} from '@juspay/blend-design-system'
 import {
     TrendingUp,
     Users,
@@ -48,7 +53,7 @@ A versatile statistics card component for displaying key metrics, KPIs, and data
 ## Usage
 
 \`\`\`tsx
-import { StatCard, StatCardVariant, ChangeType } from 'blend-v1';
+import { StatCard, StatCardVariant, ChangeType } from '@juspay/blend-design-system';
 
 <StatCard
   title="Total Revenue"

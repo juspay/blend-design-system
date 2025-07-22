@@ -1,5 +1,5 @@
 'use client'
-import { Switch, SwitchGroup, SwitchSize } from 'blend-v1'
+import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system'
 import React, { useState } from 'react'
 import ComponentPreview from './ComponentPreview'
 
@@ -16,7 +16,7 @@ const SwitchPreview = () => {
         'updates',
     ])
 
-    const tsCode = `import { Switch, SwitchGroup, SwitchSize } from "blend-v1";
+    const tsCode = `import { Switch, SwitchGroup, SwitchSize } from "@juspay/blend-design-system";
 
 function MyComponent() {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -89,7 +89,7 @@ let makeGroup = (
   />
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~id: string=?,
   ~checked: bool=?,
@@ -106,7 +106,7 @@ external make: (
   ~value: string=?,
 ) => React.element = "Switch"
 
-@module("blend-v1") @react.component
+@module("@juspay/blend-design-system") @react.component
 external makeGroup: (
   ~id: string=?,
   ~label: string=?,

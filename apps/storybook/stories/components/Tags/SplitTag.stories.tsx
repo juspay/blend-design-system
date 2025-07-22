@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { SplitTag, TagColor, TagSize, TagShape } from 'blend-v1'
+import {
+    SplitTag,
+    TagColor,
+    TagSize,
+    TagShape,
+} from '@juspay/blend-design-system'
 
 // Figma Code Connect is configured in SplitTag.figma.tsx
 import {
@@ -47,7 +52,7 @@ A specialized tag component that combines two tags to display key-value pairs or
 ## Usage
 
 \`\`\`tsx
-import { SplitTag, TagColor, TagSize } from 'blend-v1';
+import { SplitTag, TagColor, TagSize } from '@juspay/blend-design-system';
 
 <SplitTag
   primaryTag={{

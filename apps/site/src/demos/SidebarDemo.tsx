@@ -63,6 +63,7 @@ import MenuDemo from './MenuDemo'
 import SingleSelectDemo from './SingleSelectDemo'
 import MultiSelectDemo from './MultiSelectDemo'
 import DropdownInputDemo from './DropdownInputDemo'
+import DrawerDemo from './DrawerDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -96,6 +97,7 @@ const SidebarDemo = () => {
         | 'textArea'
         | 'snackbar'
         | 'dataTable'
+        | 'drawer'
         | 'colorPalette'
         | 'popover'
         | 'progressBar'
@@ -105,7 +107,7 @@ const SidebarDemo = () => {
         | 'singleSelect'
         | 'multiSelect'
         | 'dropdownInput'
-    >('buttons')
+    >('drawer')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] = useState<string | undefined>(
@@ -198,6 +200,8 @@ const SidebarDemo = () => {
                 return <MultiSelectDemo />
             case 'progressBar':
                 return <ProgressBarDemo />
+            case 'drawer':
+                return <DrawerDemo />
             case 'dropdownInput':
                 return <DropdownInputDemo />
             default:
@@ -425,6 +429,11 @@ const SidebarDemo = () => {
                         />
                     ),
                     onClick: () => setActiveComponent('popover'),
+                },
+                {
+                    label: 'Drawer',
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    onClick: () => setActiveComponent('drawer'),
                 },
             ],
         },

@@ -1,6 +1,6 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { AvatarGroup, AvatarSize } from 'blend-v1'
+import { AvatarGroup, AvatarSize } from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR AVATARGROUP COMPONENT
@@ -108,7 +108,7 @@ figma.connect(
             )
         },
 
-        imports: ["import { AvatarGroup } from 'blend-v1'"],
+        imports: ["import { AvatarGroup } from '@juspay/blend-design-system'"],
 
         links: [
             {
