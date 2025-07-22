@@ -8,7 +8,7 @@ import type { TabsTokensType } from '../components/Tabs/tabs.token'
 import { type ComponentTokenType, useTheme } from './ThemeContext'
 import type { TextInputTokensType } from '../components/Inputs/TextInput/textInput.tokens'
 import type { NumberInputTokensType } from '../components/Inputs/NumberInput/numberInput.tokens'
-import type { AlertTokenType } from '../components/Alert/alert.tokens'
+import type { ResponsiveAlertTokens } from '../components/Alert/alert.tokens'
 import type { OTPInputTokensType } from '../components/Inputs/OTPInput/otpInput.tokens'
 import type { TooltipTokensType } from '../components/Tooltip/tooltip.tokens'
 import type { UnitInputTokensType } from '../components/Inputs/UnitInput/unitInput.tokens'
@@ -16,7 +16,7 @@ import type { MultiValueInputTokensType } from '../components/Inputs/MultiValueI
 import type { DropdownInputTokensType } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
 import type { ModalTokensType } from '../components/Modal/modal.tokens'
-import type { BreadcrumbTokenType } from '../components/Breadcrumb/breadcrumb.tokens'
+import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { PopoverTokenType } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { MultiSelectTokensType } from '../components/MultiSelect/multiSelect.tokens'
@@ -34,7 +34,7 @@ export const useComponentToken = (
     | TextAreaTokensType
     | TextInputTokensType
     | NumberInputTokensType
-    | AlertTokenType
+    | ResponsiveAlertTokens
     | ResponsiveRadioTokens
     | OTPInputTokensType
     | UnitInputTokensType
@@ -46,7 +46,7 @@ export const useComponentToken = (
     | DropdownInputTokensType
     | ResponsiveButtonTokens
     | ModalTokensType
-    | BreadcrumbTokenType
+    | ResponsiveBreadcrumbTokens
     | PopoverTokenType
     | ResponsiveMenuTokensType
     | MultiSelectTokensType

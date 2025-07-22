@@ -14,8 +14,8 @@ import type { CSSObject } from 'styled-components'
 import type { AlertTokenType } from './alert.tokens'
 import Text from '../Text/Text'
 import { forwardRef } from 'react'
-import { useComponentToken } from '../../context/useComponentToken'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(
     (
@@ -32,7 +32,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
         },
         ref
     ) => {
-        const alertTokens = useComponentToken('ALERT') as AlertTokenType
+        const alertTokens = useResponsiveTokens<AlertTokenType>('ALERT')
 
         // this is to make sure that the close button is always visible if there is an onClose prop
         // but no primary or secondary actions are provided
