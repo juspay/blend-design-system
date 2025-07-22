@@ -29,6 +29,7 @@ export const Switch = ({
     slot,
     name,
     value,
+    ...rest
 }: SwitchProps) => {
     const tokens = useResponsiveTokens<SwitchTokensType>('SWITCH')
 
@@ -63,6 +64,7 @@ export const Switch = ({
                 $error={error}
                 value={value}
                 name={name}
+                {...rest}
             >
                 <StyledSwitchThumb
                     size={size}

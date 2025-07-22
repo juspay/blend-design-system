@@ -29,6 +29,7 @@ export const Radio = ({
     subtext,
     slot,
     name,
+    ...rest
 }: RadioProps) => {
     const radioTokens = useResponsiveTokens<RadioTokensType>('RADIO')
 
@@ -60,6 +61,7 @@ export const Radio = ({
                     $isDisabled={disabled}
                     $isChecked={currentChecked}
                     $error={error}
+                    {...rest}
                 />
 
                 <RadioContent
