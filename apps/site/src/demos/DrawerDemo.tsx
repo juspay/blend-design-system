@@ -17,6 +17,8 @@ import {
     StatusDrawer,
     MultiSelectDrawer,
     SingleSelectDrawer,
+    NestedMultiSelectDrawer,
+    NestedSingleSelectDrawer,
 } from '../../../../packages/blend/lib/components/Drawer'
 import { ButtonType } from '../../../../packages/blend/lib/components/Button'
 import ResponsiveSelectDemo from './ResponsiveSelectDemo'
@@ -1910,6 +1912,827 @@ export const SingleSelectDrawerExample = () => {
     )
 }
 
+// Nested Multi-Select Drawer Example
+export const NestedMultiSelectDrawerExample = () => {
+    const [open, setOpen] = useState(false)
+    const [selectedItems, setSelectedItems] = useState<string[]>([
+        'visa',
+        'react',
+        'figma',
+    ])
+
+    // Hierarchical data structure with nested items
+    const nestedMenuItems = [
+        {
+            items: [
+                {
+                    value: 'payment_methods',
+                    label: 'Payment Methods',
+                    slot1: <span style={{ fontSize: '20px' }}>💳</span>,
+                    nestedItems: [
+                        {
+                            groupLabel: 'Credit Cards',
+                            items: [
+                                {
+                                    value: 'visa',
+                                    label: 'Visa',
+                                    subLabel: 'Most widely accepted',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            💳
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: 'mastercard',
+                                    label: 'Mastercard',
+                                    subLabel: 'Global acceptance',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            💳
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: 'amex',
+                                    label: 'American Express',
+                                    subLabel: 'Premium rewards',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            💳
+                                        </span>
+                                    ),
+                                },
+                            ],
+                        },
+                        {
+                            groupLabel: 'Digital Wallets',
+                            items: [
+                                {
+                                    value: 'apple_pay',
+                                    label: 'Apple Pay',
+                                    subLabel: 'Touch ID or Face ID',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🍎
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: 'google_pay',
+                                    label: 'Google Pay',
+                                    subLabel: 'Pay with Google',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🔴
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: 'paypal',
+                                    label: 'PayPal',
+                                    subLabel: 'Pay with your PayPal account',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🅿️
+                                        </span>
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    value: 'technologies',
+                    label: 'Technologies',
+                    slot1: <span style={{ fontSize: '20px' }}>⚛️</span>,
+                    nestedItems: [
+                        {
+                            groupLabel: 'Frontend Frameworks',
+                            items: [
+                                {
+                                    value: 'react',
+                                    label: 'React',
+                                    subLabel: 'UI library by Facebook',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            ⚛️
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: 'vue',
+                                    label: 'Vue.js',
+                                    subLabel: 'Progressive framework',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🟢
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: 'angular',
+                                    label: 'Angular',
+                                    subLabel: 'Full framework by Google',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🅰️
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: 'svelte',
+                                    label: 'Svelte',
+                                    subLabel: 'Compile-time framework',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🔥
+                                        </span>
+                                    ),
+                                },
+                            ],
+                        },
+                        {
+                            groupLabel: 'Backend Technologies',
+                            items: [
+                                {
+                                    value: 'nodejs',
+                                    label: 'Node.js',
+                                    subLabel: 'JavaScript runtime',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🟢
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: 'python',
+                                    label: 'Python',
+                                    subLabel: 'Versatile language',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🐍
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: 'java',
+                                    label: 'Java',
+                                    subLabel: 'Enterprise language',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            ☕
+                                        </span>
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    value: 'design_tools',
+                    label: 'Design Tools',
+                    slot1: <span style={{ fontSize: '20px' }}>🎨</span>,
+                    nestedItems: [
+                        {
+                            items: [
+                                {
+                                    value: 'figma',
+                                    label: 'Figma',
+                                    subLabel: 'Design collaboration',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🎨
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: 'sketch',
+                                    label: 'Sketch',
+                                    subLabel: 'Mac design tool',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            ✏️
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: 'adobe_xd',
+                                    label: 'Adobe XD',
+                                    subLabel: 'Adobe design tool',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🔷
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: 'photoshop',
+                                    label: 'Photoshop',
+                                    subLabel: 'Image editing',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🖼️
+                                        </span>
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ]
+
+    const handleSelectionChange = (newSelection: string[]) => {
+        setSelectedItems(newSelection)
+    }
+
+    const handleConfirm = () => {
+        console.log('Selected nested items:', selectedItems)
+        setOpen(false)
+    }
+
+    return (
+        <>
+            <button
+                onClick={() => setOpen(true)}
+                style={{
+                    display: 'flex',
+                    height: '40px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    overflow: 'hidden',
+                    borderRadius: '20px',
+                    backgroundColor: 'white',
+                    padding: '0 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                    border: '1px solid #e5e7eb',
+                    cursor: 'pointer',
+                }}
+            >
+                Nested Multi-Select ({selectedItems.length} selected)
+            </button>
+            <NestedMultiSelectDrawer
+                open={open}
+                onOpenChange={setOpen}
+                heading="Select Your Preferences"
+                description="Navigate through categories to select your preferences"
+                rightSlot={
+                    <div
+                        style={{
+                            width: '14px',
+                            height: '14px',
+                            backgroundColor: '#8b5cf6',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <span style={{ fontSize: '8px', color: 'white' }}>
+                            🔗
+                        </span>
+                    </div>
+                }
+                items={nestedMenuItems}
+                selectedValues={selectedItems}
+                onSelectionChange={handleSelectionChange}
+                enableSearch={true}
+                searchPlaceholder="Search preferences..."
+                cancelText="Clear All"
+                confirmText="Save Preferences"
+                onConfirm={handleConfirm}
+            />
+        </>
+    )
+}
+
+// Nested Single-Select Drawer Example
+export const NestedSingleSelectDrawerExample = () => {
+    const [open, setOpen] = useState(false)
+    const [selectedLocation, setSelectedLocation] = useState<string>('us_ca_sf')
+
+    // Hierarchical location data
+    const nestedLocationItems = [
+        {
+            items: [
+                {
+                    value: 'north_america',
+                    label: 'North America',
+                    slot1: <span style={{ fontSize: '20px' }}>🌎</span>,
+                    nestedItems: [
+                        {
+                            groupLabel: 'United States',
+                            items: [
+                                {
+                                    value: 'us_states',
+                                    label: 'United States',
+                                    subLabel: 'Select a state',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🇺🇸
+                                        </span>
+                                    ),
+                                    nestedItems: [
+                                        {
+                                            items: [
+                                                {
+                                                    value: 'us_ca_sf',
+                                                    label: 'San Francisco, CA',
+                                                    subLabel: 'California',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🌉
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'us_ca_la',
+                                                    label: 'Los Angeles, CA',
+                                                    subLabel: 'California',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🌴
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'us_ny_nyc',
+                                                    label: 'New York City, NY',
+                                                    subLabel: 'New York',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🗽
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'us_tx_austin',
+                                                    label: 'Austin, TX',
+                                                    subLabel: 'Texas',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🤠
+                                                        </span>
+                                                    ),
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                        {
+                            groupLabel: 'Canada',
+                            items: [
+                                {
+                                    value: 'ca_provinces',
+                                    label: 'Canada',
+                                    subLabel: 'Select a province',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🇨🇦
+                                        </span>
+                                    ),
+                                    nestedItems: [
+                                        {
+                                            items: [
+                                                {
+                                                    value: 'ca_on_toronto',
+                                                    label: 'Toronto, ON',
+                                                    subLabel: 'Ontario',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🏙️
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'ca_bc_vancouver',
+                                                    label: 'Vancouver, BC',
+                                                    subLabel:
+                                                        'British Columbia',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🏔️
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'ca_qc_montreal',
+                                                    label: 'Montreal, QC',
+                                                    subLabel: 'Quebec',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🍁
+                                                        </span>
+                                                    ),
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    value: 'europe',
+                    label: 'Europe',
+                    slot1: <span style={{ fontSize: '20px' }}>🌍</span>,
+                    nestedItems: [
+                        {
+                            items: [
+                                {
+                                    value: 'uk_cities',
+                                    label: 'United Kingdom',
+                                    subLabel: 'Select a city',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🇬🇧
+                                        </span>
+                                    ),
+                                    nestedItems: [
+                                        {
+                                            items: [
+                                                {
+                                                    value: 'uk_london',
+                                                    label: 'London',
+                                                    subLabel: 'England',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🏰
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'uk_manchester',
+                                                    label: 'Manchester',
+                                                    subLabel: 'England',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            ⚽
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'uk_edinburgh',
+                                                    label: 'Edinburgh',
+                                                    subLabel: 'Scotland',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🏴󠁧󠁢󠁳󠁣󠁴󠁿
+                                                        </span>
+                                                    ),
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                                {
+                                    value: 'de_cities',
+                                    label: 'Germany',
+                                    subLabel: 'Select a city',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🇩🇪
+                                        </span>
+                                    ),
+                                    nestedItems: [
+                                        {
+                                            items: [
+                                                {
+                                                    value: 'de_berlin',
+                                                    label: 'Berlin',
+                                                    subLabel: 'Capital city',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🏛️
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'de_munich',
+                                                    label: 'Munich',
+                                                    subLabel: 'Bavaria',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🍺
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'de_hamburg',
+                                                    label: 'Hamburg',
+                                                    subLabel: 'Port city',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            ⚓
+                                                        </span>
+                                                    ),
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    value: 'asia',
+                    label: 'Asia',
+                    slot1: <span style={{ fontSize: '20px' }}>🌏</span>,
+                    nestedItems: [
+                        {
+                            items: [
+                                {
+                                    value: 'jp_cities',
+                                    label: 'Japan',
+                                    subLabel: 'Select a city',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🇯🇵
+                                        </span>
+                                    ),
+                                    nestedItems: [
+                                        {
+                                            items: [
+                                                {
+                                                    value: 'jp_tokyo',
+                                                    label: 'Tokyo',
+                                                    subLabel: 'Capital city',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🗼
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'jp_osaka',
+                                                    label: 'Osaka',
+                                                    subLabel: 'Kansai region',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🏯
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'jp_kyoto',
+                                                    label: 'Kyoto',
+                                                    subLabel: 'Ancient capital',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            ⛩️
+                                                        </span>
+                                                    ),
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                                {
+                                    value: 'in_cities',
+                                    label: 'India',
+                                    subLabel: 'Select a city',
+                                    slot1: (
+                                        <span style={{ fontSize: '16px' }}>
+                                            🇮🇳
+                                        </span>
+                                    ),
+                                    nestedItems: [
+                                        {
+                                            items: [
+                                                {
+                                                    value: 'in_mumbai',
+                                                    label: 'Mumbai',
+                                                    subLabel:
+                                                        'Financial capital',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🏙️
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'in_bangalore',
+                                                    label: 'Bangalore',
+                                                    subLabel:
+                                                        'Silicon Valley of India',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            💻
+                                                        </span>
+                                                    ),
+                                                },
+                                                {
+                                                    value: 'in_delhi',
+                                                    label: 'New Delhi',
+                                                    subLabel: 'Capital city',
+                                                    slot1: (
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    '16px',
+                                                            }}
+                                                        >
+                                                            🏛️
+                                                        </span>
+                                                    ),
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ]
+
+    const handleValueChange = (value: string) => {
+        setSelectedLocation(value)
+    }
+
+    const handleConfirm = () => {
+        console.log('Selected location:', selectedLocation)
+        setOpen(false)
+    }
+
+    const getSelectedLocationLabel = () => {
+        // Helper function to recursively find the selected item
+        const findItem = (items: any[]): any => {
+            for (const group of items) {
+                for (const item of group.items) {
+                    if (item.value === selectedLocation) return item
+                    if (item.nestedItems) {
+                        const found = findItem(item.nestedItems)
+                        if (found) return found
+                    }
+                }
+            }
+            return null
+        }
+
+        const item = findItem(nestedLocationItems)
+        return item ? item.label : 'Select Location'
+    }
+
+    return (
+        <>
+            <button
+                onClick={() => setOpen(true)}
+                style={{
+                    display: 'flex',
+                    height: '40px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    overflow: 'hidden',
+                    borderRadius: '20px',
+                    backgroundColor: 'white',
+                    padding: '0 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                    border: '1px solid #e5e7eb',
+                    cursor: 'pointer',
+                }}
+            >
+                Nested Single-Select: {getSelectedLocationLabel()}
+            </button>
+            <NestedSingleSelectDrawer
+                open={open}
+                onOpenChange={setOpen}
+                heading="Select Your Location"
+                description="Navigate through regions to find your location"
+                rightSlot={
+                    <div
+                        style={{
+                            width: '14px',
+                            height: '14px',
+                            backgroundColor: '#10b981',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <span style={{ fontSize: '8px', color: 'white' }}>
+                            📍
+                        </span>
+                    </div>
+                }
+                items={nestedLocationItems}
+                selectedValue={selectedLocation}
+                onValueChange={handleValueChange}
+                enableSearch={true}
+                searchPlaceholder="Search locations..."
+                cancelText="Clear"
+                confirmText="Select Location"
+                onConfirm={handleConfirm}
+            />
+        </>
+    )
+}
+
 // Custom Mobile Offset Example
 export const CustomMobileOffsetExample = () => {
     return (
@@ -2042,6 +2865,22 @@ export const DrawerDemo = () => {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                     <MultiSelectDrawerExample />
                     <SingleSelectDrawerExample />
+                </div>
+            </div>
+
+            <div>
+                <h2 style={{ marginBottom: '8px' }}>
+                    Nested Select Drawer Examples
+                </h2>
+                <p style={{ marginBottom: '16px', color: '#6b7280' }}>
+                    Nested select drawers support hierarchical data structures
+                    with navigation between levels. Features include back button
+                    navigation, breadcrumb-like experience, and state
+                    preservation across levels.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                    <NestedMultiSelectDrawerExample />
+                    <NestedSingleSelectDrawerExample />
                 </div>
             </div>
 
