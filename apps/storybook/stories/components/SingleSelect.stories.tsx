@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { SingleSelect } from 'blend-v1'
+import { SingleSelect } from '@juspay/blend-design-system'
 
-// Define types locally since they're not exported from blend-v1
+// Define types locally since they're not exported from @juspay/blend-design-system
 type SelectMenuGroupType = {
     label?: string
     groupLabel?: string
@@ -87,7 +87,7 @@ A single selection dropdown component that allows users to select one option fro
 ## Usage
 
 \`\`\`tsx
-import { SingleSelect } from 'blend-v1';
+import { SingleSelect } from '@juspay/blend-design-system';
 
 const [selected, setSelected] = useState("");
 

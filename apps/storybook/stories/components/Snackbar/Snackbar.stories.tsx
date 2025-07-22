@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Snackbar, addSnackbar, SnackbarVariant } from 'blend-v1'
-import { Button } from 'blend-v1'
+import {
+    Snackbar,
+    addSnackbar,
+    SnackbarVariant,
+} from '@juspay/blend-design-system'
+import { Button } from '@juspay/blend-design-system'
 import {
     Info,
     CheckCircle,
@@ -40,7 +44,7 @@ A toast notification component for displaying temporary messages, alerts, and fe
 ## Usage
 
 \`\`\`tsx
-import { Snackbar, addSnackbar, SnackbarVariant } from 'blend-v1';
+import { Snackbar, addSnackbar, SnackbarVariant } from '@juspay/blend-design-system';
 
 // First, add the Snackbar component to your app root
 <Snackbar />

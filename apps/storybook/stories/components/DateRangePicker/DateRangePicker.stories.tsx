@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { DateRangePicker, Button, ButtonType } from 'blend-v1'
+import {
+    DateRangePicker,
+    Button,
+    ButtonType,
+} from '@juspay/blend-design-system'
 
 // Import types that might not be exported from main
 type DateRange = {

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Avatar, AvatarSize, AvatarShape } from 'blend-v1'
+import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system'
 import { Crown, Star, CheckCircle, Settings, User } from 'lucide-react'
 
 const meta: Meta<typeof Avatar> = {
@@ -26,7 +26,7 @@ A flexible avatar component for displaying user profile images with automatic fa
 ## Usage
 
 \`\`\`tsx
-import { Avatar, AvatarSize, AvatarShape } from 'blend-v1';
+import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system';
 
 <Avatar 
   src="/user-profile.jpg" 

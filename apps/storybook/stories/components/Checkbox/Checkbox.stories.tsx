@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { Checkbox, CheckboxSize } from 'blend-v1'
+import { Checkbox, CheckboxSize } from '@juspay/blend-design-system'
 import { Star, Info, Settings } from 'lucide-react'
 
 const meta: Meta<typeof Checkbox> = {
@@ -27,7 +27,7 @@ A versatile checkbox component with support for controlled and uncontrolled stat
 ## Usage
 
 \`\`\`tsx
-import { Checkbox, CheckboxSize } from 'blend-v1';
+import { Checkbox, CheckboxSize } from '@juspay/blend-design-system';
 
 <Checkbox 
   size={CheckboxSize.MEDIUM}

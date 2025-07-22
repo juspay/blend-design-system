@@ -1,5 +1,5 @@
 import { figma } from '@figma/code-connect'
-import { NumberInput, NumberInputSize } from 'blend-v1'
+import { NumberInput, NumberInputSize } from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR NUMBERINPUT COMPONENT
@@ -93,7 +93,9 @@ figma.connect(
             />
         ),
 
-        imports: ["import { NumberInput, NumberInputSize } from 'blend-v1'"],
+        imports: [
+            "import { NumberInput, NumberInputSize } from '@juspay/blend-design-system'",
+        ],
 
         links: [
             {

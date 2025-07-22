@@ -1,6 +1,11 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { SplitTag, TagSize, TagShape, TagColor } from 'blend-v1'
+import {
+    SplitTag,
+    TagSize,
+    TagShape,
+    TagColor,
+} from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR SPLITTAG COMPONENT
@@ -74,7 +79,9 @@ figma.connect(
             />
         ),
 
-        imports: ["import { SplitTag, TagColor } from 'blend-v1'"],
+        imports: [
+            "import { SplitTag, TagColor } from '@juspay/blend-design-system'",
+        ],
     }
 )
 
@@ -112,7 +119,9 @@ figma.connect(
                 secondaryTag={secondaryTag}
             />
         ),
-        imports: ["import { SplitTag, TagColor } from 'blend-v1'"],
+        imports: [
+            "import { SplitTag, TagColor } from '@juspay/blend-design-system'",
+        ],
     }
 )
 
@@ -149,7 +158,9 @@ figma.connect(
                 secondaryTag={secondaryTag}
             />
         ),
-        imports: ["import { SplitTag, TagColor } from 'blend-v1'"],
+        imports: [
+            "import { SplitTag, TagColor } from '@juspay/blend-design-system'",
+        ],
     }
 )
 
@@ -186,7 +197,9 @@ figma.connect(
                 secondaryTag={secondaryTag}
             />
         ),
-        imports: ["import { SplitTag, TagColor } from 'blend-v1'"],
+        imports: [
+            "import { SplitTag, TagColor } from '@juspay/blend-design-system'",
+        ],
     }
 )
 
@@ -223,7 +236,9 @@ figma.connect(
                 secondaryTag={secondaryTag}
             />
         ),
-        imports: ["import { SplitTag, TagColor } from 'blend-v1'"],
+        imports: [
+            "import { SplitTag, TagColor } from '@juspay/blend-design-system'",
+        ],
     }
 )
 
@@ -260,6 +275,8 @@ figma.connect(
                 secondaryTag={secondaryTag}
             />
         ),
-        imports: ["import { SplitTag, TagColor } from 'blend-v1'"],
+        imports: [
+            "import { SplitTag, TagColor } from '@juspay/blend-design-system'",
+        ],
     }
 )

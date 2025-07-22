@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Popover, PopoverSize } from 'blend-v1'
-import { Button, ButtonType, ButtonSize } from 'blend-v1'
+import { Popover, PopoverSize } from '@juspay/blend-design-system'
+import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system'
 import {
     Settings,
     User,
@@ -43,8 +43,8 @@ A flexible popover component for displaying contextual content, forms, and actio
 ## Usage
 
 \`\`\`tsx
-import { Popover, PopoverSize } from 'blend-v1';
-import { Button } from 'blend-v1';
+import { Popover, PopoverSize } from '@juspay/blend-design-system';
+import { Button } from '@juspay/blend-design-system';
 
 <Popover
   trigger={<Button>Open Popover</Button>}

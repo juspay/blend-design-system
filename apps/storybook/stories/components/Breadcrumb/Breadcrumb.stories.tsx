@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Breadcrumb } from 'blend-v1'
+import { Breadcrumb } from '@juspay/blend-design-system'
 import {
     Home,
     Users,
@@ -42,7 +42,7 @@ A navigation breadcrumb component that displays the current page's location with
 ## Usage
 
 \`\`\`tsx
-import { Breadcrumb, BreadcrumbItemType } from 'blend-v1';
+import { Breadcrumb, BreadcrumbItemType } from '@juspay/blend-design-system';
 
 const breadcrumbItems: BreadcrumbItemType[] = [
   { label: "Home", href: "/" },

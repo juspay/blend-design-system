@@ -6,7 +6,7 @@ import {
     Button,
     ButtonType,
     ButtonSize,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import { Plus, Download, Settings, Save, X, Edit, Trash2 } from 'lucide-react'
 
 const meta: Meta<typeof ButtonGroup> = {
@@ -30,7 +30,7 @@ A container component for grouping multiple buttons with consistent spacing and 
 ## Usage
 
 \`\`\`tsx
-import { ButtonGroup, ButtonGroupMode, Button, ButtonType } from 'blend-v1';
+import { ButtonGroup, ButtonGroupMode, Button, ButtonType } from '@juspay/blend-design-system';
 
 <ButtonGroup mode={ButtonGroupMode.SINGLE_PRIMARY} isStacked={true}>
   <Button text="Save" buttonType={ButtonType.PRIMARY} />

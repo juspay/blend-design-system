@@ -1,5 +1,9 @@
 import { figma } from '@figma/code-connect'
-import { UnitInput, UnitInputSize, UnitPosition } from 'blend-v1'
+import {
+    UnitInput,
+    UnitInputSize,
+    UnitPosition,
+} from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR UNITINPUT COMPONENT
@@ -131,7 +135,7 @@ figma.connect(
         ),
 
         imports: [
-            "import { UnitInput, UnitInputSize, UnitPosition } from 'blend-v1'",
+            "import { UnitInput, UnitInputSize, UnitPosition } from '@juspay/blend-design-system'",
         ],
 
         links: [

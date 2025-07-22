@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Alert, AlertVariant, AlertStyle, AlertActionPlacement } from 'blend-v1'
+import {
+    Alert,
+    AlertVariant,
+    AlertStyle,
+    AlertActionPlacement,
+} from '@juspay/blend-design-system'
 import {
     AlertTriangle,
     CheckCircle,
@@ -32,7 +37,7 @@ A versatile alert component for displaying important messages, notifications, an
 ## Usage
 
 \`\`\`tsx
-import { Alert, AlertVariant, AlertStyle } from 'blend-v1';
+import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system';
 
 <Alert
   heading="Success!"

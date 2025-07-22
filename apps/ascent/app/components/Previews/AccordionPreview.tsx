@@ -4,12 +4,12 @@ import {
     AccordionItem,
     AccordionType,
     AccordionChevronPosition,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
 
 const AccordionPreview = () => {
-    const tsCode = `import { Accordion, AccordionItem, AccordionType, AccordionChevronPosition } from "blend-v1";
+    const tsCode = `import { Accordion, AccordionItem, AccordionType, AccordionChevronPosition } from "@juspay/blend-design-system";
 
 function MyComponent() {
   return (
@@ -73,7 +73,7 @@ let makeItem = (
   />
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~children: React.element,
   ~accordionType: [#border | #noBorder]=?,
@@ -83,7 +83,7 @@ external make: (
   ~onValueChange: string => unit=?,
 ) => React.element = "Accordion"
 
-@module("blend-v1") @react.component
+@module("@juspay/blend-design-system") @react.component
 external makeItem: (
   ~value: string,
   ~title: string,

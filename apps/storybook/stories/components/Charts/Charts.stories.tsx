@@ -5,7 +5,7 @@ import {
     ChartType,
     ChartLegendPosition,
     NewNestedDataPoint,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import {
     TrendingUp,
     Calendar,
@@ -58,7 +58,7 @@ A powerful and flexible charting component built on Recharts that supports multi
 ## Usage
 
 \`\`\`tsx
-import { Charts, ChartType, ChartLegendPosition } from 'blend-v1';
+import { Charts, ChartType, ChartLegendPosition } from '@juspay/blend-design-system';
 
 const data = [
   {

@@ -1,5 +1,5 @@
 import { figma } from '@figma/code-connect'
-import { MultiValueInput, TextInputSize } from 'blend-v1'
+import { MultiValueInput, TextInputSize } from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR MULTIVALUEINPUT COMPONENT
@@ -100,7 +100,9 @@ figma.connect(
             />
         ),
 
-        imports: ["import { MultiValueInput, TextInputSize } from 'blend-v1'"],
+        imports: [
+            "import { MultiValueInput, TextInputSize } from '@juspay/blend-design-system'",
+        ],
 
         links: [
             {

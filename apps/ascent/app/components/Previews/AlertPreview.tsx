@@ -1,10 +1,10 @@
 'use client'
-import { Alert, AlertVariant, AlertStyle } from 'blend-v1'
+import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
 
 const AlertPreview = () => {
-    const tsCode = `import { Alert, AlertVariant, AlertStyle } from "blend-v1";
+    const tsCode = `import { Alert, AlertVariant, AlertStyle } from "@juspay/blend-design-system";
 
 function MyComponent() {
   return (
@@ -51,7 +51,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~heading: string,
   ~description: string,

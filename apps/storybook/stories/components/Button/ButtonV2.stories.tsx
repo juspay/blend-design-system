@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Button, ButtonType, ButtonSize, ButtonSubType } from 'blend-v1'
+import {
+    Button,
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+} from '@juspay/blend-design-system'
 import {
     Plus,
     Download,
@@ -39,7 +44,7 @@ A modern, enhanced button component with improved styling and token-based design
 ## Usage
 
 \`\`\`tsx
-import { Button, ButtonType, ButtonSize } from 'blend-v1';
+import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
 
 <Button
   buttonType={ButtonType.PRIMARY}

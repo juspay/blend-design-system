@@ -1,5 +1,5 @@
 import { figma } from '@figma/code-connect'
-import { Sidebar } from 'blend-v1'
+import { Sidebar } from '@juspay/blend-design-system'
 import {
     Home,
     Settings,
@@ -167,7 +167,7 @@ figma.connect(
         ),
 
         imports: [
-            "import { Sidebar } from 'blend-v1'",
+            "import { Sidebar } from '@juspay/blend-design-system'",
             "import { Home, Settings, Users, FileText, BarChart, CreditCard } from 'lucide-react'",
         ],
 

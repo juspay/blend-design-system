@@ -1,5 +1,9 @@
 'use client'
-import { Charts, ChartType, ChartLegendPosition } from 'blend-v1'
+import {
+    Charts,
+    ChartType,
+    ChartLegendPosition,
+} from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
 
@@ -35,7 +39,7 @@ const ChartPreview = () => {
         },
     ]
 
-    const tsCode = `import { Charts, ChartType, ChartLegendPosition } from "blend-v1";
+    const tsCode = `import { Charts, ChartType, ChartLegendPosition } from "@juspay/blend-design-system";
 
 function MyComponent() {
   const data = [
@@ -106,7 +110,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~chartType: [#line | #bar | #pie]=?,
   ~data: array<nestedDataPoint>,

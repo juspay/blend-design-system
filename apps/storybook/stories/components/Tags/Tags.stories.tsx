@@ -1,6 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Tag, TagVariant, TagColor, TagSize, TagShape } from 'blend-v1'
+import {
+    Tag,
+    TagVariant,
+    TagColor,
+    TagSize,
+    TagShape,
+} from '@juspay/blend-design-system'
 import {
     X,
     Check,
@@ -50,7 +56,7 @@ A versatile tag component for labeling, categorizing, and displaying metadata wi
 ## Usage
 
 \`\`\`tsx
-import { Tag, TagVariant, TagColor, TagSize } from 'blend-v1';
+import { Tag, TagVariant, TagColor, TagSize } from '@juspay/blend-design-system';
 
 <Tag
   text="New Feature"

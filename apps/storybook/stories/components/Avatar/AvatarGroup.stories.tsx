@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { AvatarGroup, AvatarSize, AvatarShape } from 'blend-v1'
+import {
+    AvatarGroup,
+    AvatarSize,
+    AvatarShape,
+} from '@juspay/blend-design-system'
 import { User, Star, Crown, Shield, Heart, Zap } from 'lucide-react'
 
 const meta: Meta<typeof AvatarGroup> = {
@@ -27,7 +31,7 @@ A flexible avatar group component for displaying multiple user avatars with over
 ## Usage
 
 \`\`\`tsx
-import { AvatarGroup, AvatarSize, AvatarShape } from 'blend-v1';
+import { AvatarGroup, AvatarSize, AvatarShape } from '@juspay/blend-design-system';
 
 const avatars = [
   { id: 1, src: "/user1.jpg", alt: "John Doe" },

@@ -1,6 +1,6 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { Avatar, AvatarSize, AvatarShape } from 'blend-v1'
+import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR AVATAR COMPONENT
@@ -70,7 +70,7 @@ figma.connect(
             return <Avatar {...avatarProps} />
         },
 
-        imports: ["import { Avatar } from 'blend-v1'"],
+        imports: ["import { Avatar } from '@juspay/blend-design-system'"],
 
         links: [
             {

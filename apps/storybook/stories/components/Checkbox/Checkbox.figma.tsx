@@ -1,6 +1,6 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { Checkbox, CheckboxSize } from 'blend-v1'
+import { Checkbox, CheckboxSize } from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR CHECKBOX COMPONENT
@@ -93,7 +93,7 @@ figma.connect(
             />
         ),
 
-        imports: ["import { Checkbox } from 'blend-v1'"],
+        imports: ["import { Checkbox } from '@juspay/blend-design-system'"],
 
         links: [
             {

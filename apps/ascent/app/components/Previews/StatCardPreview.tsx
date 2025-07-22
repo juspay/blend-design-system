@@ -1,5 +1,10 @@
 'use client'
-import { StatCard, StatCardVariant, ChangeType, SingleSelect } from 'blend-v1'
+import {
+    StatCard,
+    StatCardVariant,
+    ChangeType,
+    SingleSelect,
+} from '@juspay/blend-design-system'
 import React, { useState } from 'react'
 import ComponentPreview from './ComponentPreview'
 import { DollarSign } from 'lucide-react'
@@ -7,7 +12,7 @@ import { DollarSign } from 'lucide-react'
 const StatCardPreview = () => {
     const [selectedVariant, setSelectedVariant] = useState<string>('line')
 
-    const tsCode = `import { StatCard, StatCardVariant, ChangeType, SingleSelect, SelectMenuSize, SelectMenuVariant } from "blend-v1";
+    const tsCode = `import { StatCard, StatCardVariant, ChangeType, SingleSelect, SelectMenuSize, SelectMenuVariant } from "@juspay/blend-design-system";
 import { TrendingUp, Users, DollarSign, Activity } from "lucide-react";
 import { useState } from "react";
 
@@ -149,7 +154,7 @@ let make = () => {
   </div>
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~title: string,
   ~value: string,

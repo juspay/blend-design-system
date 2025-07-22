@@ -1,5 +1,5 @@
 import { figma } from '@figma/code-connect'
-import { TextArea } from 'blend-v1'
+import { TextArea } from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR TEXTAREA COMPONENT
@@ -106,7 +106,7 @@ figma.connect(
             />
         ),
 
-        imports: ["import { TextArea } from 'blend-v1'"],
+        imports: ["import { TextArea } from '@juspay/blend-design-system'"],
 
         links: [
             {

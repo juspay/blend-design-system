@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { Radio, RadioGroup, RadioSize } from 'blend-v1'
+import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system'
 import { CreditCard, DollarSign, Smartphone, Shield } from 'lucide-react'
 
 const meta: Meta<typeof Radio> = {
@@ -28,7 +28,7 @@ A radio button component for single selection within groups, with support for co
 ## Usage
 
 \`\`\`tsx
-import { Radio, RadioGroup, RadioSize } from 'blend-v1';
+import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system';
 
 <RadioGroup name="plan" label="Select Plan">
   <Radio value="basic" size={RadioSize.MEDIUM}>

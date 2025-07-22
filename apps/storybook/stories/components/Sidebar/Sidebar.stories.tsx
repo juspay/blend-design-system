@@ -8,7 +8,7 @@ import {
     Avatar,
     AvatarSize,
     AvatarShape,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import {
     Home,
     Users,
@@ -116,7 +116,7 @@ A comprehensive sidebar navigation component with multi-tenant support, merchant
 ## Usage
 
 \`\`\`tsx
-import { Sidebar } from 'blend-v1';
+import { Sidebar } from '@juspay/blend-design-system';
 
 const navigationData = [
   {

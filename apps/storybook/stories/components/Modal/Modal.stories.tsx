@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { Modal, Button, ButtonType } from 'blend-v1'
+import { Modal, Button, ButtonType } from '@juspay/blend-design-system'
 import {
     Trash2,
     AlertTriangle,

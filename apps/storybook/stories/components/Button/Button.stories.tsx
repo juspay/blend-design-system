@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Button, ButtonType, ButtonSize, ButtonSubType } from 'blend-v1'
+import {
+    Button,
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+} from '@juspay/blend-design-system'
 import { Plus, Download, Settings, Heart, Star } from 'lucide-react'
 
 const meta: Meta<typeof Button> = {
@@ -24,7 +29,7 @@ A versatile button component with multiple variants, sizes, and states.
 ## Usage
 
 \`\`\`tsx
-import { Button, ButtonType, ButtonSize } from 'blend-v1';
+import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
 
 <Button
   buttonType={ButtonType.PRIMARY}

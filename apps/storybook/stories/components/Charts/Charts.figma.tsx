@@ -1,5 +1,9 @@
 import { figma } from '@figma/code-connect'
-import { Charts, ChartType, ChartLegendPosition } from 'blend-v1'
+import {
+    Charts,
+    ChartType,
+    ChartLegendPosition,
+} from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR CHARTS COMPONENT
@@ -87,7 +91,7 @@ figma.connect(
         ),
 
         imports: [
-            "import { Charts, ChartType, ChartLegendPosition } from 'blend-v1'",
+            "import { Charts, ChartType, ChartLegendPosition } from '@juspay/blend-design-system'",
         ],
 
         links: [

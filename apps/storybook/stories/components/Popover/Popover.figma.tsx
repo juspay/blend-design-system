@@ -1,6 +1,12 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { Popover, PopoverSize, Button, ButtonType, ButtonSize } from 'blend-v1'
+import {
+    Popover,
+    PopoverSize,
+    Button,
+    ButtonType,
+    ButtonSize,
+} from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR POPOVER COMPONENT
@@ -90,7 +96,9 @@ figma.connect(
             )
         },
 
-        imports: ["import { Popover, Button } from 'blend-v1'"],
+        imports: [
+            "import { Popover, Button } from '@juspay/blend-design-system'",
+        ],
 
         links: [
             {

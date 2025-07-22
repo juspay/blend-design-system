@@ -1,5 +1,5 @@
 import { figma } from '@figma/code-connect'
-import { SearchInput } from 'blend-v1'
+import { SearchInput } from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR SEARCHINPUT COMPONENT
@@ -72,7 +72,7 @@ figma.connect(
             />
         ),
 
-        imports: ["import { SearchInput } from 'blend-v1'"],
+        imports: ["import { SearchInput } from '@juspay/blend-design-system'"],
 
         links: [
             {

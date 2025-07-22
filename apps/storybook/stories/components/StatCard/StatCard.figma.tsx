@@ -1,6 +1,10 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { StatCard, StatCardVariant, ChangeType } from 'blend-v1'
+import {
+    StatCard,
+    StatCardVariant,
+    ChangeType,
+} from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR STATCARD COMPONENT
@@ -120,7 +124,7 @@ figma.connect(
             />
         ),
 
-        imports: ["import { StatCard } from 'blend-v1'"],
+        imports: ["import { StatCard } from '@juspay/blend-design-system'"],
 
         links: [
             {

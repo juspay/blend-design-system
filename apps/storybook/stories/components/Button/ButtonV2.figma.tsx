@@ -1,6 +1,11 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { Button, ButtonType, ButtonSize, ButtonSubType } from 'blend-v1'
+import {
+    Button,
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+} from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR BUTTONV2 COMPONENT
@@ -115,7 +120,7 @@ figma.connect(
             />
         ),
 
-        imports: ["import { Button } from 'blend-v1'"],
+        imports: ["import { Button } from '@juspay/blend-design-system'"],
 
         links: [
             {

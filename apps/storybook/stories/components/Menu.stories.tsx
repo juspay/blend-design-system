@@ -10,7 +10,7 @@ import {
     Button,
     ButtonType,
     ButtonSize,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import {
     ChevronDown,
     Building,
@@ -97,7 +97,7 @@ A versatile dropdown menu component built on top of Radix UI's DropdownMenu prim
 ## Usage
 
 \`\`\`tsx
-import { Menu, MenuAlignment, MenuSide } from 'blend-v1';
+import { Menu, MenuAlignment, MenuSide } from '@juspay/blend-design-system';
 
 const menuItems = [
   {

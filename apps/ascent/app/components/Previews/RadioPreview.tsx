@@ -1,5 +1,5 @@
 'use client'
-import { Radio, RadioGroup, RadioSize } from 'blend-v1'
+import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system'
 import React, { useState } from 'react'
 import ComponentPreview from './ComponentPreview'
 
@@ -9,7 +9,7 @@ const RadioPreview = () => {
     const [selectedTheme, setSelectedTheme] = useState('light')
     const [selectedPlan, setSelectedPlan] = useState('basic')
 
-    const tsCode = `import { Radio, RadioGroup, RadioSize } from "blend-v1";
+    const tsCode = `import { Radio, RadioGroup, RadioSize } from "@juspay/blend-design-system";
 
 function MyComponent() {
   const [selectedOption, setSelectedOption] = useState("option1");
@@ -92,7 +92,7 @@ let makeGroup = (
   />
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~id: string=?,
   ~value: string=?,
@@ -109,7 +109,7 @@ external make: (
   ~name: string=?,
 ) => React.element = "Radio"
 
-@module("blend-v1") @react.component
+@module("@juspay/blend-design-system") @react.component
 external makeGroup: (
   ~id: string=?,
   ~label: string=?,

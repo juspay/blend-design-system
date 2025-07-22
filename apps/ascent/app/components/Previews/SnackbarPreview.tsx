@@ -1,10 +1,14 @@
 'use client'
-import { Snackbar, addSnackbar, SnackbarVariant } from 'blend-v1'
+import {
+    Snackbar,
+    addSnackbar,
+    SnackbarVariant,
+} from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
 
 const SnackbarPreview = () => {
-    const tsCode = `import { Snackbar, addSnackbar, SnackbarVariant } from "blend-v1";
+    const tsCode = `import { Snackbar, addSnackbar, SnackbarVariant } from "@juspay/blend-design-system";
 
 function MyComponent() {
   const showSnackbar = () => {
@@ -51,10 +55,10 @@ let addSnackbar = (
   )
 }`
 
-    const bindingCode = `@module("blend-v1") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: unit => React.element = "Snackbar"
 
-@module("blend-v1")
+@module("@juspay/blend-design-system")
 external addSnackbar: (
   ~header: string,
   ~description: string=?,

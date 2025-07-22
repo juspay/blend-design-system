@@ -1,6 +1,6 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { Switch, SwitchSize } from 'blend-v1'
+import { Switch, SwitchSize } from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR SWITCH COMPONENT
@@ -85,7 +85,7 @@ figma.connect(
             />
         ),
 
-        imports: ["import { Switch } from 'blend-v1'"],
+        imports: ["import { Switch } from '@juspay/blend-design-system'"],
 
         links: [
             {

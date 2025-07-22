@@ -16,7 +16,7 @@
         "@mdx-js/react": "^3.1.0",
         "@next/mdx": "^15.3.4",
         "@types/mdx": "^2.0.13",
-        "blend-v1": "workspace:*",
+        "@juspay/blend-design-system": "workspace:*",
         "cmdk": "^1.1.1",
         "gray-matter": "^4.0.3",
         "lucide-react": "^0.525.0",
