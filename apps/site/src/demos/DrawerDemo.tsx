@@ -15,6 +15,8 @@ import {
     DrawerFooter,
     DrawerClose,
     StatusDrawer,
+    MultiSelectDrawer,
+    SingleSelectDrawer,
 } from '../../../../packages/blend/lib/components/Drawer'
 import { ButtonType } from '../../../../packages/blend/lib/components/Button'
 import ResponsiveSelectDemo from './ResponsiveSelectDemo'
@@ -1357,6 +1359,557 @@ export const StatusDrawerInfoExample = () => {
     )
 }
 
+// Multi-Select Drawer Example with Rich Data
+export const MultiSelectDrawerExample = () => {
+    const [open, setOpen] = useState(false)
+    const [selectedItems, setSelectedItems] = useState<string[]>([
+        'credit_card',
+        'typescript',
+        'figma',
+    ])
+
+    const menuItems = [
+        {
+            items: [
+                {
+                    value: 'credit_card',
+                    label: 'Credit Card',
+                    subLabel: 'Visa, Mastercard, Amex',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#dbeafe',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            💳
+                        </span>
+                    ),
+                },
+                {
+                    value: 'paypal',
+                    label: 'PayPal',
+                    subLabel: 'Pay with your PayPal account',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#fef3c7',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🅿️
+                        </span>
+                    ),
+                },
+                {
+                    value: 'apple_pay',
+                    label: 'Apple Pay',
+                    subLabel: 'Touch ID or Face ID',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#f3f4f6',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🍎
+                        </span>
+                    ),
+                },
+                {
+                    value: 'google_pay',
+                    label: 'Google Pay',
+                    subLabel: 'Pay with Google',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#fecaca',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🔴
+                        </span>
+                    ),
+                },
+                {
+                    value: 'bank_transfer',
+                    label: 'Bank Transfer',
+                    subLabel: 'Direct bank transfer',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#dcfce7',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🏦
+                        </span>
+                    ),
+                },
+                {
+                    value: 'javascript',
+                    label: 'JavaScript',
+                    subLabel: 'Popular web language',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#fef3c7',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                color: '#f59e0b',
+                                fontWeight: 'bold',
+                                fontSize: '12px',
+                            }}
+                        >
+                            JS
+                        </span>
+                    ),
+                },
+                {
+                    value: 'typescript',
+                    label: 'TypeScript',
+                    subLabel: 'Typed JavaScript',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#dbeafe',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                color: '#3b82f6',
+                                fontWeight: 'bold',
+                                fontSize: '12px',
+                            }}
+                        >
+                            TS
+                        </span>
+                    ),
+                },
+                {
+                    value: 'python',
+                    label: 'Python',
+                    subLabel: 'Versatile language',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#dcfce7',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                color: '#10b981',
+                                fontWeight: 'bold',
+                                fontSize: '12px',
+                            }}
+                        >
+                            PY
+                        </span>
+                    ),
+                },
+                {
+                    value: 'react',
+                    label: 'React',
+                    subLabel: 'UI library',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#e0f2fe',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            ⚛️
+                        </span>
+                    ),
+                },
+                {
+                    value: 'vue',
+                    label: 'Vue.js',
+                    subLabel: 'Progressive framework',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#dcfce7',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🟢
+                        </span>
+                    ),
+                },
+                {
+                    value: 'angular',
+                    label: 'Angular',
+                    subLabel: 'Full framework',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#fecaca',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🅰️
+                        </span>
+                    ),
+                },
+                {
+                    value: 'figma',
+                    label: 'Figma',
+                    subLabel: 'Design collaboration',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#fdf2f8',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🎨
+                        </span>
+                    ),
+                },
+                {
+                    value: 'sketch',
+                    label: 'Sketch',
+                    subLabel: 'Mac design tool',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#fef3c7',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            ✏️
+                        </span>
+                    ),
+                },
+                {
+                    value: 'adobe_xd',
+                    label: 'Adobe XD',
+                    subLabel: 'Adobe design tool',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#fdf2f8',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                color: '#ec4899',
+                                fontWeight: 'bold',
+                                fontSize: '12px',
+                            }}
+                        >
+                            XD
+                        </span>
+                    ),
+                },
+                {
+                    value: 'photoshop',
+                    label: 'Photoshop',
+                    subLabel: 'Image editing',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#dbeafe',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                color: '#3b82f6',
+                                fontWeight: 'bold',
+                                fontSize: '12px',
+                            }}
+                        >
+                            PS
+                        </span>
+                    ),
+                },
+            ],
+        },
+    ]
+
+    const handleSelectionChange = (newSelection: string[]) => {
+        setSelectedItems(newSelection)
+    }
+
+    const handleConfirm = () => {
+        console.log('Selected items:', selectedItems)
+        setOpen(false)
+    }
+
+    return (
+        <>
+            <button
+                onClick={() => setOpen(true)}
+                style={{
+                    display: 'flex',
+                    height: '40px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    overflow: 'hidden',
+                    borderRadius: '20px',
+                    backgroundColor: 'white',
+                    padding: '0 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                    border: '1px solid #e5e7eb',
+                    cursor: 'pointer',
+                }}
+            >
+                Multi-Select Drawer ({selectedItems.length} selected)
+            </button>
+            <MultiSelectDrawer
+                open={open}
+                onOpenChange={setOpen}
+                heading="Select Your Skills"
+                description="Choose all the technologies and tools you're proficient in"
+                rightSlot={
+                    <div
+                        style={{
+                            width: '14px',
+                            height: '14px',
+                            backgroundColor: '#8b5cf6',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <span style={{ fontSize: '8px', color: 'white' }}>
+                            ✨
+                        </span>
+                    </div>
+                }
+                items={menuItems}
+                selectedValues={selectedItems}
+                onSelectionChange={handleSelectionChange}
+                enableSearch={true}
+                searchPlaceholder="Search skills..."
+                cancelText="Clear All"
+                confirmText="Save Selection"
+                onConfirm={handleConfirm}
+            />
+        </>
+    )
+}
+
+// Single-Select Drawer Example
+export const SingleSelectDrawerExample = () => {
+    const [open, setOpen] = useState(false)
+    const [selectedCountry, setSelectedCountry] = useState<string>('us')
+
+    const countryItems = [
+        {
+            items: [
+                {
+                    value: 'us',
+                    label: 'United States',
+                    subLabel: 'North America',
+                    slot1: <span style={{ fontSize: '20px' }}>🇺🇸</span>,
+                },
+                {
+                    value: 'uk',
+                    label: 'United Kingdom',
+                    subLabel: 'Europe',
+                    slot1: <span style={{ fontSize: '20px' }}>🇬🇧</span>,
+                },
+                {
+                    value: 'ca',
+                    label: 'Canada',
+                    subLabel: 'North America',
+                    slot1: <span style={{ fontSize: '20px' }}>🇨🇦</span>,
+                },
+                {
+                    value: 'au',
+                    label: 'Australia',
+                    subLabel: 'Oceania',
+                    slot1: <span style={{ fontSize: '20px' }}>🇦🇺</span>,
+                },
+                {
+                    value: 'de',
+                    label: 'Germany',
+                    subLabel: 'Europe',
+                    slot1: <span style={{ fontSize: '20px' }}>🇩🇪</span>,
+                },
+                {
+                    value: 'jp',
+                    label: 'Japan',
+                    subLabel: 'East Asia',
+                    slot1: <span style={{ fontSize: '20px' }}>🇯🇵</span>,
+                },
+                {
+                    value: 'kr',
+                    label: 'South Korea',
+                    subLabel: 'East Asia',
+                    slot1: <span style={{ fontSize: '20px' }}>🇰🇷</span>,
+                },
+                {
+                    value: 'in',
+                    label: 'India',
+                    subLabel: 'South Asia',
+                    slot1: <span style={{ fontSize: '20px' }}>🇮🇳</span>,
+                },
+                {
+                    value: 'sg',
+                    label: 'Singapore',
+                    subLabel: 'Southeast Asia',
+                    slot1: <span style={{ fontSize: '20px' }}>🇸🇬</span>,
+                },
+                {
+                    value: 'cn',
+                    label: 'China',
+                    subLabel: 'East Asia',
+                    slot1: <span style={{ fontSize: '20px' }}>🇨🇳</span>,
+                },
+                {
+                    value: 'fr',
+                    label: 'France',
+                    subLabel: 'Western Europe',
+                    slot1: <span style={{ fontSize: '20px' }}>🇫🇷</span>,
+                },
+                {
+                    value: 'es',
+                    label: 'Spain',
+                    subLabel: 'Southern Europe',
+                    slot1: <span style={{ fontSize: '20px' }}>🇪🇸</span>,
+                },
+                {
+                    value: 'it',
+                    label: 'Italy',
+                    subLabel: 'Southern Europe',
+                    slot1: <span style={{ fontSize: '20px' }}>🇮🇹</span>,
+                },
+                {
+                    value: 'nl',
+                    label: 'Netherlands',
+                    subLabel: 'Western Europe',
+                    slot1: <span style={{ fontSize: '20px' }}>🇳🇱</span>,
+                },
+                {
+                    value: 'se',
+                    label: 'Sweden',
+                    subLabel: 'Northern Europe',
+                    slot1: <span style={{ fontSize: '20px' }}>🇸🇪</span>,
+                },
+                {
+                    value: 'br',
+                    label: 'Brazil',
+                    subLabel: 'South America',
+                    slot1: <span style={{ fontSize: '20px' }}>🇧🇷</span>,
+                },
+                {
+                    value: 'mx',
+                    label: 'Mexico',
+                    subLabel: 'North America',
+                    slot1: <span style={{ fontSize: '20px' }}>🇲🇽</span>,
+                },
+                {
+                    value: 'ar',
+                    label: 'Argentina',
+                    subLabel: 'South America',
+                    slot1: <span style={{ fontSize: '20px' }}>🇦🇷</span>,
+                },
+                {
+                    value: 'cl',
+                    label: 'Chile',
+                    subLabel: 'South America',
+                    slot1: <span style={{ fontSize: '20px' }}>🇨🇱</span>,
+                },
+            ],
+        },
+    ]
+
+    const handleValueChange = (value: string) => {
+        setSelectedCountry(value)
+    }
+
+    const handleConfirm = () => {
+        console.log('Selected country:', selectedCountry)
+        setOpen(false)
+    }
+
+    const getSelectedCountryLabel = () => {
+        for (const group of countryItems) {
+            const item = group.items.find(
+                (item) => item.value === selectedCountry
+            )
+            if (item) return item.label
+        }
+        return 'Select Country'
+    }
+
+    return (
+        <>
+            <button
+                onClick={() => setOpen(true)}
+                style={{
+                    display: 'flex',
+                    height: '40px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    overflow: 'hidden',
+                    borderRadius: '20px',
+                    backgroundColor: 'white',
+                    padding: '0 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                    border: '1px solid #e5e7eb',
+                    cursor: 'pointer',
+                }}
+            >
+                Single-Select: {getSelectedCountryLabel()}
+            </button>
+            <SingleSelectDrawer
+                open={open}
+                onOpenChange={setOpen}
+                heading="Select Your Country"
+                description="Choose your country of residence"
+                rightSlot={
+                    <div
+                        style={{
+                            width: '14px',
+                            height: '14px',
+                            backgroundColor: '#10b981',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <span style={{ fontSize: '8px', color: 'white' }}>
+                            🌍
+                        </span>
+                    </div>
+                }
+                items={countryItems}
+                selectedValue={selectedCountry}
+                onValueChange={handleValueChange}
+                enableSearch={true}
+                searchPlaceholder="Search countries..."
+                cancelText="Clear"
+                confirmText="Select Country"
+                onConfirm={handleConfirm}
+            />
+        </>
+    )
+}
+
 // Custom Mobile Offset Example
 export const CustomMobileOffsetExample = () => {
     return (
@@ -1476,6 +2029,19 @@ export const DrawerDemo = () => {
                     <StatusDrawerErrorExample />
                     <StatusDrawerWarningExample />
                     <StatusDrawerInfoExample />
+                </div>
+            </div>
+
+            <div>
+                <h2 style={{ marginBottom: '8px' }}>Select Drawer Examples</h2>
+                <p style={{ marginBottom: '16px', color: '#6b7280' }}>
+                    Select drawers are specialized for selection interfaces with
+                    search functionality, scrollable content, and dual-action
+                    buttons (Clear All / Confirm).
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                    <MultiSelectDrawerExample />
+                    <SingleSelectDrawerExample />
                 </div>
             </div>
 

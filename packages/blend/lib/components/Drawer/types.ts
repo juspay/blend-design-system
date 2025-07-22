@@ -244,3 +244,154 @@ export type StatusDrawerProps = {
      */
     style?: React.CSSProperties
 }
+
+export type SelectDrawerItem = {
+    /**
+     * Unique identifier for the item
+     */
+    value: string
+    /**
+     * Display label for the item
+     */
+    label: string
+    /**
+     * Optional subtitle/description
+     */
+    subLabel?: string
+    /**
+     * Optional icon or element to display on the left
+     */
+    slot1?: ReactNode
+    /**
+     * Whether the item is disabled
+     */
+    disabled?: boolean
+}
+
+export type SelectDrawerGroup = {
+    /**
+     * Optional group label
+     */
+    groupLabel?: string
+    /**
+     * Items in this group
+     */
+    items: SelectDrawerItem[]
+    /**
+     * Whether to show separator after this group
+     */
+    showSeparator?: boolean
+}
+
+export type SelectDrawerProps = {
+    /**
+     * Whether the drawer is open
+     */
+    open?: boolean
+    /**
+     * Callback when the drawer open state changes
+     */
+    onOpenChange?: (open: boolean) => void
+    /**
+     * The heading text (gray-800, body.lg)
+     */
+    heading: string
+    /**
+     * The description text (gray-500, body.md)
+     */
+    description?: string
+    /**
+     * 14x14px slot for any React element (icon, etc.)
+     */
+    rightSlot?: ReactNode
+    /**
+     * Array of items or groups to display
+     */
+    items: SelectDrawerGroup[]
+    /**
+     * Currently selected values (for multi-select)
+     */
+    selectedValues?: string[]
+    /**
+     * Single selected value (for single-select)
+     */
+    selectedValue?: string
+    /**
+     * Callback when selection changes (multi-select)
+     */
+    onSelectionChange?: (selectedValues: string[]) => void
+    /**
+     * Callback when single selection changes
+     */
+    onValueChange?: (value: string) => void
+    /**
+     * Whether to enable search functionality
+     * @default true
+     */
+    enableSearch?: boolean
+    /**
+     * Search placeholder text
+     * @default 'Search'
+     */
+    searchPlaceholder?: string
+    /**
+     * Whether this is a multi-select drawer
+     * @default true
+     */
+    multiSelect?: boolean
+    /**
+     * Cancel button text
+     * @default 'Clear All'
+     */
+    cancelText?: string
+    /**
+     * Confirm button text
+     * @default 'Done'
+     */
+    confirmText?: string
+    /**
+     * Cancel button click handler
+     */
+    onCancel?: () => void
+    /**
+     * Confirm button click handler
+     */
+    onConfirm?: () => void
+    /**
+     * Whether to show the cancel button
+     * @default true
+     */
+    showCancelButton?: boolean
+    /**
+     * The direction from which the drawer slides in
+     * @default 'bottom'
+     */
+    direction?: DrawerDirection
+    /**
+     * Whether the drawer should be modal (with overlay)
+     * @default true
+     */
+    modal?: boolean
+    /**
+     * Whether the drawer can be dismissed by clicking outside
+     * @default true
+     */
+    dismissible?: boolean
+    /**
+     * Custom mobile offset values (overrides token defaults)
+     */
+    mobileOffset?: {
+        top?: string
+        bottom?: string
+        left?: string
+        right?: string
+    }
+    /**
+     * Custom class name for the drawer content
+     */
+    className?: string
+    /**
+     * Custom styles for the drawer content
+     */
+    style?: React.CSSProperties
+}
