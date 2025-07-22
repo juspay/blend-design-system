@@ -165,6 +165,8 @@ const RadioDemo = () => {
                                     <Heart size={16} className="text-red-500" />
                                 ) : undefined
                             }
+                            data-radio="false"
+                            data-radio-enabled="true"
                         >
                             {playgroundLabel}
                         </Radio>

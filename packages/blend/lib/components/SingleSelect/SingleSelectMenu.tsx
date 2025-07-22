@@ -23,6 +23,7 @@ type SingleSelectMenuProps = {
     maxWidth?: number
     maxHeight?: number
     enableSearch?: boolean
+    disabled?: boolean
 
     // alignment
     alignment?: SelectMenuAlignment
@@ -332,6 +333,7 @@ const SingleSelectMenu = ({
     maxWidth,
     maxHeight,
     enableSearch,
+    disabled,
     // alignment
     alignment = SelectMenuAlignment.CENTER,
     side = SelectMenuSide.BOTTOM,
@@ -346,9 +348,20 @@ const SingleSelectMenu = ({
 
     const filteredItems = filterMenuGroups(items, searchText)
 
+    const handleOpenChange = (newOpen: boolean) => {
+        if (disabled) return
+        onOpenChange(newOpen)
+    }
+
     return (
-        <RadixMenu.Root modal={false} open={open} onOpenChange={onOpenChange}>
-            <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>
+        <RadixMenu.Root
+            modal={false}
+            open={open && !disabled}
+            onOpenChange={handleOpenChange}
+        >
+            <RadixMenu.Trigger asChild disabled={disabled}>
+                {trigger}
+            </RadixMenu.Trigger>
             <Content
                 align={alignment}
                 sideOffset={sideOffset}

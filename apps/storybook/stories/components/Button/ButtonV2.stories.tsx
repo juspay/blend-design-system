@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { ButtonV2, ButtonTypeV2, ButtonSizeV2, ButtonSubTypeV2 } from 'blend-v1'
+import { Button, ButtonType, ButtonSize, ButtonSubType } from 'blend-v1'
 import {
     Plus,
     Download,
@@ -12,11 +12,11 @@ import {
     Trash2,
 } from 'lucide-react'
 
-// Figma Code Connect is now in a separate file: ButtonV2.figma.tsx
+// Figma Code Connect is now in a separate file: Button.figma.tsx
 
-const meta: Meta<typeof ButtonV2> = {
-    title: 'Components/Button/ButtonV2',
-    component: ButtonV2,
+const meta: Meta<typeof Button> = {
+    title: 'Components/Button/Button',
+    component: Button,
     parameters: {
         layout: 'centered',
         docs: {
@@ -39,11 +39,11 @@ A modern, enhanced button component with improved styling and token-based design
 ## Usage
 
 \`\`\`tsx
-import { ButtonV2, ButtonTypeV2, ButtonSizeV2 } from 'blend-v1';
+import { Button, ButtonType, ButtonSize } from 'blend-v1';
 
-<ButtonV2
-  buttonType={ButtonTypeV2.PRIMARY}
-  size={ButtonSizeV2.MEDIUM}
+<Button
+  buttonType={ButtonType.PRIMARY}
+  size={ButtonSize.MEDIUM}
   text="Click me"
   onClick={() => console.log('Button clicked!')}
 />
@@ -55,17 +55,17 @@ import { ButtonV2, ButtonTypeV2, ButtonSizeV2 } from 'blend-v1';
     argTypes: {
         buttonType: {
             control: 'select',
-            options: Object.values(ButtonTypeV2),
+            options: Object.values(ButtonType),
             description: 'The visual style of the button',
         },
         size: {
             control: 'select',
-            options: Object.values(ButtonSizeV2),
+            options: Object.values(ButtonSize),
             description: 'The size of the button',
         },
         subType: {
             control: 'select',
-            options: Object.values(ButtonSubTypeV2),
+            options: Object.values(ButtonSubType),
             description: 'Button subtype for special variants',
         },
         text: {
@@ -104,13 +104,13 @@ import { ButtonV2, ButtonTypeV2, ButtonSizeV2 } from 'blend-v1';
 }
 
 export default meta
-type Story = StoryObj<typeof ButtonV2>
+type Story = StoryObj<typeof Button>
 
 // Default story
 export const Default: Story = {
     args: {
-        buttonType: ButtonTypeV2.PRIMARY,
-        size: ButtonSizeV2.MEDIUM,
+        buttonType: ButtonType.PRIMARY,
+        size: ButtonSize.MEDIUM,
         text: 'Button',
         loading: false,
         disabled: false,
@@ -128,10 +128,10 @@ export const ButtonTypes: Story = {
                 flexWrap: 'wrap',
             }}
         >
-            <ButtonV2 buttonType={ButtonTypeV2.PRIMARY} text="Primary" />
-            <ButtonV2 buttonType={ButtonTypeV2.SECONDARY} text="Secondary" />
-            <ButtonV2 buttonType={ButtonTypeV2.DANGER} text="Danger" />
-            <ButtonV2 buttonType={ButtonTypeV2.SUCCESS} text="Success" />
+            <Button buttonType={ButtonType.PRIMARY} text="Primary" />
+            <Button buttonType={ButtonType.SECONDARY} text="Secondary" />
+            <Button buttonType={ButtonType.DANGER} text="Danger" />
+            <Button buttonType={ButtonType.SUCCESS} text="Success" />
         </div>
     ),
     parameters: {
@@ -154,9 +154,9 @@ export const ButtonSizes: Story = {
                 flexWrap: 'wrap',
             }}
         >
-            <ButtonV2 size={ButtonSizeV2.SMALL} text="Small" />
-            <ButtonV2 size={ButtonSizeV2.MEDIUM} text="Medium" />
-            <ButtonV2 size={ButtonSizeV2.LARGE} text="Large" />
+            <Button size={ButtonSize.SMALL} text="Small" />
+            <Button size={ButtonSize.MEDIUM} text="Medium" />
+            <Button size={ButtonSize.LARGE} text="Large" />
         </div>
     ),
     parameters: {
@@ -179,13 +179,13 @@ export const ButtonSubTypes: Story = {
                 flexWrap: 'wrap',
             }}
         >
-            <ButtonV2 subType={ButtonSubTypeV2.DEFAULT} text="Default" />
-            <ButtonV2
-                subType={ButtonSubTypeV2.ICON_ONLY}
+            <Button subType={ButtonSubType.DEFAULT} text="Default" />
+            <Button
+                subType={ButtonSubType.ICON_ONLY}
                 leftIcon={<Settings size={16} />}
                 text="Icon Only"
             />
-            <ButtonV2 subType={ButtonSubTypeV2.INLINE} text="Inline" />
+            <Button subType={ButtonSubType.INLINE} text="Inline" />
         </div>
     ),
     parameters: {
@@ -201,26 +201,26 @@ export const ButtonSubTypes: Story = {
 export const WithIcons: Story = {
     render: () => (
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <ButtonV2
+            <Button
                 text="Add Item"
                 leftIcon={<Plus size={16} />}
-                buttonType={ButtonTypeV2.PRIMARY}
+                buttonType={ButtonType.PRIMARY}
             />
-            <ButtonV2
+            <Button
                 text="Download"
                 leftIcon={<Download size={16} />}
-                buttonType={ButtonTypeV2.SECONDARY}
+                buttonType={ButtonType.SECONDARY}
             />
-            <ButtonV2
+            <Button
                 text="Settings"
                 rightIcon={<Settings size={16} />}
-                buttonType={ButtonTypeV2.SECONDARY}
+                buttonType={ButtonType.SECONDARY}
             />
-            <ButtonV2
+            <Button
                 text="Favorite"
                 leftIcon={<Heart size={16} />}
                 rightIcon={<Star size={16} />}
-                buttonType={ButtonTypeV2.SUCCESS}
+                buttonType={ButtonType.SUCCESS}
             />
         </div>
     ),
@@ -244,29 +244,29 @@ export const IconOnly: Story = {
                 flexWrap: 'wrap',
             }}
         >
-            <ButtonV2
-                subType={ButtonSubTypeV2.ICON_ONLY}
+            <Button
+                subType={ButtonSubType.ICON_ONLY}
                 leftIcon={<Plus size={16} />}
-                buttonType={ButtonTypeV2.PRIMARY}
-                size={ButtonSizeV2.SMALL}
+                buttonType={ButtonType.PRIMARY}
+                size={ButtonSize.SMALL}
             />
-            <ButtonV2
-                subType={ButtonSubTypeV2.ICON_ONLY}
+            <Button
+                subType={ButtonSubType.ICON_ONLY}
                 leftIcon={<Search size={16} />}
-                buttonType={ButtonTypeV2.SECONDARY}
-                size={ButtonSizeV2.MEDIUM}
+                buttonType={ButtonType.SECONDARY}
+                size={ButtonSize.MEDIUM}
             />
-            <ButtonV2
-                subType={ButtonSubTypeV2.ICON_ONLY}
+            <Button
+                subType={ButtonSubType.ICON_ONLY}
                 leftIcon={<Edit size={16} />}
-                buttonType={ButtonTypeV2.SUCCESS}
-                size={ButtonSizeV2.LARGE}
+                buttonType={ButtonType.SUCCESS}
+                size={ButtonSize.LARGE}
             />
-            <ButtonV2
-                subType={ButtonSubTypeV2.ICON_ONLY}
+            <Button
+                subType={ButtonSubType.ICON_ONLY}
                 leftIcon={<Trash2 size={16} />}
-                buttonType={ButtonTypeV2.DANGER}
-                size={ButtonSizeV2.MEDIUM}
+                buttonType={ButtonType.DANGER}
+                size={ButtonSize.MEDIUM}
             />
         </div>
     ),
@@ -291,16 +291,16 @@ export const InlineButtons: Story = {
             }}
         >
             <span>This is some text with </span>
-            <ButtonV2
-                subType={ButtonSubTypeV2.INLINE}
+            <Button
+                subType={ButtonSubType.INLINE}
                 text="inline button"
-                buttonType={ButtonTypeV2.PRIMARY}
+                buttonType={ButtonType.PRIMARY}
             />
             <span> and </span>
-            <ButtonV2
-                subType={ButtonSubTypeV2.INLINE}
+            <Button
+                subType={ButtonSubType.INLINE}
                 text="another one"
-                buttonType={ButtonTypeV2.SECONDARY}
+                buttonType={ButtonType.SECONDARY}
             />
             <span> in the flow.</span>
         </div>
@@ -318,15 +318,15 @@ export const InlineButtons: Story = {
 export const ButtonStates: Story = {
     render: () => (
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <ButtonV2 text="Normal" buttonType={ButtonTypeV2.PRIMARY} />
-            <ButtonV2
+            <Button text="Normal" buttonType={ButtonType.PRIMARY} />
+            <Button
                 text="Loading"
-                buttonType={ButtonTypeV2.PRIMARY}
+                buttonType={ButtonType.PRIMARY}
                 loading={true}
             />
-            <ButtonV2
+            <Button
                 text="Disabled"
-                buttonType={ButtonTypeV2.PRIMARY}
+                buttonType={ButtonType.PRIMARY}
                 disabled={true}
             />
         </div>
@@ -351,19 +351,19 @@ export const FullWidth: Story = {
                 gap: '12px',
             }}
         >
-            <ButtonV2
+            <Button
                 text="Full Width Primary"
-                buttonType={ButtonTypeV2.PRIMARY}
+                buttonType={ButtonType.PRIMARY}
                 fullWidth={true}
             />
-            <ButtonV2
+            <Button
                 text="Full Width Secondary"
-                buttonType={ButtonTypeV2.SECONDARY}
+                buttonType={ButtonType.SECONDARY}
                 fullWidth={true}
             />
-            <ButtonV2
+            <Button
                 text="Full Width with Icon"
-                buttonType={ButtonTypeV2.SUCCESS}
+                buttonType={ButtonType.SUCCESS}
                 leftIcon={<Plus size={16} />}
                 fullWidth={true}
             />
@@ -393,19 +393,19 @@ export const ButtonGroupPositioning: Story = {
                     Button Group
                 </h4>
                 <div style={{ display: 'flex' }}>
-                    <ButtonV2
+                    <Button
                         text="Left"
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                         buttonGroupPosition="left"
                     />
-                    <ButtonV2
+                    <Button
                         text="Center"
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                         buttonGroupPosition="center"
                     />
-                    <ButtonV2
+                    <Button
                         text="Right"
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                         buttonGroupPosition="right"
                     />
                 </div>
@@ -421,14 +421,14 @@ export const ButtonGroupPositioning: Story = {
                     Primary Group
                 </h4>
                 <div style={{ display: 'flex' }}>
-                    <ButtonV2
+                    <Button
                         text="Save"
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                         buttonGroupPosition="left"
                     />
-                    <ButtonV2
+                    <Button
                         text="Save & Continue"
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                         buttonGroupPosition="right"
                     />
                 </div>
@@ -455,21 +455,21 @@ export const ContentAlignment: Story = {
                 gap: '12px',
             }}
         >
-            <ButtonV2
+            <Button
                 text="Left Aligned"
-                buttonType={ButtonTypeV2.SECONDARY}
+                buttonType={ButtonType.SECONDARY}
                 fullWidth={true}
                 justifyContent="flex-start"
             />
-            <ButtonV2
+            <Button
                 text="Center Aligned"
-                buttonType={ButtonTypeV2.SECONDARY}
+                buttonType={ButtonType.SECONDARY}
                 fullWidth={true}
                 justifyContent="center"
             />
-            <ButtonV2
+            <Button
                 text="Right Aligned"
-                buttonType={ButtonTypeV2.SECONDARY}
+                buttonType={ButtonType.SECONDARY}
                 fullWidth={true}
                 justifyContent="flex-end"
             />
@@ -487,8 +487,8 @@ export const ContentAlignment: Story = {
 // Loading state
 export const Loading: Story = {
     args: {
-        buttonType: ButtonTypeV2.PRIMARY,
-        size: ButtonSizeV2.MEDIUM,
+        buttonType: ButtonType.PRIMARY,
+        size: ButtonSize.MEDIUM,
         text: 'Loading Button',
         loading: true,
     },
@@ -504,8 +504,8 @@ export const Loading: Story = {
 // Disabled state
 export const Disabled: Story = {
     args: {
-        buttonType: ButtonTypeV2.PRIMARY,
-        size: ButtonSizeV2.MEDIUM,
+        buttonType: ButtonType.PRIMARY,
+        size: ButtonSize.MEDIUM,
         text: 'Disabled Button',
         disabled: true,
     },
@@ -540,19 +540,13 @@ export const Showcase: Story = {
                     Button Types
                 </h3>
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.PRIMARY}
-                        text="Primary"
-                    />
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
+                    <Button buttonType={ButtonType.PRIMARY} text="Primary" />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
                         text="Secondary"
                     />
-                    <ButtonV2 buttonType={ButtonTypeV2.DANGER} text="Danger" />
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SUCCESS}
-                        text="Success"
-                    />
+                    <Button buttonType={ButtonType.DANGER} text="Danger" />
+                    <Button buttonType={ButtonType.SUCCESS} text="Success" />
                 </div>
             </div>
 
@@ -567,20 +561,20 @@ export const Showcase: Story = {
                     With Icons
                 </h3>
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <ButtonV2
+                    <Button
                         text="Add"
                         leftIcon={<Plus size={16} />}
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                     />
-                    <ButtonV2
+                    <Button
                         text="Download"
                         rightIcon={<Download size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
-                    <ButtonV2
-                        subType={ButtonSubTypeV2.ICON_ONLY}
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
                         leftIcon={<Settings size={16} />}
-                        buttonType={ButtonTypeV2.SECONDARY}
+                        buttonType={ButtonType.SECONDARY}
                     />
                 </div>
             </div>
@@ -596,15 +590,15 @@ export const Showcase: Story = {
                     States
                 </h3>
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <ButtonV2 text="Normal" buttonType={ButtonTypeV2.PRIMARY} />
-                    <ButtonV2
+                    <Button text="Normal" buttonType={ButtonType.PRIMARY} />
+                    <Button
                         text="Loading"
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                         loading={true}
                     />
-                    <ButtonV2
+                    <Button
                         text="Disabled"
-                        buttonType={ButtonTypeV2.PRIMARY}
+                        buttonType={ButtonType.PRIMARY}
                         disabled={true}
                     />
                 </div>
@@ -614,7 +608,7 @@ export const Showcase: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'A comprehensive showcase of ButtonV2 capabilities and variations.',
+                story: 'A comprehensive showcase of Button capabilities and variations.',
             },
         },
     },

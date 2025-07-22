@@ -1,10 +1,10 @@
 import { ChevronRight } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
-import { MultiSelectMenuItemType } from './types'
+import { type MultiSelectMenuItemType } from './types'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import MultiSelectMenuItem from './MultiSelectMenuItem'
-import { MultiSelectTokensType } from './multiSelect.tokens'
+import { type MultiSelectTokensType } from './multiSelect.tokens'
 import { useComponentToken } from '../../context/useComponentToken'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 
@@ -61,6 +61,7 @@ const MultiSelectSubMenu = ({
                             multiSelectTokens.dropdown.item.backgroundColor
                                 .focusVisible,
                     }}
+                    style={{ userSelect: 'none' }}
                 >
                     <Block
                         display="flex"

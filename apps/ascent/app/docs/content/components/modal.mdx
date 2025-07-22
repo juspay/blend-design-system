@@ -13,7 +13,7 @@ tags:
 ## Usage
 
 ```tsx
-import { Modal, ButtonTypeV2 } from 'blend-v1'
+import { Modal, ButtonType } from 'blend-v1'
 import { useState } from 'react'
 
 function MyComponent() {
@@ -30,7 +30,7 @@ function MyComponent() {
                 subtitle="Optional subtitle for the modal"
                 primaryAction={{
                     text: 'Save',
-                    buttonType: ButtonTypeV2.PRIMARY,
+                    buttonType: ButtonType.PRIMARY,
                     onClick: () => {
                         console.log('Primary action clicked')
                         setIsOpen(false)
@@ -38,7 +38,7 @@ function MyComponent() {
                 }}
                 secondaryAction={{
                     text: 'Cancel',
-                    buttonType: ButtonTypeV2.SECONDARY,
+                    buttonType: ButtonType.SECONDARY,
                     onClick: () => setIsOpen(false),
                 }}
             >
@@ -172,21 +172,21 @@ The `primaryAction` and `secondaryAction` props accept a `ModalButtonAction` obj
                 content: 'buttonType',
                 hintText: 'The visual type of the button',
             },
-            { content: 'ButtonTypeV2', hintText: 'enum' },
-            { content: 'ButtonTypeV2.PRIMARY' },
+            { content: 'ButtonType', hintText: 'enum' },
+            { content: 'ButtonType.PRIMARY' },
         ],
         [
             { content: 'size', hintText: 'The size of the button' },
-            { content: 'ButtonSizeV2', hintText: 'enum' },
-            { content: 'ButtonSizeV2.MEDIUM' },
+            { content: 'ButtonSize', hintText: 'enum' },
+            { content: 'ButtonSize.MEDIUM' },
         ],
         [
             {
                 content: 'subType',
                 hintText: 'The subtype affecting button styling',
             },
-            { content: 'ButtonSubTypeV2', hintText: 'enum' },
-            { content: 'ButtonSubTypeV2.DEFAULT' },
+            { content: 'ButtonSubType', hintText: 'enum' },
+            { content: 'ButtonSubType.DEFAULT' },
         ],
         [
             {
@@ -273,12 +273,12 @@ Modal with primary and secondary action buttons
     title="Confirm Action"
     primaryAction={{
         text: 'Save',
-        buttonType: ButtonTypeV2.PRIMARY,
+        buttonType: ButtonType.PRIMARY,
         onClick: handleSave,
     }}
     secondaryAction={{
         text: 'Cancel',
-        buttonType: ButtonTypeV2.SECONDARY,
+        buttonType: ButtonType.SECONDARY,
         onClick: () => setIsOpen(false),
     }}
 >
@@ -297,7 +297,7 @@ Modal with a loading primary action
     title="Processing"
     primaryAction={{
         text: 'Processing...',
-        buttonType: ButtonTypeV2.PRIMARY,
+        buttonType: ButtonType.PRIMARY,
         loading: true,
         onClick: handleProcess,
     }}

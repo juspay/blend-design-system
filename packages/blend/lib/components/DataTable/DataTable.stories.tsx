@@ -1463,7 +1463,7 @@ export const WithCustomHeaderSlots: Story = {
         headerSlot1: (
             <Button
                 buttonType={ButtonType.SECONDARY}
-                leadingIcon={RefreshCw}
+                leadingIcon={<RefreshCw />}
                 size={ButtonSize.SMALL}
                 onClick={() => console.log('Refresh clicked')}
             >
@@ -1474,7 +1474,7 @@ export const WithCustomHeaderSlots: Story = {
             <div style={{ display: 'flex', gap: '8px' }}>
                 <Button
                     buttonType={ButtonType.SECONDARY}
-                    leadingIcon={Download}
+                    leadingIcon={<Download />}
                     size={ButtonSize.SMALL}
                     onClick={() => console.log('Export clicked')}
                 >
@@ -1482,7 +1482,7 @@ export const WithCustomHeaderSlots: Story = {
                 </Button>
                 <Button
                     buttonType={ButtonType.SECONDARY}
-                    leadingIcon={Settings}
+                    leadingIcon={<Settings />}
                     size={ButtonSize.SMALL}
                     onClick={() => console.log('Settings clicked')}
                 >
@@ -1490,7 +1490,7 @@ export const WithCustomHeaderSlots: Story = {
                 </Button>
                 <Button
                     buttonType={ButtonType.PRIMARY}
-                    leadingIcon={Plus}
+                    leadingIcon={<Plus />}
                     size={ButtonSize.SMALL}
                     onClick={() => console.log('Add employee clicked')}
                 >

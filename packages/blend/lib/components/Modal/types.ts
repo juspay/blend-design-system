@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { ButtonV2Props } from '../ButtonV2'
+import type { ButtonV2Props } from '../Button'
 
 type ModalButtonAction = Omit<ButtonV2Props, 'buttonGroupPosition'>
 

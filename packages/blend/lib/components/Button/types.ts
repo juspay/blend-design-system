@@ -1,4 +1,5 @@
-import type { ComponentPropsWithoutRef, ElementType } from 'react'
+import React from 'react'
+import type { CSSObject } from 'styled-components'
 
 export enum ButtonType {
     PRIMARY = 'primary',
@@ -16,22 +17,22 @@ export enum ButtonSize {
 export enum ButtonSubType {
     DEFAULT = 'default',
     ICON_ONLY = 'iconOnly',
-    LINK = 'link',
-    PLAIN_ICON = 'plainIcon',
+    INLINE = 'inline',
 }
 
-export type ButtonProps = ComponentPropsWithoutRef<'button'> & {
+export type ButtonV2Props = {
     buttonType?: ButtonType
     size?: ButtonSize
     subType?: ButtonSubType
     text?: string
-    leadingIcon?: ElementType
-    trailingIcon?: ElementType
+    leadingIcon?: React.ReactNode
+    trailingIcon?: React.ReactNode
     isLoading?: boolean
     isDisabled?: boolean
-    ariaLabel?: string
-    ariaExpanded?: boolean
-    ariaControls?: string
-    ariaPressed?: boolean | 'mixed'
-    ariaHasPopup?: boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'
-}
+    disabled?: boolean
+    onClick?: () => void
+    loading?: boolean
+    buttonGroupPosition?: 'center' | 'left' | 'right'
+    fullWidth?: boolean
+    justifyContent?: CSSObject['justifyContent']
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style' | 'className'>

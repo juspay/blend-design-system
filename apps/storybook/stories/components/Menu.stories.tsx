@@ -7,9 +7,9 @@ import {
     MenuItemV2Variant,
     MenuItemV2ActionType,
     MenuV2GroupType,
-    ButtonV2,
-    ButtonTypeV2,
-    ButtonSizeV2,
+    Button,
+    ButtonType,
+    ButtonSize,
 } from 'blend-v1'
 import {
     ChevronDown,
@@ -181,9 +181,9 @@ type Story = StoryObj<typeof Menu>
 export const Default: Story = {
     args: {
         trigger: (
-            <ButtonV2
-                buttonType={ButtonTypeV2.SECONDARY}
-                size={ButtonSizeV2.MEDIUM}
+            <Button
+                buttonType={ButtonType.SECONDARY}
+                size={ButtonSize.MEDIUM}
                 text="Open Menu"
                 trailingIcon={<ChevronDown size={16} />}
             />
@@ -274,9 +274,9 @@ export const WithSearch: Story = {
         return (
             <Menu
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
                         text="Search Menu"
                         leadingIcon={<Search size={16} />}
                     />
@@ -361,9 +361,9 @@ export const WithSubLabels: Story = {
         return (
             <Menu
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
                         text="Plans & Billing"
                         trailingIcon={<ChevronDown size={16} />}
                     />
@@ -498,9 +498,9 @@ export const WithMultipleSlots: Story = {
         return (
             <Menu
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
                         text="Team"
                         leadingIcon={<Users size={16} />}
                         trailingIcon={<ChevronDown size={16} />}
@@ -571,9 +571,9 @@ export const ActionVariants: Story = {
         return (
             <Menu
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
                         text="File Actions"
                         trailingIcon={<ChevronDown size={16} />}
                     />
@@ -655,9 +655,9 @@ export const WithDisabledItems: Story = {
         return (
             <Menu
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
                         text="Edit"
                         trailingIcon={<ChevronDown size={16} />}
                     />
@@ -692,9 +692,9 @@ export const PositioningExamples: Story = {
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                 <Menu
                     trigger={
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.SECONDARY}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
                             text="Bottom Start"
                         />
                     }
@@ -704,9 +704,9 @@ export const PositioningExamples: Story = {
                 />
                 <Menu
                     trigger={
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.SECONDARY}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
                             text="Bottom Center"
                         />
                     }
@@ -716,9 +716,9 @@ export const PositioningExamples: Story = {
                 />
                 <Menu
                     trigger={
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.SECONDARY}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
                             text="Bottom End"
                         />
                     }
@@ -728,9 +728,9 @@ export const PositioningExamples: Story = {
                 />
                 <Menu
                     trigger={
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.SECONDARY}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
                             text="Right"
                         />
                     }
@@ -740,9 +740,9 @@ export const PositioningExamples: Story = {
                 />
                 <Menu
                     trigger={
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.SECONDARY}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
                             text="Left"
                         />
                     }
@@ -752,9 +752,9 @@ export const PositioningExamples: Story = {
                 />
                 <Menu
                     trigger={
-                        <ButtonV2
-                            buttonType={ButtonTypeV2.SECONDARY}
-                            size={ButtonSizeV2.SMALL}
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
                             text="Top"
                         />
                     }
@@ -868,9 +868,9 @@ export const SettingsMenuExample: Story = {
         return (
             <Menu
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
                         text="Settings"
                         leadingIcon={<Settings size={16} />}
                     />
@@ -982,9 +982,9 @@ export const FileBrowserMenu: Story = {
         return (
             <Menu
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
                         text="View Options"
                         leadingIcon={<Filter size={16} />}
                         trailingIcon={<ChevronDown size={16} />}
@@ -1209,9 +1209,9 @@ export const ComplexExample: Story = {
         return (
             <Menu
                 trigger={
-                    <ButtonV2
-                        buttonType={ButtonTypeV2.SECONDARY}
-                        size={ButtonSizeV2.MEDIUM}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
                         text="Dashboard Menu"
                         leadingIcon={<BarChart size={16} />}
                         trailingIcon={<ChevronDown size={16} />}

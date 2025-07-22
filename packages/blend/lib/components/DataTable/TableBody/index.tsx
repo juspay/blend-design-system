@@ -7,9 +7,9 @@ import Block from '../../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../../tokens'
 
 import {
-    ButtonV2,
-    ButtonTypeV2,
-    ButtonSizeV2,
+    Button,
+    ButtonType,
+    ButtonSize,
     Checkbox,
     CheckboxSize,
     TableTokenType,
@@ -485,7 +485,7 @@ const TableBody = forwardRef<
                                               >
                                                   {isEditing ? (
                                                       <>
-                                                          <ButtonV2
+                                                          <Button
                                                               onClick={() =>
                                                                   onSaveRow(
                                                                       row[
@@ -495,7 +495,7 @@ const TableBody = forwardRef<
                                                               }
                                                               title="Save"
                                                               buttonType={
-                                                                  ButtonTypeV2.SECONDARY
+                                                                  ButtonType.SECONDARY
                                                               }
                                                               leadingIcon={
                                                                   <Save
@@ -503,10 +503,10 @@ const TableBody = forwardRef<
                                                                   />
                                                               }
                                                               size={
-                                                                  ButtonSizeV2.SMALL
+                                                                  ButtonSize.SMALL
                                                               }
                                                           />
-                                                          <ButtonV2
+                                                          <Button
                                                               onClick={() =>
                                                                   onCancelEdit(
                                                                       row[
@@ -516,7 +516,7 @@ const TableBody = forwardRef<
                                                               }
                                                               title="Cancel"
                                                               buttonType={
-                                                                  ButtonTypeV2.SECONDARY
+                                                                  ButtonType.SECONDARY
                                                               }
                                                               leadingIcon={
                                                                   <X
@@ -524,12 +524,12 @@ const TableBody = forwardRef<
                                                                   />
                                                               }
                                                               size={
-                                                                  ButtonSizeV2.SMALL
+                                                                  ButtonSize.SMALL
                                                               }
                                                           />
                                                       </>
                                                   ) : (
-                                                      <ButtonV2
+                                                      <Button
                                                           onClick={() =>
                                                               onEditRow(
                                                                   row[idField]
@@ -537,13 +537,13 @@ const TableBody = forwardRef<
                                                           }
                                                           title="Edit"
                                                           buttonType={
-                                                              ButtonTypeV2.SECONDARY
+                                                              ButtonType.SECONDARY
                                                           }
                                                           leadingIcon={
                                                               <Edit size={16} />
                                                           }
                                                           size={
-                                                              ButtonSizeV2.SMALL
+                                                              ButtonSize.SMALL
                                                           }
                                                       />
                                                   )}

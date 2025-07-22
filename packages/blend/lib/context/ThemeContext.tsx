@@ -63,7 +63,7 @@ import {
 import {
     type ResponsiveButtonTokens,
     getButtonTokens,
-} from '../components/ButtonV2/button.tokens'
+} from '../components/Button/button.tokens'
 import {
     getModalComponentTokens,
     type ModalTokensType,
@@ -100,6 +100,9 @@ import {
     getStatCardToken,
     type StatCardTokenType,
 } from '../components/StatCard/statcard.tokens'
+import progressBarTokens, {
+    type ProgressBarTokenType,
+} from '../components/ProgressBar/progressbar.tokens'
 import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
 
 export type ComponentTokenType = {
@@ -128,6 +131,7 @@ export type ComponentTokenType = {
     CALENDAR?: CalendarTokenType
     ACCORDION?: AccordionTokenType
     STAT_CARD?: StatCardTokenType
+    PROGRESS_BAR?: ProgressBarTokenType
 }
 
 type ThemeContextType = {
@@ -164,6 +168,7 @@ const ThemeContext = createContext<ThemeContextType>({
         CALENDAR: getCalendarToken(FOUNDATION_THEME),
         ACCORDION: getAccordionToken(FOUNDATION_THEME),
         STAT_CARD: getStatCardToken(FOUNDATION_THEME),
+        PROGRESS_BAR: progressBarTokens,
     },
     breakpoints: BREAKPOINTS,
 })

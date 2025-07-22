@@ -24,7 +24,7 @@ import { TextInput } from '../Inputs/TextInput'
 import { useComponentToken } from '../../context/useComponentToken'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
-import { ButtonTypeV2, ButtonSizeV2, ButtonV2 } from '../../main'
+import { ButtonType, ButtonSize, Button } from '../../main'
 
 type DateInputsSectionProps = {
     startDate: string
@@ -225,15 +225,15 @@ const FooterControls: React.FC<FooterControlsProps> = ({
         </Block>
 
         <Block display="flex" gap={calendarToken.calendar.footer.button.gap}>
-            <ButtonV2
-                buttonType={ButtonTypeV2.SECONDARY}
-                size={ButtonSizeV2.SMALL}
+            <Button
+                buttonType={ButtonType.SECONDARY}
+                size={ButtonSize.SMALL}
                 onClick={onCancel}
                 text="Cancel"
             />
-            <ButtonV2
-                buttonType={ButtonTypeV2.PRIMARY}
-                size={ButtonSizeV2.SMALL}
+            <Button
+                buttonType={ButtonType.PRIMARY}
+                size={ButtonSize.SMALL}
                 onClick={onApply}
                 text="Apply"
             />

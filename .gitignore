@@ -160,3 +160,6 @@ dist/
 apps/ascent/out/
 apps/ascent/.next/
 apps/storybook/storybook-static/
+
+packages/blend/dist/*
+**/dist
