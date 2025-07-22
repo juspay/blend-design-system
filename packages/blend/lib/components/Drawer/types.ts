@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import type { ButtonV2Props } from '../Button/types'
 
 export type DrawerDirection = 'top' | 'bottom' | 'left' | 'right'
 
@@ -179,4 +180,67 @@ export type DrawerCloseProps = {
      * Whether the close button is disabled
      */
     disabled?: boolean
+}
+
+export type StatusDrawerProps = {
+    /**
+     * Whether the drawer is open
+     */
+    open?: boolean
+    /**
+     * Callback when the drawer open state changes
+     */
+    onOpenChange?: (open: boolean) => void
+    /**
+     * The heading text (gray-700, heading.sm)
+     */
+    heading: string
+    /**
+     * The description text (gray-500, body.md)
+     */
+    description: string
+    /**
+     * Primary action button props (e.g., Delete, OK, Confirm)
+     */
+    primaryButtonProps: ButtonV2Props
+    /**
+     * Secondary action button props (e.g., Cancel) - optional
+     */
+    secondaryButtonProps?: ButtonV2Props
+    /**
+     * 56x56px slot for any React element (icon, image, etc.)
+     */
+    slot: ReactNode
+    /**
+     * The direction from which the drawer slides in
+     * @default 'bottom'
+     */
+    direction?: DrawerDirection
+    /**
+     * Whether the drawer should be modal (with overlay)
+     * @default true
+     */
+    modal?: boolean
+    /**
+     * Whether the drawer can be dismissed by clicking outside
+     * @default true
+     */
+    dismissible?: boolean
+    /**
+     * Custom mobile offset values (overrides token defaults)
+     */
+    mobileOffset?: {
+        top?: string
+        bottom?: string
+        left?: string
+        right?: string
+    }
+    /**
+     * Custom class name for the drawer content
+     */
+    className?: string
+    /**
+     * Custom styles for the drawer content
+     */
+    style?: React.CSSProperties
 }

@@ -10,6 +10,7 @@ export {
     DrawerBody,
     DrawerFooter,
     DrawerClose,
+    StatusDrawer,
 } from './Drawer'
 export * from './types'
 export type { DrawerTokensType } from './drawer.tokens'

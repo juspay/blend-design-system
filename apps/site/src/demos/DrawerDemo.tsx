@@ -14,7 +14,9 @@ import {
     DrawerTitle,
     DrawerFooter,
     DrawerClose,
+    StatusDrawer,
 } from '../../../../packages/blend/lib/components/Drawer'
+import { ButtonType } from '../../../../packages/blend/lib/components/Button'
 import ResponsiveSelectDemo from './ResponsiveSelectDemo'
 
 export const BasicDrawerExample = () => {
@@ -1115,6 +1117,246 @@ export const NonDismissibleExample = () => {
     )
 }
 
+// Status Drawer Examples
+export const StatusDrawerSuccessExample = () => {
+    const [open, setOpen] = useState(false)
+
+    return (
+        <>
+            <button
+                onClick={() => setOpen(true)}
+                style={{
+                    display: 'flex',
+                    height: '40px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    overflow: 'hidden',
+                    borderRadius: '20px',
+                    backgroundColor: 'white',
+                    padding: '0 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                    border: '1px solid #e5e7eb',
+                    cursor: 'pointer',
+                }}
+            >
+                Success Status
+            </button>
+            <StatusDrawer
+                open={open}
+                onOpenChange={setOpen}
+                heading="Are you sure you want to delete?"
+                description="This will delete the entry. You might not be able to retrieve again ever."
+                slot={
+                    <div
+                        style={{
+                            width: '56px',
+                            height: '56px',
+                            backgroundColor: '#ddd6fe',
+                            borderRadius: '8px',
+                            border: '2px dashed #8b5cf6',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <span style={{ fontSize: '24px' }}>🗑️</span>
+                    </div>
+                }
+                secondaryButtonProps={{
+                    buttonType: ButtonType.SECONDARY,
+                    text: 'Cancel',
+                    onClick: () => setOpen(false),
+                }}
+                primaryButtonProps={{
+                    buttonType: ButtonType.DANGER,
+                    text: 'Delete',
+                    onClick: () => {
+                        console.log('Item deleted!')
+                        setOpen(false)
+                    },
+                }}
+            />
+        </>
+    )
+}
+
+export const StatusDrawerErrorExample = () => {
+    const [open, setOpen] = useState(false)
+
+    return (
+        <>
+            <button
+                onClick={() => setOpen(true)}
+                style={{
+                    display: 'flex',
+                    height: '40px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    overflow: 'hidden',
+                    borderRadius: '20px',
+                    backgroundColor: 'white',
+                    padding: '0 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                    border: '1px solid #e5e7eb',
+                    cursor: 'pointer',
+                }}
+            >
+                Error Status
+            </button>
+            <StatusDrawer
+                open={open}
+                onOpenChange={setOpen}
+                heading="Connection Failed"
+                description="Unable to connect to the server. Please check your internet connection and try again."
+                slot={
+                    <div
+                        style={{
+                            width: '56px',
+                            height: '56px',
+                            backgroundColor: '#fecaca',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <span style={{ fontSize: '24px', color: '#dc2626' }}>
+                            ✕
+                        </span>
+                    </div>
+                }
+                primaryButtonProps={{
+                    buttonType: ButtonType.PRIMARY,
+                    text: 'Try Again',
+                    onClick: () => setOpen(false),
+                }}
+            />
+        </>
+    )
+}
+
+export const StatusDrawerWarningExample = () => {
+    const [open, setOpen] = useState(false)
+
+    return (
+        <>
+            <button
+                onClick={() => setOpen(true)}
+                style={{
+                    display: 'flex',
+                    height: '40px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    overflow: 'hidden',
+                    borderRadius: '20px',
+                    backgroundColor: 'white',
+                    padding: '0 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                    border: '1px solid #e5e7eb',
+                    cursor: 'pointer',
+                }}
+            >
+                Warning Status
+            </button>
+            <StatusDrawer
+                open={open}
+                onOpenChange={setOpen}
+                heading="Storage Almost Full"
+                description="You're running out of storage space. Consider upgrading your plan or deleting some files."
+                slot={
+                    <div
+                        style={{
+                            width: '56px',
+                            height: '56px',
+                            backgroundColor: '#fef3c7',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <span style={{ fontSize: '24px', color: '#f59e0b' }}>
+                            ⚠️
+                        </span>
+                    </div>
+                }
+                primaryButtonProps={{
+                    buttonType: ButtonType.PRIMARY,
+                    text: 'Upgrade Plan',
+                    onClick: () => setOpen(false),
+                }}
+            />
+        </>
+    )
+}
+
+export const StatusDrawerInfoExample = () => {
+    const [open, setOpen] = useState(false)
+
+    return (
+        <>
+            <button
+                onClick={() => setOpen(true)}
+                style={{
+                    display: 'flex',
+                    height: '40px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    overflow: 'hidden',
+                    borderRadius: '20px',
+                    backgroundColor: 'white',
+                    padding: '0 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                    border: '1px solid #e5e7eb',
+                    cursor: 'pointer',
+                }}
+            >
+                Info Status
+            </button>
+            <StatusDrawer
+                open={open}
+                onOpenChange={setOpen}
+                heading="New Feature Available"
+                description="We've added a new feature that helps you organize your files better. Check it out!"
+                slot={
+                    <div
+                        style={{
+                            width: '56px',
+                            height: '56px',
+                            backgroundColor: '#dbeafe',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <span style={{ fontSize: '24px', color: '#3b82f6' }}>
+                            ℹ️
+                        </span>
+                    </div>
+                }
+                primaryButtonProps={{
+                    buttonType: ButtonType.PRIMARY,
+                    text: 'Learn More',
+                    onClick: () => setOpen(false),
+                }}
+            />
+        </>
+    )
+}
+
 // Custom Mobile Offset Example
 export const CustomMobileOffsetExample = () => {
     return (
@@ -1219,6 +1461,21 @@ export const DrawerDemo = () => {
                     <SequentialSnapPointsExample />
                     <CustomFadeIndexExample />
                     <NonDismissibleExample />
+                </div>
+            </div>
+
+            <div>
+                <h2 style={{ marginBottom: '8px' }}>Status Drawer Examples</h2>
+                <p style={{ marginBottom: '16px', color: '#6b7280' }}>
+                    Status drawers are pre-built variants for displaying status
+                    messages with an icon, heading, description, and action
+                    button.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                    <StatusDrawerSuccessExample />
+                    <StatusDrawerErrorExample />
+                    <StatusDrawerWarningExample />
+                    <StatusDrawerInfoExample />
                 </div>
             </div>
 
