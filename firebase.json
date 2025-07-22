@@ -2,6 +2,10 @@
     "database": {
         "rules": "apps/blend-monitor/database.rules.json"
     },
+    "functions": {
+        "source": "apps/blend-monitor/functions",
+        "runtime": "nodejs20"
+    },
     "hosting": [
         {
             "target": "blend-prod",
@@ -122,6 +126,62 @@
                         {
                             "key": "Cache-Control",
                             "value": "public, max-age=3600"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "target": "blend-monitor",
+            "public": "apps/blend-monitor/out",
+            "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+            "rewrites": [
+                {
+                    "source": "/api/**",
+                    "function": "api"
+                },
+                {
+                    "source": "**",
+                    "destination": "/index.html"
+                }
+            ],
+            "headers": [
+                {
+                    "source": "**",
+                    "headers": [
+                        {
+                            "key": "X-Content-Type-Options",
+                            "value": "nosniff"
+                        },
+                        {
+                            "key": "X-Frame-Options",
+                            "value": "SAMEORIGIN"
+                        },
+                        {
+                            "key": "X-XSS-Protection",
+                            "value": "1; mode=block"
+                        },
+                        {
+                            "key": "Referrer-Policy",
+                            "value": "strict-origin-when-cross-origin"
+                        }
+                    ]
+                },
+                {
+                    "source": "**/*.@(js|css)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "public, max-age=31536000, immutable"
+                        }
+                    ]
+                },
+                {
+                    "source": "**/*.@(jpg|jpeg|gif|png|svg|ico)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "public, max-age=86400"
                         }
                     ]
                 }

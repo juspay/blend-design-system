@@ -51,7 +51,7 @@ export enum ActivityAction {
 }
 
 export class ActivityService {
-    private db = getDatabase(app)
+    private db = typeof window !== 'undefined' && app ? getDatabase(app) : null
 
     // Log user activity
     async logUserActivity(
@@ -60,6 +60,11 @@ export class ActivityService {
         details?: Record<string, any>,
         metadata?: ActivityLog['metadata']
     ): Promise<void> {
+        if (!this.db) {
+            console.warn('Database not initialized, skipping activity log')
+            return
+        }
+
         try {
             const activityRef = ref(this.db, `users/${userId}/activity`)
             const newActivity: ActivityLog = {
@@ -88,6 +93,13 @@ export class ActivityService {
         action: ActivityAction,
         details?: Record<string, any>
     ): Promise<void> {
+        if (!this.db) {
+            console.warn(
+                'Database not initialized, skipping system activity log'
+            )
+            return
+        }
+
         try {
             const activityRef = ref(this.db, 'system_activity')
             const newActivity: ActivityLog = {
@@ -107,6 +119,11 @@ export class ActivityService {
         userId: string,
         limit: number = 50
     ): Promise<ActivityLog[]> {
+        if (!this.db) {
+            console.warn('Database not initialized, returning empty activities')
+            return []
+        }
+
         try {
             const activityRef = ref(this.db, `users/${userId}/activity`)
             const recentQuery = query(
@@ -140,6 +157,14 @@ export class ActivityService {
         callback: (activities: ActivityLog[]) => void,
         limit: number = 50
     ): () => void {
+        if (!this.db) {
+            console.warn(
+                'Database not initialized, returning empty unsubscribe'
+            )
+            callback([])
+            return () => {}
+        }
+
         const activityRef = ref(this.db, `users/${userId}/activity`)
         const recentQuery = query(
             activityRef,
@@ -165,6 +190,11 @@ export class ActivityService {
 
     // Get all activities (admin only)
     async getAllActivities(limit: number = 100): Promise<ActivityLog[]> {
+        if (!this.db) {
+            console.warn('Database not initialized, returning empty activities')
+            return []
+        }
+
         try {
             const activities: ActivityLog[] = []
 
@@ -252,4 +282,13 @@ export class ActivityService {
     }
 }
 
-export const activityService = new ActivityService()
+// Create a singleton instance but handle initialization errors
+let activityServiceInstance: ActivityService | null = null
+
+try {
+    activityServiceInstance = new ActivityService()
+} catch (error) {
+    console.warn('Failed to initialize ActivityService:', error)
+}
+
+export const activityService = activityServiceInstance || new ActivityService()

@@ -1,6 +1,6 @@
-import { initializeApp } from 'firebase/app'
-import { getDatabase } from 'firebase/database'
-import { getAuth } from 'firebase/auth'
+import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app'
+import { getDatabase, Database } from 'firebase/database'
+import { getAuth, Auth } from 'firebase/auth'
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,6 +12,49 @@ const firebaseConfig = {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-export const app = initializeApp(firebaseConfig)
-export const database = getDatabase(app)
-export const auth = getAuth(app)
+// Initialize Firebase only on client side
+let app: FirebaseApp | null = null
+let database: Database | null = null
+let auth: Auth | null = null
+
+if (typeof window !== 'undefined') {
+    try {
+        // Client-side initialization
+        console.log('Initializing Firebase with config:', {
+            ...firebaseConfig,
+            apiKey: firebaseConfig.apiKey ? '***' : 'missing',
+            databaseURL: firebaseConfig.databaseURL || 'missing',
+        })
+
+        if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+            console.error(
+                'Firebase configuration is incomplete. Check your environment variables.'
+            )
+        } else {
+            app =
+                getApps().length === 0
+                    ? initializeApp(firebaseConfig)
+                    : getApp()
+
+            // Initialize auth first (doesn't require database URL)
+            auth = getAuth(app)
+
+            // Try to initialize database
+            try {
+                database = getDatabase(app)
+            } catch (dbError) {
+                console.warn(
+                    'Firebase Realtime Database initialization failed:',
+                    dbError
+                )
+                console.warn(
+                    'The app will work but database features will be limited.'
+                )
+            }
+        }
+    } catch (error) {
+        console.error('Firebase initialization error:', error)
+    }
+}
+
+export { app, database, auth }

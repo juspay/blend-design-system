@@ -10,6 +10,11 @@ export function useComponentCoverage() {
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
+        if (!database) {
+            setLoading(false)
+            return
+        }
+
         const coverageRef = ref(database, 'blend-monitor/coverage/summary')
 
         const unsubscribe = onValue(
@@ -41,6 +46,11 @@ export function useComponents() {
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
+        if (!database) {
+            setLoading(false)
+            return
+        }
+
         const componentsRef = ref(database, 'blend-monitor/components')
 
         const unsubscribe = onValue(
@@ -84,6 +94,11 @@ export function usePackageStats() {
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
+        if (!database) {
+            setLoading(false)
+            return
+        }
+
         const publishingRef = ref(database, 'blend-monitor/publishing')
 
         const unsubscribe = onValue(
@@ -128,6 +143,11 @@ export function useDownloadTrends() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        if (!database) {
+            setLoading(false)
+            return
+        }
+
         const trendsRef = ref(
             database,
             'blend-monitor/publishing/trends/downloads'
@@ -153,6 +173,11 @@ export function useVersionHistory() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        if (!database) {
+            setLoading(false)
+            return
+        }
+
         const versionsRef = ref(database, 'blend-monitor/publishing/versions')
 
         const unsubscribe = onValue(versionsRef, (snapshot: DataSnapshot) => {
@@ -185,6 +210,11 @@ export function useRecentActivity(limit: number = 10) {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        if (!database) {
+            setLoading(false)
+            return
+        }
+
         const activityRef = ref(database, 'blend-monitor/activity/recent')
 
         const unsubscribe = onValue(activityRef, (snapshot: DataSnapshot) => {
@@ -220,6 +250,11 @@ export function useCategoryCoverage() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        if (!database) {
+            setLoading(false)
+            return
+        }
+
         const categoryRef = ref(database, 'blend-monitor/coverage/byCategory')
 
         const unsubscribe = onValue(categoryRef, (snapshot: DataSnapshot) => {

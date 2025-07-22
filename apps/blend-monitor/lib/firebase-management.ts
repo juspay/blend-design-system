@@ -1,5 +1,5 @@
 // Firebase Management API client for fetching deployment and billing data
-import { getAdminAuth, getAdminDb } from './firebase-admin'
+import { getAdminAuth, getAdminDatabase } from './firebase-admin'
 import { google } from 'googleapis'
 
 // Initialize Google APIs
@@ -44,13 +44,16 @@ export async function fetchHostingDeployments() {
 
         // For each site, get releases (deployments)
         for (const site of sitesResponse.data.sites || []) {
+            if (!site.name) continue
+
             const releasesResponse = await firebasehosting.sites.releases.list({
                 parent: site.name,
                 auth: authClient as any,
                 pageSize: 50,
             })
 
-            for (const release of releasesResponse.data.releases || []) {
+            for (const release of (releasesResponse as any).data.releases ||
+                []) {
                 // Get version details
                 const versionResponse =
                     await firebasehosting.sites.versions.get({
@@ -92,7 +95,7 @@ export async function fetchHostingDeployments() {
         )
 
         // Store in database
-        const adminDb = getAdminDb()
+        const adminDb = getAdminDatabase()
         await adminDb.ref('deployments/history').set(
             deployments.reduce((acc, dep) => {
                 acc[dep.id.replace(/\//g, '_')] = dep
@@ -121,6 +124,8 @@ export async function fetchHostingStatus() {
         const environments: any = {}
 
         for (const site of sitesResponse.data.sites || []) {
+            if (!site.name) continue
+
             // Get the latest release
             const releasesResponse = await firebasehosting.sites.releases.list({
                 parent: site.name,
@@ -128,7 +133,7 @@ export async function fetchHostingStatus() {
                 pageSize: 1,
             })
 
-            const latestRelease = releasesResponse.data.releases?.[0]
+            const latestRelease = (releasesResponse as any).data.releases?.[0]
             const envName = site.name?.includes('staging')
                 ? 'staging'
                 : site.name?.includes('dev')
@@ -147,7 +152,7 @@ export async function fetchHostingStatus() {
         }
 
         // Store in database
-        const adminDb = getAdminDb()
+        const adminDb = getAdminDatabase()
         await adminDb.ref('deployments/environments').set(environments)
 
         return environments
@@ -169,7 +174,8 @@ export async function fetchBillingData() {
             auth: authClient as any,
         })
 
-        const billingAccountName = projectResponse.data.billingAccountName
+        const billingAccountName = (projectResponse.data as any)
+            .billingAccountName
 
         if (!billingAccountName) {
             console.log('No billing account found for project')
@@ -216,7 +222,7 @@ export async function fetchBillingData() {
         }
 
         // Store in database
-        const adminDb = getAdminDb()
+        const adminDb = getAdminDatabase()
         await adminDb.ref('deployments/usage').set(usageData)
 
         return usageData
@@ -234,7 +240,7 @@ export async function fetchFunctionsStatus() {
         const functions: any[] = []
 
         // Store in database
-        const adminDb = getAdminDb()
+        const adminDb = getAdminDatabase()
         await adminDb.ref('deployments/functions').set({})
 
         return functions

@@ -45,8 +45,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const router = useRouter()
 
     useEffect(() => {
+        if (!auth) {
+            setLoading(false)
+            return
+        }
+
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            const previousUser = auth.currentUser
             setUser(user)
 
             if (user) {
@@ -136,6 +140,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }, [userData?.role])
 
     const signInWithGoogle = async () => {
+        if (!auth) {
+            throw new Error('Firebase auth not initialized')
+        }
+
         try {
             const provider = new GoogleAuthProvider()
             const result = await signInWithPopup(auth, provider)
@@ -158,6 +166,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     const logout = async () => {
+        if (!auth) {
+            throw new Error('Firebase auth not initialized')
+        }
+
         try {
             // Log logout activity before signing out
             if (user) {

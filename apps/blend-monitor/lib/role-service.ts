@@ -75,6 +75,9 @@ export class RoleService {
 
     private getDb(): Database {
         if (!this.db) {
+            if (!app) {
+                throw new Error('Firebase app not initialized')
+            }
             this.db = getDatabase(app)
         }
         return this.db

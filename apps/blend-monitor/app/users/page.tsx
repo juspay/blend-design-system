@@ -97,6 +97,10 @@ function UserManagement() {
         if (!canManageUsers) return
 
         try {
+            if (!auth) {
+                throw new Error('Firebase auth not initialized')
+            }
+
             const user = auth.currentUser
             if (!user) {
                 throw new Error('User not authenticated')
@@ -128,7 +132,7 @@ function UserManagement() {
 
             // Log activity
             const targetUser = users.find((u) => u.id === userId)
-            if (user && targetUser) {
+            if (auth?.currentUser && targetUser) {
                 await activityService.logUserActivity(
                     user.uid,
                     ActivityAction.ROLE_CHANGED,
@@ -164,10 +168,9 @@ function UserManagement() {
 
             // Log activity
             const targetUser = users.find((u) => u.id === userId)
-            const user = auth.currentUser
-            if (user && targetUser) {
+            if (auth?.currentUser && targetUser) {
                 await activityService.logUserActivity(
-                    user.uid,
+                    auth.currentUser.uid,
                     ActivityAction.USER_STATUS_CHANGED,
                     {
                         targetUserId: userId,
@@ -240,10 +243,9 @@ function UserManagement() {
             await loadUsers()
 
             // Log activity
-            const user = auth.currentUser
-            if (user) {
+            if (auth?.currentUser) {
                 await activityService.logUserActivity(
-                    user.uid,
+                    auth.currentUser.uid,
                     ActivityAction.USER_INVITED,
                     {
                         email: inviteEmail,
@@ -281,10 +283,9 @@ function UserManagement() {
             setUserToDelete(null)
 
             // Log activity
-            const user = auth.currentUser
-            if (user) {
+            if (auth?.currentUser) {
                 await activityService.logUserActivity(
-                    user.uid,
+                    auth.currentUser.uid,
                     ActivityAction.USER_REMOVED,
                     {
                         targetUserId: userToDelete.id,
@@ -670,20 +671,6 @@ function UserManagement() {
                                     {canManageUsers && (
                                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                                             <div className="flex items-center gap-2">
-                                                <ButtonV2
-                                                    buttonType={
-                                                        ButtonTypeV2.SECONDARY
-                                                    }
-                                                    size={ButtonSizeV2.SMALL}
-                                                    text=""
-                                                    leadingIcon={
-                                                        <Activity className="w-4 h-4" />
-                                                    }
-                                                    onClick={() =>
-                                                        handleViewActivity(user)
-                                                    }
-                                                    title="View activity"
-                                                />
                                                 <ButtonV2
                                                     buttonType={
                                                         ButtonTypeV2.SECONDARY

@@ -7,6 +7,11 @@ export function subscribeToEnvironmentStatus(
     environment: string,
     callback: (status: Environment) => void
 ): () => void {
+    if (!database) {
+        // Return no-op unsubscribe function if database is not available
+        return () => {}
+    }
+
     const envRef = ref(database, `deployments/environments/${environment}`)
 
     const listener = onValue(envRef, (snapshot) => {
@@ -23,6 +28,11 @@ export function subscribeToEnvironmentStatus(
 export function subscribeToDeploymentUpdates(
     callback: (deployment: Deployment) => void
 ): () => void {
+    if (!database) {
+        // Return no-op unsubscribe function if database is not available
+        return () => {}
+    }
+
     const deploymentsRef = ref(database, 'deployments/history')
 
     const listener = onValue(deploymentsRef, (snapshot) => {

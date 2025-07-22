@@ -127,6 +127,10 @@ function DeploymentForm() {
         setDeploying(true)
 
         try {
+            if (!auth) {
+                throw new Error('Firebase auth not initialized')
+            }
+
             const user = auth.currentUser
             if (!user) {
                 throw new Error('User not authenticated')
