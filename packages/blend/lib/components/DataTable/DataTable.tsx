@@ -593,7 +593,7 @@ const DataTable = forwardRef(
                                 trigger={
                                     <Button
                                         buttonType={ButtonType.SECONDARY}
-                                        leadingIcon={Settings}
+                                        leadingIcon={<Settings />}
                                         size={ButtonSize.SMALL}
                                     >
                                         Settings

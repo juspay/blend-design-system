@@ -15,7 +15,7 @@ import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import { getMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
-import { getButtonTokens } from '../components/ButtonV2/button.tokens'
+import { getButtonTokens } from '../components/Button/button.tokens'
 import { getModalComponentTokens } from '../components/Modal/modal.tokens'
 import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import { getPopoverTokens } from '../components/Popover/popover.tokens'
@@ -25,6 +25,7 @@ import { getTableToken } from '../components/DataTable/dataTable.tokens'
 import { getCalendarToken } from '../components/DateRangePicker/dateRangePicker.tokens'
 import { getAccordionToken } from '../components/Accordion/accordion.tokens'
 import { getStatCardToken } from '../components/StatCard/statcard.tokens'
+import progressBarTokens from '../components/ProgressBar/progressbar.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -76,6 +77,7 @@ const initTokens = (
             componentTokens.ACCORDION ?? getAccordionToken(foundationTokens),
         STAT_CARD:
             componentTokens.STAT_CARD ?? getStatCardToken(foundationTokens),
+        PROGRESS_BAR: componentTokens.PROGRESS_BAR ?? progressBarTokens,
     }
 }
 

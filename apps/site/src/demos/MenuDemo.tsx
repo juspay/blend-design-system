@@ -7,10 +7,12 @@ import {
     MenuItemV2ActionType,
 } from '../../../../packages/blend/lib/components/Menu/types'
 import type { MenuV2GroupType } from '../../../../packages/blend/lib/components/Menu/types'
-import { ButtonV2 } from '../../../../packages/blend/lib/components/ButtonV2'
-import { ButtonTypeV2 } from '../../../../packages/blend/lib/components/ButtonV2/types'
+import { Button } from '../../../../packages/blend/lib/components/Button'
+import { ButtonType } from '../../../../packages/blend/lib/components/Button/types'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
+import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import {
     User,
     Settings,
@@ -407,6 +409,22 @@ export const MenuDemo: React.FC = () => {
     const [isControlledMenuOpen, setIsControlledMenuOpen] = useState(false)
     const boundaryRef = useRef<HTMLDivElement>(null)
 
+    // Playground state
+    const [playgroundAlignment, setPlaygroundAlignment] =
+        useState<MenuAlignment>(MenuAlignment.CENTER)
+    const [playgroundSide, setPlaygroundSide] = useState<MenuSide>(
+        MenuSide.BOTTOM
+    )
+    const [playgroundMaxHeight, setPlaygroundMaxHeight] = useState(400)
+    const [playgroundMinWidth, setPlaygroundMinWidth] = useState(200)
+    const [playgroundMaxWidth, setPlaygroundMaxWidth] = useState(280)
+    const [playgroundSideOffset, setPlaygroundSideOffset] = useState(8)
+    const [playgroundAlignOffset, setPlaygroundAlignOffset] = useState(0)
+    const [playgroundEnableSearch, setPlaygroundEnableSearch] = useState(false)
+    const [playgroundSearchPlaceholder, setPlaygroundSearchPlaceholder] =
+        useState('Search actions...')
+    const [playgroundAsModal, setPlaygroundAsModal] = useState(false)
+
     return (
         <Block padding="32px" backgroundColor="gray.50" minHeight="100vh">
             {/* Header */}
@@ -420,6 +438,268 @@ export const MenuDemo: React.FC = () => {
                     Comprehensive demonstration of all Menu component features,
                     props, and variations
                 </Text>
+            </Block>
+
+            {/* Playground Section */}
+            <Block marginBottom="48px">
+                <Block marginBottom="16px">
+                    <Text fontSize={28} fontWeight="semibold">
+                        Menu Playground
+                    </Text>
+                </Block>
+                <Block marginBottom="24px">
+                    <Text fontSize={14} color="gray.600">
+                        Test and adjust Menu component props interactively
+                    </Text>
+                </Block>
+
+                <Block display="flex" gap="32px" flexWrap="wrap">
+                    {/* Controls */}
+                    <Block
+                        width="400px"
+                        display="flex"
+                        flexDirection="column"
+                        gap="16px"
+                    >
+                        <Text fontSize={18} fontWeight="medium">
+                            Controls
+                        </Text>
+
+                        <Block display="flex" gap="16px">
+                            <TextInput
+                                label="Max Height"
+                                type="number"
+                                value={playgroundMaxHeight.toString()}
+                                onChange={(e) =>
+                                    setPlaygroundMaxHeight(
+                                        Number(e.target.value)
+                                    )
+                                }
+                                placeholder="400"
+                            />
+                            <TextInput
+                                label="Min Width"
+                                type="number"
+                                value={playgroundMinWidth.toString()}
+                                onChange={(e) =>
+                                    setPlaygroundMinWidth(
+                                        Number(e.target.value)
+                                    )
+                                }
+                                placeholder="200"
+                            />
+                        </Block>
+
+                        <Block display="flex" gap="16px">
+                            <TextInput
+                                label="Max Width"
+                                type="number"
+                                value={playgroundMaxWidth.toString()}
+                                onChange={(e) =>
+                                    setPlaygroundMaxWidth(
+                                        Number(e.target.value)
+                                    )
+                                }
+                                placeholder="280"
+                            />
+                            <TextInput
+                                label="Side Offset"
+                                type="number"
+                                value={playgroundSideOffset.toString()}
+                                onChange={(e) =>
+                                    setPlaygroundSideOffset(
+                                        Number(e.target.value)
+                                    )
+                                }
+                                placeholder="8"
+                            />
+                        </Block>
+
+                        <TextInput
+                            label="Align Offset"
+                            type="number"
+                            value={playgroundAlignOffset.toString()}
+                            onChange={(e) =>
+                                setPlaygroundAlignOffset(Number(e.target.value))
+                            }
+                            placeholder="0"
+                        />
+
+                        <TextInput
+                            label="Search Placeholder"
+                            value={playgroundSearchPlaceholder}
+                            onChange={(e) =>
+                                setPlaygroundSearchPlaceholder(e.target.value)
+                            }
+                            placeholder="Search actions..."
+                        />
+
+                        <Block display="flex" gap="16px">
+                            <Switch
+                                label="Enable Search"
+                                checked={playgroundEnableSearch}
+                                onChange={setPlaygroundEnableSearch}
+                            />
+                            <Switch
+                                label="As Modal"
+                                checked={playgroundAsModal}
+                                onChange={setPlaygroundAsModal}
+                            />
+                        </Block>
+
+                        <Block marginBottom="8px">
+                            <Text fontSize={14} fontWeight="medium">
+                                Alignment
+                            </Text>
+                        </Block>
+                        <Block display="flex" gap="8px">
+                            <Button
+                                text="Start"
+                                buttonType={
+                                    playgroundAlignment === MenuAlignment.START
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
+                                }
+                                onClick={() =>
+                                    setPlaygroundAlignment(MenuAlignment.START)
+                                }
+                            />
+                            <Button
+                                text="Center"
+                                buttonType={
+                                    playgroundAlignment === MenuAlignment.CENTER
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
+                                }
+                                onClick={() =>
+                                    setPlaygroundAlignment(MenuAlignment.CENTER)
+                                }
+                            />
+                            <Button
+                                text="End"
+                                buttonType={
+                                    playgroundAlignment === MenuAlignment.END
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
+                                }
+                                onClick={() =>
+                                    setPlaygroundAlignment(MenuAlignment.END)
+                                }
+                            />
+                        </Block>
+
+                        <Block marginBottom="8px">
+                            <Text fontSize={14} fontWeight="medium">
+                                Side
+                            </Text>
+                        </Block>
+                        <Block display="flex" gap="8px" flexWrap="wrap">
+                            <Button
+                                text="Top"
+                                buttonType={
+                                    playgroundSide === MenuSide.TOP
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
+                                }
+                                onClick={() => setPlaygroundSide(MenuSide.TOP)}
+                            />
+                            <Button
+                                text="Bottom"
+                                buttonType={
+                                    playgroundSide === MenuSide.BOTTOM
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
+                                }
+                                onClick={() =>
+                                    setPlaygroundSide(MenuSide.BOTTOM)
+                                }
+                            />
+                            <Button
+                                text="Left"
+                                buttonType={
+                                    playgroundSide === MenuSide.LEFT
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
+                                }
+                                onClick={() => setPlaygroundSide(MenuSide.LEFT)}
+                            />
+                            <Button
+                                text="Right"
+                                buttonType={
+                                    playgroundSide === MenuSide.RIGHT
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
+                                }
+                                onClick={() =>
+                                    setPlaygroundSide(MenuSide.RIGHT)
+                                }
+                            />
+                        </Block>
+                    </Block>
+
+                    {/* Preview */}
+                    <Block width="400px">
+                        <Block marginBottom="16px">
+                            <Text fontSize={18} fontWeight="medium">
+                                Preview
+                            </Text>
+                        </Block>
+
+                        <Block
+                            padding="24px"
+                            backgroundColor="white"
+                            borderRadius="8px"
+                            border="1px solid #e2e8f0"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            minHeight="200px"
+                        >
+                            <Menu
+                                trigger={
+                                    <Button
+                                        buttonType={ButtonType.PRIMARY}
+                                        text="Interactive Menu"
+                                    />
+                                }
+                                items={searchableMenuItems}
+                                alignment={playgroundAlignment}
+                                side={playgroundSide}
+                                maxHeight={playgroundMaxHeight}
+                                minWidth={playgroundMinWidth}
+                                maxWidth={playgroundMaxWidth}
+                                sideOffset={playgroundSideOffset}
+                                alignOffset={playgroundAlignOffset}
+                                enableSearch={playgroundEnableSearch}
+                                searchPlaceholder={playgroundSearchPlaceholder}
+                                asModal={playgroundAsModal}
+                            />
+                        </Block>
+
+                        <Block
+                            marginTop="16px"
+                            padding="12px"
+                            backgroundColor="blue.50"
+                            borderRadius="6px"
+                        >
+                            <Text
+                                fontSize={14}
+                                fontWeight="medium"
+                                color="blue.700"
+                            >
+                                Current Settings:
+                            </Text>
+                            <Text fontSize={12} color="blue.600">
+                                Alignment: {playgroundAlignment} | Side:{' '}
+                                {playgroundSide} | Search:{' '}
+                                {playgroundEnableSearch
+                                    ? 'Enabled'
+                                    : 'Disabled'}{' '}
+                                | Modal: {playgroundAsModal ? 'Yes' : 'No'}
+                            </Text>
+                        </Block>
+                    </Block>
+                </Block>
             </Block>
 
             {/* 1. Basic Menu Types */}
@@ -438,8 +718,8 @@ export const MenuDemo: React.FC = () => {
                 <Block display="flex" gap="16px" flexWrap="wrap">
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.SECONDARY}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
                                 text="Basic Menu"
                             />
                         }
@@ -448,8 +728,8 @@ export const MenuDemo: React.FC = () => {
 
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.PRIMARY}
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
                                 text="Action Menu"
                             />
                         }
@@ -457,13 +737,13 @@ export const MenuDemo: React.FC = () => {
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Nested Sub-menus" />}
+                        trigger={<Button text="Nested Sub-menus" />}
                         items={nestedMenuItems}
                         maxWidth={280}
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Slot Variations" />}
+                        trigger={<Button text="Slot Variations" />}
                         items={slotVariationItems}
                     />
                 </Block>
@@ -485,8 +765,8 @@ export const MenuDemo: React.FC = () => {
                 <Block display="flex" gap="16px" flexWrap="wrap">
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.SECONDARY}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
                                 text="Start Aligned"
                             />
                         }
@@ -496,8 +776,8 @@ export const MenuDemo: React.FC = () => {
 
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.SECONDARY}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
                                 text="Center Aligned"
                             />
                         }
@@ -507,8 +787,8 @@ export const MenuDemo: React.FC = () => {
 
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.SECONDARY}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
                                 text="End Aligned"
                             />
                         }
@@ -533,25 +813,25 @@ export const MenuDemo: React.FC = () => {
 
                 <Block display="flex" gap="16px" flexWrap="wrap">
                     <Menu
-                        trigger={<ButtonV2 text="Top Side" />}
+                        trigger={<Button text="Top Side" />}
                         items={basicMenuItems}
                         side={MenuSide.TOP}
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Bottom Side" />}
+                        trigger={<Button text="Bottom Side" />}
                         items={basicMenuItems}
                         side={MenuSide.BOTTOM}
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Left Side" />}
+                        trigger={<Button text="Left Side" />}
                         items={basicMenuItems}
                         side={MenuSide.LEFT}
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Right Side" />}
+                        trigger={<Button text="Right Side" />}
                         items={basicMenuItems}
                         side={MenuSide.RIGHT}
                     />
@@ -573,7 +853,7 @@ export const MenuDemo: React.FC = () => {
 
                 <Block display="flex" gap="16px" flexWrap="wrap">
                     <Menu
-                        trigger={<ButtonV2 text="Custom Size" />}
+                        trigger={<Button text="Custom Size" />}
                         items={actionMenuItems}
                         minWidth={320}
                         maxWidth={400}
@@ -581,21 +861,21 @@ export const MenuDemo: React.FC = () => {
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Compact Menu" />}
+                        trigger={<Button text="Compact Menu" />}
                         items={basicMenuItems}
                         minWidth={120}
                         maxWidth={180}
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Custom Offsets" />}
+                        trigger={<Button text="Custom Offsets" />}
                         items={basicMenuItems}
                         sideOffset={20}
                         alignOffset={15}
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Long Content" />}
+                        trigger={<Button text="Long Content" />}
                         items={longContentItems}
                         maxWidth={400}
                     />
@@ -618,8 +898,8 @@ export const MenuDemo: React.FC = () => {
                 <Block display="flex" gap="16px" flexWrap="wrap">
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.PRIMARY}
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
                                 text="Searchable Menu"
                             />
                         }
@@ -631,7 +911,7 @@ export const MenuDemo: React.FC = () => {
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Custom Search Text" />}
+                        trigger={<Button text="Custom Search Text" />}
                         items={searchableMenuItems}
                         enableSearch={true}
                         searchPlaceholder="Find what you need..."
@@ -656,8 +936,8 @@ export const MenuDemo: React.FC = () => {
                 <Block display="flex" gap="16px" flexWrap="wrap">
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.SECONDARY}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
                                 text="Disabled Items"
                             />
                         }
@@ -666,8 +946,8 @@ export const MenuDemo: React.FC = () => {
 
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.PRIMARY}
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
                                 text="Modal Menu"
                             />
                         }
@@ -678,7 +958,7 @@ export const MenuDemo: React.FC = () => {
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Controlled State" />}
+                        trigger={<Button text="Controlled State" />}
                         items={basicMenuItems}
                         open={isControlledMenuOpen}
                         onOpenChange={setIsControlledMenuOpen}
@@ -707,8 +987,8 @@ export const MenuDemo: React.FC = () => {
                 >
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.DANGER}
+                            <Button
+                                buttonType={ButtonType.DANGER}
                                 text="Empty Menu"
                             />
                         }
@@ -716,7 +996,7 @@ export const MenuDemo: React.FC = () => {
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Single Item" />}
+                        trigger={<Button text="Single Item" />}
                         items={[
                             {
                                 items: [
@@ -732,7 +1012,7 @@ export const MenuDemo: React.FC = () => {
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="With Boundary" />}
+                        trigger={<Button text="With Boundary" />}
                         items={actionMenuItems}
                         collisonBoundaryRef={boundaryRef.current}
                         maxHeight={200}
@@ -756,8 +1036,8 @@ export const MenuDemo: React.FC = () => {
                 <Block display="flex" gap="16px" flexWrap="wrap">
                     <Menu
                         trigger={
-                            <ButtonV2
-                                buttonType={ButtonTypeV2.PRIMARY}
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
                                 text="Search + Custom Size"
                             />
                         }
@@ -772,7 +1052,7 @@ export const MenuDemo: React.FC = () => {
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="Modal + Search + Actions" />}
+                        trigger={<Button text="Modal + Search + Actions" />}
                         items={[...actionMenuItems, ...searchableMenuItems]}
                         asModal={true}
                         enableSearch={true}
@@ -783,7 +1063,7 @@ export const MenuDemo: React.FC = () => {
                     />
 
                     <Menu
-                        trigger={<ButtonV2 text="All Features" />}
+                        trigger={<Button text="All Features" />}
                         items={[...nestedMenuItems, ...actionMenuItems]}
                         enableSearch={true}
                         searchPlaceholder="Find anything..."

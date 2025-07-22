@@ -42,12 +42,27 @@ const Menu = ({
     searchPlaceholder = 'Search',
     minWidth,
     maxWidth,
+    open,
+    onOpenChange,
 }: MenuV2Props) => {
     const [searchText, setSearchText] = useState<string>('')
     const filteredItems = filterMenuGroups(items, searchText)
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
+
+    const handleOpenChange = (newOpen: boolean) => {
+        if (!newOpen && enableSearch) {
+            setSearchText('')
+        }
+
+        onOpenChange?.(newOpen)
+    }
+
     return (
-        <RadixMenu.Root modal={asModal}>
+        <RadixMenu.Root
+            modal={asModal}
+            open={open}
+            onOpenChange={handleOpenChange}
+        >
             <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>
             <Content
                 sideOffset={sideOffset}

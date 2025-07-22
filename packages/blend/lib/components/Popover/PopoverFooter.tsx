@@ -1,5 +1,5 @@
 import { useComponentToken } from '../../context/useComponentToken'
-import { ButtonSubTypeV2, ButtonV2 } from '../ButtonV2'
+import { ButtonSubType, Button } from '../Button'
 import Block from '../Primitives/Block/Block'
 import { PopoverTokenType } from './popover.tokens'
 import { PopoverProps } from './types'
@@ -20,13 +20,10 @@ const PopoverFooter = ({
             justifyContent={popoverTokens.footer.justifyContent}
         >
             {primaryAction && (
-                <ButtonV2 {...primaryAction} subType={ButtonSubTypeV2.INLINE} />
+                <Button {...primaryAction} subType={ButtonSubType.INLINE} />
             )}
             {secondaryAction && (
-                <ButtonV2
-                    {...secondaryAction}
-                    subType={ButtonSubTypeV2.INLINE}
-                />
+                <Button {...secondaryAction} subType={ButtonSubType.INLINE} />
             )}
         </Block>
     )

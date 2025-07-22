@@ -35,7 +35,7 @@ import AvatarDemo from './AvatarDemo'
 import BreadcrumbDemo from './BreadcrumbDemo'
 import InputDemo from './TextInputDemo'
 import UnitInputDemo from './UnitInputDemo'
-import type { DirectoryData } from '../../../../packages/blend/dist/components/Directory/types'
+import type { DirectoryData } from '../../../../packages/blend/lib/components/Directory/types'
 import NumberInputDemo from './NumberInputDemo'
 import TextAreaDemo from './TextAreaDemo'
 import AlertDemo from './AlertDemo'
@@ -49,6 +49,7 @@ import ModalDemo from './ModalDemo'
 import RadioDemo from './RadioDemo'
 import CheckboxDemo from './CheckboxDemo'
 import SwitchDemo from './SwitchDemo'
+import ProgressBarDemo from './ProgressBarDemo'
 import { Snackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { ThemeProvider } from '../../../../packages/blend/lib/context'
 import ALT_FOUNDATION_TOKENS from '../themes/AIT_FOUNDATION_TOKENS'
@@ -59,6 +60,9 @@ import {
     SelectMenuVariant,
 } from '../../../../packages/blend/lib/components/Select'
 import MenuDemo from './MenuDemo'
+import SingleSelectDemo from './SingleSelectDemo'
+import MultiSelectDemo from './MultiSelectDemo'
+import DropdownInputDemo from './DropdownInputDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -94,9 +98,13 @@ const SidebarDemo = () => {
         | 'dataTable'
         | 'colorPalette'
         | 'popover'
+        | 'progressBar'
         | 'theme'
         | 'salesKpiDashboard'
         | 'transactionAnalyticsDashboard'
+        | 'singleSelect'
+        | 'multiSelect'
+        | 'dropdownInput'
     >('buttons')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -184,6 +192,14 @@ const SidebarDemo = () => {
                 return <SwitchDemo />
             case 'menu':
                 return <MenuDemo />
+            case 'singleSelect':
+                return <SingleSelectDemo />
+            case 'multiSelect':
+                return <MultiSelectDemo />
+            case 'progressBar':
+                return <ProgressBarDemo />
+            case 'dropdownInput':
+                return <DropdownInputDemo />
             default:
                 return <div>No component selected</div>
         }
@@ -266,6 +282,15 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('numberInput'),
                 },
                 {
+                    label: 'Dropdown Input',
+                    leftSlot: (
+                        <DecimalsArrowRightIcon
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    onClick: () => setActiveComponent('dropdownInput'),
+                },
+                {
                     label: 'Text Area',
                     leftSlot: (
                         <FileText style={{ width: '16px', height: '16px' }} />
@@ -330,6 +355,20 @@ const SidebarDemo = () => {
                             ),
                         },
                     ],
+                },
+                {
+                    label: 'Single Select',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('singleSelect'),
+                },
+                {
+                    label: 'Multi Select',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('multiSelect'),
                 },
                 {
                     label: 'Tabs',
@@ -407,6 +446,13 @@ const SidebarDemo = () => {
                         <FileText style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('statCard'),
+                },
+                {
+                    label: 'Progress Bar',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('progressBar'),
                 },
                 {
                     label: 'Data Table',

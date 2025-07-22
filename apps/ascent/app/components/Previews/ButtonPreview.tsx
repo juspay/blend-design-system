@@ -1,5 +1,5 @@
 'use client'
-import { ButtonTypeV2, ButtonV2 } from 'blend-v1'
+import { ButtonType, Button } from 'blend-v1'
 import React from 'react'
 import ComponentPreview from './ComponentPreview'
 
@@ -95,14 +95,14 @@ external make: (
   ~fullWidth: bool=?,
   ~tabIndex: int=?,
   ~dataTestId: string=?,
-) => React.element = "ButtonV2"`
+) => React.element = "Button"`
     return (
         <ComponentPreview
             ts={tsCode}
             rescript={reCode}
             rescriptBinding={bindingCode}
         >
-            <ButtonV2 text="Click me" buttonType={ButtonTypeV2.PRIMARY} />
+            <Button text="Click me" buttonType={ButtonType.PRIMARY} />
         </ComponentPreview>
     )
 }
