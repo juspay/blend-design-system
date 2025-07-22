@@ -7,9 +7,17 @@
   "targets": {
     "storybook-452807": {
       "hosting": {
-        "blend-staging": ["blend-staging"],
-        "blend-prod": ["blend-prod"]
+        "blend-staging": [
+          "blend-staging"
+        ],
+        "blend-prod": [
+          "blend-prod"
+        ],
+        "blend-monitor": [
+          "blend-monitor"
+        ]
       }
     }
-  }
+  },
+  "etags": {}
 }

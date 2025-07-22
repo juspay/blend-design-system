@@ -1,0 +1,32 @@
+{
+    "name": "blend-monitor-functions",
+    "version": "1.0.0",
+    "description": "Cloud Functions for Blend Monitor",
+    "main": "lib/index.js",
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch",
+        "serve": "npm run build && firebase emulators:start --only functions",
+        "shell": "npm run build && firebase functions:shell",
+        "start": "npm run shell",
+        "deploy": "firebase deploy --only functions",
+        "logs": "firebase functions:log"
+    },
+    "engines": {
+        "node": "20"
+    },
+    "dependencies": {
+        "firebase-admin": "^12.0.0",
+        "firebase-functions": "^5.0.0",
+        "cors": "^2.8.5",
+        "express": "^4.18.2"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.13",
+        "@types/express": "^4.17.17",
+        "@types/node": "^20.0.0",
+        "typescript": "^5.0.0",
+        "firebase-functions-test": "^3.1.0"
+    },
+    "private": true
+}
