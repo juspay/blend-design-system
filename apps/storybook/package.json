@@ -1,99 +1,36 @@
 {
-    "name": "@juspay/blend-design-system",
-    "private": false,
-    "version": "0.0.1",
-    "description": "A comprehensive React component library and design system by Juspay",
-    "type": "module",
-    "main": "./dist/main.js",
-    "module": "./dist/main.js",
-    "types": "./dist/main.d.ts",
-    "files": [
-        "dist",
-        "README.md"
-    ],
-    "sideEffects": false,
-    "exports": {
-        ".": {
-            "import": "./dist/main.js",
-            "types": "./dist/main.d.ts"
-        },
-        "./style.css": "./dist/style.css"
-    },
+    "name": "storybook",
+    "private": true,
+    "version": "0.1.0",
     "scripts": {
-        "lint": "eslint .",
-        "build": "pnpm lint && tsc --p ./tsconfig.json && vite build",
-        "prepublishOnly": "pnpm run build"
-    },
-    "peerDependencies": {
-        "react": "^18.0.0 || ^19.0.0",
-        "react-dom": "^18.0.0 || ^19.0.0"
+        "dev": "storybook dev -p 6006",
+        "build-storybook": "storybook build",
+        "preview-storybook": "npx serve storybook-static -p 6006",
+        "lint": "eslint . --max-warnings 0",
+        "lint:fix": "eslint . --fix"
     },
     "dependencies": {
-        "@radix-ui/react-accordion": "^1.2.3",
-        "@radix-ui/react-checkbox": "^1.3.2",
-        "@radix-ui/react-dropdown-menu": "^2.1.15",
-        "@radix-ui/react-popover": "^1.1.14",
-        "@radix-ui/react-slider": "^1.2.3",
-        "@radix-ui/react-tabs": "^1.0.4",
-        "@radix-ui/react-tooltip": "^1.2.7",
-        "@types/styled-components": "^5.1.34",
+        "blend-v1": "workspace:*",
         "lucide-react": "^0.511.0",
-        "radix-ui": "^1.1.3",
-        "recharts": "^2.15.3",
-        "sonner": "^2.0.3",
-        "styled-components": "^6.1.18",
-        "vaul": "^1.1.2"
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0"
     },
     "devDependencies": {
-        "@eslint/js": "^9.25.0",
         "@storybook/addon-essentials": "^8.6.12",
         "@storybook/addon-interactions": "^8.6.12",
-        "@storybook/addon-onboarding": "^8.6.12",
+        "@storybook/addon-docs": "^8.6.12",
+        "@storybook/addon-controls": "^8.6.12",
+        "@storybook/addon-viewport": "^8.6.12",
+        "@storybook/addon-backgrounds": "^8.6.12",
+        "@storybook/addon-mdx-gfm": "^8.6.12",
         "@storybook/blocks": "^8.6.12",
         "@storybook/react": "^8.6.12",
         "@storybook/react-vite": "^8.6.12",
         "@storybook/test": "^8.6.12",
-        "@types/node": "^22.15.21",
         "@types/react": "^19.1.2",
         "@types/react-dom": "^19.1.2",
-        "@vitejs/plugin-react": "^4.4.1",
-        "eslint": "^9.25.0",
-        "eslint-plugin-react-hooks": "^5.2.0",
-        "eslint-plugin-react-refresh": "^0.4.19",
-        "eslint-plugin-storybook": "^0.12.0",
-        "globals": "^16.0.0",
-        "prettier": "^3.1.0",
-        "react": "^19.1.0",
-        "react-dom": "^19.1.0",
         "storybook": "^8.6.12",
         "typescript": "~5.8.3",
-        "typescript-eslint": "^8.30.1",
-        "vite": "^6.3.5",
-        "vite-plugin-dts": "^4.5.4",
-        "vite-plugin-lib-inject-css": "^2.2.2"
-    },
-    "keywords": [
-        "react",
-        "ui",
-        "components",
-        "design-system",
-        "blend",
-        "juspay"
-    ],
-    "author": "Juspay",
-    "license": "MIT",
-    "homepage": "https://juspay.design/",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/juspay/blend-design-system.git"
-    },
-    "bugs": {
-        "url": "https://github.com/juspay/blend-design-system/issues"
-    },
-    "eslintConfig": {
-        "extends": [
-            "plugin:storybook/recommended"
-        ]
-    },
-    "packageManager": "pnpm@10.11.0"
+        "vite": "^6.3.5"
+    }
 }
