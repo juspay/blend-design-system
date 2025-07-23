@@ -3,8 +3,8 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "blend-v1": ["../../packages/blend/lib/main.ts"],
-            "blend-v1/*": ["../../packages/blend/lib/*"]
+            "@juspay/blend-design-system": ["../../packages/blend/lib/main.ts"],
+            "@juspay/blend-design-system/*": ["../../packages/blend/lib/*"]
         }
     },
     "include": ["stories/**/*", ".storybook/**/*"],
