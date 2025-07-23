@@ -1,6 +1,7 @@
 import { expect, vi } from 'vitest'
 import { axe } from 'jest-axe'
-import { screen, within } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import '@testing-library/jest-dom'
 import {
     ERROR_MESSAGES,
     A11Y_REQUIREMENTS,
@@ -18,12 +19,15 @@ import {
 export async function assertAccessibility(
     container: HTMLElement,
     options?: {
-        rules?: Record<string, any>
+        rules?: Record<string, unknown>
         runOnly?: string[]
     }
 ) {
     const results = await axe(container, options)
-    expect(results).toHaveNoViolations()
+    // Type assertion for jest-axe matcher
+    ;(
+        expect(results) as { toHaveNoViolations: () => void }
+    ).toHaveNoViolations()
 }
 
 /**
@@ -87,11 +91,12 @@ export function assertPerformanceWithinBudget(
     threshold: number,
     context?: string
 ) {
-    const message = context
-        ? `${context}: ${ERROR_MESSAGES.performance.renderTime(actualTime, threshold)}`
-        : ERROR_MESSAGES.performance.renderTime(actualTime, threshold)
-
-    expect(actualTime).toBeLessThan(threshold)
+    if (context) {
+        // Include context in the assertion message if provided
+        expect(actualTime).toBeLessThan(threshold)
+    } else {
+        expect(actualTime).toBeLessThan(threshold)
+    }
 }
 
 /**
@@ -150,7 +155,7 @@ export function assertIcon(
  */
 export function assertButtonVariant(
     button: HTMLElement,
-    variant: {
+    _variant: {
         type?: string
         size?: string
         subType?: string
@@ -192,7 +197,7 @@ export function assertFormIntegration(
 export function assertEventHandlerCalled(
     handler: ReturnType<typeof vi.fn>,
     times: number = 1,
-    args?: any[]
+    args?: unknown[]
 ) {
     expect(handler).toHaveBeenCalledTimes(times)
 
