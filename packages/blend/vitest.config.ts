@@ -10,6 +10,7 @@ export default defineConfig({
         coverage: {
             provider: 'v8',
             reporter: ['text', 'json', 'html'],
+            reportsDirectory: './coverage',
             exclude: [
                 'node_modules/',
                 'dist/',
@@ -24,6 +25,8 @@ export default defineConfig({
                 functions: 95,
                 lines: 95,
             },
+            // Generate coverage even if tests fail
+            reportOnFailure: true,
         },
     },
     resolve: {
