@@ -6,12 +6,29 @@ import {
 } from '../../lib/components/Button/types'
 import { MockIcon } from './index'
 
+interface ButtonTestProps {
+    text?: string
+    buttonType?: ButtonType
+    size?: ButtonSize
+    subType?: ButtonSubType
+    leadingIcon?: React.ReactElement
+    trailingIcon?: React.ReactElement
+    fullWidth?: boolean
+    disabled?: boolean
+    loading?: boolean
+    onClick?: () => void
+    'aria-label'?: string
+    'aria-describedby'?: string
+    'aria-pressed'?: string
+    [key: string]: unknown
+}
+
 /**
  * Test data builder for Button component props
  * Implements the builder pattern for flexible test data creation
  */
 export class ButtonPropsBuilder {
-    private props: any = {}
+    private props: ButtonTestProps = {}
 
     withText(text: string) {
         this.props.text = text
@@ -68,7 +85,7 @@ export class ButtonPropsBuilder {
         return this
     }
 
-    withCustomProps(props: Record<string, any>) {
+    withCustomProps(props: Record<string, unknown>) {
         this.props = { ...this.props, ...props }
         return this
     }
@@ -156,7 +173,7 @@ export const TestScenarios = {
 
     // Generate props for all visual variants
     visualVariants: () => {
-        const variants: Array<{ name: string; props: any }> = []
+        const variants: Array<{ name: string; props: ButtonTestProps }> = []
 
         // All type and size combinations
         Object.values(ButtonType).forEach((type) => {

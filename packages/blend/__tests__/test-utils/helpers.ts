@@ -5,6 +5,7 @@ import { render } from './index'
 import { ButtonType, ButtonSize } from '../../lib/components/Button/types'
 import { TEST_BREAKPOINTS, KEYBOARD_KEYS } from './constants'
 import { assertAccessibility, assertEventHandlerCalled } from './assertions'
+import type { UserEvent } from '@testing-library/user-event'
 
 /**
  * Test helpers for common testing patterns
@@ -14,7 +15,7 @@ import { assertAccessibility, assertEventHandlerCalled } from './assertions'
 /**
  * Render component with all visual variants
  */
-export async function renderWithAllVariants<T extends Record<string, any>>(
+export async function renderWithAllVariants<T extends Record<string, unknown>>(
     Component: React.ComponentType<T>,
     baseProps: T,
     variants: {
@@ -31,7 +32,7 @@ export async function renderWithAllVariants<T extends Record<string, any>>(
             const result = render(
                 React.createElement(Component, {
                     ...baseProps,
-                    buttonType: type as any,
+                    buttonType: type as ButtonType,
                 })
             )
             results.push({ name: `type-${type}`, result })
@@ -44,7 +45,7 @@ export async function renderWithAllVariants<T extends Record<string, any>>(
             const result = render(
                 React.createElement(Component, {
                     ...baseProps,
-                    size: size as any,
+                    size: size as ButtonSize,
                 })
             )
             results.push({ name: `size-${size}`, result })
@@ -89,7 +90,9 @@ export function testAllButtonSizes(
 /**
  * Test component across responsive breakpoints
  */
-export async function testResponsiveBreakpoints<T extends Record<string, any>>(
+export async function testResponsiveBreakpoints<
+    T extends Record<string, unknown>,
+>(
     Component: React.ComponentType<T>,
     props: T,
     testFn: (
@@ -115,7 +118,7 @@ export async function testResponsiveBreakpoints<T extends Record<string, any>>(
         }))
 
         const { container, unmount } = render(
-            React.createElement(Component as any, props)
+            React.createElement(Component, props)
         )
 
         await testFn(breakpointName as keyof typeof TEST_BREAKPOINTS, container)
@@ -137,7 +140,7 @@ export async function testKeyboardInteractions(
         handler?: ReturnType<typeof vi.fn>
         shouldTrigger?: boolean
     }>,
-    user: any // UserEvent instance
+    user: UserEvent
 ) {
     element.focus()
 
@@ -253,7 +256,10 @@ export async function batchTestAccessibility(
     scenarios: Array<{
         name: string
         render: () => RenderResult
-        axeOptions?: any
+        axeOptions?: {
+            rules?: Record<string, unknown>
+            runOnly?: string[]
+        }
     }>
 ) {
     for (const scenario of scenarios) {
@@ -321,7 +327,7 @@ export function testComponentCleanup(
 /**
  * Create a test suite for a component
  */
-export function createComponentTestSuite<T extends Record<string, any>>(
+export function createComponentTestSuite<T extends Record<string, unknown>>(
     componentName: string,
     Component: React.ComponentType<T>,
     defaultProps: T
@@ -334,7 +340,7 @@ export function createComponentTestSuite<T extends Record<string, any>>(
                 scenarios.forEach((scenario) => {
                     it(`renders ${scenario.name}`, () => {
                         const { container } = render(
-                            React.createElement(Component as any, {
+                            React.createElement(Component, {
                                 ...defaultProps,
                                 ...scenario.props,
                             })
@@ -352,7 +358,7 @@ export function createComponentTestSuite<T extends Record<string, any>>(
                 scenarios.forEach((scenario) => {
                     it(`is accessible when ${scenario.name}`, async () => {
                         const { container } = render(
-                            React.createElement(Component as any, {
+                            React.createElement(Component, {
                                 ...defaultProps,
                                 ...scenario.props,
                             })
@@ -367,7 +373,10 @@ export function createComponentTestSuite<T extends Record<string, any>>(
             scenarios: Array<{
                 name: string
                 props: Partial<T>
-                interaction: (element: HTMLElement, user: any) => Promise<void>
+                interaction: (
+                    element: HTMLElement,
+                    user: UserEvent
+                ) => Promise<void>
                 expectation: () => void
             }>
         ) => {
@@ -375,7 +384,7 @@ export function createComponentTestSuite<T extends Record<string, any>>(
                 scenarios.forEach((scenario) => {
                     it(`handles ${scenario.name}`, async () => {
                         const { container, user } = render(
-                            React.createElement(Component as any, {
+                            React.createElement(Component, {
                                 ...defaultProps,
                                 ...scenario.props,
                             })
@@ -395,7 +404,7 @@ export function createComponentTestSuite<T extends Record<string, any>>(
  * Performance test helper
  */
 export async function measureComponentPerformance<
-    T extends Record<string, any>,
+    T extends Record<string, unknown>,
 >(
     Component: React.ComponentType<T>,
     scenarios: Array<{
@@ -414,7 +423,7 @@ export async function measureComponentPerformance<
         for (let i = 0; i < iterations; i++) {
             const start = performance.now()
             const { unmount } = render(
-                React.createElement(Component as any, scenario.props)
+                React.createElement(Component, scenario.props)
             )
             const end = performance.now()
 

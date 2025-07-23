@@ -155,6 +155,7 @@ export function assertIcon(
  */
 export function assertButtonVariant(
     button: HTMLElement,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _variant: {
         type?: string
         size?: string

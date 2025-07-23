@@ -3,11 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import Button from '../../../lib/components/Button/Button'
-import {
-    ButtonType,
-    ButtonSize,
-    ButtonSubType,
-} from '../../../lib/components/Button/types'
+import { ButtonType, ButtonSubType } from '../../../lib/components/Button/types'
 import { MockIcon } from '../../test-utils'
 
 describe('Button Accessibility', () => {

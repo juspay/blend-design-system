@@ -3,7 +3,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import { useResponsiveTokens } from '../../lib/hooks/useResponsiveTokens'
 import ThemeProvider from '../../lib/context/ThemeProvider'
-import { BREAKPOINTS } from '../../lib/breakpoints/breakPoints'
 import { getButtonTokens } from '../../lib/components/Button/button.tokens'
 import { FOUNDATION_THEME } from '../../lib/tokens'
 
@@ -11,7 +10,7 @@ import { FOUNDATION_THEME } from '../../lib/tokens'
 vi.mock('../../lib/hooks/useBreakPoints', () => ({
     useBreakpoints: vi.fn(() => ({
         breakPointLabel: 'sm',
-        currentBreakpoint: 768,
+        innerWidth: 768,
     })),
 }))
 
@@ -48,8 +47,8 @@ describe('useResponsiveTokens Hook', () => {
         it('returns correct tokens for small breakpoint', () => {
             vi.mocked(useBreakpoints).mockReturnValue({
                 breakPointLabel: 'sm',
-                currentBreakpoint: 640,
-            } as any)
+                innerWidth: 640,
+            })
 
             const { result } = renderHook(() => useResponsiveTokens('BUTTON'), {
                 wrapper,
@@ -62,8 +61,8 @@ describe('useResponsiveTokens Hook', () => {
         it('returns correct tokens for large breakpoint', () => {
             vi.mocked(useBreakpoints).mockReturnValue({
                 breakPointLabel: 'lg',
-                currentBreakpoint: 1024,
-            } as any)
+                innerWidth: 1024,
+            })
 
             const { result } = renderHook(() => useResponsiveTokens('BUTTON'), {
                 wrapper,
@@ -79,8 +78,8 @@ describe('useResponsiveTokens Hook', () => {
             const mockUseBreakpoints = vi.mocked(useBreakpoints)
             mockUseBreakpoints.mockReturnValue({
                 breakPointLabel: 'sm',
-                currentBreakpoint: 640,
-            } as any)
+                innerWidth: 640,
+            })
 
             const { result, rerender } = renderHook(
                 () => useResponsiveTokens('BUTTON'),
@@ -92,8 +91,8 @@ describe('useResponsiveTokens Hook', () => {
             // Change breakpoint
             mockUseBreakpoints.mockReturnValue({
                 breakPointLabel: 'lg',
-                currentBreakpoint: 1024,
-            } as any)
+                innerWidth: 1024,
+            })
 
             rerender()
 
@@ -144,7 +143,9 @@ describe('useResponsiveTokens Hook', () => {
 
             // Button specific properties
             expect(buttonResult.current).toHaveProperty('backgroundColor')
-            const buttonTokens = buttonResult.current as any
+            const buttonTokens = buttonResult.current as {
+                backgroundColor: { primary: { default: string } }
+            }
             expect(buttonTokens.backgroundColor).toHaveProperty('primary')
             expect(buttonTokens.backgroundColor.primary).toHaveProperty(
                 'default'
@@ -243,9 +244,9 @@ describe('useResponsiveTokens Hook', () => {
     describe('Edge Cases', () => {
         it.skip('handles undefined breakpoint gracefully', () => {
             vi.mocked(useBreakpoints).mockReturnValue({
-                breakPointLabel: undefined as any,
-                currentBreakpoint: 0,
-            } as any)
+                breakPointLabel: undefined as unknown as 'sm' | 'lg',
+                innerWidth: 0,
+            })
 
             const { result } = renderHook(() => useResponsiveTokens('BUTTON'), {
                 wrapper,
@@ -261,7 +262,7 @@ describe('useResponsiveTokens Hook', () => {
             })
 
             expect(result.current).toBeDefined()
-            expect(() => (result.current as any).gap).not.toThrow()
+            expect(() => (result.current as { gap?: string }).gap).not.toThrow()
         })
     })
 

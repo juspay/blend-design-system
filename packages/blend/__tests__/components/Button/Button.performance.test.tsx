@@ -8,10 +8,8 @@ import {
     ButtonSubType,
 } from '../../../lib/components/Button/types'
 import { MockIcon } from '../../test-utils'
-import {
-    PERFORMANCE_THRESHOLDS,
-    getThreshold,
-} from '../../test-utils/constants'
+import { getThreshold } from '../../test-utils/constants'
+import { screen, fireEvent } from '@testing-library/react'
 
 describe('Button Performance', () => {
     describe('Render Performance', () => {
@@ -89,7 +87,7 @@ describe('Button Performance', () => {
         })
 
         it('handles state changes efficiently', async () => {
-            const { rerender, user } = render(<Button text="State Test" />)
+            const { user } = render(<Button text="State Test" />)
 
             const button = screen.getByRole('button')
 
@@ -111,14 +109,16 @@ describe('Button Performance', () => {
             )
 
             // Get initial memory if available (Chrome only)
-            const performanceMemory = (performance as any).memory
+            const performanceMemory = (
+                performance as { memory?: { usedJSHeapSize: number } }
+            ).memory
             const initialMemory = performanceMemory?.usedJSHeapSize || 0
 
             unmount()
 
             // Force garbage collection if available
-            if ((global as any).gc) {
-                ;(global as any).gc()
+            if ((global as { gc?: () => void }).gc) {
+                ;(global as { gc?: () => void }).gc?.()
             }
 
             // Memory should not increase significantly
@@ -304,6 +304,3 @@ describe('Button Performance', () => {
         })
     })
 })
-
-// Import screen from testing library for the tests that need it
-import { screen, fireEvent } from '@testing-library/react'

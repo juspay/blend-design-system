@@ -144,7 +144,11 @@ export const getThreshold = (
     category: keyof typeof PERFORMANCE_THRESHOLDS,
     type: string
 ): number => {
-    const baseThreshold = (PERFORMANCE_THRESHOLDS[category] as any)[type]
+    const categoryThresholds = PERFORMANCE_THRESHOLDS[category] as Record<
+        string,
+        number
+    >
+    const baseThreshold = categoryThresholds[type]
 
     // Adjust thresholds for CI environment (usually slower)
     if (TEST_ENV.isCI) {
