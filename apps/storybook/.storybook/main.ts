@@ -1,6 +1,11 @@
-const path = require('path')
+import type { StorybookConfig } from '@storybook/react-vite'
+import * as path from 'path'
+import { fileURLToPath } from 'url'
 
-const config = {
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const config: StorybookConfig = {
     stories: [
         '../stories/**/*.stories.@(js|jsx|ts|tsx|mdx)',
         '../stories/**/*.mdx',
@@ -22,7 +27,7 @@ const config = {
         reactDocgen: 'react-docgen-typescript',
         reactDocgenTypescriptOptions: {
             shouldExtractLiteralValuesFromEnum: true,
-            propFilter: (prop) =>
+            propFilter: (prop: any) =>
                 prop.parent ? !/node_modules/.test(prop.parent.fileName) : true,
         },
     },
@@ -30,11 +35,11 @@ const config = {
         autodocs: 'tag',
     },
     viteFinal: async (config) => {
-        // Ensure proper resolution of the blend-v1 package
+        // Ensure proper resolution of the @juspay/blend-design-system package
         if (config.resolve) {
             config.resolve.alias = {
                 ...config.resolve.alias,
-                'blend-v1': path.resolve(
+                '@juspay/blend-design-system': path.resolve(
                     __dirname,
                     '../../../packages/blend/lib/main.ts'
                 ),
@@ -44,4 +49,4 @@ const config = {
     },
 }
 
-module.exports = config
+export default config
