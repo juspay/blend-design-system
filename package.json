@@ -31,12 +31,7 @@
         "version:blend": "cd packages/blend && npm version",
         "figma:validate": "figma connect validate",
         "figma:publish": "figma connect publish",
-        "figma:unpublish": "figma connect unpublish",
-        "test:blend": "cd packages/blend && pnpm test",
-        "test:blend:ui": "cd packages/blend && pnpm test:ui",
-        "test:blend:coverage": "cd packages/blend && pnpm test:coverage",
-        "test:blend:watch": "cd packages/blend && pnpm test:watch",
-        "test:blend:run": "cd packages/blend && pnpm test:run"
+        "figma:unpublish": "figma connect unpublish"
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",
