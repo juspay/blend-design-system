@@ -90,10 +90,22 @@ type Story = StoryObj<typeof Checkbox>
 
 // Default story
 export const Default: Story = {
+    render: (args) => {
+        const [checked, setChecked] = useState(false)
+
+        return (
+            <Checkbox
+                {...args}
+                checked={checked}
+                onCheckedChange={(newChecked) =>
+                    setChecked(newChecked === true)
+                }
+            />
+        )
+    },
     args: {
         children: 'Default checkbox',
         size: CheckboxSize.MEDIUM,
-        defaultChecked: false,
         disabled: false,
         required: false,
         error: false,
