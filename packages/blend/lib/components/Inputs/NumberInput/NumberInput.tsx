@@ -6,8 +6,13 @@ import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
 import type { NumberInputProps } from './types'
 import { NumberInputSize } from './types'
-import { useComponentToken } from '../../../context/useComponentToken'
 import type { NumberInputTokensType } from './numberInput.tokens'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { toPixels } from '../../../global-utils/GlobalUtils'
+import { useState } from 'react'
+import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
+import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 
 const NumberInput = ({
     value,
@@ -26,34 +31,76 @@ const NumberInput = ({
     label = 'Number Input',
     hintText,
     name,
+    onBlur,
+    onFocus,
     ...rest
 }: NumberInputProps) => {
-    const numberInputTokens = useComponentToken(
-        'NUMBER_INPUT'
-    ) as NumberInputTokensType
+    const numberInputTokens =
+        useResponsiveTokens<NumberInputTokensType>('NUMBER_INPUT')
+
+    const [isFocused, setIsFocused] = useState(false)
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakPointLabel === 'sm'
+
+    const inputFocusedOrWithValue = isFocused || value !== undefined
+    const isSmallScreenWithLargeSize =
+        isSmallScreen && size === NumberInputSize.LARGE
+
     const paddingX = numberInputTokens.input.paddingX[size]
-    const paddingY = numberInputTokens.input.paddingY[size]
+    const paddingY =
+        toPixels(numberInputTokens.input.paddingY[size]) +
+        (isSmallScreenWithLargeSize ? 0.5 : 0)
 
     return (
         <Block display="flex" flexDirection="column" gap={8} width="100%">
-            <InputLabels
-                label={label}
-                sublabel={sublabel}
-                disabled={disabled}
-                helpIconHintText={helpIconHintText}
-                name={name}
-                required={required}
-            />
+            {(!isSmallScreen || size !== NumberInputSize.LARGE) && (
+                <InputLabels
+                    label={label}
+                    sublabel={sublabel}
+                    disabled={disabled}
+                    helpIconHintText={helpIconHintText}
+                    name={name}
+                    required={required}
+                />
+            )}
             <Block
                 position="relative"
                 width={'100%'}
                 display="flex"
                 borderRadius={8}
             >
+                {label && isSmallScreenWithLargeSize && (
+                    <Block
+                        position="absolute"
+                        top={
+                            inputFocusedOrWithValue
+                                ? toPixels(paddingY - paddingY / 1.3)
+                                : '50%'
+                        }
+                        left={toPixels(paddingX)}
+                        height={'max-content'}
+                        style={{
+                            transition: 'all 0.2s ease-in-out',
+                            transform: inputFocusedOrWithValue
+                                ? 'scale(0.95)'
+                                : 'translateY(-50%) scale(1)',
+                            transformOrigin: 'left center',
+                            pointerEvents: 'none',
+                            zIndex: 1,
+                        }}
+                    >
+                        <FloatingLabels
+                            label={label}
+                            required={required || false}
+                            name={name || ''}
+                            isFocused={inputFocusedOrWithValue}
+                        />
+                    </Block>
+                )}
                 <PrimitiveInput
                     name={name}
                     type="number"
-                    placeholder={placeholder}
+                    placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
                     value={value}
                     onChange={onChange}
                     step={step}
@@ -61,7 +108,16 @@ const NumberInput = ({
                     max={max}
                     required={required}
                     paddingX={paddingX}
-                    paddingY={paddingY}
+                    paddingTop={
+                        isSmallScreenWithLargeSize && inputFocusedOrWithValue
+                            ? paddingY * 1.5
+                            : paddingY
+                    }
+                    paddingBottom={
+                        isSmallScreenWithLargeSize && inputFocusedOrWithValue
+                            ? paddingY / 2
+                            : paddingY
+                    }
                     borderRadius={numberInputTokens.input.borderRadius}
                     boxShadow={numberInputTokens.input.boxShadow.default}
                     border={
@@ -69,6 +125,8 @@ const NumberInput = ({
                             error ? 'error' : 'default'
                         ]
                     }
+                    fontSize={'14px'}
+                    fontWeight={500}
                     outline="none"
                     width={'100%'}
                     _hover={{
@@ -97,6 +155,14 @@ const NumberInput = ({
                         border: numberInputTokens.input.border.disabled,
                         cursor: 'not-allowed',
                     }}
+                    onFocus={(e) => {
+                        setIsFocused(true)
+                        onFocus?.(e)
+                    }}
+                    onBlur={(e) => {
+                        setIsFocused(false)
+                        onBlur?.(e)
+                    }}
                     {...rest}
                 />
                 <Block
@@ -123,7 +189,11 @@ const NumberInput = ({
                     <PrimitiveButton
                         onClick={() =>
                             onChange({
-                                target: { value: String(value + (step ?? 1)) },
+                                target: {
+                                    value: String(
+                                        value ? value + (step ?? 1) : 0
+                                    ),
+                                },
                             } as React.ChangeEvent<HTMLInputElement>)
                         }
                         backgroundColor={FOUNDATION_THEME.colors.gray[0]}
@@ -134,7 +204,9 @@ const NumberInput = ({
                         borderRadius={`0 ${numberInputTokens.input.borderRadius} 0 0`}
                         disabled={
                             disabled ||
-                            (typeof max === 'number' && value >= max)
+                            (typeof max === 'number' &&
+                                value !== undefined &&
+                                value >= max)
                         }
                         _focus={{
                             backgroundColor: FOUNDATION_THEME.colors.gray[100],
@@ -148,7 +220,11 @@ const NumberInput = ({
                     <PrimitiveButton
                         onClick={() =>
                             onChange({
-                                target: { value: String(value - (step ?? 1)) },
+                                target: {
+                                    value: String(
+                                        value ? value - (step ?? 1) : 0
+                                    ),
+                                },
                             } as React.ChangeEvent<HTMLInputElement>)
                         }
                         backgroundColor={FOUNDATION_THEME.colors.gray[0]}
@@ -165,7 +241,9 @@ const NumberInput = ({
                         }}
                         disabled={
                             disabled ||
-                            (typeof min === 'number' && value <= min)
+                            (typeof min === 'number' &&
+                                value !== undefined &&
+                                value <= min)
                         }
                     >
                         <TriangleSVG direction="down" />

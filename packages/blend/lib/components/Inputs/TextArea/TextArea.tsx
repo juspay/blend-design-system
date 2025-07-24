@@ -3,8 +3,13 @@ import PrimitiveTextarea from '../../Primitives/PrimitiveTextArea'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
 import type { TextAreaProps } from './types'
-import { useComponentToken } from '../../../context/useComponentToken'
 import type { TextAreaTokensType } from './textarea.token'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useEffect, useRef, useState } from 'react'
+import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
+import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
+import { toPixels } from '../../../global-utils/GlobalUtils'
 
 const TextArea = ({
     value,
@@ -27,35 +32,102 @@ const TextArea = ({
     resize = 'none',
     ...rest
 }: TextAreaProps) => {
-    const textAreaTokens = useComponentToken('TEXT_AREA') as TextAreaTokensType
+    const textAreaTokens = useResponsiveTokens<TextAreaTokensType>('TEXT_AREA')
+    const [isFocused, setIsFocused] = useState(false)
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakPointLabel === 'sm'
+    const labelRef = useRef<HTMLDivElement>(null)
+    const [labelHeight, setLabelHeight] = useState(0)
+
+    const inputFocusedOrWithValue = isFocused || value.length > 0
+
+    const paddingX = toPixels(textAreaTokens.paddingX)
+    const paddingY = toPixels(textAreaTokens.paddingY)
+
+    useEffect(() => {
+        if (labelRef.current) {
+            setLabelHeight(labelRef.current.offsetHeight)
+        } else {
+            setLabelHeight(0)
+        }
+    }, [isSmallScreen])
+
     return (
-        <Block display="flex" flexDirection="column" gap={8} width="100%">
-            <InputLabels
-                label={label}
-                sublabel={sublabel}
-                disabled={disabled}
-                helpIconHintText={helpIconHintText}
-                required={required}
-            />
+        <Block
+            display="flex"
+            flexDirection="column"
+            gap={8}
+            width="100%"
+            position="relative"
+        >
+            {!isSmallScreen && (
+                <InputLabels
+                    label={label}
+                    sublabel={sublabel}
+                    disabled={disabled}
+                    helpIconHintText={helpIconHintText}
+                    required={required}
+                />
+            )}
+            {label && isSmallScreen && (
+                <Block
+                    ref={labelRef}
+                    position="absolute"
+                    top={5}
+                    left={paddingX}
+                    height={'max-content'}
+                    style={{
+                        transition: 'all 0.2s ease-in-out',
+                        transform: inputFocusedOrWithValue
+                            ? 'scale(0.95)'
+                            : ' scale(1)',
+                        transformOrigin: 'left center',
+                        pointerEvents: 'none',
+                        zIndex: 1,
+                    }}
+                >
+                    <FloatingLabels
+                        label={label}
+                        required={required || false}
+                        name={''}
+                        isFocused={inputFocusedOrWithValue}
+                    />
+                </Block>
+            )}
             <PrimitiveTextarea
                 width={'100%'}
                 autoFocus={autoFocus}
                 value={value}
-                placeholder={placeholder}
+                placeholder={isSmallScreen ? '' : placeholder}
                 onChange={onChange}
-                onFocus={onFocus}
-                onBlur={onBlur}
+                onFocus={(e) => {
+                    setIsFocused(true)
+                    onFocus?.(e)
+                }}
+                onBlur={(e) => {
+                    setIsFocused(false)
+                    onBlur?.(e)
+                }}
                 rows={rows}
                 required={required}
                 cols={cols}
                 wrap={wrap}
                 borderRadius={textAreaTokens.borderRadius}
                 resize={resize}
-                paddingX={textAreaTokens.paddingX}
-                paddingY={textAreaTokens.paddingY}
+                paddingX={paddingX}
+                paddingTop={
+                    isSmallScreen && inputFocusedOrWithValue
+                        ? paddingY + 14
+                        : paddingY
+                }
+                paddingBottom={
+                    isSmallScreen && inputFocusedOrWithValue ? 0 : paddingY
+                }
                 boxShadow={textAreaTokens.boxShadow.default}
                 fontFamily={textAreaTokens.fontFamily}
                 border={textAreaTokens.border[error ? 'error' : 'default']}
+                fontSize={'14px'}
+                fontWeight={500}
                 outline={textAreaTokens.outline[error ? 'error' : 'default']}
                 _hover={{
                     border: textAreaTokens.border[error ? 'error' : 'hover'],

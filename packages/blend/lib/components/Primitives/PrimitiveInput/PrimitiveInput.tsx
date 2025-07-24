@@ -14,7 +14,8 @@ type StateStyles = {
 
 type PrimitiveInputProps = StateStyles & {
     color?: CSSObject['color']
-
+    fontSize?: CSSObject['fontSize']
+    fontWeight?: CSSObject['fontWeight']
     // Positioning
     position?: CSSObject['position']
     inset?: CSSObject['inset']
@@ -213,6 +214,8 @@ const getStyles = (props: PrimitiveInputProps): CSSObject => {
     const styles: CSSObject = {}
 
     if (props.color !== undefined) styles.color = props.color
+    if (props.fontSize !== undefined) styles.fontSize = props.fontSize
+    if (props.fontWeight !== undefined) styles.fontWeight = props.fontWeight
 
     if (props.position !== undefined) styles.position = props.position
     if (props.inset !== undefined) styles.inset = props.inset

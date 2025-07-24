@@ -6,7 +6,9 @@ import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 
 const NumberInputDemo = () => {
-    const [playgroundValue, setPlaygroundValue] = useState(42)
+    const [playgroundValue, setPlaygroundValue] = useState<number | undefined>(
+        undefined
+    )
     const [playgroundSize, setPlaygroundSize] = useState<NumberInputSize>(
         NumberInputSize.MEDIUM
     )
@@ -127,7 +129,7 @@ const NumberInputDemo = () => {
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
                         <div className="w-full max-w-md">
                             <NumberInput
-                                label="Playground Number Input"
+                                label="Your Label"
                                 value={playgroundValue}
                                 onChange={(e) =>
                                     setPlaygroundValue(Number(e.target.value))
@@ -150,7 +152,7 @@ const NumberInputDemo = () => {
                                 }
                                 hintText="This is a hint text"
                                 helpIconHintText="This is help text for the number input"
-                                required
+                                required={false}
                             />
                         </div>
                     </div>

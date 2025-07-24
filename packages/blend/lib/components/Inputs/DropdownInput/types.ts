@@ -32,7 +32,9 @@ export type DropdownInputProps = {
     dropdownName?: string
     onDropdownOpen?: () => void
     onDropdownClose?: () => void
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
+    onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'style' | 'className'
+    'size' | 'style' | 'className' | 'onBlur' | 'onFocus'
 >
