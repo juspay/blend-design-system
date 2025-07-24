@@ -137,7 +137,7 @@ describe('Switch Component', () => {
         it('renders all sizes correctly', () => {
             const sizes = SwitchTestFactory.allSizes()
 
-            sizes.forEach((props, index) => {
+            sizes.forEach((props) => {
                 const { unmount } = render(<Switch {...props} />)
                 expect(screen.getByRole('switch')).toBeInTheDocument()
                 unmount()
@@ -520,11 +520,21 @@ describe('Switch Component', () => {
             let switchElement = screen.getByRole('switch')
             expect(switchElement).toHaveAttribute('aria-checked', 'false')
 
-            rerender(<Switch label="Boolean Switch" checked={0 as any} />)
+            rerender(
+                <Switch
+                    label="Boolean Switch"
+                    checked={0 as unknown as boolean}
+                />
+            )
             switchElement = screen.getByRole('switch')
             expect(switchElement).toHaveAttribute('aria-checked', '0')
 
-            rerender(<Switch label="Boolean Switch" checked={1 as any} />)
+            rerender(
+                <Switch
+                    label="Boolean Switch"
+                    checked={1 as unknown as boolean}
+                />
+            )
             switchElement = screen.getByRole('switch')
             expect(switchElement).toHaveAttribute('aria-checked', '1')
         })

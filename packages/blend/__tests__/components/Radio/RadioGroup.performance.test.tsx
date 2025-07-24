@@ -15,12 +15,12 @@ import {
 
 // Helper to get current test name for performance tracking
 function getCurrentTestName(): string {
-    const testContext = expect.getState()
+    const testContext = expect.getState() as { currentTestName?: string }
     return testContext.currentTestName || 'unknown-test'
 }
 
 describe('RadioGroup Performance', () => {
-    let defaultProps: any
+    let defaultProps: Record<string, unknown>
 
     beforeEach(() => {
         defaultProps = RadioGroupTestFactory.default()
@@ -29,7 +29,7 @@ describe('RadioGroup Performance', () => {
     describe('Render Performance', () => {
         it('renders within performance budget', async () => {
             const renderTime = await measureRenderTime(
-                <RadioGroup {...defaultProps}>
+                <RadioGroup {...defaultProps} name="perf-test-group">
                     <Radio value="option1">Option 1</Radio>
                     <Radio value="option2">Option 2</Radio>
                 </RadioGroup>
@@ -216,10 +216,10 @@ describe('RadioGroup Performance', () => {
             const props = RadioGroupTestFactory.controlled()
             let renderCount = 0
 
-            const TestRadioGroup = (groupProps: any) => {
+            const TestRadioGroup = (groupProps: Record<string, unknown>) => {
                 renderCount++
                 return (
-                    <RadioGroup {...groupProps}>
+                    <RadioGroup {...groupProps} name="test-radio-group">
                         <Radio value="option1">Option 1</Radio>
                         <Radio value="option2">Option 2</Radio>
                     </RadioGroup>

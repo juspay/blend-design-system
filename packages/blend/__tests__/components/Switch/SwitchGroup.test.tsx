@@ -425,7 +425,7 @@ describe('SwitchGroup Component', () => {
                 .withOnChange(handleChange)
                 .build()
 
-            const { user } = render(
+            render(
                 <SwitchGroup {...props}>
                     <Switch label="Option 1" value="option1" />
                     <Switch label="Option 2" /> {/* No value prop */}

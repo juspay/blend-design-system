@@ -1,12 +1,6 @@
 import React, { forwardRef, useState, useCallback } from 'react'
 import type { RadioGroupProps } from './types'
-import {
-    isRadioElement,
-    shouldRadioBeChecked,
-    createGroupChangeHandler,
-    isValidRadioValue,
-    getRadioTextProps,
-} from './utils'
+import { isRadioElement, isValidRadioValue, getRadioTextProps } from './utils'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import Radio from './Radio'
@@ -73,7 +67,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
                                 : currentIndex - 1
                         break
                     case ' ':
-                    case 'Enter':
+                    case 'Enter': {
                         e.preventDefault()
                         const targetRadio = radios[
                             currentIndex
@@ -82,6 +76,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
                             handleGroupChange(targetRadio.value)
                         }
                         return
+                    }
                     default:
                         return
                 }

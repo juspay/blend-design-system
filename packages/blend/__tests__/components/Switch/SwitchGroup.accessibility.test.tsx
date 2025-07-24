@@ -3,10 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import SwitchGroup from '../../../lib/components/Switch/SwitchGroup'
 import { Switch } from '../../../lib/components/Switch/Switch'
-import {
-    SwitchGroupTestFactory,
-    SwitchGroupPropsBuilder,
-} from '../../test-utils/builders'
+import { SwitchGroupTestFactory } from '../../test-utils/builders'
 import { assertAccessibility } from '../../test-utils/assertions'
 
 describe('SwitchGroup Accessibility', () => {

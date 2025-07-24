@@ -157,7 +157,7 @@ describe('Radio Component', () => {
         it('renders all sizes with consistent behavior', () => {
             const allSizes = RadioTestFactory.allSizes()
 
-            allSizes.forEach((props, index) => {
+            allSizes.forEach((props) => {
                 const { unmount } = render(<Radio {...props} />)
 
                 const radio = screen.getByRole('radio')

@@ -16,7 +16,7 @@ import { screen, fireEvent } from '@testing-library/react'
 
 // Helper to get current test name for performance tracking
 function getCurrentTestName(): string {
-    const testContext = expect.getState()
+    const testContext = expect.getState() as { currentTestName?: string }
     return testContext.currentTestName || 'unknown-test'
 }
 

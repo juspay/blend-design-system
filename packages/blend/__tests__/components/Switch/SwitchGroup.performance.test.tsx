@@ -12,12 +12,12 @@ import { SwitchGroupTestFactory } from '../../test-utils/builders'
 
 // Helper to get current test name for performance tracking
 function getCurrentTestName(): string {
-    const testContext = expect.getState()
+    const testContext = expect.getState() as { currentTestName?: string }
     return testContext.currentTestName || 'unknown-test'
 }
 
 describe('SwitchGroup Performance', () => {
-    let defaultProps: any
+    let defaultProps: Record<string, unknown>
 
     beforeEach(() => {
         defaultProps = SwitchGroupTestFactory.default()
@@ -147,7 +147,7 @@ describe('SwitchGroup Performance', () => {
     describe('Re-render Performance', () => {
         it('avoids unnecessary re-renders with stable props', async () => {
             const renderSpy = vi.fn()
-            const TestSwitchGroup = (props: any) => {
+            const TestSwitchGroup = (props: Record<string, unknown>) => {
                 renderSpy()
                 return (
                     <SwitchGroup {...props}>
@@ -748,9 +748,8 @@ describe('SwitchGroup Performance', () => {
                     <Switch value="mixed2" label="Mixed 2" />
                     {null}
                     <Switch value="mixed3" label="Mixed 3" />
-                    {false && (
-                        <Switch value="conditional" label="Conditional" />
-                    )}
+                    {/* Conditional rendering example - normally would be a variable */}
+                    {null}
                 </SwitchGroup>
             )
             const end = performance.now()

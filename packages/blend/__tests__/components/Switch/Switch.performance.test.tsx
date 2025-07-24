@@ -1,18 +1,13 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import {
-    render,
-    screen,
-    measureRenderTime,
-    assertPerformanceWithContext,
-} from '../../test-utils'
+import { render, screen, assertPerformanceWithContext } from '../../test-utils'
 import { Switch } from '../../../lib/components/Switch/Switch'
 import { SwitchSize } from '../../../lib/components/Switch/types'
 import { SwitchTestFactory } from '../../test-utils/builders'
 
 // Helper to get current test name for performance tracking
 function getCurrentTestName(): string {
-    const testContext = expect.getState()
+    const testContext = expect.getState() as { currentTestName?: string }
     return testContext.currentTestName || 'unknown-test'
 }
 
@@ -97,7 +92,7 @@ describe('Switch Performance', () => {
     describe('Re-render Performance', () => {
         it('avoids unnecessary re-renders with stable props', () => {
             const renderSpy = vi.fn()
-            const TestSwitch = (props: any) => {
+            const TestSwitch = (props: Record<string, unknown>) => {
                 renderSpy()
                 return <Switch {...props} />
             }
@@ -578,26 +573,29 @@ describe('Switch Performance', () => {
 
         it('handles boolean coercion efficiently', async () => {
             const { rerender } = render(
-                <Switch label="Boolean Coercion Switch" checked={0 as any} />
+                <Switch
+                    label="Boolean Coercion Switch"
+                    checked={0 as unknown as boolean}
+                />
             )
 
             const coercionTime = await measureComponentPerformance(() => {
                 rerender(
                     <Switch
                         label="Boolean Coercion Switch"
-                        checked={1 as any}
+                        checked={1 as unknown as boolean}
                     />
                 )
                 rerender(
                     <Switch
                         label="Boolean Coercion Switch"
-                        checked={'' as any}
+                        checked={'' as unknown as boolean}
                     />
                 )
                 rerender(
                     <Switch
                         label="Boolean Coercion Switch"
-                        checked={'true' as any}
+                        checked={'true' as unknown as boolean}
                     />
                 )
             })

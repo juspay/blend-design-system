@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '../../test-utils'
+import { render, screen } from '../../test-utils'
 import RadioGroup from '../../../lib/components/Radio/RadioGroup'
 import Radio from '../../../lib/components/Radio/Radio'
 import {
@@ -406,8 +406,8 @@ describe('RadioGroup Component', () => {
             expect(radios[1]).toBeChecked()
         })
 
-        it('provides proper form data structure', async () => {
-            const { user } = render(
+        it('provides proper form data structure', () => {
+            render(
                 <RadioGroup name="preferences" defaultValue="dark">
                     <Radio value="light">Light Theme</Radio>
                     <Radio value="dark">Dark Theme</Radio>

@@ -3,7 +3,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import Radio from '../../../lib/components/Radio/Radio'
-import { RadioSize } from '../../../lib/components/Radio/types'
 import { RadioPropsBuilder, RadioTestFactory } from '../../test-utils/builders'
 import { MockIcon } from '../../test-utils'
 

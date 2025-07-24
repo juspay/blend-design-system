@@ -77,7 +77,9 @@ export function getPerformanceThreshold(
     metric: string
 ): number {
     const config = getPerformanceConfig()
-    const baseThreshold = (config.baseThresholds[category] as any)[metric]
+    const baseThreshold = (
+        config.baseThresholds[category] as Record<string, number>
+    )[metric]
 
     if (!baseThreshold) {
         throw new Error(`Unknown performance metric: ${category}.${metric}`)
@@ -113,7 +115,9 @@ export async function measurePerformanceWithContext<T>(
 
     let recommendation: string | undefined
     if (!passed) {
-        const baseThreshold = (config.baseThresholds[category] as any)[metric]
+        const baseThreshold = (
+            config.baseThresholds[category] as Record<string, number>
+        )[metric]
         if (duration <= baseThreshold * 1.2) {
             recommendation = 'Performance is acceptable but could be optimized'
         } else if (duration <= baseThreshold * 2) {
@@ -240,7 +244,20 @@ export function createPerformanceMonitor() {
 
                         return stats
                     },
-                    {} as Record<string, any>
+                    {} as Record<
+                        string,
+                        {
+                            count: number
+                            totalDuration: number
+                            operations: Record<
+                                string,
+                                {
+                                    count: number
+                                    totalDuration: number
+                                }
+                            >
+                        }
+                    >
                 ),
             },
         }),
@@ -276,7 +293,9 @@ export function assertPerformanceWithContext(
     }
 
     if (duration > threshold) {
-        const baseThreshold = (config.baseThresholds[category] as any)[metric]
+        const baseThreshold = (
+            config.baseThresholds[category] as Record<string, number>
+        )[metric]
         const message = [
             `Performance test failed: ${duration.toFixed(2)}ms > ${threshold}ms`,
             `Environment: ${config.environment} (${config.multiplier}x multiplier)`,
@@ -306,7 +325,7 @@ export function performanceTest(
         console.log(
             `Running performance test: ${name}\n` +
                 `Environment: ${config.environment}\n` +
-                `Threshold: ${threshold}ms (base: ${(config.baseThresholds[category] as any)[metric]}ms × ${config.multiplier})`
+                `Threshold: ${threshold}ms (base: ${(config.baseThresholds[category] as Record<string, number>)[metric]}ms × ${config.multiplier})`
         )
 
         await testFn()

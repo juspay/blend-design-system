@@ -3,10 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import RadioGroup from '../../../lib/components/Radio/RadioGroup'
 import { Radio } from '../../../lib/components/Radio/Radio'
-import {
-    RadioGroupTestFactory,
-    RadioGroupPropsBuilder,
-} from '../../test-utils/builders'
+import { RadioGroupTestFactory } from '../../test-utils/builders'
 import { assertAccessibility } from '../../test-utils/assertions'
 
 describe('RadioGroup Accessibility', () => {

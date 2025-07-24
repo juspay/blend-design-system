@@ -8,10 +8,7 @@ import {
 } from '../../test-utils'
 import Checkbox from '../../../lib/components/Checkbox/Checkbox'
 import { CheckboxSize } from '../../../lib/components/Checkbox/types'
-import {
-    CheckboxPropsBuilder,
-    CheckboxTestFactory,
-} from '../../test-utils/builders'
+import { CheckboxTestFactory } from '../../test-utils/builders'
 import { MockIcon } from '../../test-utils'
 
 // Helper to get current test name for performance tracking
@@ -216,8 +213,6 @@ describe('Checkbox Performance', () => {
                 <Checkbox onCheckedChange={handleChange}>Event Test</Checkbox>
             )
 
-            const checkbox = screen.getByRole('checkbox')
-
             unmount()
 
             // Verify clicking after unmount doesn't trigger handler
@@ -264,8 +259,7 @@ describe('Checkbox Performance', () => {
         it('imports only necessary dependencies', () => {
             // This is more of a build-time concern, but we can check
             // that the component doesn't have unexpected runtime dependencies
-            const checkbox = render(<Checkbox>Bundle Test</Checkbox>)
-            expect(checkbox).toBeDefined()
+            render(<Checkbox>Bundle Test</Checkbox>)
 
             // The component should not pull in unnecessary large dependencies
             // This would be better tested with bundle analysis tools
@@ -415,10 +409,9 @@ describe('Checkbox Performance', () => {
     describe('Animation Performance', () => {
         it('state transition animations are performant', async () => {
             const { user } = render(<Checkbox>Animation Test</Checkbox>)
-            const checkbox = screen.getByRole('checkbox')
 
             const start = performance.now()
-            await user.click(checkbox)
+            await user.click(screen.getByRole('checkbox'))
             const end = performance.now()
 
             // State transitions should be fast

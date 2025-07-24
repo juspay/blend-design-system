@@ -8,7 +8,7 @@ import {
 } from '../../test-utils'
 import Radio from '../../../lib/components/Radio/Radio'
 import { RadioSize } from '../../../lib/components/Radio/types'
-import { RadioPropsBuilder, RadioTestFactory } from '../../test-utils/builders'
+import { RadioTestFactory } from '../../test-utils/builders'
 import { MockIcon } from '../../test-utils'
 
 // Helper to get current test name for performance tracking
@@ -231,8 +231,6 @@ describe('Radio Performance', () => {
                 </Radio>
             )
 
-            const radio = screen.getByRole('radio')
-
             unmount()
 
             // Verify clicking after unmount doesn't trigger handler
@@ -281,8 +279,7 @@ describe('Radio Performance', () => {
         it('imports only necessary dependencies', () => {
             // This is more of a build-time concern, but we can check
             // that the component doesn't have unexpected runtime dependencies
-            const radio = render(<Radio value="test">Bundle Test</Radio>)
-            expect(radio).toBeDefined()
+            render(<Radio value="test">Bundle Test</Radio>)
 
             // The component should not pull in unnecessary large dependencies
             // This would be better tested with bundle analysis tools

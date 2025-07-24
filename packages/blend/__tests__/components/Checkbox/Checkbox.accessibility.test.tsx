@@ -3,7 +3,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import Checkbox from '../../../lib/components/Checkbox/Checkbox'
-import { CheckboxSize } from '../../../lib/components/Checkbox/types'
 import {
     CheckboxPropsBuilder,
     CheckboxTestFactory,

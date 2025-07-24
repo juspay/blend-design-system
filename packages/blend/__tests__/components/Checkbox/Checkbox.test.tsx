@@ -19,8 +19,7 @@ describe('Checkbox Component', () => {
 
         it('renders without label (checkbox only)', () => {
             render(<Checkbox />)
-            const checkbox = screen.getByRole('checkbox')
-            expect(checkbox).toBeInTheDocument()
+            expect(screen.getByRole('checkbox')).toBeInTheDocument()
             // Checkbox renders without visible label text
         })
 
@@ -158,7 +157,7 @@ describe('Checkbox Component', () => {
         it('renders all sizes with consistent behavior', () => {
             const allSizes = CheckboxTestFactory.allSizes()
 
-            allSizes.forEach((props, index) => {
+            allSizes.forEach((props) => {
                 const { unmount } = render(<Checkbox {...props} />)
 
                 const checkbox = screen.getByRole('checkbox')
@@ -340,8 +339,8 @@ describe('Checkbox Component', () => {
                 </form>
             )
 
-            const checkbox = screen.getByRole('checkbox')
             // The required prop shows a visual indicator (*) but may not set HTML required attribute
+            expect(screen.getByRole('checkbox')).toBeInTheDocument()
             expect(screen.getByText('*')).toBeInTheDocument()
         })
 
@@ -433,14 +432,12 @@ describe('Checkbox Component', () => {
 
         it('handles empty children', () => {
             render(<Checkbox>{''}</Checkbox>)
-            const checkbox = screen.getByRole('checkbox')
-            expect(checkbox).toBeInTheDocument()
+            expect(screen.getByRole('checkbox')).toBeInTheDocument()
         })
 
         it('handles null children', () => {
             render(<Checkbox>{null}</Checkbox>)
-            const checkbox = screen.getByRole('checkbox')
-            expect(checkbox).toBeInTheDocument()
+            expect(screen.getByRole('checkbox')).toBeInTheDocument()
         })
 
         it('handles undefined subtext gracefully', () => {
@@ -456,15 +453,10 @@ describe('Checkbox Component', () => {
                 </Checkbox>
             )
 
-            const checkbox = screen.getByRole('checkbox')
-            const label = screen.getByText('Layout test')
-            const subtext = screen.getByText('Helper text')
-            const icon = screen.getByTestId('mock-icon')
-
-            expect(checkbox).toBeInTheDocument()
-            expect(label).toBeInTheDocument()
-            expect(subtext).toBeInTheDocument()
-            expect(icon).toBeInTheDocument()
+            expect(screen.getByRole('checkbox')).toBeInTheDocument()
+            expect(screen.getByText('Layout test')).toBeInTheDocument()
+            expect(screen.getByText('Helper text')).toBeInTheDocument()
+            expect(screen.getByTestId('mock-icon')).toBeInTheDocument()
         })
 
         it('handles rapid state changes', async () => {
@@ -473,12 +465,10 @@ describe('Checkbox Component', () => {
                 <Checkbox onCheckedChange={handleChange}>Rapid clicks</Checkbox>
             )
 
-            const checkbox = screen.getByRole('checkbox')
-
             // Simulate rapid clicking
-            await user.click(checkbox)
-            await user.click(checkbox)
-            await user.click(checkbox)
+            await user.click(screen.getByRole('checkbox'))
+            await user.click(screen.getByRole('checkbox'))
+            await user.click(screen.getByRole('checkbox'))
 
             expect(handleChange).toHaveBeenCalledTimes(3)
         })
