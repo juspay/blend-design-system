@@ -1,25 +1,24 @@
-name: Release and Publish Blend Design System
+name: Release Blend Design System
 
 on:
-    push:
-        branches: [main]
     pull_request:
         branches: [main]
         types: [closed]
+    workflow_dispatch:
+        inputs:
+            tag:
+                description: 'Git tag to publish to NPM (e.g., v1.2.3)'
+                required: true
+                type: string
 
 jobs:
-    release:
-        if: |
-            (github.event_name == 'push') ||
-            (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
-
+    version-bump:
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
         runs-on: ubuntu-latest
 
         permissions:
             contents: write
-            packages: write
             pull-requests: write
-            id-token: write
 
         steps:
             - name: Checkout code
@@ -32,57 +31,29 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: '20'
-                  registry-url: 'https://registry.npmjs.org'
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
 
-            - name: Get pnpm store directory
-              shell: bash
-              run: |
-                  echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-            - name: Setup pnpm cache
-              uses: actions/cache@v4
-              with:
-                  path: ${{ env.STORE_PATH }}
-                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-store-
-
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
-
-            - name: Run linting and build
-              run: |
-                  pnpm --filter @juspay/blend-design-system lint
-                  pnpm --filter @juspay/blend-design-system build
 
             - name: Determine version bump type
               id: version-type
               run: |
-                  # Get the latest commit message
-                  COMMIT_MSG=$(git log -1 --pretty=format:"%s")
-                  echo "Latest commit: $COMMIT_MSG"
+                  PR_TITLE="${{ github.event.pull_request.title }}"
+                  echo "PR title: $PR_TITLE"
 
-                  # Determine version bump based on commit message
-                  if echo "$COMMIT_MSG" | grep -iE "^feat(\(.+\))?!?:" > /dev/null; then
-                    if echo "$COMMIT_MSG" | grep -E "!" > /dev/null; then
+                  if echo "$PR_TITLE" | grep -iE "^feat(\(.+\))?!?:" > /dev/null; then
+                    if echo "$PR_TITLE" | grep -E "!" > /dev/null; then
                       echo "version_type=major" >> $GITHUB_OUTPUT
-                      echo "Version bump: MAJOR (breaking change)"
                     else
                       echo "version_type=minor" >> $GITHUB_OUTPUT
-                      echo "Version bump: MINOR (new feature)"
                     fi
-                  elif echo "$COMMIT_MSG" | grep -iE "^fix(\(.+\))?:" > /dev/null; then
+                  elif echo "$PR_TITLE" | grep -iE "^fix(\(.+\))?:" > /dev/null; then
                     echo "version_type=patch" >> $GITHUB_OUTPUT
-                    echo "Version bump: PATCH (bug fix)"
-                  elif echo "$COMMIT_MSG" | grep -iE "^(build|chore|ci|docs|style|refactor|perf|test)(\(.+\))?:" > /dev/null; then
-                    echo "version_type=patch" >> $GITHUB_OUTPUT
-                    echo "Version bump: PATCH (maintenance)"
                   else
                     echo "version_type=patch" >> $GITHUB_OUTPUT
-                    echo "Version bump: PATCH (default)"
                   fi
 
             - name: Configure Git
@@ -94,11 +65,9 @@ jobs:
               id: version-bump
               working-directory: packages/blend
               run: |
-                  # Get current version
                   CURRENT_VERSION=$(node -p "require('./package.json').version")
                   echo "Current version: $CURRENT_VERSION"
 
-                  # Bump version based on type
                   if [ "${{ steps.version-type.outputs.version_type }}" = "major" ]; then
                     NEW_VERSION=$(pnpm version major --no-git-tag-version)
                   elif [ "${{ steps.version-type.outputs.version_type }}" = "minor" ]; then
@@ -107,7 +76,6 @@ jobs:
                     NEW_VERSION=$(pnpm version patch --no-git-tag-version)
                   fi
 
-                  # Clean up version string (remove 'v' prefix if present)
                   NEW_VERSION=$(echo $NEW_VERSION | sed 's/^v//')
                   echo "New version: $NEW_VERSION"
                   echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
@@ -115,80 +83,163 @@ jobs:
             - name: Create git tag
               run: |
                   TAG_NAME="v${{ steps.version-bump.outputs.new_version }}"
-
-                  # Delete tag if it exists locally
-                  if git tag -l | grep -q "^${TAG_NAME}$"; then
-                    git tag -d "$TAG_NAME"
-                  fi
-
-                  # Delete tag if it exists remotely
-                  if git ls-remote --tags origin | grep -q "refs/tags/${TAG_NAME}$"; then
-                    git push origin ":refs/tags/$TAG_NAME"
-                  fi
-
-                  # Create new tag
                   git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
+                  git push origin "$TAG_NAME"
+                  echo "Created and pushed tag: $TAG_NAME"
 
-            - name: Stage and commit changes
+            - name: Create version bump PR
+              uses: peter-evans/create-pull-request@v5
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  commit-message: 'chore(release): bump version to v${{ steps.version-bump.outputs.new_version }}'
+                  title: 'chore(release): bump version to v${{ steps.version-bump.outputs.new_version }}'
+                  body: |
+                      ## Version Bump to v${{ steps.version-bump.outputs.new_version }}
+
+                      This PR bumps the version of `@juspay/blend-design-system` to `v${{ steps.version-bump.outputs.new_version }}`.
+
+                      **Version type:** ${{ steps.version-type.outputs.version_type }}
+                      **Triggered by:** PR #${{ github.event.pull_request.number }} - "${{ github.event.pull_request.title }}"
+
+                      ### What's included:
+                      - Version bumped in `packages/blend/package.json`
+                      - Git tag `v${{ steps.version-bump.outputs.new_version }}` created
+
+                      ### To publish to NPM:
+                      1. Merge this PR
+                      2. Go to [Actions](https://github.com/${{ github.repository }}/actions/workflows/release.yml)
+                      3. Click "Run workflow" → Enter tag `v${{ steps.version-bump.outputs.new_version }}` → Run
+                  branch: release/v${{ steps.version-bump.outputs.new_version }}
+                  delete-branch: true
+
+            - name: Comment on original PR
+              uses: actions/github-script@v7
+              with:
+                  script: |
+                      const newVersion = '${{ steps.version-bump.outputs.new_version }}';
+
+                      const body = `## Version Bump Complete
+
+                      Version has been bumped to \`v${newVersion}\` and git tag has been created.
+
+                      **Next steps:**
+                      1. Merge the version bump PR that was just created
+                      2. Go to [Actions](https://github.com/${{ github.repository }}/actions/workflows/release.yml) and manually run the workflow with tag \`v${newVersion}\` to publish to NPM
+                      `;
+
+                      github.rest.issues.createComment({
+                        issue_number: ${{ github.event.pull_request.number }},
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        body: body
+                      });
+
+    publish:
+        if: github.event_name == 'workflow_dispatch'
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: write
+            packages: write
+            id-token: write
+
+        steps:
+            - name: Validate tag format
               run: |
-                  # Check if there are any changes to commit
-                  if [ -n "$(git status --porcelain)" ]; then
-                    git add packages/blend/package.json
-                    git commit -m "chore(release): v${{ steps.version-bump.outputs.new_version }}"
-                  else
-                    echo "No changes to commit"
+                  TAG="${{ github.event.inputs.tag }}"
+                  if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                    echo "Invalid tag format. Expected format: v1.2.3"
+                    exit 1
                   fi
 
-            - name: Push changes and tags
+            - name: Checkout code at tag
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.inputs.tag }}
+                  fetch-depth: 0
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20'
+                  registry-url: 'https://registry.npmjs.org'
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Run linting and build
               run: |
-                  # Push changes first
-                  git push origin main
+                  pnpm --filter @juspay/blend-design-system lint
+                  pnpm --filter @juspay/blend-design-system build
 
-                  # Then push the tag
-                  git push origin "v${{ steps.version-bump.outputs.new_version }}"
+            - name: Run tests
+              run: pnpm --filter @juspay/blend-design-system test:run
 
-                  echo "Successfully pushed version v${{ steps.version-bump.outputs.new_version }}"
-
-            - name: Publish to NPM
+            - name: Verify package version matches tag
               working-directory: packages/blend
               run: |
-                  # Check if this version already exists on NPM
-                  PACKAGE_NAME=$(node -p "require('./package.json').name")
-                  NEW_VERSION="${{ steps.version-bump.outputs.new_version }}"
+                  PACKAGE_VERSION=$(node -p "require('./package.json').version")
+                  TAG_VERSION="${{ github.event.inputs.tag }}"
+                  TAG_VERSION_CLEAN=$(echo $TAG_VERSION | sed 's/^v//')
 
-                  if npm view "$PACKAGE_NAME@$NEW_VERSION" version 2>/dev/null; then
-                    echo "Version $NEW_VERSION already exists on NPM, skipping publish"
-                    exit 0
+                  if [ "$PACKAGE_VERSION" != "$TAG_VERSION_CLEAN" ]; then
+                    echo "Package version ($PACKAGE_VERSION) does not match tag version ($TAG_VERSION_CLEAN)"
+                    exit 1
                   fi
 
-                  # Publish to NPM with provenance
+                  echo "Package version matches tag version"
+
+            - name: Check if version exists on NPM
+              working-directory: packages/blend
+              run: |
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+                  if npm view "$PACKAGE_NAME@$PACKAGE_VERSION" version 2>/dev/null; then
+                    echo "⚠️ Version $PACKAGE_VERSION already exists on NPM"
+                    echo "version_exists=true" >> $GITHUB_ENV
+                  else
+                    echo "Version $PACKAGE_VERSION does not exist on NPM, safe to publish"
+                    echo "version_exists=false" >> $GITHUB_ENV
+                  fi
+
+            - name: Publish to NPM
+              if: env.version_exists == 'false'
+              working-directory: packages/blend
+              run: |
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+                  echo "Publishing $PACKAGE_NAME@$PACKAGE_VERSION to NPM..."
                   pnpm publish --provenance --access public --no-git-checks
-                  echo "Successfully published $PACKAGE_NAME@$NEW_VERSION to NPM"
+                  echo "Successfully published to NPM"
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Skip publish (version exists)
+              if: env.version_exists == 'true'
+              run: echo "⏭Skipping NPM publish as version already exists"
 
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v1
               with:
-                  tag_name: v${{ steps.version-bump.outputs.new_version }}
-                  name: Release v${{ steps.version-bump.outputs.new_version }}
+                  tag_name: ${{ github.event.inputs.tag }}
+                  name: Release ${{ github.event.inputs.tag }}
                   body: |
-                      ## What's Changed in Blend Design System
+                      ## Blend Design System Release ${{ github.event.inputs.tag }}
 
-                      This release includes updates to the `@juspay/blend-design-system` package.
-
-                      ### Latest Changes
-                      - ${{ github.event.head_commit.message }}
-
-                      **Full Changelog**: https://github.com/juspay/blend-design-system/compare/v${{ steps.version-bump.outputs.previous_version }}...v${{ steps.version-bump.outputs.new_version }}
-
-                      ## Installation
+                      ### Installation
                       ```bash
-                      npm install @juspay/blend-design-system@${{ steps.version-bump.outputs.new_version }}
+                      npm install @juspay/blend-design-system@${{ github.event.inputs.tag }}
                       ```
 
-                      ## Documentation
+                      ### Documentation
                       Visit [juspay.design](https://juspay.design/) for complete documentation.
+
+                      **Published to NPM:** ${{ env.version_exists == 'false' && 'Yes' || '⏭Already existed' }}
                   draft: false
                   prerelease: false
                   files: |
