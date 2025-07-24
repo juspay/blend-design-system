@@ -5,7 +5,7 @@ import InputFooter from '../utils/InputFooter/InputFooter'
 import type { TextAreaProps } from './types'
 import type { TextAreaTokensType } from './textarea.token'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
@@ -37,20 +37,11 @@ const TextArea = ({
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const labelRef = useRef<HTMLDivElement>(null)
-    const [labelHeight, setLabelHeight] = useState(0)
 
     const inputFocusedOrWithValue = isFocused || value.length > 0
 
     const paddingX = toPixels(textAreaTokens.paddingX)
     const paddingY = toPixels(textAreaTokens.paddingY)
-
-    useEffect(() => {
-        if (labelRef.current) {
-            setLabelHeight(labelRef.current.offsetHeight)
-        } else {
-            setLabelHeight(0)
-        }
-    }, [isSmallScreen])
 
     return (
         <Block
