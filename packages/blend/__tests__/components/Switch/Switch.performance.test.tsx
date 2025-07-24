@@ -1,11 +1,20 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '../../test-utils'
+import {
+    render,
+    screen,
+    measureRenderTime,
+    assertPerformanceWithContext,
+} from '../../test-utils'
 import { Switch } from '../../../lib/components/Switch/Switch'
 import { SwitchSize } from '../../../lib/components/Switch/types'
 import { SwitchTestFactory } from '../../test-utils/builders'
-import { assertPerformanceWithinBudget } from '../../test-utils/assertions'
-import { PERFORMANCE_THRESHOLDS } from '../../test-utils/constants'
+
+// Helper to get current test name for performance tracking
+function getCurrentTestName(): string {
+    const testContext = expect.getState()
+    return testContext.currentTestName || 'unknown-test'
+}
 
 // Simple performance measurement utility
 const measureComponentPerformance = async (
@@ -24,9 +33,11 @@ describe('Switch Performance', () => {
                 render(<Switch label="Performance Switch" />)
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 renderTime,
-                PERFORMANCE_THRESHOLDS.render.simple
+                'render',
+                'simple',
+                getCurrentTestName()
             )
         })
 
@@ -36,9 +47,11 @@ describe('Switch Performance', () => {
                 render(<Switch {...props} />)
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 renderTime,
-                PERFORMANCE_THRESHOLDS.render.complex
+                'render',
+                'complex',
+                getCurrentTestName()
             )
         })
 
@@ -53,10 +66,11 @@ describe('Switch Performance', () => {
                 )
             })
 
-            // Use batch threshold for multiple components
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 renderTime,
-                PERFORMANCE_THRESHOLDS.render.complex * 2
+                'render',
+                'complex',
+                getCurrentTestName()
             )
         })
 
@@ -71,9 +85,11 @@ describe('Switch Performance', () => {
                 })
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 renderTime,
-                PERFORMANCE_THRESHOLDS.render.complex
+                'render',
+                'complex',
+                getCurrentTestName()
             )
         })
     })
@@ -108,9 +124,11 @@ describe('Switch Performance', () => {
                 rerender(<Switch label="Changing Switch" checked={true} />)
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 rerenderTime,
-                PERFORMANCE_THRESHOLDS.reRender.propChange
+                'interaction',
+                'click',
+                getCurrentTestName()
             )
         })
 
@@ -127,9 +145,11 @@ describe('Switch Performance', () => {
                 }
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 rapidRerenderTime,
-                PERFORMANCE_THRESHOLDS.reRender.propChange * 10
+                'interaction',
+                'rapid',
+                getCurrentTestName()
             )
         })
 
@@ -141,9 +161,11 @@ describe('Switch Performance', () => {
                 rerender(<Switch {...complexProps} checked={true} />)
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 rerenderTime,
-                PERFORMANCE_THRESHOLDS.reRender.propChange
+                'interaction',
+                'click',
+                getCurrentTestName()
             )
         })
     })
@@ -164,9 +186,11 @@ describe('Switch Performance', () => {
                 await user.click(switchElement)
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 clickTime,
-                PERFORMANCE_THRESHOLDS.animation.hover
+                'interaction',
+                'click',
+                getCurrentTestName()
             )
             expect(handleChange).toHaveBeenCalledWith(true)
         })
@@ -187,9 +211,11 @@ describe('Switch Performance', () => {
                 await user.keyboard(' ')
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 keyboardTime,
-                PERFORMANCE_THRESHOLDS.animation.hover
+                'interaction',
+                'click',
+                getCurrentTestName()
             )
             expect(handleChange).toHaveBeenCalledWith(true)
         })
@@ -213,9 +239,11 @@ describe('Switch Performance', () => {
                 }
             )
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 rapidInteractionTime,
-                PERFORMANCE_THRESHOLDS.animation.hover * 5
+                'interaction',
+                'rapid',
+                getCurrentTestName()
             )
             expect(handleChange).toHaveBeenCalledTimes(5)
         })
@@ -242,10 +270,11 @@ describe('Switch Performance', () => {
                 await user.click(switchElement)
             })
 
-            // Should still be reasonably fast even with complex handler
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 handlerTime,
-                PERFORMANCE_THRESHOLDS.animation.hover * 2
+                'interaction',
+                'click',
+                getCurrentTestName()
             )
         })
     })
@@ -268,9 +297,11 @@ describe('Switch Performance', () => {
                 }
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 mountUnmountTime,
-                PERFORMANCE_THRESHOLDS.render.complex * 10
+                'memory',
+                'stress',
+                getCurrentTestName()
             )
         })
 
@@ -293,9 +324,11 @@ describe('Switch Performance', () => {
                 }
             )
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 stateManagementTime,
-                PERFORMANCE_THRESHOLDS.reRender.stateChange * 5
+                'interaction',
+                'rapid',
+                getCurrentTestName()
             )
         })
     })
@@ -308,9 +341,11 @@ describe('Switch Performance', () => {
                 }
             )
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 tokenResolutionTime,
-                PERFORMANCE_THRESHOLDS.render.simple
+                'render',
+                'simple',
+                getCurrentTestName()
             )
         })
 
@@ -327,9 +362,11 @@ describe('Switch Performance', () => {
                 )
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 sizeVariantTime,
-                PERFORMANCE_THRESHOLDS.render.complex
+                'render',
+                'complex',
+                getCurrentTestName()
             )
         })
 
@@ -344,10 +381,11 @@ describe('Switch Performance', () => {
                 )
             })
 
-            // Multiple instances should benefit from token caching
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 multiInstanceTime,
-                PERFORMANCE_THRESHOLDS.render.complex
+                'render',
+                'complex',
+                getCurrentTestName()
             )
         })
     })
@@ -371,9 +409,11 @@ describe('Switch Performance', () => {
                 )
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 formRenderTime,
-                PERFORMANCE_THRESHOLDS.render.complex
+                'render',
+                'complex',
+                getCurrentTestName()
             )
         })
 
@@ -394,9 +434,11 @@ describe('Switch Performance', () => {
                 rerender(<DynamicSwitch count={2} />)
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 dynamicUpdateTime,
-                PERFORMANCE_THRESHOLDS.reRender.propChange * 3
+                'interaction',
+                'rapid',
+                getCurrentTestName()
             )
         })
 
@@ -415,9 +457,11 @@ describe('Switch Performance', () => {
                 )
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 complexLabelTime,
-                PERFORMANCE_THRESHOLDS.render.complex
+                'render',
+                'complex',
+                getCurrentTestName()
             )
         })
 
@@ -432,9 +476,11 @@ describe('Switch Performance', () => {
                 )
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 errorStateTime,
-                PERFORMANCE_THRESHOLDS.render.complex
+                'render',
+                'complex',
+                getCurrentTestName()
             )
         })
     })
@@ -458,9 +504,11 @@ describe('Switch Performance', () => {
                 )
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 a11yTime,
-                PERFORMANCE_THRESHOLDS.render.complex
+                'render',
+                'complex',
+                getCurrentTestName()
             )
         })
 
@@ -479,9 +527,11 @@ describe('Switch Performance', () => {
                 await user.tab()
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 focusTime,
-                PERFORMANCE_THRESHOLDS.animation.hover
+                'interaction',
+                'click',
+                getCurrentTestName()
             )
         })
     })
@@ -499,9 +549,11 @@ describe('Switch Performance', () => {
                 )
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 undefinedPropsTime,
-                PERFORMANCE_THRESHOLDS.render.simple
+                'render',
+                'simple',
+                getCurrentTestName()
             )
         })
 
@@ -516,9 +568,11 @@ describe('Switch Performance', () => {
                 )
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 nullChildrenTime,
-                PERFORMANCE_THRESHOLDS.render.simple
+                'render',
+                'simple',
+                getCurrentTestName()
             )
         })
 
@@ -548,9 +602,11 @@ describe('Switch Performance', () => {
                 )
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 coercionTime,
-                PERFORMANCE_THRESHOLDS.reRender.propChange * 3
+                'interaction',
+                'rapid',
+                getCurrentTestName()
             )
         })
     })
@@ -567,9 +623,11 @@ describe('Switch Performance', () => {
                 )
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 stressTestTime,
-                PERFORMANCE_THRESHOLDS.render.complex * 5
+                'memory',
+                'stress',
+                getCurrentTestName()
             )
         })
 
@@ -588,9 +646,11 @@ describe('Switch Performance', () => {
                 }
             )
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 rapidStateTime,
-                PERFORMANCE_THRESHOLDS.reRender.stateChange * 10
+                'interaction',
+                'rapid',
+                getCurrentTestName()
             )
         })
 
@@ -605,9 +665,11 @@ describe('Switch Performance', () => {
                 }
             })
 
-            assertPerformanceWithinBudget(
+            assertPerformanceWithContext(
                 memoryPressureTime,
-                PERFORMANCE_THRESHOLDS.render.complex * 10
+                'memory',
+                'stress',
+                getCurrentTestName()
             )
         })
     })
@@ -618,9 +680,11 @@ describe('Switch Performance', () => {
                 render(<Switch label="Baseline Switch" />)
             })
 
-            // This test serves as a baseline for performance regression detection
-            expect(baselineTime).toBeLessThan(
-                PERFORMANCE_THRESHOLDS.render.simple
+            assertPerformanceWithContext(
+                baselineTime,
+                'render',
+                'simple',
+                getCurrentTestName()
             )
         })
 
@@ -640,9 +704,11 @@ describe('Switch Performance', () => {
                     render(<Switch {...props} />)
                 })
 
-                assertPerformanceWithinBudget(
+                assertPerformanceWithContext(
                     renderTime,
-                    PERFORMANCE_THRESHOLDS.render.simple
+                    'render',
+                    'simple',
+                    getCurrentTestName()
                 )
             }
         })

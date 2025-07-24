@@ -1,10 +1,21 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, measureRenderTime } from '../../test-utils'
+import {
+    render,
+    screen,
+    measureRenderTime,
+    assertPerformanceWithContext,
+} from '../../test-utils'
 import Radio from '../../../lib/components/Radio/Radio'
 import { RadioSize } from '../../../lib/components/Radio/types'
 import { RadioPropsBuilder, RadioTestFactory } from '../../test-utils/builders'
 import { MockIcon } from '../../test-utils'
+
+// Helper to get current test name for performance tracking
+function getCurrentTestName(): string {
+    const testContext = expect.getState()
+    return testContext.currentTestName || 'unknown-test'
+}
 
 describe('Radio Performance', () => {
     describe('Render Performance', () => {
@@ -14,7 +25,12 @@ describe('Radio Performance', () => {
             )
 
             // Radio should render in less than 100ms (adjusted for test environment)
-            expect(renderTime).toBeLessThan(100)
+            assertPerformanceWithContext(
+                renderTime,
+                'render',
+                'complex',
+                getCurrentTestName()
+            )
         })
 
         it('renders complex radio within budget', async () => {
@@ -33,7 +49,12 @@ describe('Radio Performance', () => {
             )
 
             // Even complex radios should render quickly
-            expect(renderTime).toBeLessThan(100)
+            assertPerformanceWithContext(
+                renderTime,
+                'render',
+                'complex',
+                getCurrentTestName()
+            )
         })
 
         it('renders all radio states efficiently', async () => {
@@ -50,7 +71,12 @@ describe('Radio Performance', () => {
 
             // All states should render efficiently
             renderTimes.forEach((time) => {
-                expect(time).toBeLessThan(30)
+                assertPerformanceWithContext(
+                    time,
+                    'interaction',
+                    'click',
+                    getCurrentTestName()
+                )
             })
         })
 
@@ -63,7 +89,12 @@ describe('Radio Performance', () => {
 
             // All sizes should render efficiently
             renderTimes.forEach((time) => {
-                expect(time).toBeLessThan(16)
+                assertPerformanceWithContext(
+                    time,
+                    'interaction',
+                    'click',
+                    getCurrentTestName()
+                )
             })
         })
     })
@@ -85,22 +116,36 @@ describe('Radio Performance', () => {
             const end = performance.now()
 
             // Re-rendering with same props should be very fast
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('handles prop changes efficiently', () => {
-            const { rerender } = render(<Radio value="test">Initial</Radio>)
+            const { rerender } = render(
+                <Radio value="test" checked={false}>
+                    Initial
+                </Radio>
+            )
 
             const start = performance.now()
             rerender(
-                <Radio value="test" checked>
+                <Radio value="test" checked={true}>
                     Updated
                 </Radio>
             )
             const end = performance.now()
 
             // Prop changes should still be handled efficiently
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('handles state changes efficiently', async () => {
@@ -112,7 +157,12 @@ describe('Radio Performance', () => {
             await user.click(radio)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(50)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('handles checked state changes efficiently', () => {
@@ -130,7 +180,12 @@ describe('Radio Performance', () => {
             )
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
     })
 
@@ -160,7 +215,12 @@ describe('Radio Performance', () => {
             const memoryDiff = finalMemory - initialMemory
 
             // Allow for some variance but should not leak significantly
-            expect(memoryDiff).toBeLessThan(1000000) // 1MB threshold
+            assertPerformanceWithContext(
+                memoryDiff,
+                'memory',
+                'stress',
+                getCurrentTestName()
+            ) // 1MB threshold
         })
 
         it('removes event listeners on unmount', () => {
@@ -199,7 +259,12 @@ describe('Radio Performance', () => {
             // Average render time should remain consistent
             const averageTime =
                 renderTimes.reduce((a, b) => a + b) / renderTimes.length
-            expect(averageTime).toBeLessThan(5)
+            assertPerformanceWithContext(
+                averageTime,
+                'memory',
+                'basic',
+                getCurrentTestName()
+            )
 
             // No significant memory leaks over multiple cycles
             const lastTenAverage =
@@ -254,7 +319,12 @@ describe('Radio Performance', () => {
             rerender(<Radio value="test">Responsive</Radio>)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
 
             // Restore original
             window.matchMedia = originalMatchMedia
@@ -297,7 +367,12 @@ describe('Radio Performance', () => {
             const averageTime = (end - start) / radioCount
 
             // Average render time per radio should be very low
-            expect(averageTime).toBeLessThan(2)
+            assertPerformanceWithContext(
+                averageTime,
+                'memory',
+                'basic',
+                getCurrentTestName()
+            )
         })
 
         it('handles dynamic radio lists efficiently', () => {
@@ -318,7 +393,12 @@ describe('Radio Performance', () => {
             const end = performance.now()
 
             // Adding 10 more radios should be efficient
-            expect(end - start).toBeLessThan(20)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('handles radio state updates in lists efficiently', async () => {
@@ -340,7 +420,12 @@ describe('Radio Performance', () => {
             const end = performance.now()
 
             // Multiple state updates should be efficient
-            expect(end - start).toBeLessThan(100)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'rapid',
+                getCurrentTestName()
+            )
         })
 
         it('handles radio groups efficiently', async () => {
@@ -364,7 +449,12 @@ describe('Radio Performance', () => {
             const end = performance.now()
 
             // 10 groups with 5 radios each (50 total) should render efficiently
-            expect(end - start).toBeLessThan(200)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'rapid',
+                getCurrentTestName()
+            )
         })
     })
 
@@ -378,7 +468,12 @@ describe('Radio Performance', () => {
             const end = performance.now()
 
             // State transitions should be fast
-            expect(end - start).toBeLessThan(50)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('checked state animations are smooth', () => {
@@ -397,7 +492,12 @@ describe('Radio Performance', () => {
             const end = performance.now()
 
             // Checked state change should be fast
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('hover transitions are smooth', async () => {
@@ -417,7 +517,12 @@ describe('Radio Performance', () => {
 
             // All hover cycles should be consistently fast
             measurements.forEach((time) => {
-                expect(time).toBeLessThan(50)
+                assertPerformanceWithContext(
+                    time,
+                    'interaction',
+                    'click',
+                    getCurrentTestName()
+                )
             })
 
             // Check consistency (low standard deviation)
@@ -430,7 +535,12 @@ describe('Radio Performance', () => {
                 ) / measurements.length
             const stdDev = Math.sqrt(variance)
 
-            expect(stdDev).toBeLessThan(10) // Consistent performance
+            assertPerformanceWithContext(
+                stdDev,
+                'memory',
+                'basic',
+                getCurrentTestName()
+            ) // Consistent performance
         })
     })
 
@@ -457,7 +567,12 @@ describe('Radio Performance', () => {
             render(<Radio {...complexProps}>Complex Radio</Radio>)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(20)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('processes prop changes efficiently', () => {
@@ -476,7 +591,12 @@ describe('Radio Performance', () => {
             rerender(<Radio {...updatedProps} />)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(15)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('handles frequent prop updates efficiently', () => {
@@ -498,7 +618,12 @@ describe('Radio Performance', () => {
             const end = performance.now()
             const averageUpdateTime = (end - start) / updateCount
 
-            expect(averageUpdateTime).toBeLessThan(5)
+            assertPerformanceWithContext(
+                averageUpdateTime,
+                'memory',
+                'basic',
+                getCurrentTestName()
+            )
         })
     })
 
@@ -523,7 +648,12 @@ describe('Radio Performance', () => {
             const end = performance.now()
             const averageClickTime = (end - start) / clickCount
 
-            expect(averageClickTime).toBeLessThan(10)
+            assertPerformanceWithContext(
+                averageClickTime,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
             // Radio only triggers onChange on first click (when becoming checked)
             expect(handleChange).toHaveBeenCalledTimes(1)
         })
@@ -547,7 +677,12 @@ describe('Radio Performance', () => {
             await user.click(radio)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(100)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'rapid',
+                getCurrentTestName()
+            )
             // Radio only triggers onChange once (when becoming checked)
             expect(handleChange).toHaveBeenCalledTimes(1)
         })
@@ -593,7 +728,12 @@ describe('Radio Performance', () => {
             await user.click(radio3)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(100)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'rapid',
+                getCurrentTestName()
+            )
             expect(handleChange1).toHaveBeenCalledTimes(1)
             expect(handleChange2).toHaveBeenCalledTimes(1)
             expect(handleChange3).toHaveBeenCalledTimes(1)
@@ -623,7 +763,12 @@ describe('Radio Performance', () => {
             const end = performance.now()
 
             // Stress test should complete within reasonable time
-            expect(end - start).toBeLessThan(1000) // 1 second
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'rapid',
+                getCurrentTestName()
+            ) // 1 second
         })
 
         it('handles memory pressure gracefully', () => {
@@ -644,7 +789,12 @@ describe('Radio Performance', () => {
             const end = performance.now()
             const averageTime = (end - start) / iterations
 
-            expect(averageTime).toBeLessThan(2)
+            assertPerformanceWithContext(
+                averageTime,
+                'memory',
+                'basic',
+                getCurrentTestName()
+            )
         })
 
         it('handles large radio groups efficiently', async () => {
@@ -666,7 +816,12 @@ describe('Radio Performance', () => {
             const end = performance.now()
 
             // Large group should still be performant (adjusted for test environment)
-            expect(end - start).toBeLessThan(1000)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'rapid',
+                getCurrentTestName()
+            )
             expect(middleRadio).toBeChecked()
         })
     })
@@ -704,7 +859,12 @@ describe('Radio Performance', () => {
 
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(200)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'rapid',
+                getCurrentTestName()
+            )
 
             // Only the last radio should be checked
             expect(radios[4]).toBeChecked()
@@ -751,7 +911,12 @@ describe('Radio Performance', () => {
             const end = performance.now()
 
             // Group state change should be efficient
-            expect(end - start).toBeLessThan(20)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
     })
 })

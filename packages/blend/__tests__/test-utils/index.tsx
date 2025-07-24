@@ -61,8 +61,9 @@ export const hasProperAriaAttributes = (element: HTMLElement): boolean => {
 // Export all test utilities
 export * from './builders'
 export * from './constants'
-// export * from './assertions'
+export * from './assertions'
 export * from './helpers'
+export * from './performance'
 
 // Re-export specific items from assertions to avoid potential circular dependency
 export {

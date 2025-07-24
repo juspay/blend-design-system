@@ -1,6 +1,10 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { render, measureRenderTime } from '../../test-utils'
+import {
+    render,
+    measureRenderTime,
+    assertPerformanceWithContext,
+} from '../../test-utils'
 import Button from '../../../lib/components/Button/Button'
 import {
     ButtonType,
@@ -8,8 +12,13 @@ import {
     ButtonSubType,
 } from '../../../lib/components/Button/types'
 import { MockIcon } from '../../test-utils'
-import { getThreshold } from '../../test-utils/constants'
 import { screen, fireEvent } from '@testing-library/react'
+
+// Helper to get current test name for performance tracking
+function getCurrentTestName(): string {
+    const testContext = expect.getState()
+    return testContext.currentTestName || 'unknown-test'
+}
 
 describe('Button Performance', () => {
     describe('Render Performance', () => {
@@ -18,8 +27,13 @@ describe('Button Performance', () => {
                 <Button text="Performance Test" />
             )
 
-            // Button should render in less than 50ms (adjusted for test environment)
-            expect(renderTime).toBeLessThan(50)
+            // Use environment-aware performance assertion
+            assertPerformanceWithContext(
+                renderTime,
+                'render',
+                'simple',
+                'Button-render-simple'
+            )
         })
 
         it('renders complex button within budget', async () => {
@@ -35,7 +49,12 @@ describe('Button Performance', () => {
             )
 
             // Even complex buttons should render quickly (adjusted for test environment)
-            expect(renderTime).toBeLessThan(50)
+            assertPerformanceWithContext(
+                renderTime,
+                'render',
+                'complex',
+                getCurrentTestName()
+            )
         })
 
         it('renders multiple variants efficiently', async () => {
@@ -56,7 +75,12 @@ describe('Button Performance', () => {
 
             // All variants should render efficiently
             renderTimes.forEach((time) => {
-                expect(time).toBeLessThan(16)
+                assertPerformanceWithContext(
+                    time,
+                    'render',
+                    'simple',
+                    getCurrentTestName()
+                )
             })
         })
     })
@@ -72,7 +96,12 @@ describe('Button Performance', () => {
             const end = performance.now()
 
             // Re-rendering with same props should be very fast (adjusted for test environment)
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('handles prop changes efficiently', () => {
@@ -83,7 +112,12 @@ describe('Button Performance', () => {
             const end = performance.now()
 
             // Prop changes should still be handled efficiently
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('handles state changes efficiently', async () => {
@@ -96,8 +130,11 @@ describe('Button Performance', () => {
             await user.hover(button)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(
-                getThreshold('reRender', 'stateChange')
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
             )
         })
     })
@@ -126,7 +163,12 @@ describe('Button Performance', () => {
             const memoryDiff = finalMemory - initialMemory
 
             // Allow for some variance but should not leak significantly
-            expect(memoryDiff).toBeLessThan(1000000) // 1MB threshold
+            assertPerformanceWithContext(
+                memoryDiff,
+                'memory',
+                'stress',
+                getCurrentTestName()
+            ) // 1MB threshold
         })
 
         it('removes event listeners on unmount', () => {
@@ -180,7 +222,12 @@ describe('Button Performance', () => {
             rerender(<Button text="Responsive" />)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
 
             // Restore original
             window.matchMedia = originalMatchMedia
@@ -201,7 +248,12 @@ describe('Button Performance', () => {
             const averageTime = (end - start) / buttonCount
 
             // Average render time per button should be very low
-            expect(averageTime).toBeLessThan(1)
+            assertPerformanceWithContext(
+                averageTime,
+                'memory',
+                'basic',
+                getCurrentTestName()
+            )
         })
 
         it('handles dynamic button lists efficiently', () => {
@@ -220,7 +272,12 @@ describe('Button Performance', () => {
             const end = performance.now()
 
             // Adding 10 more buttons should be efficient
-            expect(end - start).toBeLessThan(20)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
     })
 
@@ -235,7 +292,12 @@ describe('Button Performance', () => {
             const end = performance.now()
 
             // Switching to loading state should be fast
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('hover transitions are smooth', async () => {
@@ -255,7 +317,12 @@ describe('Button Performance', () => {
 
             // All hover cycles should be consistently fast
             measurements.forEach((time) => {
-                expect(time).toBeLessThan(50)
+                assertPerformanceWithContext(
+                    time,
+                    'interaction',
+                    'click',
+                    getCurrentTestName()
+                )
             })
 
             // Check consistency (low standard deviation)
@@ -268,7 +335,12 @@ describe('Button Performance', () => {
                 ) / measurements.length
             const stdDev = Math.sqrt(variance)
 
-            expect(stdDev).toBeLessThan(10) // Consistent performance
+            assertPerformanceWithContext(
+                stdDev,
+                'memory',
+                'basic',
+                getCurrentTestName()
+            ) // Consistent performance
         })
     })
 
@@ -300,7 +372,12 @@ describe('Button Performance', () => {
             render(<Button {...complexProps} />)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(20)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
     })
 })

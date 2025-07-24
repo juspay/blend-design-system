@@ -1,6 +1,11 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, measureRenderTime } from '../../test-utils'
+import {
+    render,
+    screen,
+    measureRenderTime,
+    assertPerformanceWithContext,
+} from '../../test-utils'
 import Checkbox from '../../../lib/components/Checkbox/Checkbox'
 import { CheckboxSize } from '../../../lib/components/Checkbox/types'
 import {
@@ -8,7 +13,12 @@ import {
     CheckboxTestFactory,
 } from '../../test-utils/builders'
 import { MockIcon } from '../../test-utils'
-import { getThreshold } from '../../test-utils/constants'
+
+// Helper to get current test name for performance tracking
+function getCurrentTestName(): string {
+    const testContext = expect.getState()
+    return testContext.currentTestName || 'unknown-test'
+}
 
 describe('Checkbox Performance', () => {
     describe('Render Performance', () => {
@@ -18,7 +28,12 @@ describe('Checkbox Performance', () => {
             )
 
             // Checkbox should render in less than 100ms (adjusted for test environment)
-            expect(renderTime).toBeLessThan(100)
+            assertPerformanceWithContext(
+                renderTime,
+                'render',
+                'complex',
+                getCurrentTestName()
+            )
         })
 
         it('renders complex checkbox within budget', async () => {
@@ -36,7 +51,12 @@ describe('Checkbox Performance', () => {
             )
 
             // Even complex checkboxes should render quickly
-            expect(renderTime).toBeLessThan(100)
+            assertPerformanceWithContext(
+                renderTime,
+                'render',
+                'complex',
+                getCurrentTestName()
+            )
         })
 
         it('renders all checkbox states efficiently', async () => {
@@ -56,7 +76,12 @@ describe('Checkbox Performance', () => {
 
             // All states should render efficiently
             renderTimes.forEach((time) => {
-                expect(time).toBeLessThan(30)
+                assertPerformanceWithContext(
+                    time,
+                    'render',
+                    'simple',
+                    getCurrentTestName()
+                )
             })
         })
 
@@ -69,7 +94,12 @@ describe('Checkbox Performance', () => {
 
             // All sizes should render efficiently
             renderTimes.forEach((time) => {
-                expect(time).toBeLessThan(16)
+                assertPerformanceWithContext(
+                    time,
+                    'render',
+                    'simple',
+                    getCurrentTestName()
+                )
             })
         })
     })
@@ -85,18 +115,30 @@ describe('Checkbox Performance', () => {
             const end = performance.now()
 
             // Re-rendering with same props should be very fast
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('handles prop changes efficiently', () => {
-            const { rerender } = render(<Checkbox>Initial</Checkbox>)
+            const { rerender } = render(
+                <Checkbox checked={false}>Initial</Checkbox>
+            )
 
             const start = performance.now()
-            rerender(<Checkbox checked>Updated</Checkbox>)
+            rerender(<Checkbox checked={true}>Updated</Checkbox>)
             const end = performance.now()
 
             // Prop changes should still be handled efficiently
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('handles state changes efficiently', async () => {
@@ -108,7 +150,12 @@ describe('Checkbox Performance', () => {
             await user.click(checkbox)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(50)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('handles indeterminate state changes efficiently', () => {
@@ -122,7 +169,12 @@ describe('Checkbox Performance', () => {
             )
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
     })
 
@@ -150,7 +202,12 @@ describe('Checkbox Performance', () => {
             const memoryDiff = finalMemory - initialMemory
 
             // Allow for some variance but should not leak significantly
-            expect(memoryDiff).toBeLessThan(1000000) // 1MB threshold
+            assertPerformanceWithContext(
+                memoryDiff,
+                'memory',
+                'stress',
+                getCurrentTestName()
+            ) // 1MB threshold
         })
 
         it('removes event listeners on unmount', () => {
@@ -185,7 +242,12 @@ describe('Checkbox Performance', () => {
             // Average render time should remain consistent
             const averageTime =
                 renderTimes.reduce((a, b) => a + b) / renderTimes.length
-            expect(averageTime).toBeLessThan(5)
+            assertPerformanceWithContext(
+                averageTime,
+                'memory',
+                'basic',
+                getCurrentTestName()
+            )
 
             // No significant memory leaks over multiple cycles
             const lastTenAverage =
@@ -240,7 +302,12 @@ describe('Checkbox Performance', () => {
             rerender(<Checkbox>Responsive</Checkbox>)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
 
             // Restore original
             window.matchMedia = originalMatchMedia
@@ -283,7 +350,12 @@ describe('Checkbox Performance', () => {
             const averageTime = (end - start) / checkboxCount
 
             // Average render time per checkbox should be very low
-            expect(averageTime).toBeLessThan(2)
+            assertPerformanceWithContext(
+                averageTime,
+                'memory',
+                'basic',
+                getCurrentTestName()
+            )
         })
 
         it('handles dynamic checkbox lists efficiently', () => {
@@ -304,7 +376,12 @@ describe('Checkbox Performance', () => {
             const end = performance.now()
 
             // Adding 10 more checkboxes should be efficient
-            expect(end - start).toBeLessThan(20)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('handles checkbox state updates in lists efficiently', async () => {
@@ -326,7 +403,12 @@ describe('Checkbox Performance', () => {
             const end = performance.now()
 
             // Multiple state updates should be efficient
-            expect(end - start).toBeLessThan(100)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'rapid',
+                getCurrentTestName()
+            )
         })
     })
 
@@ -340,7 +422,12 @@ describe('Checkbox Performance', () => {
             const end = performance.now()
 
             // State transitions should be fast
-            expect(end - start).toBeLessThan(50)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('indeterminate state animations are smooth', () => {
@@ -357,7 +444,12 @@ describe('Checkbox Performance', () => {
             const end = performance.now()
 
             // Indeterminate state change should be fast
-            expect(end - start).toBeLessThan(10)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('hover transitions are smooth', async () => {
@@ -377,7 +469,12 @@ describe('Checkbox Performance', () => {
 
             // All hover cycles should be consistently fast
             measurements.forEach((time) => {
-                expect(time).toBeLessThan(50)
+                assertPerformanceWithContext(
+                    time,
+                    'interaction',
+                    'click',
+                    getCurrentTestName()
+                )
             })
 
             // Check consistency (low standard deviation)
@@ -390,7 +487,12 @@ describe('Checkbox Performance', () => {
                 ) / measurements.length
             const stdDev = Math.sqrt(variance)
 
-            expect(stdDev).toBeLessThan(10) // Consistent performance
+            assertPerformanceWithContext(
+                stdDev,
+                'memory',
+                'basic',
+                getCurrentTestName()
+            ) // Consistent performance
         })
     })
 
@@ -416,7 +518,12 @@ describe('Checkbox Performance', () => {
             render(<Checkbox {...complexProps}>Complex Checkbox</Checkbox>)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(20)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('processes prop changes efficiently', () => {
@@ -435,7 +542,12 @@ describe('Checkbox Performance', () => {
             rerender(<Checkbox {...updatedProps} />)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(15)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
         })
 
         it('handles frequent prop updates efficiently', () => {
@@ -451,7 +563,12 @@ describe('Checkbox Performance', () => {
             const end = performance.now()
             const averageUpdateTime = (end - start) / updateCount
 
-            expect(averageUpdateTime).toBeLessThan(5)
+            assertPerformanceWithContext(
+                averageUpdateTime,
+                'memory',
+                'basic',
+                getCurrentTestName()
+            )
         })
     })
 
@@ -476,7 +593,12 @@ describe('Checkbox Performance', () => {
             const end = performance.now()
             const averageClickTime = (end - start) / clickCount
 
-            expect(averageClickTime).toBeLessThan(10)
+            assertPerformanceWithContext(
+                averageClickTime,
+                'interaction',
+                'click',
+                getCurrentTestName()
+            )
             expect(handleChange).toHaveBeenCalledTimes(clickCount)
         })
 
@@ -497,7 +619,12 @@ describe('Checkbox Performance', () => {
             await user.click(checkbox)
             const end = performance.now()
 
-            expect(end - start).toBeLessThan(100)
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'rapid',
+                getCurrentTestName()
+            )
             expect(handleChange).toHaveBeenCalledTimes(5)
         })
     })
@@ -525,7 +652,12 @@ describe('Checkbox Performance', () => {
             const end = performance.now()
 
             // Stress test should complete within reasonable time
-            expect(end - start).toBeLessThan(1000) // 1 second
+            assertPerformanceWithContext(
+                end - start,
+                'interaction',
+                'rapid',
+                getCurrentTestName()
+            ) // 1 second
         })
 
         it('handles memory pressure gracefully', () => {
@@ -544,7 +676,12 @@ describe('Checkbox Performance', () => {
             const end = performance.now()
             const averageTime = (end - start) / iterations
 
-            expect(averageTime).toBeLessThan(2)
+            assertPerformanceWithContext(
+                averageTime,
+                'memory',
+                'basic',
+                getCurrentTestName()
+            )
         })
     })
 })

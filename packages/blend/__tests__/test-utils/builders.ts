@@ -758,6 +758,13 @@ export const RadioGroupTestFactory = {
     withoutLabel: () =>
         new RadioGroupPropsBuilder().withName('no-label-group').build(),
 
+    withSelection: () =>
+        new RadioGroupPropsBuilder()
+            .withName('selection-group')
+            .withLabel('Selection Group')
+            .withValue('option1')
+            .build(),
+
     complex: () =>
         new RadioGroupPropsBuilder()
             .withId('complex-group')

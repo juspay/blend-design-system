@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useState, useCallback } from 'react'
 import type { RadioGroupProps } from './types'
 import {
     isRadioElement,
@@ -21,7 +21,81 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
     ) => {
         const radioTokens = useResponsiveTokens<RadioTokensType>('RADIO')
 
-        const handleGroupChange = createGroupChangeHandler(onChange)
+        // Internal state for uncontrolled mode
+        const [internalValue, setInternalValue] = useState<string | undefined>(
+            defaultValue
+        )
+
+        // Determine if controlled or uncontrolled
+        const isControlled = value !== undefined
+        const currentValue = isControlled ? value : internalValue
+
+        const handleGroupChange = useCallback(
+            (newValue: string) => {
+                if (!isControlled) {
+                    setInternalValue(newValue)
+                }
+                onChange?.(newValue)
+            },
+            [isControlled, onChange]
+        )
+
+        // Handle keyboard navigation
+        const handleKeyDown = useCallback(
+            (e: React.KeyboardEvent) => {
+                if (disabled) return
+
+                const radios = Array.from(
+                    e.currentTarget.querySelectorAll(
+                        'input[type="radio"]:not(:disabled)'
+                    )
+                )
+                const currentIndex = radios.findIndex(
+                    (radio) => radio === e.target
+                )
+
+                if (currentIndex === -1) return
+
+                let nextIndex = currentIndex
+
+                switch (e.key) {
+                    case 'ArrowDown':
+                    case 'ArrowRight':
+                        e.preventDefault()
+                        nextIndex = (currentIndex + 1) % radios.length
+                        break
+                    case 'ArrowUp':
+                    case 'ArrowLeft':
+                        e.preventDefault()
+                        nextIndex =
+                            currentIndex === 0
+                                ? radios.length - 1
+                                : currentIndex - 1
+                        break
+                    case ' ':
+                    case 'Enter':
+                        e.preventDefault()
+                        const targetRadio = radios[
+                            currentIndex
+                        ] as HTMLInputElement
+                        if (targetRadio && targetRadio.value) {
+                            handleGroupChange(targetRadio.value)
+                        }
+                        return
+                    default:
+                        return
+                }
+
+                const nextRadio = radios[nextIndex] as HTMLInputElement
+                if (nextRadio) {
+                    nextRadio.focus()
+                    if (nextRadio.value) {
+                        handleGroupChange(nextRadio.value)
+                    }
+                }
+            },
+            [disabled, handleGroupChange]
+        )
 
         const enhancedChildren = React.Children.map(children, (child) => {
             if (!React.isValidElement(child) || !isRadioElement(child, Radio)) {
@@ -36,18 +110,14 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
                 return null
             }
 
-            const isChecked = shouldRadioBeChecked(
-                value,
-                defaultValue,
-                childValue
-            )
+            const isChecked = currentValue === childValue
 
             return React.cloneElement(child, {
                 name,
                 checked: isChecked,
                 onChange: (checked: boolean) => {
                     if (checked) {
-                        handleGroupChange(checked, childValue)
+                        handleGroupChange(childValue)
                     }
                 },
                 disabled: disabled || child.props.disabled,
@@ -60,6 +130,9 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
                 display="flex"
                 flexDirection="column"
                 gap={radioTokens.groupGap}
+                role="radiogroup"
+                aria-label={label}
+                onKeyDown={handleKeyDown}
             >
                 {label && (
                     <GroupLabel radioTokens={radioTokens}>{label}</GroupLabel>
