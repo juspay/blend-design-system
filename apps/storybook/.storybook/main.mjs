@@ -1,7 +1,11 @@
-import type { StorybookConfig } from '@storybook/react-vite'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
-const config: StorybookConfig = {
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+/** @type {import('@storybook/react-vite').StorybookConfig} */
+const config = {
     stories: [
         '../stories/**/*.stories.@(js|jsx|ts|tsx|mdx)',
         '../stories/**/*.mdx',
@@ -23,7 +27,7 @@ const config: StorybookConfig = {
         reactDocgen: 'react-docgen-typescript',
         reactDocgenTypescriptOptions: {
             shouldExtractLiteralValuesFromEnum: true,
-            propFilter: (prop: any) =>
+            propFilter: (prop) =>
                 prop.parent ? !/node_modules/.test(prop.parent.fileName) : true,
         },
     },

@@ -4,6 +4,7 @@
         "baseUrl": ".",
         "module": "ESNext",
         "moduleResolution": "bundler",
+        "target": "ES2022",
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "paths": {
