@@ -2,15 +2,25 @@ import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 import {
     ButtonGroup,
-    ButtonGroupMode,
     Button,
     ButtonType,
     ButtonSize,
+    ButtonSubType,
 } from '@juspay/blend-design-system'
-import { Plus, Download, Settings, Save, X, Edit, Trash2 } from 'lucide-react'
+import {
+    Plus,
+    Download,
+    Settings,
+    Save,
+    X,
+    Edit,
+    Trash2,
+    Search,
+    Copy,
+} from 'lucide-react'
 
 const meta: Meta<typeof ButtonGroup> = {
-    title: 'Components/Button/ButtonGroup (v1)',
+    title: 'Components/Button/ButtonGroup',
     component: ButtonGroup,
     parameters: {
         layout: 'centered',
@@ -18,21 +28,21 @@ const meta: Meta<typeof ButtonGroup> = {
             description: {
                 component: `
 
-A container component for grouping multiple buttons with consistent spacing and styling.
+A modern container component for grouping Button components with automatic positioning and spacing.
 
 ## Features
-- Multiple grouping modes (Single Primary, All Secondary, No Transform)
+- Automatic button group positioning (left, center, right)
 - Stacked and non-stacked layouts
-- Automatic button type transformation
-- Consistent spacing based on button size
-- Support for all button variants
+- Works seamlessly with Button components
+- Automatic border radius adjustment for connected buttons
+- Simple and clean API
 
 ## Usage
 
 \`\`\`tsx
-import { ButtonGroup, ButtonGroupMode, Button, ButtonType } from '@juspay/blend-design-system';
+import { ButtonGroup, Button, ButtonType } from '@juspay/blend-design-system';
 
-<ButtonGroup mode={ButtonGroupMode.SINGLE_PRIMARY} isStacked={true}>
+<ButtonGroup stacked={true}>
   <Button text="Save" buttonType={ButtonType.PRIMARY} />
   <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
 </ButtonGroup>
@@ -42,19 +52,10 @@ import { ButtonGroup, ButtonGroupMode, Button, ButtonType } from '@juspay/blend-
         },
     },
     argTypes: {
-        size: {
-            control: 'select',
-            options: Object.values(ButtonSize),
-            description: 'The size applied to all buttons in the group',
-        },
-        isStacked: {
+        stacked: {
             control: 'boolean',
-            description: 'Whether buttons are stacked together or have spacing',
-        },
-        mode: {
-            control: 'select',
-            options: Object.values(ButtonGroupMode),
-            description: 'How button types are transformed within the group',
+            description:
+                'Whether buttons are stacked together (connected) or have spacing',
         },
     },
     tags: ['autodocs'],
@@ -66,9 +67,7 @@ type Story = StoryObj<typeof ButtonGroup>
 // Default story
 export const Default: Story = {
     args: {
-        size: ButtonSize.MEDIUM,
-        isStacked: true,
-        mode: ButtonGroupMode.SINGLE_PRIMARY,
+        stacked: true,
     },
     render: (args) => (
         <ButtonGroup {...args}>
@@ -76,83 +75,6 @@ export const Default: Story = {
             <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
         </ButtonGroup>
     ),
-}
-
-// Button group modes
-export const GroupModes: Story = {
-    render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div>
-                <h4
-                    style={{
-                        marginBottom: '8px',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Single Primary Mode
-                </h4>
-                <ButtonGroup
-                    mode={ButtonGroupMode.SINGLE_PRIMARY}
-                    isStacked={true}
-                >
-                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
-                    <Button
-                        text="Save & Continue"
-                        buttonType={ButtonType.PRIMARY}
-                    />
-                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
-                </ButtonGroup>
-            </div>
-
-            <div>
-                <h4
-                    style={{
-                        marginBottom: '8px',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                    }}
-                >
-                    All Secondary Mode
-                </h4>
-                <ButtonGroup
-                    mode={ButtonGroupMode.ALL_SECONDARY}
-                    isStacked={true}
-                >
-                    <Button text="Edit" buttonType={ButtonType.PRIMARY} />
-                    <Button text="Delete" buttonType={ButtonType.DANGER} />
-                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
-                </ButtonGroup>
-            </div>
-
-            <div>
-                <h4
-                    style={{
-                        marginBottom: '8px',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                    }}
-                >
-                    No Transform Mode
-                </h4>
-                <ButtonGroup
-                    mode={ButtonGroupMode.NO_TRANSFORM}
-                    isStacked={true}
-                >
-                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
-                    <Button text="Delete" buttonType={ButtonType.DANGER} />
-                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
-                </ButtonGroup>
-            </div>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Different button group modes that control how button types are transformed within the group.',
-            },
-        },
-    },
 }
 
 // Stacked vs Non-stacked
@@ -169,10 +91,7 @@ export const StackedVsNonStacked: Story = {
                 >
                     Stacked (Connected)
                 </h4>
-                <ButtonGroup
-                    isStacked={true}
-                    mode={ButtonGroupMode.SINGLE_PRIMARY}
-                >
+                <ButtonGroup stacked={true}>
                     <Button text="Save" buttonType={ButtonType.PRIMARY} />
                     <Button
                         text="Save & Continue"
@@ -192,10 +111,7 @@ export const StackedVsNonStacked: Story = {
                 >
                     Non-Stacked (Spaced)
                 </h4>
-                <ButtonGroup
-                    isStacked={false}
-                    mode={ButtonGroupMode.SINGLE_PRIMARY}
-                >
+                <ButtonGroup stacked={false}>
                     <Button text="Save" buttonType={ButtonType.PRIMARY} />
                     <Button
                         text="Save & Continue"
@@ -215,8 +131,76 @@ export const StackedVsNonStacked: Story = {
     },
 }
 
+// Different button types
+export const ButtonTypes: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Primary Actions
+                </h4>
+                <ButtonGroup stacked={true}>
+                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
+                    <Button
+                        text="Save & Continue"
+                        buttonType={ButtonType.PRIMARY}
+                    />
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Mixed Types
+                </h4>
+                <ButtonGroup stacked={true}>
+                    <Button text="Save" buttonType={ButtonType.SUCCESS} />
+                    <Button text="Delete" buttonType={ButtonType.DANGER} />
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    All Secondary
+                </h4>
+                <ButtonGroup stacked={true}>
+                    <Button text="Option 1" buttonType={ButtonType.SECONDARY} />
+                    <Button text="Option 2" buttonType={ButtonType.SECONDARY} />
+                    <Button text="Option 3" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Button groups with different button types and combinations.',
+            },
+        },
+    },
+}
+
 // Different sizes
-export const ButtonGroupSizes: Story = {
+export const ButtonSizes: Story = {
     render: () => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div>
@@ -229,9 +213,17 @@ export const ButtonGroupSizes: Story = {
                 >
                     Small
                 </h4>
-                <ButtonGroup size={ButtonSize.SMALL} isStacked={true}>
-                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
-                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                <ButtonGroup stacked={true}>
+                    <Button
+                        text="Save"
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.SMALL}
+                    />
+                    <Button
+                        text="Cancel"
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.SMALL}
+                    />
                 </ButtonGroup>
             </div>
 
@@ -245,9 +237,17 @@ export const ButtonGroupSizes: Story = {
                 >
                     Medium
                 </h4>
-                <ButtonGroup size={ButtonSize.MEDIUM} isStacked={true}>
-                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
-                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                <ButtonGroup stacked={true}>
+                    <Button
+                        text="Save"
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.MEDIUM}
+                    />
+                    <Button
+                        text="Cancel"
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                    />
                 </ButtonGroup>
             </div>
 
@@ -261,9 +261,17 @@ export const ButtonGroupSizes: Story = {
                 >
                     Large
                 </h4>
-                <ButtonGroup size={ButtonSize.LARGE} isStacked={true}>
-                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
-                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                <ButtonGroup stacked={true}>
+                    <Button
+                        text="Save"
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.LARGE}
+                    />
+                    <Button
+                        text="Cancel"
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.LARGE}
+                    />
                 </ButtonGroup>
             </div>
         </div>
@@ -271,7 +279,7 @@ export const ButtonGroupSizes: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Button groups in different sizes. The size prop applies to all buttons in the group.',
+                story: 'Button groups with different button sizes.',
             },
         },
     },
@@ -291,18 +299,15 @@ export const WithIcons: Story = {
                 >
                     Action Buttons
                 </h4>
-                <ButtonGroup
-                    isStacked={true}
-                    mode={ButtonGroupMode.SINGLE_PRIMARY}
-                >
+                <ButtonGroup stacked={true}>
                     <Button
                         text="Save"
-                        leadingIcon={Save}
+                        leadingIcon={<Save size={16} />}
                         buttonType={ButtonType.PRIMARY}
                     />
                     <Button
                         text="Cancel"
-                        leadingIcon={X}
+                        leadingIcon={<X size={16} />}
                         buttonType={ButtonType.SECONDARY}
                     />
                 </ButtonGroup>
@@ -318,23 +323,20 @@ export const WithIcons: Story = {
                 >
                     CRUD Operations
                 </h4>
-                <ButtonGroup
-                    isStacked={false}
-                    mode={ButtonGroupMode.NO_TRANSFORM}
-                >
+                <ButtonGroup stacked={false}>
                     <Button
                         text="Add"
-                        leadingIcon={Plus}
+                        leadingIcon={<Plus size={16} />}
                         buttonType={ButtonType.PRIMARY}
                     />
                     <Button
                         text="Edit"
-                        leadingIcon={Edit}
+                        leadingIcon={<Edit size={16} />}
                         buttonType={ButtonType.SECONDARY}
                     />
                     <Button
                         text="Delete"
-                        leadingIcon={Trash2}
+                        leadingIcon={<Trash2 size={16} />}
                         buttonType={ButtonType.DANGER}
                     />
                 </ButtonGroup>
@@ -350,18 +352,20 @@ export const WithIcons: Story = {
                 >
                     File Operations
                 </h4>
-                <ButtonGroup
-                    isStacked={true}
-                    mode={ButtonGroupMode.ALL_SECONDARY}
-                >
+                <ButtonGroup stacked={true}>
                     <Button
                         text="Download"
-                        leadingIcon={Download}
-                        buttonType={ButtonType.PRIMARY}
+                        leadingIcon={<Download size={16} />}
+                        buttonType={ButtonType.SECONDARY}
+                    />
+                    <Button
+                        text="Copy"
+                        leadingIcon={<Copy size={16} />}
+                        buttonType={ButtonType.SECONDARY}
                     />
                     <Button
                         text="Settings"
-                        leadingIcon={Settings}
+                        leadingIcon={<Settings size={16} />}
                         buttonType={ButtonType.SECONDARY}
                     />
                 </ButtonGroup>
@@ -371,7 +375,79 @@ export const WithIcons: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Button groups with icons for enhanced visual communication and context.',
+                story: 'Button groups with icons for enhanced visual communication.',
+            },
+        },
+    },
+}
+
+// Icon only buttons
+export const IconOnlyButtons: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Toolbar Actions
+                </h4>
+                <ButtonGroup stacked={true}>
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Plus size={16} />}
+                        buttonType={ButtonType.PRIMARY}
+                    />
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Edit size={16} />}
+                        buttonType={ButtonType.SECONDARY}
+                    />
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Trash2 size={16} />}
+                        buttonType={ButtonType.DANGER}
+                    />
+                </ButtonGroup>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Media Controls
+                </h4>
+                <ButtonGroup stacked={false}>
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Search size={16} />}
+                        buttonType={ButtonType.SECONDARY}
+                    />
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Download size={16} />}
+                        buttonType={ButtonType.SECONDARY}
+                    />
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Settings size={16} />}
+                        buttonType={ButtonType.SECONDARY}
+                    />
+                </ButtonGroup>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Icon-only button groups for compact interfaces and toolbars.',
             },
         },
     },
@@ -391,10 +467,7 @@ export const CommonUseCases: Story = {
                 >
                     Form Actions
                 </h4>
-                <ButtonGroup
-                    isStacked={false}
-                    mode={ButtonGroupMode.SINGLE_PRIMARY}
-                >
+                <ButtonGroup stacked={false}>
                     <Button text="Save" buttonType={ButtonType.PRIMARY} />
                     <Button
                         text="Save as Draft"
@@ -414,10 +487,7 @@ export const CommonUseCases: Story = {
                 >
                     Modal Actions
                 </h4>
-                <ButtonGroup
-                    isStacked={false}
-                    mode={ButtonGroupMode.SINGLE_PRIMARY}
-                >
+                <ButtonGroup stacked={false}>
                     <Button text="Confirm" buttonType={ButtonType.DANGER} />
                     <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
                 </ButtonGroup>
@@ -431,18 +501,11 @@ export const CommonUseCases: Story = {
                         fontWeight: '600',
                     }}
                 >
-                    Toolbar Actions
+                    Navigation
                 </h4>
-                <ButtonGroup
-                    isStacked={true}
-                    mode={ButtonGroupMode.ALL_SECONDARY}
-                >
-                    <Button text="Bold" buttonType={ButtonType.SECONDARY} />
-                    <Button text="Italic" buttonType={ButtonType.SECONDARY} />
-                    <Button
-                        text="Underline"
-                        buttonType={ButtonType.SECONDARY}
-                    />
+                <ButtonGroup stacked={true}>
+                    <Button text="Previous" buttonType={ButtonType.SECONDARY} />
+                    <Button text="Next" buttonType={ButtonType.PRIMARY} />
                 </ButtonGroup>
             </div>
 
@@ -454,14 +517,12 @@ export const CommonUseCases: Story = {
                         fontWeight: '600',
                     }}
                 >
-                    Navigation
+                    Filter Options
                 </h4>
-                <ButtonGroup
-                    isStacked={true}
-                    mode={ButtonGroupMode.SINGLE_PRIMARY}
-                >
-                    <Button text="Previous" buttonType={ButtonType.SECONDARY} />
-                    <Button text="Next" buttonType={ButtonType.PRIMARY} />
+                <ButtonGroup stacked={true}>
+                    <Button text="All" buttonType={ButtonType.PRIMARY} />
+                    <Button text="Active" buttonType={ButtonType.SECONDARY} />
+                    <Button text="Inactive" buttonType={ButtonType.SECONDARY} />
                 </ButtonGroup>
             </div>
         </div>
@@ -475,47 +536,126 @@ export const CommonUseCases: Story = {
     },
 }
 
-// Single primary mode showcase
-export const SinglePrimaryMode: Story = {
-    args: {
-        size: ButtonSize.MEDIUM,
-        isStacked: true,
-        mode: ButtonGroupMode.SINGLE_PRIMARY,
-    },
-    render: (args) => (
-        <ButtonGroup {...args}>
-            <Button text="Save" buttonType={ButtonType.PRIMARY} />
-            <Button text="Save & Continue" buttonType={ButtonType.PRIMARY} />
-            <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
-        </ButtonGroup>
+// Button states
+export const ButtonStates: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Normal State
+                </h4>
+                <ButtonGroup stacked={true}>
+                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    With Loading
+                </h4>
+                <ButtonGroup stacked={true}>
+                    <Button
+                        text="Saving..."
+                        buttonType={ButtonType.PRIMARY}
+                        loading={true}
+                    />
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    With Disabled
+                </h4>
+                <ButtonGroup stacked={true}>
+                    <Button
+                        text="Save"
+                        buttonType={ButtonType.PRIMARY}
+                        disabled={true}
+                    />
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
+            </div>
+        </div>
     ),
     parameters: {
         docs: {
             description: {
-                story: 'Single Primary mode ensures only one primary button is shown, converting others to secondary.',
+                story: 'Button groups with different button states including loading and disabled.',
             },
         },
     },
 }
 
-// All secondary mode showcase
-export const AllSecondaryMode: Story = {
-    args: {
-        size: ButtonSize.MEDIUM,
-        isStacked: true,
-        mode: ButtonGroupMode.ALL_SECONDARY,
-    },
-    render: (args) => (
-        <ButtonGroup {...args}>
-            <Button text="Edit" buttonType={ButtonType.PRIMARY} />
-            <Button text="Delete" buttonType={ButtonType.DANGER} />
+// Two button groups
+export const TwoButtonGroups: Story = {
+    render: () => (
+        <ButtonGroup stacked={true}>
+            <Button text="Save" buttonType={ButtonType.PRIMARY} />
             <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
         </ButtonGroup>
     ),
     parameters: {
         docs: {
             description: {
-                story: 'All Secondary mode converts all buttons to secondary type for uniform appearance.',
+                story: 'Simple two-button group - the most common use case.',
+            },
+        },
+    },
+}
+
+// Three button groups
+export const ThreeButtonGroups: Story = {
+    render: () => (
+        <ButtonGroup stacked={true}>
+            <Button text="Save" buttonType={ButtonType.PRIMARY} />
+            <Button text="Save & Continue" buttonType={ButtonType.SECONDARY} />
+            <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+        </ButtonGroup>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Three-button group with proper border radius handling.',
+            },
+        },
+    },
+}
+
+// Many button groups
+export const ManyButtonGroups: Story = {
+    render: () => (
+        <ButtonGroup stacked={true}>
+            <Button text="1" buttonType={ButtonType.SECONDARY} />
+            <Button text="2" buttonType={ButtonType.SECONDARY} />
+            <Button text="3" buttonType={ButtonType.SECONDARY} />
+            <Button text="4" buttonType={ButtonType.SECONDARY} />
+            <Button text="5" buttonType={ButtonType.PRIMARY} />
+        </ButtonGroup>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Button group with many buttons, useful for pagination or tabs.',
             },
         },
     },
@@ -540,52 +680,6 @@ export const Showcase: Story = {
                         fontWeight: '600',
                     }}
                 >
-                    Button Group Modes
-                </h3>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
-                    <ButtonGroup
-                        mode={ButtonGroupMode.SINGLE_PRIMARY}
-                        isStacked={true}
-                    >
-                        <Button text="Save" buttonType={ButtonType.PRIMARY} />
-                        <Button
-                            text="Save & Continue"
-                            buttonType={ButtonType.PRIMARY}
-                        />
-                        <Button
-                            text="Cancel"
-                            buttonType={ButtonType.SECONDARY}
-                        />
-                    </ButtonGroup>
-
-                    <ButtonGroup
-                        mode={ButtonGroupMode.ALL_SECONDARY}
-                        isStacked={true}
-                    >
-                        <Button text="Edit" buttonType={ButtonType.PRIMARY} />
-                        <Button text="Delete" buttonType={ButtonType.DANGER} />
-                        <Button
-                            text="Cancel"
-                            buttonType={ButtonType.SECONDARY}
-                        />
-                    </ButtonGroup>
-                </div>
-            </div>
-
-            <div>
-                <h3
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
                     Layout Options
                 </h3>
                 <div
@@ -595,10 +689,7 @@ export const Showcase: Story = {
                         gap: '16px',
                     }}
                 >
-                    <ButtonGroup
-                        isStacked={true}
-                        mode={ButtonGroupMode.SINGLE_PRIMARY}
-                    >
+                    <ButtonGroup stacked={true}>
                         <Button
                             text="Stacked"
                             buttonType={ButtonType.PRIMARY}
@@ -609,10 +700,7 @@ export const Showcase: Story = {
                         />
                     </ButtonGroup>
 
-                    <ButtonGroup
-                        isStacked={false}
-                        mode={ButtonGroupMode.SINGLE_PRIMARY}
-                    >
+                    <ButtonGroup stacked={false}>
                         <Button text="Spaced" buttonType={ButtonType.PRIMARY} />
                         <Button
                             text="Separated"
@@ -630,26 +718,87 @@ export const Showcase: Story = {
                         fontWeight: '600',
                     }}
                 >
+                    Button Types
+                </h3>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                    }}
+                >
+                    <ButtonGroup stacked={true}>
+                        <Button
+                            text="Primary"
+                            buttonType={ButtonType.PRIMARY}
+                        />
+                        <Button
+                            text="Secondary"
+                            buttonType={ButtonType.SECONDARY}
+                        />
+                        <Button
+                            text="Success"
+                            buttonType={ButtonType.SUCCESS}
+                        />
+                        <Button text="Danger" buttonType={ButtonType.DANGER} />
+                    </ButtonGroup>
+                </div>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '16px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
                     With Icons
                 </h3>
-                <ButtonGroup
-                    isStacked={false}
-                    mode={ButtonGroupMode.NO_TRANSFORM}
-                >
+                <ButtonGroup stacked={false}>
                     <Button
                         text="Add"
-                        leadingIcon={Plus}
+                        leadingIcon={<Plus size={16} />}
                         buttonType={ButtonType.PRIMARY}
                     />
                     <Button
                         text="Edit"
-                        leadingIcon={Edit}
+                        leadingIcon={<Edit size={16} />}
                         buttonType={ButtonType.SECONDARY}
                     />
                     <Button
                         text="Delete"
-                        leadingIcon={Trash2}
+                        leadingIcon={<Trash2 size={16} />}
                         buttonType={ButtonType.DANGER}
+                    />
+                </ButtonGroup>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '16px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Icon Only
+                </h3>
+                <ButtonGroup stacked={true}>
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Search size={16} />}
+                        buttonType={ButtonType.SECONDARY}
+                    />
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Download size={16} />}
+                        buttonType={ButtonType.SECONDARY}
+                    />
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Settings size={16} />}
+                        buttonType={ButtonType.SECONDARY}
                     />
                 </ButtonGroup>
             </div>
