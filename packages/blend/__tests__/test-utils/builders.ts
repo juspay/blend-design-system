@@ -4,6 +4,9 @@ import {
     ButtonSize,
     ButtonSubType,
 } from '../../lib/components/Button/types'
+import { CheckboxSize } from '../../lib/components/Checkbox/types'
+import { RadioSize } from '../../lib/components/Radio/types'
+import { SwitchSize } from '../../lib/components/Switch/types'
 import { MockIcon } from './index'
 
 interface ButtonTestProps {
@@ -220,4 +223,487 @@ export const TestScenarios = {
                 .build(),
         },
     ],
+}
+
+// Checkbox Component Test Props and Builder
+interface CheckboxTestProps {
+    id?: string
+    value?: string
+    checked?: boolean | 'indeterminate'
+    defaultChecked?: boolean
+    onCheckedChange?: (checked: boolean | 'indeterminate') => void
+    disabled?: boolean
+    required?: boolean
+    error?: boolean
+    size?: CheckboxSize
+    children?: React.ReactNode
+    subtext?: string
+    slot?: React.ReactNode
+    [key: string]: unknown
+}
+
+/**
+ * Test data builder for Checkbox component props
+ */
+export class CheckboxPropsBuilder {
+    private props: CheckboxTestProps = {}
+
+    withId(id: string) {
+        this.props.id = id
+        return this
+    }
+
+    withValue(value: string) {
+        this.props.value = value
+        return this
+    }
+
+    withChecked(checked: boolean | 'indeterminate' = true) {
+        this.props.checked = checked
+        return this
+    }
+
+    withDefaultChecked(defaultChecked: boolean = true) {
+        this.props.defaultChecked = defaultChecked
+        return this
+    }
+
+    withIndeterminate() {
+        this.props.checked = 'indeterminate'
+        return this
+    }
+
+    withDisabled() {
+        this.props.disabled = true
+        return this
+    }
+
+    withRequired() {
+        this.props.required = true
+        return this
+    }
+
+    withError() {
+        this.props.error = true
+        return this
+    }
+
+    withSize(size: CheckboxSize) {
+        this.props.size = size
+        return this
+    }
+
+    withChildren(children: React.ReactNode) {
+        this.props.children = children
+        return this
+    }
+
+    withSubtext(subtext: string) {
+        this.props.subtext = subtext
+        return this
+    }
+
+    withSlot(slot: React.ReactNode) {
+        this.props.slot = slot
+        return this
+    }
+
+    withOnCheckedChange(
+        onCheckedChange: (checked: boolean | 'indeterminate') => void
+    ) {
+        this.props.onCheckedChange = onCheckedChange
+        return this
+    }
+
+    withCustomProps(props: Record<string, unknown>) {
+        this.props = { ...this.props, ...props }
+        return this
+    }
+
+    build() {
+        return this.props
+    }
+}
+
+// Radio Component Test Props and Builder
+interface RadioTestProps {
+    id?: string
+    value?: string
+    checked?: boolean
+    defaultChecked?: boolean
+    onChange?: (checked: boolean) => void
+    disabled?: boolean
+    required?: boolean
+    error?: boolean
+    size?: RadioSize
+    children?: React.ReactNode
+    subtext?: string
+    slot?: React.ReactNode
+    name?: string
+    [key: string]: unknown
+}
+
+/**
+ * Test data builder for Radio component props
+ */
+export class RadioPropsBuilder {
+    private props: RadioTestProps = {}
+
+    withId(id: string) {
+        this.props.id = id
+        return this
+    }
+
+    withValue(value: string) {
+        this.props.value = value
+        return this
+    }
+
+    withChecked(checked: boolean = true) {
+        this.props.checked = checked
+        return this
+    }
+
+    withDefaultChecked(defaultChecked: boolean = true) {
+        this.props.defaultChecked = defaultChecked
+        return this
+    }
+
+    withDisabled() {
+        this.props.disabled = true
+        return this
+    }
+
+    withRequired() {
+        this.props.required = true
+        return this
+    }
+
+    withError() {
+        this.props.error = true
+        return this
+    }
+
+    withSize(size: RadioSize) {
+        this.props.size = size
+        return this
+    }
+
+    withChildren(children: React.ReactNode) {
+        this.props.children = children
+        return this
+    }
+
+    withSubtext(subtext: string) {
+        this.props.subtext = subtext
+        return this
+    }
+
+    withSlot(slot: React.ReactNode) {
+        this.props.slot = slot
+        return this
+    }
+
+    withName(name: string) {
+        this.props.name = name
+        return this
+    }
+
+    withOnChange(onChange: (checked: boolean) => void) {
+        this.props.onChange = onChange
+        return this
+    }
+
+    withCustomProps(props: Record<string, unknown>) {
+        this.props = { ...this.props, ...props }
+        return this
+    }
+
+    build() {
+        return this.props
+    }
+}
+
+// Switch Component Test Props and Builder
+interface SwitchTestProps {
+    id?: string
+    checked?: boolean
+    defaultChecked?: boolean
+    onChange?: (checked: boolean) => void
+    disabled?: boolean
+    required?: boolean
+    error?: boolean
+    size?: SwitchSize
+    label?: React.ReactNode
+    subtext?: React.ReactNode
+    slot?: React.ReactNode
+    name?: string
+    value?: string
+    [key: string]: unknown
+}
+
+/**
+ * Test data builder for Switch component props
+ */
+export class SwitchPropsBuilder {
+    private props: SwitchTestProps = {}
+
+    withId(id: string) {
+        this.props.id = id
+        return this
+    }
+
+    withChecked(checked: boolean = true) {
+        this.props.checked = checked
+        return this
+    }
+
+    withDefaultChecked(defaultChecked: boolean = true) {
+        this.props.defaultChecked = defaultChecked
+        return this
+    }
+
+    withDisabled() {
+        this.props.disabled = true
+        return this
+    }
+
+    withRequired() {
+        this.props.required = true
+        return this
+    }
+
+    withError() {
+        this.props.error = true
+        return this
+    }
+
+    withSize(size: SwitchSize) {
+        this.props.size = size
+        return this
+    }
+
+    withLabel(label: React.ReactNode) {
+        this.props.label = label
+        return this
+    }
+
+    withSubtext(subtext: React.ReactNode) {
+        this.props.subtext = subtext
+        return this
+    }
+
+    withSlot(slot: React.ReactNode) {
+        this.props.slot = slot
+        return this
+    }
+
+    withName(name: string) {
+        this.props.name = name
+        return this
+    }
+
+    withValue(value: string) {
+        this.props.value = value
+        return this
+    }
+
+    withOnChange(onChange: (checked: boolean) => void) {
+        this.props.onChange = onChange
+        return this
+    }
+
+    withCustomProps(props: Record<string, unknown>) {
+        this.props = { ...this.props, ...props }
+        return this
+    }
+
+    build() {
+        return this.props
+    }
+}
+
+/**
+ * Factory functions for Checkbox test scenarios
+ */
+export const CheckboxTestFactory = {
+    default: () =>
+        new CheckboxPropsBuilder().withChildren('Test Checkbox').build(),
+
+    checked: () =>
+        new CheckboxPropsBuilder()
+            .withChildren('Checked Checkbox')
+            .withChecked()
+            .build(),
+
+    indeterminate: () =>
+        new CheckboxPropsBuilder()
+            .withChildren('Indeterminate Checkbox')
+            .withIndeterminate()
+            .build(),
+
+    disabled: () =>
+        new CheckboxPropsBuilder()
+            .withChildren('Disabled Checkbox')
+            .withDisabled()
+            .build(),
+
+    required: () =>
+        new CheckboxPropsBuilder()
+            .withChildren('Required Checkbox')
+            .withRequired()
+            .build(),
+
+    withError: () =>
+        new CheckboxPropsBuilder()
+            .withChildren('Error Checkbox')
+            .withError()
+            .build(),
+
+    withSubtext: () =>
+        new CheckboxPropsBuilder()
+            .withChildren('Checkbox with subtext')
+            .withSubtext('Additional information')
+            .build(),
+
+    complex: () =>
+        new CheckboxPropsBuilder()
+            .withChildren('Complex Checkbox')
+            .withSubtext('With subtext')
+            .withSlot(React.createElement(MockIcon))
+            .withRequired()
+            .withSize(CheckboxSize.MEDIUM)
+            .build(),
+
+    allSizes: () =>
+        [CheckboxSize.SMALL, CheckboxSize.MEDIUM].map((size) =>
+            new CheckboxPropsBuilder()
+                .withChildren(`${size} Checkbox`)
+                .withSize(size)
+                .build()
+        ),
+}
+
+/**
+ * Factory functions for Radio test scenarios
+ */
+export const RadioTestFactory = {
+    default: () =>
+        new RadioPropsBuilder()
+            .withChildren('Test Radio')
+            .withValue('test')
+            .build(),
+
+    checked: () =>
+        new RadioPropsBuilder()
+            .withChildren('Checked Radio')
+            .withValue('checked')
+            .withChecked()
+            .build(),
+
+    disabled: () =>
+        new RadioPropsBuilder()
+            .withChildren('Disabled Radio')
+            .withValue('disabled')
+            .withDisabled()
+            .build(),
+
+    required: () =>
+        new RadioPropsBuilder()
+            .withChildren('Required Radio')
+            .withValue('required')
+            .withRequired()
+            .build(),
+
+    withError: () =>
+        new RadioPropsBuilder()
+            .withChildren('Error Radio')
+            .withValue('error')
+            .withError()
+            .build(),
+
+    withSubtext: () =>
+        new RadioPropsBuilder()
+            .withChildren('Radio with subtext')
+            .withValue('subtext')
+            .withSubtext('Additional information')
+            .build(),
+
+    group: () => [
+        new RadioPropsBuilder()
+            .withChildren('Option 1')
+            .withValue('option1')
+            .withName('test-group')
+            .build(),
+        new RadioPropsBuilder()
+            .withChildren('Option 2')
+            .withValue('option2')
+            .withName('test-group')
+            .build(),
+        new RadioPropsBuilder()
+            .withChildren('Option 3')
+            .withValue('option3')
+            .withName('test-group')
+            .build(),
+    ],
+
+    allSizes: () =>
+        [RadioSize.SMALL, RadioSize.MEDIUM].map((size) =>
+            new RadioPropsBuilder()
+                .withChildren(`${size} Radio`)
+                .withValue(size)
+                .withSize(size)
+                .build()
+        ),
+}
+
+/**
+ * Factory functions for Switch test scenarios
+ */
+export const SwitchTestFactory = {
+    default: () => new SwitchPropsBuilder().withLabel('Test Switch').build(),
+
+    checked: () =>
+        new SwitchPropsBuilder()
+            .withLabel('Checked Switch')
+            .withChecked()
+            .build(),
+
+    disabled: () =>
+        new SwitchPropsBuilder()
+            .withLabel('Disabled Switch')
+            .withDisabled()
+            .build(),
+
+    required: () =>
+        new SwitchPropsBuilder()
+            .withLabel('Required Switch')
+            .withRequired()
+            .build(),
+
+    withError: () =>
+        new SwitchPropsBuilder().withLabel('Error Switch').withError().build(),
+
+    withSubtext: () =>
+        new SwitchPropsBuilder()
+            .withLabel('Switch with subtext')
+            .withSubtext('Additional information')
+            .build(),
+
+    complex: () =>
+        new SwitchPropsBuilder()
+            .withLabel('Complex Switch')
+            .withSubtext('With subtext')
+            .withSlot(React.createElement(MockIcon))
+            .withRequired()
+            .withSize(SwitchSize.MEDIUM)
+            .build(),
+
+    allSizes: () =>
+        [SwitchSize.SMALL, SwitchSize.MEDIUM].map((size) =>
+            new SwitchPropsBuilder()
+                .withLabel(`${size} Switch`)
+                .withSize(size)
+                .build()
+        ),
 }
