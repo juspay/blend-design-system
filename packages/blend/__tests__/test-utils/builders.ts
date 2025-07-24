@@ -5,8 +5,14 @@ import {
     ButtonSubType,
 } from '../../lib/components/Button/types'
 import { CheckboxSize } from '../../lib/components/Checkbox/types'
-import { RadioSize } from '../../lib/components/Radio/types'
-import { SwitchSize } from '../../lib/components/Switch/types'
+import {
+    RadioSize,
+    type RadioGroupProps,
+} from '../../lib/components/Radio/types'
+import {
+    SwitchSize,
+    type SwitchGroupProps,
+} from '../../lib/components/Switch/types'
 import { MockIcon } from './index'
 
 interface ButtonTestProps {
@@ -657,6 +663,110 @@ export const RadioTestFactory = {
         ),
 }
 
+// RadioGroup Component Test Props and Builder
+interface RadioGroupTestProps extends RadioGroupProps {
+    [key: string]: unknown
+}
+
+/**
+ * Test data builder for RadioGroup component props
+ */
+export class RadioGroupPropsBuilder {
+    private props: RadioGroupTestProps = { name: 'test-group', children: null }
+
+    withId(id: string) {
+        this.props.id = id
+        return this
+    }
+
+    withLabel(label: string) {
+        this.props.label = label
+        return this
+    }
+
+    withName(name: string) {
+        this.props.name = name
+        return this
+    }
+
+    withValue(value: string) {
+        this.props.value = value
+        return this
+    }
+
+    withDefaultValue(defaultValue: string) {
+        this.props.defaultValue = defaultValue
+        return this
+    }
+
+    withOnChange(onChange: (value: string) => void) {
+        this.props.onChange = onChange
+        return this
+    }
+
+    withDisabled() {
+        this.props.disabled = true
+        return this
+    }
+
+    withChildren(children: React.ReactNode) {
+        this.props.children = children
+        return this
+    }
+
+    withCustomProps(props: Record<string, unknown>) {
+        this.props = { ...this.props, ...props }
+        return this
+    }
+
+    build() {
+        return this.props
+    }
+}
+
+/**
+ * Factory functions for RadioGroup test scenarios
+ */
+export const RadioGroupTestFactory = {
+    default: () =>
+        new RadioGroupPropsBuilder()
+            .withName('default-group')
+            .withLabel('Default Group')
+            .build(),
+
+    controlled: () =>
+        new RadioGroupPropsBuilder()
+            .withName('controlled-group')
+            .withLabel('Controlled Group')
+            .withValue('option1')
+            .build(),
+
+    uncontrolled: () =>
+        new RadioGroupPropsBuilder()
+            .withName('uncontrolled-group')
+            .withLabel('Uncontrolled Group')
+            .withDefaultValue('option2')
+            .build(),
+
+    disabled: () =>
+        new RadioGroupPropsBuilder()
+            .withName('disabled-group')
+            .withLabel('Disabled Group')
+            .withDisabled()
+            .build(),
+
+    withoutLabel: () =>
+        new RadioGroupPropsBuilder().withName('no-label-group').build(),
+
+    complex: () =>
+        new RadioGroupPropsBuilder()
+            .withId('complex-group')
+            .withName('complex-group')
+            .withLabel('Complex Radio Group')
+            .withValue('selected-option')
+            .build(),
+}
+
 /**
  * Factory functions for Switch test scenarios
  */
@@ -706,4 +816,115 @@ export const SwitchTestFactory = {
                 .withSize(size)
                 .build()
         ),
+}
+
+// SwitchGroup Component Test Props and Builder
+interface SwitchGroupTestProps extends SwitchGroupProps {
+    [key: string]: unknown
+}
+
+/**
+ * Test data builder for SwitchGroup component props
+ */
+export class SwitchGroupPropsBuilder {
+    private props: SwitchGroupTestProps = { children: null }
+
+    withId(id: string) {
+        this.props.id = id
+        return this
+    }
+
+    withLabel(label: string) {
+        this.props.label = label
+        return this
+    }
+
+    withName(name: string) {
+        this.props.name = name
+        return this
+    }
+
+    withValue(value: string[]) {
+        this.props.value = value
+        return this
+    }
+
+    withDefaultValue(defaultValue: string[]) {
+        this.props.defaultValue = defaultValue
+        return this
+    }
+
+    withOnChange(onChange: (value: string[]) => void) {
+        this.props.onChange = onChange
+        return this
+    }
+
+    withDisabled() {
+        this.props.disabled = true
+        return this
+    }
+
+    withChildren(children: React.ReactNode) {
+        this.props.children = children
+        return this
+    }
+
+    withCustomProps(props: Record<string, unknown>) {
+        this.props = { ...this.props, ...props }
+        return this
+    }
+
+    build() {
+        return this.props
+    }
+}
+
+/**
+ * Factory functions for SwitchGroup test scenarios
+ */
+export const SwitchGroupTestFactory = {
+    default: () =>
+        new SwitchGroupPropsBuilder()
+            .withName('default-group')
+            .withLabel('Default Switch Group')
+            .build(),
+
+    controlled: () =>
+        new SwitchGroupPropsBuilder()
+            .withName('controlled-group')
+            .withLabel('Controlled Switch Group')
+            .withValue(['option1'])
+            .build(),
+
+    uncontrolled: () =>
+        new SwitchGroupPropsBuilder()
+            .withName('uncontrolled-group')
+            .withLabel('Uncontrolled Switch Group')
+            .withDefaultValue(['option2'])
+            .build(),
+
+    disabled: () =>
+        new SwitchGroupPropsBuilder()
+            .withName('disabled-group')
+            .withLabel('Disabled Switch Group')
+            .withDisabled()
+            .build(),
+
+    withoutLabel: () =>
+        new SwitchGroupPropsBuilder().withName('no-label-group').build(),
+
+    multipleSelected: () =>
+        new SwitchGroupPropsBuilder()
+            .withName('multiple-group')
+            .withLabel('Multiple Selection Group')
+            .withValue(['option1', 'option3'])
+            .build(),
+
+    complex: () =>
+        new SwitchGroupPropsBuilder()
+            .withId('complex-group')
+            .withName('complex-group')
+            .withLabel('Complex Switch Group')
+            .withValue(['selected-option'])
+            .build(),
 }
