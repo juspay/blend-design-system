@@ -1,5 +1,5 @@
 import type { StorybookConfig } from '@storybook/react-vite'
-const path = require('path')
+import path from 'path'
 
 const config: StorybookConfig = {
     stories: [
