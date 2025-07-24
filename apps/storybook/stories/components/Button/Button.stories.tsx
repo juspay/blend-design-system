@@ -6,10 +6,21 @@ import {
     ButtonSize,
     ButtonSubType,
 } from '@juspay/blend-design-system'
-import { Plus, Download, Settings, Heart, Star } from 'lucide-react'
+import {
+    Plus,
+    Download,
+    Settings,
+    Heart,
+    Star,
+    Search,
+    Edit,
+    Trash2,
+} from 'lucide-react'
+
+// Figma Code Connect is now in a separate file: Button.figma.tsx
 
 const meta: Meta<typeof Button> = {
-    title: 'Components/Button/Button (v1)',
+    title: 'Components/Button/Button',
     component: Button,
     parameters: {
         layout: 'centered',
@@ -17,13 +28,17 @@ const meta: Meta<typeof Button> = {
             description: {
                 component: `
 
-A versatile button component with multiple variants, sizes, and states.
+A modern, enhanced button component with improved styling and token-based design system.
 
 ## Features
-- Multiple button types (Primary, Secondary, Tertiary, etc.)
+- Multiple button types (Primary, Secondary, Danger, Success)
 - Various sizes (Small, Medium, Large)
+- Sub-types (Default, Icon Only, Inline)
 - Icon support (leading and trailing)
 - Loading and disabled states
+- Full width support
+- Button group positioning
+- Token-based styling system
 - Accessibility features built-in
 
 ## Usage
@@ -62,13 +77,28 @@ import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
             control: 'text',
             description: 'The text content of the button',
         },
-        isLoading: {
+        loading: {
             control: 'boolean',
             description: 'Shows loading state',
         },
-        isDisabled: {
+        disabled: {
             control: 'boolean',
             description: 'Disables the button',
+        },
+        fullWidth: {
+            control: 'boolean',
+            description: 'Makes the button take full width',
+        },
+        buttonGroupPosition: {
+            control: 'select',
+            options: ['left', 'center', 'right'],
+            description:
+                'Position in button group for border radius adjustment',
+        },
+        justifyContent: {
+            control: 'select',
+            options: ['flex-start', 'center', 'flex-end', 'space-between'],
+            description: 'Content alignment within the button',
         },
         onClick: {
             action: 'clicked',
@@ -87,22 +117,32 @@ export const Default: Story = {
         buttonType: ButtonType.PRIMARY,
         size: ButtonSize.MEDIUM,
         text: 'Button',
-        isLoading: false,
-        isDisabled: false,
+        loading: false,
+        disabled: false,
     },
 }
 
 // Button types
 export const ButtonTypes: Story = {
-    args: {
-        buttonType: ButtonType.SECONDARY,
-        size: ButtonSize.MEDIUM,
-        text: 'Secondary Button',
-    },
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                gap: '12px',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+            }}
+        >
+            <Button buttonType={ButtonType.PRIMARY} text="Primary" />
+            <Button buttonType={ButtonType.SECONDARY} text="Secondary" />
+            <Button buttonType={ButtonType.DANGER} text="Danger" />
+            <Button buttonType={ButtonType.SUCCESS} text="Success" />
+        </div>
+    ),
     parameters: {
         docs: {
             description: {
-                story: 'Different button types for various use cases. Use the controls below to switch between PRIMARY, SECONDARY, DANGER, and SUCCESS types.',
+                story: 'Different button types for various use cases and semantic meanings.',
             },
         },
     },
@@ -127,7 +167,36 @@ export const ButtonSizes: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Different button sizes to fit various contexts.',
+                story: 'Different button sizes to fit various contexts and layouts.',
+            },
+        },
+    },
+}
+
+// Button sub-types
+export const ButtonSubTypes: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                gap: '12px',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+            }}
+        >
+            <Button subType={ButtonSubType.DEFAULT} text="Default" />
+            <Button
+                subType={ButtonSubType.ICON_ONLY}
+                leadingIcon={<Settings size={16} />}
+                text="Icon Only"
+            />
+            <Button subType={ButtonSubType.INLINE} text="Inline" />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Different button sub-types including default, icon-only, and inline variants.',
             },
         },
     },
@@ -139,23 +208,23 @@ export const WithIcons: Story = {
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <Button
                 text="Add Item"
-                leadingIcon={Plus}
+                leadingIcon={<Plus size={16} />}
                 buttonType={ButtonType.PRIMARY}
             />
             <Button
                 text="Download"
-                leadingIcon={Download}
+                leadingIcon={<Download size={16} />}
                 buttonType={ButtonType.SECONDARY}
             />
             <Button
                 text="Settings"
-                trailingIcon={Settings}
+                trailingIcon={<Settings size={16} />}
                 buttonType={ButtonType.SECONDARY}
             />
             <Button
                 text="Favorite"
-                leadingIcon={Heart}
-                trailingIcon={Star}
+                leadingIcon={<Heart size={16} />}
+                trailingIcon={<Star size={16} />}
                 buttonType={ButtonType.SUCCESS}
             />
         </div>
@@ -182,31 +251,69 @@ export const IconOnly: Story = {
         >
             <Button
                 subType={ButtonSubType.ICON_ONLY}
-                leadingIcon={Plus}
-                text="Add"
+                leadingIcon={<Plus size={16} />}
                 buttonType={ButtonType.PRIMARY}
                 size={ButtonSize.SMALL}
             />
             <Button
                 subType={ButtonSubType.ICON_ONLY}
-                leadingIcon={Download}
-                text="Download"
+                leadingIcon={<Search size={16} />}
                 buttonType={ButtonType.SECONDARY}
                 size={ButtonSize.MEDIUM}
             />
             <Button
                 subType={ButtonSubType.ICON_ONLY}
-                leadingIcon={Settings}
-                text="Settings"
-                buttonType={ButtonType.DANGER}
+                leadingIcon={<Edit size={16} />}
+                buttonType={ButtonType.SUCCESS}
                 size={ButtonSize.LARGE}
+            />
+            <Button
+                subType={ButtonSubType.ICON_ONLY}
+                leadingIcon={<Trash2 size={16} />}
+                buttonType={ButtonType.DANGER}
+                size={ButtonSize.MEDIUM}
             />
         </div>
     ),
     parameters: {
         docs: {
             description: {
-                story: 'Icon-only buttons for compact interfaces. The text prop is used for accessibility.',
+                story: 'Icon-only buttons for compact interfaces. Perfect for toolbars and action bars.',
+            },
+        },
+    },
+}
+
+// Inline buttons
+export const InlineButtons: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                gap: '8px',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+            }}
+        >
+            <span>This is some text with </span>
+            <Button
+                subType={ButtonSubType.INLINE}
+                text="inline button"
+                buttonType={ButtonType.PRIMARY}
+            />
+            <span> and </span>
+            <Button
+                subType={ButtonSubType.INLINE}
+                text="another one"
+                buttonType={ButtonType.SECONDARY}
+            />
+            <span> in the flow.</span>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Inline buttons that blend seamlessly with text content.',
             },
         },
     },
@@ -220,12 +327,12 @@ export const ButtonStates: Story = {
             <Button
                 text="Loading"
                 buttonType={ButtonType.PRIMARY}
-                isLoading={true}
+                loading={true}
             />
             <Button
                 text="Disabled"
                 buttonType={ButtonType.PRIMARY}
-                isDisabled={true}
+                disabled={true}
             />
         </div>
     ),
@@ -238,18 +345,162 @@ export const ButtonStates: Story = {
     },
 }
 
+// Full width buttons
+export const FullWidth: Story = {
+    render: () => (
+        <div
+            style={{
+                width: '300px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+            }}
+        >
+            <Button
+                text="Full Width Primary"
+                buttonType={ButtonType.PRIMARY}
+                fullWidth={true}
+            />
+            <Button
+                text="Full Width Secondary"
+                buttonType={ButtonType.SECONDARY}
+                fullWidth={true}
+            />
+            <Button
+                text="Full Width with Icon"
+                buttonType={ButtonType.SUCCESS}
+                leadingIcon={<Plus size={16} />}
+                fullWidth={true}
+            />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Full-width buttons that take up the entire available width of their container.',
+            },
+        },
+    },
+}
+
+// Button group positioning
+export const ButtonGroupPositioning: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Button Group
+                </h4>
+                <div style={{ display: 'flex' }}>
+                    <Button
+                        text="Left"
+                        buttonType={ButtonType.SECONDARY}
+                        buttonGroupPosition="left"
+                    />
+                    <Button
+                        text="Center"
+                        buttonType={ButtonType.SECONDARY}
+                        buttonGroupPosition="center"
+                    />
+                    <Button
+                        text="Right"
+                        buttonType={ButtonType.SECONDARY}
+                        buttonGroupPosition="right"
+                    />
+                </div>
+            </div>
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Primary Group
+                </h4>
+                <div style={{ display: 'flex' }}>
+                    <Button
+                        text="Save"
+                        buttonType={ButtonType.PRIMARY}
+                        buttonGroupPosition="left"
+                    />
+                    <Button
+                        text="Save & Continue"
+                        buttonType={ButtonType.PRIMARY}
+                        buttonGroupPosition="right"
+                    />
+                </div>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Button group positioning affects border radius to create seamless button groups.',
+            },
+        },
+    },
+}
+
+// Content alignment
+export const ContentAlignment: Story = {
+    render: () => (
+        <div
+            style={{
+                width: '200px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+            }}
+        >
+            <Button
+                text="Left Aligned"
+                buttonType={ButtonType.SECONDARY}
+                fullWidth={true}
+                justifyContent="flex-start"
+            />
+            <Button
+                text="Center Aligned"
+                buttonType={ButtonType.SECONDARY}
+                fullWidth={true}
+                justifyContent="center"
+            />
+            <Button
+                text="Right Aligned"
+                buttonType={ButtonType.SECONDARY}
+                fullWidth={true}
+                justifyContent="flex-end"
+            />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Different content alignment options within the button.',
+            },
+        },
+    },
+}
+
 // Loading state
 export const Loading: Story = {
     args: {
         buttonType: ButtonType.PRIMARY,
         size: ButtonSize.MEDIUM,
         text: 'Loading Button',
-        isLoading: true,
+        loading: true,
     },
     parameters: {
         docs: {
             description: {
-                story: 'Button in loading state. The text and icons are hidden while loading.',
+                story: 'Button in loading state. Shows a spinner and hides the text and icons.',
             },
         },
     },
@@ -261,12 +512,108 @@ export const Disabled: Story = {
         buttonType: ButtonType.PRIMARY,
         size: ButtonSize.MEDIUM,
         text: 'Disabled Button',
-        isDisabled: true,
+        disabled: true,
     },
     parameters: {
         docs: {
             description: {
                 story: 'Button in disabled state. Click events are prevented and visual styling indicates the disabled state.',
+            },
+        },
+    },
+}
+
+// Comprehensive showcase
+export const Showcase: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '24px',
+                padding: '16px',
+            }}
+        >
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Button Types
+                </h3>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button buttonType={ButtonType.PRIMARY} text="Primary" />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Secondary"
+                    />
+                    <Button buttonType={ButtonType.DANGER} text="Danger" />
+                    <Button buttonType={ButtonType.SUCCESS} text="Success" />
+                </div>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    With Icons
+                </h3>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button
+                        text="Add"
+                        leadingIcon={<Plus size={16} />}
+                        buttonType={ButtonType.PRIMARY}
+                    />
+                    <Button
+                        text="Download"
+                        trailingIcon={<Download size={16} />}
+                        buttonType={ButtonType.SECONDARY}
+                    />
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Settings size={16} />}
+                        buttonType={ButtonType.SECONDARY}
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    States
+                </h3>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button text="Normal" buttonType={ButtonType.PRIMARY} />
+                    <Button
+                        text="Loading"
+                        buttonType={ButtonType.PRIMARY}
+                        loading={true}
+                    />
+                    <Button
+                        text="Disabled"
+                        buttonType={ButtonType.PRIMARY}
+                        disabled={true}
+                    />
+                </div>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'A comprehensive showcase of Button capabilities and variations.',
             },
         },
     },

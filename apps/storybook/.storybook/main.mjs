@@ -1,5 +1,10 @@
-const path = require('path')
+import path from 'path'
+import { fileURLToPath } from 'url'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+/** @type {import('@storybook/react-vite').StorybookConfig} */
 const config = {
     stories: [
         '../stories/**/*.stories.@(js|jsx|ts|tsx|mdx)',
@@ -30,11 +35,11 @@ const config = {
         autodocs: 'tag',
     },
     viteFinal: async (config) => {
-        // Ensure proper resolution of the blend-v1 package
+        // Ensure proper resolution of the @juspay/blend-design-system package
         if (config.resolve) {
             config.resolve.alias = {
                 ...config.resolve.alias,
-                'blend-v1': path.resolve(
+                '@juspay/blend-design-system': path.resolve(
                     __dirname,
                     '../../../packages/blend/lib/main.ts'
                 ),
@@ -44,4 +49,4 @@ const config = {
     },
 }
 
-module.exports = config
+export default config
