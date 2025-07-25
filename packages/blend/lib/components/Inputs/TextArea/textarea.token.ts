@@ -1,6 +1,7 @@
 import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../../tokens'
 import type { FoundationTokenType } from '../../../tokens/theme.token'
+import { BreakpointType } from '../../../breakpoints/breakPoints'
 
 type TextAreaState = 'default' | 'hover' | 'focus' | 'error' | 'disabled'
 
@@ -24,6 +25,10 @@ export type TextAreaTokensType = {
     backgroundColor: {
         [key in TextAreaState]: CSSObject['backgroundColor']
     }
+}
+
+export type ResponsiveTextAreaTokens = {
+    [key in keyof BreakpointType]: TextAreaTokensType
 }
 
 export const textAreaTokens: TextAreaTokensType = {
@@ -70,46 +75,89 @@ export const textAreaTokens: TextAreaTokensType = {
 
 export const getTextAreaTokens = (
     foundationTokens: FoundationTokenType
-): TextAreaTokensType => {
+): ResponsiveTextAreaTokens => {
     return {
-        fontFamily: 'InterDisplay',
-        paddingX: foundationTokens.unit[14],
-        paddingY: foundationTokens.unit[10],
-        borderRadius: foundationTokens.unit[8],
-        boxShadow: {
-            default: foundationTokens.shadows.sm,
-            hover: foundationTokens.shadows.sm,
-            focus: foundationTokens.shadows.focusPrimary,
-            error: foundationTokens.shadows.focusError,
-            disabled: foundationTokens.shadows.sm,
+        sm: {
+            fontFamily: 'InterDisplay',
+            paddingX: foundationTokens.unit[14],
+            paddingY: foundationTokens.unit[10],
+            borderRadius: foundationTokens.unit[8],
+            boxShadow: {
+                default: foundationTokens.shadows.sm,
+                hover: foundationTokens.shadows.sm,
+                focus: foundationTokens.shadows.focusPrimary,
+                error: foundationTokens.shadows.focusError,
+                disabled: foundationTokens.shadows.sm,
+            },
+            outline: {
+                default: 'none',
+                hover: 'none',
+                focus: 'none',
+                error: 'none',
+                disabled: 'none',
+            },
+            border: {
+                default: `1px solid ${foundationTokens.colors.gray[200]}`,
+                hover: `1px solid ${foundationTokens.colors.gray[400]}`,
+                focus: `1px solid ${foundationTokens.colors.primary[500]}`,
+                error: `1px solid ${foundationTokens.colors.red[500]}`,
+                disabled: `1px solid ${foundationTokens.colors.gray[200]}`,
+            },
+            color: {
+                default: foundationTokens.colors.gray[800],
+                hover: foundationTokens.colors.gray[800],
+                focus: foundationTokens.colors.gray[800],
+                error: foundationTokens.colors.red[800],
+                disabled: foundationTokens.colors.gray[300],
+            },
+            backgroundColor: {
+                default: foundationTokens.colors.gray[0],
+                hover: foundationTokens.colors.gray[0],
+                focus: foundationTokens.colors.gray[0],
+                error: foundationTokens.colors.gray[0],
+                disabled: foundationTokens.colors.gray[50],
+            },
         },
-        outline: {
-            default: 'none',
-            hover: 'none',
-            focus: 'none',
-            error: 'none',
-            disabled: 'none',
-        },
-        border: {
-            default: `1px solid ${foundationTokens.colors.gray[200]}`,
-            hover: `1px solid ${foundationTokens.colors.gray[400]}`,
-            focus: `1px solid ${foundationTokens.colors.primary[500]}`,
-            error: `1px solid ${foundationTokens.colors.red[500]}`,
-            disabled: `1px solid ${foundationTokens.colors.gray[200]}`,
-        },
-        color: {
-            default: foundationTokens.colors.gray[800],
-            hover: foundationTokens.colors.gray[800],
-            focus: foundationTokens.colors.gray[800],
-            error: foundationTokens.colors.red[800],
-            disabled: foundationTokens.colors.gray[300],
-        },
-        backgroundColor: {
-            default: foundationTokens.colors.gray[0],
-            hover: foundationTokens.colors.gray[0],
-            focus: foundationTokens.colors.gray[0],
-            error: foundationTokens.colors.gray[0],
-            disabled: foundationTokens.colors.gray[50],
+        lg: {
+            fontFamily: 'InterDisplay',
+            paddingX: foundationTokens.unit[14],
+            paddingY: foundationTokens.unit[10],
+            borderRadius: foundationTokens.unit[8],
+            boxShadow: {
+                default: foundationTokens.shadows.sm,
+                hover: foundationTokens.shadows.sm,
+                focus: foundationTokens.shadows.focusPrimary,
+                error: foundationTokens.shadows.focusError,
+                disabled: foundationTokens.shadows.sm,
+            },
+            outline: {
+                default: 'none',
+                hover: 'none',
+                focus: 'none',
+                error: 'none',
+                disabled: 'none',
+            },
+            border: {
+                default: `1px solid ${foundationTokens.colors.gray[200]}`,
+                hover: `1px solid ${foundationTokens.colors.gray[400]}`,
+                focus: `1px solid ${foundationTokens.colors.primary[500]}`,
+                error: `1px solid ${foundationTokens.colors.red[500]}`,
+                disabled: `1px solid ${foundationTokens.colors.gray[200]}`,
+            },
+            color: {
+                default: foundationTokens.colors.gray[800],
+                hover: foundationTokens.colors.gray[800],
+                focus: foundationTokens.colors.gray[800],
+                error: foundationTokens.colors.red[800],
+                disabled: foundationTokens.colors.gray[300],
+            },
+            backgroundColor: {
+                default: foundationTokens.colors.gray[0],
+                hover: foundationTokens.colors.gray[0],
+                focus: foundationTokens.colors.gray[0],
+                error: foundationTokens.colors.gray[0],
+                disabled: foundationTokens.colors.gray[50],
+            },
         },
     }
 }

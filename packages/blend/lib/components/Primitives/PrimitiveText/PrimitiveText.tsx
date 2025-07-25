@@ -40,6 +40,11 @@ export type PrimitiveTextProps = {
     name?: CSSObject['name']
     htmlFor?: CSSObject['htmlFor']
     textTransform?: CSSObject['textTransform']
+    position?: CSSObject['position']
+    top?: CSSObject['top']
+    left?: CSSObject['left']
+    bottom?: CSSObject['bottom']
+    right?: CSSObject['right']
 }
 
 export type TextProps = PrimitiveTextProps &

@@ -2,6 +2,7 @@ import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../../tokens'
 import type { FoundationTokenType } from '../../../tokens/theme.token'
 import { DropdownInputSize, DropdownInputState } from './types'
+import { BreakpointType } from '../../../breakpoints/breakPoints'
 
 export type DropdownInputTokensType = {
     input: {
@@ -29,6 +30,10 @@ export type DropdownInputTokensType = {
             [key in DropdownInputState]: CSSObject['backgroundColor']
         }
     }
+}
+
+export type ResponsiveDropdownInputTokens = {
+    [key in keyof BreakpointType]: DropdownInputTokensType
 }
 
 const dropdownInputTokens: Readonly<DropdownInputTokensType> = {
@@ -83,53 +88,104 @@ const dropdownInputTokens: Readonly<DropdownInputTokensType> = {
 
 export const getDropdownInputTokens = (
     foundationTheme: FoundationTokenType
-): DropdownInputTokensType => {
+): ResponsiveDropdownInputTokens => {
     return {
-        input: {
-            gap: foundationTheme.unit[8],
-            borderRadius: foundationTheme.unit[10],
-            paddingX: {
-                md: foundationTheme.unit[12],
-                lg: foundationTheme.unit[14],
+        sm: {
+            input: {
+                gap: foundationTheme.unit[8],
+                borderRadius: foundationTheme.unit[10],
+                paddingX: {
+                    md: foundationTheme.unit[12],
+                    lg: foundationTheme.unit[14],
+                },
+                paddingY: {
+                    md: foundationTheme.unit[8],
+                    lg: foundationTheme.unit[14],
+                },
+                border: {
+                    default: `1px solid ${foundationTheme.colors.gray[200]}`,
+                    hover: `1px solid ${foundationTheme.colors.gray[400]}`,
+                    focus: `1px solid ${foundationTheme.colors.primary[500]}`,
+                    error: `1px solid ${foundationTheme.colors.red[500]}`,
+                    disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
+                },
+                outline: {
+                    default: 'none',
+                    hover: 'none',
+                    focus: 'none',
+                    error: 'none',
+                    disabled: 'none',
+                },
+                color: {
+                    default: foundationTheme.colors.gray[800],
+                    hover: foundationTheme.colors.gray[800],
+                    focus: foundationTheme.colors.gray[800],
+                    error: foundationTheme.colors.red[800],
+                    disabled: foundationTheme.colors.gray[300],
+                },
+                backgroundColor: {
+                    default: foundationTheme.colors.gray[0],
+                    disabled: foundationTheme.colors.gray[50],
+                    hover: foundationTheme.colors.gray[0],
+                    focus: foundationTheme.colors.gray[0],
+                    error: foundationTheme.colors.gray[0],
+                },
+                boxShadow: {
+                    default: FOUNDATION_THEME.shadows.sm,
+                    hover: FOUNDATION_THEME.shadows.sm,
+                    focus: FOUNDATION_THEME.shadows.focusPrimary,
+                    error: FOUNDATION_THEME.shadows.focusError,
+                    disabled: FOUNDATION_THEME.shadows.sm,
+                },
             },
-            paddingY: {
-                md: foundationTheme.unit[8],
-                lg: foundationTheme.unit[10],
-            },
-            border: {
-                default: `1px solid ${foundationTheme.colors.gray[200]}`,
-                hover: `1px solid ${foundationTheme.colors.gray[400]}`,
-                focus: `1px solid ${foundationTheme.colors.primary[500]}`,
-                error: `1px solid ${foundationTheme.colors.red[500]}`,
-                disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
-            },
-            outline: {
-                default: 'none',
-                hover: 'none',
-                focus: 'none',
-                error: 'none',
-                disabled: 'none',
-            },
-            color: {
-                default: foundationTheme.colors.gray[800],
-                hover: foundationTheme.colors.gray[800],
-                focus: foundationTheme.colors.gray[800],
-                error: foundationTheme.colors.red[800],
-                disabled: foundationTheme.colors.gray[300],
-            },
-            backgroundColor: {
-                default: foundationTheme.colors.gray[0],
-                disabled: foundationTheme.colors.gray[50],
-                hover: foundationTheme.colors.gray[0],
-                focus: foundationTheme.colors.gray[0],
-                error: foundationTheme.colors.gray[0],
-            },
-            boxShadow: {
-                default: FOUNDATION_THEME.shadows.sm,
-                hover: FOUNDATION_THEME.shadows.sm,
-                focus: FOUNDATION_THEME.shadows.focusPrimary,
-                error: FOUNDATION_THEME.shadows.focusError,
-                disabled: FOUNDATION_THEME.shadows.sm,
+        },
+        lg: {
+            input: {
+                gap: foundationTheme.unit[8],
+                borderRadius: foundationTheme.unit[10],
+                paddingX: {
+                    md: foundationTheme.unit[12],
+                    lg: foundationTheme.unit[14],
+                },
+                paddingY: {
+                    md: foundationTheme.unit[8],
+                    lg: foundationTheme.unit[10],
+                },
+                border: {
+                    default: `1px solid ${foundationTheme.colors.gray[200]}`,
+                    hover: `1px solid ${foundationTheme.colors.gray[400]}`,
+                    focus: `1px solid ${foundationTheme.colors.primary[500]}`,
+                    error: `1px solid ${foundationTheme.colors.red[500]}`,
+                    disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
+                },
+                outline: {
+                    default: 'none',
+                    hover: 'none',
+                    focus: 'none',
+                    error: 'none',
+                    disabled: 'none',
+                },
+                color: {
+                    default: foundationTheme.colors.gray[800],
+                    hover: foundationTheme.colors.gray[800],
+                    focus: foundationTheme.colors.gray[800],
+                    error: foundationTheme.colors.red[800],
+                    disabled: foundationTheme.colors.gray[300],
+                },
+                backgroundColor: {
+                    default: foundationTheme.colors.gray[0],
+                    disabled: foundationTheme.colors.gray[50],
+                    hover: foundationTheme.colors.gray[0],
+                    focus: foundationTheme.colors.gray[0],
+                    error: foundationTheme.colors.gray[0],
+                },
+                boxShadow: {
+                    default: FOUNDATION_THEME.shadows.sm,
+                    hover: FOUNDATION_THEME.shadows.sm,
+                    focus: FOUNDATION_THEME.shadows.focusPrimary,
+                    error: FOUNDATION_THEME.shadows.focusError,
+                    disabled: FOUNDATION_THEME.shadows.sm,
+                },
             },
         },
     }

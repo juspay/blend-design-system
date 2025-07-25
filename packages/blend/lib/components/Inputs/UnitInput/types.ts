@@ -9,7 +9,7 @@ export enum UnitPosition {
 }
 
 export type UnitInputProps = {
-    value: number
+    value: number | undefined
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     step?: number
     error?: boolean
@@ -24,6 +24,8 @@ export type UnitInputProps = {
     rightSlot?: React.ReactNode
     unit: string
     unitPosition?: UnitPosition
+    onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
     'size' | 'style' | 'className'
