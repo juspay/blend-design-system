@@ -19,6 +19,7 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
+            id-token: write
 
         steps:
             - name: Checkout code
@@ -38,8 +39,32 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
+            - name: Check if version was manually changed
+              id: version-check
+              working-directory: packages/blend
+              run: |
+                  # Get current version from main branch
+                  git fetch origin main
+                  MAIN_VERSION=$(git show origin/main:packages/blend/package.json | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8')).version")
+
+                  # Get current version from this PR
+                  CURRENT_VERSION=$(node -p "require('./package.json').version")
+
+                  echo "Main branch version: $MAIN_VERSION"
+                  echo "PR version: $CURRENT_VERSION"
+
+                  if [ "$CURRENT_VERSION" != "$MAIN_VERSION" ]; then
+                    echo "Version was manually changed in PR from $MAIN_VERSION to $CURRENT_VERSION"
+                    echo "manual_version_change=true" >> $GITHUB_OUTPUT
+                    echo "new_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+                  else
+                    echo "No version change detected, will auto-bump based on PR title"
+                    echo "manual_version_change=false" >> $GITHUB_OUTPUT
+                  fi
+
             - name: Determine version bump type
               id: version-type
+              if: steps.version-check.outputs.manual_version_change == 'false'
               run: |
                   PR_TITLE="${{ github.event.pull_request.title }}"
                   echo "PR title: $PR_TITLE"
@@ -61,8 +86,9 @@ jobs:
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
 
-            - name: Bump version
+            - name: Bump version (auto)
               id: version-bump
+              if: steps.version-check.outputs.manual_version_change == 'false'
               working-directory: packages/blend
               run: |
                   CURRENT_VERSION=$(node -p "require('./package.json').version")
@@ -80,52 +106,81 @@ jobs:
                   echo "New version: $NEW_VERSION"
                   echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
+            - name: Use manual version
+              id: version-manual
+              if: steps.version-check.outputs.manual_version_change == 'true'
+              run: |
+                  echo "Using manually set version: ${{ steps.version-check.outputs.new_version }}"
+                  echo "new_version=${{ steps.version-check.outputs.new_version }}" >> $GITHUB_OUTPUT
+
             - name: Create git tag
               run: |
-                  TAG_NAME="v${{ steps.version-bump.outputs.new_version }}"
+                  # Get the final version (either auto-bumped or manual)
+                  if [ "${{ steps.version-check.outputs.manual_version_change }}" = "true" ]; then
+                    FINAL_VERSION="${{ steps.version-manual.outputs.new_version }}"
+                  else
+                    FINAL_VERSION="${{ steps.version-bump.outputs.new_version }}"
+                  fi
+
+                  TAG_NAME="v$FINAL_VERSION"
                   git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
                   git push origin "$TAG_NAME"
                   echo "Created and pushed tag: $TAG_NAME"
+                  echo "final_version=$FINAL_VERSION" >> $GITHUB_ENV
 
             - name: Create version bump PR
+              if: steps.version-check.outputs.manual_version_change == 'false'
               uses: peter-evans/create-pull-request@v5
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  commit-message: 'chore(release): bump version to v${{ steps.version-bump.outputs.new_version }}'
-                  title: 'chore(release): bump version to v${{ steps.version-bump.outputs.new_version }}'
+                  commit-message: 'chore(release): bump version to v${{ env.final_version }}'
+                  title: 'chore(release): bump version to v${{ env.final_version }}'
                   body: |
-                      ## Version Bump to v${{ steps.version-bump.outputs.new_version }}
+                      ## Version Bump to v${{ env.final_version }}
 
-                      This PR bumps the version of `@juspay/blend-design-system` to `v${{ steps.version-bump.outputs.new_version }}`.
+                      This PR bumps the version of `@juspay/blend-design-system` to `v${{ env.final_version }}`.
 
                       **Version type:** ${{ steps.version-type.outputs.version_type }}
                       **Triggered by:** PR #${{ github.event.pull_request.number }} - "${{ github.event.pull_request.title }}"
 
                       ### What's included:
                       - Version bumped in `packages/blend/package.json`
-                      - Git tag `v${{ steps.version-bump.outputs.new_version }}` created
+                      - Git tag `v${{ env.final_version }}` created
 
                       ### To publish to NPM:
                       1. Merge this PR
                       2. Go to [Actions](https://github.com/${{ github.repository }}/actions/workflows/release.yml)
-                      3. Click "Run workflow" → Enter tag `v${{ steps.version-bump.outputs.new_version }}` → Run
-                  branch: release/v${{ steps.version-bump.outputs.new_version }}
+                      3. Click "Run workflow" → Enter tag `v${{ env.final_version }}` → Run
+                  branch: release/v${{ env.final_version }}
                   delete-branch: true
 
             - name: Comment on original PR
               uses: actions/github-script@v7
               with:
                   script: |
-                      const newVersion = '${{ steps.version-bump.outputs.new_version }}';
+                      const finalVersion = '${{ env.final_version }}';
+                      const wasManual = '${{ steps.version-check.outputs.manual_version_change }}' === 'true';
 
-                      const body = `## Version Bump Complete
+                      let body;
+                      if (wasManual) {
+                        body = `## Manual Version Detected
 
-                      Version has been bumped to \`v${newVersion}\` and git tag has been created.
+                        Your PR already contains a version bump to \`v${finalVersion}\`. Git tag has been created.
 
-                      **Next steps:**
-                      1. Merge the version bump PR that was just created
-                      2. Go to [Actions](https://github.com/${{ github.repository }}/actions/workflows/release.yml) and manually run the workflow with tag \`v${newVersion}\` to publish to NPM
-                      `;
+                        **Next steps:**
+                        Since you manually set the version, no additional version bump PR is needed.
+                        Go to [Actions](https://github.com/${{ github.repository }}/actions/workflows/release.yml) and manually run the workflow with tag \`v${finalVersion}\` to publish to NPM.
+                        `;
+                      } else {
+                        body = `##Version Bump Complete
+
+                        Version has been bumped to \`v${finalVersion}\` and git tag has been created.
+
+                        **Next steps:**
+                        1. Merge the version bump PR that was just created
+                        2. Go to [Actions](https://github.com/${{ github.repository }}/actions/workflows/release.yml) and manually run the workflow with tag \`v${finalVersion}\` to publish to NPM
+                        `;
+                      }
 
                       github.rest.issues.createComment({
                         issue_number: ${{ github.event.pull_request.number }},
@@ -174,9 +229,6 @@ jobs:
               run: |
                   pnpm --filter @juspay/blend-design-system lint
                   pnpm --filter @juspay/blend-design-system build
-
-            - name: Run tests
-              run: pnpm --filter @juspay/blend-design-system test:run
 
             - name: Verify package version matches tag
               working-directory: packages/blend

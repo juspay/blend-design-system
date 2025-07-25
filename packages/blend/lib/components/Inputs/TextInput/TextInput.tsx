@@ -4,22 +4,12 @@ import { useRef, useState, useEffect } from 'react'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
 import { TextInputSize, type TextInputProps } from './types'
-import { useComponentToken } from '../../../context/useComponentToken'
 import type { TextInputTokensType } from './textInput.tokens'
-
-const toPixels = (value: string | number | undefined): number => {
-    if (typeof value === 'number') {
-        return value
-    }
-
-    if (typeof value === 'string') {
-        // Remove 'px' and convert to number
-        const numericValue = parseFloat(value.replace('px', ''))
-        return isNaN(numericValue) ? 0 : numericValue
-    }
-
-    return 0
-}
+import { toPixels } from '../../../global-utils/GlobalUtils'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
+import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 
 const TextInput = ({
     size = TextInputSize.MEDIUM,
@@ -37,16 +27,39 @@ const TextInput = ({
     onChange,
     name,
     required = false,
+    onBlur,
+    onFocus,
     ...rest
 }: TextInputProps) => {
-    const textInputTokens = useComponentToken(
-        'TEXT_INPUT'
-    ) as TextInputTokensType
+    const textInputTokens =
+        useResponsiveTokens<TextInputTokensType>('TEXT_INPUT')
+
+    const [isFocused, setIsFocused] = useState(false)
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakPointLabel === 'sm'
+
+    const inputFocusedOrWithValue = isFocused || value.length > 0
+    const isSmallScreenWithLargeSize =
+        isSmallScreen && size === TextInputSize.LARGE
+
     const leftSlotRef = useRef<HTMLDivElement>(null)
     const rightSlotRef = useRef<HTMLDivElement>(null)
 
     const [leftSlotWidth, setLeftSlotWidth] = useState(0)
     const [rightSlotWidth, setRightSlotWidth] = useState(0)
+
+    const paddingX = toPixels(textInputTokens.input.paddingX[size])
+    const paddingY =
+        toPixels(textInputTokens.input.paddingY[size]) +
+        (isSmallScreenWithLargeSize ? 0.5 : 0)
+    const GAP = toPixels(textInputTokens.input.gap)
+
+    const paddingInlineStart = leftSlot
+        ? paddingX + leftSlotWidth + GAP
+        : paddingX
+    const paddingInlineEnd = rightSlot
+        ? paddingX + rightSlotWidth + GAP
+        : paddingX
 
     useEffect(() => {
         if (leftSlotRef.current) {
@@ -61,26 +74,18 @@ const TextInput = ({
         }
     }, [leftSlot, rightSlot])
 
-    const paddingX = toPixels(textInputTokens.input.paddingX[size])
-    const paddingY = toPixels(textInputTokens.input.paddingY[size])
-    const GAP = toPixels(textInputTokens.input.gap)
-
-    const paddingInlineStart = leftSlot
-        ? paddingX + leftSlotWidth + GAP
-        : paddingX
-    const paddingInlineEnd = rightSlot
-        ? paddingX + rightSlotWidth + GAP
-        : paddingX
     return (
         <Block display="flex" flexDirection="column" gap={8} width={'100%'}>
-            <InputLabels
-                label={label}
-                sublabel={sublabel}
-                helpIconHintText={helpIconHintText}
-                disabled={disabled}
-                name={name}
-                required={required}
-            />
+            {(!isSmallScreen || size !== TextInputSize.LARGE) && (
+                <InputLabels
+                    label={label}
+                    sublabel={sublabel}
+                    helpIconHintText={helpIconHintText}
+                    disabled={disabled}
+                    name={name}
+                    required={required}
+                />
+            )}
             <Block position="relative" width={'100%'}>
                 {leftSlot && (
                     <Block
@@ -95,20 +100,57 @@ const TextInput = ({
                     </Block>
                 )}
 
+                {label && isSmallScreenWithLargeSize && (
+                    <Block
+                        position="absolute"
+                        top={
+                            inputFocusedOrWithValue
+                                ? toPixels(paddingY - paddingY / 1.3)
+                                : '50%'
+                        }
+                        left={paddingInlineStart}
+                        height={'max-content'}
+                        style={{
+                            transition: 'all 0.2s ease-in-out',
+                            transform: inputFocusedOrWithValue
+                                ? 'scale(0.95)'
+                                : 'translateY(-50%) scale(1)',
+                            transformOrigin: 'left center',
+                            pointerEvents: 'none',
+                            zIndex: 1,
+                        }}
+                    >
+                        <FloatingLabels
+                            label={label}
+                            required={required || false}
+                            name={name || ''}
+                            isFocused={inputFocusedOrWithValue}
+                        />
+                    </Block>
+                )}
+
                 <PrimitiveInput
                     required={required}
                     value={value}
                     type="text"
                     name={name}
                     onChange={onChange}
-                    placeholder={placeholder}
+                    placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
                     width={'100%'}
                     disabled={disabled}
                     //styling props
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
-                    paddingTop={paddingY}
-                    paddingBottom={paddingY}
+                    paddingTop={
+                        isSmallScreenWithLargeSize && inputFocusedOrWithValue
+                            ? paddingY * 1.5
+                            : paddingY
+                    }
+                    paddingBottom={
+                        isSmallScreenWithLargeSize && inputFocusedOrWithValue
+                            ? paddingY / 2
+                            : paddingY
+                    }
                     borderRadius={textInputTokens.input.borderRadius}
                     boxShadow={textInputTokens.input.boxShadow.default}
                     border={
@@ -116,6 +158,8 @@ const TextInput = ({
                             error ? 'error' : 'default'
                         ]
                     }
+                    fontSize={'14px'}
+                    fontWeight={500}
                     outline="none"
                     _hover={{
                         border: textInputTokens.input.border[
@@ -141,6 +185,14 @@ const TextInput = ({
                             textInputTokens.input.backgroundColor.disabled,
                         border: textInputTokens.input.border.disabled,
                         cursor: 'not-allowed',
+                    }}
+                    onFocus={(e) => {
+                        setIsFocused(true)
+                        onFocus?.(e)
+                    }}
+                    onBlur={(e) => {
+                        setIsFocused(false)
+                        onBlur?.(e)
                     }}
                     {...rest}
                 />

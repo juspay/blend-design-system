@@ -8,7 +8,11 @@ import InputLabels from '../utils/InputLabels/InputLabels'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import InputFooter from '../utils/InputFooter/InputFooter'
 import type { UnitInputTokensType } from './unitInput.tokens'
-import { useComponentToken } from '../../../context/useComponentToken'
+import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
+import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
+import { toPixels } from '../../../global-utils/GlobalUtils'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const UnitInput = ({
     value,
@@ -31,21 +35,32 @@ const UnitInput = ({
     unit,
     unitPosition = UnitPosition.RIGHT,
     name,
+    onFocus,
+    onBlur,
     ...rest
 }: UnitInputProps) => {
-    const unitInputTokens = useComponentToken(
-        'UNIT_INPUT'
-    ) as UnitInputTokensType
-    const paddingX = unitInputTokens.input.paddingX[size]
-    const paddingY = unitInputTokens.input.paddingY[size]
-
-    const leftSlotRef = useRef<HTMLDivElement>(null)
-    const rightSlotRef = useRef<HTMLDivElement>(null)
-    const unitRef = useRef<HTMLDivElement>(null)
+    const unitInputTokens =
+        useResponsiveTokens<UnitInputTokensType>('UNIT_INPUT')
 
     const [leftSlotWidth, setLeftSlotWidth] = useState(0)
     const [rightSlotWidth, setRightSlotWidth] = useState(0)
     const [unitWidth, setUnitWidth] = useState(0)
+    const [isFocused, setIsFocused] = useState(false)
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakPointLabel === 'sm'
+
+    const inputFocusedOrWithValue = isFocused || value !== undefined
+    const isSmallScreenWithLargeSize =
+        isSmallScreen && size === UnitInputSize.LARGE
+
+    const paddingX = unitInputTokens.input.paddingX[size]
+    const paddingY =
+        toPixels(unitInputTokens.input.paddingY[size]) +
+        (isSmallScreenWithLargeSize ? 0.5 : 0)
+
+    const leftSlotRef = useRef<HTMLDivElement>(null)
+    const rightSlotRef = useRef<HTMLDivElement>(null)
+    const unitRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         if (leftSlotRef.current) {
@@ -66,10 +81,10 @@ const UnitInput = ({
     }, [leftSlot, rightSlot, unit])
 
     const paddingInlineStart =
-        !leftSlot && unitPosition !== UnitPosition.LEFT
+        (!leftSlot && unitPosition !== UnitPosition.LEFT
             ? paddingY
             : (unitPosition === UnitPosition.LEFT ? unitWidth + 8 : 8) +
-              (leftSlot ? leftSlotWidth + 8 : 0)
+              (leftSlot ? leftSlotWidth + 8 : 0)) + 4
 
     const paddingInlineEnd =
         !rightSlot && unitPosition !== UnitPosition.RIGHT
@@ -137,14 +152,16 @@ const UnitInput = ({
 
     return (
         <Block display="flex" flexDirection="column" gap={8} width="100%">
-            <InputLabels
-                label={label}
-                sublabel={sublabel}
-                helpIconHintText={helpIconHintText}
-                disabled={disabled}
-                name={name}
-                required={required}
-            />
+            {(!isSmallScreen || size !== UnitInputSize.LARGE) && (
+                <InputLabels
+                    label={label}
+                    sublabel={sublabel}
+                    helpIconHintText={helpIconHintText}
+                    disabled={disabled}
+                    name={name}
+                    required={required}
+                />
+            )}
             <Block
                 position="relative"
                 width={'100%'}
@@ -186,9 +203,37 @@ const UnitInput = ({
 
                 {unitPosition === UnitPosition.RIGHT && <RightUnitSlot />}
                 {unitPosition === UnitPosition.LEFT && <LeftUnitSlot />}
+                {label && isSmallScreenWithLargeSize && (
+                    <Block
+                        position="absolute"
+                        top={
+                            inputFocusedOrWithValue
+                                ? toPixels(paddingY - paddingY / 1.3)
+                                : '50%'
+                        }
+                        left={toPixels(paddingInlineStart)}
+                        height={'max-content'}
+                        style={{
+                            transition: 'all 0.2s ease-in-out',
+                            transform: inputFocusedOrWithValue
+                                ? 'scale(0.95)'
+                                : 'translateY(-50%) scale(1)',
+                            transformOrigin: 'left center',
+                            pointerEvents: 'none',
+                            zIndex: 1,
+                        }}
+                    >
+                        <FloatingLabels
+                            label={label}
+                            required={required || false}
+                            name={name || ''}
+                            isFocused={inputFocusedOrWithValue}
+                        />
+                    </Block>
+                )}
                 <PrimitiveInput
                     type="number"
-                    placeholder={placeholder}
+                    placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
                     value={value}
                     onChange={onChange}
                     step={step}
@@ -196,8 +241,16 @@ const UnitInput = ({
                     max={max}
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
-                    paddingTop={paddingY}
-                    paddingBottom={paddingY}
+                    paddingTop={
+                        isSmallScreenWithLargeSize && inputFocusedOrWithValue
+                            ? paddingY * 1.5
+                            : paddingY
+                    }
+                    paddingBottom={
+                        isSmallScreenWithLargeSize && inputFocusedOrWithValue
+                            ? paddingY / 2
+                            : paddingY
+                    }
                     required={required}
                     borderRadius={unitInputTokens.input.borderRadius}
                     boxShadow={unitInputTokens.input.boxShadow.default}
@@ -206,6 +259,8 @@ const UnitInput = ({
                             error ? 'error' : 'default'
                         ]
                     }
+                    fontSize={'14px'}
+                    fontWeight={500}
                     outline="none"
                     width={'100%'}
                     _hover={{
@@ -244,6 +299,14 @@ const UnitInput = ({
                             unitInputTokens.input.backgroundColor.disabled,
                         border: unitInputTokens.input.border.disabled,
                         cursor: 'not-allowed',
+                    }}
+                    onFocus={(e) => {
+                        setIsFocused(true)
+                        onFocus?.(e)
+                    }}
+                    onBlur={(e) => {
+                        setIsFocused(false)
+                        onBlur?.(e)
                     }}
                     {...rest}
                 />

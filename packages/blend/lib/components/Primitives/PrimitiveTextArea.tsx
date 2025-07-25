@@ -115,10 +115,13 @@ type PrimitiveTextareaProps = StateStyles & {
 
     // Font
     fontFamily?: CSSObject['fontFamily']
+    fontSize?: CSSObject['fontSize']
+    fontWeight?: CSSObject['fontWeight']
 }
 
 const blockedProps = [
     // Similar blocked list as input
+
     'padding',
     'paddingTop',
     'paddingBottom',
@@ -190,6 +193,8 @@ const blockedProps = [
     'placeholderStyles',
     'resize',
     'fontFamily',
+    'fontSize',
+    'fontWeight',
 ]
 
 const stateToSelector: Record<keyof StateStyles, string> = {
@@ -221,6 +226,8 @@ const getStyles = (props: PrimitiveTextareaProps): CSSObject => {
         styles.pointerEvents = props.pointerEvents
     if (props.opacity !== undefined) styles.opacity = props.opacity
     if (props.fontFamily !== undefined) styles.fontFamily = props.fontFamily
+    if (props.fontSize !== undefined) styles.fontSize = props.fontSize
+    if (props.fontWeight !== undefined) styles.fontWeight = props.fontWeight
 
     if (props.contentCentered) {
         styles.display = props.display ?? 'flex'
