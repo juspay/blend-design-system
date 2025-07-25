@@ -82,7 +82,7 @@ import {
 } from '../components/Menu/menu.tokens'
 import {
     getMultiSelectTokens,
-    type MultiSelectTokensType,
+    type ResponsiveMultiSelectTokens,
 } from '../components/MultiSelect/multiSelect.tokens'
 import {
     getTableToken,
@@ -130,7 +130,7 @@ export type ComponentTokenType = {
     BREADCRUMB?: ResponsiveBreadcrumbTokens
     POPOVER?: PopoverTokenType
     MENU?: ResponsiveMenuTokensType
-    MULTI_SELECT?: MultiSelectTokensType
+    MULTI_SELECT?: ResponsiveMultiSelectTokens
     TABLE?: TableTokenType
     CALENDAR?: CalendarTokenType
     ACCORDION?: AccordionTokenType

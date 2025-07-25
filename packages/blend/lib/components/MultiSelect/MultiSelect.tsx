@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Block from '../Primitives/Block/Block'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
@@ -14,7 +14,6 @@ import {
     MultiSelectVariant,
 } from './types'
 import { type MultiSelectTokensType } from './multiSelect.tokens'
-import { useComponentToken } from '../../context/useComponentToken'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import {
     Drawer,
@@ -30,6 +29,9 @@ import {
 import { Button, ButtonType, ButtonSize } from '../../main'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { handleSelectAll, map } from './utils'
+import { toPixels } from '../../global-utils/GlobalUtils'
+import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const MultiSelect = ({
     selectedValues,
@@ -62,18 +64,25 @@ const MultiSelect = ({
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
+    const textContainerRef = useRef<HTMLDivElement>(null)
+    const textContainerHeight = textContainerRef.current?.clientHeight
+    const containerRef = useRef<HTMLDivElement>(null)
 
-    const multiSelectTokens = useComponentToken(
-        'MULTI_SELECT'
-    ) as MultiSelectTokensType
+    const multiSelectTokens =
+        useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
     const [open, setOpen] = useState(false)
     const [drawerOpen, setDrawerOpen] = useState(false)
     const { innerWidth } = useBreakpoints()
     const isMobile = innerWidth < 1024
     const valueLabelMap = map(items)
-
     const showCancelButton =
         variant === MultiSelectVariant.CONTAINER && selectedValues.length > 0
+
+    const smallScreenPaddingY =
+        toPixels(multiSelectTokens.trigger.height) - (textContainerHeight || 0)
+    const isItemSelected = selectedValues.length > 0
+    const isSmallScreenWithLargeSize =
+        isSmallScreen && size === MultiSelectMenuSize.LARGE
 
     const borderRadius = multiSelectTokens.trigger.borderRadius[size]
     const appliedBorderRadius = showCancelButton
@@ -450,7 +459,12 @@ const MultiSelect = ({
                         required={required}
                     />
                 )}
-            <Block display="flex">
+            <Block
+                display="flex"
+                ref={containerRef}
+                height={toPixels(multiSelectTokens.trigger.height)}
+                maxHeight={toPixels(multiSelectTokens.trigger.height)}
+            >
                 <Block
                     width={
                         variant === MultiSelectVariant.CONTAINER
@@ -496,6 +510,12 @@ const MultiSelect = ({
                         onOpenChange={setOpen}
                         trigger={
                             <PrimitiveButton
+                                height={toPixels(
+                                    multiSelectTokens.trigger.height
+                                )}
+                                maxHeight={toPixels(
+                                    multiSelectTokens.trigger.height
+                                )}
                                 width={'100%'}
                                 display="flex"
                                 alignItems="center"
@@ -506,8 +526,22 @@ const MultiSelect = ({
                                 boxShadow={
                                     multiSelectTokens.trigger.boxShadow[variant]
                                 }
-                                padding={
-                                    multiSelectTokens.trigger.padding[size]
+                                paddingX={
+                                    multiSelectTokens.trigger.paddingX[size]
+                                }
+                                paddingTop={
+                                    isSmallScreenWithLargeSize && isItemSelected
+                                        ? smallScreenPaddingY / 2
+                                        : multiSelectTokens.trigger.paddingY[
+                                              size
+                                          ]
+                                }
+                                paddingBottom={
+                                    isSmallScreenWithLargeSize && isItemSelected
+                                        ? smallScreenPaddingY / 2
+                                        : multiSelectTokens.trigger.paddingY[
+                                              size
+                                          ]
                                 }
                                 backgroundColor={
                                     multiSelectTokens.trigger.backgroundColor
@@ -543,6 +577,7 @@ const MultiSelect = ({
                                     </Block>
                                 )}
                                 <Block
+                                    ref={textContainerRef}
                                     as="span"
                                     textAlign="left"
                                     style={{
@@ -569,37 +604,19 @@ const MultiSelect = ({
                                         </Text>
                                     )}
 
-                                    {isSmallScreen &&
-                                        size === MultiSelectMenuSize.LARGE &&
+                                    {isSmallScreenWithLargeSize &&
                                         variant ===
                                             MultiSelectVariant.CONTAINER && (
                                             <Block
                                                 display="flex"
                                                 alignItems="center"
-                                                gap={4}
                                             >
-                                                <Text
-                                                    as="span"
-                                                    variant="body.sm"
-                                                    color={
-                                                        FOUNDATION_THEME.colors
-                                                            .gray[400]
-                                                    }
-                                                    fontWeight={500}
-                                                >
-                                                    {label}
-                                                </Text>
-                                                {required && (
-                                                    <span
-                                                        style={{
-                                                            color: FOUNDATION_THEME
-                                                                .colors
-                                                                .red[500],
-                                                        }}
-                                                    >
-                                                        *
-                                                    </span>
-                                                )}
+                                                <FloatingLabels
+                                                    label={label}
+                                                    required={required || false}
+                                                    name={name || ''}
+                                                    isFocused={isItemSelected}
+                                                />
                                             </Block>
                                         )}
                                     {/* Variant == Container - always show the placeholder*/}

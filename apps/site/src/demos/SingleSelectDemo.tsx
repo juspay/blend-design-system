@@ -25,7 +25,7 @@ const SingleSelectDemo = () => {
         'Select an option...'
     )
     const [playgroundSize, setPlaygroundSize] = useState<SelectMenuSize>(
-        SelectMenuSize.MEDIUM
+        SelectMenuSize.LARGE
     )
     const [playgroundVariant, setPlaygroundVariant] =
         useState<SelectMenuVariant>(SelectMenuVariant.CONTAINER)

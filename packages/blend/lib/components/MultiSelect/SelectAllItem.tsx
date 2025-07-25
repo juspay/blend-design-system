@@ -1,4 +1,4 @@
-import { useComponentToken } from '../../context/useComponentToken'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { Checkbox } from '../Checkbox'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
@@ -19,9 +19,8 @@ const SelectAllItem = ({
     selectAllText: string
     disabled?: boolean
 }) => {
-    const multiSelectTokens = useComponentToken(
-        'MULTI_SELECT'
-    ) as MultiSelectTokensType
+    const multiSelectTokens =
+        useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
 
     const { allSelected, someSelected } = getSelectAllState(
         selected,
