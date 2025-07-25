@@ -1,19 +1,19 @@
 import type { SearchInputTokensType } from '../components/Inputs/SearchInput/searchInput.tokens'
-import type { TextAreaTokensType } from '../components/Inputs/TextArea/textarea.token'
+import type { ResponsiveTextAreaTokens } from '../components/Inputs/TextArea/textarea.token'
 import type { ResponsiveTagTokens } from '../components/Tags/tag.tokens'
 import type { ResponsiveRadioTokens } from '../components/Radio/radio.token'
 import type { ResponsiveSwitchTokens } from '../components/Switch/switch.token'
 import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import type { TabsTokensType } from '../components/Tabs/tabs.token'
 import { type ComponentTokenType, useTheme } from './ThemeContext'
-import type { TextInputTokensType } from '../components/Inputs/TextInput/textInput.tokens'
-import type { NumberInputTokensType } from '../components/Inputs/NumberInput/numberInput.tokens'
+import type { ResponsiveTextInputTokens } from '../components/Inputs/TextInput/textInput.tokens'
+import type { ResponsiveNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
 import type { ResponsiveAlertTokens } from '../components/Alert/alert.tokens'
 import type { OTPInputTokensType } from '../components/Inputs/OTPInput/otpInput.tokens'
 import type { TooltipTokensType } from '../components/Tooltip/tooltip.tokens'
-import type { UnitInputTokensType } from '../components/Inputs/UnitInput/unitInput.tokens'
+import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import type { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
-import type { DropdownInputTokensType } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
+import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
 import type { ModalTokensType } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
@@ -32,19 +32,19 @@ export const useComponentToken = (
 ):
     | SearchInputTokensType
     | ResponsiveTagTokens
-    | TextAreaTokensType
-    | TextInputTokensType
-    | NumberInputTokensType
+    | ResponsiveTextAreaTokens
+    | ResponsiveTextInputTokens
+    | ResponsiveNumberInputTokens
     | ResponsiveAlertTokens
     | ResponsiveRadioTokens
     | OTPInputTokensType
-    | UnitInputTokensType
+    | ResponsiveUnitInputTokens
     | MultiValueInputTokensType
     | ResponsiveSwitchTokens
     | ResponsiveCheckboxTokens
     | TabsTokensType
     | TooltipTokensType
-    | DropdownInputTokensType
+    | ResponsiveDropdownInputTokens
     | ResponsiveButtonTokens
     | ModalTokensType
     | ResponsiveBreadcrumbTokens

@@ -9,12 +9,9 @@ import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 
 const DropdownInputDemo = () => {
     // Individual playground state
-    const [playgroundLabel, setPlaygroundLabel] = useState(
-        'Select Country and Enter City'
-    )
-    const [playgroundSublabel, setPlaygroundSublabel] = useState(
-        'Choose your location'
-    )
+    const [playgroundLabel, setPlaygroundLabel] = useState('Your Label')
+    const [playgroundSublabel, setPlaygroundSublabel] =
+        useState('Your Sublabel')
     const [playgroundHintText, setPlaygroundHintText] = useState(
         'This helps us provide location-specific services'
     )
@@ -25,7 +22,7 @@ const DropdownInputDemo = () => {
         'Select from the dropdown and type in the input'
     )
     const [playgroundSize, setPlaygroundSize] = useState<TextInputSize>(
-        TextInputSize.MEDIUM
+        TextInputSize.LARGE
     )
     const [playgroundValue, setPlaygroundValue] = useState('')
     const [playgroundDropdownValue, setPlaygroundDropdownValue] = useState('')

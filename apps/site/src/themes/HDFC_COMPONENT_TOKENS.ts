@@ -3,69 +3,211 @@ import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 
 export const HDFC_COMPONENT_TOKENS: ComponentTokenType = {
     NUMBER_INPUT: {
-        input: {
-            gap: FOUNDATION_THEME.unit[8],
-            borderRadius: FOUNDATION_THEME.unit[10],
-            paddingX: {
-                md: FOUNDATION_THEME.unit[12],
-                lg: FOUNDATION_THEME.unit[14],
+        sm: {
+            input: {
+                gap: FOUNDATION_THEME.unit[8],
+                borderRadius: FOUNDATION_THEME.unit[10],
+                paddingX: {
+                    md: FOUNDATION_THEME.unit[12],
+                    lg: FOUNDATION_THEME.unit[14],
+                },
+                paddingY: {
+                    md: FOUNDATION_THEME.unit[8],
+                    lg: FOUNDATION_THEME.unit[10],
+                },
+                border: {
+                    default: `1px solid ${FOUNDATION_THEME.colors.green[500]}`,
+                    hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
+                    focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                    error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+                    disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                },
+                outline: {
+                    default: 'none',
+                    hover: 'none',
+                    focus: 'none',
+                    error: 'none',
+                    disabled: 'none',
+                },
+                color: {
+                    default: FOUNDATION_THEME.colors.gray[800],
+                    hover: FOUNDATION_THEME.colors.gray[800],
+                    focus: FOUNDATION_THEME.colors.gray[800],
+                    error: FOUNDATION_THEME.colors.red[800],
+                    disabled: FOUNDATION_THEME.colors.gray[300],
+                },
+                backgroundColor: {
+                    default: FOUNDATION_THEME.colors.gray[0],
+                    disabled: FOUNDATION_THEME.colors.gray[50],
+                },
+                boxShadow: {
+                    default: FOUNDATION_THEME.shadows.sm,
+                    hover: FOUNDATION_THEME.shadows.sm,
+                    focus: FOUNDATION_THEME.shadows.focusPrimary,
+                    error: FOUNDATION_THEME.shadows.focusError,
+                    disabled: FOUNDATION_THEME.shadows.sm,
+                },
             },
-            paddingY: {
-                md: FOUNDATION_THEME.unit[8],
-                lg: FOUNDATION_THEME.unit[10],
-            },
-            border: {
-                default: `1px solid ${FOUNDATION_THEME.colors.green[500]}`,
-                hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
-                focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-                disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-            },
-            outline: {
-                default: 'none',
-                hover: 'none',
-                focus: 'none',
-                error: 'none',
-                disabled: 'none',
-            },
-            color: {
-                default: FOUNDATION_THEME.colors.gray[800],
-                hover: FOUNDATION_THEME.colors.gray[800],
-                focus: FOUNDATION_THEME.colors.gray[800],
-                error: FOUNDATION_THEME.colors.red[800],
-                disabled: FOUNDATION_THEME.colors.gray[300],
-            },
-            backgroundColor: {
-                default: FOUNDATION_THEME.colors.gray[0],
-                disabled: FOUNDATION_THEME.colors.gray[50],
-            },
-            boxShadow: {
-                default: FOUNDATION_THEME.shadows.sm,
-                hover: FOUNDATION_THEME.shadows.sm,
-                focus: FOUNDATION_THEME.shadows.focusPrimary,
-                error: FOUNDATION_THEME.shadows.focusError,
-                disabled: FOUNDATION_THEME.shadows.sm,
+        },
+        lg: {
+            input: {
+                gap: FOUNDATION_THEME.unit[8],
+                borderRadius: FOUNDATION_THEME.unit[10],
+                paddingX: {
+                    md: FOUNDATION_THEME.unit[12],
+                    lg: FOUNDATION_THEME.unit[14],
+                },
+                paddingY: {
+                    md: FOUNDATION_THEME.unit[8],
+                    lg: FOUNDATION_THEME.unit[10],
+                },
+                border: {
+                    default: `1px solid ${FOUNDATION_THEME.colors.green[500]}`,
+                    hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
+                    focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                    error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+                    disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                },
+                outline: {
+                    default: 'none',
+                    hover: 'none',
+                    focus: 'none',
+                    error: 'none',
+                    disabled: 'none',
+                },
+                color: {
+                    default: FOUNDATION_THEME.colors.gray[800],
+                    hover: FOUNDATION_THEME.colors.gray[800],
+                    focus: FOUNDATION_THEME.colors.gray[800],
+                    error: FOUNDATION_THEME.colors.red[800],
+                    disabled: FOUNDATION_THEME.colors.gray[300],
+                },
+                backgroundColor: {
+                    default: FOUNDATION_THEME.colors.gray[0],
+                    disabled: FOUNDATION_THEME.colors.gray[50],
+                },
+                boxShadow: {
+                    default: FOUNDATION_THEME.shadows.sm,
+                    hover: FOUNDATION_THEME.shadows.sm,
+                    focus: FOUNDATION_THEME.shadows.focusPrimary,
+                    error: FOUNDATION_THEME.shadows.focusError,
+                    disabled: FOUNDATION_THEME.shadows.sm,
+                },
             },
         },
     },
     TEXT_INPUT: {
-        input: {
-            gap: FOUNDATION_THEME.unit[8],
-            borderRadius: FOUNDATION_THEME.unit[10],
-            paddingX: {
-                md: FOUNDATION_THEME.unit[12],
-                lg: FOUNDATION_THEME.unit[14],
+        sm: {
+            input: {
+                gap: FOUNDATION_THEME.unit[8],
+                borderRadius: FOUNDATION_THEME.unit[10],
+                paddingX: {
+                    md: FOUNDATION_THEME.unit[12],
+                    lg: FOUNDATION_THEME.unit[14],
+                },
+                paddingY: {
+                    md: FOUNDATION_THEME.unit[8],
+                    lg: FOUNDATION_THEME.unit[10],
+                },
+                border: {
+                    default: `1px solid ${FOUNDATION_THEME.colors.red[200]}`,
+                    hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
+                    focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                    error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+                    disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                },
+                outline: {
+                    default: 'none',
+                    hover: 'none',
+                    focus: 'none',
+                    error: 'none',
+                    disabled: 'none',
+                },
+                color: {
+                    default: FOUNDATION_THEME.colors.gray[800],
+                    hover: FOUNDATION_THEME.colors.gray[800],
+                    focus: FOUNDATION_THEME.colors.gray[800],
+                    error: FOUNDATION_THEME.colors.red[800],
+                    disabled: FOUNDATION_THEME.colors.gray[300],
+                },
+                backgroundColor: {
+                    default: FOUNDATION_THEME.colors.gray[0],
+                    disabled: FOUNDATION_THEME.colors.gray[50],
+                    hover: FOUNDATION_THEME.colors.gray[0],
+                    focus: FOUNDATION_THEME.colors.gray[0],
+                    error: FOUNDATION_THEME.colors.gray[0],
+                },
+                boxShadow: {
+                    default: FOUNDATION_THEME.shadows.sm,
+                    hover: FOUNDATION_THEME.shadows.sm,
+                    focus: FOUNDATION_THEME.shadows.focusPrimary,
+                    error: FOUNDATION_THEME.shadows.focusError,
+                    disabled: FOUNDATION_THEME.shadows.sm,
+                },
             },
-            paddingY: {
-                md: FOUNDATION_THEME.unit[8],
-                lg: FOUNDATION_THEME.unit[10],
+        },
+        lg: {
+            input: {
+                gap: FOUNDATION_THEME.unit[8],
+                borderRadius: FOUNDATION_THEME.unit[10],
+                paddingX: {
+                    md: FOUNDATION_THEME.unit[12],
+                    lg: FOUNDATION_THEME.unit[14],
+                },
+                paddingY: {
+                    md: FOUNDATION_THEME.unit[8],
+                    lg: FOUNDATION_THEME.unit[10],
+                },
+                border: {
+                    default: `1px solid ${FOUNDATION_THEME.colors.red[200]}`,
+                    hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
+                    focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                    error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+                    disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                },
+                outline: {
+                    default: 'none',
+                    hover: 'none',
+                    focus: 'none',
+                    error: 'none',
+                    disabled: 'none',
+                },
+                color: {
+                    default: FOUNDATION_THEME.colors.gray[800],
+                    hover: FOUNDATION_THEME.colors.gray[800],
+                    focus: FOUNDATION_THEME.colors.gray[800],
+                    error: FOUNDATION_THEME.colors.red[800],
+                    disabled: FOUNDATION_THEME.colors.gray[300],
+                },
+                backgroundColor: {
+                    default: FOUNDATION_THEME.colors.gray[0],
+                    disabled: FOUNDATION_THEME.colors.gray[50],
+                    hover: FOUNDATION_THEME.colors.gray[0],
+                    focus: FOUNDATION_THEME.colors.gray[0],
+                    error: FOUNDATION_THEME.colors.gray[0],
+                },
+                boxShadow: {
+                    default: FOUNDATION_THEME.shadows.sm,
+                    hover: FOUNDATION_THEME.shadows.sm,
+                    focus: FOUNDATION_THEME.shadows.focusPrimary,
+                    error: FOUNDATION_THEME.shadows.focusError,
+                    disabled: FOUNDATION_THEME.shadows.sm,
+                },
             },
-            border: {
-                default: `1px solid ${FOUNDATION_THEME.colors.red[200]}`,
-                hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
-                focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-                disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+        },
+    },
+    TEXT_AREA: {
+        sm: {
+            fontFamily: 'InterDisplay',
+            paddingX: FOUNDATION_THEME.unit[14],
+            paddingY: FOUNDATION_THEME.unit[10],
+            borderRadius: FOUNDATION_THEME.unit[8],
+            boxShadow: {
+                default: FOUNDATION_THEME.shadows.sm,
+                hover: FOUNDATION_THEME.shadows.sm,
+                focus: FOUNDATION_THEME.shadows.focusPrimary,
+                error: FOUNDATION_THEME.shadows.focusError,
+                disabled: FOUNDATION_THEME.shadows.sm,
             },
             outline: {
                 default: 'none',
@@ -73,6 +215,13 @@ export const HDFC_COMPONENT_TOKENS: ComponentTokenType = {
                 focus: 'none',
                 error: 'none',
                 disabled: 'none',
+            },
+            border: {
+                default: `1px solid ${FOUNDATION_THEME.colors.green[200]}`,
+                hover: `1px solid ${FOUNDATION_THEME.colors.primary[400]}`,
+                focus: `1px solid ${FOUNDATION_THEME.colors.orange[500]}`,
+                error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+                disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
             },
             color: {
                 default: FOUNDATION_THEME.colors.gray[800],
@@ -83,11 +232,17 @@ export const HDFC_COMPONENT_TOKENS: ComponentTokenType = {
             },
             backgroundColor: {
                 default: FOUNDATION_THEME.colors.gray[0],
-                disabled: FOUNDATION_THEME.colors.gray[50],
                 hover: FOUNDATION_THEME.colors.gray[0],
                 focus: FOUNDATION_THEME.colors.gray[0],
                 error: FOUNDATION_THEME.colors.gray[0],
+                disabled: FOUNDATION_THEME.colors.gray[50],
             },
+        },
+        lg: {
+            fontFamily: 'InterDisplay',
+            paddingX: FOUNDATION_THEME.unit[14],
+            paddingY: FOUNDATION_THEME.unit[10],
+            borderRadius: FOUNDATION_THEME.unit[8],
             boxShadow: {
                 default: FOUNDATION_THEME.shadows.sm,
                 hover: FOUNDATION_THEME.shadows.sm,
@@ -95,47 +250,34 @@ export const HDFC_COMPONENT_TOKENS: ComponentTokenType = {
                 error: FOUNDATION_THEME.shadows.focusError,
                 disabled: FOUNDATION_THEME.shadows.sm,
             },
-        },
-    },
-    TEXT_AREA: {
-        fontFamily: 'InterDisplay',
-        paddingX: FOUNDATION_THEME.unit[14],
-        paddingY: FOUNDATION_THEME.unit[10],
-        borderRadius: FOUNDATION_THEME.unit[8],
-        boxShadow: {
-            default: FOUNDATION_THEME.shadows.sm,
-            hover: FOUNDATION_THEME.shadows.sm,
-            focus: FOUNDATION_THEME.shadows.focusPrimary,
-            error: FOUNDATION_THEME.shadows.focusError,
-            disabled: FOUNDATION_THEME.shadows.sm,
-        },
-        outline: {
-            default: 'none',
-            hover: 'none',
-            focus: 'none',
-            error: 'none',
-            disabled: 'none',
-        },
-        border: {
-            default: `1px solid ${FOUNDATION_THEME.colors.green[200]}`,
-            hover: `1px solid ${FOUNDATION_THEME.colors.primary[400]}`,
-            focus: `1px solid ${FOUNDATION_THEME.colors.orange[500]}`,
-            error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-            disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-        },
-        color: {
-            default: FOUNDATION_THEME.colors.gray[800],
-            hover: FOUNDATION_THEME.colors.gray[800],
-            focus: FOUNDATION_THEME.colors.gray[800],
-            error: FOUNDATION_THEME.colors.red[800],
-            disabled: FOUNDATION_THEME.colors.gray[300],
-        },
-        backgroundColor: {
-            default: FOUNDATION_THEME.colors.gray[0],
-            hover: FOUNDATION_THEME.colors.gray[0],
-            focus: FOUNDATION_THEME.colors.gray[0],
-            error: FOUNDATION_THEME.colors.gray[0],
-            disabled: FOUNDATION_THEME.colors.gray[50],
+            outline: {
+                default: 'none',
+                hover: 'none',
+                focus: 'none',
+                error: 'none',
+                disabled: 'none',
+            },
+            border: {
+                default: `1px solid ${FOUNDATION_THEME.colors.green[200]}`,
+                hover: `1px solid ${FOUNDATION_THEME.colors.primary[400]}`,
+                focus: `1px solid ${FOUNDATION_THEME.colors.orange[500]}`,
+                error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+                disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+            },
+            color: {
+                default: FOUNDATION_THEME.colors.gray[800],
+                hover: FOUNDATION_THEME.colors.gray[800],
+                focus: FOUNDATION_THEME.colors.gray[800],
+                error: FOUNDATION_THEME.colors.red[800],
+                disabled: FOUNDATION_THEME.colors.gray[300],
+            },
+            backgroundColor: {
+                default: FOUNDATION_THEME.colors.gray[0],
+                hover: FOUNDATION_THEME.colors.gray[0],
+                focus: FOUNDATION_THEME.colors.gray[0],
+                error: FOUNDATION_THEME.colors.gray[0],
+                disabled: FOUNDATION_THEME.colors.gray[50],
+            },
         },
     },
     SEARCH_INPUT: {
