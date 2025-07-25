@@ -49,6 +49,7 @@ export type MultiSelectMenuGroupType = {
 
 // Multi Select Component Props
 export type MultiSelectProps = {
+    height?: number
     selectedValues: string[]
     onChange: (selectedValue: string) => void
     items: MultiSelectMenuGroupType[]

@@ -4,8 +4,8 @@ import { type MultiSelectMenuItemType } from './types'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { Checkbox } from '../Checkbox'
 import MultiSelectSubMenu from './MultiSelectSubMenu'
-import { useComponentToken } from '../../context/useComponentToken'
 import { type MultiSelectTokensType } from './multiSelect.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const MenuItemSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -24,9 +24,9 @@ const MultiSelectMenuItem = ({
     onSelect: (value: string) => void
     selected: string[]
 }) => {
-    const multiSelectTokens = useComponentToken(
-        'MULTI_SELECT'
-    ) as MultiSelectTokensType
+    const multiSelectTokens =
+        useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
+
     if (item.subMenu) {
         return (
             <MultiSelectSubMenu

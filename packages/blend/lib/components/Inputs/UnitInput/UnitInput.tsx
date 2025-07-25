@@ -20,7 +20,7 @@ const UnitInput = ({
     min,
     max,
     step,
-    error = true,
+    error = false,
     errorMessage,
     required,
     disabled,

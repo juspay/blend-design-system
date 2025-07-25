@@ -13,10 +13,10 @@ import {
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import MultiSelectMenuItem from './MultiSelectMenuItem'
 import { type MultiSelectTokensType } from './multiSelect.tokens'
-import { useComponentToken } from '../../context/useComponentToken'
 import { SearchInput } from '../Inputs'
 import { filterMenuGroups, getAllAvailableValues } from './utils'
 import SelectAllItem from './SelectAllItem'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const Content = styled(RadixMenu.Content)(() => ({
     position: 'relative',
@@ -52,9 +52,8 @@ const MultiSelectMenu = ({
     open,
     onOpenChange,
 }: MultiSelectMenuProps) => {
-    const multiSelectTokens = useComponentToken(
-        'MULTI_SELECT'
-    ) as MultiSelectTokensType
+    const multiSelectTokens =
+        useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
 
     const [searchText, setSearchText] = useState('')
     const filteredItems = filterMenuGroups(items, searchText)
