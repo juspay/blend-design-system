@@ -4,7 +4,7 @@ export enum NumberInputSize {
 }
 
 export type NumberInputProps = {
-    value: number
+    value: number | undefined
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     step?: number
     error?: boolean
@@ -14,7 +14,9 @@ export type NumberInputProps = {
     sublabel?: string
     helpIconHintText?: string
     hintText?: string
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
+    onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'style' | 'className' | 'value'
+    'size' | 'style' | 'className' | 'value' | 'onBlur' | 'onFocus'
 >

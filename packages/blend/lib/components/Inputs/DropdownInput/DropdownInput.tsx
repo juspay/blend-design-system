@@ -16,7 +16,11 @@ import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import Text from '../../Text/Text'
 import type { DropdownInputProps } from './types'
 import type { DropdownInputTokensType } from './dropdownInput.tokens'
-import { useComponentToken } from '../../../context/useComponentToken'
+import { toPixels } from '../../../global-utils/GlobalUtils'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
+import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 
 const map = function getValueLabelMap(
     groups: SelectMenuGroupType[]
@@ -37,20 +41,6 @@ const map = function getValueLabelMap(
     }
 
     return map
-}
-
-const toPixels = (value: string | number | undefined): number => {
-    if (typeof value === 'number') {
-        return value
-    }
-
-    if (typeof value === 'string') {
-        // Remove 'px' and convert to number
-        const numericValue = parseFloat(value.replace('px', ''))
-        return isNaN(numericValue) ? 0 : numericValue
-    }
-
-    return 0
 }
 
 const DropdownInput = ({
@@ -74,17 +64,38 @@ const DropdownInput = ({
     dropdownName,
     onDropdownOpen,
     onDropdownClose,
+    onBlur,
+    onFocus,
     ...rest
 }: DropdownInputProps) => {
-    const dropdownInputTokens = useComponentToken(
-        'DROPDOWN_INPUT'
-    ) as DropdownInputTokensType
+    const dropdownInputTokens =
+        useResponsiveTokens<DropdownInputTokensType>('DROPDOWN_INPUT')
+
+    const [isFocused, setIsFocused] = useState(false)
+    const [slotWidth, setSlotWidth] = useState<number>(0)
+    const [dropdownWidth, setDropdownWidth] = useState<number>(0)
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakPointLabel === 'sm'
+
+    const inputFocusedOrWithValue =
+        isFocused || (value !== undefined && value.length > 0)
+
+    const isSmallScreenWithLargeSize =
+        isSmallScreen && size === TextInputSize.LARGE
+
     const slotRef = useRef<HTMLDivElement>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
     const valueLabelMap = map(dropDownItems)
 
-    const [slotWidth, setSlotWidth] = useState<number>(0)
-    const [dropdownWidth, setDropdownWidth] = useState<number>(0)
+    const paddingX = toPixels(dropdownInputTokens.input.paddingX[size])
+    const paddingY =
+        toPixels(dropdownInputTokens.input.paddingY[size]) +
+        (isSmallScreenWithLargeSize ? 0.5 : 0)
+    const GAP = toPixels(dropdownInputTokens.input.gap)
+
+    const paddingInlineStart = paddingX + (slotWidth ? slotWidth + GAP : 0)
+    const paddingInlineEnd =
+        paddingX + (dropdownWidth ? dropdownWidth + 2 * GAP : 0)
 
     useEffect(() => {
         if (slotRef.current) {
@@ -100,24 +111,18 @@ const DropdownInput = ({
         }
     }, [slot, dropDownValue])
 
-    const paddingX = toPixels(dropdownInputTokens.input.paddingX[size])
-    const paddingY = toPixels(dropdownInputTokens.input.paddingY[size])
-    const GAP = toPixels(dropdownInputTokens.input.gap)
-
-    const paddingInlineStart = paddingX + (slotWidth ? slotWidth + GAP : 0)
-    const paddingInlineEnd =
-        paddingX + (dropdownWidth ? dropdownWidth + 2 * GAP : 0)
-
     return (
         <Block display="flex" flexDirection="column" gap={8} width={'100%'}>
-            <InputLabels
-                label={label}
-                sublabel={sublabel}
-                disabled={disabled}
-                helpIconHintText={helpIconHintText}
-                name={name}
-                required={required}
-            />
+            {(!isSmallScreen || size !== TextInputSize.LARGE) && (
+                <InputLabels
+                    label={label}
+                    sublabel={sublabel}
+                    disabled={disabled}
+                    helpIconHintText={helpIconHintText}
+                    name={name}
+                    required={required}
+                />
+            )}
             <Block position="relative" width={'100%'}>
                 {slot && (
                     <Block
@@ -131,6 +136,36 @@ const DropdownInput = ({
                         {slot}
                     </Block>
                 )}
+
+                {label && isSmallScreenWithLargeSize && (
+                    <Block
+                        position="absolute"
+                        top={
+                            inputFocusedOrWithValue
+                                ? toPixels(paddingY - paddingY / 1.3)
+                                : '50%'
+                        }
+                        left={toPixels(paddingInlineStart)}
+                        height={'max-content'}
+                        style={{
+                            transition: 'all 0.2s ease-in-out',
+                            transform: inputFocusedOrWithValue
+                                ? 'scale(0.95)'
+                                : 'translateY(-50%) scale(1)',
+                            transformOrigin: 'left center',
+                            pointerEvents: 'none',
+                            zIndex: 1,
+                        }}
+                    >
+                        <FloatingLabels
+                            label={label}
+                            required={required || false}
+                            name={name || ''}
+                            isFocused={inputFocusedOrWithValue}
+                        />
+                    </Block>
+                )}
+
                 <PrimitiveInput
                     required={required}
                     value={value}
@@ -139,9 +174,17 @@ const DropdownInput = ({
                     onChange={onChange}
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
-                    paddingTop={paddingY}
-                    paddingBottom={paddingY}
-                    placeholder={placeholder}
+                    paddingTop={
+                        isSmallScreenWithLargeSize && inputFocusedOrWithValue
+                            ? paddingY * 1.5
+                            : paddingY
+                    }
+                    paddingBottom={
+                        isSmallScreenWithLargeSize && inputFocusedOrWithValue
+                            ? paddingY / 2
+                            : paddingY
+                    }
+                    placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
                     borderRadius={dropdownInputTokens.input.borderRadius}
                     boxShadow={dropdownInputTokens.input.boxShadow.default}
                     border={
@@ -149,6 +192,8 @@ const DropdownInput = ({
                             ? dropdownInputTokens.input.border.error
                             : dropdownInputTokens.input.border.default
                     }
+                    fontSize={'14px'}
+                    fontWeight={500}
                     outline="none"
                     width={'100%'}
                     _hover={{
@@ -177,6 +222,14 @@ const DropdownInput = ({
                             dropdownInputTokens.input.backgroundColor.disabled,
                         border: dropdownInputTokens.input.border.disabled,
                         cursor: 'not-allowed',
+                    }}
+                    onFocus={(e) => {
+                        setIsFocused(true)
+                        onFocus?.(e)
+                    }}
+                    onBlur={(e) => {
+                        setIsFocused(false)
+                        onBlur?.(e)
                     }}
                     {...rest}
                 />

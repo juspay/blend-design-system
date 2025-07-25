@@ -10,7 +10,7 @@ import {
 } from '../components/Inputs/SearchInput/searchInput.tokens'
 import {
     getTextAreaTokens,
-    type TextAreaTokensType,
+    type ResponsiveTextAreaTokens,
 } from '../components/Inputs/TextArea/textarea.token'
 import {
     type ResponsiveRadioTokens,
@@ -22,11 +22,11 @@ import {
 } from '../components/Switch/switch.token'
 import {
     getTextInputTokens,
-    type TextInputTokensType,
+    type ResponsiveTextInputTokens,
 } from '../components/Inputs/TextInput/textInput.tokens'
 import {
     getNumberInputTokens,
-    type NumberInputTokensType,
+    type ResponsiveNumberInputTokens,
 } from '../components/Inputs/NumberInput/numberInput.tokens'
 import {
     getAlertTokens,
@@ -42,7 +42,7 @@ import {
 } from '../components/Tooltip/tooltip.tokens'
 import {
     getUnitInputTokens,
-    type UnitInputTokensType,
+    type ResponsiveUnitInputTokens,
 } from '../components/Inputs/UnitInput/unitInput.tokens'
 import {
     getMultiValueInputTokens,
@@ -50,7 +50,7 @@ import {
 } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import {
     getDropdownInputTokens,
-    type DropdownInputTokensType,
+    type ResponsiveDropdownInputTokens,
 } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import {
     getCheckboxTokens,
@@ -112,17 +112,17 @@ import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: SearchInputTokensType
-    TEXT_AREA?: TextAreaTokensType
+    TEXT_AREA?: ResponsiveTextAreaTokens
     RADIO?: ResponsiveRadioTokens
     SWITCH?: ResponsiveSwitchTokens
-    TEXT_INPUT?: TextInputTokensType
-    NUMBER_INPUT?: NumberInputTokensType
+    TEXT_INPUT?: ResponsiveTextInputTokens
+    NUMBER_INPUT?: ResponsiveNumberInputTokens
     ALERT?: ResponsiveAlertTokens
     OTP_INPUT?: OTPInputTokensType
     TOOLTIP?: TooltipTokensType
-    UNIT_INPUT?: UnitInputTokensType
+    UNIT_INPUT?: ResponsiveUnitInputTokens
     MULTI_VALUE_INPUT?: MultiValueInputTokensType
-    DROPDOWN_INPUT?: DropdownInputTokensType
+    DROPDOWN_INPUT?: ResponsiveDropdownInputTokens
     CHECKBOX?: ResponsiveCheckboxTokens
     TABS?: TabsTokensType
     BUTTON?: ResponsiveButtonTokens

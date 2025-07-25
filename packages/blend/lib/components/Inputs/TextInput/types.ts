@@ -23,7 +23,9 @@ export type TextInputProps = {
     rightSlot?: React.ReactNode
     value: string
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
+    onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'style' | 'className'
+    'size' | 'style' | 'className' | 'onBlur' | 'onFocus'
 >
