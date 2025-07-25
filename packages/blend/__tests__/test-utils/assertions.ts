@@ -155,7 +155,7 @@ export function assertIcon(
  */
 export function assertButtonVariant(
     button: HTMLElement,
-     
+
     _variant: {
         type?: string
         size?: string
