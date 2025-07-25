@@ -153,15 +153,7 @@ export function assertIcon(
  * Note: This checks for the presence of the element, actual styling
  * should be verified through visual regression tests
  */
-export function assertButtonVariant(
-    button: HTMLElement,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _variant: {
-        type?: string
-        size?: string
-        subType?: string
-    }
-) {
+export function assertButtonVariant(button: HTMLElement) {
     expect(button).toBeInTheDocument()
 
     // Additional checks can be added here for computed styles

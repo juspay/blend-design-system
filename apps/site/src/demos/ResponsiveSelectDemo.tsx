@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { MultiSelect } from '../../../../packages/blend/lib/components/MultiSelect'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Star } from 'lucide-react'
+import { MultiSelectMenuSize } from '@juspay/blend-design-system'
 
 // Sample data for the selects
 const countryOptions = [
@@ -193,6 +194,7 @@ export const ResponsiveSelectDemo = () => {
                     selectedValues={selectedSkills}
                     onChange={handleSkillChange}
                     hintText="Select all technologies you're proficient in"
+                    size={MultiSelectMenuSize.LARGE}
                 />
 
                 <SingleSelect
