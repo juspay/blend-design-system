@@ -57,6 +57,7 @@ export const Radio = ({
                     required={required}
                     onChange={handleChange}
                     data-state={getRadioDataState(currentChecked)}
+                    aria-checked={currentChecked}
                     size={size}
                     $isDisabled={disabled}
                     $isChecked={currentChecked}

@@ -22,5 +22,5 @@ export type TextAreaProps = {
     wrap?: CSSObject['whiteSpace']
 } & Omit<
     React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-    'size' | 'style' | 'className'
+    'size' | 'style' | 'className' | 'onFocus' | 'onBlur'
 >

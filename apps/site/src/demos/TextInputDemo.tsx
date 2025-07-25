@@ -7,7 +7,7 @@ import { Search, Eye, EyeOff, User, Mail, Lock, Phone } from 'lucide-react'
 import { useState } from 'react'
 
 const InputDemo = () => {
-    const [playgroundText, setPlaygroundText] = useState('Playground Input')
+    const [playgroundText, setPlaygroundText] = useState('Your Label')
     const [playgroundSize, setPlaygroundSize] = useState<TextInputSize>(
         TextInputSize.MEDIUM
     )
@@ -125,7 +125,7 @@ const InputDemo = () => {
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
                         <div className="w-full max-w-md">
                             <TextInput
-                                label="Playground Input"
+                                label={playgroundText}
                                 value={playgroundValue}
                                 onChange={(e) =>
                                     setPlaygroundValue(e.target.value)
