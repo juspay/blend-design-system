@@ -43,6 +43,13 @@ export default function ThemeToggle() {
         applyTheme(newTheme)
     }
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            toggleTheme()
+        }
+    }
+
     if (!mounted) {
         return (
             <button className="p-2 rounded-md border border-[var(--border)] bg-[var(--background)] opacity-50">
@@ -54,6 +61,7 @@ export default function ThemeToggle() {
     return (
         <button
             onClick={toggleTheme}
+            onKeyDown={handleKeyDown}
             className="p-2 rounded-md border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--sidebar-item-hover)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2"
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >

@@ -8,6 +8,7 @@ import SearchProvider from '../components/SearchProvider'
 import ThemeToggle from '../components/ThemeToggle'
 import { GlobalKeyboardNavigationProvider } from '../components/GlobalKeyboardNavigation'
 import KeyboardNavigationHelp from '../components/KeyboardNavigationHelp'
+import FloatingShortcutsButton from '../components/FloatingShortcutsButton'
 
 const layout = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -22,10 +23,10 @@ const layout = ({ children }: { children: React.ReactNode }) => {
                         </div>
                         <Link
                             href="/"
-                            className="flex items-center font-semibold text-lg dark:text-white hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+                            className="flex items-center font-semibold text-lg text-[var(--foreground)] hover:text-[var(--muted-foreground)] transition-colors"
                             data-nav-topbar
                         >
-                            <span className="dark:!text-white">Blend Docs</span>
+                            <span>Blend Docs</span>
                         </Link>
                     </div>
 
@@ -79,6 +80,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
                     </div>
                 </div>
                 <KeyboardNavigationHelp />
+                <FloatingShortcutsButton />
             </main>
         </GlobalKeyboardNavigationProvider>
     )

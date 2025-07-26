@@ -171,9 +171,22 @@ export const GlobalKeyboardNavigationProvider = ({
 
         switch (zone) {
             case NavigationZone.TOPBAR:
-                elements = Array.from(
+                // Get topbar wrapper elements
+                const topbarWrappers = Array.from(
                     document.querySelectorAll('[data-nav-topbar]')
                 ) as HTMLElement[]
+
+                // For each wrapper, find the actual interactive element inside
+                elements = topbarWrappers
+                    .map((wrapper) => {
+                        // Look for button, link, or other interactive element inside
+                        const interactiveElement = wrapper.querySelector(
+                            'button, a, input, [role="button"]'
+                        ) as HTMLElement
+                        // If found, return the interactive element, otherwise return the wrapper itself
+                        return interactiveElement || wrapper
+                    })
+                    .filter(Boolean)
                 break
 
             case NavigationZone.SIDEBAR:
@@ -364,35 +377,36 @@ export const GlobalKeyboardNavigationProvider = ({
                     setFocusedElement(nextElement)
                 }
             } else if ((e.key === 'Enter' || e.key === ' ') && focusedElement) {
-                e.preventDefault()
+                // First, try to let the element handle its own keyboard event
+                const keyEvent = new KeyboardEvent('keydown', {
+                    key: e.key,
+                    bubbles: true,
+                    cancelable: true,
+                })
 
-                // Handle different types of elements
-                if (focusedElement.tagName === 'A') {
-                    focusedElement.click()
-                } else if (focusedElement.tagName === 'BUTTON') {
-                    focusedElement.click()
-                } else if (focusedElement.hasAttribute('data-sidebar-item')) {
-                    const path =
-                        focusedElement.getAttribute('data-sidebar-item')
-                    if (path) {
-                        router.push(`/docs/${path}`)
-                    }
-                } else if (focusedElement.hasAttribute('data-nav-content')) {
-                    // Check if it's a tooltip trigger
-                    if (
-                        focusedElement.hasAttribute(
-                            'data-radix-tooltip-trigger'
-                        ) ||
-                        focusedElement.closest('[data-radix-tooltip-trigger]')
+                // Dispatch the event to the focused element first
+                const eventHandled = !focusedElement.dispatchEvent(keyEvent)
+
+                // If the event was not handled by the element, handle it globally
+                if (!eventHandled) {
+                    e.preventDefault()
+
+                    // Handle different types of elements
+                    if (focusedElement.tagName === 'A') {
+                        focusedElement.click()
+                    } else if (focusedElement.tagName === 'BUTTON') {
+                        focusedElement.click()
+                    } else if (
+                        focusedElement.hasAttribute('data-sidebar-item')
                     ) {
-                        // Trigger keyboard event for tooltip
-                        const keyEvent = new KeyboardEvent('keydown', {
-                            key: e.key,
-                            bubbles: true,
-                            cancelable: true,
-                        })
-                        focusedElement.dispatchEvent(keyEvent)
-                    } else {
+                        const path =
+                            focusedElement.getAttribute('data-sidebar-item')
+                        if (path) {
+                            router.push(`/docs/${path}`)
+                        }
+                    } else if (
+                        focusedElement.hasAttribute('data-nav-content')
+                    ) {
                         // Handle regular navigation
                         const href = focusedElement.getAttribute('href')
                         if (href) {

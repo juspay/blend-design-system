@@ -221,6 +221,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchIndex }) => {
         setQuery('')
     }
 
+    const handleSearchTriggerKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            setIsOpen(true)
+        }
+    }
+
     return (
         <div className="relative">
             <button
@@ -231,6 +238,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchIndex }) => {
                 aria-expanded="false"
                 data-state="closed"
                 onClick={() => setIsOpen(true)}
+                onKeyDown={handleSearchTriggerKeyDown}
             >
                 <svg
                     width="16"

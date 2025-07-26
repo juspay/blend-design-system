@@ -21,12 +21,12 @@ const TableHeader = () => {
     const columns = ['Prop Name', 'Type', 'Default']
 
     return (
-        <thead className="bg-gray-50 dark:bg-[var(--code-background)] border-b-1 border-[var(--code-border)]">
+        <thead className="bg-[var(--muted)] dark:bg-[var(--code-background)] border-b border-[var(--code-border)]">
             <tr>
                 {columns.map((column, index) => (
                     <th
                         key={index}
-                        className={`px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[var(--muted-foreground)] uppercase tracking-wider ${
+                        className={`px-6 py-3 text-left text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider ${
                             index === 2 ? 'hidden md:table-cell' : ''
                         }`}
                     >
@@ -40,16 +40,19 @@ const TableHeader = () => {
 
 const TableBody = ({ data }: { data: TableCell[][] }) => {
     return (
-        <tbody className="bg-[var(--code-background)] dark:bg-neutral-950 divide-y divide-[var(--code-border)] ">
+        <tbody className="bg-[var(--background)] dark:bg-[var(--code-background)] divide-y divide-[var(--code-border)]">
             {data.map((row, rowIndex) => (
-                <tr key={rowIndex}>
+                <tr
+                    key={rowIndex}
+                    className="hover:bg-[var(--muted)] dark:hover:bg-[var(--code-highlight)]"
+                >
                     {row.map((cell, cellIndex) => {
                         const hasTooltip = cell.hintText !== undefined
 
                         return (
                             <td
                                 key={`${rowIndex}-${cellIndex}`}
-                                className={`py-4 text-sm ${
+                                className={`py-4 text-sm text-[var(--foreground)] ${
                                     cellIndex === 2
                                         ? 'hidden md:table-cell'
                                         : ''
@@ -88,9 +91,9 @@ const DocsTypeTable = ({
     if (isLoading) {
         return (
             <div
-                className={`w-full overflow-hidden border border-[var(--code-border)] rounded-lg ${className}`}
+                className={`w-full overflow-hidden border border-[var(--code-border)] rounded-lg bg-[var(--background)] ${className}`}
             >
-                <div className="p-6 text-center text-gray-500">
+                <div className="p-6 text-center text-[var(--muted-foreground)]">
                     {loadingMessage}
                 </div>
             </div>
@@ -100,9 +103,9 @@ const DocsTypeTable = ({
     if (data.length === 0) {
         return (
             <div
-                className={`w-full overflow-hidden border border-[var(--code-border)] rounded-lg ${className}`}
+                className={`w-full overflow-hidden border border-[var(--code-border)] rounded-lg bg-[var(--background)] ${className}`}
             >
-                <div className="p-6 text-center text-gray-500">
+                <div className="p-6 text-center text-[var(--muted-foreground)]">
                     {emptyMessage}
                 </div>
             </div>

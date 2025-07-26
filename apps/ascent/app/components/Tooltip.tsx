@@ -51,7 +51,7 @@ const Tooltip = ({
                     alignOffset={alignOffset}
                     className={
                         typeof content === 'string'
-                            ? 'bg-black dark:bg-white text-white dark:text-black rounded-xl py-1 px-3 shadow-md max-w-60 md:max-w-100'
+                            ? 'bg-black text-white dark:bg-white dark:text-black rounded-xl py-1 px-3 shadow-md max-w-60 md:max-w-100 z-50'
                             : ''
                     }
                 >
