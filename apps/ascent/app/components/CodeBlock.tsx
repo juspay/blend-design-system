@@ -30,6 +30,10 @@ const CodeBlock = ({ code, props }: { code: React.ReactNode; props: any }) => {
                     transition={{ duration: 0.2 }}
                     className="absolute top-3 right-1 p-1 flex items-center justify-center text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md cursor-pointer hover:text-gray-500 z-10"
                     onClick={copyToClipboard}
+                    data-nav-content
+                    aria-label={
+                        isCopied ? 'Code copied' : 'Copy code to clipboard'
+                    }
                 >
                     {isCopied ? (
                         <Check

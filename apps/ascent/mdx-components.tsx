@@ -132,14 +132,24 @@ const components = {
             'text-blue-500 hover:text-blue-700 dark:text-gray-400 hover:dark:text-gray-300 dark:underline dark:underline-offset-2 dark:decoration-gray-800'
         if (href?.startsWith('/')) {
             return (
-                <Link href={href} className={className} {...props}>
+                <Link
+                    href={href}
+                    className={className}
+                    data-nav-content
+                    {...props}
+                >
                     {children}
                 </Link>
             )
         }
         if (href?.startsWith('#')) {
             return (
-                <a href={href} className={className} {...props}>
+                <a
+                    href={href}
+                    className={className}
+                    data-nav-content
+                    {...props}
+                >
                     {children}
                 </a>
             )
@@ -150,6 +160,7 @@ const components = {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={className}
+                data-nav-content
                 {...props}
             >
                 {children}

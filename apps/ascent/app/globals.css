@@ -3,7 +3,7 @@
 :root {
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
-    --navbar-height: 48px;
+    --navbar-height: 56px;
 
     --primary: oklch(0.205 0 0);
     --primary-foreground: oklch(0.985 0 0);
@@ -12,6 +12,25 @@
     --muted: oklch(0.97 0 0);
     --muted-foreground: oklch(0.556 0 0);
     --surface: oklch(0.98 0 0);
+
+    /* Enhanced sidebar and navigation tokens */
+    --sidebar-background: oklch(0.995 0 0);
+    --sidebar-border: oklch(0.94 0 0);
+    --sidebar-item-hover: oklch(0.96 0 0);
+    --sidebar-item-active: oklch(0.92 0 0);
+    --sidebar-section-text: oklch(0.45 0 0);
+
+    /* Accent colors */
+    --accent: oklch(0.55 0.15 250);
+    --accent-foreground: oklch(0.98 0 0);
+    --accent-muted: oklch(0.85 0.08 250);
+
+    /* Border and shadow tokens */
+    --border: oklch(0.92 0 0);
+    --border-muted: oklch(0.96 0 0);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md:
+        0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
     --code: var(--surface);
     --code-foreground: var(--surface-foreground);
@@ -52,6 +71,25 @@
         --muted-foreground: oklch(0.708 0 0);
         --surface: oklch(0.2 0 0);
 
+        /* Enhanced dark mode sidebar and navigation tokens */
+        --sidebar-background: oklch(0.16 0 0);
+        --sidebar-border: oklch(0.25 0 0);
+        --sidebar-item-hover: oklch(0.22 0 0);
+        --sidebar-item-active: oklch(0.28 0 0);
+        --sidebar-section-text: oklch(0.65 0 0);
+
+        /* Dark mode accent colors */
+        --accent: oklch(0.65 0.15 250);
+        --accent-foreground: oklch(0.98 0 0);
+        --accent-muted: oklch(0.35 0.08 250);
+
+        /* Dark mode border and shadow tokens */
+        --border: oklch(0.25 0 0);
+        --border-muted: oklch(0.22 0 0);
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+        --shadow-md:
+            0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+
         --code: var(--surface);
         --code-foreground: var(--surface-foreground);
         --code-highlight: oklch(0.27 0 0);
@@ -70,6 +108,108 @@
         --code-background: #161616;
         --code-border: #262626;
     }
+}
+
+/* Class-based light mode support */
+.light {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --surface: oklch(0.98 0 0);
+
+    /* Enhanced light mode sidebar and navigation tokens */
+    --sidebar-background: oklch(0.995 0 0);
+    --sidebar-border: oklch(0.94 0 0);
+    --sidebar-item-hover: oklch(0.96 0 0);
+    --sidebar-item-active: oklch(0.92 0 0);
+    --sidebar-section-text: oklch(0.45 0 0);
+
+    /* Light mode accent colors */
+    --accent: oklch(0.55 0.15 250);
+    --accent-foreground: oklch(0.98 0 0);
+    --accent-muted: oklch(0.85 0.08 250);
+
+    /* Light mode border and shadow tokens */
+    --border: oklch(0.92 0 0);
+    --border-muted: oklch(0.96 0 0);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md:
+        0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+    --code: var(--surface);
+    --code-foreground: var(--surface-foreground);
+    --code-highlight: oklch(0.96 0 0);
+    --code-number: oklch(0.56 0 0);
+
+    --sh-class: #144f9e;
+    --sh-identifier: #b01b1b;
+    --sh-sign: #465462;
+    --sh-property: #0550ae;
+    --sh-entity: #1a6e6b;
+    --sh-jsxliterals: #3438b4;
+    --sh-string: #00766c;
+    --sh-keyword: #f53527;
+    --sh-comment: #a19595;
+    --sh-background: #f6f8fa;
+    --code-background: #fefefe;
+    --code-border: #e0e0e0;
+}
+
+/* Class-based dark mode support */
+.dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --surface: oklch(0.2 0 0);
+
+    /* Enhanced dark mode sidebar and navigation tokens */
+    --sidebar-background: oklch(0.16 0 0);
+    --sidebar-border: oklch(0.25 0 0);
+    --sidebar-item-hover: oklch(0.22 0 0);
+    --sidebar-item-active: oklch(0.28 0 0);
+    --sidebar-section-text: oklch(0.65 0 0);
+
+    /* Dark mode accent colors */
+    --accent: oklch(0.65 0.15 250);
+    --accent-foreground: oklch(0.98 0 0);
+    --accent-muted: oklch(0.35 0.08 250);
+
+    /* Dark mode border and shadow tokens */
+    --border: oklch(0.25 0 0);
+    --border-muted: oklch(0.22 0 0);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md:
+        0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+
+    --code: var(--surface);
+    --code-foreground: var(--surface-foreground);
+    --code-highlight: oklch(0.27 0 0);
+    --code-number: oklch(0.72 0 0);
+
+    --sh-class: #78bced;
+    --sh-identifier: #76a4ef;
+    --sh-sign: #8996a3;
+    --sh-property: #4dc4ff;
+    --sh-entity: #34edb1;
+    --sh-jsxliterals: #8790eb;
+    --sh-string: #3ac9b0;
+    --sh-keyword: #ff7b72;
+    --sh-comment: #8b949e;
+    --sh-background: #0d1117;
+    --code-background: #161616;
+    --code-border: #262626;
 }
 
 body {
@@ -157,4 +297,121 @@ button {
 
 button:disabled {
     cursor: not-allowed;
+}
+
+/* Remove default browser focus outlines across the app */
+*:focus {
+    outline: none;
+}
+
+*:focus-visible {
+    outline: none;
+}
+
+/* Remove focus outlines for all interactive elements */
+button:focus,
+a:focus,
+input:focus,
+textarea:focus,
+select:focus,
+[tabindex]:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Remove focus outlines for form elements */
+input[type='text']:focus,
+input[type='email']:focus,
+input[type='password']:focus,
+input[type='search']:focus,
+input[type='url']:focus,
+input[type='tel']:focus,
+input[type='number']:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Remove focus outlines for custom components */
+[role='button']:focus,
+[role='link']:focus,
+[role='tab']:focus,
+[role='menuitem']:focus {
+    outline: none;
+}
+
+/* Keyboard navigation focus indicators - using hover states */
+.keyboard-focused {
+    /* Apply hover state styling instead of blue border */
+    background-color: var(--sidebar-item-hover) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Specific hover state styling for different element types */
+.keyboard-focused[data-sidebar-item] {
+    background-color: var(--sidebar-item-hover) !important;
+}
+
+.keyboard-focused button {
+    /* Use existing button hover styles */
+    opacity: 0.8 !important;
+    transform: translateY(-1px) !important;
+}
+
+.keyboard-focused a {
+    /* Use existing link hover styles */
+    opacity: 0.8 !important;
+}
+
+/* Active navigation zone indicator - more subtle */
+.active-nav-zone {
+    position: relative;
+}
+
+.active-nav-zone::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Keyboard navigation help indicator */
+.keyboard-nav-help {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--muted-foreground);
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.keyboard-nav-help.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.keyboard-nav-help kbd {
+    background: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    margin: 0 2px;
 }

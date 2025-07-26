@@ -37,22 +37,34 @@ const SearchProvider: React.FC = () => {
     if (isLoading) {
         return (
             <button
-                data-slot="dialog-trigger"
-                className="inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm transition-all disabled:pointer-events-none disabled:opacity-50 shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-secondary/80 px-4 py-2 bg-zinc-100 relative h-8 w-full justify-start pl-2.5 font-normal shadow-none sm:pr-12 md:w-40 lg:w-56 xl:w-64 cursor-pointer"
+                className="inline-flex items-center gap-3 w-full h-9 px-3 py-2 bg-[var(--sidebar-background)] border border-[var(--border)] rounded-lg text-sm text-[var(--muted-foreground)] hover:bg-[var(--sidebar-item-hover)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 cursor-pointer"
                 type="button"
                 aria-haspopup="dialog"
                 aria-expanded="false"
                 data-state="closed"
             >
-                <span className="hidden lg:inline-flex">
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-[var(--muted-foreground)]"
+                >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35" />
+                </svg>
+                <span className="flex-1 text-left">
                     Search documentation...
                 </span>
-                <span className="inline-flex lg:hidden">Search...</span>
-                <div className="absolute top-1.5 right-1.5 hidden gap-1 sm:flex">
-                    <kbd className="bg-[var(--background)] text-muted-foreground pointer-events-none flex h-5 items-center justify-center gap-1 rounded border border-[var(--code-border) ] px-1 font-sans text-[0.7rem] font-medium select-none">
+                <div className="hidden sm:flex gap-1">
+                    <kbd className="bg-[var(--background)] text-[var(--muted-foreground)] pointer-events-none flex h-5 items-center justify-center gap-1 rounded border border-[var(--border)] px-1.5 font-sans text-[0.7rem] font-medium select-none">
                         ⌘
                     </kbd>
-                    <kbd className="bg-[var(--background)] text-muted-foreground pointer-events-none flex h-5 items-center justify-center gap-1 rounded border border-[var(--code-border)] px-1 font-sans text-[0.7rem] font-medium select-none">
+                    <kbd className="bg-[var(--background)] text-[var(--muted-foreground)] pointer-events-none flex h-5 items-center justify-center gap-1 rounded border border-[var(--border)] px-1.5 font-sans text-[0.7rem] font-medium select-none">
                         K
                     </kbd>
                 </div>
@@ -62,13 +74,27 @@ const SearchProvider: React.FC = () => {
 
     if (error) {
         return (
-            <div className="relative max-w-md">
+            <div className="relative w-full">
                 <div className="relative">
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--muted-foreground)]"
+                    >
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
                     <input
                         type="text"
                         placeholder="Search unavailable"
                         disabled
-                        className="w-full pl-10 pr-10 py-2 border border-gray-200 rounded-md bg-gray-50 text-sm text-gray-500"
+                        className="w-full h-9 pl-10 pr-4 py-2 bg-[var(--sidebar-background)] border border-[var(--border)] rounded-lg text-sm text-[var(--muted-foreground)] opacity-50"
                     />
                 </div>
             </div>

@@ -94,6 +94,7 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
                             style={{
                                 paddingLeft: `${(item.level - 1) * 16 + 8}px`,
                             }}
+                            data-nav-content
                         >
                             <p>{item.text}</p>
                         </button>
