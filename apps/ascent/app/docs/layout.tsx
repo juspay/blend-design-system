@@ -1,14 +1,15 @@
 import Link from 'next/link'
 import React from 'react'
 import { Github } from 'lucide-react'
-import Sidebar from '../components/Sidebar'
+import {
+    Sidebar,
+    SidebarDrawer,
+    SearchProvider,
+    ThemeToggle,
+    GlobalKeyboardNavigationProvider,
+    FloatingShortcutsButton,
+} from '../components'
 import getDirItems from './utils/getDirItems'
-import SidebarDrawer from '../components/SidebarDrawer'
-import SearchProvider from '../components/SearchProvider'
-import ThemeToggle from '../components/ThemeToggle'
-import { GlobalKeyboardNavigationProvider } from '../components/GlobalKeyboardNavigation'
-import KeyboardNavigationHelp from '../components/KeyboardNavigationHelp'
-import FloatingShortcutsButton from '../components/FloatingShortcutsButton'
 
 const layout = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -79,7 +80,8 @@ const layout = ({ children }: { children: React.ReactNode }) => {
                         {children}
                     </div>
                 </div>
-                <KeyboardNavigationHelp />
+
+                {/* Floating Shortcuts Button */}
                 <FloatingShortcutsButton />
             </main>
         </GlobalKeyboardNavigationProvider>

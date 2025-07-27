@@ -1,12 +1,6 @@
 'use client'
 
-import React, {
-    useState,
-    useEffect,
-    useRef,
-    createContext,
-    useContext,
-} from 'react'
+import React, { useState, useEffect, createContext, useContext } from 'react'
 import { useRouter } from 'next/navigation'
 
 // Navigation zones
@@ -106,32 +100,36 @@ const findNearestElement = (
         let alignment = 0
 
         switch (direction) {
-            case 'up':
+            case 'up': {
                 isInDirection = center.y < currentCenter.y - 10 // Add threshold
                 distance = currentCenter.y - center.y
                 alignment =
                     1 - Math.abs(center.x - currentCenter.x) / window.innerWidth
                 break
-            case 'down':
+            }
+            case 'down': {
                 isInDirection = center.y > currentCenter.y + 10 // Add threshold
                 distance = center.y - currentCenter.y
                 alignment =
                     1 - Math.abs(center.x - currentCenter.x) / window.innerWidth
                 break
-            case 'left':
+            }
+            case 'left': {
                 isInDirection = center.x < currentCenter.x - 10 // Add threshold
                 distance = currentCenter.x - center.x
                 alignment =
                     1 -
                     Math.abs(center.y - currentCenter.y) / window.innerHeight
                 break
-            case 'right':
+            }
+            case 'right': {
                 isInDirection = center.x > currentCenter.x + 10 // Add threshold
                 distance = center.x - currentCenter.x
                 alignment =
                     1 -
                     Math.abs(center.y - currentCenter.y) / window.innerHeight
                 break
+            }
         }
 
         if (isInDirection && distance > 0) {
@@ -170,7 +168,7 @@ export const GlobalKeyboardNavigationProvider = ({
         let elements: HTMLElement[] = []
 
         switch (zone) {
-            case NavigationZone.TOPBAR:
+            case NavigationZone.TOPBAR: {
                 // Get topbar wrapper elements
                 const topbarWrappers = Array.from(
                     document.querySelectorAll('[data-nav-topbar]')
@@ -188,14 +186,16 @@ export const GlobalKeyboardNavigationProvider = ({
                     })
                     .filter(Boolean)
                 break
+            }
 
-            case NavigationZone.SIDEBAR:
+            case NavigationZone.SIDEBAR: {
                 elements = Array.from(
                     document.querySelectorAll('[data-sidebar-item]')
                 ) as HTMLElement[]
                 break
+            }
 
-            case NavigationZone.MAIN_CONTENT:
+            case NavigationZone.MAIN_CONTENT: {
                 // Get explicitly marked elements, but exclude those in Table of Contents
                 const explicitElements = Array.from(
                     document.querySelectorAll('[data-nav-content]')
@@ -286,15 +286,19 @@ export const GlobalKeyboardNavigationProvider = ({
                         array.findIndex((el) => el === element) === index
                 )
                 break
+            }
 
-            case NavigationZone.TABLE_OF_CONTENTS:
+            case NavigationZone.TABLE_OF_CONTENTS: {
                 elements = Array.from(
                     document.querySelectorAll('.doc-toc-ctr [data-nav-content]')
                 ) as HTMLElement[]
                 break
+            }
 
-            default:
+            default: {
                 elements = []
+                break
+            }
         }
 
         // Filter out hidden or disabled elements, but keep elements that are just outside viewport
@@ -377,43 +381,26 @@ export const GlobalKeyboardNavigationProvider = ({
                     setFocusedElement(nextElement)
                 }
             } else if ((e.key === 'Enter' || e.key === ' ') && focusedElement) {
-                // First, try to let the element handle its own keyboard event
-                const keyEvent = new KeyboardEvent('keydown', {
-                    key: e.key,
-                    bubbles: true,
-                    cancelable: true,
-                })
+                e.preventDefault()
 
-                // Dispatch the event to the focused element first
-                const eventHandled = !focusedElement.dispatchEvent(keyEvent)
-
-                // If the event was not handled by the element, handle it globally
-                if (!eventHandled) {
-                    e.preventDefault()
-
-                    // Handle different types of elements
-                    if (focusedElement.tagName === 'A') {
+                // Handle different types of elements directly
+                if (focusedElement.tagName === 'A') {
+                    focusedElement.click()
+                } else if (focusedElement.tagName === 'BUTTON') {
+                    focusedElement.click()
+                } else if (focusedElement.hasAttribute('data-sidebar-item')) {
+                    const path =
+                        focusedElement.getAttribute('data-sidebar-item')
+                    if (path) {
+                        router.push(`/docs/${path}`)
+                    }
+                } else if (focusedElement.hasAttribute('data-nav-content')) {
+                    // Handle regular navigation
+                    const href = focusedElement.getAttribute('href')
+                    if (href) {
+                        router.push(href)
+                    } else {
                         focusedElement.click()
-                    } else if (focusedElement.tagName === 'BUTTON') {
-                        focusedElement.click()
-                    } else if (
-                        focusedElement.hasAttribute('data-sidebar-item')
-                    ) {
-                        const path =
-                            focusedElement.getAttribute('data-sidebar-item')
-                        if (path) {
-                            router.push(`/docs/${path}`)
-                        }
-                    } else if (
-                        focusedElement.hasAttribute('data-nav-content')
-                    ) {
-                        // Handle regular navigation
-                        const href = focusedElement.getAttribute('href')
-                        if (href) {
-                            router.push(href)
-                        } else {
-                            focusedElement.click()
-                        }
                     }
                 }
             } else if (e.key === 'Escape') {

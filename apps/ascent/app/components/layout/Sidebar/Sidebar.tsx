@@ -4,7 +4,7 @@ import Link from 'next/link'
 import React from 'react'
 import { usePathname } from 'next/navigation'
 import { BookOpen, Palette, ChevronRight, Home } from 'lucide-react'
-import { DocItem } from '../docs/utils/scanDirectory'
+import { DocItem } from '../../../docs/utils/scanDirectory'
 
 const capitalize = (str: string) => {
     return str

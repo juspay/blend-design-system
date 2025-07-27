@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import * as RadixTooltip from '@radix-ui/react-tooltip'
 

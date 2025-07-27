@@ -2,7 +2,7 @@
 
 import { Info } from 'lucide-react'
 import React from 'react'
-import Tooltip from './Tooltip'
+import { Tooltip } from '../../ui'
 
 type TableCell = {
     content: string | React.ReactNode

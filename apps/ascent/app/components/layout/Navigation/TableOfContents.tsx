@@ -2,6 +2,7 @@
 
 import { AlignLeft } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 
 export interface TOCItem {
     id: string
@@ -16,6 +17,8 @@ interface TableOfContentsProps {
 
 export default function TableOfContents({ items }: TableOfContentsProps) {
     const [activeId, setActiveId] = useState<string>('')
+    const router = useRouter()
+    const pathname = usePathname()
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -66,9 +69,8 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
                 block: 'start',
             })
 
-            const url = new URL(window.location.href)
-            url.hash = id
-            window.history.pushState({}, '', url.toString())
+            // Use Next.js router to update the URL with hash
+            router.push(`${pathname}#${id}`, { scroll: false })
         }
     }
 

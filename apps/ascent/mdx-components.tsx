@@ -1,10 +1,12 @@
 import React, { ComponentPropsWithoutRef } from 'react'
 import Link from 'next/link'
 import { highlight } from 'sugar-high'
-import CodeBlock from './app/components/CodeBlock'
-import DocsTypeTable from './app/components/DocsTypeTable'
-import Preview from './app/components/Preview'
-import PreviewWrapper from './app/components/PreviewWrapper'
+import {
+    CodeBlock,
+    DocsTypeTable,
+    Preview,
+    PreviewWrapper,
+} from './app/components'
 
 // Create wrapper components for each preview
 const ButtonPreview = () => <PreviewWrapper component="ButtonPreview" />
