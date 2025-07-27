@@ -76,9 +76,15 @@ export const createPreviewComponents = () => {
     previewComponents.forEach((name) => {
         components[`${name}Preview`] = () => {
             // Dynamic import would be better here, but for now we'll use a simple approach
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            const PreviewWrapper =
-                require('../../app/_components/features/Documentation/PreviewWrapper').default
+            // For now, return a simple placeholder component
+            const PreviewWrapper = () =>
+                React.createElement(
+                    'div',
+                    {
+                        className: 'p-4 border rounded-lg bg-gray-50',
+                    },
+                    `Preview for ${name}`
+                )
             return React.createElement(PreviewWrapper, {
                 component: `${name}Preview`,
             })
