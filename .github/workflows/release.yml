@@ -125,7 +125,7 @@ jobs:
             - name: Get Current Version
               id: current_version
               run: |
-                  CURRENT=$(node -p "require('./packages/blend-design-system/package.json').version")
+                  CURRENT=$(node -p "require('./packages/blend/package.json').version")
                   echo "version=$CURRENT" >> $GITHUB_OUTPUT
                   echo "Current version: $CURRENT"
 
@@ -134,7 +134,7 @@ jobs:
               run: |
                   if [[ "${{ steps.release_type.outputs.type }}" == "custom" ]]; then
                     VERSION="${{ steps.release_type.outputs.custom_version }}"
-                    cd packages/blend-design-system
+                    cd packages/blend
                     npm version $VERSION --no-git-tag-version
                     cd ../..
                   else
@@ -143,7 +143,7 @@ jobs:
                     else
                       pnpm version --filter @juspay/blend-design-system ${{ steps.release_type.outputs.semver }} --no-git-tag-version
                     fi
-                    VERSION=$(node -p "require('./packages/blend-design-system/package.json').version")
+                    VERSION=$(node -p "require('./packages/blend/package.json').version")
                   fi
 
                   echo "new_version=$VERSION" >> $GITHUB_OUTPUT
@@ -235,15 +235,15 @@ jobs:
               with:
                   name: build-artifacts-${{ steps.bump.outputs.new_version }}
                   path: |
-                      packages/blend-design-system/dist/
-                      packages/blend-design-system/package.json
+                      packages/blend/dist/
+                      packages/blend/package.json
                       docs/CHANGELOG.md
                   retention-days: 30
 
             - name: Verify Package Contents
               run: |
                   echo "Verifying package contents..."
-                  cd packages/blend-design-system
+                  cd packages/blend
                   npm pack --dry-run
                   echo "Package verification completed"
 
@@ -260,7 +260,7 @@ jobs:
                   fi
 
                   # Validate package.json
-                  cd packages/blend-design-system
+                  cd packages/blend
                   node -e "
                     const pkg = require('./package.json');
                     if (!pkg.name || !pkg.version || !pkg.main) {
@@ -295,7 +295,7 @@ jobs:
               if: steps.config.outputs.dry_run == 'true'
               run: |
                   echo "DRY RUN: Would publish version ${{ steps.bump.outputs.new_version }} with tag ${{ steps.release_type.outputs.npm_tag }}"
-                  cd packages/blend-design-system
+                  cd packages/blend
                   npm pack
                   echo "Dry run completed successfully"
 
@@ -321,12 +321,12 @@ jobs:
                   draft: false
                   prerelease: ${{ steps.release_type.outputs.type == 'beta' }}
                   files: |
-                      packages/blend-design-system/*.tgz
+                      packages/blend/*.tgz
 
             - name: Upload Package to Release
               if: steps.config.outputs.dry_run != 'true'
               run: |
-                  cd packages/blend-design-system
+                  cd packages/blend
                   TARBALL=$(npm pack)
                   echo "Created package: $TARBALL"
 
