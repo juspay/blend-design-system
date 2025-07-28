@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { useComponents } from '@/hooks/useRealtimeData'
+import { useComponents } from '@/hooks/usePostgreSQLData'
 import {
     Button,
     ButtonSize,

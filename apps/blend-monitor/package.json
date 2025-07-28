@@ -10,13 +10,14 @@
         "populate-data": "node scripts/populate-all-deployment-data.js"
     },
     "dependencies": {
+        "@types/pg": "^8.15.4",
         "blend-v1": "^0.2.44",
-        "dotenv": "^17.2.0",
+        "dotenv": "^17.2.1",
         "firebase": "^11.10.0",
-        "firebase-admin": "^12.0.0",
         "googleapis": "^153.0.0",
         "lucide-react": "^0.525.0",
         "next": "15.4.1",
+        "pg": "^8.16.3",
         "react": "19.1.0",
         "react-dom": "19.1.0",
         "react-spinners": "^0.17.0"

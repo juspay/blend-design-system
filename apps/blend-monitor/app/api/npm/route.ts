@@ -1,125 +1,203 @@
 import { NextResponse } from 'next/server'
 import { NPMClient } from '@/lib/data/npm-client'
-import { getAdminDatabase } from '@/lib/firebase-admin'
+import { databaseService } from '@/lib/database-service'
+import { initializeDatabase } from '@/lib/database'
 
 export async function GET() {
     try {
+        // Initialize PostgreSQL database
+        await initializeDatabase()
+
         const npmClient = new NPMClient('blend-v1')
 
-        // Fetch package stats
-        const packageStats = await npmClient.getPackageStats()
+        let successfulOperations = 0
+        let errors: string[] = []
 
-        if (!packageStats) {
-            throw new Error('Failed to fetch package stats')
+        // Fetch package stats with fallback
+        let packageStats = null
+        try {
+            packageStats = await npmClient.getPackageStats()
+            if (packageStats) {
+                await databaseService.savePackageStats(packageStats)
+                successfulOperations++
+            } else {
+                // Try to get from database as fallback
+                packageStats = await databaseService.getPackageStats()
+                errors.push(
+                    'Failed to fetch package stats from NPM, using cached data'
+                )
+            }
+        } catch (error) {
+            console.error('Error fetching package stats:', error)
+            packageStats = await databaseService.getPackageStats()
+            errors.push(
+                `Package stats error: ${error instanceof Error ? error.message : 'Unknown error'}`
+            )
         }
 
-        // Fetch download trends (last 30 days)
-        const downloadTrends = await npmClient.getDownloadTrends(30)
-
-        // Fetch version history
-        const versionHistory = await npmClient.getVersionHistory()
-
-        // Fetch package size history
-        const sizeHistory = await npmClient.getPackageSizeHistory()
-
-        // Update Firebase Realtime Database
-        const updates = {
-            publishing: {
-                current: {
-                    version: packageStats.version,
-                    publishedAt: packageStats.lastPublish,
-                    size: packageStats.size,
-                    dependencies: packageStats.dependencies,
-                },
-                downloads: {
-                    daily: packageStats.downloads.daily,
-                    weekly: packageStats.downloads.weekly,
-                    monthly: packageStats.downloads.monthly,
-                    total: packageStats.downloads.total,
-                    lastUpdated: new Date().toISOString(),
-                },
-                versions: versionHistory.reduce(
-                    (acc, version) => {
-                        // Replace dots with underscores for Firebase compatibility
-                        const versionKey = version.version.replace(/\./g, '_')
-                        acc[versionKey] = {
-                            version: version.version,
-                            publishedAt: version.publishedAt,
-                            publisher: version.publisher,
-                            downloads: version.downloads,
-                            changelog: version.changelog,
-                            size: version.size,
-                            breaking: version.breaking,
-                        }
-                        return acc
-                    },
-                    {} as Record<string, any>
-                ),
-                trends: {
-                    downloads: downloadTrends,
-                    size: sizeHistory,
-                },
-            },
+        // Fetch download trends with fallback
+        let downloadTrends: any[] = []
+        try {
+            downloadTrends = await npmClient.getDownloadTrends(30)
+            if (downloadTrends.length > 0) {
+                for (const trend of downloadTrends) {
+                    await databaseService.saveDownloadTrend(
+                        trend.date,
+                        trend.downloads
+                    )
+                }
+                successfulOperations++
+            } else {
+                // Try to get from database as fallback
+                downloadTrends = await databaseService.getDownloadTrends(30)
+                errors.push(
+                    'Failed to fetch download trends from NPM, using cached data'
+                )
+            }
+        } catch (error) {
+            console.error('Error fetching download trends:', error)
+            downloadTrends = await databaseService.getDownloadTrends(30)
+            errors.push(
+                `Download trends error: ${error instanceof Error ? error.message : 'Unknown error'}`
+            )
         }
 
-        // Save to Firebase using Admin SDK
-        const db = getAdminDatabase()
-        await db.ref('blend-monitor/publishing').set(updates.publishing)
+        // Fetch version history with fallback
+        let versionHistory: any[] = []
+        try {
+            versionHistory = await npmClient.getVersionHistory()
+            if (versionHistory.length > 0) {
+                for (const version of versionHistory) {
+                    await databaseService.saveVersionInfo(version)
+                }
+                successfulOperations++
+            } else {
+                // Try to get from database as fallback
+                versionHistory = await databaseService.getVersionHistory()
+                errors.push(
+                    'Failed to fetch version history from NPM, using cached data'
+                )
+            }
+        } catch (error) {
+            console.error('Error fetching version history:', error)
+            versionHistory = await databaseService.getVersionHistory()
+            errors.push(
+                `Version history error: ${error instanceof Error ? error.message : 'Unknown error'}`
+            )
+        }
 
-        // Update activity log using Admin SDK
-        await db.ref(`blend-monitor/activity/recent/${Date.now()}`).set({
-            type: 'npm_stats_updated',
-            timestamp: new Date().toISOString(),
-            version: packageStats.version,
-        })
+        // Fetch package size history with fallback
+        let sizeHistory: any[] = []
+        try {
+            sizeHistory = await npmClient.getPackageSizeHistory()
+            successfulOperations++
+        } catch (error) {
+            console.error('Error fetching package size history:', error)
+            sizeHistory = []
+            errors.push(
+                `Size history error: ${error instanceof Error ? error.message : 'Unknown error'}`
+            )
+        }
 
+        // Log system activity
+        try {
+            await databaseService.logSystemActivity('npm_stats_updated', {
+                version: packageStats?.version || 'unknown',
+                downloads: packageStats?.downloads?.total || 0,
+                successfulOperations,
+                errors: errors.length,
+                timestamp: new Date().toISOString(),
+            })
+        } catch (error) {
+            console.error('Error logging system activity:', error)
+        }
+
+        // Return success even if some operations failed
         return NextResponse.json({
             success: true,
             data: {
                 packageStats,
                 downloadTrends,
-                versionHistory: versionHistory.slice(0, 10), // Return only last 10 versions
+                versionHistory,
                 sizeHistory,
+            },
+            metadata: {
+                successfulOperations,
+                totalOperations: 4,
+                errors: errors.length > 0 ? errors : undefined,
+                lastUpdated: new Date().toISOString(),
+                fallbackUsed: errors.length > 0,
             },
         })
     } catch (error) {
         console.error('Error in NPM API:', error)
-        return NextResponse.json(
-            {
-                success: false,
-                error: 'Failed to fetch NPM data',
-                details:
-                    error instanceof Error ? error.message : 'Unknown error',
-            },
-            { status: 500 }
-        )
+
+        // Try to return cached data even on complete failure
+        try {
+            await initializeDatabase()
+            const packageStats = await databaseService.getPackageStats()
+            const downloadTrends = await databaseService.getDownloadTrends(30)
+            const versionHistory = await databaseService.getVersionHistory()
+
+            return NextResponse.json({
+                success: true,
+                data: {
+                    packageStats,
+                    downloadTrends,
+                    versionHistory,
+                    sizeHistory: [],
+                },
+                metadata: {
+                    successfulOperations: 0,
+                    totalOperations: 4,
+                    errors: [
+                        'Complete NPM API failure, using cached data only',
+                    ],
+                    lastUpdated: new Date().toISOString(),
+                    fallbackUsed: true,
+                },
+            })
+        } catch (fallbackError) {
+            console.error('Error fetching fallback data:', fallbackError)
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: 'Failed to fetch NPM data and no cached data available',
+                    details:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                },
+                { status: 500 }
+            )
+        }
     }
 }
 
-// POST endpoint to refresh NPM data
+// POST endpoint to trigger NPM data refresh
 export async function POST() {
     try {
-        const npmClient = new NPMClient('blend-v1')
+        await initializeDatabase()
 
-        // Fetch fresh data
-        const packageStats = await npmClient.getPackageStats()
+        // Trigger NPM data fetch and update
+        const response = await fetch(
+            `${process.env.NEXTAUTH_URL || 'http://localhost:3003'}/api/npm`,
+            {
+                method: 'GET',
+            }
+        )
 
-        if (!packageStats) {
-            throw new Error('Failed to fetch package stats')
+        if (!response.ok) {
+            throw new Error('Failed to refresh NPM data')
         }
 
-        // Update activity log using Admin SDK
-        const db = getAdminDatabase()
-        await db.ref(`blend-monitor/activity/recent/${Date.now()}`).set({
-            type: 'npm_data_refresh',
-            timestamp: new Date().toISOString(),
-            version: packageStats.version,
-        })
+        const data = await response.json()
 
         return NextResponse.json({
             success: true,
-            message: 'NPM data refresh triggered',
-            currentVersion: packageStats.version,
+            message: 'NPM data refreshed successfully',
+            lastUpdated: new Date().toISOString(),
+            metadata: data.metadata,
         })
     } catch (error) {
         console.error('Error refreshing NPM data:', error)
@@ -127,6 +205,8 @@ export async function POST() {
             {
                 success: false,
                 error: 'Failed to refresh NPM data',
+                details:
+                    error instanceof Error ? error.message : 'Unknown error',
             },
             { status: 500 }
         )

@@ -4,13 +4,16 @@ import {
     requirePermission,
     logAuditEvent,
 } from '@/lib/auth-middleware'
-import { roleService } from '@/lib/role-service'
+import { databaseService } from '@/lib/database-service'
+import { initializeDatabase } from '@/lib/database'
 
 export async function PUT(
     request: NextRequest,
     { params }: { params: { userId: string } }
 ) {
     try {
+        await initializeDatabase()
+
         // Authenticate the request
         const user = await authenticateRequest(request)
 
@@ -32,21 +35,21 @@ export async function PUT(
             )
         }
 
-        // Validate that the new role exists
-        const roleExists = await roleService.getUserRole(params.userId)
-        if (!roleExists) {
+        // Get current user data for audit logging
+        const currentUserData = await databaseService.getUserByFirebaseUid(
+            params.userId
+        )
+        if (!currentUserData) {
             return NextResponse.json(
                 { error: 'User not found' },
                 { status: 404 }
             )
         }
 
-        // Get current user data for audit logging
-        const currentUserData = await roleService.getUserData(params.userId)
-        const oldRole = currentUserData?.role
+        const oldRole = currentUserData.role
 
         // Update the user role
-        await roleService.updateUserRole(params.userId, newRole)
+        await databaseService.updateUserRole(params.userId, newRole)
 
         // Log the audit event
         await logAuditEvent(
@@ -54,7 +57,7 @@ export async function PUT(
             'role_change',
             `user:${params.userId}`,
             {
-                targetUser: currentUserData?.email,
+                targetUser: currentUserData.email,
                 oldRole,
                 newRole,
                 userId: params.userId,

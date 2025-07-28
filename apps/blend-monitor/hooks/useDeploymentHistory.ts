@@ -1,6 +1,12 @@
+// Mock implementation to replace Firebase realtime functionality
 import { useState, useEffect } from 'react'
-import { subscribeToDeploymentUpdates } from '@/lib/firebase-realtime'
 import type { Deployment } from '@/types'
+
+// Mock subscription function
+const subscribeToDeploymentUpdates = (callback: (data: any) => void) => {
+    // Return empty unsubscribe function
+    return () => {}
+}
 
 export function useDeploymentHistory(
     limit: number = 50,

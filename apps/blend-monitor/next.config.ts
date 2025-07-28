@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
     },
     // Ensure server-only code doesn't leak to client
     experimental: {
-        serverComponentsExternalPackages: ['firebase-admin'],
+        serverComponentsExternalPackages: [],
     },
 }
 

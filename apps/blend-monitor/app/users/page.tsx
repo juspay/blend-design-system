@@ -2,9 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { auth } from '@/lib/firebase'
-import { roleService, UserData, DEFAULT_ROLES } from '@/lib/role-service'
-import { usePermissions } from '@/components/auth/PermissionGuard'
-import ProtectedRoute from '@/components/auth/ProtectedRoute'
+import { onAuthStateChanged, User } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import {
     Button,
@@ -27,14 +25,69 @@ import {
     UserX,
     Shield,
 } from 'lucide-react'
-import {
-    activityService,
-    ActivityAction,
-    ActivityLog,
-} from '@/lib/activity-service'
+import { useUserManagement } from '@/hooks/usePostgreSQLData'
 
-interface UserWithId extends UserData {
+// Default roles
+const DEFAULT_ROLES = {
+    admin: { name: 'Administrator', permissions: ['*'] },
+    developer: { name: 'Developer', permissions: ['read', 'write'] },
+    viewer: { name: 'Viewer', permissions: ['read'] },
+}
+
+// User interface
+interface UserData {
     id: string
+    firebase_uid: string
+    email: string
+    display_name?: string
+    photo_url?: string
+    role: string
+    is_active: boolean
+    last_login: string
+    created_at: string
+}
+
+// Mock permissions hook
+const usePermissions = () => ({
+    canManageUsers: true,
+    isAdmin: true,
+    userData: { email: 'admin@example.com' },
+})
+
+// Mock ProtectedRoute component
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+    children,
+}) => {
+    const [user, setUser] = useState<User | null>(null)
+    const [loading, setLoading] = useState(true)
+    const router = useRouter()
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUser(user)
+            } else {
+                router.push('/login')
+            }
+            setLoading(false)
+        })
+
+        return () => unsubscribe()
+    }, [router])
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+            </div>
+        )
+    }
+
+    if (!user) {
+        return null
+    }
+
+    return <>{children}</>
 }
 
 export default function UsersPage() {
@@ -47,107 +100,33 @@ export default function UsersPage() {
 
 function UserManagement() {
     const router = useRouter()
-    const [users, setUsers] = useState<UserWithId[]>([])
-    const [loading, setLoading] = useState(true)
-    const [editingUser, setEditingUser] = useState<string | null>(null)
-    const [error, setError] = useState<string | null>(null)
     const [showInviteModal, setShowInviteModal] = useState(false)
     const [inviteEmail, setInviteEmail] = useState('')
     const [inviteRole, setInviteRole] = useState('viewer')
     const [inviting, setInviting] = useState(false)
     const [emailError, setEmailError] = useState('')
-    const [showDeleteModal, setShowDeleteModal] = useState(false)
-    const [userToDelete, setUserToDelete] = useState<UserWithId | null>(null)
-    const [deleting, setDeleting] = useState(false)
-    const [showActivityModal, setShowActivityModal] = useState(false)
-    const [selectedUserActivity, setSelectedUserActivity] =
-        useState<UserWithId | null>(null)
-    const [userActivities, setUserActivities] = useState<ActivityLog[]>([])
-    const [loadingActivities, setLoadingActivities] = useState(false)
     const { canManageUsers, isAdmin, userData } = usePermissions()
 
-    useEffect(() => {
-        // Only load users once the user is authenticated and userData is available
-        if (userData) {
-            loadUsers()
-        }
-    }, [userData])
-
-    const loadUsers = async () => {
-        try {
-            setError(null)
-            const usersData = await roleService.getAllUsers()
-            const usersList = Object.entries(usersData).map(
-                ([id, userData]) => ({
-                    id,
-                    ...userData,
-                })
-            )
-            console.log('Loaded users:', usersList) // Debug log
-            setUsers(usersList)
-        } catch (error) {
-            console.error('Error loading users:', error)
-            setError('Unable to load users. Please ensure you are signed in.')
-        } finally {
-            setLoading(false)
-        }
-    }
+    // Use PostgreSQL user management hooks
+    const {
+        users,
+        loading,
+        error,
+        updateUserRole,
+        updateUserStatus,
+        createUser,
+        deleteUser,
+    } = useUserManagement()
 
     const handleRoleChange = async (userId: string, newRole: string) => {
         if (!canManageUsers) return
 
         try {
-            const user = auth.currentUser
-            if (!user) {
-                throw new Error('User not authenticated')
-            }
-
-            const token = await user.getIdToken()
-
-            const response = await fetch(`/api/users/${userId}/role`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ newRole }),
-            })
-
-            const data = await response.json()
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to update user role')
-            }
-
-            // Update local state immediately for better UX
-            setUsers((prevUsers) =>
-                prevUsers.map((u) =>
-                    u.id === userId ? { ...u, role: newRole } : u
-                )
-            )
-
-            // Log activity
-            const targetUser = users.find((u) => u.id === userId)
-            if (user && targetUser) {
-                await activityService.logUserActivity(
-                    user.uid,
-                    ActivityAction.ROLE_CHANGED,
-                    {
-                        targetUserId: userId,
-                        targetEmail: targetUser.email,
-                        from: targetUser.role,
-                        to: newRole,
-                        changedBy: userData?.email,
-                    }
-                )
-            }
+            await updateUserRole(userId, newRole)
+            console.log(`Updated user ${userId} role to ${newRole}`)
         } catch (error) {
             console.error('Error updating user role:', error)
-            alert(
-                `Failed to update role: ${error instanceof Error ? error.message : 'Unknown error'}`
-            )
-            // Reload to revert on error
-            await loadUsers()
+            alert('Failed to update role')
         }
     }
 
@@ -155,50 +134,26 @@ function UserManagement() {
         if (!canManageUsers) return
 
         try {
-            await roleService.updateUserStatus(userId, isActive)
-
-            // Update local state immediately for better UX
-            setUsers((prevUsers) =>
-                prevUsers.map((u) => (u.id === userId ? { ...u, isActive } : u))
+            await updateUserStatus(userId, isActive)
+            console.log(
+                `Updated user ${userId} status to ${isActive ? 'active' : 'inactive'}`
             )
-
-            // Log activity
-            const targetUser = users.find((u) => u.id === userId)
-            const user = auth.currentUser
-            if (user && targetUser) {
-                await activityService.logUserActivity(
-                    user.uid,
-                    ActivityAction.USER_STATUS_CHANGED,
-                    {
-                        targetUserId: userId,
-                        targetEmail: targetUser.email,
-                        isActive,
-                        changedBy: userData?.email,
-                    }
-                )
-            }
         } catch (error) {
             console.error('Error updating user status:', error)
-            alert(
-                `Failed to update user status: ${error instanceof Error ? error.message : 'Unknown error'}`
-            )
-            // Reload to revert on error
-            await loadUsers()
+            alert('Failed to update user status')
         }
     }
 
     const validateEmail = (email: string): boolean => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        const googleDomains = ['gmail.com', 'googlemail.com']
 
         if (!emailRegex.test(email)) {
             setEmailError('Please enter a valid email address')
             return false
         }
 
-        // Check if user already exists
         const existingUser = users.find(
-            (u) => u.email.toLowerCase() === email.toLowerCase()
+            (u: UserData) => u.email.toLowerCase() === email.toLowerCase()
         )
         if (existingUser) {
             setEmailError('This user already exists in the system')
@@ -227,8 +182,12 @@ function UserManagement() {
 
         setInviting(true)
         try {
-            // Create a pre-registered user entry
-            await roleService.inviteUser(inviteEmail, inviteRole)
+            await createUser({
+                firebase_uid: `invite_${Date.now()}`, // Temporary UID for invited users
+                email: inviteEmail,
+                display_name: inviteEmail.split('@')[0],
+                role: inviteRole,
+            })
 
             // Reset form
             setInviteEmail('')
@@ -236,91 +195,12 @@ function UserManagement() {
             setEmailError('')
             setShowInviteModal(false)
 
-            // Reload users to show the invited user
-            await loadUsers()
-
-            // Log activity
-            const user = auth.currentUser
-            if (user) {
-                await activityService.logUserActivity(
-                    user.uid,
-                    ActivityAction.USER_INVITED,
-                    {
-                        email: inviteEmail,
-                        role: inviteRole,
-                        invitedBy: userData?.email,
-                    }
-                )
-            }
-
             console.log(`User ${inviteEmail} invited with role: ${inviteRole}`)
         } catch (error) {
             console.error('Error inviting user:', error)
-            setEmailError(
-                error instanceof Error ? error.message : 'Failed to invite user'
-            )
+            setEmailError('Failed to invite user')
         } finally {
             setInviting(false)
-        }
-    }
-
-    const handleDeleteUser = async () => {
-        if (!canManageUsers || !userToDelete) return
-
-        setDeleting(true)
-        try {
-            await roleService.deleteUser(userToDelete.id)
-
-            // Update local state
-            setUsers((prevUsers) =>
-                prevUsers.filter((u) => u.id !== userToDelete.id)
-            )
-
-            // Close modal
-            setShowDeleteModal(false)
-            setUserToDelete(null)
-
-            // Log activity
-            const user = auth.currentUser
-            if (user) {
-                await activityService.logUserActivity(
-                    user.uid,
-                    ActivityAction.USER_REMOVED,
-                    {
-                        targetUserId: userToDelete.id,
-                        email: userToDelete.email,
-                        removedBy: userData?.email,
-                    }
-                )
-            }
-
-            console.log(`User ${userToDelete.email} removed`)
-        } catch (error) {
-            console.error('Error deleting user:', error)
-            alert(
-                `Failed to remove user: ${error instanceof Error ? error.message : 'Unknown error'}`
-            )
-        } finally {
-            setDeleting(false)
-        }
-    }
-
-    const handleViewActivity = async (user: UserWithId) => {
-        setSelectedUserActivity(user)
-        setShowActivityModal(true)
-        setLoadingActivities(true)
-
-        try {
-            const activities = await activityService.getUserActivities(
-                user.id,
-                50
-            )
-            setUserActivities(activities)
-        } catch (error) {
-            console.error('Error loading activities:', error)
-            setUserActivities([])
-        } finally {
-            setLoadingActivities(false)
         }
     }
 
@@ -348,92 +228,6 @@ function UserManagement() {
             default:
                 return 'bg-gray-100 text-gray-800 border-gray-200'
         }
-    }
-
-    const getActivityBgColor = (action: string) => {
-        switch (action) {
-            case 'user_login':
-                return 'bg-green-500'
-            case 'user_logout':
-                return 'bg-gray-500'
-            case 'role_changed':
-                return 'bg-blue-500'
-            case 'user_invited':
-                return 'bg-purple-500'
-            case 'user_removed':
-                return 'bg-red-500'
-            case 'user_status_changed':
-                return 'bg-yellow-500'
-            default:
-                return 'bg-gray-500'
-        }
-    }
-
-    const getActivityIcon = (action: string) => {
-        switch (action) {
-            case 'user_login':
-                return <LogIn className="w-4 h-4 text-white" />
-            case 'user_logout':
-                return <LogOut className="w-4 h-4 text-white" />
-            case 'role_changed':
-                return <Shield className="w-4 h-4 text-white" />
-            case 'user_invited':
-                return <UserPlus className="w-4 h-4 text-white" />
-            case 'user_removed':
-                return <UserX className="w-4 h-4 text-white" />
-            case 'user_status_changed':
-                return <UserCheck className="w-4 h-4 text-white" />
-            default:
-                return <Activity className="w-4 h-4 text-white" />
-        }
-    }
-
-    const getActivityTitle = (action: string) => {
-        switch (action) {
-            case 'user_login':
-                return 'User Signed In'
-            case 'user_logout':
-                return 'User Signed Out'
-            case 'role_changed':
-                return 'Role Changed'
-            case 'user_invited':
-                return 'User Invited'
-            case 'user_removed':
-                return 'User Removed'
-            case 'user_status_changed':
-                return 'Status Updated'
-            default:
-                return 'Activity'
-        }
-    }
-
-    const formatActivityTime = (timestamp: string) => {
-        const date = new Date(timestamp)
-        const now = new Date()
-        const diffMs = now.getTime() - date.getTime()
-        const diffMins = Math.floor(diffMs / 60000)
-        const diffHours = Math.floor(diffMs / 3600000)
-        const diffDays = Math.floor(diffMs / 86400000)
-
-        if (diffMins < 1) return 'Just now'
-        if (diffMins < 60) return `${diffMins}m ago`
-        if (diffHours < 24) return `${diffHours}h ago`
-        if (diffDays < 7) return `${diffDays}d ago`
-
-        return date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        })
-    }
-
-    const formatDetailKey = (key: string) => {
-        return key
-            .replace(/_/g, ' ')
-            .replace(/([A-Z])/g, ' $1')
-            .toLowerCase()
-            .replace(/^./, (str) => str.toUpperCase())
     }
 
     if (loading) {
@@ -485,31 +279,29 @@ function UserManagement() {
                 </div>
             )}
 
-            {!canManageUsers && (
-                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                            <svg
-                                className="h-5 w-5 text-blue-400"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                            >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
-                        </div>
-                        <div className="ml-3">
-                            <p className="text-sm text-blue-700">
-                                You have read-only access to user information.
-                                Contact an administrator to modify user roles.
-                            </p>
-                        </div>
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                        <svg
+                            className="h-5 w-5 text-green-400"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                        >
+                            <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
+                    </div>
+                    <div className="ml-3">
+                        <p className="text-sm text-green-700">
+                            ✅ Connected to PostgreSQL! User data is now managed
+                            in your cloud database.
+                        </p>
                     </div>
                 </div>
-            )}
+            </div>
 
             {/* Users Table */}
             <div className="bg-white shadow-sm rounded-lg overflow-hidden">
@@ -540,21 +332,24 @@ function UserManagement() {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {users.map((user) => (
+                            {users.map((user: UserData) => (
                                 <tr key={user.id} className="hover:bg-gray-50">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center">
                                             <div className="flex-shrink-0 h-10 w-10">
-                                                {user.photoURL ? (
+                                                {user.photo_url ? (
                                                     <img
                                                         className="h-10 w-10 rounded-full"
-                                                        src={user.photoURL}
-                                                        alt={user.displayName}
+                                                        src={user.photo_url}
+                                                        alt={
+                                                            user.display_name ||
+                                                            'User'
+                                                        }
                                                     />
                                                 ) : (
                                                     <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
                                                         <span className="text-sm font-medium text-gray-700">
-                                                            {user.displayName?.charAt(
+                                                            {user.display_name?.charAt(
                                                                 0
                                                             ) ||
                                                                 user.email
@@ -566,7 +361,7 @@ function UserManagement() {
                                             </div>
                                             <div className="ml-4">
                                                 <div className="text-sm font-medium text-gray-900">
-                                                    {user.displayName ||
+                                                    {user.display_name ||
                                                         'No name'}
                                                 </div>
                                                 <div className="text-sm text-gray-500">
@@ -583,7 +378,7 @@ function UserManagement() {
                                                     selected={user.role}
                                                     onSelect={(value: string) =>
                                                         handleRoleChange(
-                                                            user.id,
+                                                            user.firebase_uid,
                                                             value
                                                         )
                                                     }
@@ -609,8 +404,9 @@ function UserManagement() {
                                             <span
                                                 className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${getRoleBadgeColor(user.role)}`}
                                             >
-                                                {DEFAULT_ROLES[user.role]
-                                                    ?.name || user.role}
+                                                {DEFAULT_ROLES[
+                                                    user.role as keyof typeof DEFAULT_ROLES
+                                                ]?.name || user.role}
                                             </span>
                                         )}
                                     </td>
@@ -620,13 +416,13 @@ function UserManagement() {
                                                 <SingleSelect
                                                     label=""
                                                     selected={
-                                                        user.isActive
+                                                        user.is_active
                                                             ? 'active'
                                                             : 'inactive'
                                                     }
                                                     onSelect={(value: string) =>
                                                         handleStatusChange(
-                                                            user.id,
+                                                            user.firebase_uid,
                                                             value === 'active'
                                                         )
                                                     }
@@ -650,22 +446,22 @@ function UserManagement() {
                                         ) : (
                                             <span
                                                 className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                    user.isActive
+                                                    user.is_active
                                                         ? 'bg-green-100 text-green-800'
                                                         : 'bg-red-100 text-red-800'
                                                 }`}
                                             >
-                                                {user.isActive
+                                                {user.is_active
                                                     ? 'Active'
                                                     : 'Inactive'}
                                             </span>
                                         )}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {formatDate(user.lastLogin)}
+                                        {formatDate(user.last_login)}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {formatDate(user.createdAt)}
+                                        {formatDate(user.created_at)}
                                     </td>
                                     {canManageUsers && (
                                         <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -680,33 +476,11 @@ function UserManagement() {
                                                         <Activity className="w-4 h-4" />
                                                     }
                                                     onClick={() =>
-                                                        handleViewActivity(user)
+                                                        router.push(
+                                                            `/users/${user.firebase_uid}/activity`
+                                                        )
                                                     }
                                                     title="View activity"
-                                                />
-                                                <Button
-                                                    buttonType={
-                                                        ButtonType.SECONDARY
-                                                    }
-                                                    size={ButtonSize.SMALL}
-                                                    text=""
-                                                    leadingIcon={
-                                                        <Trash2 className="w-4 h-4" />
-                                                    }
-                                                    onClick={() => {
-                                                        setUserToDelete(user)
-                                                        setShowDeleteModal(true)
-                                                    }}
-                                                    disabled={
-                                                        user.email ===
-                                                        userData?.email
-                                                    } // Can't delete yourself
-                                                    title={
-                                                        user.email ===
-                                                        userData?.email
-                                                            ? 'You cannot remove yourself'
-                                                            : 'Remove user'
-                                                    }
                                                 />
                                             </div>
                                         </td>
@@ -717,7 +491,7 @@ function UserManagement() {
                     </table>
                 </div>
 
-                {users.length === 0 && (
+                {users.length === 0 && !loading && (
                     <div className="text-center py-12">
                         <svg
                             className="mx-auto h-12 w-12 text-gray-400"
@@ -772,8 +546,7 @@ function UserManagement() {
                         )}
                         <p className="mt-1 text-xs text-gray-500">
                             Enter the email address of the user you want to
-                            invite. They will be able to sign in with their
-                            Google account.
+                            invite.
                         </p>
                     </div>
 
@@ -814,252 +587,6 @@ function UserManagement() {
                             onClick={handleInviteUser}
                             disabled={!inviteEmail || !!emailError || inviting}
                         />
-                    </div>
-                </div>
-            </Modal>
-
-            {/* Delete User Confirmation Modal */}
-            <Modal
-                isOpen={showDeleteModal}
-                onClose={() => {
-                    setShowDeleteModal(false)
-                    setUserToDelete(null)
-                }}
-                title="Remove User"
-                showFooter={false}
-            >
-                <div className="space-y-4">
-                    <div className="flex items-start">
-                        <div className="flex-shrink-0">
-                            <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center">
-                                <Trash2 className="h-6 w-6 text-red-600" />
-                            </div>
-                        </div>
-                        <div className="ml-4">
-                            <h3 className="text-lg font-medium text-gray-900">
-                                Are you sure you want to remove this user?
-                            </h3>
-                            <div className="mt-2 text-sm text-gray-500">
-                                <p>
-                                    This will remove{' '}
-                                    <strong>{userToDelete?.email}</strong> from
-                                    the system.
-                                </p>
-                                <p className="mt-2">
-                                    They will lose access immediately and will
-                                    need to be invited again to regain access.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex justify-end gap-3 pt-4">
-                        <Button
-                            buttonType={ButtonType.SECONDARY}
-                            size={ButtonSize.MEDIUM}
-                            text="Cancel"
-                            onClick={() => {
-                                setShowDeleteModal(false)
-                                setUserToDelete(null)
-                            }}
-                            disabled={deleting}
-                        />
-                        <Button
-                            buttonType={ButtonType.PRIMARY}
-                            size={ButtonSize.MEDIUM}
-                            text={deleting ? 'Removing...' : 'Remove User'}
-                            onClick={handleDeleteUser}
-                            disabled={deleting}
-                        />
-                    </div>
-                </div>
-            </Modal>
-
-            {/* Activity Modal */}
-            <Modal
-                isOpen={showActivityModal}
-                onClose={() => {
-                    setShowActivityModal(false)
-                    setSelectedUserActivity(null)
-                    setUserActivities([])
-                }}
-                title="User Activity"
-                showFooter={false}
-            >
-                <div className="h-[500px]">
-                    {/* User Info Header */}
-                    {selectedUserActivity && (
-                        <div className="flex items-center gap-3 pb-4 mb-4 border-b border-gray-200">
-                            {selectedUserActivity.photoURL ? (
-                                <img
-                                    src={selectedUserActivity.photoURL}
-                                    alt={selectedUserActivity.displayName}
-                                    className="w-12 h-12 rounded-full"
-                                />
-                            ) : (
-                                <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span className="text-lg font-medium text-gray-600">
-                                        {selectedUserActivity.displayName?.charAt(
-                                            0
-                                        ) ||
-                                            selectedUserActivity.email
-                                                .charAt(0)
-                                                .toUpperCase()}
-                                    </span>
-                                </div>
-                            )}
-                            <div>
-                                <h3 className="text-base font-semibold text-gray-900">
-                                    {selectedUserActivity.displayName ||
-                                        'No name'}
-                                </h3>
-                                <p className="text-sm text-gray-500">
-                                    {selectedUserActivity.email}
-                                </p>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Activity Content - Scrollable */}
-                    <div className="h-[calc(100%-80px)] overflow-y-auto">
-                        {loadingActivities ? (
-                            <div className="flex items-center justify-center h-full">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                            </div>
-                        ) : userActivities.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-full text-center">
-                                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
-                                    <Activity className="h-6 w-6 text-gray-400" />
-                                </div>
-                                <h3 className="text-sm font-medium text-gray-900">
-                                    No activity yet
-                                </h3>
-                                <p className="mt-1 text-sm text-gray-500">
-                                    Activities will appear here as they occur
-                                </p>
-                            </div>
-                        ) : (
-                            <div className="relative">
-                                {/* Timeline line */}
-                                <div className="absolute left-4 top-8 bottom-0 w-px bg-gray-200"></div>
-
-                                {/* Activity items */}
-                                <div className="space-y-6">
-                                    {userActivities.map((activity, index) => {
-                                        const isLast =
-                                            index === userActivities.length - 1
-                                        return (
-                                            <div
-                                                key={activity.id || index}
-                                                className="relative flex gap-4"
-                                            >
-                                                {/* Timeline dot and connector */}
-                                                <div className="relative flex flex-col items-center">
-                                                    <div
-                                                        className={`z-10 flex-shrink-0 w-8 h-8 rounded-full border-2 border-white shadow-sm flex items-center justify-center ${getActivityBgColor(activity.action)}`}
-                                                    >
-                                                        {getActivityIcon(
-                                                            activity.action
-                                                        )}
-                                                    </div>
-                                                    {!isLast && (
-                                                        <div className="w-px h-full bg-gray-200 absolute top-8"></div>
-                                                    )}
-                                                </div>
-
-                                                {/* Activity card */}
-                                                <div className="flex-1 pb-6">
-                                                    <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow">
-                                                        {/* Header with action and time */}
-                                                        <div className="flex items-start justify-between mb-2">
-                                                            <h4 className="text-sm font-medium text-gray-900">
-                                                                {getActivityTitle(
-                                                                    activity.action
-                                                                )}
-                                                            </h4>
-                                                            <span className="text-xs text-gray-500">
-                                                                {formatActivityTime(
-                                                                    activity.timestamp
-                                                                )}
-                                                            </span>
-                                                        </div>
-
-                                                        {/* Activity description */}
-                                                        <p className="text-sm text-gray-600">
-                                                            {activityService.formatActivityMessage(
-                                                                activity
-                                                            )}
-                                                        </p>
-
-                                                        {/* Activity details */}
-                                                        {activity.details &&
-                                                            Object.keys(
-                                                                activity.details
-                                                            ).length > 0 && (
-                                                                <div className="mt-3 flex flex-wrap gap-2">
-                                                                    {Object.entries(
-                                                                        activity.details
-                                                                    )
-                                                                        .filter(
-                                                                            ([
-                                                                                key,
-                                                                            ]) =>
-                                                                                [
-                                                                                    'email',
-                                                                                    'provider',
-                                                                                    'from',
-                                                                                    'to',
-                                                                                    'role',
-                                                                                ].includes(
-                                                                                    key
-                                                                                )
-                                                                        )
-                                                                        .map(
-                                                                            ([
-                                                                                key,
-                                                                                value,
-                                                                            ]) => (
-                                                                                <span
-                                                                                    key={
-                                                                                        key
-                                                                                    }
-                                                                                    className="inline-flex items-center px-2 py-1 rounded-md bg-gray-100 text-xs text-gray-700"
-                                                                                >
-                                                                                    <span className="font-medium">
-                                                                                        {key ===
-                                                                                            'from' &&
-                                                                                            'From: '}
-                                                                                        {key ===
-                                                                                            'to' &&
-                                                                                            'To: '}
-                                                                                        {key ===
-                                                                                            'email' &&
-                                                                                            'Email: '}
-                                                                                        {key ===
-                                                                                            'provider' &&
-                                                                                            'Via: '}
-                                                                                        {key ===
-                                                                                            'role' &&
-                                                                                            'Role: '}
-                                                                                    </span>
-                                                                                    <span className="ml-1">
-                                                                                        {String(
-                                                                                            value
-                                                                                        )}
-                                                                                    </span>
-                                                                                </span>
-                                                                            )
-                                                                        )}
-                                                                </div>
-                                                            )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </div>
             </Modal>

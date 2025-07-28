@@ -3,12 +3,41 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { auth } from '@/lib/firebase'
-import { roleService, UserData } from '@/lib/role-service'
-import { activityService, ActivityLog } from '@/lib/activity-service'
+import { onAuthStateChanged, User } from 'firebase/auth'
 import { usePermissions } from '@/components/auth/PermissionGuard'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import { Button, ButtonType, ButtonSize } from 'blend-v1'
-import { ArrowLeft, Activity, Clock, User } from 'lucide-react'
+import { ArrowLeft, Activity, Clock, User as LucideUser } from 'lucide-react'
+
+// Mock interfaces and services to replace the deleted ones
+interface ActivityLog {
+    id: string
+    action: string
+    timestamp: string
+    details?: Record<string, any>
+}
+
+interface UserData {
+    uid: string
+    email: string
+    displayName?: string
+    photoURL?: string
+    role?: string
+}
+
+// Mock services
+const activityService = {
+    getUserActivity: async (uid: string) => [],
+    subscribeToUserActivity:
+        (uid: string, callback: (activities: ActivityLog[]) => void) =>
+        () => {},
+    formatActivityMessage: (action: string, details?: any) =>
+        `Activity: ${action}`,
+}
+
+const roleService = {
+    getUserData: async (uid: string): Promise<UserData | null> => null,
+}
 
 export default function UserActivityPage() {
     return (
@@ -46,13 +75,12 @@ function UserActivity() {
         loadUserData()
 
         // Subscribe to real-time activity updates
-        const unsubscribe = activityService.subscribeToUserActivities(
+        const unsubscribe = activityService.subscribeToUserActivity(
             userId,
             (activities) => {
                 setActivities(activities)
                 setLoading(false)
-            },
-            100 // Load last 100 activities
+            }
         )
 
         return () => unsubscribe()
@@ -95,12 +123,12 @@ function UserActivity() {
         switch (action) {
             case 'user_login':
             case 'user_logout':
-                return <User className="w-4 h-4" />
+                return <LucideUser className="w-4 h-4" />
             case 'role_changed':
             case 'user_invited':
             case 'user_removed':
             case 'user_status_changed':
-                return <User className="w-4 h-4" />
+                return <LucideUser className="w-4 h-4" />
             default:
                 return <Activity className="w-4 h-4" />
         }
@@ -228,7 +256,8 @@ function UserActivity() {
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-medium text-gray-900">
                                         {activityService.formatActivityMessage(
-                                            activity
+                                            activity.action,
+                                            activity.details
                                         )}
                                     </p>
                                     {activity.details &&

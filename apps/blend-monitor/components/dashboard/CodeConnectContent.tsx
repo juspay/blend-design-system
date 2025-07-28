@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { useComponents, useCategoryCoverage } from '@/hooks/useRealtimeData'
+import { useComponents, useCategoryCoverage } from '@/hooks/usePostgreSQLData'
 import { ComponentInfo } from '@/types'
 import Loader, { CardSkeleton } from '@/components/shared/Loader'
 import {
@@ -141,7 +141,7 @@ export default function CodeConnectContent() {
         setRefreshing(true)
         try {
             await fetch('/api/components', { method: 'POST' })
-            // Data will auto-update via Firebase listeners
+            // Data will auto-update via PostgreSQL polling hooks
         } catch (error) {
             console.error('Error refreshing:', error)
         }

@@ -3,10 +3,11 @@
 import React, { useEffect, useState } from 'react'
 import {
     useComponentCoverage,
+    useComponents,
     usePackageStats,
     useRecentActivity,
     useDownloadTrends,
-} from '@/hooks/useRealtimeData'
+} from '@/hooks/usePostgreSQLData'
 import Loader, { CardSkeleton } from '@/components/shared/Loader'
 import {
     Package,

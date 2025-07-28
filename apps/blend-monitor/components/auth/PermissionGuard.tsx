@@ -20,7 +20,10 @@ export default function PermissionGuard({
 }: PermissionGuardProps) {
     const { hasPermission } = useAuth()
 
-    if (!hasPermission(resource, action)) {
+    // Combine resource and action into a single permission string
+    const permission = `${resource}:${action}`
+
+    if (!hasPermission(permission)) {
         return showFallback ? <>{fallback}</> : null
     }
 
@@ -53,14 +56,15 @@ export function usePermissions() {
     const { hasPermission, userRole, userData } = useAuth()
 
     return {
-        hasPermission,
+        hasPermission: (resource: string, action: string) =>
+            hasPermission(`${resource}:${action}`),
         userRole,
         userData,
-        canManageUsers: hasPermission('users', 'write'),
-        canDeploy: hasPermission('deployments', 'deploy'),
-        canRollback: hasPermission('deployments', 'rollback'),
-        canEditComponents: hasPermission('components', 'write'),
-        canManageSettings: hasPermission('settings', 'write'),
+        canManageUsers: hasPermission('users:write'),
+        canDeploy: hasPermission('deployments:deploy'),
+        canRollback: hasPermission('deployments:rollback'),
+        canEditComponents: hasPermission('components:write'),
+        canManageSettings: hasPermission('settings:write'),
         isAdmin: userData?.role === 'admin',
         isDeveloper: userData?.role === 'developer',
         isViewer: userData?.role === 'viewer',

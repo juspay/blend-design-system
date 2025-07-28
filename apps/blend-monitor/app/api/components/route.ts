@@ -1,109 +1,58 @@
 import { NextResponse } from 'next/server'
-import { ComponentScanner } from '@/lib/scanners/component-scanner'
-import { getAdminDatabase } from '@/lib/firebase-admin'
 
+// Test PostgreSQL connection directly without database-service
+const { Pool } = require('pg')
+
+// Database row interface
+interface ComponentRow {
+    component_id: string
+    name: string
+    path: string
+    category: string
+    has_storybook: boolean
+    has_figma_connect: boolean
+    has_tests: boolean
+    last_modified?: Date
+}
+
+const pool = new Pool({
+    host: process.env.DATABASE_HOST,
+    port: process.env.DATABASE_PORT,
+    database: process.env.DATABASE_NAME,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    ssl: { rejectUnauthorized: false },
+})
+
+// GET /api/components - Fetch components from PostgreSQL
 export async function GET() {
     try {
-        // Initialize scanner
-        const scanner = new ComponentScanner()
-
-        // Scan components from file system
-        const components = await scanner.scanComponents()
-
-        // Calculate coverage metrics
-        const total = components.length
-        const integrated = components.filter((c) => c.hasFigmaConnect).length
-        const percentage =
-            total > 0 ? Math.round((integrated / total) * 100) : 0
-
-        // Group by category
-        const byCategory = components.reduce(
-            (acc, component) => {
-                if (!acc[component.category]) {
-                    acc[component.category] = {
-                        total: 0,
-                        integrated: 0,
-                        components: [],
-                    }
-                }
-
-                acc[component.category].total++
-                if (component.hasFigmaConnect) {
-                    acc[component.category].integrated++
-                }
-                acc[component.category].components.push(component)
-
-                return acc
-            },
-            {} as Record<string, any>
+        const client = await pool.connect()
+        const result = await client.query(
+            'SELECT * FROM components ORDER BY name'
         )
+        client.release()
 
-        // Update Firebase Realtime Database
-        const updates = {
-            components: components.reduce(
-                (acc, comp) => {
-                    acc[comp.id] = {
-                        info: {
-                            name: comp.name,
-                            category: comp.category,
-                            path: comp.path,
-                            lastModified: comp.lastModified,
-                        },
-                        integration: {
-                            status: comp.hasFigmaConnect
-                                ? 'active'
-                                : 'not_integrated',
-                            hasFigmaConnect: comp.hasFigmaConnect,
-                            hasStorybook: comp.hasStorybook,
-                            hasTests: comp.hasTests,
-                            lastSync: new Date().toISOString(),
-                        },
-                    }
-                    return acc
-                },
-                {} as Record<string, any>
-            ),
-            coverage: {
-                summary: {
-                    total,
-                    integrated,
-                    percentage,
-                    lastUpdated: new Date().toISOString(),
-                },
-                byCategory: Object.entries(byCategory).reduce(
-                    (acc, [category, data]: [string, any]) => {
-                        acc[category] = {
-                            total: data.total,
-                            integrated: data.integrated,
-                        }
-                        return acc
-                    },
-                    {} as Record<string, any>
-                ),
-            },
-        }
-
-        // Save to Firebase using Admin SDK
-        const db = getAdminDatabase()
-        await db.ref('blend-monitor').set(updates)
+        const components = result.rows.map((row: ComponentRow) => ({
+            id: row.component_id,
+            name: row.name,
+            path: row.path,
+            category: row.category,
+            hasStorybook: row.has_storybook,
+            hasFigmaConnect: row.has_figma_connect,
+            hasTests: row.has_tests,
+            lastModified:
+                row.last_modified?.toISOString() || new Date().toISOString(),
+        }))
 
         return NextResponse.json({
-            success: true,
-            data: {
-                components,
-                coverage: {
-                    total,
-                    integrated,
-                    percentage,
-                    byCategory,
-                },
-            },
+            components,
+            lastUpdated: new Date().toISOString(),
         })
     } catch (error) {
-        console.error('Error in components API:', error)
+        console.error('Error fetching components:', error)
         return NextResponse.json(
             {
-                success: false,
                 error: 'Failed to fetch components',
                 details:
                     error instanceof Error ? error.message : 'Unknown error',
@@ -113,33 +62,17 @@ export async function GET() {
     }
 }
 
-// POST endpoint to trigger a rescan
+// POST /api/components - Simple refresh
 export async function POST() {
     try {
-        // Trigger component scan
-        const scanner = new ComponentScanner()
-        const components = await scanner.scanComponents()
-
-        // Update activity log using Admin SDK
-        const db = getAdminDatabase()
-        await db.ref(`blend-monitor/activity/recent/${Date.now()}`).set({
-            type: 'component_scan',
-            timestamp: new Date().toISOString(),
-            componentsFound: components.length,
-        })
-
         return NextResponse.json({
             success: true,
-            message: 'Component scan triggered',
-            componentsFound: components.length,
+            message: 'Components refresh endpoint',
         })
     } catch (error) {
-        console.error('Error triggering scan:', error)
+        console.error('Error in components POST API:', error)
         return NextResponse.json(
-            {
-                success: false,
-                error: 'Failed to trigger scan',
-            },
+            { error: 'Failed to process request' },
             { status: 500 }
         )
     }
