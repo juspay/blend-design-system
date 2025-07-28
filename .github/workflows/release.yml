@@ -39,8 +39,8 @@ jobs:
         name: Publish Release
         runs-on: ubuntu-latest
         outputs:
-            version: ${{ steps.bump.outputs.new_version }}
-            tag: ${{ steps.bump.outputs.tag }}
+            version: ${{ steps.bump_version.outputs.new_version }}
+            tag: ${{ steps.bump_version.outputs.tag }}
             dry_run: ${{ steps.config.outputs.dry_run }}
 
         steps:
@@ -130,13 +130,12 @@ jobs:
                   echo "Current version: $CURRENT"
 
             - name: Bump Version
-              id: bump
+              id: bump_version
               run: |
                   if [[ "${{ steps.release_type.outputs.type }}" == "custom" ]]; then
                     VERSION="${{ steps.release_type.outputs.custom_version }}"
-                    cd packages/blend
-                    npm version $VERSION --no-git-tag-version
-                    cd ../..
+                    pnpm version --filter @juspay/blend-design-system $VERSION --no-git-tag-version
+                    VERSION=$(node -p "require('./packages/blend/package.json').version")
                   else
                     if [[ "${{ steps.release_type.outputs.type }}" == "beta" ]]; then
                       pnpm version --filter @juspay/blend-design-system ${{ steps.release_type.outputs.semver }} --preid beta --no-git-tag-version
@@ -150,23 +149,24 @@ jobs:
                   echo "tag=v$VERSION" >> $GITHUB_OUTPUT
                   echo "Bumped to version: $VERSION"
 
-            - name: Check Tag Exists
+            - name: Check and Clean Existing Tags
               run: |
-                  TAG="${{ steps.bump.outputs.tag }}"
+                  TAG="${{ steps.bump_version.outputs.tag }}"
+                  echo "Checking for existing tag: $TAG"
 
-                  # Check if tag exists locally
+                  # Check if tag exists locally and delete it
                   if git rev-parse "$TAG" >/dev/null 2>&1; then
-                    echo "Tag $TAG already exists locally"
-                    exit 1
+                    echo "Tag $TAG exists locally, deleting..."
+                    git tag -d "$TAG"
                   fi
 
-                  # Check if tag exists on remote
+                  # Check if tag exists on remote and delete it
                   if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
-                    echo "Tag $TAG already exists on remote"
-                    exit 1
+                    echo "Tag $TAG exists on remote, deleting..."
+                    git push origin ":refs/tags/$TAG"
                   fi
 
-                  echo "Tag $TAG is available"
+                  echo "Tag $TAG is now available for creation"
 
             - name: Validate Conventional Commits
               run: |
@@ -192,7 +192,7 @@ jobs:
 
             - name: Generate Changelog
               run: |
-                  VERSION=${{ steps.bump.outputs.new_version }}
+                  VERSION=${{ steps.bump_version.outputs.new_version }}
                   TAG="v$VERSION"
                   echo "# Changelog for $TAG" > docs/CHANGELOG.md
                   echo "" >> docs/CHANGELOG.md
@@ -233,7 +233,7 @@ jobs:
             - name: Upload Build Artifacts
               uses: actions/upload-artifact@v4
               with:
-                  name: build-artifacts-${{ steps.bump.outputs.new_version }}
+                  name: build-artifacts-${{ steps.bump_version.outputs.new_version }}
                   path: |
                       packages/blend/dist/
                       packages/blend/package.json
@@ -250,7 +250,7 @@ jobs:
             - name: Pre-publish Validation
               if: steps.config.outputs.dry_run != 'true'
               run: |
-                  VERSION=${{ steps.bump.outputs.new_version }}
+                  VERSION=${{ steps.bump_version.outputs.new_version }}
 
                   # Check if version already exists on NPM using npm show
                   if npm show @juspay/blend-design-system@$VERSION version >/dev/null 2>&1; then
@@ -273,7 +273,7 @@ jobs:
             - name: Commit, Tag & Push
               if: steps.config.outputs.dry_run != 'true'
               run: |
-                  VERSION=${{ steps.bump.outputs.new_version }}
+                  VERSION=${{ steps.bump_version.outputs.new_version }}
                   TAG="v$VERSION"
 
                   git config user.name "github-actions[bot]"
@@ -294,7 +294,7 @@ jobs:
             - name: Publish to NPM (Dry Run)
               if: steps.config.outputs.dry_run == 'true'
               run: |
-                  echo "DRY RUN: Would publish version ${{ steps.bump.outputs.new_version }} with tag ${{ steps.release_type.outputs.npm_tag }}"
+                  echo "DRY RUN: Would publish version ${{ steps.bump_version.outputs.new_version }} with tag ${{ steps.release_type.outputs.npm_tag }}"
                   cd packages/blend
                   npm pack
                   echo "Dry run completed successfully"
@@ -302,7 +302,7 @@ jobs:
             - name: Publish to NPM
               if: steps.config.outputs.dry_run != 'true'
               run: |
-                  VERSION=${{ steps.bump.outputs.new_version }}
+                  VERSION=${{ steps.bump_version.outputs.new_version }}
                   TAG=${{ steps.release_type.outputs.npm_tag }}
 
                   echo "Publishing $VERSION to NPM with tag $TAG..."
@@ -315,8 +315,8 @@ jobs:
               if: steps.config.outputs.dry_run != 'true'
               uses: softprops/action-gh-release@v2
               with:
-                  tag_name: ${{ steps.bump.outputs.tag }}
-                  name: Release ${{ steps.bump.outputs.tag }}
+                  tag_name: ${{ steps.bump_version.outputs.tag }}
+                  name: Release ${{ steps.bump_version.outputs.tag }}
                   body_path: docs/CHANGELOG.md
                   draft: false
                   prerelease: ${{ steps.release_type.outputs.type == 'beta' }}
