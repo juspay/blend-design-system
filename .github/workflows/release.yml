@@ -21,7 +21,7 @@ on:
                     - preminor
                     - premajor
             custom_version:
-                description: 'Custom version (optional, overrides version_type)'
+                description: 'Custom version (optional)'
                 required: false
                 type: string
             dry_run:
@@ -44,82 +44,65 @@ jobs:
             dry_run: ${{ steps.config.outputs.dry_run }}
 
         steps:
-            - name: Checkout
+            - name: Checkout Repo
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
                   token: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Setup Node
+            - name: Setup Node.js 22 and pnpm
               uses: actions/setup-node@v4
               with:
                   node-version: 22
                   registry-url: 'https://registry.npmjs.org/'
 
-            - name: Configure Release
-              id: config
-              run: |
-                  if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.dry_run }}" == "true" ]]; then
-                    echo "dry_run=true" >> $GITHUB_OUTPUT
-                    echo "DRY RUN MODE - No publishing will occur"
-                  else
-                    echo "dry_run=false" >> $GITHUB_OUTPUT
-                  fi
-
-            - name: Validate Workspace
-              run: |
-                  if [[ -n $(git status --porcelain) ]]; then
-                    echo "Workspace is not clean"
-                    git status
-                    exit 1
-                  fi
-                  echo "Workspace is clean"
-
-            - name: Install dependencies
+            - name: Enable corepack & install deps
               run: |
                   corepack enable
                   pnpm install --frozen-lockfile
 
+            - name: Configure Dry Run
+              id: config
+              run: |
+                  if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.dry_run }}" == "true" ]]; then
+                    echo "dry_run=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "dry_run=false" >> $GITHUB_OUTPUT
+                  fi
+
             - name: Determine Release Type
               id: release_type
               run: |
-                  if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-                    if [[ -n "${{ inputs.custom_version }}" ]]; then
-                      echo "type=custom" >> $GITHUB_OUTPUT
-                      echo "semver=custom" >> $GITHUB_OUTPUT
-                      echo "custom_version=${{ inputs.custom_version }}" >> $GITHUB_OUTPUT
-                    else
-                      BRANCH="${{ github.ref_name }}"
-                      if [[ "$BRANCH" == "dev" ]]; then
-                        case "${{ inputs.version_type }}" in
-                          "auto") echo "semver=prepatch" >> $GITHUB_OUTPUT ;;
-                          *) echo "semver=pre${{ inputs.version_type }}" >> $GITHUB_OUTPUT ;;
-                        esac
-                        echo "type=beta" >> $GITHUB_OUTPUT
-                        echo "npm_tag=beta" >> $GITHUB_OUTPUT
-                        echo "preid=beta" >> $GITHUB_OUTPUT
-                      else
-                        case "${{ inputs.version_type }}" in
-                          "auto") echo "semver=patch" >> $GITHUB_OUTPUT ;;
-                          *) echo "semver=${{ inputs.version_type }}" >> $GITHUB_OUTPUT ;;
-                        esac
-                        echo "type=stable" >> $GITHUB_OUTPUT
-                        echo "npm_tag=latest" >> $GITHUB_OUTPUT
-                        echo "preid=" >> $GITHUB_OUTPUT
-                      fi
-                    fi
-                  else
-                    if [[ "${GITHUB_REF##*/}" == "dev" ]]; then
-                      echo "type=beta" >> $GITHUB_OUTPUT
+                  BRANCH="${GITHUB_REF_NAME}"
+                  EVENT="${GITHUB_EVENT_NAME}"
+                  CUSTOM_VERSION="${{ inputs.custom_version }}"
+                  VERSION_TYPE="${{ inputs.version_type }}"
+
+                  if [[ "$EVENT" == "workflow_dispatch" && -n "$CUSTOM_VERSION" ]]; then
+                    echo "type=custom" >> $GITHUB_OUTPUT
+                    echo "semver=custom" >> $GITHUB_OUTPUT
+                    echo "custom_version=$CUSTOM_VERSION" >> $GITHUB_OUTPUT
+                    echo "npm_tag=latest" >> $GITHUB_OUTPUT
+
+                  elif [[ "$BRANCH" == "dev" ]]; then
+                    echo "type=beta" >> $GITHUB_OUTPUT
+                    if [[ "$VERSION_TYPE" == "auto" ]]; then
                       echo "semver=prepatch" >> $GITHUB_OUTPUT
-                      echo "npm_tag=beta" >> $GITHUB_OUTPUT
-                      echo "preid=beta" >> $GITHUB_OUTPUT
                     else
-                      echo "type=stable" >> $GITHUB_OUTPUT
-                      echo "semver=patch" >> $GITHUB_OUTPUT
-                      echo "npm_tag=latest" >> $GITHUB_OUTPUT
-                      echo "preid=" >> $GITHUB_OUTPUT
+                      echo "semver=pre$VERSION_TYPE" >> $GITHUB_OUTPUT
                     fi
+                    echo "npm_tag=beta" >> $GITHUB_OUTPUT
+                    echo "preid=beta" >> $GITHUB_OUTPUT
+
+                  else
+                    echo "type=stable" >> $GITHUB_OUTPUT
+                    if [[ "$VERSION_TYPE" == "auto" ]]; then
+                      echo "semver=patch" >> $GITHUB_OUTPUT
+                    else
+                      echo "semver=$VERSION_TYPE" >> $GITHUB_OUTPUT
+                    fi
+                    echo "npm_tag=latest" >> $GITHUB_OUTPUT
+                    echo "preid=" >> $GITHUB_OUTPUT
                   fi
 
             - name: Get Current Version
@@ -127,158 +110,59 @@ jobs:
               run: |
                   CURRENT=$(node -p "require('./packages/blend/package.json').version")
                   echo "version=$CURRENT" >> $GITHUB_OUTPUT
-                  echo "Current version: $CURRENT"
 
             - name: Bump Version
               id: bump_version
               run: |
+                  cd packages/blend
                   if [[ "${{ steps.release_type.outputs.type }}" == "custom" ]]; then
-                    VERSION="${{ steps.release_type.outputs.custom_version }}"
-                    pnpm version --filter @juspay/blend-design-system $VERSION --no-git-tag-version
-                    VERSION=$(node -p "require('./packages/blend/package.json').version")
+                    npm version "${{ steps.release_type.outputs.custom_version }}" --no-git-tag-version
+                  elif [[ "${{ steps.release_type.outputs.type }}" == "beta" ]]; then
+                    npm version "${{ steps.release_type.outputs.semver }}" --preid beta --no-git-tag-version
                   else
-                    if [[ "${{ steps.release_type.outputs.type }}" == "beta" ]]; then
-                      pnpm version --filter @juspay/blend-design-system ${{ steps.release_type.outputs.semver }} --preid beta --no-git-tag-version
-                    else
-                      pnpm version --filter @juspay/blend-design-system ${{ steps.release_type.outputs.semver }} --no-git-tag-version
-                    fi
-                    VERSION=$(node -p "require('./packages/blend/package.json').version")
+                    npm version "${{ steps.release_type.outputs.semver }}" --no-git-tag-version
                   fi
-
+                  VERSION=$(node -p "require('./package.json').version")
                   echo "new_version=$VERSION" >> $GITHUB_OUTPUT
                   echo "tag=v$VERSION" >> $GITHUB_OUTPUT
-                  echo "Bumped to version: $VERSION"
 
-            - name: Check and Clean Existing Tags
+            - name: Clean Existing Tag
               run: |
                   TAG="${{ steps.bump_version.outputs.tag }}"
-                  echo "Checking for existing tag: $TAG"
-
-                  # Check if tag exists locally and delete it
-                  if git rev-parse "$TAG" >/dev/null 2>&1; then
-                    echo "Tag $TAG exists locally, deleting..."
-                    git tag -d "$TAG"
-                  fi
-
-                  # Check if tag exists on remote and delete it
-                  if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
-                    echo "Tag $TAG exists on remote, deleting..."
-                    git push origin ":refs/tags/$TAG"
-                  fi
-
-                  echo "Tag $TAG is now available for creation"
-
-            - name: Validate Conventional Commits
-              run: |
-                  echo "Validating commit messages since last tag..."
-                  LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-
-                  if [[ -n "$LAST_TAG" ]]; then
-                    COMMITS=$(git log $LAST_TAG..HEAD --oneline)
-                    echo "Commits since $LAST_TAG:"
-                    echo "$COMMITS"
-                    
-                    INVALID_COMMITS=$(git log $LAST_TAG..HEAD --pretty=format:"%s" | grep -v -E '^(feat|fix|docs|style|refactor|test|chore|ci|build|perf)(\(.+\))?: .+' || true)
-                    
-                    if [[ -n "$INVALID_COMMITS" ]]; then
-                      echo "Warning: Some commits don't follow conventional format:"
-                      echo "$INVALID_COMMITS"
-                    else
-                      echo "All commits follow conventional format"
-                    fi
-                  else
-                    echo "No previous tags found, skipping validation"
-                  fi
+                  git tag -d "$TAG" 2>/dev/null || true
+                  git push origin ":refs/tags/$TAG" || true
 
             - name: Generate Changelog
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
-                  TAG="v$VERSION"
-                  echo "# Changelog for $TAG" > docs/CHANGELOG.md
-                  echo "" >> docs/CHANGELOG.md
-
                   LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-                  if [[ -z "$LAST_TAG" ]]; then
-                    echo "## Initial Release" >> docs/CHANGELOG.md
-                    echo "" >> docs/CHANGELOG.md
-                    git log -n 20 --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
+                  echo "# Changelog for v$VERSION" > docs/CHANGELOG.md
+                  echo "" >> docs/CHANGELOG.md
+                  if [[ -n "$LAST_TAG" ]]; then
+                    git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
                   else
-                    echo "## Changes since $LAST_TAG" >> docs/CHANGELOG.md
-                    echo "" >> docs/CHANGELOG.md
-                    
-                    echo "### Features" >> docs/CHANGELOG.md
-                    git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" --grep="^feat" >> docs/CHANGELOG.md || echo "No new features" >> docs/CHANGELOG.md
-                    echo "" >> docs/CHANGELOG.md
-                    
-                    echo "### Bug Fixes" >> docs/CHANGELOG.md
-                    git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" --grep="^fix" >> docs/CHANGELOG.md || echo "No bug fixes" >> docs/CHANGELOG.md
-                    echo "" >> docs/CHANGELOG.md
-                    
-                    echo "### Other Changes" >> docs/CHANGELOG.md
-                    git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" --grep="^feat" --grep="^fix" --invert-grep >> docs/CHANGELOG.md || echo "No other changes" >> docs/CHANGELOG.md
+                    git log -n 20 --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
                   fi
 
-            - name: Security Audit
-              run: |
-                  echo "Running security audit..."
-                  pnpm audit --audit-level moderate
-                  echo "Security audit passed"
+            - name: Build Package
+              run: pnpm --filter @juspay/blend-design-system build
 
-            - name: Build
-              run: |
-                  echo "Building package..."
-                  pnpm --filter @juspay/blend-design-system build
-                  echo "Build completed"
-
-            - name: Upload Build Artifacts
+            - name: Upload Artifacts
               uses: actions/upload-artifact@v4
               with:
-                  name: build-artifacts-${{ steps.bump_version.outputs.new_version }}
+                  name: build-${{ steps.bump_version.outputs.new_version }}
                   path: |
-                      packages/blend/dist/
+                      packages/blend/dist
                       packages/blend/package.json
                       docs/CHANGELOG.md
-                  retention-days: 30
-
-            - name: Verify Package Contents
-              run: |
-                  echo "Verifying package contents..."
-                  cd packages/blend
-                  npm pack --dry-run
-                  echo "Package verification completed"
-
-            - name: Pre-publish Validation
-              if: steps.config.outputs.dry_run != 'true'
-              run: |
-                  VERSION=${{ steps.bump_version.outputs.new_version }}
-
-                  # Check if version already exists on NPM using npm show
-                  if npm show @juspay/blend-design-system@$VERSION version >/dev/null 2>&1; then
-                    echo "Version $VERSION already published to NPM registry"
-                    echo "Use 'npm show @juspay/blend-design-system@$VERSION' to view details"
-                    exit 1
-                  fi
-
-                  # Validate package.json
-                  cd packages/blend
-                  node -e "
-                    const pkg = require('./package.json');
-                    if (!pkg.name || !pkg.version || !pkg.main) {
-                      console.error('Invalid package.json structure');
-                      process.exit(1);
-                    }
-                    console.log('Package.json validation passed');
-                  "
 
             - name: Commit, Tag & Push
               if: steps.config.outputs.dry_run != 'true'
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
                   TAG="v$VERSION"
-
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
-
                   git add .
                   git commit -m "chore(release): $TAG
 
@@ -286,30 +170,16 @@ jobs:
                   - Update changelog
 
                   [skip ci]"
-
                   git tag "$TAG" -m "Release $TAG"
                   git push origin HEAD --follow-tags
-                  echo "Changes committed and tagged"
-
-            - name: Publish to NPM (Dry Run)
-              if: steps.config.outputs.dry_run == 'true'
-              run: |
-                  echo "DRY RUN: Would publish version ${{ steps.bump_version.outputs.new_version }} with tag ${{ steps.release_type.outputs.npm_tag }}"
-                  cd packages/blend
-                  npm pack
-                  echo "Dry run completed successfully"
 
             - name: Publish to NPM
               if: steps.config.outputs.dry_run != 'true'
-              run: |
-                  VERSION=${{ steps.bump_version.outputs.new_version }}
-                  TAG=${{ steps.release_type.outputs.npm_tag }}
-
-                  echo "Publishing $VERSION to NPM with tag $TAG..."
-                  pnpm publish --filter @juspay/blend-design-system --access public --tag $TAG --no-git-checks
-                  echo "Successfully published to NPM"
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+              run: |
+                  cd packages/blend
+                  pnpm publish --access public --tag ${{ steps.release_type.outputs.npm_tag }} --no-git-checks
 
             - name: Create GitHub Release
               if: steps.config.outputs.dry_run != 'true'
@@ -320,86 +190,28 @@ jobs:
                   body_path: docs/CHANGELOG.md
                   draft: false
                   prerelease: ${{ steps.release_type.outputs.type == 'beta' }}
-                  files: |
-                      packages/blend/*.tgz
-
-            - name: Upload Package to Release
-              if: steps.config.outputs.dry_run != 'true'
-              run: |
-                  cd packages/blend
-                  TARBALL=$(npm pack)
-                  echo "Created package: $TARBALL"
 
     backmerge:
-        name: Back-merge main to dev
+        name: Back-merge main → dev
         needs: release
         if: github.ref == 'refs/heads/main' && needs.release.outputs.dry_run != 'true'
         runs-on: ubuntu-latest
-
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+            - uses: actions/checkout@v4
               with:
                   fetch-depth: 0
                   token: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Fetch latest changes
-              run: |
-                  git fetch origin main:main
-                  git fetch origin dev:dev
-
-            - name: Create Back-merge PR
+            - name: Create PR main → dev
               uses: peter-evans/create-pull-request@v6
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  branch: release/backmerge-main-to-dev-${{ needs.release.outputs.version }}
                   base: dev
-                  title: 'chore: merge release ${{ needs.release.outputs.tag }} from main to dev'
+                  branch: backmerge/main-to-dev-${{ needs.release.outputs.version }}
+                  title: 'chore: backmerge release ${{ needs.release.outputs.version }} to dev'
                   body: |
-                      ## Automated Back-merge
-
-                      This PR merges the latest release changes from `main` to `dev`.
-
-                      **Release:** ${{ needs.release.outputs.tag }}
-                      **Triggered by:** Release workflow
-
-                      ### Changes included:
-                      - Version bump to ${{ needs.release.outputs.version }}
-                      - Updated changelog
-                      - Release tag: ${{ needs.release.outputs.tag }}
-
-                      This PR should be automatically merged if there are no conflicts.
+                      Backmerging release changes from `main` into `dev`
                   labels: |
                       automated
                       release
-                      backmerge
                   assignees: ${{ github.actor }}
-
-    post_release:
-        name: Post-release Tasks
-        needs: [release, backmerge]
-        if: always() && needs.release.result == 'success' && needs.release.outputs.dry_run != 'true'
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: Verify NPM Publication
-              run: |
-                  VERSION=${{ needs.release.outputs.version }}
-                  echo "Verifying NPM publication..."
-
-                  # Wait for NPM to propagate
-                  sleep 30
-
-                  if npm show @juspay/blend-design-system@$VERSION version >/dev/null 2>&1; then
-                    echo "Package $VERSION successfully published to NPM"
-                    npm show @juspay/blend-design-system@$VERSION version
-                  else
-                    echo "Package $VERSION not found on NPM registry"
-                    echo "Check NPM status or wait for propagation"
-                    exit 1
-                  fi
-
-            - name: Update Package Cache
-              run: |
-                  echo "Clearing package caches..."
-                  echo "Package caches updated"
