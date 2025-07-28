@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { auth } from '@/lib/firebase'
+import { auth } from '@/frontend/lib/firebase'
 import { onAuthStateChanged, User } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import {
@@ -25,7 +25,7 @@ import {
     UserX,
     Shield,
 } from 'lucide-react'
-import { useUserManagement } from '@/hooks/usePostgreSQLData'
+import { useUserManagement } from '@/frontend/hooks/usePostgreSQLData'
 
 // Default roles
 const DEFAULT_ROLES = {

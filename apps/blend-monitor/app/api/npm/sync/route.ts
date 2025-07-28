@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { databaseService } from '@/lib/database-service'
-import { initializeDatabase } from '@/lib/database'
+import { databaseService } from '@/backend/lib/database-service'
+import { initializeDatabase } from '@/backend/lib/database'
 
 // POST /api/npm/sync - Manually trigger NPM data synchronization
 export async function POST() {

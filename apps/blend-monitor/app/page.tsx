@@ -7,8 +7,8 @@ import {
     usePackageStats,
     useRecentActivity,
     useDownloadTrends,
-} from '@/hooks/usePostgreSQLData'
-import Loader, { CardSkeleton } from '@/components/shared/Loader'
+} from '@/frontend/hooks/usePostgreSQLData'
+import Loader, { CardSkeleton } from '@/frontend/components/shared/Loader'
 import {
     Package,
     Link,
@@ -65,7 +65,7 @@ import {
     tenants,
     merchants,
     getNavigationData,
-} from '@/components/shared/SidebarConfig'
+} from '@/frontend/components/shared/SidebarConfig'
 
 export default function DashboardHome() {
     const router = useRouter()

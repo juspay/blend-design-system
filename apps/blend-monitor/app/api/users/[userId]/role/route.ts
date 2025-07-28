@@ -4,8 +4,8 @@ import {
     requirePermission,
     logAuditEvent,
 } from '@/lib/auth-middleware'
-import { databaseService } from '@/lib/database-service'
-import { initializeDatabase } from '@/lib/database'
+import { databaseService } from '@/backend/lib/database-service'
+import { initializeDatabase } from '@/backend/lib/database'
 
 export async function PUT(
     request: NextRequest,

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { databaseService } from '@/lib/database-service'
-import { initializeDatabase } from '@/lib/database'
+import { databaseService } from '@/backend/lib/database-service'
+import { initializeDatabase } from '@/backend/lib/database'
 
 export async function POST(request: NextRequest) {
     try {

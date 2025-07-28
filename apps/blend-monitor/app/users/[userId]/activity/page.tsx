@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { auth } from '@/lib/firebase'
+import { auth } from '@/frontend/lib/firebase'
 import { onAuthStateChanged, User } from 'firebase/auth'
-import { usePermissions } from '@/components/auth/PermissionGuard'
-import ProtectedRoute from '@/components/auth/ProtectedRoute'
+import { usePermissions } from '@/frontend/components/auth/PermissionGuard'
+import ProtectedRoute from '@/frontend/components/auth/ProtectedRoute'
 import { Button, ButtonType, ButtonSize } from 'blend-v1'
 import { ArrowLeft, Activity, Clock, User as LucideUser } from 'lucide-react'
 

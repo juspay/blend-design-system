@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/frontend/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { Button, ButtonType, ButtonSize } from 'blend-v1'
 import { Zap, Shield, BarChart3, GitBranch, AlertCircle } from 'lucide-react'
-import Loader from '@/components/shared/Loader'
+import Loader from '@/frontend/components/shared/Loader'
 
 export default function LoginPage() {
     const { user, loading, signInWithGoogle } = useAuth()

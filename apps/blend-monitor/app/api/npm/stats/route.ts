@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
-import { databaseService } from '@/lib/database-service'
-import { initializeDatabase } from '@/lib/database'
-import { NPMClient } from '@/lib/data/npm-client'
+import { databaseService } from '@/backend/lib/database-service'
+import { initializeDatabase } from '@/backend/lib/database'
+import { NPMClient } from '@/backend/external/npm-client'
 
 // GET /api/npm/stats - Get NPM package statistics
 export async function GET() {
