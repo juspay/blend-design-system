@@ -4,7 +4,6 @@ import {
     SQL,
     DatabaseUser,
     DatabaseComponent,
-    DatabaseDeployment,
     DatabaseActivityLog,
 } from './database'
 import {
@@ -13,8 +12,6 @@ import {
     PackageStats,
     Activity,
     UserRole,
-    Deployment,
-    Environment,
 } from '@/types'
 
 export class DatabaseService {
@@ -611,106 +608,6 @@ export class DatabaseService {
         }))
     }
 
-    // ==================== DEPLOYMENTS ====================
-
-    async getDeployments(
-        limit: number = 50,
-        offset: number = 0
-    ): Promise<Deployment[]> {
-        const result = await query<DatabaseDeployment>(SQL.deployments.list, [
-            limit,
-            offset,
-        ])
-
-        return result.rows.map(this.mapDatabaseDeploymentToDeployment)
-    }
-
-    async getDeploymentById(id: string): Promise<Deployment | null> {
-        const result = await query<DatabaseDeployment>(
-            SQL.deployments.findById,
-            [id]
-        )
-        return result.rows[0]
-            ? this.mapDatabaseDeploymentToDeployment(result.rows[0])
-            : null
-    }
-
-    async createDeployment(
-        deployment: Partial<Deployment>
-    ): Promise<Deployment> {
-        const result = await query<DatabaseDeployment>(SQL.deployments.create, [
-            deployment.environment,
-            deployment.version,
-            deployment.deployer?.name,
-            deployment.deployer?.email,
-            new Date(deployment.startTime!),
-            deployment.status,
-            deployment.commitSha,
-            deployment.branch,
-            deployment.configuration
-                ? JSON.stringify(deployment.configuration)
-                : null,
-        ])
-
-        return this.mapDatabaseDeploymentToDeployment(result.rows[0])
-    }
-
-    async updateDeploymentStatus(
-        id: string,
-        status: string,
-        endTime?: Date,
-        durationSeconds?: number
-    ): Promise<Deployment> {
-        const result = await query<DatabaseDeployment>(
-            SQL.deployments.updateStatus,
-            [id, status, endTime, durationSeconds]
-        )
-
-        return this.mapDatabaseDeploymentToDeployment(result.rows[0])
-    }
-
-    // ==================== ENVIRONMENTS ====================
-
-    async getEnvironments(): Promise<Environment[]> {
-        const result = await query(SQL.environments.list)
-        return result.rows.map((row) => ({
-            id: row.id,
-            name: row.name,
-            status: row.status,
-            uptime: row.uptime_percentage,
-            currentVersion: row.current_version,
-            lastDeployment: row.last_deployment?.toISOString(),
-            url: row.url,
-            channel: row.channel,
-            responseTime: {
-                p50: row.response_time_p50,
-                p95: row.response_time_p95,
-                p99: row.response_time_p99,
-            },
-            metrics: {
-                requestRate: row.request_rate,
-                errorRate: row.error_rate,
-                activeUsers: row.active_users,
-            },
-        }))
-    }
-
-    async updateEnvironmentStatus(
-        name: string,
-        status: string,
-        uptime?: number,
-        currentVersion?: string,
-        lastDeployment?: Date
-    ): Promise<void> {
-        await query(SQL.environments.updateStatus, [
-            name,
-            status,
-            uptime,
-            currentVersion,
-            lastDeployment,
-        ])
-    }
-
     // ==================== HELPER METHODS ====================
 
     private mapDatabaseComponentToInfo(
@@ -741,37 +638,6 @@ export class DatabaseService {
             component: dbActivity.details?.component,
             version: dbActivity.details?.version,
             user: dbActivity.details?.user,
-        }
-    }
-
-    private mapDatabaseDeploymentToDeployment(
-        dbDeployment: DatabaseDeployment
-    ): Deployment {
-        return {
-            id: dbDeployment.id,
-            environment: dbDeployment.environment,
-            version: dbDeployment.version,
-            deployer: {
-                name: dbDeployment.deployer_name,
-                email: dbDeployment.deployer_email,
-            },
-            startTime: dbDeployment.start_time.toISOString(),
-            endTime: dbDeployment.end_time?.toISOString(),
-            status: dbDeployment.status as any,
-            duration: dbDeployment.duration_seconds,
-            commitSha: dbDeployment.commit_sha || '',
-            buildLogsUrl: dbDeployment.build_logs_url,
-            configuration: dbDeployment.configuration,
-            rollbackAvailable: dbDeployment.rollback_available,
-            source: dbDeployment.source as any,
-            service: dbDeployment.service,
-            siteUrl: dbDeployment.site_url,
-            branch: dbDeployment.branch,
-            buildLogs: dbDeployment.build_logs,
-            deploymentLogs: dbDeployment.deployment_logs,
-            buildCacheKey: dbDeployment.build_cache_key,
-            previewUrl: dbDeployment.preview_url,
-            scheduledFor: dbDeployment.scheduled_for?.toISOString(),
         }
     }
 

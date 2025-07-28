@@ -321,65 +321,6 @@ export function useUserActivity(userId: string, limit: number = 50) {
     }
 }
 
-// Hook for deployments
-export function useDeployments(limit: number = 50, offset: number = 0) {
-    const fetchDeployments = useCallback(async () => {
-        const response = await fetch(
-            `/api/deployments?limit=${limit}&offset=${offset}`
-        )
-        if (!response.ok) {
-            throw new Error('Failed to fetch deployments')
-        }
-        return response.json()
-    }, [limit, offset])
-
-    const {
-        data: deployments,
-        loading,
-        error,
-        refetch,
-    } = usePolling(
-        fetchDeployments,
-        POLLING_INTERVALS.activity, // Use activity interval for deployments
-        [limit, offset]
-    )
-
-    return {
-        deployments: deployments || [],
-        loading,
-        error,
-        refetch,
-    }
-}
-
-// Hook for environments
-export function useEnvironments() {
-    const fetchEnvironments = useCallback(async () => {
-        const response = await fetch('/api/environments')
-        if (!response.ok) {
-            throw new Error('Failed to fetch environments')
-        }
-        return response.json()
-    }, [])
-
-    const {
-        data: environments,
-        loading,
-        error,
-        refetch,
-    } = usePolling(
-        fetchEnvironments,
-        POLLING_INTERVALS.coverage // Use coverage interval for environments
-    )
-
-    return {
-        environments: environments || [],
-        loading,
-        error,
-        refetch,
-    }
-}
-
 // Hook for real-time-like updates with background refresh
 export function useRealtimeUpdates() {
     const [lastUpdate, setLastUpdate] = useState<Date>(new Date())

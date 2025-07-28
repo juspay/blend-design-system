@@ -61,8 +61,6 @@ export function usePermissions() {
         userRole,
         userData,
         canManageUsers: hasPermission('users:write'),
-        canDeploy: hasPermission('deployments:deploy'),
-        canRollback: hasPermission('deployments:rollback'),
         canEditComponents: hasPermission('components:write'),
         canManageSettings: hasPermission('settings:write'),
         isAdmin: userData?.role === 'admin',

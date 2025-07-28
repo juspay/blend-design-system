@@ -269,33 +269,6 @@ export interface DatabaseComponent {
     updated_at: Date
 }
 
-export interface DatabaseDeployment {
-    id: string
-    environment: string
-    version: string
-    deployer_name: string
-    deployer_email: string
-    start_time: Date
-    end_time?: Date
-    status: string
-    duration_seconds?: number
-    commit_sha?: string
-    build_logs_url?: string
-    configuration?: any
-    rollback_available: boolean
-    source?: string
-    service?: string
-    site_url?: string
-    branch?: string
-    build_logs?: string[]
-    deployment_logs?: string[]
-    build_cache_key?: string
-    preview_url?: string
-    scheduled_for?: Date
-    created_at: Date
-    updated_at: Date
-}
-
 export interface DatabaseActivityLog {
     id: string
     user_id?: string
@@ -392,43 +365,6 @@ export const SQL = {
         systemLog: `
             INSERT INTO system_activity (action, details, timestamp)
             VALUES ($1, $2, $3)
-            RETURNING *
-        `,
-    },
-
-    // Deployment queries
-    deployments: {
-        list: `
-            SELECT * FROM deployments 
-            ORDER BY start_time DESC 
-            LIMIT $1 OFFSET $2
-        `,
-        findById: 'SELECT * FROM deployments WHERE id = $1',
-        create: `
-            INSERT INTO deployments (
-                environment, version, deployer_name, deployer_email, 
-                start_time, status, commit_sha, branch, configuration
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-            RETURNING *
-        `,
-        updateStatus: `
-            UPDATE deployments 
-            SET status = $2, end_time = $3, duration_seconds = $4, updated_at = NOW()
-            WHERE id = $1
-            RETURNING *
-        `,
-    },
-
-    // Environment queries
-    environments: {
-        list: 'SELECT * FROM environments ORDER BY name',
-        findByName: 'SELECT * FROM environments WHERE name = $1',
-        updateStatus: `
-            UPDATE environments 
-            SET status = $2, uptime_percentage = $3, current_version = $4, 
-                last_deployment = $5, updated_at = NOW()
-            WHERE name = $1
             RETURNING *
         `,
     },
