@@ -26,17 +26,21 @@ interface UserData {
 
 // Mock services
 const activityService = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getUserActivity: async (_uid: string) => [],
     subscribeToUserActivity:
-        (_uid: string, callback: (activities: ActivityLog[]) => void) =>
-        () => {},
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        (_uid: string, _callback: (activities: ActivityLog[]) => void) =>
+            () => {},
     formatActivityMessage: (
         action: string,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _details?: Record<string, unknown>
     ) => `Activity: ${action}`,
 }
 
 const roleService = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getUserData: async (_uid: string): Promise<UserData | null> => null,
 }
 
@@ -83,7 +87,7 @@ function UserActivity() {
         // Subscribe to real-time activity updates
         const unsubscribe = activityService.subscribeToUserActivity(
             userId,
-            (activities) => {
+            (activities: ActivityLog[]) => {
                 setActivities(activities)
                 setLoading(false)
             }

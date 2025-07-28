@@ -1,13 +1,29 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { databaseService } from '@/backend/lib/database-service'
 import { ComponentScanner } from '@/backend/scanners/component-scanner'
 import { initializeDatabase } from '@/backend/lib/database'
+import {
+    authenticateRequest,
+    requirePermission,
+} from '@/backend/lib/auth-middleware'
 
 // GET /api/components-pg - Fetch components from PostgreSQL
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
         // Ensure database is initialized
         await initializeDatabase()
+
+        // Authenticate the request
+        const user = await authenticateRequest(request)
+
+        // Check permissions - users with 'read' permission can view components
+        const permissionCheck = await requirePermission('components', 'read')(
+            request,
+            user
+        )
+        if (permissionCheck) {
+            return permissionCheck
+        }
 
         const components = await databaseService.getComponents()
         const coverage = await databaseService.getComponentCoverage()
@@ -33,12 +49,24 @@ export async function GET() {
 }
 
 // POST /api/components-pg - Scan and update components in PostgreSQL
-export async function POST() {
+export async function POST(request: NextRequest) {
     try {
         console.log('Starting component scan and database update...')
 
         // Ensure database is initialized
         await initializeDatabase()
+
+        // Authenticate the request
+        const user = await authenticateRequest(request)
+
+        // Check permissions - only admins can trigger component scans
+        const permissionCheck = await requirePermission('components', 'write')(
+            request,
+            user
+        )
+        if (permissionCheck) {
+            return permissionCheck
+        }
 
         // Scan components from filesystem
         const scanner = new ComponentScanner()

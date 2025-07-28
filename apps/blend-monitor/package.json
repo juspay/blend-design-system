@@ -16,6 +16,7 @@
         "blend-v1": "^0.2.44",
         "dotenv": "^17.2.1",
         "firebase": "^11.10.0",
+        "firebase-admin": "^12.7.0",
         "googleapis": "^153.0.0",
         "lucide-react": "^0.525.0",
         "next": "15.4.1",

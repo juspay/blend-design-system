@@ -1,6 +1,12 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, {
+    createContext,
+    useContext,
+    useState,
+    useEffect,
+    useCallback,
+} from 'react'
 import {
     onAuthStateChanged,
     signInWithPopup,
@@ -45,23 +51,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = useState(true)
     const router = useRouter()
 
-    const getRoleName = (role: string) => {
+    const getRoleName = useCallback((role: string) => {
         const roleNames: Record<string, string> = {
             admin: 'Administrator',
             developer: 'Developer',
             viewer: 'Viewer',
         }
         return roleNames[role] || 'Viewer'
-    }
+    }, [])
 
-    const getRolePermissions = (role: string) => {
+    const getRolePermissions = useCallback((role: string) => {
         const rolePermissions: Record<string, string[]> = {
             admin: ['*'],
             developer: ['read', 'write', 'deploy'],
             viewer: ['read'],
         }
         return rolePermissions[role] || ['read']
-    }
+    }, [])
 
     useEffect(() => {
         // Create or update user in PostgreSQL

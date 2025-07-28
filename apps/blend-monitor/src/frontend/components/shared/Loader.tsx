@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { PulseLoader } from 'react-spinners'
 
 interface LoaderProps {
     size?: 'small' | 'medium' | 'large'
@@ -14,10 +13,10 @@ export default function Loader({
     text = 'Loading...',
     fullScreen = false,
 }: LoaderProps) {
-    const loaderSize = {
-        small: 8,
-        medium: 12,
-        large: 16,
+    const dotSize = {
+        small: 'w-2 h-2',
+        medium: 'w-3 h-3',
+        large: 'w-4 h-4',
     }
 
     const textSize = {
@@ -28,12 +27,19 @@ export default function Loader({
 
     const content = (
         <div className="flex flex-col items-center justify-center">
-            <PulseLoader
-                color="#2563eb"
-                size={loaderSize[size]}
-                margin={4}
-                speedMultiplier={0.8}
-            />
+            <div className="flex space-x-2">
+                <div
+                    className={`${dotSize[size]} bg-blue-600 rounded-full animate-pulse`}
+                ></div>
+                <div
+                    className={`${dotSize[size]} bg-blue-600 rounded-full animate-pulse`}
+                    style={{ animationDelay: '0.2s' }}
+                ></div>
+                <div
+                    className={`${dotSize[size]} bg-blue-600 rounded-full animate-pulse`}
+                    style={{ animationDelay: '0.4s' }}
+                ></div>
+            </div>
 
             {text && (
                 <p

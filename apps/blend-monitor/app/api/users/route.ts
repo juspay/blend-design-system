@@ -1,10 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { databaseService } from '@/backend/lib/database-service'
 import { initializeDatabase } from '@/backend/lib/database'
+import {
+    authenticateRequest,
+    requirePermission,
+} from '@/backend/lib/auth-middleware'
 
 export async function GET(request: NextRequest) {
     try {
         await initializeDatabase()
+
+        // Authenticate the request
+        const user = await authenticateRequest(request)
+
+        // Check permissions - users with 'read' permission can view users
+        const permissionCheck = await requirePermission('users', 'read')(
+            request,
+            user
+        )
+        if (permissionCheck) {
+            return permissionCheck
+        }
 
         const searchParams = request.nextUrl.searchParams
         const limit = searchParams.get('limit')
@@ -38,6 +54,8 @@ export async function POST(request: NextRequest) {
     try {
         await initializeDatabase()
 
+        // Note: POST is used during login to create/update user
+        // We'll allow this without full authentication but verify the Firebase UID
         const body = await request.json()
         const {
             firebase_uid,

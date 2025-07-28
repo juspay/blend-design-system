@@ -5,6 +5,7 @@ import {
     PackageStats,
     Activity,
 } from '../../shared/types'
+import { authenticatedFetch } from '../lib/api-client'
 
 // Hook configuration
 const POLLING_INTERVALS = {
@@ -71,7 +72,7 @@ function usePolling<T>(
 // Hook for component coverage data
 export function useComponentCoverage() {
     const fetchCoverage = useCallback(async (): Promise<CoverageMetrics> => {
-        const response = await fetch('/api/components/coverage')
+        const response = await authenticatedFetch('/api/components/coverage')
         if (!response.ok) {
             throw new Error('Failed to fetch coverage data')
         }
@@ -91,7 +92,7 @@ export function useComponentCoverage() {
 // Hook for components list
 export function useComponents() {
     const fetchComponents = useCallback(async (): Promise<ComponentInfo[]> => {
-        const response = await fetch('/api/components')
+        const response = await authenticatedFetch('/api/components')
         if (!response.ok) {
             throw new Error('Failed to fetch components')
         }
@@ -118,7 +119,7 @@ export function useComponents() {
 export function usePackageStats() {
     const fetchPackageStats =
         useCallback(async (): Promise<PackageStats | null> => {
-            const response = await fetch('/api/npm/stats')
+            const response = await authenticatedFetch('/api/npm/stats')
 
             if (!response.ok) {
                 if (response.status === 503) {
@@ -158,7 +159,7 @@ export function useDownloadTrends() {
     const fetchTrends = useCallback(async (): Promise<
         { date: string; downloads: number }[]
     > => {
-        const response = await fetch('/api/npm/trends')
+        const response = await authenticatedFetch('/api/npm/trends')
 
         if (!response.ok) {
             if (response.status === 503) {
@@ -214,7 +215,7 @@ export function useVersionHistory() {
             breaking?: boolean
         }[]
     > => {
-        const response = await fetch('/api/npm/versions')
+        const response = await authenticatedFetch('/api/npm/versions')
 
         if (!response.ok) {
             if (response.status === 503) {
@@ -260,7 +261,9 @@ export function useVersionHistory() {
 // Hook for recent activity
 export function useRecentActivity(limit: number = 10) {
     const fetchActivity = useCallback(async (): Promise<Activity[]> => {
-        const response = await fetch(`/api/activity/recent?limit=${limit}`)
+        const response = await authenticatedFetch(
+            `/api/activity/recent?limit=${limit}`
+        )
         if (!response.ok) {
             throw new Error('Failed to fetch recent activity')
         }
@@ -287,7 +290,9 @@ export function useCategoryCoverage() {
     const fetchCategories = useCallback(async (): Promise<
         Record<string, { total: number; integrated: number }>
     > => {
-        const response = await fetch('/api/components/coverage/categories')
+        const response = await authenticatedFetch(
+            '/api/components/coverage/categories'
+        )
         if (!response.ok) {
             throw new Error('Failed to fetch category coverage')
         }
@@ -314,7 +319,7 @@ export function useUserActivity(userId: string, limit: number = 50) {
     const fetchUserActivity = useCallback(async (): Promise<Activity[]> => {
         if (!userId) return []
 
-        const response = await fetch(
+        const response = await authenticatedFetch(
             `/api/users/${userId}/activity?limit=${limit}`
         )
         if (!response.ok) {
@@ -393,7 +398,7 @@ function usePollingWithRefresh<T>(
 // Export enhanced versions of hooks that respond to manual refresh
 export function useComponentsWithRefresh() {
     const fetchComponents = useCallback(async (): Promise<ComponentInfo[]> => {
-        const response = await fetch('/api/components')
+        const response = await authenticatedFetch('/api/components')
         if (!response.ok) {
             throw new Error('Failed to fetch components')
         }
@@ -419,7 +424,7 @@ export function useComponentsWithRefresh() {
 export function usePackageStatsWithRefresh() {
     const fetchPackageStats =
         useCallback(async (): Promise<PackageStats | null> => {
-            const response = await fetch('/api/npm/stats')
+            const response = await authenticatedFetch('/api/npm/stats')
             if (!response.ok) {
                 throw new Error('Failed to fetch package stats')
             }
@@ -442,12 +447,12 @@ export function useDataRefresh() {
         try {
             if (endpoint) {
                 // Refresh specific endpoint
-                await fetch(endpoint, { method: 'POST' })
+                await authenticatedFetch(endpoint, { method: 'POST' })
             } else {
                 // Refresh all data sources
                 await Promise.allSettled([
-                    fetch('/api/components', { method: 'POST' }),
-                    fetch('/api/npm', { method: 'POST' }),
+                    authenticatedFetch('/api/components', { method: 'POST' }),
+                    authenticatedFetch('/api/npm', { method: 'POST' }),
                 ])
             }
 
@@ -467,7 +472,7 @@ export function useDataRefresh() {
 // User management hooks
 export function useUsers() {
     const fetchUsers = useCallback(async () => {
-        const response = await fetch('/api/users')
+        const response = await authenticatedFetch('/api/users')
         if (!response.ok) {
             throw new Error(`Failed to fetch users: ${response.statusText}`)
         }
@@ -503,13 +508,16 @@ export function useUserManagement() {
     const updateUserRole = useCallback(
         async (userId: string, role: string) => {
             try {
-                const response = await fetch(`/api/users/${userId}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ role }),
-                })
+                const response = await authenticatedFetch(
+                    `/api/users/${userId}`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ role }),
+                    }
+                )
 
                 if (!response.ok) {
                     throw new Error(
@@ -535,13 +543,16 @@ export function useUserManagement() {
     const updateUserStatus = useCallback(
         async (userId: string, isActive: boolean) => {
             try {
-                const response = await fetch(`/api/users/${userId}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ is_active: isActive }),
-                })
+                const response = await authenticatedFetch(
+                    `/api/users/${userId}`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ is_active: isActive }),
+                    }
+                )
 
                 if (!response.ok) {
                     throw new Error(
@@ -575,7 +586,7 @@ export function useUserManagement() {
             role?: string
         }) => {
             try {
-                const response = await fetch('/api/users', {
+                const response = await authenticatedFetch('/api/users', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -607,9 +618,12 @@ export function useUserManagement() {
     const deleteUser = useCallback(
         async (userId: string) => {
             try {
-                const response = await fetch(`/api/users/${userId}`, {
-                    method: 'DELETE',
-                })
+                const response = await authenticatedFetch(
+                    `/api/users/${userId}`,
+                    {
+                        method: 'DELETE',
+                    }
+                )
 
                 if (!response.ok) {
                     throw new Error(

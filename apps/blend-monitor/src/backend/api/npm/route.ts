@@ -1,13 +1,29 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { NPMClient } from '@/backend/external/npm-client'
 import { databaseService } from '@/backend/lib/database-service'
 import { initializeDatabase } from '@/backend/lib/database'
 import { VersionInfo } from '@/shared/types'
+import {
+    authenticateRequest,
+    requirePermission,
+} from '@/backend/lib/auth-middleware'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
         // Initialize PostgreSQL database
         await initializeDatabase()
+
+        // Authenticate the request
+        const user = await authenticateRequest(request)
+
+        // Check permissions - users with 'read' permission can view npm data
+        const permissionCheck = await requirePermission('npm', 'read')(
+            request,
+            user
+        )
+        if (permissionCheck) {
+            return permissionCheck
+        }
 
         const npmClient = new NPMClient('blend-v1')
 
@@ -176,9 +192,21 @@ export async function GET() {
 }
 
 // POST endpoint to trigger NPM data refresh
-export async function POST() {
+export async function POST(request: NextRequest) {
     try {
         await initializeDatabase()
+
+        // Authenticate the request
+        const user = await authenticateRequest(request)
+
+        // Check permissions - only admins can trigger npm refresh
+        const permissionCheck = await requirePermission('npm', 'write')(
+            request,
+            user
+        )
+        if (permissionCheck) {
+            return permissionCheck
+        }
 
         // Trigger NPM data fetch and update
         const response = await fetch(

@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { databaseService } from '@/backend/lib/database-service'
 import { initializeDatabase } from '@/backend/lib/database'
+import { authenticateRequest } from '@/backend/lib/auth-middleware'
 
 export async function POST(request: NextRequest) {
     try {
         await initializeDatabase()
 
+        // Note: POST is used by the frontend after login/logout
+        // We'll allow this without full authentication for now
         const body = await request.json()
         const { user_id, action, details } = body
 
@@ -51,6 +54,15 @@ export async function GET(request: NextRequest) {
     try {
         await initializeDatabase()
 
+        // Authenticate the request
+        const authenticatedUser = await authenticateRequest(request)
+        if (!authenticatedUser) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            )
+        }
+
         const searchParams = request.nextUrl.searchParams
         const userId = searchParams.get('userId')
         const limit = searchParams.get('limit')
@@ -70,6 +82,18 @@ export async function GET(request: NextRequest) {
             return NextResponse.json(
                 { success: false, error: 'User not found' },
                 { status: 404 }
+            )
+        }
+
+        // Check if user can view this activity
+        // Users can view their own activity, admins can view anyone's
+        if (
+            authenticatedUser.uid !== userId &&
+            authenticatedUser.role !== 'admin'
+        ) {
+            return NextResponse.json(
+                { success: false, error: 'Permission denied' },
+                { status: 403 }
             )
         }
 
