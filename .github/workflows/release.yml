@@ -208,10 +208,30 @@ jobs:
                       packages/blend/package.json
                       docs/CHANGELOG.md
                       .
-            - name: Who am I on NPM?
-              run: npm whoami
+            - name: Debug NPM Token
+              run: |
+                  echo "Checking if NPM_TOKEN secret is available..."
+                  if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+                    echo "ERROR: NPM_TOKEN secret is not set or is empty"
+                    echo "Please ensure the NPM_TOKEN secret is configured in your repository settings"
+                    exit 1
+                  else
+                    echo "NPM_TOKEN secret is available"
+                    echo "Token length: ${#NPM_TOKEN}"
+                  fi
               env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Setup NPM Authentication
+              run: |
+                  # Set up npm authentication using .npmrc
+                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+                  echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
+                  echo "always-auth=true" >> ~/.npmrc
+
+                  # Verify authentication
+                  echo "Testing NPM authentication..."
+                  npm whoami
 
             - name: Configure NPM Authentication
               if: steps.config.outputs.dry_run != 'true'
@@ -221,23 +241,24 @@ jobs:
             - name: Publish to NPM
               if: steps.config.outputs.dry_run != 'true'
               run: |
-                  # Set up npm authentication
-                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-
                   # Navigate to package directory
                   cd packages/blend
 
-                  # Check if this version already exists on NPM
+                  # Get package info
                   PACKAGE_NAME=$(node -p "require('./package.json').name")
                   NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
 
+                  echo "Publishing package: $PACKAGE_NAME@$NEW_VERSION"
+                  echo "NPM tag: ${{ steps.release_type.outputs.npm_tag }}"
+
+                  # Check if this version already exists on NPM
                   if npm view "$PACKAGE_NAME@$NEW_VERSION" version 2>/dev/null; then
                     echo "Version $NEW_VERSION already exists on NPM, skipping publish"
                     exit 0
                   fi
 
-                  # Publish to NPM using npm instead of pnpm for better auth compatibility
-                  npm publish --access public --tag ${{ steps.release_type.outputs.npm_tag }} --registry https://registry.npmjs.org/
+                  # Publish to NPM
+                  npm publish --access public --tag ${{ steps.release_type.outputs.npm_tag }} --registry https://registry.npmjs.org/ --verbose
                   echo "Successfully published $PACKAGE_NAME@$NEW_VERSION to NPM"
 
             - name: Create GitHub Release
