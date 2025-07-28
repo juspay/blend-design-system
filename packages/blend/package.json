@@ -113,5 +113,8 @@
             "plugin:storybook/recommended"
         ]
     },
+    "publishConfig": {
+        "access": "public"
+    },
     "packageManager": "pnpm@10.11.0"
 }
