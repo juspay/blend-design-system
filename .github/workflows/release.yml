@@ -213,18 +213,13 @@ jobs:
                   # Navigate to package directory
                   cd packages/blend
 
-                  # Set up npm authentication in the package directory
-                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
-
-                  # Get package info
-                  PACKAGE_NAME=$(node -p "require('./package.json').name")
-                  NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
-                  NPM_TAG="${{ steps.release_type.outputs.npm_tag }}"
-
-                  echo "Publishing package: $PACKAGE_NAME@$NEW_VERSION"
-                  echo "NPM tag: $NPM_TAG"
+                  # Set up npm authentication
+                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
                   # Check if this version already exists on NPM
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+
                   if npm view "$PACKAGE_NAME@$NEW_VERSION" version 2>/dev/null; then
                     echo "Version $NEW_VERSION already exists on NPM, skipping publish"
                     exit 0
