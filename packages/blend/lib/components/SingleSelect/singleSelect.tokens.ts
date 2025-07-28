@@ -244,8 +244,8 @@ export const getSingleSelectTokens = (
                 outline: foundationToken.colors.gray[200],
                 borderRadius: foundationToken.unit[10],
                 item: {
-                    padding: foundationToken.unit[4],
-                    margin: foundationToken.unit[4],
+                    padding: `${foundationToken.unit[8]} ${foundationToken.unit[8]}`,
+                    margin: `${foundationToken.unit[0]} ${foundationToken.unit[4]}`,
                     borderRadius: foundationToken.unit[10],
                     gap: foundationToken.unit[4],
                     backgroundColor: {
@@ -345,8 +345,8 @@ export const getSingleSelectTokens = (
                 outline: foundationToken.colors.gray[200],
                 borderRadius: foundationToken.unit[10],
                 item: {
-                    padding: foundationToken.unit[4],
-                    margin: foundationToken.unit[4],
+                    padding: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
+                    margin: `${foundationToken.unit[0]} ${foundationToken.unit[4]}`,
                     borderRadius: foundationToken.unit[10],
                     gap: foundationToken.unit[4],
                     backgroundColor: {

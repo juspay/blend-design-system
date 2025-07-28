@@ -30,8 +30,8 @@ import {
 import { Button, ButtonType, ButtonSize } from '../Button'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { toPixels } from '../../global-utils/GlobalUtils'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
+import { toPixels } from '../../global-utils/GlobalUtils'
 
 const map = function getValueLabelMap(
     groups: SelectMenuGroupType[]
