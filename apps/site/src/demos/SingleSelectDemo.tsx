@@ -367,6 +367,7 @@ const SingleSelectDemo = () => {
 
                         <div className="border rounded-lg p-6 bg-gray-50">
                             <SingleSelect
+                                useDrawerOnMobile={false}
                                 label={playgroundLabel}
                                 subLabel={playgroundSubLabel}
                                 hintText={playgroundHintText}

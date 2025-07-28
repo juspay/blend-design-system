@@ -622,6 +622,7 @@ const MultiSelectDemo = () => {
                             style={{ width: '400px' }}
                         >
                             <MultiSelect
+                                useDrawerOnMobile={false}
                                 height={62}
                                 enableSelectAll={true}
                                 enableSearch={true}

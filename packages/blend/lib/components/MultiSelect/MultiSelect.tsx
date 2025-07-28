@@ -64,10 +64,8 @@ const MultiSelect = ({
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
-    const textContainerRef = useRef<HTMLDivElement>(null)
-    const textContainerHeight = textContainerRef.current?.clientHeight
-    const containerRef = useRef<HTMLDivElement>(null)
-
+    const slotRef = useRef<HTMLDivElement>(null)
+    const slotWidth = slotRef.current?.offsetWidth
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
     const [open, setOpen] = useState(false)
@@ -78,8 +76,6 @@ const MultiSelect = ({
     const showCancelButton =
         variant === MultiSelectVariant.CONTAINER && selectedValues.length > 0
 
-    const smallScreenPaddingY =
-        toPixels(multiSelectTokens.trigger.height) - (textContainerHeight || 0)
     const isItemSelected = selectedValues.length > 0
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === MultiSelectMenuSize.LARGE
@@ -88,6 +84,11 @@ const MultiSelect = ({
     const appliedBorderRadius = showCancelButton
         ? `${borderRadius} 0px 0px ${borderRadius}`
         : borderRadius
+
+    const paddingX = toPixels(multiSelectTokens.trigger.paddingX[size])
+    const paddingY = toPixels(multiSelectTokens.trigger.paddingY[size])
+    const paddingInlineStart =
+        slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
     const getDisplayText = () => {
         if (selectedValues.length === 0) {
@@ -461,7 +462,6 @@ const MultiSelect = ({
                 )}
             <Block
                 display="flex"
-                ref={containerRef}
                 height={toPixels(multiSelectTokens.trigger.height)}
                 maxHeight={toPixels(multiSelectTokens.trigger.height)}
             >
@@ -510,6 +510,7 @@ const MultiSelect = ({
                         onOpenChange={setOpen}
                         trigger={
                             <PrimitiveButton
+                                position="relative"
                                 height={toPixels(
                                     multiSelectTokens.trigger.height
                                 )}
@@ -529,20 +530,7 @@ const MultiSelect = ({
                                 paddingX={
                                     multiSelectTokens.trigger.paddingX[size]
                                 }
-                                paddingTop={
-                                    isSmallScreenWithLargeSize && isItemSelected
-                                        ? smallScreenPaddingY / 2
-                                        : multiSelectTokens.trigger.paddingY[
-                                              size
-                                          ]
-                                }
-                                paddingBottom={
-                                    isSmallScreenWithLargeSize && isItemSelected
-                                        ? smallScreenPaddingY / 2
-                                        : multiSelectTokens.trigger.paddingY[
-                                              size
-                                          ]
-                                }
+                                paddingY={paddingY}
                                 backgroundColor={
                                     multiSelectTokens.trigger.backgroundColor
                                         .container[open ? 'open' : 'closed']
@@ -572,14 +560,22 @@ const MultiSelect = ({
                                 }}
                             >
                                 {slot && (
-                                    <Block as="span" contentCentered>
+                                    <Block
+                                        as="span"
+                                        ref={slotRef}
+                                        contentCentered
+                                    >
                                         {slot}
                                     </Block>
                                 )}
                                 <Block
-                                    ref={textContainerRef}
                                     as="span"
                                     textAlign="left"
+                                    paddingTop={
+                                        isSmallScreenWithLargeSize
+                                            ? paddingY * 1.5
+                                            : paddingY
+                                    }
                                     style={{
                                         textAlign: 'left',
                                         flexGrow: 1,
@@ -608,8 +604,31 @@ const MultiSelect = ({
                                         variant ===
                                             MultiSelectVariant.CONTAINER && (
                                             <Block
-                                                display="flex"
-                                                alignItems="center"
+                                                position="absolute"
+                                                top={
+                                                    isItemSelected
+                                                        ? toPixels(
+                                                              paddingY -
+                                                                  paddingY / 1.3
+                                                          ) +
+                                                          (!required ? 3 : 0)
+                                                        : '50%'
+                                                }
+                                                left={toPixels(
+                                                    paddingInlineStart
+                                                )}
+                                                height={'max-content'}
+                                                style={{
+                                                    transition:
+                                                        'all 0.2s ease-in-out',
+                                                    transform: isItemSelected
+                                                        ? 'scale(0.95)'
+                                                        : 'translateY(-50%) scale(1)',
+                                                    transformOrigin:
+                                                        'left center',
+                                                    pointerEvents: 'none',
+                                                    zIndex: 1,
+                                                }}
                                             >
                                                 <FloatingLabels
                                                     label={label}

@@ -21,6 +21,7 @@ import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import { getPopoverTokens } from '../components/Popover/popover.tokens'
 import { getMenuTokens } from '../components/Menu/menu.tokens'
 import { getMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
+import { getSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { getTableToken } from '../components/DataTable/dataTable.tokens'
 import { getCalendarToken } from '../components/DateRangePicker/dateRangePicker.tokens'
 import { getAccordionToken } from '../components/Accordion/accordion.tokens'
@@ -71,6 +72,9 @@ const initTokens = (
         MULTI_SELECT:
             componentTokens.MULTI_SELECT ??
             getMultiSelectTokens(foundationTokens),
+        SINGLE_SELECT:
+            componentTokens.SINGLE_SELECT ??
+            getSingleSelectTokens(foundationTokens),
         TABLE: componentTokens.TABLE ?? getTableToken(foundationTokens),
         CALENDAR:
             componentTokens.CALENDAR ?? getCalendarToken(foundationTokens),

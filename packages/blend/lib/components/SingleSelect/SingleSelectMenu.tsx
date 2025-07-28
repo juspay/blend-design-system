@@ -13,6 +13,8 @@ import Block from '../Primitives/Block/Block'
 import { ChevronRight } from 'lucide-react'
 import { Checkbox } from '../Checkbox'
 import { SearchInput } from '../Inputs'
+import { SingleSelectTokensType } from './singleSelect.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -267,12 +269,6 @@ const Item = ({
     )
 }
 
-const Separator = styled(RadixMenu.Separator)(() => ({
-    height: 1,
-    backgroundColor: FOUNDATION_THEME.colors.gray[200],
-    margin: '8px 0px',
-}))
-
 const Label = styled(RadixMenu.Label)(() => ({
     margin: '0px 8px',
     padding: '8px 6px',
@@ -344,8 +340,10 @@ const SingleSelectMenu = ({
     open,
     onOpenChange,
 }: SingleSelectMenuProps) => {
-    const [searchText, setSearchText] = useState('')
+    const singleSelectTokens =
+        useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
 
+    const [searchText, setSearchText] = useState('')
     const filteredItems = filterMenuGroups(items, searchText)
 
     const handleOpenChange = (newOpen: boolean) => {
@@ -419,7 +417,24 @@ const SingleSelectMenu = ({
                                 />
                             ))}
                             {groupId !== items.length - 1 &&
-                                group.showSeparator && <Separator />}
+                                group.showSeparator && (
+                                    <RadixMenu.Separator asChild>
+                                        <Block
+                                            height={
+                                                singleSelectTokens.dropdown
+                                                    .seperator.height
+                                            }
+                                            backgroundColor={
+                                                singleSelectTokens.dropdown
+                                                    .seperator.color
+                                            }
+                                            margin={
+                                                singleSelectTokens.dropdown
+                                                    .seperator.margin
+                                            }
+                                        ></Block>
+                                    </RadixMenu.Separator>
+                                )}
                         </React.Fragment>
                     ))}
             </Content>
