@@ -148,6 +148,10 @@ jobs:
                     git log -n 20 --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
                   fi
 
+            - name: Format Generated Files
+              run: |
+                  pnpm format
+
             - name: Build Package
               run: pnpm --filter @juspay/blend-design-system build
 
