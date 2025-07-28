@@ -22,6 +22,12 @@ import {
 } from '../../../../packages/blend/lib/components/Drawer'
 import { ButtonType } from '../../../../packages/blend/lib/components/Button'
 import ResponsiveSelectDemo from './ResponsiveSelectDemo'
+import {
+    MultiSelect,
+    MultiSelectVariant,
+    MultiSelectSelectionTagType,
+    MultiSelectMenuSize,
+} from '../../../../packages/blend/lib/components/MultiSelect'
 
 export const BasicDrawerExample = () => {
     return (
@@ -2804,6 +2810,166 @@ export const CustomMobileOffsetExample = () => {
     )
 }
 
+// Mobile MultiSelect without Drawer Example
+export const MobileMultiSelectNoDrawerExample = () => {
+    const [selectedItems, setSelectedItems] = useState<string[]>([
+        'react',
+        'typescript',
+    ])
+
+    const menuItems = [
+        {
+            items: [
+                {
+                    value: 'javascript',
+                    label: 'JavaScript',
+                    subLabel: 'Popular web language',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#fef3c7',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                color: '#f59e0b',
+                                fontWeight: 'bold',
+                                fontSize: '12px',
+                            }}
+                        >
+                            JS
+                        </span>
+                    ),
+                },
+                {
+                    value: 'typescript',
+                    label: 'TypeScript',
+                    subLabel: 'Typed JavaScript',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#dbeafe',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                color: '#3b82f6',
+                                fontWeight: 'bold',
+                                fontSize: '12px',
+                            }}
+                        >
+                            TS
+                        </span>
+                    ),
+                },
+                {
+                    value: 'react',
+                    label: 'React',
+                    subLabel: 'UI library',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#e0f2fe',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            ⚛️
+                        </span>
+                    ),
+                },
+                {
+                    value: 'vue',
+                    label: 'Vue.js',
+                    subLabel: 'Progressive framework',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#dcfce7',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🟢
+                        </span>
+                    ),
+                },
+                {
+                    value: 'angular',
+                    label: 'Angular',
+                    subLabel: 'Full framework',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#fecaca',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🅰️
+                        </span>
+                    ),
+                },
+                {
+                    value: 'svelte',
+                    label: 'Svelte',
+                    subLabel: 'Compile-time framework',
+                    slot1: (
+                        <span
+                            style={{
+                                backgroundColor: '#fdf2f8',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🔥
+                        </span>
+                    ),
+                },
+            ],
+        },
+    ]
+
+    const handleSelectionChange = (value: string) => {
+        setSelectedItems((prev) => {
+            if (prev.includes(value)) {
+                return prev.filter((item) => item !== value)
+            } else {
+                return [...prev, value]
+            }
+        })
+    }
+
+    return (
+        <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+            <h3 style={{ marginBottom: '16px' }}>
+                Mobile MultiSelect (No Drawer)
+            </h3>
+            <p style={{ marginBottom: '16px', color: '#6b7280' }}>
+                This MultiSelect component uses the normal dropdown even on
+                mobile devices by setting `useDrawerOnMobile=false`. The trigger
+                looks identical to the drawer version.
+            </p>
+            <MultiSelect
+                selectedValues={selectedItems}
+                onChange={handleSelectionChange}
+                items={menuItems}
+                label="Select Technologies"
+                placeholder="Choose your tech stack"
+                variant={MultiSelectVariant.CONTAINER}
+                selectionTagType={MultiSelectSelectionTagType.COUNT}
+                size={MultiSelectMenuSize.MEDIUM}
+                enableSearch={true}
+                searchPlaceholder="Search technologies..."
+                enableSelectAll={true}
+                selectAllText="Select All Technologies"
+                useDrawerOnMobile={false} // This is the key prop!
+                maxHeight={300}
+            />
+        </div>
+    )
+}
+
 // All Examples Component
 export const DrawerDemo = () => {
     return (
@@ -2894,6 +3060,21 @@ export const DrawerDemo = () => {
                     drawer for consistent styling.
                 </p>
                 <ResponsiveSelectDemo />
+            </div>
+
+            <div>
+                <h2 style={{ marginBottom: '8px' }}>
+                    Mobile MultiSelect without Drawer
+                </h2>
+                <p style={{ marginBottom: '16px', color: '#6b7280' }}>
+                    This example shows how the MultiSelect component can be used
+                    on mobile without the drawer by setting
+                    useDrawerOnMobile=false. The trigger looks identical in both
+                    desktop and mobile modes.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                    <MobileMultiSelectNoDrawerExample />
+                </div>
             </div>
         </div>
     )
