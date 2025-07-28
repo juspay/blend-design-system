@@ -209,6 +209,11 @@ jobs:
                       docs/CHANGELOG.md
                       .
 
+            - name: Configure NPM Authentication
+              if: steps.config.outputs.dry_run != 'true'
+              run: |
+                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
             - name: Publish to NPM
               if: steps.config.outputs.dry_run != 'true'
               env:
