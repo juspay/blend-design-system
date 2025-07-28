@@ -3,14 +3,17 @@ import {
     authenticateRequest,
     requirePermission,
     logAuditEvent,
-} from '@/lib/auth-middleware'
+} from '@/backend/lib/auth-middleware'
 import { databaseService } from '@/backend/lib/database-service'
 import { initializeDatabase } from '@/backend/lib/database'
 
 export async function PUT(
     request: NextRequest,
-    { params }: { params: { userId: string } }
+    { params }: { params: Promise<{ userId: string }> }
 ) {
+    // Await the params first
+    const { userId } = await params
+
     try {
         await initializeDatabase()
 
@@ -36,9 +39,8 @@ export async function PUT(
         }
 
         // Get current user data for audit logging
-        const currentUserData = await databaseService.getUserByFirebaseUid(
-            params.userId
-        )
+        const currentUserData =
+            await databaseService.getUserByFirebaseUid(userId)
         if (!currentUserData) {
             return NextResponse.json(
                 { error: 'User not found' },
@@ -49,18 +51,18 @@ export async function PUT(
         const oldRole = currentUserData.role
 
         // Update the user role
-        await databaseService.updateUserRole(params.userId, newRole)
+        await databaseService.updateUserRole(userId, newRole)
 
         // Log the audit event
         await logAuditEvent(
             user!,
             'role_change',
-            `user:${params.userId}`,
+            `user:${userId}`,
             {
                 targetUser: currentUserData.email,
                 oldRole,
                 newRole,
-                userId: params.userId,
+                userId: userId,
             },
             'success'
         )
@@ -80,13 +82,13 @@ export async function PUT(
             await logAuditEvent(
                 user,
                 'role_change',
-                `user:${params.userId}`,
+                `user:${userId}`,
                 {
                     error:
                         error instanceof Error
                             ? error.message
                             : 'Unknown error',
-                    userId: params.userId,
+                    userId: userId,
                 },
                 'failed'
             )

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Home, Link, Package, Zap, Users } from 'lucide-react'
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 
 export const tenants = [
     {
@@ -17,7 +18,10 @@ export const tenants = [
 
 export const merchants = [] // Empty for now as not being used
 
-export const getNavigationData = (router: any, pathname: string) => [
+export const getNavigationData = (
+    router: AppRouterInstance,
+    pathname: string
+) => [
     {
         label: 'Main',
         isCollapsible: false,

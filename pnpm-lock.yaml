@@ -170,9 +170,6 @@ importers:
             firebase:
                 specifier: ^11.10.0
                 version: 11.10.0
-            firebase-admin:
-                specifier: ^12.0.0
-                version: 12.7.0
             googleapis:
                 specifier: ^153.0.0
                 version: 153.0.0

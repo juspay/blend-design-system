@@ -6,10 +6,7 @@ import {
     useDownloadTrends,
     useVersionHistory,
 } from '../../hooks/usePostgreSQLData'
-import Loader, {
-    CardSkeleton,
-    SkeletonLoader,
-} from '../../components/shared/Loader'
+import Loader, { CardSkeleton } from '../../components/shared/Loader'
 import {
     Charts,
     ChartType,
@@ -33,8 +30,6 @@ import {
     RefreshCw,
     ExternalLink,
     Calendar,
-    Users,
-    FileText,
     AlertTriangle,
     History,
     GitCommit,
@@ -52,7 +47,21 @@ export default function NPMPage() {
     } = useVersionHistory()
     const [refreshing, setRefreshing] = useState(false)
     const [syncing, setSyncing] = useState(false)
-    const [syncResult, setSyncResult] = useState<any>(null)
+    const [syncResult, setSyncResult] = useState<{
+        success: boolean | null
+        message?: string
+        inProgress?: boolean
+        error?: string
+        details?: string
+        results?: {
+            versions: { total: number; new: number; updated: number }
+            trends: { saved: number }
+            stats: { updated: boolean }
+        }
+        duration?: string
+        hasErrors?: boolean
+        errors?: string[]
+    } | null>(null)
     const [filterType, setFilterType] = useState<
         'all' | 'major' | 'minor' | 'patch'
     >('all')
@@ -115,7 +124,15 @@ export default function NPMPage() {
         )
 
         // Create data object with ordered keys
-        const dataObj = {} as any
+        const dataObj: Record<
+            string,
+            {
+                primary: {
+                    label: string
+                    val: number
+                }
+            }
+        > = {}
         sortedTrends.forEach((trend) => {
             const date = new Date(trend.date).toLocaleDateString('en-US', {
                 month: 'short',

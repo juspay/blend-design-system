@@ -5,7 +5,6 @@ import {
     useComponents,
     useCategoryCoverage,
 } from '../../hooks/usePostgreSQLData'
-import { ComponentInfo } from '../../../shared/types'
 import Loader, { CardSkeleton } from '../shared/Loader'
 import {
     Button,
@@ -20,20 +19,10 @@ import {
     TabsTrigger,
     TabsContent,
     TabsVariant,
-    DataTable,
 } from 'blend-v1'
-import {
-    Package,
-    Check,
-    X,
-    AlertCircle,
-    RefreshCw,
-    ArrowRight,
-} from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { Package, Check, X, RefreshCw } from 'lucide-react'
 
 export default function CodeConnectContent() {
-    const router = useRouter()
     const { components, loading } = useComponents()
     const { categories } = useCategoryCoverage()
     const [selectedCategory, setSelectedCategory] = useState<string>('all')
@@ -98,15 +87,26 @@ export default function CodeConnectContent() {
         return [
             {
                 name: 'Categories',
-                data: categoryData.reduce((acc, cat) => {
-                    acc[cat.name] = {
-                        primary: {
-                            label: 'Integrated',
-                            val: cat.integrated,
-                        },
-                    }
-                    return acc
-                }, {} as any),
+                data: categoryData.reduce(
+                    (acc, cat) => {
+                        acc[cat.name] = {
+                            primary: {
+                                label: 'Integrated',
+                                val: cat.integrated,
+                            },
+                        }
+                        return acc
+                    },
+                    {} as Record<
+                        string,
+                        {
+                            primary: {
+                                label: string
+                                val: number
+                            }
+                        }
+                    >
+                ),
             },
         ]
     }, [categories])

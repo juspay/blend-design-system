@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { databaseService } from '@/backe@/backend/lib/database-service'
+import { databaseService } from '@/backend/lib/database-service'
 import { initializeDatabase } from '@/backend/lib/database'
 
 // POST /api/npm/sync - Manually trigger NPM data synchronization
@@ -99,7 +99,7 @@ export async function GET() {
             },
             lastSyncAttempt: 'Manual trigger only',
             nextScheduledSync: 'Not scheduled',
-            recommendations: [],
+            recommendations: [] as string[],
         }
 
         // Add recommendations based on data status

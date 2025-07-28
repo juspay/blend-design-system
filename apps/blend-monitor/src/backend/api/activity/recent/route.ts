@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { databaseService } from '@/backe@/backend/lib/database-service'
+import { databaseService } from '@/backend/lib/database-service'
 import { initializeDatabase } from '@/backend/lib/database'
 
 // GET /api/activity/recent - Get recent activity

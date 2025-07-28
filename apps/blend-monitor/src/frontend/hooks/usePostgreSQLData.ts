@@ -19,7 +19,7 @@ const POLLING_INTERVALS = {
 function usePolling<T>(
     fetchFunction: () => Promise<T>,
     interval: number,
-    dependencies: any[] = []
+    dependencies: unknown[] = []
 ) {
     const [data, setData] = useState<T | null>(null)
     const [loading, setLoading] = useState(true)
@@ -155,7 +155,9 @@ export function usePackageStats() {
 
 // Hook for download trends
 export function useDownloadTrends() {
-    const fetchTrends = useCallback(async (): Promise<any[]> => {
+    const fetchTrends = useCallback(async (): Promise<
+        { date: string; downloads: number }[]
+    > => {
         const response = await fetch('/api/npm/trends')
 
         if (!response.ok) {
@@ -198,7 +200,20 @@ export function useDownloadTrends() {
 
 // Hook for version history
 export function useVersionHistory() {
-    const fetchVersions = useCallback(async (): Promise<any[]> => {
+    const fetchVersions = useCallback(async (): Promise<
+        {
+            version: string
+            publishedAt: string
+            publisher: string
+            downloads: number
+            changelog?: string
+            size?: {
+                unpacked: number
+                gzipped: number
+            }
+            breaking?: boolean
+        }[]
+    > => {
         const response = await fetch('/api/npm/versions')
 
         if (!response.ok) {
@@ -356,15 +371,13 @@ export function useRealtimeUpdates() {
 function usePollingWithRefresh<T>(
     fetchFunction: () => Promise<T>,
     interval: number,
-    dependencies: any[] = []
+    dependencies: unknown[] = []
 ) {
     const baseHook = usePolling(fetchFunction, interval, dependencies)
-    const [refreshTrigger, setRefreshTrigger] = useState(0)
 
     // Listen for manual refresh events
     useEffect(() => {
         const handleDataUpdate = () => {
-            setRefreshTrigger((prev) => prev + 1)
             baseHook.refetch()
         }
 

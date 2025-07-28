@@ -99,7 +99,7 @@ export async function GET() {
             },
             lastSyncAttempt: 'Manual trigger only',
             nextScheduledSync: 'Not scheduled',
-            recommendations: [],
+            recommendations: [] as string[],
         }
 
         // Add recommendations based on data status

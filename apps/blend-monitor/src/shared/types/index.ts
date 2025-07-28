@@ -141,7 +141,7 @@ export interface AuditLog {
     action: 'config_change' | 'permission_change'
     user: string
     timestamp: string
-    details: Record<string, any>
+    details: Record<string, unknown>
     result: 'success' | 'failed'
     resource?: string
 }

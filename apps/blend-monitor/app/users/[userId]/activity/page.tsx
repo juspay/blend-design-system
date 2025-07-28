@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { auth } from '@/frontend/lib/firebase'
-import { onAuthStateChanged, User } from 'firebase/auth'
 import { usePermissions } from '@/frontend/components/auth/PermissionGuard'
 import ProtectedRoute from '@/frontend/components/auth/ProtectedRoute'
 import { Button, ButtonType, ButtonSize } from 'blend-v1'
@@ -14,7 +13,7 @@ interface ActivityLog {
     id: string
     action: string
     timestamp: string
-    details?: Record<string, any>
+    details?: Record<string, unknown>
 }
 
 interface UserData {
@@ -27,16 +26,18 @@ interface UserData {
 
 // Mock services
 const activityService = {
-    getUserActivity: async (uid: string) => [],
+    getUserActivity: async (_uid: string) => [],
     subscribeToUserActivity:
-        (uid: string, callback: (activities: ActivityLog[]) => void) =>
+        (_uid: string, callback: (activities: ActivityLog[]) => void) =>
         () => {},
-    formatActivityMessage: (action: string, details?: any) =>
-        `Activity: ${action}`,
+    formatActivityMessage: (
+        action: string,
+        _details?: Record<string, unknown>
+    ) => `Activity: ${action}`,
 }
 
 const roleService = {
-    getUserData: async (uid: string): Promise<UserData | null> => null,
+    getUserData: async (_uid: string): Promise<UserData | null> => null,
 }
 
 export default function UserActivityPage() {
@@ -56,14 +57,19 @@ function UserActivity() {
     const [userData, setUserData] = useState<UserData | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const {
-        canManageUsers,
-        isAdmin,
-        userData: currentUserData,
-    } = usePermissions()
+    const { canManageUsers } = usePermissions()
 
     // Check if user can view this activity
     const canViewActivity = userId === auth.currentUser?.uid || canManageUsers
+
+    const loadUserData = async () => {
+        try {
+            const data = await roleService.getUserData(userId)
+            setUserData(data)
+        } catch (error) {
+            console.error('Error loading user data:', error)
+        }
+    }
 
     useEffect(() => {
         if (!canViewActivity) {
@@ -84,16 +90,7 @@ function UserActivity() {
         )
 
         return () => unsubscribe()
-    }, [userId, canViewActivity])
-
-    const loadUserData = async () => {
-        try {
-            const data = await roleService.getUserData(userId)
-            setUserData(data)
-        } catch (error) {
-            console.error('Error loading user data:', error)
-        }
-    }
+    }, [userId, canViewActivity, loadUserData])
 
     const formatTimestamp = (timestamp: string) => {
         const date = new Date(timestamp)

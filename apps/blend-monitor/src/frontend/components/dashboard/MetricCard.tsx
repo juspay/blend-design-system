@@ -9,7 +9,6 @@ interface MetricCardProps {
     subtitle?: string
     trend?: number
     icon: React.ReactNode
-    color?: 'primary' | 'success' | 'warning' | 'error'
 }
 
 export function MetricCard({
@@ -18,7 +17,6 @@ export function MetricCard({
     subtitle,
     trend,
     icon,
-    color = 'primary',
 }: MetricCardProps) {
     // Convert trend to StatCard format
     const change =

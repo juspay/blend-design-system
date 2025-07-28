@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React from 'react'
 import dynamic from 'next/dynamic'
 import Loader from '../../components/shared/Loader'
 

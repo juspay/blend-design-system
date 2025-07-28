@@ -12,6 +12,7 @@ import {
     PackageStats,
     Activity,
     UserRole,
+    VersionInfo,
 } from '@/shared/types'
 
 export class DatabaseService {
@@ -80,7 +81,7 @@ export class DatabaseService {
             ${limitClause} ${offsetClause}
         `
 
-        const result = await query<any>(queryText)
+        const result = await query<DatabaseUser>(queryText)
         return result.rows.map(this.mapUserRow)
     }
 
@@ -93,7 +94,10 @@ export class DatabaseService {
                      role, is_active, created_at, last_login, updated_at
         `
 
-        const result = await query<any>(queryText, [isActive, firebaseUid])
+        const result = await query<DatabaseUser>(queryText, [
+            isActive,
+            firebaseUid,
+        ])
         return result.rows.length > 0 ? this.mapUserRow(result.rows[0]) : null
     }
 
@@ -106,7 +110,10 @@ export class DatabaseService {
                      role, is_active, created_at, last_login, updated_at
         `
 
-        const result = await query<any>(queryText, [displayName, firebaseUid])
+        const result = await query<DatabaseUser>(queryText, [
+            displayName,
+            firebaseUid,
+        ])
         return result.rows.length > 0 ? this.mapUserRow(result.rows[0]) : null
     }
 
@@ -215,7 +222,7 @@ export class DatabaseService {
 
     async saveCoverageMetrics(
         metrics: CoverageMetrics,
-        byCategory: Record<string, any>
+        byCategory: Record<string, unknown>
     ): Promise<void> {
         await query(
             `INSERT INTO coverage_metrics (total_components, integrated_components, percentage, category_breakdown)
@@ -326,7 +333,7 @@ export class DatabaseService {
         )
     }
 
-    async getVersionHistory(): Promise<any[]> {
+    async getVersionHistory(): Promise<VersionInfo[]> {
         try {
             const result = await query(
                 'SELECT * FROM npm_versions ORDER BY published_at DESC'
@@ -357,7 +364,7 @@ export class DatabaseService {
         }
     }
 
-    async saveVersionInfo(versionInfo: any): Promise<void> {
+    async saveVersionInfo(versionInfo: VersionInfo): Promise<void> {
         await query(
             `INSERT INTO npm_versions (
                 version, published_at, publisher, downloads, changelog,
@@ -385,7 +392,7 @@ export class DatabaseService {
 
     // Batch save version info with better conflict handling
     async batchSaveVersionInfo(
-        versions: any[]
+        versions: VersionInfo[]
     ): Promise<{ saved: number; updated: number }> {
         let saved = 0
         let updated = 0
@@ -495,7 +502,7 @@ export class DatabaseService {
                                 trend.downloads
                             )
                             trendsSaved++
-                        } catch (error) {
+                        } catch {
                             // Skip individual trend errors (likely duplicates)
                         }
                     }
@@ -545,8 +552,8 @@ export class DatabaseService {
     async logUserActivity(
         userId: string,
         action: string,
-        details?: any,
-        metadata?: any
+        details?: Record<string, unknown>,
+        metadata?: Record<string, unknown>
     ): Promise<void> {
         await query(SQL.activity.log, [
             userId,
@@ -557,7 +564,10 @@ export class DatabaseService {
         ])
     }
 
-    async logSystemActivity(action: string, details?: any): Promise<void> {
+    async logSystemActivity(
+        action: string,
+        details?: Record<string, unknown>
+    ): Promise<void> {
         await query(SQL.activity.systemLog, [
             action,
             details ? JSON.stringify(details) : null,
@@ -582,7 +592,7 @@ export class DatabaseService {
         `
 
         const result = await query(queryText, [userId, limit, offset])
-        return result.rows.map((row: any) => ({
+        return result.rows.map((row) => ({
             id: row.id,
             action: row.action,
             timestamp: row.timestamp,
@@ -599,12 +609,18 @@ export class DatabaseService {
 
         return result.rows.map((row) => ({
             id: row.id,
-            type: row.action as any,
+            type: row.action as Activity['type'],
             timestamp: row.timestamp.toISOString(),
             user: row.display_name || row.email,
-            details: row.details,
-            component: row.details?.component,
-            version: row.details?.version,
+            details: typeof row.details === 'string' ? row.details : undefined,
+            component:
+                typeof row.details?.component === 'string'
+                    ? row.details.component
+                    : undefined,
+            version:
+                typeof row.details?.version === 'string'
+                    ? row.details.version
+                    : undefined,
         }))
     }
 
@@ -632,16 +648,28 @@ export class DatabaseService {
     ): Activity {
         return {
             id: dbActivity.id,
-            type: dbActivity.action as any,
+            type: dbActivity.action as Activity['type'],
             timestamp: dbActivity.timestamp.toISOString(),
-            details: dbActivity.details?.details,
-            component: dbActivity.details?.component,
-            version: dbActivity.details?.version,
-            user: dbActivity.details?.user,
+            details:
+                typeof dbActivity.details?.details === 'string'
+                    ? dbActivity.details.details
+                    : undefined,
+            component:
+                typeof dbActivity.details?.component === 'string'
+                    ? dbActivity.details.component
+                    : undefined,
+            version:
+                typeof dbActivity.details?.version === 'string'
+                    ? dbActivity.details.version
+                    : undefined,
+            user:
+                typeof dbActivity.details?.user === 'string'
+                    ? dbActivity.details.user
+                    : undefined,
         }
     }
 
-    private mapUserRow(row: any): DatabaseUser {
+    private mapUserRow(row: DatabaseUser): DatabaseUser {
         return {
             id: row.id,
             firebase_uid: row.firebase_uid,

@@ -1,4 +1,28 @@
-import { PackageStats, VersionInfo, DownloadTrend } from '@/types'
+import { PackageStats, VersionInfo, DownloadTrend } from '@/shared/types'
+
+interface NPMPackageData {
+    name: string
+    version: string
+    'dist-tags': Record<string, string>
+    versions: Record<
+        string,
+        {
+            name: string
+            version: string
+            description?: string
+            dist?: {
+                unpackedSize?: number
+                fileCount?: number
+                size?: number
+            }
+            dependencies?: Record<string, string>
+            _npmUser?: {
+                name: string
+            }
+        }
+    >
+    time: Record<string, string>
+}
 
 export class NPMClient {
     private registryUrl: string
@@ -107,17 +131,19 @@ export class NPMClient {
 
             const data = await response.json()
 
-            return data.downloads.map((item: any) => ({
-                date: item.day,
-                downloads: item.downloads,
-            }))
+            return data.downloads.map(
+                (item: { day: string; downloads: number }) => ({
+                    date: item.day,
+                    downloads: item.downloads,
+                })
+            )
         } catch (error) {
             console.error('Error fetching download trends:', error)
             return []
         }
     }
 
-    private async fetchPackageData(): Promise<any> {
+    private async fetchPackageData(): Promise<NPMPackageData | null> {
         try {
             const response = await fetch(
                 `${this.registryUrl}/${this.packageName}`
@@ -134,7 +160,12 @@ export class NPMClient {
         }
     }
 
-    private async fetchDownloadStats(): Promise<any> {
+    private async fetchDownloadStats(): Promise<{
+        daily: number
+        weekly: number
+        monthly: number
+        total: number
+    }> {
         try {
             // Fetch different time ranges
             const [daily, weekly, monthly] = await Promise.all([
@@ -169,7 +200,9 @@ export class NPMClient {
         }
     }
 
-    private async fetchDownloadCount(period: string): Promise<any> {
+    private async fetchDownloadCount(
+        period: string
+    ): Promise<{ downloads: number }> {
         try {
             const response = await fetch(
                 `https://api.npmjs.org/downloads/point/${period}/${this.packageName}`
@@ -200,7 +233,7 @@ export class NPMClient {
         let remainingDownloads = totalCount
         const now = new Date().getTime()
 
-        versions.forEach((version, index) => {
+        versions.forEach((version) => {
             const publishDate = new Date(version.publishedAt).getTime()
             const ageInDays = (now - publishDate) / (1000 * 60 * 60 * 24)
 
@@ -215,7 +248,7 @@ export class NPMClient {
         })
     }
 
-    private extractChangelog(versionData: any): string {
+    private extractChangelog(versionData: { description?: string }): string {
         // Try to extract changelog from package.json or README
         // This is a placeholder - in real implementation, you might parse CHANGELOG.md
         return versionData.description || 'No changelog available'

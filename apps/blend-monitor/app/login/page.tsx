@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/frontend/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { Button, ButtonType, ButtonSize } from 'blend-v1'
-import { Zap, Shield, BarChart3, GitBranch, AlertCircle } from 'lucide-react'
+import { Zap, AlertCircle } from 'lucide-react'
 import Loader from '@/frontend/components/shared/Loader'
 
 export default function LoginPage() {
@@ -28,8 +28,12 @@ export default function LoginPage() {
             await signInWithGoogle()
             // Show redirecting state after successful sign in
             setIsRedirecting(true)
-        } catch (error: any) {
-            setError(error.message || 'Failed to sign in with Google')
+        } catch (error) {
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : 'Failed to sign in with Google'
+            )
             setIsSigningIn(false)
         }
     }

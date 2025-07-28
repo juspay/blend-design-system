@@ -32,11 +32,11 @@ export function getPool(): Pool {
 
         // Handle pool connection events for debugging
         if (process.env.NODE_ENV === 'development') {
-            pool.on('connect', (client: PoolClient) => {
+            pool.on('connect', () => {
                 console.log('Database client connected')
             })
 
-            pool.on('remove', (client: PoolClient) => {
+            pool.on('remove', () => {
                 console.log('Database client removed')
             })
         }
@@ -45,9 +45,9 @@ export function getPool(): Pool {
 }
 
 // Query helper with automatic connection management
-export async function query<T extends QueryResultRow = any>(
+export async function query<T extends QueryResultRow = QueryResultRow>(
     text: string,
-    params?: any[]
+    params?: unknown[]
 ): Promise<QueryResult<T>> {
     const pool = getPool()
     const start = Date.now()
@@ -273,8 +273,8 @@ export interface DatabaseActivityLog {
     id: string
     user_id?: string
     action: string
-    details?: any
-    metadata?: any
+    details?: Record<string, unknown>
+    metadata?: Record<string, unknown>
     timestamp: Date
     created_at: Date
 }

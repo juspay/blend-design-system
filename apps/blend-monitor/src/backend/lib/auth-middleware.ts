@@ -82,7 +82,7 @@ export async function logAuditEvent(
     user: AuthenticatedUser,
     action: string,
     resource: string,
-    details: Record<string, any> = {},
+    details: Record<string, unknown> = {},
     result: 'success' | 'failed' = 'success'
 ) {
     try {

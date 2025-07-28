@@ -1,249 +1,205 @@
-# Blend Monitor Dashboard
+# Blend Monitor
 
-A comprehensive monitoring dashboard for the Blend Design System, providing real-time insights into NPM package statistics, Figma Code Connect health, and Firebase deployment metrics.
+A monitoring dashboard for the Blend Design System, tracking component usage, NPM statistics, and integration health.
 
-## 🚀 Quick Start
+## Architecture
+
+The application follows a modular architecture with clear separation between frontend and backend concerns:
+
+```
+apps/blend-monitor/
+├── app/                    # Next.js App Router (re-exports from src/)
+│   ├── api/               # API route re-exports
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # Homepage re-export
+├── src/                    # Source code with modular separation
+│   ├── backend/           # Backend logic and services
+│   │   ├── api/          # API route implementations
+│   │   ├── external/     # External service integrations
+│   │   ├── lib/          # Backend utilities and services
+│   │   └── scanners/     # Component scanning logic
+│   ├── frontend/          # Frontend components and logic
+│   │   ├── app/          # Page components
+│   │   ├── components/   # Reusable UI components
+│   │   ├── contexts/     # React contexts
+│   │   ├── hooks/        # Custom React hooks
+│   │   └── lib/          # Frontend utilities
+│   └── shared/            # Shared types and constants
+│       └── types/        # TypeScript type definitions
+├── database/              # Database schema and migrations
+├── scripts/               # Utility scripts
+└── public/                # Static assets
+```
+
+## Key Features
+
+- **Component Monitoring**: Track Blend Design System component usage and coverage
+- **NPM Statistics**: Monitor download trends and package versions
+- **Code Connect Integration**: Track Figma Code Connect adoption
+- **User Management**: Role-based access control for team members
+- **Activity Tracking**: Real-time activity feed and audit logs
+
+## Technology Stack
+
+- **Frontend**: Next.js 14 (App Router), React, TypeScript
+- **Backend**: Next.js API Routes, PostgreSQL
+- **UI Components**: Blend Design System (blend-v1)
+- **Authentication**: Firebase Auth
+- **Database**: PostgreSQL with custom service layer
+- **External APIs**: NPM Registry API, Figma API
+
+## Development
 
 ### Prerequisites
 
-- Node.js 18+ and npm/pnpm
-- Firebase project with Realtime Database enabled
-- Firebase service account credentials
-- Google OAuth credentials (for authentication)
+- Node.js 18+
+- PostgreSQL database
+- Firebase project (for authentication)
+- Environment variables configured
 
-### Installation
+### Setup
 
-1. **Clone and install dependencies:**
+1. Install dependencies:
 
     ```bash
-    cd apps/blend-monitor
     npm install
     ```
 
-2. **Set up environment variables:**
-
-    Copy `.env.local.example` to `.env.local` and fill in your credentials:
+2. Set up environment variables:
 
     ```bash
-    cp .env.local.example .env.local
+    cp .env.example .env.local
     ```
 
-    Required environment variables:
-
-    ```env
-    # Firebase Configuration
-    NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
-    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-auth-domain
-    NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
-    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-storage-bucket
-    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
-    NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
-    FIREBASE_DATABASE_URL=https://your-project.firebaseio.com
-
-    # Firebase Admin (for server-side)
-    FIREBASE_PROJECT_ID=your-project-id
-    FIREBASE_CLIENT_EMAIL=your-service-account-email
-    FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
-
-    # Firebase Usage Monitoring (optional)
-    USE_REAL_FIREBASE_USAGE=false  # Set to 'true' for real usage data
-
-    # Google OAuth
-    GOOGLE_CLIENT_ID=your-google-client-id
-    GOOGLE_CLIENT_SECRET=your-google-client-secret
-
-    # NextAuth
-    NEXTAUTH_URL=http://localhost:3000
-    NEXTAUTH_SECRET=your-nextauth-secret
-    ```
-
-3. **Set up Firebase:**
-
-    a. Create a Firebase project at [Firebase Console](https://console.firebase.google.com)
-
-    b. Enable Realtime Database and set rules:
-
-    ```json
-    {
-        "rules": {
-            ".read": "auth != null",
-            ".write": "auth != null"
-        }
-    }
-    ```
-
-    c. Generate a service account key:
-    - Go to Project Settings > Service Accounts
-    - Click "Generate new private key"
-    - Save the JSON file or copy values to `.env.local`
-
-4. **Populate initial data:**
+3. Initialize the database:
 
     ```bash
-    npm run populate-data
+    npm run db:init
     ```
 
-5. **Start the development server:**
-
+4. Run development server:
     ```bash
     npm run dev
     ```
 
-6. **Access the dashboard:**
-    - Open http://localhost:3000
-    - Sign in with your Google account
+### Environment Variables
 
-## 📊 Features
+Required environment variables:
 
-### 1. **NPM Package Monitoring**
+```env
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/blend_monitor
 
-- Real-time download statistics
-- Version tracking
-- Dependency analysis
-- Package size monitoring
+# Firebase
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+FIREBASE_SERVICE_ACCOUNT_KEY=
 
-### 2. **Figma Code Connect Health**
-
-- Component coverage metrics
-- Connection status monitoring
-- Missing connections alerts
-- Component usage analytics
-
-### 3. **Deployment Monitoring**
-
-- **Hosting Status**: Monitor Firebase Hosting deployments
-- **Cloud Functions**: Track function health and metrics
-- **Performance Metrics**: Real-time performance data
-- **Usage & Billing**: Real Firebase usage data with cost estimation
-    - Realtime Database storage and bandwidth
-    - Firestore documents and storage
-    - Cloud Storage usage
-    - Authentication statistics
-    - Estimated monthly costs
-- **Deployment History**: Complete deployment timeline
-
-### 4. **Authentication**
-
-- Google OAuth integration
-- Protected routes
-- User session management
-
-## 🛠️ Development
-
-### Project Structure
-
-```
-apps/blend-monitor/
-├── app/                    # Next.js app directory
-│   ├── api/               # API routes
-│   ├── deployments/       # Deployment pages
-│   ├── npm/              # NPM monitoring
-│   └── code-connect/     # Figma monitoring
-├── components/            # React components
-├── hooks/                # Custom React hooks
-├── lib/                  # Utilities and Firebase config
-├── scripts/              # Data population scripts
-└── types/               # TypeScript definitions
+# External APIs
+NPM_API_BASE_URL=https://registry.npmjs.org
+FIGMA_API_TOKEN=
 ```
 
-### Available Scripts
+## Project Structure Details
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run populate-data` - Populate Firebase with sample data
+### Backend (`/src/backend`)
 
-## 🔄 Data Integration
+The backend follows a service-oriented architecture:
 
-### Real Firebase Usage Data
+- **API Routes** (`/api`): RESTful endpoints for data operations
+    - `/api/components`: Component management and coverage
+    - `/api/npm`: NPM package statistics and trends
+    - `/api/users`: User management and activity tracking
+    - `/api/health`: System health checks
 
-Enable real-time Firebase usage monitoring by setting `USE_REAL_FIREBASE_USAGE=true` in your `.env.local` file. This will:
+- **Services** (`/lib`):
+    - `database-service.ts`: PostgreSQL data access layer
+    - `auth-middleware.ts`: Authentication and authorization
+    - `firebase-admin.ts`: Firebase Admin SDK integration
 
-- Fetch actual usage metrics from Firebase Admin SDK
-- Calculate estimated costs based on current pricing
-- Show usage alerts when approaching limits
-- Display real authentication statistics
+- **External Integrations** (`/external`):
+    - `npm-client.ts`: NPM Registry API client
 
-See [FIREBASE_USAGE_MONITORING.md](./FIREBASE_USAGE_MONITORING.md) for detailed setup instructions.
+- **Scanners** (`/scanners`):
+    - `component-scanner.ts`: Automated component discovery
 
-### Automatic Data Updates
+### Frontend (`/src/frontend`)
 
-The dashboard automatically fetches data from Firebase on load. To capture real deployment data:
+The frontend uses modern React patterns:
 
-1. **GitHub Actions Integration:**
+- **Pages** (`/app`): Next.js page components
+    - Dashboard home page
+    - NPM statistics page
+    - Code Connect management
+    - User management
+    - Login page
 
-    ```yaml
-    - name: Deploy to Firebase
-      run: firebase deploy
+- **Components** (`/components`):
+    - `auth/`: Authentication components and guards
+    - `dashboard/`: Dashboard-specific components
+    - `shared/`: Reusable UI components
 
-    - name: Record Deployment
-      run: |
-          curl -X POST https://your-app.vercel.app/api/deployments/history \
-            -H "Content-Type: application/json" \
-            -d '{"environment": "production", "version": "v1.0.0"}'
-    ```
+- **Hooks** (`/hooks`):
+    - `usePostgreSQLData.ts`: Data fetching hooks
 
-2. **Manual Data Update:**
-    ```bash
-    npm run populate-data
-    ```
+- **Contexts** (`/contexts`):
+    - `AuthContext.tsx`: Authentication state management
 
-### API Endpoints
+### Shared (`/src/shared`)
 
-- `POST /api/deployments/history` - Record new deployment
-- `GET /api/deployments/performance` - Get performance metrics
-- `GET /api/npm` - Fetch NPM statistics
-- `GET /api/components` - Get component metrics
+Common types and interfaces used across frontend and backend:
 
-## 🚀 Deployment
+- **Types** (`/types`):
+    - Component interfaces
+    - User and role types
+    - API response types
 
-### Deploy to Vercel
+## Scripts
 
-1. Push to GitHub
-2. Import project in Vercel
-3. Add environment variables
-4. Deploy
+- `npm run dev`: Start development server
+- `npm run build`: Build for production
+- `npm run start`: Start production server
+- `npm run db:init`: Initialize database schema
+- `npm run cleanup`: Remove empty directories
 
-### Deploy to Firebase Hosting
+## API Endpoints
 
-```bash
-npm run build
-firebase deploy --only hosting
-```
+### Components
 
-## 🔒 Security
+- `GET /api/components`: Get all components with coverage
+- `POST /api/components`: Scan and update components
+- `GET /api/components/coverage`: Get coverage metrics
+- `GET /api/components/coverage/categories`: Get coverage by category
 
-- Authentication required for all routes
-- Firebase security rules enforce access control
-- Environment variables for sensitive data
-- API routes protected by NextAuth
+### NPM
 
-## 🐛 Troubleshooting
+- `GET /api/npm`: Get NPM package info
+- `GET /api/npm/stats`: Get download statistics
+- `GET /api/npm/trends`: Get download trends
+- `GET /api/npm/versions`: Get version history
+- `POST /api/npm/sync`: Sync NPM data
 
-### Common Issues
+### Users
 
-1. **"Firebase app not initialized"**
-    - Check all Firebase environment variables are set
-    - Ensure service account credentials are valid
+- `GET /api/users`: Get all users
+- `GET /api/users/:userId`: Get user details
+- `PUT /api/users/:userId/role`: Update user role
+- `GET /api/users/activity`: Get user activity logs
 
-2. **"Authentication failed"**
-    - Verify Google OAuth credentials
-    - Check NEXTAUTH_URL matches your domain
+### System
 
-3. **"No data showing"**
-    - Run `npm run populate-data` to add sample data
-    - Check Firebase Realtime Database rules
+- `GET /api/health`: Health check endpoint
+- `GET /api/activity/recent`: Get recent system activity
 
-### Debug Mode
+## Contributing
 
-Set `NODE_ENV=development` for detailed error messages.
+1. Follow the modular architecture pattern
+2. Keep frontend and backend concerns separated
+3. Use TypeScript for type safety
+4. Write tests for new features
+5. Update documentation as needed
 
-## 📚 Additional Documentation
+## License
 
-- [Firebase Usage Monitoring Setup](./FIREBASE_USAGE_MONITORING.md) - Configure real usage data
-- [Firebase Admin Setup](./FIREBASE_ADMIN_SETUP.md) - Service account configuration
-- [Deployment Monitoring](./DEPLOYMENT_MONITORING_COMPLETE.md) - Deployment features
-
-## 📝 License
-
-Part of the Blend Design System - Internal Use Only
+Internal use only - Juspay Technologies

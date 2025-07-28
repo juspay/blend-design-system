@@ -1,4 +1,4 @@
-import { ComponentInfo } from '@/types'
+import { ComponentInfo } from '@/shared/types'
 import fs from 'fs'
 import path from 'path'
 

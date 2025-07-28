@@ -17,9 +17,7 @@ const nextConfig: NextConfig = {
         return config
     },
     // Ensure server-only code doesn't leak to client
-    experimental: {
-        serverComponentsExternalPackages: [],
-    },
+    serverExternalPackages: [],
 }
 
 export default nextConfig

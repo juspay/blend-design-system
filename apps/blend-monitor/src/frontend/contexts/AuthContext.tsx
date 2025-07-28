@@ -23,7 +23,7 @@ interface UserData {
 interface UserRole {
     id: string
     name: string
-    permissions: any
+    permissions: string[]
 }
 
 interface AuthContextType {
@@ -45,48 +45,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = useState(true)
     const router = useRouter()
 
-    // Create or update user in PostgreSQL
-    const createOrUpdateUser = async (firebaseUser: User) => {
-        try {
-            const response = await fetch('/api/users', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    firebase_uid: firebaseUser.uid,
-                    email: firebaseUser.email,
-                    display_name: firebaseUser.displayName,
-                    photo_url: firebaseUser.photoURL,
-                }),
-            })
-
-            if (response.ok) {
-                const data = await response.json()
-                if (data.success) {
-                    setUserData({
-                        uid: data.user.firebase_uid,
-                        email: data.user.email,
-                        displayName: data.user.display_name,
-                        photoURL: data.user.photo_url,
-                        role: data.user.role,
-                    })
-
-                    // Set user role based on database role
-                    setUserRole({
-                        id: data.user.role,
-                        name: getRoleName(data.user.role),
-                        permissions: getRolePermissions(data.user.role),
-                    })
-                } else {
-                    console.error('Failed to create/update user:', data.error)
-                }
-            }
-        } catch (error) {
-            console.error('Error creating/updating user:', error)
-        }
-    }
-
     const getRoleName = (role: string) => {
         const roleNames: Record<string, string> = {
             admin: 'Administrator',
@@ -106,6 +64,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     useEffect(() => {
+        // Create or update user in PostgreSQL
+        const createOrUpdateUser = async (firebaseUser: User) => {
+            try {
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        firebase_uid: firebaseUser.uid,
+                        email: firebaseUser.email,
+                        display_name: firebaseUser.displayName,
+                        photo_url: firebaseUser.photoURL,
+                    }),
+                })
+
+                if (response.ok) {
+                    const data = await response.json()
+                    if (data.success) {
+                        setUserData({
+                            uid: data.user.firebase_uid,
+                            email: data.user.email,
+                            displayName: data.user.display_name,
+                            photoURL: data.user.photo_url,
+                            role: data.user.role,
+                        })
+
+                        // Set user role based on database role
+                        setUserRole({
+                            id: data.user.role,
+                            name: getRoleName(data.user.role),
+                            permissions: getRolePermissions(data.user.role),
+                        })
+                    } else {
+                        console.error(
+                            'Failed to create/update user:',
+                            data.error
+                        )
+                    }
+                }
+            } catch (error) {
+                console.error('Error creating/updating user:', error)
+            }
+        }
+
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             setUser(firebaseUser)
 
@@ -140,12 +143,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         })
 
         return () => unsubscribe()
-    }, [])
+    }, [getRoleName, getRolePermissions])
 
     const signInWithGoogle = async () => {
         const provider = new GoogleAuthProvider()
         try {
-            const result = await signInWithPopup(auth, provider)
+            await signInWithPopup(auth, provider)
             // User creation/update happens automatically in onAuthStateChanged
             router.push('/')
         } catch (error) {

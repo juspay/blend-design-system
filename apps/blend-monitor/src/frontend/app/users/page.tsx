@@ -13,18 +13,7 @@ import {
     TextInputSize,
     SingleSelect,
 } from 'blend-v1'
-import {
-    UserPlus,
-    Trash2,
-    Activity,
-    Clock,
-    User as UserIcon,
-    LogIn,
-    LogOut,
-    UserCheck,
-    UserX,
-    Shield,
-} from 'lucide-react'
+import { UserPlus, Activity } from 'lucide-react'
 import { useUserManagement } from '../../hooks/usePostgreSQLData'
 
 // Default roles
@@ -105,7 +94,7 @@ function UserManagement() {
     const [inviteRole, setInviteRole] = useState('viewer')
     const [inviting, setInviting] = useState(false)
     const [emailError, setEmailError] = useState('')
-    const { canManageUsers, isAdmin, userData } = usePermissions()
+    const { canManageUsers } = usePermissions()
 
     // Use PostgreSQL user management hooks
     const {
@@ -115,7 +104,6 @@ function UserManagement() {
         updateUserRole,
         updateUserStatus,
         createUser,
-        deleteUser,
     } = useUserManagement()
 
     const handleRoleChange = async (userId: string, newRole: string) => {

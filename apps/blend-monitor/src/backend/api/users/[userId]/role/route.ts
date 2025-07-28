@@ -3,8 +3,8 @@ import {
     authenticateRequest,
     requirePermission,
     logAuditEvent,
-} from '@/lib/auth-middleware'
-import { databaseService } from '@/backe@/backend/lib/database-service'
+} from '@/backend/lib/auth-middleware'
+import { databaseService } from '@/backend/lib/database-service'
 import { initializeDatabase } from '@/backend/lib/database'
 
 export async function PUT(

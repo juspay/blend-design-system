@@ -4,12 +4,14 @@ import { initializeDatabase } from '@/backend/lib/database'
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { userId: string } }
+    { params }: { params: Promise<{ userId: string }> }
 ) {
+    const { userId } = await params
+
     try {
         await initializeDatabase()
 
-        const user = await databaseService.getUserByFirebaseUid(params.userId)
+        const user = await databaseService.getUserByFirebaseUid(userId)
 
         if (!user) {
             return NextResponse.json(
@@ -38,8 +40,10 @@ export async function GET(
 
 export async function PATCH(
     request: NextRequest,
-    { params }: { params: { userId: string } }
+    { params }: { params: Promise<{ userId: string }> }
 ) {
+    const { userId } = await params
+
     try {
         await initializeDatabase()
 
@@ -48,26 +52,21 @@ export async function PATCH(
 
         // Update user role if provided
         if (role !== undefined) {
-            await databaseService.updateUserRole(params.userId, role)
+            await databaseService.updateUserRole(userId, role)
         }
 
         // Update user status if provided
         if (is_active !== undefined) {
-            await databaseService.updateUserStatus(params.userId, is_active)
+            await databaseService.updateUserStatus(userId, is_active)
         }
 
         // Update display name if provided
         if (display_name !== undefined) {
-            await databaseService.updateUserDisplayName(
-                params.userId,
-                display_name
-            )
+            await databaseService.updateUserDisplayName(userId, display_name)
         }
 
         // Get updated user
-        const updatedUser = await databaseService.getUserByFirebaseUid(
-            params.userId
-        )
+        const updatedUser = await databaseService.getUserByFirebaseUid(userId)
 
         return NextResponse.json({
             success: true,
@@ -89,12 +88,14 @@ export async function PATCH(
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { userId: string } }
+    { params }: { params: Promise<{ userId: string }> }
 ) {
+    const { userId } = await params
+
     try {
         await initializeDatabase()
 
-        await databaseService.deleteUser(params.userId)
+        await databaseService.deleteUser(userId)
 
         return NextResponse.json({
             success: true,

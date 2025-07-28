@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { NPMClient } from '@/backend/external/npm-client'
 import { databaseService } from '@/backend/lib/database-service'
 import { initializeDatabase } from '@/backend/lib/database'
+import { VersionInfo } from '@/shared/types'
 
 export async function GET() {
     try {
@@ -11,7 +12,7 @@ export async function GET() {
         const npmClient = new NPMClient('blend-v1')
 
         let successfulOperations = 0
-        let errors: string[] = []
+        const errors: string[] = []
 
         // Fetch package stats with fallback
         let packageStats = null
@@ -36,7 +37,7 @@ export async function GET() {
         }
 
         // Fetch download trends with fallback
-        let downloadTrends: any[] = []
+        let downloadTrends: { date: string; downloads: number }[] = []
         try {
             downloadTrends = await npmClient.getDownloadTrends(30)
             if (downloadTrends.length > 0) {
@@ -63,7 +64,7 @@ export async function GET() {
         }
 
         // Fetch version history with fallback
-        let versionHistory: any[] = []
+        let versionHistory: VersionInfo[] = []
         try {
             versionHistory = await npmClient.getVersionHistory()
             if (versionHistory.length > 0) {
@@ -87,7 +88,7 @@ export async function GET() {
         }
 
         // Fetch package size history with fallback
-        let sizeHistory: any[] = []
+        let sizeHistory: { version: string; size: number; date: string }[] = []
         try {
             sizeHistory = await npmClient.getPackageSizeHistory()
             successfulOperations++

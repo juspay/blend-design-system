@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { initializeDatabase, checkDatabaseHealth } from '@/backend/lib/database'
+import { checkDatabaseHealth } from '@/backend/lib/database'
 
 // GET /api/health - Check system health including database connectivity
 export async function GET() {
