@@ -208,6 +208,10 @@ jobs:
                       packages/blend/package.json
                       docs/CHANGELOG.md
                       .
+            - name: Who am I on NPM?
+              run: npm whoami
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Configure NPM Authentication
               if: steps.config.outputs.dry_run != 'true'
