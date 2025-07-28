@@ -1,33 +1,21 @@
-# Changelog
+# Changelog for v0.0.5-beta.0
 
-All notable changes to the Blend Design System will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-### Added
-
-- GitHub Actions release workflow
-- Automated version bumping based on conventional commits
-- Support for beta and stable releases
-- Automatic NPM publishing with proper tags (@beta, @latest)
-- Automated changelog generation
-- GitHub release creation with artifacts
-- Tag conflict resolution and cleanup
-
-### Changed
-
-- Improved release process with automated workflows
-- Enhanced CI/CD pipeline for reliable publishing
-
-### Fixed
-
-- Path resolution issues in GitHub Actions
-- Version bumping command compatibility
-- Directory creation for changelog generation
-
----
-
-_This changelog will be automatically updated by the release workflow._
+- refactor: simplify npm authentication setup in release workflow (#171) (731611d)
+- feat: added mweb support for mulitselect (#154) (a8484ed)
+- Add npmrc file (#170) (300179d)
+- refactor: streamline NPM authentication steps in release workflow (#169) (2d4424f)
+- feat: enhance NPM authentication steps in release workflow with debug checks (#168) (34091cc)
+- Add debug steps for npm auth (#167) (ba091af)
+- add debug for npm user (#166) (2796b05)
+- Fix/npm auth (#165) (205e07f)
+- feat: add NPM authentication configuration step in release workflow (#164) (dca428f)
+- chore: enhance release workflow to create a release PR (#162) (e8d2a67)
+- fix: add formatting step for generated files in release workflow (#161) (ca581b3)
+- feat: add automated changelog generation and improve release workflow (#160) (7e6ddf4)
+- fix: improve release workflow for better consistency and reliability (#159) (72c00f9)
+- fix: update release workflow to use consistent step IDs for version bumping (#158) (87d29cf)
+- fix: update release workflow to reference correct package directory (#157) (82780f9)
+- fix: update npm release workflow (#156) (7223ce7)
+- Merge pull request #153 from juspay/fix/drawer-select (73d7362)
+- Merge pull request #146 from juspay/release/v0.0.5 (6907a74)
+- chore(release): bump version to v0.0.5 (1fcdd53)
