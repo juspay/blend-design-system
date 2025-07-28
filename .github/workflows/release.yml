@@ -136,6 +136,10 @@ jobs:
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
                   LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+                  # Create docs directory if it doesn't exist
+                  mkdir -p docs
+
                   echo "# Changelog for v$VERSION" > docs/CHANGELOG.md
                   echo "" >> docs/CHANGELOG.md
                   if [[ -n "$LAST_TAG" ]]; then
