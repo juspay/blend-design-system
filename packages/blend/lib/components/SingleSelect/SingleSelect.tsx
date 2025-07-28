@@ -32,6 +32,7 @@ import { SingleSelectTokensType } from './singleSelect.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../global-utils/GlobalUtils'
+import SingleSelectTrigger from './SingleSelectTrigger'
 
 const map = function getValueLabelMap(
     groups: SelectMenuGroupType[]
@@ -96,13 +97,6 @@ const SingleSelect = ({
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === SelectMenuSize.LARGE
 
-    const getDisplayText = () => {
-        if (!selected) {
-            return placeholder || 'Select an option...'
-        }
-        return valueLabelMap[selected]
-    }
-
     const borderRadius = singleSelectTokens.trigger.borderRadius[size]
     const paddingX = toPixels(singleSelectTokens.trigger.paddingX[size])
     const paddingY = toPixels(singleSelectTokens.trigger.paddingY[size])
@@ -125,26 +119,24 @@ const SingleSelect = ({
 
                 <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
                     <DrawerTrigger>
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                width: '100%',
-                                padding: '8px 14px',
-                                backgroundColor: '#ffffff',
-                                border: '1px solid #e5e7eb',
-                                borderRadius: '8px',
-                                cursor: 'pointer',
-                                fontSize: '14px',
-                                fontWeight: '500',
-                                color: '#374151',
-                                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-                            }}
-                        >
-                            <span>{getDisplayText()}</span>
-                            <ChevronDown size={16} />
-                        </div>
+                        <SingleSelectTrigger
+                            singleSelectTokens={singleSelectTokens}
+                            size={size}
+                            selected={selected}
+                            label={label}
+                            name={name || ''}
+                            placeholder={placeholder}
+                            required={required || false}
+                            valueLabelMap={valueLabelMap}
+                            open={open}
+                            onClick={() => setDrawerOpen(true)}
+                            slot={slot}
+                            variant={variant}
+                            isSmallScreenWithLargeSize={
+                                isSmallScreenWithLargeSize
+                            }
+                            isItemSelected={isItemSelected}
+                        />
                     </DrawerTrigger>
 
                     <DrawerPortal>
