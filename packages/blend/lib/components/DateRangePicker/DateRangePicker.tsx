@@ -14,6 +14,8 @@ import {
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
 import TimeSelector from './TimeSelector'
+import MobileDrawerFloatingTabs from './MobileDrawerFloatingTabs'
+import MobileDrawerPresets from './MobileDrawerPresets'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import { SwitchSize } from '../Switch/types'
 import { Switch } from '../Switch/Switch'
@@ -25,7 +27,7 @@ import { useComponentToken } from '../../context/useComponentToken'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { ButtonType, ButtonSize, Button } from '../../main'
-
+import { useBreakpoints } from '../../hooks/useBreakPoints'
 type DateInputsSectionProps = {
     startDate: string
     endDate: string
@@ -254,15 +256,21 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             disableFutureDates = false,
             disablePastDates = false,
             triggerElement = null,
+            useDrawerOnMobile = true,
+            skipQuickFiltersOnMobile = false,
         },
         ref
     ) => {
         const [isOpen, setIsOpen] = useState(false)
         const [popoverKey, setPopoverKey] = useState(0)
         const [isQuickRangeOpen, setIsQuickRangeOpen] = useState(false)
+        const [drawerOpen, setDrawerOpen] = useState(false)
         const [showTimePickerState, setShowTimePickerState] =
             useState(showTimePicker)
+        const [_activeTab, setActiveTab] = useState('start')
         const calendarToken = useComponentToken('CALENDAR') as CalendarTokenType
+        const { innerWidth } = useBreakpoints()
+        const isMobile = innerWidth < 1024
 
         const [selectedRange, setSelectedRange] = useState<DateRange>(
             value || getPresetDateRange(DateRangePreset.TODAY)
@@ -404,6 +412,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const handleApply = useCallback(() => {
             onChange?.(selectedRange)
             setIsOpen(false)
+            setDrawerOpen(false)
             setPopoverKey((prev) => prev + 1)
         }, [selectedRange, onChange])
 
@@ -461,6 +470,41 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     >
                         {triggerElement}
                     </Block>
+                )
+            }
+
+            const formatMobileDateRange = (range: DateRange): string => {
+                const formatOptions: Intl.DateTimeFormatOptions = {
+                    month: 'short',
+                    day: 'numeric',
+                    year: '2-digit',
+                }
+
+                const startStr = range.startDate.toLocaleDateString(
+                    'en-US',
+                    formatOptions
+                )
+                const endStr = range.endDate.toLocaleDateString(
+                    'en-US',
+                    formatOptions
+                )
+
+                if (range.startDate.getTime() === range.endDate.getTime()) {
+                    return startStr
+                }
+
+                return `${startStr} - ${endStr}`
+            }
+
+            if (isMobile && useDrawerOnMobile) {
+                return (
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        text={formatMobileDateRange(selectedRange)}
+                        disabled={isDisabled}
+                        onClick={() => setDrawerOpen(true)}
+                    />
                 )
             }
 
@@ -522,6 +566,81 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             )
         }
 
+        if (isMobile && useDrawerOnMobile) {
+            if (showPresets && !skipQuickFiltersOnMobile) {
+                const getFilteredPresets = () => {
+                    const pastPresets = [
+                        DateRangePreset.LAST_6_HOURS,
+                        DateRangePreset.TODAY,
+                        DateRangePreset.YESTERDAY,
+                        DateRangePreset.LAST_7_DAYS,
+                        DateRangePreset.LAST_30_DAYS,
+                    ]
+
+                    const availablePresets = [...pastPresets]
+                    availablePresets.push(DateRangePreset.CUSTOM)
+                    return availablePresets
+                }
+
+                return (
+                    <Block ref={ref} display="flex" width="100%">
+                        <MobileDrawerPresets
+                            drawerOpen={drawerOpen}
+                            setDrawerOpen={setDrawerOpen}
+                            renderTrigger={renderTrigger}
+                            showPresets={showPresets}
+                            availablePresets={getFilteredPresets()}
+                            activePreset={activePreset}
+                            selectedRange={selectedRange}
+                            startTime={startTime}
+                            endTime={endTime}
+                            dateFormat={dateFormat}
+                            handlePresetSelect={handlePresetSelect}
+                            handleStartTimeChange={handleStartTimeChange}
+                            handleEndTimeChange={handleEndTimeChange}
+                            setSelectedRange={setSelectedRange}
+                            setStartDate={setStartDate}
+                            setEndDate={setEndDate}
+                            handleCancel={handleCancel}
+                            handleApply={handleApply}
+                        />
+                    </Block>
+                )
+            } else {
+                // Use floating tabs interface for mobile when presets are disabled
+                return (
+                    <Block ref={ref} display="flex" width="100%">
+                        <MobileDrawerFloatingTabs
+                            drawerOpen={drawerOpen}
+                            setDrawerOpen={setDrawerOpen}
+                            renderTrigger={renderTrigger}
+                            selectedRange={selectedRange}
+                            startTime={startTime}
+                            endTime={endTime}
+                            dateFormat={dateFormat}
+                            showTimePickerState={showTimePickerState}
+                            setShowTimePickerState={setShowTimePickerState}
+                            setActiveTab={setActiveTab}
+                            startDateValidation={startDateValidation}
+                            endDateValidation={endDateValidation}
+                            handleStartTimeChangeCallback={
+                                handleStartTimeChangeCallback
+                            }
+                            handleEndTimeChangeCallback={
+                                handleEndTimeChangeCallback
+                            }
+                            setSelectedRange={setSelectedRange}
+                            setStartDate={setStartDate}
+                            setEndDate={setEndDate}
+                            handleCancel={handleCancel}
+                            handleApply={handleApply}
+                        />
+                    </Block>
+                )
+            }
+        }
+
+        // Render popover on desktop
         return (
             <Block ref={ref} display="flex">
                 {showPresets && (

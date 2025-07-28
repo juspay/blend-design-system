@@ -45,7 +45,6 @@ export type DrawerTokensType = {
     body: {
         padding: CSSObject['padding']
         backgroundColor: CSSObject['backgroundColor']
-        maxHeight: CSSObject['maxHeight']
         overflowY: CSSObject['overflowY']
     }
     footer: {
@@ -101,7 +100,6 @@ export const drawerTokens: DrawerTokensType = {
     body: {
         padding: FOUNDATION_THEME.unit[16],
         backgroundColor: FOUNDATION_THEME.colors.gray[0],
-        maxHeight: '70vh',
         overflowY: 'auto',
     },
     footer: {
@@ -160,7 +158,6 @@ export const getDrawerComponentTokens = (
         body: {
             padding: foundationToken.unit[16],
             backgroundColor: foundationToken.colors.gray[0],
-            maxHeight: '70vh',
             overflowY: 'auto',
         },
         footer: {
