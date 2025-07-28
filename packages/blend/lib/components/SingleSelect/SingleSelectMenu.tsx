@@ -13,6 +13,8 @@ import Block from '../Primitives/Block/Block'
 import { ChevronRight } from 'lucide-react'
 import { Checkbox } from '../Checkbox'
 import { SearchInput } from '../Inputs'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { SingleSelectTokensType } from './singleSelect.tokens'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -48,40 +50,6 @@ const Content = styled(RadixMenu.Content)(() => ({
     overflowY: 'auto',
     scrollbarWidth: 'none',
     scrollbarColor: 'transparent transparent',
-}))
-
-const StyledItem = styled(RadixMenu.Item).withConfig({
-    shouldForwardProp: (prop) => prop !== 'isSelected',
-})<{ isSelected: boolean }>(({ isSelected }) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 4,
-    padding: '8px 6px',
-    margin: '0px 8px',
-
-    alignItems: 'center',
-    borderRadius: 4,
-    cursor: 'pointer',
-    userSelect: 'none',
-    backgroundColor: isSelected
-        ? FOUNDATION_THEME.colors.gray[50]
-        : 'transparent',
-
-    // hover effects
-    '&:hover': {
-        backgroundColor: FOUNDATION_THEME.colors.gray[50],
-    },
-
-    '&[data-disabled]': {
-        opacity: 0.5,
-        cursor: 'not-allowed',
-    },
-
-    '&[data-highlighted]': {
-        border: 'none',
-        outline: 'none',
-        backgroundColor: FOUNDATION_THEME.colors.gray[50],
-    },
 }))
 
 const StyledSubMenu = styled(RadixMenu.Sub)(() => ({
@@ -205,6 +173,9 @@ const Item = ({
     onSelect: (value: string) => void
     selected: string
 }) => {
+    const singleSelectTokens =
+        useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
+
     if (item.subMenu) {
         return <SubMenu item={item} onSelect={onSelect} selected={selected} />
     }
@@ -218,11 +189,35 @@ const Item = ({
 
     const isSelected = selected === item.value
     return (
-        <StyledItem
-            isSelected={isSelected}
+        <Block
             onClick={handleClick}
             data-disabled={item.disabled}
             data-multi-select-item="true"
+            display="flex"
+            flexDirection="column"
+            gap={singleSelectTokens.dropdown.item.gap}
+            padding={singleSelectTokens.dropdown.item.padding}
+            margin={singleSelectTokens.dropdown.item.margin}
+            alignItems="center"
+            borderRadius={singleSelectTokens.dropdown.item.borderRadius}
+            cursor="pointer"
+            style={{ userSelect: 'none' }}
+            backgroundColor={
+                isSelected ? FOUNDATION_THEME.colors.gray[50] : 'transparent'
+            }
+            // hover effects
+            _hover={{
+                backgroundColor: FOUNDATION_THEME.colors.gray[50],
+            }}
+            _disabled={{
+                opacity: 0.5,
+                cursor: 'not-allowed',
+            }}
+            _focus={{
+                border: 'none',
+                outline: 'none',
+                backgroundColor: FOUNDATION_THEME.colors.gray[50],
+            }}
         >
             <Block
                 width="100%"
@@ -263,15 +258,9 @@ const Item = ({
                     </Text>
                 </Block>
             )}
-        </StyledItem>
+        </Block>
     )
 }
-
-const Separator = styled(RadixMenu.Separator)(() => ({
-    height: 1,
-    backgroundColor: FOUNDATION_THEME.colors.gray[200],
-    margin: '8px 0px',
-}))
 
 const Label = styled(RadixMenu.Label)(() => ({
     margin: '0px 8px',
@@ -344,8 +333,10 @@ const SingleSelectMenu = ({
     open,
     onOpenChange,
 }: SingleSelectMenuProps) => {
-    const [searchText, setSearchText] = useState('')
+    const singleSelectTokens =
+        useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
 
+    const [searchText, setSearchText] = useState('')
     const filteredItems = filterMenuGroups(items, searchText)
 
     const handleOpenChange = (newOpen: boolean) => {
@@ -419,7 +410,24 @@ const SingleSelectMenu = ({
                                 />
                             ))}
                             {groupId !== items.length - 1 &&
-                                group.showSeparator && <Separator />}
+                                group.showSeparator && (
+                                    <RadixMenu.Separator asChild>
+                                        <Block
+                                            height={
+                                                singleSelectTokens.dropdown
+                                                    .seperator.height
+                                            }
+                                            backgroundColor={
+                                                singleSelectTokens.dropdown
+                                                    .seperator.color
+                                            }
+                                            margin={
+                                                singleSelectTokens.dropdown
+                                                    .seperator.margin
+                                            }
+                                        ></Block>
+                                    </RadixMenu.Separator>
+                                )}
                         </React.Fragment>
                     ))}
             </Content>

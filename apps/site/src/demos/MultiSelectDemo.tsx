@@ -38,7 +38,7 @@ const MultiSelectDemo = () => {
     const [playgroundPlaceholder, setPlaygroundPlaceholder] =
         useState('Placeholder')
     const [playgroundSize, setPlaygroundSize] = useState<MultiSelectMenuSize>(
-        MultiSelectMenuSize.MEDIUM
+        MultiSelectMenuSize.LARGE
     )
     const [playgroundVariant, setPlaygroundVariant] =
         useState<MultiSelectVariant>(MultiSelectVariant.CONTAINER)
@@ -622,6 +622,8 @@ const MultiSelectDemo = () => {
                             style={{ width: '400px' }}
                         >
                             <MultiSelect
+                                useDrawerOnMobile={false}
+                                height={62}
                                 enableSelectAll={true}
                                 enableSearch={true}
                                 label={playgroundLabel}

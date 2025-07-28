@@ -9,7 +9,7 @@ import { useState } from 'react'
 const InputDemo = () => {
     const [playgroundText, setPlaygroundText] = useState('Your Label')
     const [playgroundSize, setPlaygroundSize] = useState<TextInputSize>(
-        TextInputSize.MEDIUM
+        TextInputSize.LARGE
     )
     const [showLeftSlot, setShowLeftSlot] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)

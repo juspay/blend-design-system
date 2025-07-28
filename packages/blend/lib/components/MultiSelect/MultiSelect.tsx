@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Block from '../Primitives/Block/Block'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import MultiSelectMenu from './MultiSelectMenu'
-import MultiSelectTrigger from './MultiSelectTrigger'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { FOUNDATION_THEME } from '../../tokens'
 import Text from '../Text/Text'
-import { X } from 'lucide-react'
+import { ChevronDown, X } from 'lucide-react'
 import {
     MultiSelectMenuSize,
     type MultiSelectProps,
@@ -14,7 +14,6 @@ import {
     MultiSelectVariant,
 } from './types'
 import { type MultiSelectTokensType } from './multiSelect.tokens'
-import { useComponentToken } from '../../context/useComponentToken'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import {
     Drawer,
@@ -27,9 +26,12 @@ import {
     DrawerBody,
     DrawerClose,
 } from '../Drawer'
-import { Button, ButtonType, ButtonSize } from '../../main'
+import { Button, ButtonType, ButtonSize, MultiSelectTrigger } from '../../main'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { handleSelectAll, map } from './utils'
+import { toPixels } from '../../global-utils/GlobalUtils'
+import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const MultiSelect = ({
     selectedValues,
@@ -62,56 +64,64 @@ const MultiSelect = ({
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
-    console.log('small screen', isSmallScreen, size, variant)
-
-    const multiSelectTokens = useComponentToken(
-        'MULTI_SELECT'
-    ) as MultiSelectTokensType
+    const slotRef = useRef<HTMLDivElement>(null)
+    const slotWidth = slotRef.current?.offsetWidth
+    const multiSelectTokens =
+        useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
     const [open, setOpen] = useState(false)
     const [drawerOpen, setDrawerOpen] = useState(false)
     const { innerWidth } = useBreakpoints()
     const isMobile = innerWidth < 1024
     const valueLabelMap = map(items)
+    const showCancelButton =
+        variant === MultiSelectVariant.CONTAINER && selectedValues.length > 0
 
-    const handleClearAll = (e: React.MouseEvent) => {
-        e.preventDefault()
-        e.stopPropagation()
-        selectedValues.forEach((value) => {
-            onChange(value)
-        })
-    }
+    const isItemSelected = selectedValues.length > 0
+    const isSmallScreenWithLargeSize =
+        isSmallScreen && size === MultiSelectMenuSize.LARGE
+
+    const borderRadius = multiSelectTokens.trigger.borderRadius[size]
+    const appliedBorderRadius = showCancelButton
+        ? `${borderRadius} 0px 0px ${borderRadius}`
+        : borderRadius
+
+    const paddingX = toPixels(multiSelectTokens.trigger.paddingX[size])
+    const paddingY = toPixels(multiSelectTokens.trigger.paddingY[size])
+    const paddingInlineStart =
+        slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
     if (isMobile && useDrawerOnMobile) {
         return (
             <Block width="100%" display="flex" flexDirection="column" gap={8}>
-                {variant === MultiSelectVariant.CONTAINER &&
-                    (!isSmallScreen || size !== MultiSelectMenuSize.LARGE) && (
-                        <InputLabels
-                            label={label}
-                            sublabel={sublabel}
-                            disabled={disabled}
-                            helpIconHintText={helpIconHintText}
-                            name={name}
-                            required={required}
-                        />
-                    )}
+                {variant === MultiSelectVariant.CONTAINER && (
+                    <InputLabels
+                        label={label}
+                        sublabel={sublabel}
+                        disabled={disabled}
+                        helpIconHintText={helpIconHintText}
+                        name={name}
+                        required={required}
+                    />
+                )}
 
                 <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
                     <DrawerTrigger>
                         <MultiSelectTrigger
-                            selectedValues={selectedValues}
-                            valueLabelMap={valueLabelMap}
-                            variant={variant}
-                            selectionTagType={selectionTagType}
-                            slot={slot}
+                            onChange={onChange}
+                            name={name || ''}
                             label={label}
                             placeholder={placeholder}
+                            required={required || false}
+                            selectionTagType={selectionTagType}
+                            valueLabelMap={valueLabelMap}
+                            open={open}
+                            variant={variant}
                             size={size}
-                            required={required}
-                            open={drawerOpen}
-                            disabled={disabled}
+                            isSmallScreen={isSmallScreen}
+                            selectedValues={selectedValues}
+                            slot={slot}
+                            onClick={() => setDrawerOpen(true)}
                             multiSelectTokens={multiSelectTokens}
-                            onClearAll={handleClearAll}
                         />
                     </DrawerTrigger>
 
@@ -440,70 +450,300 @@ const MultiSelect = ({
                         required={required}
                     />
                 )}
-            <Block display="flex">
-                <Block
-                    width={
-                        variant === MultiSelectVariant.CONTAINER
-                            ? '100%'
-                            : 'auto'
-                    }
-                    maxWidth={
-                        variant === MultiSelectVariant.NO_CONTAINER
-                            ? '100%'
-                            : 'auto'
-                    }
-                    display="flex"
-                    alignItems="center"
-                >
-                    <MultiSelectMenu
-                        items={items}
-                        selected={selectedValues}
-                        onSelect={onChange}
-                        disabled={disabled}
-                        enableSearch={enableSearch}
-                        searchPlaceholder={searchPlaceholder}
-                        enableSelectAll={enableSelectAll}
-                        selectAllText={selectAllText}
-                        onSelectAll={
-                            enableSelectAll
-                                ? (selectAll: boolean) =>
-                                      handleSelectAll(
-                                          selectAll,
-                                          items,
-                                          selectedValues,
-                                          onChange
-                                      )
-                                : undefined
-                        }
-                        minWidth={minWidth}
-                        maxWidth={maxWidth}
-                        maxHeight={maxHeight}
-                        alignment={alignment}
-                        side={side}
-                        sideOffset={sideOffset}
-                        alignOffset={alignOffset}
-                        open={open}
-                        onOpenChange={setOpen}
-                        trigger={
-                            <MultiSelectTrigger
-                                selectedValues={selectedValues}
-                                valueLabelMap={valueLabelMap}
-                                variant={variant}
-                                selectionTagType={selectionTagType}
-                                slot={slot}
-                                label={label}
-                                placeholder={placeholder}
-                                size={size}
-                                required={required}
-                                open={open}
-                                disabled={disabled}
-                                multiSelectTokens={multiSelectTokens}
-                                onClearAll={handleClearAll}
-                            />
-                        }
-                    />
-                </Block>
-            </Block>
+
+            <MultiSelectMenu
+                items={items}
+                selected={selectedValues}
+                onSelect={onChange}
+                disabled={disabled}
+                enableSearch={enableSearch}
+                searchPlaceholder={searchPlaceholder}
+                enableSelectAll={enableSelectAll}
+                selectAllText={selectAllText}
+                onSelectAll={
+                    enableSelectAll
+                        ? (selectAll: boolean) =>
+                              handleSelectAll(
+                                  selectAll,
+                                  items,
+                                  selectedValues,
+                                  onChange
+                              )
+                        : undefined
+                }
+                minWidth={minWidth}
+                maxWidth={maxWidth}
+                maxHeight={maxHeight}
+                alignment={alignment}
+                side={side}
+                sideOffset={sideOffset}
+                alignOffset={alignOffset}
+                open={open}
+                onOpenChange={setOpen}
+                trigger={
+                    <Block
+                        display="flex"
+                        height={toPixels(multiSelectTokens.trigger.height)}
+                        maxHeight={toPixels(multiSelectTokens.trigger.height)}
+                    >
+                        <Block
+                            width={
+                                variant === MultiSelectVariant.CONTAINER
+                                    ? '100%'
+                                    : 'auto'
+                            }
+                            maxWidth={
+                                variant === MultiSelectVariant.NO_CONTAINER
+                                    ? '100%'
+                                    : 'auto'
+                            }
+                            display="flex"
+                            alignItems="center"
+                        >
+                            <PrimitiveButton
+                                position="relative"
+                                height={toPixels(
+                                    multiSelectTokens.trigger.height
+                                )}
+                                maxHeight={toPixels(
+                                    multiSelectTokens.trigger.height
+                                )}
+                                width={'100%'}
+                                display="flex"
+                                alignItems="center"
+                                overflow="hidden"
+                                justifyContent="space-between"
+                                gap={8}
+                                borderRadius={appliedBorderRadius}
+                                boxShadow={
+                                    multiSelectTokens.trigger.boxShadow[variant]
+                                }
+                                paddingX={
+                                    multiSelectTokens.trigger.paddingX[size]
+                                }
+                                paddingY={paddingY}
+                                backgroundColor={
+                                    multiSelectTokens.trigger.backgroundColor
+                                        .container[open ? 'open' : 'closed']
+                                }
+                                outline={
+                                    multiSelectTokens.trigger.outline[variant][
+                                        open ? 'open' : 'closed'
+                                    ]
+                                }
+                                _hover={{
+                                    outline:
+                                        multiSelectTokens.trigger.outline[
+                                            variant
+                                        ].hover,
+                                    backgroundColor:
+                                        multiSelectTokens.trigger
+                                            .backgroundColor.container.hover,
+                                }}
+                                _focus={{
+                                    outline:
+                                        multiSelectTokens.trigger.outline[
+                                            variant
+                                        ].focus,
+                                    backgroundColor:
+                                        multiSelectTokens.trigger
+                                            .backgroundColor.container.focus,
+                                }}
+                            >
+                                {slot && (
+                                    <Block
+                                        as="span"
+                                        ref={slotRef}
+                                        contentCentered
+                                    >
+                                        {slot}
+                                    </Block>
+                                )}
+                                <Block
+                                    as="span"
+                                    textAlign="left"
+                                    paddingTop={
+                                        variant ===
+                                            MultiSelectVariant.CONTAINER &&
+                                        isSmallScreenWithLargeSize &&
+                                        isItemSelected
+                                            ? paddingY * 1.5
+                                            : 0
+                                    }
+                                    style={{
+                                        textAlign: 'left',
+                                        flexGrow: 1,
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {/* NO CONTAINER Label*/}
+                                    {variant ===
+                                        MultiSelectVariant.NO_CONTAINER && (
+                                        <Text
+                                            as="span"
+                                            variant="body.md"
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[700]
+                                            }
+                                            fontWeight={500}
+                                        >
+                                            {label}
+                                        </Text>
+                                    )}
+
+                                    {isSmallScreenWithLargeSize &&
+                                        variant ===
+                                            MultiSelectVariant.CONTAINER && (
+                                            <Block
+                                                position="absolute"
+                                                top={
+                                                    isItemSelected
+                                                        ? toPixels(
+                                                              paddingY -
+                                                                  paddingY / 1.3
+                                                          ) +
+                                                          (!required ? 3 : 0)
+                                                        : '50%'
+                                                }
+                                                left={toPixels(
+                                                    paddingInlineStart
+                                                )}
+                                                height={'max-content'}
+                                                style={{
+                                                    transition:
+                                                        'all 0.2s ease-in-out',
+                                                    transform: isItemSelected
+                                                        ? 'scale(0.95)'
+                                                        : 'translateY(-50%) scale(1)',
+                                                    transformOrigin:
+                                                        'left center',
+                                                    pointerEvents: 'none',
+                                                    zIndex: 1,
+                                                }}
+                                            >
+                                                <FloatingLabels
+                                                    label={label}
+                                                    required={required || false}
+                                                    name={name || ''}
+                                                    isFocused={isItemSelected}
+                                                />
+                                            </Block>
+                                        )}
+                                    {/* Variant == Container - always show the placeholder*/}
+                                    {variant === MultiSelectVariant.CONTAINER &&
+                                        (selectedValues.length > 0 ||
+                                            !isSmallScreen ||
+                                            size !==
+                                                MultiSelectMenuSize.LARGE) && (
+                                            <Text
+                                                as="span"
+                                                variant="body.md"
+                                                color={
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[700]
+                                                }
+                                                fontWeight={500}
+                                            >
+                                                {placeholder}
+                                            </Text>
+                                        )}
+                                    {selectedValues.length > 0 && (
+                                        <Text
+                                            as="span"
+                                            variant="body.md"
+                                            color={
+                                                multiSelectTokens.trigger
+                                                    .selectionTag.container[
+                                                    selectionTagType
+                                                ].color
+                                            }
+                                            fontWeight={500}
+                                            style={{
+                                                height: '100%',
+                                                marginLeft: 8,
+                                                backgroundColor:
+                                                    multiSelectTokens.trigger
+                                                        .selectionTag.container[
+                                                        selectionTagType
+                                                    ].backgroundColor,
+                                                borderRadius: 4,
+                                                padding:
+                                                    selectionTagType ===
+                                                    MultiSelectSelectionTagType.COUNT
+                                                        ? '0px 6px'
+                                                        : '0px 0px',
+                                            }}
+                                        >
+                                            {selectionTagType ===
+                                            MultiSelectSelectionTagType.COUNT
+                                                ? selectedValues.length
+                                                : selectedValues
+                                                      .map(
+                                                          (v) =>
+                                                              valueLabelMap[v]
+                                                      )
+                                                      .join(', ')}
+                                        </Text>
+                                    )}
+                                </Block>
+                                <Block
+                                    as="span"
+                                    display="flex"
+                                    alignItems="center"
+                                    gap={4}
+                                    size={20}
+                                    contentCentered
+                                    flexShrink={0}
+                                >
+                                    <ChevronDown size={16} />
+                                </Block>
+                            </PrimitiveButton>
+
+                            {variant === MultiSelectVariant.CONTAINER &&
+                                selectedValues.length > 0 && (
+                                    <PrimitiveButton
+                                        borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
+                                        backgroundColor={
+                                            FOUNDATION_THEME.colors.gray[0]
+                                        }
+                                        contentCentered
+                                        height={'100%'}
+                                        style={{ aspectRatio: 1 }}
+                                        onClick={() => onChange('')}
+                                        outline={
+                                            multiSelectTokens.trigger.outline[
+                                                variant
+                                            ].closed
+                                        }
+                                        _hover={{
+                                            backgroundColor:
+                                                FOUNDATION_THEME.colors
+                                                    .gray[25],
+                                        }}
+                                        _focus={{
+                                            backgroundColor:
+                                                FOUNDATION_THEME.colors
+                                                    .gray[25],
+                                            outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
+                                        }}
+                                    >
+                                        <X
+                                            size={16}
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
+                                            }
+                                        />
+                                    </PrimitiveButton>
+                                )}
+                        </Block>
+                    </Block>
+                }
+            />
+
             {variant === MultiSelectVariant.CONTAINER && (
                 <InputFooter hintText={hintText} />
             )}

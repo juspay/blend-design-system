@@ -19,13 +19,14 @@ import type { ModalTokensType } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { PopoverTokenType } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
-import type { MultiSelectTokensType } from '../components/MultiSelect/multiSelect.tokens'
+import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { TableTokenType } from '../components/DataTable/dataTable.tokens'
 import type { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { AccordionTokenType } from '../components/Accordion/accordion.tokens'
 import type { StatCardTokenType } from '../components/StatCard/statcard.tokens'
 import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
 import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
+import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -50,7 +51,8 @@ export const useComponentToken = (
     | ResponsiveBreadcrumbTokens
     | PopoverTokenType
     | ResponsiveMenuTokensType
-    | MultiSelectTokensType
+    | ResponsiveMultiSelectTokens
+    | ResponsiveSingleSelectTokens
     | TableTokenType
     | CalendarTokenType
     | AccordionTokenType
@@ -97,6 +99,7 @@ export const useComponentToken = (
             return componentTokens.MENU
         case 'MULTI_SELECT':
             return componentTokens.MULTI_SELECT
+
         case 'TABLE':
             return componentTokens.TABLE
         case 'CALENDAR':
@@ -113,6 +116,8 @@ export const useComponentToken = (
             return componentTokens.PROGRESS_BAR
         case 'DRAWER':
             return componentTokens.DRAWER
+        case 'SINGLE_SELECT':
+            return componentTokens.SINGLE_SELECT
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

@@ -18,6 +18,8 @@ type PrimitiveButtonProps = StateStyles & {
     padding?: CSSObject['padding']
     paddingX?: CSSObject['padding']
     paddingY?: CSSObject['padding']
+    paddingTop?: CSSObject['padding']
+    paddingBottom?: CSSObject['padding']
     margin?: CSSObject['margin']
     marginX?: CSSObject['margin']
     marginY?: CSSObject['margin']
@@ -93,6 +95,8 @@ const blockedProps = [
     'padding',
     'paddingX',
     'paddingY',
+    'paddingTop',
+    'paddingBottom',
     'margin',
     'marginX',
     'marginY',
@@ -189,6 +193,12 @@ const getStyles = (props: PrimitiveButtonProps): CSSObject => {
     if (props.paddingY) {
         styles.paddingTop = props.paddingY
         styles.paddingBottom = props.paddingY
+    }
+    if (props.paddingTop) {
+        styles.paddingTop = props.paddingTop
+    }
+    if (props.paddingBottom) {
+        styles.paddingBottom = props.paddingBottom
     }
     if (props.margin) styles.margin = props.margin
     if (props.marginX) {
