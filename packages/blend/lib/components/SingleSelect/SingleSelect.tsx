@@ -547,9 +547,10 @@ const SingleSelect = ({
                                             as="span"
                                             textAlign="left"
                                             paddingTop={
-                                                isSmallScreenWithLargeSize
+                                                isSmallScreenWithLargeSize &&
+                                                isItemSelected
                                                     ? paddingY * 1.5
-                                                    : paddingY
+                                                    : 0
                                             }
                                             style={{
                                                 textAlign: 'left',

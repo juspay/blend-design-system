@@ -572,9 +572,12 @@ const MultiSelect = ({
                                     as="span"
                                     textAlign="left"
                                     paddingTop={
-                                        isSmallScreenWithLargeSize
+                                        variant ===
+                                            MultiSelectVariant.CONTAINER &&
+                                        isSmallScreenWithLargeSize &&
+                                        isItemSelected
                                             ? paddingY * 1.5
-                                            : paddingY
+                                            : 0
                                     }
                                     style={{
                                         textAlign: 'left',
