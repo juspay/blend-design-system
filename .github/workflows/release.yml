@@ -209,18 +209,27 @@ jobs:
                       docs/CHANGELOG.md
                       .
 
-            - name: Configure NPM Authentication
-              if: steps.config.outputs.dry_run != 'true'
-              run: |
-                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-
             - name: Publish to NPM
               if: steps.config.outputs.dry_run != 'true'
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
               run: |
+                  # Set up npm authentication
+                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+                  # Navigate to package directory
                   cd packages/blend
-                  pnpm publish --access public --tag ${{ steps.release_type.outputs.npm_tag }} --no-git-checks
+
+                  # Check if this version already exists on NPM
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+
+                  if npm view "$PACKAGE_NAME@$NEW_VERSION" version 2>/dev/null; then
+                    echo "Version $NEW_VERSION already exists on NPM, skipping publish"
+                    exit 0
+                  fi
+
+                  # Publish to NPM using npm instead of pnpm for better auth compatibility
+                  npm publish --access public --tag ${{ steps.release_type.outputs.npm_tag }} --registry https://registry.npmjs.org/
+                  echo "Successfully published $PACKAGE_NAME@$NEW_VERSION to NPM"
 
             - name: Create GitHub Release
               if: steps.config.outputs.dry_run != 'true'
