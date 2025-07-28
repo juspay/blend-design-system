@@ -164,22 +164,50 @@ jobs:
                       packages/blend/package.json
                       docs/CHANGELOG.md
 
-            - name: Commit, Tag & Push
+            - name: Create Release Tag
               if: steps.config.outputs.dry_run != 'true'
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
                   TAG="v$VERSION"
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git add .
-                  git commit -m "chore(release): $TAG
-
-                  - Bump version to $VERSION
-                  - Update changelog
-
-                  [skip ci]"
                   git tag "$TAG" -m "Release $TAG"
-                  git push origin HEAD --follow-tags
+                  git push origin "$TAG"
+
+            - name: Create Release PR
+              if: steps.config.outputs.dry_run != 'true'
+              uses: peter-evans/create-pull-request@v6
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  branch: release/${{ steps.bump_version.outputs.new_version }}
+                  title: 'chore(release): ${{ steps.bump_version.outputs.tag }}'
+                  body: |
+                      Release ${{ steps.bump_version.outputs.tag }}
+
+                      - Bump version to ${{ steps.bump_version.outputs.new_version }}
+                      - Update changelog
+
+                      This PR was automatically created by the release workflow.
+
+                      **Changes included:**
+                      - Updated package.json version
+                      - Generated changelog
+                      - Formatted files
+                  labels: |
+                      automated
+                      release
+                  assignees: ${{ github.actor }}
+                  commit-message: |
+                      chore(release): ${{ steps.bump_version.outputs.tag }}
+
+                      - Bump version to ${{ steps.bump_version.outputs.new_version }}
+                      - Update changelog
+
+                      [skip ci]
+                  add-paths: |
+                      packages/blend/package.json
+                      docs/CHANGELOG.md
+                      .
 
             - name: Publish to NPM
               if: steps.config.outputs.dry_run != 'true'
