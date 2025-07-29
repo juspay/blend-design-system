@@ -10,6 +10,7 @@ import {
     getPresetDisplayLabel,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
+import { getCalendarToken } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { ButtonType, ButtonSize, Button } from '../../main'
@@ -55,6 +56,9 @@ type MobileDrawerPresetsProps = {
 
 const { ITEM_HEIGHT, VISIBLE_ITEMS, SCROLL_DEBOUNCE } = MOBILE_PICKER_CONSTANTS
 const CONTAINER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS
+
+// Get tokens
+const tokens = getCalendarToken(FOUNDATION_THEME)
 
 // Scrollable Picker Component
 const ScrollablePicker = React.memo<{
@@ -159,7 +163,7 @@ const ScrollablePicker = React.memo<{
                 right="0"
                 height={`${ITEM_HEIGHT}px`}
                 style={{
-                    background: `linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.2) 80%, transparent 100%)`,
+                    background: tokens.mobileDrawer.picker.gradients.top,
                     pointerEvents: 'none',
                     zIndex: 3,
                 }}
@@ -172,7 +176,7 @@ const ScrollablePicker = React.memo<{
                 right="0"
                 height={`${ITEM_HEIGHT}px`}
                 style={{
-                    background: `linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.2) 80%, transparent 100%)`,
+                    background: tokens.mobileDrawer.picker.gradients.bottom,
                     pointerEvents: 'none',
                     zIndex: 3,
                 }}
@@ -271,12 +275,19 @@ const ScrollablePicker = React.memo<{
                     }}
                 >
                     <PrimitiveText
-                        fontSize={16}
-                        fontWeight={400}
-                        color={FOUNDATION_THEME.colors.gray[400]}
+                        fontSize={
+                            tokens.mobileDrawer.picker.text.unselected.fontSize
+                        }
+                        fontWeight={
+                            tokens.mobileDrawer.picker.text.unselected
+                                .fontWeight
+                        }
+                        color={tokens.mobileDrawer.picker.text.unselected.color}
                         style={{
                             textAlign: 'center',
-                            opacity: 0.6,
+                            opacity:
+                                tokens.mobileDrawer.picker.text.unselected
+                                    .opacity,
                             userSelect: 'none',
                         }}
                     >
@@ -395,12 +406,22 @@ const ScrollablePicker = React.memo<{
                         />
                     ) : (
                         <PrimitiveText
-                            fontSize={16}
-                            fontWeight={600}
-                            color={FOUNDATION_THEME.colors.gray[900]}
+                            fontSize={
+                                tokens.mobileDrawer.picker.text.selected
+                                    .fontSize
+                            }
+                            fontWeight={
+                                tokens.mobileDrawer.picker.text.selected
+                                    .fontWeight
+                            }
+                            color={
+                                tokens.mobileDrawer.picker.text.selected.color
+                            }
                             style={{
                                 textAlign: 'center',
-                                opacity: 1,
+                                opacity:
+                                    tokens.mobileDrawer.picker.text.selected
+                                        .opacity,
                                 userSelect: 'none',
                             }}
                         >
@@ -423,12 +444,19 @@ const ScrollablePicker = React.memo<{
                     }}
                 >
                     <PrimitiveText
-                        fontSize={16}
-                        fontWeight={400}
-                        color={FOUNDATION_THEME.colors.gray[400]}
+                        fontSize={
+                            tokens.mobileDrawer.picker.text.unselected.fontSize
+                        }
+                        fontWeight={
+                            tokens.mobileDrawer.picker.text.unselected
+                                .fontWeight
+                        }
+                        color={tokens.mobileDrawer.picker.text.unselected.color}
                         style={{
                             textAlign: 'center',
-                            opacity: 0.6,
+                            opacity:
+                                tokens.mobileDrawer.picker.text.unselected
+                                    .opacity,
                             userSelect: 'none',
                         }}
                     >
@@ -439,7 +467,6 @@ const ScrollablePicker = React.memo<{
                 </Block>
             </Block>
 
-            {/* Hidden scrollable area for scroll detection */}
             <Block
                 ref={scrollRef}
                 height={`${CONTAINER_HEIGHT}px`}
@@ -493,7 +520,6 @@ const ScrollablePicker = React.memo<{
 
 ScrollablePicker.displayName = 'ScrollablePicker'
 
-// Date Picker Component
 const DatePickerComponent: React.FC<{
     selectedRange: DateRange
     startTime: string
@@ -524,9 +550,14 @@ const DatePickerComponent: React.FC<{
         )
 
         return (
-            <Block marginTop={24}>
+            <Block marginTop={tokens.mobileDrawer.datePicker.marginTop}>
                 {/* Combined container with sticky headers and scrollable content */}
-                <Block display="flex" padding="0 16px" width="100%" gap={12}>
+                <Block
+                    display="flex"
+                    padding={tokens.mobileDrawer.datePicker.container.padding}
+                    width="100%"
+                    gap={tokens.mobileDrawer.datePicker.container.gap}
+                >
                     {/* Year Column */}
                     <Block
                         flexGrow={1}
@@ -538,9 +569,11 @@ const DatePickerComponent: React.FC<{
                         <Block
                             position="sticky"
                             top="0"
-                            zIndex={5}
-                            backgroundColor="white"
-                            paddingBottom="12px"
+                            zIndex={tokens.mobileDrawer.header.zIndex}
+                            backgroundColor={
+                                tokens.mobileDrawer.header.backgroundColor
+                            }
+                            padding={tokens.mobileDrawer.header.padding}
                             width="100%"
                             display="flex"
                             justifyContent="center"
@@ -548,10 +581,12 @@ const DatePickerComponent: React.FC<{
                         >
                             <PrimitiveText
                                 fontSize={
-                                    FOUNDATION_THEME.font.size.body.md.fontSize
+                                    tokens.mobileDrawer.header.text.fontSize
                                 }
-                                fontWeight={400}
-                                color={FOUNDATION_THEME.colors.gray[500]}
+                                fontWeight={
+                                    tokens.mobileDrawer.header.text.fontWeight
+                                }
+                                color={tokens.mobileDrawer.header.text.color}
                             >
                                 Year
                             </PrimitiveText>
@@ -623,14 +658,12 @@ const DatePickerComponent: React.FC<{
                         />
                     </Block>
 
-                    {/* Date Column */}
                     <Block
                         flexGrow={1}
                         display="flex"
                         flexDirection="column"
                         alignItems="center"
                     >
-                        {/* Sticky Header */}
                         <Block
                             position="sticky"
                             top="0"
@@ -671,14 +704,12 @@ const DatePickerComponent: React.FC<{
                         />
                     </Block>
 
-                    {/* Time Column */}
                     <Block
                         flexGrow={1}
                         display="flex"
                         flexDirection="column"
                         alignItems="center"
                     >
-                        {/* Sticky Header */}
                         <Block
                             position="sticky"
                             top="0"
@@ -700,7 +731,6 @@ const DatePickerComponent: React.FC<{
                                 Time
                             </PrimitiveText>
                         </Block>
-                        {/* Scrollable Picker */}
                         <ScrollablePicker
                             items={data.times.items}
                             selectedIndex={data.times.selectedIndex}

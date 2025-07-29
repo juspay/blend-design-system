@@ -49,6 +49,101 @@ export type CalendarTokenType = {
             '&[data-highlighted]': CSSObject
         }
     }
+    mobileDrawer: {
+        picker: {
+            itemHeight: CSSObject['height']
+            containerHeight: CSSObject['height']
+            gradients: {
+                top: CSSObject['background']
+                bottom: CSSObject['background']
+            }
+            divider: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+                strokeColor: CSSObject['color']
+                strokeColorEnd: CSSObject['color']
+            }
+            text: {
+                selected: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color']
+                    opacity: CSSObject['opacity']
+                }
+                unselected: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color']
+                    opacity: CSSObject['opacity']
+                }
+            }
+            timeInput: {
+                width: CSSObject['width']
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+                zIndex: CSSObject['zIndex']
+            }
+            scrollArea: {
+                zIndex: CSSObject['zIndex']
+                opacity: CSSObject['opacity']
+            }
+        }
+        header: {
+            padding: CSSObject['padding']
+            backgroundColor: CSSObject['backgroundColor']
+            zIndex: CSSObject['zIndex']
+            text: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+        }
+        presetItem: {
+            padding: CSSObject['padding']
+            borderBottom: CSSObject['borderBottom']
+            text: {
+                active: {
+                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color']
+                }
+                inactive: {
+                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color']
+                }
+            }
+            icon: {
+                size: CSSObject['width']
+                color: CSSObject['color']
+            }
+            chevron: {
+                size: CSSObject['width']
+                color: CSSObject['color']
+                transition: CSSObject['transition']
+            }
+        }
+        actionButtons: {
+            container: {
+                gap: CSSObject['gap']
+                padding: CSSObject['padding']
+                marginTop: CSSObject['marginTop']
+                borderTop: CSSObject['borderTop']
+            }
+        }
+        tabs: {
+            marginTop: CSSObject['marginTop']
+            content: {
+                marginTop: CSSObject['marginTop']
+            }
+        }
+        datePicker: {
+            marginTop: CSSObject['marginTop']
+            container: {
+                padding: CSSObject['padding']
+                gap: CSSObject['gap']
+            }
+        }
+    }
     trigger: {
         height: CSSObject['height']
         display: CSSObject['display']
@@ -192,6 +287,101 @@ export const getCalendarToken = (
     foundationToken: FoundationTokenType
 ): CalendarTokenType => {
     return {
+        mobileDrawer: {
+            picker: {
+                itemHeight: foundationToken.unit[44],
+                containerHeight: '132px', // 44px * 3
+                gradients: {
+                    top: 'linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.2) 80%, transparent 100%)',
+                    bottom: 'linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.2) 80%, transparent 100%)',
+                },
+                divider: {
+                    width: foundationToken.unit[70],
+                    height: foundationToken.unit[2],
+                    strokeColor: foundationToken.colors.gray[500],
+                    strokeColorEnd: foundationToken.colors.gray[0],
+                },
+                text: {
+                    selected: {
+                        fontSize: foundationToken.font.size.body.md.fontSize,
+                        fontWeight: foundationToken.font.weight[600],
+                        color: foundationToken.colors.gray[900],
+                        opacity: 1,
+                    },
+                    unselected: {
+                        fontSize: foundationToken.font.size.body.md.fontSize,
+                        fontWeight: foundationToken.font.weight[400],
+                        color: foundationToken.colors.gray[400],
+                        opacity: 0.6,
+                    },
+                },
+                timeInput: {
+                    width: foundationToken.unit[60],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[600],
+                    color: foundationToken.colors.gray[900],
+                    zIndex: 10,
+                },
+                scrollArea: {
+                    zIndex: 1,
+                    opacity: 0,
+                },
+            },
+            header: {
+                padding: foundationToken.unit[12],
+                backgroundColor: foundationToken.colors.gray[0],
+                zIndex: 5,
+                text: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[400],
+                    color: foundationToken.colors.gray[500],
+                },
+            },
+            presetItem: {
+                padding: `${foundationToken.unit[16]} ${foundationToken.unit[20]}`,
+                borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[150]}`,
+                text: {
+                    active: {
+                        fontWeight: foundationToken.font.weight[600],
+                        color: foundationToken.colors.gray[700],
+                    },
+                    inactive: {
+                        fontWeight: foundationToken.font.weight[500],
+                        color: foundationToken.colors.gray[600],
+                    },
+                },
+                icon: {
+                    size: foundationToken.unit[20],
+                    color: foundationToken.colors.gray[700],
+                },
+                chevron: {
+                    size: foundationToken.unit[16],
+                    color: foundationToken.colors.gray[500],
+                    transition: 'transform 0.2s ease',
+                },
+            },
+            actionButtons: {
+                container: {
+                    gap: foundationToken.unit[16],
+                    padding: foundationToken.unit[16],
+                    marginTop: foundationToken.unit[24],
+                    borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
+                },
+            },
+            tabs: {
+                marginTop: foundationToken.unit[16],
+                content: {
+                    marginTop: foundationToken.unit[32],
+                },
+            },
+            datePicker: {
+                marginTop: foundationToken.unit[24],
+                container: {
+                    padding: `0 ${foundationToken.unit[16]}`,
+                    gap: foundationToken.unit[12],
+                },
+            },
+        },
         quickRange: {
             width: '136px',
             trigger: {

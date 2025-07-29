@@ -1595,17 +1595,19 @@ export const createSelectionHandler = (
         const newDate = new Date(targetDate)
 
         switch (type) {
-            case 'year':
+            case 'year': {
                 const years = Array.from(
                     { length: new Date().getFullYear() + 5 - 2012 + 1 },
                     (_, i) => 2012 + i
                 )
                 newDate.setFullYear(years[index])
                 break
-            case 'month':
+            }
+            case 'month': {
                 newDate.setMonth(index)
                 break
-            case 'date':
+            }
+            case 'date': {
                 const daysInMonth = new Date(
                     newDate.getFullYear(),
                     newDate.getMonth() + 1,
@@ -1617,7 +1619,8 @@ export const createSelectionHandler = (
                 )
                 newDate.setDate(dates[index])
                 break
-            case 'time':
+            }
+            case 'time': {
                 const times = []
                 for (let h = 0; h < 24; h++) {
                     for (let m = 0; m < 60; m += 15) {
@@ -1633,6 +1636,7 @@ export const createSelectionHandler = (
                     handleEndTimeChange(time)
                 }
                 return
+            }
         }
 
         if (tabType === 'start') {
