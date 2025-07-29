@@ -457,17 +457,21 @@ const ScrollablePicker = React.memo<{
                     opacity: 0,
                     pointerEvents: isTimeColumn && isEditing ? 'none' : 'auto',
                     zIndex: 1,
+                    WebkitOverflowScrolling: 'touch',
+                    touchAction: 'pan-y',
                 }}
                 onScroll={handleScroll}
                 className={`scrollable-picker-${columnId}`}
             >
                 <style>
-                    {`.scrollable-picker-${columnId}::-webkit-scrollbar { display: none; }`}
+                    {`.scrollable-picker-${columnId}::-webkit-scrollbar { display: none; }
+                     .scrollable-picker-${columnId} { -webkit-overflow-scrolling: touch; touch-action: pan-y; }`}
                 </style>
                 <Block
                     style={{
                         height: `${items.length * ITEM_HEIGHT}px`,
                         width: '100%',
+                        minHeight: `${items.length * ITEM_HEIGHT}px`,
                     }}
                 >
                     {items.map((_, index) => (
@@ -477,6 +481,7 @@ const ScrollablePicker = React.memo<{
                             style={{
                                 scrollSnapAlign: 'start',
                                 width: '100%',
+                                minHeight: `${ITEM_HEIGHT}px`,
                             }}
                         />
                     ))}
