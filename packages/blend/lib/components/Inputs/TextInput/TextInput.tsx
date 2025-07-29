@@ -105,7 +105,8 @@ const TextInput = ({
                         position="absolute"
                         top={
                             inputFocusedOrWithValue
-                                ? toPixels(paddingY - paddingY / 1.3)
+                                ? toPixels(paddingY - paddingY / 1.3) +
+                                  (!required ? 3 : 0)
                                 : '50%'
                         }
                         left={paddingInlineStart}
