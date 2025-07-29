@@ -392,19 +392,19 @@ export const DrawerBody = forwardRef<
         children: React.ReactNode
         className?: string
         overflowY?: 'auto' | 'hidden' | 'scroll' | 'visible'
+        noPadding?: boolean
     }
->(({ children, className, overflowY, ...props }, ref) => {
+>(({ children, className, overflowY, noPadding = false, ...props }, ref) => {
     const tokens = useComponentToken('DRAWER') as DrawerTokensType
 
     return (
         <Block
             ref={ref}
             className={className}
-            padding={tokens.body.padding}
+            padding={noPadding ? 0 : tokens.body.padding}
             backgroundColor={tokens.body.backgroundColor}
             flexGrow={1}
             overflowY={overflowY || tokens.body.overflowY}
-            maxHeight={tokens.body.maxHeight}
             {...props}
         >
             {children}

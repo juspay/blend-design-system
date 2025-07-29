@@ -1,19 +1,11 @@
 import React, { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { DateRange, DateRangePreset } from './types'
-import {
-    formatDate,
-    getPresetLabel,
-    generateCalendarMonths,
-    getMonthName,
-} from './utils'
+import { formatDate, getPresetLabel, getMonthName } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
-import { TextInput } from '../Inputs/TextInput'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { ButtonType, ButtonSize, Button } from '../../main'
-import { SwitchSize } from '../Switch/types'
-import { Switch } from '../Switch/Switch'
 import {
     Drawer,
     DrawerTrigger,
@@ -30,6 +22,7 @@ import {
     TabsVariant,
     TabsSize,
 } from '../Tabs'
+import Text from '../Text/Text'
 
 type MobileDrawerPresetsProps = {
     drawerOpen: boolean
@@ -157,21 +150,46 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                 gap={12}
             >
                 {items.map((item, index) => {
-                    const isSelected = index === 1 // Middle item is always selected
+                    const isSelected = index === 1
                     const isAdjacent = index === 0 || index === 2
                     const uniqueKey = `${tabType}-${isTimeColumn ? 'time' : 'item'}-${index}-${item}`
 
                     if (isTimeColumn && isSelected) {
-                        // Render input for selected time
                         return (
-                            <Block key={uniqueKey} width="60px">
-                                <TextInput
-                                    label=""
-                                    placeholder="00:00"
-                                    value={String(selectedItem)}
-                                    onChange={(e) => onSelect(e.target.value)}
-                                />
-                            </Block>
+                            <PrimitiveText
+                                key={uniqueKey}
+                                fontSize={14}
+                                fontWeight={600}
+                                color={FOUNDATION_THEME.colors.gray[900]}
+                                style={{
+                                    cursor: 'text',
+                                    textAlign: 'center',
+                                    minHeight: '20px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    border: 'none',
+                                    outline: 'none',
+                                    background: 'transparent',
+                                    width: '60px',
+                                }}
+                                contentEditable
+                                suppressContentEditableWarning
+                                onBlur={(e) => {
+                                    const newValue =
+                                        e.currentTarget.textContent ||
+                                        String(selectedItem)
+                                    onSelect(newValue)
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault()
+                                        e.currentTarget.blur()
+                                    }
+                                }}
+                            >
+                                {String(selectedItem)}
+                            </PrimitiveText>
                         )
                     }
 
@@ -400,24 +418,24 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
             <Tabs
                 defaultValue="start"
                 onValueChange={setActiveTab}
-                variant={TabsVariant.FLOATING}
+                variant={TabsVariant.BOXED}
                 size={TabsSize.MD}
             >
                 <TabsList
-                    variant={TabsVariant.FLOATING}
+                    variant={TabsVariant.BOXED}
                     size={TabsSize.MD}
-                    fitContent
+                    expanded={true}
                 >
                     <TabsTrigger
                         value="start"
-                        variant={TabsVariant.FLOATING}
+                        variant={TabsVariant.BOXED}
                         size={TabsSize.MD}
                     >
                         Start Date
                     </TabsTrigger>
                     <TabsTrigger
                         value="end"
-                        variant={TabsVariant.FLOATING}
+                        variant={TabsVariant.BOXED}
                         size={TabsSize.MD}
                     >
                         End Date
@@ -442,10 +460,12 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
             <DrawerPortal>
                 <DrawerOverlay />
                 <DrawerContent>
-                    <DrawerBody>
+                    <DrawerBody noPadding>
                         <Block display="flex" flexDirection="column" gap={0}>
                             {showCustomDropdownOnly ? (
-                                <Block>{renderCustomDateInputs()}</Block>
+                                <Block width={'100%'}>
+                                    {renderCustomDateInputs()}
+                                </Block>
                             ) : (
                                 showPresets && (
                                     <Block>
@@ -455,9 +475,15 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                                                 display="flex"
                                                 alignItems="center"
                                                 justifyContent="space-between"
-                                                padding="16px"
-                                                borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                                                padding="16px 20px"
+                                                borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[150]}`}
                                                 cursor="pointer"
+                                                backgroundColor="transparent"
+                                                _hover={{
+                                                    backgroundColor:
+                                                        FOUNDATION_THEME.colors
+                                                            .gray[50],
+                                                }}
                                                 onClick={() => {
                                                     if (
                                                         preset ===
@@ -468,7 +494,7 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                                                         )
                                                         handlePresetSelect(
                                                             preset
-                                                        ) // Set Custom as active preset
+                                                        )
                                                     } else {
                                                         handlePresetSelect(
                                                             preset
@@ -477,12 +503,12 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                                                     }
                                                 }}
                                             >
-                                                <PrimitiveText
-                                                    fontSize={16}
+                                                <Text
+                                                    variant="body.md"
                                                     fontWeight={
                                                         activePreset === preset
                                                             ? 600
-                                                            : 400
+                                                            : 500
                                                     }
                                                     color={
                                                         activePreset === preset
@@ -506,7 +532,7 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                                                             : getPresetLabel(
                                                                   preset
                                                               )}
-                                                </PrimitiveText>
+                                                </Text>
                                                 {activePreset === preset &&
                                                     preset !==
                                                         DateRangePreset.CUSTOM && (
@@ -529,7 +555,7 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                                                                     stroke={
                                                                         FOUNDATION_THEME
                                                                             .colors
-                                                                            .primary[600]
+                                                                            .gray[700]
                                                                     }
                                                                     strokeWidth="2"
                                                                     strokeLinecap="round"
@@ -540,7 +566,7 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                                                     )}
                                                 {preset ===
                                                     DateRangePreset.CUSTOM &&
-                                                    activePreset === preset && (
+                                                    isCustomExpanded && (
                                                         <Block
                                                             width="20px"
                                                             height="20px"
@@ -560,7 +586,7 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                                                                     stroke={
                                                                         FOUNDATION_THEME
                                                                             .colors
-                                                                            .primary[600]
+                                                                            .gray[700]
                                                                     }
                                                                     strokeWidth="2"
                                                                     strokeLinecap="round"
@@ -570,28 +596,20 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                                                         </Block>
                                                     )}
                                                 {preset ===
-                                                    DateRangePreset.CUSTOM && (
-                                                    <ChevronDown
-                                                        size={16}
-                                                        color={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[500]
-                                                        }
-                                                        style={{
-                                                            transform:
-                                                                isCustomExpanded
-                                                                    ? 'rotate(180deg)'
-                                                                    : 'rotate(0deg)',
-                                                            transition:
-                                                                'transform 0.2s ease',
-                                                        }}
-                                                    />
-                                                )}
+                                                    DateRangePreset.CUSTOM &&
+                                                    !isCustomExpanded && (
+                                                        <ChevronDown
+                                                            size={16}
+                                                            color={
+                                                                FOUNDATION_THEME
+                                                                    .colors
+                                                                    .gray[500]
+                                                            }
+                                                        />
+                                                    )}
                                             </Block>
                                         ))}
 
-                                        {/* Custom Date Inputs - Show when Custom Date is expanded */}
                                         {isCustomExpanded && (
                                             <Block padding="0 16px">
                                                 {renderCustomDateInputs()}
@@ -601,59 +619,67 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                                 )
                             )}
 
-                            {/* Footer Controls - Always show when custom dropdown is expanded */}
                             {isCustomExpanded && (
                                 <Block
                                     display="flex"
-                                    justifyContent="space-between"
-                                    alignItems="center"
-                                    padding="24px 16px"
+                                    gap={16}
+                                    padding="16px"
                                     marginTop={24}
                                     borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
                                 >
-                                    <Button
-                                        buttonType={ButtonType.SECONDARY}
-                                        size={ButtonSize.MEDIUM}
-                                        onClick={() => {
-                                            handleCancel()
-                                            setDrawerOpen(false)
-                                        }}
-                                        text="Cancel"
-                                    />
-                                    <Button
-                                        buttonType={ButtonType.PRIMARY}
-                                        size={ButtonSize.MEDIUM}
-                                        onClick={handleApply}
-                                        text="Apply Date"
-                                    />
+                                    <Block flexGrow={1}>
+                                        <Button
+                                            buttonType={ButtonType.SECONDARY}
+                                            size={ButtonSize.MEDIUM}
+                                            fullWidth={true}
+                                            onClick={() => {
+                                                handleCancel()
+                                                setDrawerOpen(false)
+                                            }}
+                                            text="Cancel"
+                                        />
+                                    </Block>
+                                    <Block flexGrow={1}>
+                                        <Button
+                                            buttonType={ButtonType.PRIMARY}
+                                            size={ButtonSize.MEDIUM}
+                                            fullWidth={true}
+                                            onClick={handleApply}
+                                            text="Apply Date"
+                                        />
+                                    </Block>
                                 </Block>
                             )}
 
-                            {/* Footer Controls for showCustomDropdownOnly mode */}
                             {showCustomDropdownOnly && (
                                 <Block
                                     display="flex"
-                                    justifyContent="space-between"
-                                    alignItems="center"
-                                    padding="24px 16px"
+                                    gap={16}
+                                    padding="16px"
                                     marginTop={24}
                                     borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
                                 >
-                                    <Button
-                                        buttonType={ButtonType.SECONDARY}
-                                        size={ButtonSize.MEDIUM}
-                                        onClick={() => {
-                                            handleCancel()
-                                            setDrawerOpen(false)
-                                        }}
-                                        text="Cancel"
-                                    />
-                                    <Button
-                                        buttonType={ButtonType.PRIMARY}
-                                        size={ButtonSize.MEDIUM}
-                                        onClick={handleApply}
-                                        text="Apply Date"
-                                    />
+                                    <Block flexGrow={1}>
+                                        <Button
+                                            buttonType={ButtonType.SECONDARY}
+                                            size={ButtonSize.MEDIUM}
+                                            fullWidth={true}
+                                            onClick={() => {
+                                                handleCancel()
+                                                setDrawerOpen(false)
+                                            }}
+                                            text="Cancel"
+                                        />
+                                    </Block>
+                                    <Block flexGrow={1}>
+                                        <Button
+                                            buttonType={ButtonType.PRIMARY}
+                                            size={ButtonSize.MEDIUM}
+                                            fullWidth={true}
+                                            onClick={handleApply}
+                                            text="Apply Date"
+                                        />
+                                    </Block>
                                 </Block>
                             )}
                         </Block>
