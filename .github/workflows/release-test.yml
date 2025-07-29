@@ -75,13 +75,18 @@ jobs:
                   CUSTOM_VERSION="${{ inputs.custom_version }}"
                   VERSION_TYPE="${{ inputs.version_type }}"
 
+                  echo "Debug: BRANCH=$BRANCH"
+                  echo "Debug: EVENT=$EVENT"
+                  echo "Debug: CUSTOM_VERSION=$CUSTOM_VERSION"
+                  echo "Debug: VERSION_TYPE=$VERSION_TYPE"
+
                   if [[ "$EVENT" == "workflow_dispatch" && -n "$CUSTOM_VERSION" ]]; then
                     echo "type=custom" >> $GITHUB_OUTPUT
                     echo "semver=custom" >> $GITHUB_OUTPUT
                     echo "custom_version=$CUSTOM_VERSION" >> $GITHUB_OUTPUT
                     echo "npm_tag=latest" >> $GITHUB_OUTPUT
 
-                  elif [[ "$BRANCH" == "test-release" ]]; then
+                  elif [[ "$BRANCH" == "test-release" || "$BRANCH" == "test/npm-publish" ]]; then
                     echo "type=test" >> $GITHUB_OUTPUT
                     if [[ "$VERSION_TYPE" == "auto" ]]; then
                       echo "semver=prepatch" >> $GITHUB_OUTPUT
@@ -93,7 +98,7 @@ jobs:
 
                   else
                     echo "type=stable" >> $GITHUB_OUTPUT
-                    if [[ "$VERSION_TYPE" == "auto" ]]; then
+                    if [[ "$VERSION_TYPE" == "auto" || -z "$VERSION_TYPE" ]]; then
                       echo "semver=patch" >> $GITHUB_OUTPUT
                     else
                       echo "semver=$VERSION_TYPE" >> $GITHUB_OUTPUT
@@ -101,6 +106,10 @@ jobs:
                     echo "npm_tag=latest" >> $GITHUB_OUTPUT
                     echo "preid=" >> $GITHUB_OUTPUT
                   fi
+
+                  echo "Debug: Final outputs:"
+                  echo "type=$(grep 'type=' $GITHUB_OUTPUT | tail -1)"
+                  echo "semver=$(grep 'semver=' $GITHUB_OUTPUT | tail -1)"
 
             - name: Get Current Version
               id: current_version
@@ -124,7 +133,7 @@ jobs:
                   echo "tag=v$VERSION" >> $GITHUB_OUTPUT
 
             - name: Build Package
-              run: pnpm --filter @your-username/blend-design-system build
+              run: pnpm --filter @vinitjuspay/blend-design-system build
 
             - name: Upload Artifacts
               uses: actions/upload-artifact@v4
