@@ -1,0 +1,173 @@
+name: Release Test
+
+on:
+    push:
+        branches:
+            - test/npm-publish
+    workflow_dispatch:
+        inputs:
+            version_type:
+                description: 'Version bump type'
+                required: true
+                default: 'patch' # Default to patch for testing
+                type: choice
+                options:
+                    - patch
+                    - minor
+                    - major
+                    - prepatch
+                    - preminor
+                    - premajor
+            custom_version:
+                description: 'Custom version (optional)'
+                required: false
+                type: string
+            dry_run:
+                description: 'Dry run (skip publishing)'
+                required: false
+                default: true
+                type: boolean
+
+concurrency:
+    group: release-test-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    release:
+        name: Test Release
+        runs-on: ubuntu-latest
+        outputs:
+            version: ${{ steps.bump_version.outputs.new_version }}
+            tag: ${{ steps.bump_version.outputs.tag }}
+            dry_run: ${{ steps.config.outputs.dry_run }}
+
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Setup Node.js 22 and pnpm
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+
+            - name: Enable corepack & install deps
+              run: |
+                  corepack enable
+                  pnpm install --frozen-lockfile
+
+            - name: Configure Dry Run
+              id: config
+              run: |
+                  if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.dry_run }}" == "true" ]]; then
+                    echo "dry_run=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "dry_run=false" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Determine Release Type
+              id: release_type
+              run: |
+                  BRANCH="${GITHUB_REF_NAME}"
+                  EVENT="${GITHUB_EVENT_NAME}"
+                  CUSTOM_VERSION="${{ inputs.custom_version }}"
+                  VERSION_TYPE="${{ inputs.version_type }}"
+
+                  if [[ "$EVENT" == "workflow_dispatch" && -n "$CUSTOM_VERSION" ]]; then
+                    echo "type=custom" >> $GITHUB_OUTPUT
+                    echo "semver=custom" >> $GITHUB_OUTPUT
+                    echo "custom_version=$CUSTOM_VERSION" >> $GITHUB_OUTPUT
+                    echo "npm_tag=latest" >> $GITHUB_OUTPUT
+
+                  elif [[ "$BRANCH" == "test-release" ]]; then
+                    echo "type=test" >> $GITHUB_OUTPUT
+                    if [[ "$VERSION_TYPE" == "auto" ]]; then
+                      echo "semver=prepatch" >> $GITHUB_OUTPUT
+                    else
+                      echo "semver=pre$VERSION_TYPE" >> $GITHUB_OUTPUT
+                    fi
+                    echo "npm_tag=test" >> $GITHUB_OUTPUT
+                    echo "preid=test" >> $GITHUB_OUTPUT
+
+                  else
+                    echo "type=stable" >> $GITHUB_OUTPUT
+                    if [[ "$VERSION_TYPE" == "auto" ]]; then
+                      echo "semver=patch" >> $GITHUB_OUTPUT
+                    else
+                      echo "semver=$VERSION_TYPE" >> $GITHUB_OUTPUT
+                    fi
+                    echo "npm_tag=latest" >> $GITHUB_OUTPUT
+                    echo "preid=" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Get Current Version
+              id: current_version
+              run: |
+                  CURRENT=$(node -p "require('./packages/blend/package.json').version")
+                  echo "version=$CURRENT" >> $GITHUB_OUTPUT
+
+            - name: Bump Version
+              id: bump_version
+              run: |
+                  cd packages/blend
+                  if [[ "${{ steps.release_type.outputs.type }}" == "custom" ]]; then
+                    npm version "${{ steps.release_type.outputs.custom_version }}" --no-git-tag-version
+                  elif [[ "${{ steps.release_type.outputs.type }}" == "test" ]]; then
+                    npm version "${{ steps.release_type.outputs.semver }}" --preid test --no-git-tag-version
+                  else
+                    npm version "${{ steps.release_type.outputs.semver }}" --no-git-tag-version
+                  fi
+                  VERSION=$(node -p "require('./package.json').version")
+                  echo "new_version=$VERSION" >> $GITHUB_OUTPUT
+                  echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+            - name: Build Package
+              run: pnpm --filter @your-username/blend-design-system build
+
+            - name: Upload Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: build-${{ steps.bump_version.outputs.new_version }}
+                  path: |
+                      packages/blend/dist
+                      packages/blend/package.json
+
+            - name: Test NPM Publish (Dry Run)
+              if: steps.config.outputs.dry_run == 'true'
+              run: |
+                  cd packages/blend
+                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TEST_TOKEN }}" > ~/.npmrc
+                  npm publish --dry-run --access public --registry https://registry.npmjs.org/
+                  echo "✅ Dry run successful! Package would be published as $(node -p "require('./package.json').name")@$(node -p "require('./package.json').version")"
+
+            - name: Publish to NPM
+              if: steps.config.outputs.dry_run != 'true'
+              run: |
+                  cd packages/blend
+                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TEST_TOKEN }}" > ~/.npmrc
+
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+
+                  if npm view "$PACKAGE_NAME@$NEW_VERSION" version 2>/dev/null; then
+                    echo "Version $NEW_VERSION already exists on NPM, skipping publish"
+                    exit 0
+                  fi
+
+                  npm publish --access public --registry https://registry.npmjs.org/
+                  echo "Successfully published $PACKAGE_NAME@$NEW_VERSION to NPM"
+
+            - name: Create GitHub Release
+              if: steps.config.outputs.dry_run != 'true'
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: ${{ steps.bump_version.outputs.tag }}
+                  name: Test Release ${{ steps.bump_version.outputs.tag }}
+                  body: |
+                      Test release ${{ steps.bump_version.outputs.tag }}
+
+                      This is a test release for development purposes.
+                  draft: false
+                  prerelease: true
