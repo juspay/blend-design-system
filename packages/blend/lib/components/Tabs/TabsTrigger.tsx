@@ -1,8 +1,8 @@
 import { forwardRef } from 'react'
 import { type TabsTriggerProps, TabsVariant, TabsSize } from './types'
 import { StyledTabsTrigger, IconContainer } from './StyledTabs'
-import { useComponentToken } from '../../context/useComponentToken'
 import type { TabsTokensType } from './tabs.token'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
     (
@@ -18,7 +18,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
         },
         ref
     ) => {
-        const tabsToken = useComponentToken('TABS') as TabsTokensType
+        const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
 
         return (
             <StyledTabsTrigger

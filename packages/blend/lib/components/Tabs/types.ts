@@ -5,6 +5,7 @@ export enum TabsVariant {
     BOXED = 'boxed',
     FLOATING = 'floating',
     UNDERLINE = 'underline',
+    PILLS = 'pills',
 }
 
 export enum TabsSize {
