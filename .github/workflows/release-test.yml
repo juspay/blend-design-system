@@ -36,6 +36,7 @@ jobs:
     release:
         name: Test Release
         runs-on: ubuntu-latest
+        environment: npm
         outputs:
             version: ${{ steps.bump_version.outputs.new_version }}
             tag: ${{ steps.bump_version.outputs.tag }}
