@@ -1,9 +1,5 @@
 import type { CSSObject } from 'styled-components'
-import {
-    MultiSelectMenuSize,
-    MultiSelectSelectionTagType,
-    MultiSelectVariant,
-} from './types'
+import { SelectMenuSize, SelectMenuVariant } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
@@ -19,20 +15,20 @@ export type SingleSelectItemStates =
     | 'disabled'
     | 'selected'
 
-export type MultiSelectTokensType = {
+export type SingleSelectTokensType = {
     trigger: {
         height: CSSObject['height']
         paddingX: {
-            [key in MultiSelectMenuSize]: CSSObject['padding']
+            [key in SelectMenuSize]: CSSObject['padding']
         }
         paddingY: {
-            [key in MultiSelectMenuSize]: CSSObject['padding']
+            [key in SelectMenuSize]: CSSObject['padding']
         }
         borderRadius: {
-            [key in MultiSelectMenuSize]: CSSObject['borderRadius']
+            [key in SelectMenuSize]: CSSObject['borderRadius']
         }
         boxShadow: {
-            [key in MultiSelectVariant]: CSSObject['boxShadow']
+            [key in SelectMenuVariant]: CSSObject['boxShadow']
         }
         backgroundColor: {
             container: {
@@ -40,17 +36,8 @@ export type MultiSelectTokensType = {
             }
         }
         outline: {
-            [key in MultiSelectVariant]: {
+            [key in SelectMenuVariant]: {
                 [key in TriggerStates]: CSSObject['outline']
-            }
-        }
-        selectionTag: {
-            container: {
-                [key in MultiSelectSelectionTagType]: {
-                    color: CSSObject['color']
-                    backgroundColor: CSSObject['backgroundColor']
-                    fontWeight: CSSObject['fontWeight']
-                }
             }
         }
     }
@@ -93,11 +80,11 @@ export type MultiSelectTokensType = {
     }
 }
 
-export type ResponsiveMultiSelectTokens = {
-    [key in keyof BreakpointType]: MultiSelectTokensType
+export type ResponsiveSingleSelectTokens = {
+    [key in keyof BreakpointType]: SingleSelectTokensType
 }
 
-export const multiSelectTokens: MultiSelectTokensType = {
+export const singleSelectTokens: SingleSelectTokensType = {
     trigger: {
         height: FOUNDATION_THEME.unit[52],
         paddingX: {
@@ -139,20 +126,6 @@ export const multiSelectTokens: MultiSelectTokensType = {
                 closed: undefined,
                 hover: undefined,
                 focus: undefined,
-            },
-        },
-        selectionTag: {
-            container: {
-                [MultiSelectSelectionTagType.TEXT]: {
-                    color: FOUNDATION_THEME.colors.gray[700],
-                    backgroundColor: 'transparent',
-                    fontWeight: 500,
-                },
-                [MultiSelectSelectionTagType.COUNT]: {
-                    color: FOUNDATION_THEME.colors.gray[0],
-                    backgroundColor: FOUNDATION_THEME.colors.primary[600],
-                    fontWeight: 500,
-                },
             },
         },
     },
@@ -213,9 +186,9 @@ export const multiSelectTokens: MultiSelectTokensType = {
     },
 }
 
-export const getMultiSelectTokens = (
+export const getSingleSelectTokens = (
     foundationToken: FoundationTokenType
-): ResponsiveMultiSelectTokens => {
+): ResponsiveSingleSelectTokens => {
     return {
         sm: {
             trigger: {
@@ -261,21 +234,6 @@ export const getMultiSelectTokens = (
                         focus: undefined,
                     },
                 },
-                selectionTag: {
-                    container: {
-                        text: {
-                            color: foundationToken.colors.gray[400],
-                            backgroundColor: 'transparent',
-                            fontWeight: 500,
-                        },
-                        count: {
-                            color: foundationToken.colors.gray[0],
-                            backgroundColor:
-                                foundationToken.colors.primary[600],
-                            fontWeight: 500,
-                        },
-                    },
-                },
             },
             dropdown: {
                 shadow: foundationToken.shadows.sm,
@@ -286,8 +244,8 @@ export const getMultiSelectTokens = (
                 outline: foundationToken.colors.gray[200],
                 borderRadius: foundationToken.unit[10],
                 item: {
-                    padding: foundationToken.unit[4],
-                    margin: foundationToken.unit[4],
+                    padding: `${foundationToken.unit[8]} ${foundationToken.unit[8]}`,
+                    margin: `${foundationToken.unit[0]} ${foundationToken.unit[4]}`,
                     borderRadius: foundationToken.unit[10],
                     gap: foundationToken.unit[4],
                     backgroundColor: {
@@ -377,21 +335,6 @@ export const getMultiSelectTokens = (
                         focus: undefined,
                     },
                 },
-                selectionTag: {
-                    container: {
-                        text: {
-                            color: foundationToken.colors.gray[400],
-                            backgroundColor: 'transparent',
-                            fontWeight: 500,
-                        },
-                        count: {
-                            color: foundationToken.colors.gray[0],
-                            backgroundColor:
-                                foundationToken.colors.primary[600],
-                            fontWeight: 500,
-                        },
-                    },
-                },
             },
             dropdown: {
                 shadow: foundationToken.shadows.sm,
@@ -402,8 +345,8 @@ export const getMultiSelectTokens = (
                 outline: foundationToken.colors.gray[200],
                 borderRadius: foundationToken.unit[10],
                 item: {
-                    padding: foundationToken.unit[4],
-                    margin: foundationToken.unit[4],
+                    padding: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
+                    margin: `${foundationToken.unit[0]} ${foundationToken.unit[4]}`,
                     borderRadius: foundationToken.unit[10],
                     gap: foundationToken.unit[4],
                     backgroundColor: {

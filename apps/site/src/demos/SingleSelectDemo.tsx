@@ -25,7 +25,7 @@ const SingleSelectDemo = () => {
         'Select an option...'
     )
     const [playgroundSize, setPlaygroundSize] = useState<SelectMenuSize>(
-        SelectMenuSize.MEDIUM
+        SelectMenuSize.LARGE
     )
     const [playgroundVariant, setPlaygroundVariant] =
         useState<SelectMenuVariant>(SelectMenuVariant.CONTAINER)
@@ -367,6 +367,7 @@ const SingleSelectDemo = () => {
 
                         <div className="border rounded-lg p-6 bg-gray-50">
                             <SingleSelect
+                                useDrawerOnMobile={false}
                                 label={playgroundLabel}
                                 subLabel={playgroundSubLabel}
                                 hintText={playgroundHintText}

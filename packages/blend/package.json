@@ -1,7 +1,7 @@
 {
     "name": "@juspay/blend-design-system",
     "private": false,
-    "version": "0.0.5",
+    "version": "0.0.5-beta.0",
     "description": "A comprehensive React component library and design system by Juspay",
     "type": "module",
     "main": "./dist/main.js",
@@ -112,6 +112,9 @@
         "extends": [
             "plugin:storybook/recommended"
         ]
+    },
+    "publishConfig": {
+        "access": "public"
     },
     "packageManager": "pnpm@10.11.0"
 }

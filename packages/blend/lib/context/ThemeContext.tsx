@@ -82,7 +82,7 @@ import {
 } from '../components/Menu/menu.tokens'
 import {
     getMultiSelectTokens,
-    type MultiSelectTokensType,
+    type ResponsiveMultiSelectTokens,
 } from '../components/MultiSelect/multiSelect.tokens'
 import {
     getTableToken,
@@ -108,6 +108,10 @@ import {
     type DrawerTokensType,
 } from '../components/Drawer/drawer.tokens'
 import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
+import {
+    getSingleSelectTokens,
+    ResponsiveSingleSelectTokens,
+} from '../components/SingleSelect/singleSelect.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -130,7 +134,8 @@ export type ComponentTokenType = {
     BREADCRUMB?: ResponsiveBreadcrumbTokens
     POPOVER?: PopoverTokenType
     MENU?: ResponsiveMenuTokensType
-    MULTI_SELECT?: MultiSelectTokensType
+    MULTI_SELECT?: ResponsiveMultiSelectTokens
+    SINGLE_SELECT?: ResponsiveSingleSelectTokens
     TABLE?: TableTokenType
     CALENDAR?: CalendarTokenType
     ACCORDION?: AccordionTokenType
@@ -169,6 +174,7 @@ const ThemeContext = createContext<ThemeContextType>({
         POPOVER: getPopoverTokens(FOUNDATION_THEME),
         MENU: getMenuTokens(FOUNDATION_THEME),
         MULTI_SELECT: getMultiSelectTokens(FOUNDATION_THEME),
+        SINGLE_SELECT: getSingleSelectTokens(FOUNDATION_THEME),
         TABLE: getTableToken(FOUNDATION_THEME),
         CALENDAR: getCalendarToken(FOUNDATION_THEME),
         ACCORDION: getAccordionToken(FOUNDATION_THEME),

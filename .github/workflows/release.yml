@@ -1,300 +1,283 @@
-name: Release Blend Design System
+name: Release
 
 on:
-    pull_request:
-        branches: [main]
-        types: [closed]
+    push:
+        branches:
+            - main
+            - dev
     workflow_dispatch:
         inputs:
-            tag:
-                description: 'Git tag to publish to NPM (e.g., v1.2.3)'
+            version_type:
+                description: 'Version bump type'
                 required: true
+                default: 'auto'
+                type: choice
+                options:
+                    - auto
+                    - patch
+                    - minor
+                    - major
+                    - prepatch
+                    - preminor
+                    - premajor
+            custom_version:
+                description: 'Custom version (optional)'
+                required: false
                 type: string
+            dry_run:
+                description: 'Dry run (skip publishing)'
+                required: false
+                default: false
+                type: boolean
+
+concurrency:
+    group: release-${{ github.ref }}
+    cancel-in-progress: true
 
 jobs:
-    version-bump:
-        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    release:
+        name: Publish Release
         runs-on: ubuntu-latest
-
-        permissions:
-            contents: write
-            pull-requests: write
-            id-token: write
+        environment: npm
+        outputs:
+            version: ${{ steps.bump_version.outputs.new_version }}
+            tag: ${{ steps.bump_version.outputs.tag }}
+            dry_run: ${{ steps.config.outputs.dry_run }}
 
         steps:
-            - name: Checkout code
+            - name: Checkout Repo
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
                   token: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Setup Node.js
+            - name: Setup Node.js 22 and pnpm
               uses: actions/setup-node@v4
               with:
-                  node-version: '20'
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4
-
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-
-            - name: Check if version was manually changed
-              id: version-check
-              working-directory: packages/blend
-              run: |
-                  # Get current version from main branch
-                  git fetch origin main
-                  MAIN_VERSION=$(git show origin/main:packages/blend/package.json | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8')).version")
-
-                  # Get current version from this PR
-                  CURRENT_VERSION=$(node -p "require('./package.json').version")
-
-                  echo "Main branch version: $MAIN_VERSION"
-                  echo "PR version: $CURRENT_VERSION"
-
-                  if [ "$CURRENT_VERSION" != "$MAIN_VERSION" ]; then
-                    echo "Version was manually changed in PR from $MAIN_VERSION to $CURRENT_VERSION"
-                    echo "manual_version_change=true" >> $GITHUB_OUTPUT
-                    echo "new_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-                  else
-                    echo "No version change detected, will auto-bump based on PR title"
-                    echo "manual_version_change=false" >> $GITHUB_OUTPUT
-                  fi
-
-            - name: Determine version bump type
-              id: version-type
-              if: steps.version-check.outputs.manual_version_change == 'false'
-              run: |
-                  PR_TITLE="${{ github.event.pull_request.title }}"
-                  echo "PR title: $PR_TITLE"
-
-                  if echo "$PR_TITLE" | grep -iE "^feat(\(.+\))?!?:" > /dev/null; then
-                    if echo "$PR_TITLE" | grep -E "!" > /dev/null; then
-                      echo "version_type=major" >> $GITHUB_OUTPUT
-                    else
-                      echo "version_type=minor" >> $GITHUB_OUTPUT
-                    fi
-                  elif echo "$PR_TITLE" | grep -iE "^fix(\(.+\))?:" > /dev/null; then
-                    echo "version_type=patch" >> $GITHUB_OUTPUT
-                  else
-                    echo "version_type=patch" >> $GITHUB_OUTPUT
-                  fi
-
-            - name: Configure Git
-              run: |
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
-
-            - name: Bump version (auto)
-              id: version-bump
-              if: steps.version-check.outputs.manual_version_change == 'false'
-              working-directory: packages/blend
-              run: |
-                  CURRENT_VERSION=$(node -p "require('./package.json').version")
-                  echo "Current version: $CURRENT_VERSION"
-
-                  if [ "${{ steps.version-type.outputs.version_type }}" = "major" ]; then
-                    NEW_VERSION=$(pnpm version major --no-git-tag-version)
-                  elif [ "${{ steps.version-type.outputs.version_type }}" = "minor" ]; then
-                    NEW_VERSION=$(pnpm version minor --no-git-tag-version)
-                  else
-                    NEW_VERSION=$(pnpm version patch --no-git-tag-version)
-                  fi
-
-                  NEW_VERSION=$(echo $NEW_VERSION | sed 's/^v//')
-                  echo "New version: $NEW_VERSION"
-                  echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-
-            - name: Use manual version
-              id: version-manual
-              if: steps.version-check.outputs.manual_version_change == 'true'
-              run: |
-                  echo "Using manually set version: ${{ steps.version-check.outputs.new_version }}"
-                  echo "new_version=${{ steps.version-check.outputs.new_version }}" >> $GITHUB_OUTPUT
-
-            - name: Create git tag
-              run: |
-                  # Get the final version (either auto-bumped or manual)
-                  if [ "${{ steps.version-check.outputs.manual_version_change }}" = "true" ]; then
-                    FINAL_VERSION="${{ steps.version-manual.outputs.new_version }}"
-                  else
-                    FINAL_VERSION="${{ steps.version-bump.outputs.new_version }}"
-                  fi
-
-                  TAG_NAME="v$FINAL_VERSION"
-                  git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
-                  git push origin "$TAG_NAME"
-                  echo "Created and pushed tag: $TAG_NAME"
-                  echo "final_version=$FINAL_VERSION" >> $GITHUB_ENV
-
-            - name: Create version bump PR
-              if: steps.version-check.outputs.manual_version_change == 'false'
-              uses: peter-evans/create-pull-request@v5
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  commit-message: 'chore(release): bump version to v${{ env.final_version }}'
-                  title: 'chore(release): bump version to v${{ env.final_version }}'
-                  body: |
-                      ## Version Bump to v${{ env.final_version }}
-
-                      This PR bumps the version of `@juspay/blend-design-system` to `v${{ env.final_version }}`.
-
-                      **Version type:** ${{ steps.version-type.outputs.version_type }}
-                      **Triggered by:** PR #${{ github.event.pull_request.number }} - "${{ github.event.pull_request.title }}"
-
-                      ### What's included:
-                      - Version bumped in `packages/blend/package.json`
-                      - Git tag `v${{ env.final_version }}` created
-
-                      ### To publish to NPM:
-                      1. Merge this PR
-                      2. Go to [Actions](https://github.com/${{ github.repository }}/actions/workflows/release.yml)
-                      3. Click "Run workflow" → Enter tag `v${{ env.final_version }}` → Run
-                  branch: release/v${{ env.final_version }}
-                  delete-branch: true
-
-            - name: Comment on original PR
-              uses: actions/github-script@v7
-              with:
-                  script: |
-                      const finalVersion = '${{ env.final_version }}';
-                      const wasManual = '${{ steps.version-check.outputs.manual_version_change }}' === 'true';
-
-                      let body;
-                      if (wasManual) {
-                        body = `## Manual Version Detected
-
-                        Your PR already contains a version bump to \`v${finalVersion}\`. Git tag has been created.
-
-                        **Next steps:**
-                        Since you manually set the version, no additional version bump PR is needed.
-                        Go to [Actions](https://github.com/${{ github.repository }}/actions/workflows/release.yml) and manually run the workflow with tag \`v${finalVersion}\` to publish to NPM.
-                        `;
-                      } else {
-                        body = `##Version Bump Complete
-
-                        Version has been bumped to \`v${finalVersion}\` and git tag has been created.
-
-                        **Next steps:**
-                        1. Merge the version bump PR that was just created
-                        2. Go to [Actions](https://github.com/${{ github.repository }}/actions/workflows/release.yml) and manually run the workflow with tag \`v${finalVersion}\` to publish to NPM
-                        `;
-                      }
-
-                      github.rest.issues.createComment({
-                        issue_number: ${{ github.event.pull_request.number }},
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        body: body
-                      });
-
-    publish:
-        if: github.event_name == 'workflow_dispatch'
-        runs-on: ubuntu-latest
-
-        permissions:
-            contents: write
-            packages: write
-            id-token: write
-
-        steps:
-            - name: Validate tag format
-              run: |
-                  TAG="${{ github.event.inputs.tag }}"
-                  if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-                    echo "Invalid tag format. Expected format: v1.2.3"
-                    exit 1
-                  fi
-
-            - name: Checkout code at tag
-              uses: actions/checkout@v4
-              with:
-                  ref: ${{ github.event.inputs.tag }}
-                  fetch-depth: 0
-
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: '20'
+                  node-version: 22
                   registry-url: 'https://registry.npmjs.org'
 
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4
-
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-
-            - name: Run linting and build
+            - name: Enable corepack & install deps
               run: |
-                  pnpm --filter @juspay/blend-design-system lint
-                  pnpm --filter @juspay/blend-design-system build
+                  corepack enable
+                  pnpm install --frozen-lockfile
 
-            - name: Verify package version matches tag
-              working-directory: packages/blend
+            - name: Configure Dry Run
+              id: config
               run: |
-                  PACKAGE_VERSION=$(node -p "require('./package.json').version")
-                  TAG_VERSION="${{ github.event.inputs.tag }}"
-                  TAG_VERSION_CLEAN=$(echo $TAG_VERSION | sed 's/^v//')
-
-                  if [ "$PACKAGE_VERSION" != "$TAG_VERSION_CLEAN" ]; then
-                    echo "Package version ($PACKAGE_VERSION) does not match tag version ($TAG_VERSION_CLEAN)"
-                    exit 1
-                  fi
-
-                  echo "Package version matches tag version"
-
-            - name: Check if version exists on NPM
-              working-directory: packages/blend
-              run: |
-                  PACKAGE_NAME=$(node -p "require('./package.json').name")
-                  PACKAGE_VERSION=$(node -p "require('./package.json').version")
-
-                  if npm view "$PACKAGE_NAME@$PACKAGE_VERSION" version 2>/dev/null; then
-                    echo "⚠️ Version $PACKAGE_VERSION already exists on NPM"
-                    echo "version_exists=true" >> $GITHUB_ENV
+                  if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.dry_run }}" == "true" ]]; then
+                    echo "dry_run=true" >> $GITHUB_OUTPUT
                   else
-                    echo "Version $PACKAGE_VERSION does not exist on NPM, safe to publish"
-                    echo "version_exists=false" >> $GITHUB_ENV
+                    echo "dry_run=false" >> $GITHUB_OUTPUT
                   fi
 
-            - name: Publish to NPM
-              if: env.version_exists == 'false'
-              working-directory: packages/blend
+            - name: Determine Release Type
+              id: release_type
               run: |
-                  PACKAGE_NAME=$(node -p "require('./package.json').name")
-                  PACKAGE_VERSION=$(node -p "require('./package.json').version")
+                  BRANCH="${GITHUB_REF_NAME}"
+                  EVENT="${GITHUB_EVENT_NAME}"
+                  CUSTOM_VERSION="${{ inputs.custom_version }}"
+                  VERSION_TYPE="${{ inputs.version_type }}"
 
-                  echo "Publishing $PACKAGE_NAME@$PACKAGE_VERSION to NPM..."
-                  pnpm publish --provenance --access public --no-git-checks
-                  echo "Successfully published to NPM"
+                  if [[ "$EVENT" == "workflow_dispatch" && -n "$CUSTOM_VERSION" ]]; then
+                    echo "type=custom" >> $GITHUB_OUTPUT
+                    echo "semver=custom" >> $GITHUB_OUTPUT
+                    echo "custom_version=$CUSTOM_VERSION" >> $GITHUB_OUTPUT
+                    echo "npm_tag=latest" >> $GITHUB_OUTPUT
+
+                  elif [[ "$BRANCH" == "dev" ]]; then
+                    echo "type=beta" >> $GITHUB_OUTPUT
+                    if [[ "$VERSION_TYPE" == "auto" ]]; then
+                      echo "semver=prepatch" >> $GITHUB_OUTPUT
+                    else
+                      echo "semver=pre$VERSION_TYPE" >> $GITHUB_OUTPUT
+                    fi
+                    echo "npm_tag=beta" >> $GITHUB_OUTPUT
+                    echo "preid=beta" >> $GITHUB_OUTPUT
+
+                  else
+                    echo "type=stable" >> $GITHUB_OUTPUT
+                    if [[ "$VERSION_TYPE" == "auto" ]]; then
+                      echo "semver=patch" >> $GITHUB_OUTPUT
+                    else
+                      echo "semver=$VERSION_TYPE" >> $GITHUB_OUTPUT
+                    fi
+                    echo "npm_tag=latest" >> $GITHUB_OUTPUT
+                    echo "preid=" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Get Current Version
+              id: current_version
+              run: |
+                  CURRENT=$(node -p "require('./packages/blend/package.json').version")
+                  echo "version=$CURRENT" >> $GITHUB_OUTPUT
+
+            - name: Bump Version
+              id: bump_version
+              run: |
+                  cd packages/blend
+                  if [[ "${{ steps.release_type.outputs.type }}" == "custom" ]]; then
+                    npm version "${{ steps.release_type.outputs.custom_version }}" --no-git-tag-version
+                  elif [[ "${{ steps.release_type.outputs.type }}" == "beta" ]]; then
+                    npm version "${{ steps.release_type.outputs.semver }}" --preid beta --no-git-tag-version
+                  else
+                    npm version "${{ steps.release_type.outputs.semver }}" --no-git-tag-version
+                  fi
+                  VERSION=$(node -p "require('./package.json').version")
+                  echo "new_version=$VERSION" >> $GITHUB_OUTPUT
+                  echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+            - name: Clean Existing Tag
+              run: |
+                  TAG="${{ steps.bump_version.outputs.tag }}"
+                  git tag -d "$TAG" 2>/dev/null || true
+                  git push origin ":refs/tags/$TAG" || true
+
+            - name: Generate Changelog
+              run: |
+                  VERSION=${{ steps.bump_version.outputs.new_version }}
+                  LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+                  # Create docs directory if it doesn't exist
+                  mkdir -p docs
+
+                  echo "# Changelog for v$VERSION" > docs/CHANGELOG.md
+                  echo "" >> docs/CHANGELOG.md
+                  if [[ -n "$LAST_TAG" ]]; then
+                    git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
+                  else
+                    git log -n 20 --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
+                  fi
+
+            - name: Format Generated Files
+              run: |
+                  pnpm format
+
+            - name: Build Package
+              run: pnpm --filter @juspay/blend-design-system build
+
+            - name: Upload Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: build-${{ steps.bump_version.outputs.new_version }}
+                  path: |
+                      packages/blend/dist
+                      packages/blend/package.json
+                      docs/CHANGELOG.md
+
+            - name: Create Release Tag
+              if: steps.config.outputs.dry_run != 'true'
+              run: |
+                  VERSION=${{ steps.bump_version.outputs.new_version }}
+                  TAG="v$VERSION"
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git tag "$TAG" -m "Release $TAG"
+                  git push origin "$TAG"
+
+            - name: Create Release PR
+              if: steps.config.outputs.dry_run != 'true'
+              uses: peter-evans/create-pull-request@v6
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  branch: release/${{ steps.bump_version.outputs.new_version }}
+                  title: 'chore(release): ${{ steps.bump_version.outputs.tag }}'
+                  body: |
+                      Release ${{ steps.bump_version.outputs.tag }}
+
+                      - Bump version to ${{ steps.bump_version.outputs.new_version }}
+                      - Update changelog
+
+                      This PR was automatically created by the release workflow.
+
+                      **Changes included:**
+                      - Updated package.json version
+                      - Generated changelog
+                      - Formatted files
+                  labels: |
+                      automated
+                      release
+                  assignees: ${{ github.actor }}
+                  commit-message: |
+                      chore(release): ${{ steps.bump_version.outputs.tag }}
+
+                      - Bump version to ${{ steps.bump_version.outputs.new_version }}
+                      - Update changelog
+
+                      [skip ci]
+                  add-paths: |
+                      packages/blend/package.json
+                      docs/CHANGELOG.md
+                      .
+            - name: Verify NPM Token
+              run: |
+                  # Debug: Check if token is set (without revealing it)
+                  if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+                    echo "NPM_TOKEN secret is not set!"
+                    exit 1
+                  else
+                    echo "NPM_TOKEN secret is configured"
+                  fi
+
+                  # Test authentication using NODE_AUTH_TOKEN
+                  echo "Testing NPM authentication..."
+                  npm whoami || echo "NPM authentication test failed, but continuing..."
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-            - name: Skip publish (version exists)
-              if: env.version_exists == 'true'
-              run: echo "⏭Skipping NPM publish as version already exists"
+            - name: Publish to NPM
+              if: steps.config.outputs.dry_run != 'true'
+              run: |
+                  cd packages/blend
+
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+
+                  echo "Publishing $PACKAGE_NAME@$NEW_VERSION to NPM..."
+
+                  # Check if version already exists
+                  if npm view "$PACKAGE_NAME@$NEW_VERSION" version 2>/dev/null; then
+                    echo "Version $NEW_VERSION already exists on NPM, skipping publish"
+                    exit 0
+                  fi
+
+                  # Publish to NPM
+                  npm publish --access public
+                  echo "Successfully published $PACKAGE_NAME@$NEW_VERSION to NPM"
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Create GitHub Release
-              uses: softprops/action-gh-release@v1
+              if: steps.config.outputs.dry_run != 'true'
+              uses: softprops/action-gh-release@v2
               with:
-                  tag_name: ${{ github.event.inputs.tag }}
-                  name: Release ${{ github.event.inputs.tag }}
-                  body: |
-                      ## Blend Design System Release ${{ github.event.inputs.tag }}
-
-                      ### Installation
-                      ```bash
-                      npm install @juspay/blend-design-system@${{ github.event.inputs.tag }}
-                      ```
-
-                      ### Documentation
-                      Visit [juspay.design](https://juspay.design/) for complete documentation.
-
-                      **Published to NPM:** ${{ env.version_exists == 'false' && 'Yes' || '⏭Already existed' }}
+                  tag_name: ${{ steps.bump_version.outputs.tag }}
+                  name: Release ${{ steps.bump_version.outputs.tag }}
+                  body_path: docs/CHANGELOG.md
                   draft: false
-                  prerelease: false
-                  files: |
-                      packages/blend/dist/**/*
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  prerelease: ${{ steps.release_type.outputs.type == 'beta' }}
+
+    backmerge:
+        name: Back-merge main → dev
+        needs: release
+        if: github.ref == 'refs/heads/main' && needs.release.outputs.dry_run != 'true'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Create PR main → dev
+              uses: peter-evans/create-pull-request@v6
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  base: dev
+                  branch: backmerge/main-to-dev-${{ needs.release.outputs.version }}
+                  title: 'chore: backmerge release ${{ needs.release.outputs.version }} to dev'
+                  body: |
+                      Backmerging release changes from `main` into `dev`
+                  labels: |
+                      automated
+                      release
+                  assignees: ${{ github.actor }}

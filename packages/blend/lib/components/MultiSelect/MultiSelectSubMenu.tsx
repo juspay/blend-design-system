@@ -5,7 +5,7 @@ import { type MultiSelectMenuItemType } from './types'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import MultiSelectMenuItem from './MultiSelectMenuItem'
 import { type MultiSelectTokensType } from './multiSelect.tokens'
-import { useComponentToken } from '../../context/useComponentToken'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 
 const MenuItemSlot = ({ slot }: { slot: React.ReactNode }) => {
@@ -25,9 +25,9 @@ const MultiSelectSubMenu = ({
     onSelect: (value: string) => void
     selected: string[]
 }) => {
-    const multiSelectTokens = useComponentToken(
-        'MULTI_SELECT'
-    ) as MultiSelectTokensType
+    const multiSelectTokens =
+        useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
+
     return (
         <RadixMenu.Sub>
             <RadixMenu.SubTrigger asChild>

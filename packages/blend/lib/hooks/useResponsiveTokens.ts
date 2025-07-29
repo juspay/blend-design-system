@@ -13,6 +13,12 @@ export const useResponsiveTokens = <T>(component: keyof ComponentTokenType) => {
         T
     >
 
+    if (!componentTokens) {
+        throw new Error(
+            `Component tokens for '${component}' are not defined. Make sure the component is properly registered in the theme provider and context.`
+        )
+    }
+
     const responsiveComponentTokens =
         componentTokens[breakPointLabel as keyof BreakpointType]
 
