@@ -14,7 +14,6 @@ import {
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
 import TimeSelector from './TimeSelector'
-import MobileDrawerFloatingTabs from './MobileDrawerFloatingTabs'
 import MobileDrawerPresets from './MobileDrawerPresets'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import { SwitchSize } from '../Switch/types'
@@ -267,7 +266,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const [drawerOpen, setDrawerOpen] = useState(false)
         const [showTimePickerState, setShowTimePickerState] =
             useState(showTimePicker)
-        const [_activeTab, setActiveTab] = useState('start')
         const calendarToken = useComponentToken('CALENDAR') as CalendarTokenType
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
@@ -567,77 +565,47 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         }
 
         if (isMobile && useDrawerOnMobile) {
-            if (showPresets && !skipQuickFiltersOnMobile) {
-                const getFilteredPresets = () => {
-                    const pastPresets = [
-                        DateRangePreset.LAST_6_HOURS,
-                        DateRangePreset.TODAY,
-                        DateRangePreset.YESTERDAY,
-                        DateRangePreset.LAST_7_DAYS,
-                        DateRangePreset.LAST_30_DAYS,
-                    ]
+            const getFilteredPresets = () => {
+                const pastPresets = [
+                    DateRangePreset.LAST_6_HOURS,
+                    DateRangePreset.TODAY,
+                    DateRangePreset.YESTERDAY,
+                    DateRangePreset.LAST_7_DAYS,
+                    DateRangePreset.LAST_30_DAYS,
+                ]
 
-                    const availablePresets = [...pastPresets]
-                    availablePresets.push(DateRangePreset.CUSTOM)
-                    return availablePresets
-                }
-
-                return (
-                    <Block ref={ref} display="flex" width="100%">
-                        <MobileDrawerPresets
-                            drawerOpen={drawerOpen}
-                            setDrawerOpen={setDrawerOpen}
-                            renderTrigger={renderTrigger}
-                            showPresets={showPresets}
-                            availablePresets={getFilteredPresets()}
-                            activePreset={activePreset}
-                            selectedRange={selectedRange}
-                            startTime={startTime}
-                            endTime={endTime}
-                            dateFormat={dateFormat}
-                            handlePresetSelect={handlePresetSelect}
-                            handleStartTimeChange={handleStartTimeChange}
-                            handleEndTimeChange={handleEndTimeChange}
-                            setSelectedRange={setSelectedRange}
-                            setStartDate={setStartDate}
-                            setEndDate={setEndDate}
-                            handleCancel={handleCancel}
-                            handleApply={handleApply}
-                        />
-                    </Block>
-                )
-            } else {
-                // Use floating tabs interface for mobile when presets are disabled
-                return (
-                    <Block ref={ref} display="flex" width="100%">
-                        <MobileDrawerFloatingTabs
-                            drawerOpen={drawerOpen}
-                            setDrawerOpen={setDrawerOpen}
-                            renderTrigger={renderTrigger}
-                            selectedRange={selectedRange}
-                            startTime={startTime}
-                            endTime={endTime}
-                            dateFormat={dateFormat}
-                            showTimePickerState={showTimePickerState}
-                            setShowTimePickerState={setShowTimePickerState}
-                            setActiveTab={setActiveTab}
-                            startDateValidation={startDateValidation}
-                            endDateValidation={endDateValidation}
-                            handleStartTimeChangeCallback={
-                                handleStartTimeChangeCallback
-                            }
-                            handleEndTimeChangeCallback={
-                                handleEndTimeChangeCallback
-                            }
-                            setSelectedRange={setSelectedRange}
-                            setStartDate={setStartDate}
-                            setEndDate={setEndDate}
-                            handleCancel={handleCancel}
-                            handleApply={handleApply}
-                        />
-                    </Block>
-                )
+                const availablePresets = [...pastPresets]
+                availablePresets.push(DateRangePreset.CUSTOM)
+                return availablePresets
             }
+
+            return (
+                <Block ref={ref} display="flex" width="100%">
+                    <MobileDrawerPresets
+                        drawerOpen={drawerOpen}
+                        setDrawerOpen={setDrawerOpen}
+                        renderTrigger={renderTrigger}
+                        showPresets={showPresets && !skipQuickFiltersOnMobile}
+                        availablePresets={getFilteredPresets()}
+                        activePreset={activePreset}
+                        selectedRange={selectedRange}
+                        startTime={startTime}
+                        endTime={endTime}
+                        dateFormat={dateFormat}
+                        handlePresetSelect={handlePresetSelect}
+                        handleStartTimeChange={handleStartTimeChange}
+                        handleEndTimeChange={handleEndTimeChange}
+                        setSelectedRange={setSelectedRange}
+                        setStartDate={setStartDate}
+                        setEndDate={setEndDate}
+                        handleCancel={handleCancel}
+                        handleApply={handleApply}
+                        showCustomDropdownOnly={
+                            !showPresets || skipQuickFiltersOnMobile
+                        }
+                    />
+                </Block>
+            )
         }
 
         // Render popover on desktop

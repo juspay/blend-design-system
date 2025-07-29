@@ -1,7 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { DateRange, DateRangePreset } from './types'
-import { formatDate, getPresetLabel, getMonthName } from './utils'
+import {
+    MOBILE_PICKER_CONSTANTS,
+    isValidTimeInput,
+    formatTimeInput,
+    generatePickerData,
+    createSelectionHandler,
+    getPresetDisplayLabel,
+} from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
@@ -46,378 +53,676 @@ type MobileDrawerPresetsProps = {
     showCustomDropdownOnly?: boolean
 }
 
-const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
-    drawerOpen,
-    setDrawerOpen,
-    renderTrigger,
-    showPresets,
-    availablePresets,
-    activePreset,
+const { ITEM_HEIGHT, VISIBLE_ITEMS, SCROLL_DEBOUNCE } = MOBILE_PICKER_CONSTANTS
+const CONTAINER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS
+
+// Scrollable Picker Component
+const ScrollablePicker = React.memo<{
+    items: (string | number)[]
+    selectedIndex: number
+    onSelect: (index: number) => void
+    isTimeColumn?: boolean
+    columnId: string
+}>(({ items, selectedIndex, onSelect, isTimeColumn = false, columnId }) => {
+    const scrollRef = useRef<HTMLDivElement>(null)
+    const isScrollingRef = useRef(false)
+    const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+    const lastSelectedIndexRef = useRef(selectedIndex)
+    const [editingValue, setEditingValue] = useState<string>('')
+    const [isEditing, setIsEditing] = useState(false)
+
+    // Initialize scroll position
+    useEffect(() => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollTop = selectedIndex * ITEM_HEIGHT
+            lastSelectedIndexRef.current = selectedIndex
+        }
+    }, [selectedIndex])
+
+    // Handle scroll with improved responsiveness
+    const handleScroll = useCallback(
+        (e: React.UIEvent<HTMLDivElement>) => {
+            e.stopPropagation()
+
+            if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current)
+            }
+
+            isScrollingRef.current = true
+            const scrollTop = e.currentTarget.scrollTop
+            const newIndex = Math.round(scrollTop / ITEM_HEIGHT)
+            const clampedIndex = Math.max(
+                0,
+                Math.min(items.length - 1, newIndex)
+            )
+
+            // Immediate visual feedback
+            if (clampedIndex !== selectedIndex) {
+                lastSelectedIndexRef.current = clampedIndex
+                onSelect(clampedIndex)
+            }
+
+            // Snap to position with shorter delay
+            scrollTimeoutRef.current = setTimeout(() => {
+                isScrollingRef.current = false
+                if (scrollRef.current) {
+                    const exactScrollTop = clampedIndex * ITEM_HEIGHT
+                    scrollRef.current.scrollTo({
+                        top: exactScrollTop,
+                        behavior: 'smooth',
+                    })
+                }
+            }, SCROLL_DEBOUNCE)
+        },
+        [selectedIndex, onSelect, items.length]
+    )
+
+    // Handle item click
+    const handleItemClick = useCallback(
+        (index: number, e: React.MouseEvent) => {
+            e.stopPropagation()
+
+            if (index !== selectedIndex && index >= 0 && index < items.length) {
+                lastSelectedIndexRef.current = index
+                onSelect(index)
+                if (scrollRef.current) {
+                    scrollRef.current.scrollTo({
+                        top: index * ITEM_HEIGHT,
+                        behavior: 'smooth',
+                    })
+                }
+            }
+        },
+        [onSelect, selectedIndex, items.length]
+    )
+
+    // Cleanup
+    useEffect(() => {
+        return () => {
+            if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current)
+            }
+        }
+    }, [])
+
+    return (
+        <Block
+            position="relative"
+            height={`${CONTAINER_HEIGHT}px`}
+            width="100%"
+            style={{ overflow: 'hidden', isolation: 'isolate' }}
+        >
+            <Block
+                position="absolute"
+                top="0"
+                left="0"
+                right="0"
+                height={`${ITEM_HEIGHT}px`}
+                style={{
+                    background: `linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.2) 80%, transparent 100%)`,
+                    pointerEvents: 'none',
+                    zIndex: 3,
+                }}
+            />
+
+            <Block
+                position="absolute"
+                bottom="0"
+                left="0"
+                right="0"
+                height={`${ITEM_HEIGHT}px`}
+                style={{
+                    background: `linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.2) 80%, transparent 100%)`,
+                    pointerEvents: 'none',
+                    zIndex: 3,
+                }}
+            />
+
+            {/* Top divider SVG */}
+            <Block
+                position="absolute"
+                top={`${ITEM_HEIGHT}px`}
+                left="50%"
+                style={{
+                    transform: 'translateX(-50%)',
+                    pointerEvents: 'none',
+                    zIndex: 2,
+                }}
+            >
+                <svg
+                    width="70"
+                    height="2"
+                    viewBox="0 0 70 2"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M0.125 1H69.875"
+                        stroke="url(#paint0_radial_top)"
+                        strokeWidth="1"
+                    />
+                    <defs>
+                        <radialGradient
+                            id="paint0_radial_top"
+                            cx="0"
+                            cy="0"
+                            r="1"
+                            gradientUnits="userSpaceOnUse"
+                            gradientTransform="translate(35 1) rotate(90) scale(0.5 34.875)"
+                        >
+                            <stop stopColor="#777777" />
+                            <stop offset="1" stopColor="white" />
+                        </radialGradient>
+                    </defs>
+                </svg>
+            </Block>
+
+            {/* Bottom divider SVG */}
+            <Block
+                position="absolute"
+                top={`${ITEM_HEIGHT * 2}px`}
+                left="50%"
+                style={{
+                    transform: 'translateX(-50%)',
+                    pointerEvents: 'none',
+                    zIndex: 2,
+                }}
+            >
+                <svg
+                    width="70"
+                    height="2"
+                    viewBox="0 0 70 2"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M0.125 1H69.875"
+                        stroke="url(#paint0_radial_bottom)"
+                        strokeWidth="1"
+                    />
+                    <defs>
+                        <radialGradient
+                            id="paint0_radial_bottom"
+                            cx="0"
+                            cy="0"
+                            r="1"
+                            gradientUnits="userSpaceOnUse"
+                            gradientTransform="translate(35 1) rotate(90) scale(0.5 34.875)"
+                        >
+                            <stop stopColor="#777777" />
+                            <stop offset="1" stopColor="white" />
+                        </radialGradient>
+                    </defs>
+                </svg>
+            </Block>
+            {/* 3-row display */}
+            <Block height={`${CONTAINER_HEIGHT}px`} position="relative">
+                {/* Top row */}
+                <Block
+                    height={`${ITEM_HEIGHT}px`}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                    onClick={(e) => {
+                        if (selectedIndex > 0) {
+                            handleItemClick(selectedIndex - 1, e)
+                        }
+                    }}
+                >
+                    <PrimitiveText
+                        fontSize={16}
+                        fontWeight={400}
+                        color={FOUNDATION_THEME.colors.gray[400]}
+                        style={{
+                            textAlign: 'center',
+                            opacity: 0.6,
+                            userSelect: 'none',
+                        }}
+                    >
+                        {selectedIndex > 0
+                            ? String(items[selectedIndex - 1])
+                            : ''}
+                    </PrimitiveText>
+                </Block>
+
+                {/* Middle row (selected) */}
+                <Block
+                    height={`${ITEM_HEIGHT}px`}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{
+                        cursor: isTimeColumn ? 'text' : 'pointer',
+                        userSelect: isTimeColumn ? 'text' : 'none',
+                        zIndex: isTimeColumn ? 10 : 1,
+                    }}
+                >
+                    {isTimeColumn ? (
+                        <input
+                            type="text"
+                            value={
+                                isEditing
+                                    ? editingValue
+                                    : String(items[selectedIndex])
+                            }
+                            style={{
+                                cursor: 'text',
+                                textAlign: 'center',
+                                border: 'none',
+                                outline: 'none',
+                                background: 'transparent',
+                                width: '60px',
+                                height: 'auto',
+                                borderRadius: '0',
+                                padding: '0',
+                                fontSize: '16px',
+                                fontWeight: 600,
+                                color: String(
+                                    FOUNDATION_THEME.colors.gray[900]
+                                ),
+                                position: 'relative',
+                                zIndex: 10,
+                                fontFamily: 'inherit',
+                            }}
+                            onFocus={(e) => {
+                                setIsEditing(true)
+                                setEditingValue(e.currentTarget.value)
+                                e.currentTarget.select()
+                            }}
+                            onChange={(e) => {
+                                const input = e.target.value
+
+                                if (isValidTimeInput(input)) {
+                                    const formatted = formatTimeInput(input)
+                                    setEditingValue(formatted)
+                                    e.target.value = formatted
+                                } else {
+                                    e.target.value = editingValue
+                                }
+                            }}
+                            onBlur={(e) => {
+                                setIsEditing(false)
+                                const newValue =
+                                    e.target.value ||
+                                    editingValue ||
+                                    String(items[selectedIndex])
+                                const newIndex = items.findIndex(
+                                    (t) => t === newValue
+                                )
+
+                                if (newIndex !== -1) {
+                                    onSelect(newIndex)
+                                } else {
+                                    e.target.value = String(
+                                        items[selectedIndex]
+                                    )
+                                }
+                                setEditingValue('')
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault()
+                                    e.currentTarget.blur()
+                                }
+
+                                const allowedKeys = [
+                                    'Backspace',
+                                    'Delete',
+                                    'ArrowLeft',
+                                    'ArrowRight',
+                                    'Tab',
+                                ]
+                                const isNumber = /^[0-9]$/.test(e.key)
+                                const isColon = e.key === ':'
+
+                                if (
+                                    !isNumber &&
+                                    !isColon &&
+                                    !allowedKeys.includes(e.key)
+                                ) {
+                                    e.preventDefault()
+                                }
+
+                                e.stopPropagation()
+                            }}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                e.preventDefault()
+                                e.currentTarget.focus()
+                                e.currentTarget.select()
+                            }}
+                        />
+                    ) : (
+                        <PrimitiveText
+                            fontSize={16}
+                            fontWeight={600}
+                            color={FOUNDATION_THEME.colors.gray[900]}
+                            style={{
+                                textAlign: 'center',
+                                opacity: 1,
+                                userSelect: 'none',
+                            }}
+                        >
+                            {String(items[selectedIndex])}
+                        </PrimitiveText>
+                    )}
+                </Block>
+
+                {/* Bottom row */}
+                <Block
+                    height={`${ITEM_HEIGHT}px`}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                    onClick={(e) => {
+                        if (selectedIndex < items.length - 1) {
+                            handleItemClick(selectedIndex + 1, e)
+                        }
+                    }}
+                >
+                    <PrimitiveText
+                        fontSize={16}
+                        fontWeight={400}
+                        color={FOUNDATION_THEME.colors.gray[400]}
+                        style={{
+                            textAlign: 'center',
+                            opacity: 0.6,
+                            userSelect: 'none',
+                        }}
+                    >
+                        {selectedIndex < items.length - 1
+                            ? String(items[selectedIndex + 1])
+                            : ''}
+                    </PrimitiveText>
+                </Block>
+            </Block>
+
+            {/* Hidden scrollable area for scroll detection */}
+            <Block
+                ref={scrollRef}
+                height={`${CONTAINER_HEIGHT}px`}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    overflowY: 'auto',
+                    overflowX: 'hidden',
+                    paddingTop: `${ITEM_HEIGHT}px`,
+                    paddingBottom: `${ITEM_HEIGHT}px`,
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                    opacity: 0,
+                    pointerEvents: isTimeColumn && isEditing ? 'none' : 'auto',
+                    zIndex: 1,
+                }}
+                onScroll={handleScroll}
+                className={`scrollable-picker-${columnId}`}
+            >
+                <style>
+                    {`.scrollable-picker-${columnId}::-webkit-scrollbar { display: none; }`}
+                </style>
+                <Block
+                    style={{
+                        height: `${items.length * ITEM_HEIGHT}px`,
+                        width: '100%',
+                    }}
+                >
+                    {items.map((_, index) => (
+                        <Block
+                            key={`${columnId}-scroll-${index}`}
+                            height={`${ITEM_HEIGHT}px`}
+                            style={{
+                                scrollSnapAlign: 'start',
+                                width: '100%',
+                            }}
+                        />
+                    ))}
+                </Block>
+            </Block>
+        </Block>
+    )
+})
+
+ScrollablePicker.displayName = 'ScrollablePicker'
+
+// Date Picker Component
+const DatePickerComponent: React.FC<{
+    selectedRange: DateRange
+    startTime: string
+    endTime: string
+    dateFormat: string
+    handleStartTimeChange: (time: string) => void
+    handleEndTimeChange: (time: string) => void
+    setSelectedRange: (range: DateRange) => void
+    setStartDate: (date: string) => void
+    setEndDate: (date: string) => void
+}> = ({
     selectedRange,
     startTime,
     endTime,
     dateFormat,
-    handlePresetSelect,
     handleStartTimeChange,
     handleEndTimeChange,
     setSelectedRange,
     setStartDate,
     setEndDate,
-    handleCancel,
-    handleApply,
-    showCustomDropdownOnly = false,
 }) => {
-    const [isCustomExpanded, setIsCustomExpanded] = useState(
-        showCustomDropdownOnly
-    )
-    const [_activeTab, setActiveTab] = useState('start')
-
     const renderTabContent = (tabType: 'start' | 'end') => {
-        const targetDate =
-            tabType === 'start'
-                ? selectedRange.startDate
-                : selectedRange.endDate
-        const targetTime = tabType === 'start' ? startTime : endTime
-
-        const selectedYear = targetDate.getFullYear()
-        const selectedMonth = targetDate.getMonth()
-        const selectedDate = targetDate.getDate()
-
-        const currentYear = new Date().getFullYear()
-        const allYears = Array.from(
-            { length: currentYear + 5 - 2012 + 1 },
-            (_, i) => 2012 + i
+        const data = generatePickerData(
+            tabType,
+            selectedRange,
+            startTime,
+            endTime
         )
-        const allMonths = Array.from({ length: 12 }, (_, i) => i)
-        const daysInCurrentMonth = new Date(
-            selectedYear,
-            selectedMonth + 1,
-            0
-        ).getDate()
-        const allDates = Array.from(
-            { length: daysInCurrentMonth },
-            (_, i) => i + 1
-        )
-
-        const generateTimeOptions = () => {
-            const times = []
-            for (let h = 0; h < 24; h++) {
-                for (let m = 0; m < 60; m += 15) {
-                    const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
-                    times.push(timeStr)
-                }
-            }
-            return times
-        }
-
-        const allTimes = generateTimeOptions()
-
-        const yearIndex = allYears.indexOf(selectedYear)
-        const monthIndex = selectedMonth
-        const dateIndex = allDates.indexOf(selectedDate)
-        const timeIndex =
-            allTimes.indexOf(targetTime) !== -1
-                ? allTimes.indexOf(targetTime)
-                : 0
-
-        const getVisibleItems = (
-            items: (string | number)[],
-            currentIndex: number
-        ) => {
-            const prevIndex = Math.max(0, currentIndex - 1)
-            const nextIndex = Math.min(items.length - 1, currentIndex + 1)
-            return [items[prevIndex], items[currentIndex], items[nextIndex]]
-        }
-
-        const visibleYears = getVisibleItems(allYears, yearIndex)
-        const visibleMonths = getVisibleItems(
-            allMonths.map((m) => getMonthName(m).slice(0, 3)),
-            monthIndex
-        )
-        const visibleDates = getVisibleItems(allDates, dateIndex)
-        const visibleTimes = getVisibleItems(allTimes, timeIndex)
-
-        const renderColumn = (
-            items: (string | number)[],
-            selectedItem: string | number,
-            onSelect: (item: string | number) => void,
-            isTimeColumn: boolean = false
-        ) => (
-            <Block
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                gap={12}
-            >
-                {items.map((item, index) => {
-                    const isSelected = index === 1
-                    const isAdjacent = index === 0 || index === 2
-                    const uniqueKey = `${tabType}-${isTimeColumn ? 'time' : 'item'}-${index}-${item}`
-
-                    if (isTimeColumn && isSelected) {
-                        return (
-                            <PrimitiveText
-                                key={uniqueKey}
-                                fontSize={14}
-                                fontWeight={600}
-                                color={FOUNDATION_THEME.colors.gray[900]}
-                                style={{
-                                    cursor: 'text',
-                                    textAlign: 'center',
-                                    minHeight: '20px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    border: 'none',
-                                    outline: 'none',
-                                    background: 'transparent',
-                                    width: '60px',
-                                }}
-                                contentEditable
-                                suppressContentEditableWarning
-                                onBlur={(e) => {
-                                    const newValue =
-                                        e.currentTarget.textContent ||
-                                        String(selectedItem)
-                                    onSelect(newValue)
-                                }}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        e.preventDefault()
-                                        e.currentTarget.blur()
-                                    }
-                                }}
-                            >
-                                {String(selectedItem)}
-                            </PrimitiveText>
-                        )
-                    }
-
-                    return (
-                        <React.Fragment key={uniqueKey}>
-                            <PrimitiveText
-                                fontSize={14}
-                                fontWeight={isSelected ? 600 : 300}
-                                color={
-                                    isSelected
-                                        ? FOUNDATION_THEME.colors.gray[900]
-                                        : FOUNDATION_THEME.colors.gray[400]
-                                }
-                                style={{
-                                    opacity: isSelected
-                                        ? 1
-                                        : isAdjacent
-                                          ? 0.6
-                                          : 0.3,
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease',
-                                    textAlign: 'center',
-                                    minHeight: '20px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                                onClick={() => onSelect(item)}
-                            >
-                                {item}
-                            </PrimitiveText>
-                            {index < items.length - 1 && index === 0 && (
-                                <Block
-                                    width="100%"
-                                    height="1px"
-                                    backgroundColor={
-                                        FOUNDATION_THEME.colors.gray[200]
-                                    }
-                                    margin="8px 0"
-                                />
-                            )}
-                            {index === items.length - 2 && (
-                                <Block
-                                    width="100%"
-                                    height="1px"
-                                    backgroundColor={
-                                        FOUNDATION_THEME.colors.gray[200]
-                                    }
-                                    margin="8px 0"
-                                />
-                            )}
-                        </React.Fragment>
-                    )
-                })}
-            </Block>
-        )
-
-        const handleYearSelect = (year: string | number) => {
-            const newDate = new Date(targetDate)
-            newDate.setFullYear(Number(year))
-
-            if (tabType === 'start') {
-                setSelectedRange({ ...selectedRange, startDate: newDate })
-                setStartDate(formatDate(newDate, dateFormat))
-            } else {
-                setSelectedRange({ ...selectedRange, endDate: newDate })
-                setEndDate(formatDate(newDate, dateFormat))
-            }
-        }
-
-        const handleMonthSelect = (month: string | number) => {
-            const monthNames = [
-                'Jan',
-                'Feb',
-                'Mar',
-                'Apr',
-                'May',
-                'Jun',
-                'Jul',
-                'Aug',
-                'Sep',
-                'Oct',
-                'Nov',
-                'Dec',
-            ]
-            const monthIndex = monthNames.indexOf(String(month))
-            if (monthIndex !== -1) {
-                const newDate = new Date(targetDate)
-                newDate.setMonth(monthIndex)
-
-                if (tabType === 'start') {
-                    setSelectedRange({ ...selectedRange, startDate: newDate })
-                    setStartDate(formatDate(newDate, dateFormat))
-                } else {
-                    setSelectedRange({ ...selectedRange, endDate: newDate })
-                    setEndDate(formatDate(newDate, dateFormat))
-                }
-            }
-        }
-
-        const handleDateSelect = (date: string | number) => {
-            const newDate = new Date(targetDate)
-            newDate.setDate(Number(date))
-
-            if (tabType === 'start') {
-                setSelectedRange({ ...selectedRange, startDate: newDate })
-                setStartDate(formatDate(newDate, dateFormat))
-            } else {
-                setSelectedRange({ ...selectedRange, endDate: newDate })
-                setEndDate(formatDate(newDate, dateFormat))
-            }
-        }
-
-        const handleTimeChange = (time: string) => {
-            if (tabType === 'start') {
-                handleStartTimeChange(time)
-            } else {
-                handleEndTimeChange(time)
-            }
-        }
-
-        const handleTimeSelect = (item: string | number) => {
-            handleTimeChange(String(item))
-        }
 
         return (
             <Block marginTop={24}>
-                <Block
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    padding="16px"
-                    width="100%"
-                >
+                {/* Combined container with sticky headers and scrollable content */}
+                <Block display="flex" padding="0 16px" width="100%" gap={12}>
+                    {/* Year Column */}
                     <Block
+                        flexGrow={1}
                         display="flex"
                         flexDirection="column"
                         alignItems="center"
-                        flexGrow={1}
                     >
-                        <PrimitiveText
-                            fontSize={14}
-                            fontWeight={500}
-                            color={FOUNDATION_THEME.colors.gray[600]}
-                            margin="0 0 16px 0"
+                        {/* Sticky Header */}
+                        <Block
+                            position="sticky"
+                            top="0"
+                            zIndex={5}
+                            backgroundColor="white"
+                            paddingBottom="12px"
+                            width="100%"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
                         >
-                            Year
-                        </PrimitiveText>
-                        {renderColumn(
-                            visibleYears,
-                            selectedYear,
-                            handleYearSelect
-                        )}
+                            <PrimitiveText
+                                fontSize={
+                                    FOUNDATION_THEME.font.size.body.md.fontSize
+                                }
+                                fontWeight={400}
+                                color={FOUNDATION_THEME.colors.gray[500]}
+                            >
+                                Year
+                            </PrimitiveText>
+                        </Block>
+                        {/* Scrollable Picker */}
+                        <ScrollablePicker
+                            items={data.years.items}
+                            selectedIndex={data.years.selectedIndex}
+                            onSelect={createSelectionHandler(
+                                tabType,
+                                'year',
+                                selectedRange,
+                                dateFormat,
+                                handleStartTimeChange,
+                                handleEndTimeChange,
+                                setSelectedRange,
+                                setStartDate,
+                                setEndDate
+                            )}
+                            columnId={`${tabType}-year`}
+                        />
                     </Block>
 
+                    {/* Month Column */}
                     <Block
+                        flexGrow={1}
                         display="flex"
                         flexDirection="column"
                         alignItems="center"
-                        flexGrow={1}
                     >
-                        <PrimitiveText
-                            fontSize={14}
-                            fontWeight={500}
-                            color={FOUNDATION_THEME.colors.gray[600]}
-                            margin="0 0 16px 0"
+                        {/* Sticky Header */}
+                        <Block
+                            position="sticky"
+                            top="0"
+                            zIndex={5}
+                            backgroundColor="white"
+                            paddingBottom="12px"
+                            width="100%"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
                         >
-                            Month
-                        </PrimitiveText>
-                        {renderColumn(
-                            visibleMonths,
-                            getMonthName(selectedMonth).slice(0, 3),
-                            handleMonthSelect
-                        )}
+                            <PrimitiveText
+                                fontSize={
+                                    FOUNDATION_THEME.font.size.body.md.fontSize
+                                }
+                                fontWeight={400}
+                                color={FOUNDATION_THEME.colors.gray[500]}
+                            >
+                                Month
+                            </PrimitiveText>
+                        </Block>
+                        {/* Scrollable Picker */}
+                        <ScrollablePicker
+                            items={data.months.items}
+                            selectedIndex={data.months.selectedIndex}
+                            onSelect={createSelectionHandler(
+                                tabType,
+                                'month',
+                                selectedRange,
+                                dateFormat,
+                                handleStartTimeChange,
+                                handleEndTimeChange,
+                                setSelectedRange,
+                                setStartDate,
+                                setEndDate
+                            )}
+                            columnId={`${tabType}-month`}
+                        />
                     </Block>
 
+                    {/* Date Column */}
                     <Block
+                        flexGrow={1}
                         display="flex"
                         flexDirection="column"
                         alignItems="center"
-                        flexGrow={1}
                     >
-                        <PrimitiveText
-                            fontSize={14}
-                            fontWeight={500}
-                            color={FOUNDATION_THEME.colors.gray[600]}
-                            margin="0 0 16px 0"
+                        {/* Sticky Header */}
+                        <Block
+                            position="sticky"
+                            top="0"
+                            zIndex={5}
+                            backgroundColor="white"
+                            paddingBottom="12px"
+                            width="100%"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
                         >
-                            Date
-                        </PrimitiveText>
-                        {renderColumn(
-                            visibleDates,
-                            selectedDate,
-                            handleDateSelect
-                        )}
+                            <PrimitiveText
+                                fontSize={
+                                    FOUNDATION_THEME.font.size.body.md.fontSize
+                                }
+                                fontWeight={400}
+                                color={FOUNDATION_THEME.colors.gray[500]}
+                            >
+                                Date
+                            </PrimitiveText>
+                        </Block>
+                        {/* Scrollable Picker */}
+                        <ScrollablePicker
+                            items={data.dates.items}
+                            selectedIndex={data.dates.selectedIndex}
+                            onSelect={createSelectionHandler(
+                                tabType,
+                                'date',
+                                selectedRange,
+                                dateFormat,
+                                handleStartTimeChange,
+                                handleEndTimeChange,
+                                setSelectedRange,
+                                setStartDate,
+                                setEndDate
+                            )}
+                            columnId={`${tabType}-date`}
+                        />
                     </Block>
 
+                    {/* Time Column */}
                     <Block
+                        flexGrow={1}
                         display="flex"
                         flexDirection="column"
                         alignItems="center"
-                        flexGrow={1}
                     >
-                        <PrimitiveText
-                            fontSize={14}
-                            fontWeight={500}
-                            color={FOUNDATION_THEME.colors.gray[600]}
-                            margin="0 0 16px 0"
+                        {/* Sticky Header */}
+                        <Block
+                            position="sticky"
+                            top="0"
+                            zIndex={5}
+                            backgroundColor="white"
+                            paddingBottom="12px"
+                            width="100%"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
                         >
-                            Time
-                        </PrimitiveText>
-                        {renderColumn(
-                            visibleTimes,
-                            targetTime,
-                            handleTimeSelect,
-                            true
-                        )}
+                            <PrimitiveText
+                                fontSize={
+                                    FOUNDATION_THEME.font.size.body.md.fontSize
+                                }
+                                fontWeight={400}
+                                color={FOUNDATION_THEME.colors.gray[500]}
+                            >
+                                Time
+                            </PrimitiveText>
+                        </Block>
+                        {/* Scrollable Picker */}
+                        <ScrollablePicker
+                            items={data.times.items}
+                            selectedIndex={data.times.selectedIndex}
+                            onSelect={createSelectionHandler(
+                                tabType,
+                                'time',
+                                selectedRange,
+                                dateFormat,
+                                handleStartTimeChange,
+                                handleEndTimeChange,
+                                setSelectedRange,
+                                setStartDate,
+                                setEndDate
+                            )}
+                            isTimeColumn={true}
+                            columnId={`${tabType}-time`}
+                        />
                     </Block>
                 </Block>
             </Block>
         )
     }
 
-    const renderCustomDateInputs = () => (
+    return (
         <Block marginTop={16}>
             <Tabs
                 defaultValue="start"
-                onValueChange={setActiveTab}
                 variant={TabsVariant.BOXED}
                 size={TabsSize.MD}
             >
@@ -442,12 +747,165 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                     </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="start">
-                    {renderTabContent('start')}
-                </TabsContent>
-
-                <TabsContent value="end">{renderTabContent('end')}</TabsContent>
+                <Block marginTop={32}>
+                    <TabsContent value="start">
+                        {renderTabContent('start')}
+                    </TabsContent>
+                    <TabsContent value="end">
+                        {renderTabContent('end')}
+                    </TabsContent>
+                </Block>
             </Tabs>
+        </Block>
+    )
+}
+
+// Main Component
+const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
+    drawerOpen,
+    setDrawerOpen,
+    renderTrigger,
+    showPresets,
+    availablePresets,
+    activePreset,
+    selectedRange,
+    startTime,
+    endTime,
+    dateFormat,
+    handlePresetSelect,
+    handleStartTimeChange,
+    handleEndTimeChange,
+    setSelectedRange,
+    setStartDate,
+    setEndDate,
+    handleCancel,
+    handleApply,
+    showCustomDropdownOnly = false,
+}) => {
+    const [isCustomExpanded, setIsCustomExpanded] = useState(
+        showCustomDropdownOnly
+    )
+
+    const renderCustomDateInputs = () => (
+        <DatePickerComponent
+            selectedRange={selectedRange}
+            startTime={startTime}
+            endTime={endTime}
+            dateFormat={dateFormat}
+            handleStartTimeChange={handleStartTimeChange}
+            handleEndTimeChange={handleEndTimeChange}
+            setSelectedRange={setSelectedRange}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+        />
+    )
+
+    const renderPresetItem = (preset: DateRangePreset) => {
+        const isActive = activePreset === preset
+        const isCustom = preset === DateRangePreset.CUSTOM
+
+        return (
+            <Block
+                key={preset}
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                padding="16px 20px"
+                borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[150]}`}
+                cursor="pointer"
+                backgroundColor="transparent"
+                onClick={() => {
+                    if (isCustom) {
+                        setIsCustomExpanded(!isCustomExpanded)
+                        handlePresetSelect(preset)
+                    } else {
+                        handlePresetSelect(preset)
+                        setDrawerOpen(false)
+                    }
+                }}
+            >
+                <Text
+                    variant="body.md"
+                    fontWeight={isActive ? 600 : 500}
+                    color={
+                        isActive
+                            ? FOUNDATION_THEME.colors.gray[700]
+                            : FOUNDATION_THEME.colors.gray[600]
+                    }
+                >
+                    {getPresetDisplayLabel(preset)}
+                </Text>
+
+                {isActive && !isCustom && (
+                    <Block
+                        width="20px"
+                        height="20px"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                        >
+                            <path
+                                d="M13.5 4.5L6 12L2.5 8.5"
+                                stroke={FOUNDATION_THEME.colors.gray[700]}
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </Block>
+                )}
+
+                {isCustom && (
+                    <ChevronDown
+                        size={16}
+                        color={FOUNDATION_THEME.colors.gray[500]}
+                        style={{
+                            transform: isCustomExpanded
+                                ? 'rotate(180deg)'
+                                : 'rotate(0deg)',
+                            transition: 'transform 0.2s ease',
+                        }}
+                    />
+                )}
+            </Block>
+        )
+    }
+
+    const renderActionButtons = () => (
+        <Block
+            display="flex"
+            gap={16}
+            padding="16px"
+            marginTop={24}
+            borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+        >
+            <Block flexGrow={1}>
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.LARGE}
+                    fullWidth={true}
+                    onClick={() => {
+                        handleCancel()
+                        setDrawerOpen(false)
+                    }}
+                    text="Cancel"
+                />
+            </Block>
+            <Block flexGrow={1}>
+                <Button
+                    buttonType={ButtonType.PRIMARY}
+                    size={ButtonSize.LARGE}
+                    fullWidth={true}
+                    onClick={handleApply}
+                    text="Apply Date"
+                />
+            </Block>
         </Block>
     )
 
@@ -459,157 +917,23 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
 
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent>
+                <DrawerContent
+                    mobileOffset={
+                        showCustomDropdownOnly || !showPresets
+                            ? { top: '50%' }
+                            : undefined
+                    }
+                >
                     <DrawerBody noPadding>
                         <Block display="flex" flexDirection="column" gap={0}>
-                            {showCustomDropdownOnly ? (
-                                <Block width={'100%'}>
+                            {showCustomDropdownOnly || !showPresets ? (
+                                <Block width="100%">
                                     {renderCustomDateInputs()}
                                 </Block>
                             ) : (
                                 showPresets && (
                                     <Block>
-                                        {availablePresets.map((preset) => (
-                                            <Block
-                                                key={preset}
-                                                display="flex"
-                                                alignItems="center"
-                                                justifyContent="space-between"
-                                                padding="16px 20px"
-                                                borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[150]}`}
-                                                cursor="pointer"
-                                                backgroundColor="transparent"
-                                                _hover={{
-                                                    backgroundColor:
-                                                        FOUNDATION_THEME.colors
-                                                            .gray[50],
-                                                }}
-                                                onClick={() => {
-                                                    if (
-                                                        preset ===
-                                                        DateRangePreset.CUSTOM
-                                                    ) {
-                                                        setIsCustomExpanded(
-                                                            !isCustomExpanded
-                                                        )
-                                                        handlePresetSelect(
-                                                            preset
-                                                        )
-                                                    } else {
-                                                        handlePresetSelect(
-                                                            preset
-                                                        )
-                                                        setDrawerOpen(false)
-                                                    }
-                                                }}
-                                            >
-                                                <Text
-                                                    variant="body.md"
-                                                    fontWeight={
-                                                        activePreset === preset
-                                                            ? 600
-                                                            : 500
-                                                    }
-                                                    color={
-                                                        activePreset === preset
-                                                            ? FOUNDATION_THEME
-                                                                  .colors
-                                                                  .gray[700]
-                                                            : FOUNDATION_THEME
-                                                                  .colors
-                                                                  .gray[600]
-                                                    }
-                                                >
-                                                    {preset ===
-                                                    DateRangePreset.LAST_1_HOUR
-                                                        ? 'Last 6 hours'
-                                                        : preset ===
-                                                            DateRangePreset.LAST_6_HOURS
-                                                          ? 'Last 6 hours'
-                                                          : preset ===
-                                                              DateRangePreset.LAST_7_DAYS
-                                                            ? 'Last 2 Days'
-                                                            : getPresetLabel(
-                                                                  preset
-                                                              )}
-                                                </Text>
-                                                {activePreset === preset &&
-                                                    preset !==
-                                                        DateRangePreset.CUSTOM && (
-                                                        <Block
-                                                            width="20px"
-                                                            height="20px"
-                                                            display="flex"
-                                                            alignItems="center"
-                                                            justifyContent="center"
-                                                        >
-                                                            <svg
-                                                                width="16"
-                                                                height="16"
-                                                                viewBox="0 0 16 16"
-                                                                fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                            >
-                                                                <path
-                                                                    d="M13.5 4.5L6 12L2.5 8.5"
-                                                                    stroke={
-                                                                        FOUNDATION_THEME
-                                                                            .colors
-                                                                            .gray[700]
-                                                                    }
-                                                                    strokeWidth="2"
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                />
-                                                            </svg>
-                                                        </Block>
-                                                    )}
-                                                {preset ===
-                                                    DateRangePreset.CUSTOM &&
-                                                    isCustomExpanded && (
-                                                        <Block
-                                                            width="20px"
-                                                            height="20px"
-                                                            display="flex"
-                                                            alignItems="center"
-                                                            justifyContent="center"
-                                                        >
-                                                            <svg
-                                                                width="16"
-                                                                height="16"
-                                                                viewBox="0 0 16 16"
-                                                                fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                            >
-                                                                <path
-                                                                    d="M13.5 4.5L6 12L2.5 8.5"
-                                                                    stroke={
-                                                                        FOUNDATION_THEME
-                                                                            .colors
-                                                                            .gray[700]
-                                                                    }
-                                                                    strokeWidth="2"
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                />
-                                                            </svg>
-                                                        </Block>
-                                                    )}
-                                                {preset ===
-                                                    DateRangePreset.CUSTOM &&
-                                                    !isCustomExpanded && (
-                                                        <ChevronDown
-                                                            size={16}
-                                                            color={
-                                                                FOUNDATION_THEME
-                                                                    .colors
-                                                                    .gray[500]
-                                                            }
-                                                        />
-                                                    )}
-                                            </Block>
-                                        ))}
-
+                                        {availablePresets.map(renderPresetItem)}
                                         {isCustomExpanded && (
                                             <Block padding="0 16px">
                                                 {renderCustomDateInputs()}
@@ -619,69 +943,10 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                                 )
                             )}
 
-                            {isCustomExpanded && (
-                                <Block
-                                    display="flex"
-                                    gap={16}
-                                    padding="16px"
-                                    marginTop={24}
-                                    borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                                >
-                                    <Block flexGrow={1}>
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.MEDIUM}
-                                            fullWidth={true}
-                                            onClick={() => {
-                                                handleCancel()
-                                                setDrawerOpen(false)
-                                            }}
-                                            text="Cancel"
-                                        />
-                                    </Block>
-                                    <Block flexGrow={1}>
-                                        <Button
-                                            buttonType={ButtonType.PRIMARY}
-                                            size={ButtonSize.MEDIUM}
-                                            fullWidth={true}
-                                            onClick={handleApply}
-                                            text="Apply Date"
-                                        />
-                                    </Block>
-                                </Block>
-                            )}
-
-                            {showCustomDropdownOnly && (
-                                <Block
-                                    display="flex"
-                                    gap={16}
-                                    padding="16px"
-                                    marginTop={24}
-                                    borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                                >
-                                    <Block flexGrow={1}>
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.MEDIUM}
-                                            fullWidth={true}
-                                            onClick={() => {
-                                                handleCancel()
-                                                setDrawerOpen(false)
-                                            }}
-                                            text="Cancel"
-                                        />
-                                    </Block>
-                                    <Block flexGrow={1}>
-                                        <Button
-                                            buttonType={ButtonType.PRIMARY}
-                                            size={ButtonSize.MEDIUM}
-                                            fullWidth={true}
-                                            onClick={handleApply}
-                                            text="Apply Date"
-                                        />
-                                    </Block>
-                                </Block>
-                            )}
+                            {(isCustomExpanded ||
+                                showCustomDropdownOnly ||
+                                !showPresets) &&
+                                renderActionButtons()}
                         </Block>
                     </DrawerBody>
                 </DrawerContent>
