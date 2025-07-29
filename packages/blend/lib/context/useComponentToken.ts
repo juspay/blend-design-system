@@ -4,7 +4,7 @@ import type { ResponsiveTagTokens } from '../components/Tags/tag.tokens'
 import type { ResponsiveRadioTokens } from '../components/Radio/radio.token'
 import type { ResponsiveSwitchTokens } from '../components/Switch/switch.token'
 import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
-import type { TabsTokensType } from '../components/Tabs/tabs.token'
+import type { ResponsiveTabsTokens } from '../components/Tabs/tabs.token'
 import { type ComponentTokenType, useTheme } from './ThemeContext'
 import type { ResponsiveTextInputTokens } from '../components/Inputs/TextInput/textInput.tokens'
 import type { ResponsiveNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
@@ -43,7 +43,7 @@ export const useComponentToken = (
     | MultiValueInputTokensType
     | ResponsiveSwitchTokens
     | ResponsiveCheckboxTokens
-    | TabsTokensType
+    | ResponsiveTabsTokens
     | TooltipTokensType
     | ResponsiveDropdownInputTokens
     | ResponsiveButtonTokens

@@ -57,7 +57,7 @@ import {
     type ResponsiveCheckboxTokens,
 } from '../components/Checkbox/checkbox.token'
 import {
-    type TabsTokensType,
+    ResponsiveTabsTokens,
     getTabsTokens,
 } from '../components/Tabs/tabs.token' // Added TABS
 import {
@@ -128,7 +128,7 @@ export type ComponentTokenType = {
     MULTI_VALUE_INPUT?: MultiValueInputTokensType
     DROPDOWN_INPUT?: ResponsiveDropdownInputTokens
     CHECKBOX?: ResponsiveCheckboxTokens
-    TABS?: TabsTokensType
+    TABS?: ResponsiveTabsTokens
     BUTTON?: ResponsiveButtonTokens
     MODAL?: ModalTokensType
     BREADCRUMB?: ResponsiveBreadcrumbTokens

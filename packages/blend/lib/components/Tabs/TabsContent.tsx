@@ -1,13 +1,12 @@
 import { forwardRef } from 'react'
 import { type TabsContentProps } from './types'
 import { StyledTabsContent } from './StyledTabs'
-import { useComponentToken } from '../../context/useComponentToken'
 import type { TabsTokensType } from './tabs.token'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const TabsContent = forwardRef<HTMLDivElement, TabsContentProps>(
     ({ className, children, ...props }, ref) => {
-        const tabsToken = useComponentToken('TABS') as TabsTokensType
-
+        const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
         return (
             <StyledTabsContent
                 ref={ref}
