@@ -2,12 +2,25 @@ import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg'
 
 // Database connection configuration
 const dbConfig = {
-    host: process.env.DATABASE_HOST || 'localhost',
-    port: parseInt(process.env.DATABASE_PORT || '5432'),
+    host:
+        process.env.NODE_ENV === 'production' &&
+        process.env.INSTANCE_CONNECTION_NAME
+            ? `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`
+            : process.env.DATABASE_HOST || 'localhost',
+    port:
+        process.env.NODE_ENV === 'production' &&
+        process.env.INSTANCE_CONNECTION_NAME
+            ? undefined
+            : parseInt(process.env.DATABASE_PORT || '5432'),
     database: process.env.DATABASE_NAME || 'blend_monitor',
     user: process.env.DATABASE_USER || 'postgres',
     password: process.env.DATABASE_PASSWORD,
-    ssl: process.env.DATABASE_HOST ? { rejectUnauthorized: false } : false,
+    ssl:
+        process.env.NODE_ENV === 'production'
+            ? false // Cloud SQL uses Unix socket, no SSL needed
+            : process.env.DATABASE_HOST
+              ? { rejectUnauthorized: false }
+              : false,
     max: 10, // Reduced from 20 to 10 for better connection management
     idleTimeoutMillis: 10000, // Reduced from 30000 to 10000
     connectionTimeoutMillis: 5000, // Increased from 2000 to 5000
