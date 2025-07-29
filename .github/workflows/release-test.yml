@@ -52,6 +52,7 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 22
+                  registry-url: 'https://registry.npmjs.org'
 
             - name: Enable corepack & install deps
               run: |
@@ -143,30 +144,60 @@ jobs:
                       packages/blend/dist
                       packages/blend/package.json
 
+            - name: Verify NPM Token
+              run: |
+                  # Debug: Check if token is set (without revealing it)
+                  if [ -z "${{ secrets.NPM_TEST_TOKEN }}" ]; then
+                    echo "❌ NPM_TEST_TOKEN secret is not set!"
+                    exit 1
+                  else
+                    echo "✅ NPM_TEST_TOKEN secret is configured"
+                  fi
+
+                  # Test authentication using NODE_AUTH_TOKEN
+                  echo "Testing NPM authentication..."
+                  npm whoami || echo "⚠️ NPM authentication test failed, but continuing..."
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TEST_TOKEN }}
+
             - name: Test NPM Publish (Dry Run)
               if: steps.config.outputs.dry_run == 'true'
               run: |
                   cd packages/blend
-                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TEST_TOKEN }}" > ~/.npmrc
-                  npm publish --dry-run --access public --registry https://registry.npmjs.org/
-                  echo "✅ Dry run successful! Package would be published as $(node -p "require('./package.json').name")@$(node -p "require('./package.json').version")"
+
+                  echo "📦 Testing package publication (dry run)..."
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+                  echo "Package: $PACKAGE_NAME@$PACKAGE_VERSION"
+
+                  # Try dry run with NODE_AUTH_TOKEN
+                  npm publish --dry-run --access public
+                  echo "✅ Dry run successful! Package would be published as $PACKAGE_NAME@$PACKAGE_VERSION"
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TEST_TOKEN }}
 
             - name: Publish to NPM
               if: steps.config.outputs.dry_run != 'true'
               run: |
                   cd packages/blend
-                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TEST_TOKEN }}" > ~/.npmrc
 
                   PACKAGE_NAME=$(node -p "require('./package.json').name")
                   NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
 
+                  echo "📦 Publishing $PACKAGE_NAME@$NEW_VERSION to NPM..."
+
+                  # Check if version already exists
                   if npm view "$PACKAGE_NAME@$NEW_VERSION" version 2>/dev/null; then
                     echo "Version $NEW_VERSION already exists on NPM, skipping publish"
                     exit 0
                   fi
 
-                  npm publish --access public --registry https://registry.npmjs.org/
-                  echo "Successfully published $PACKAGE_NAME@$NEW_VERSION to NPM"
+                  # Publish to NPM using NODE_AUTH_TOKEN
+                  npm publish --access public
+                  echo "✅ Successfully published $PACKAGE_NAME@$NEW_VERSION to NPM"
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TEST_TOKEN }}
 
             - name: Create GitHub Release
               if: steps.config.outputs.dry_run != 'true'
