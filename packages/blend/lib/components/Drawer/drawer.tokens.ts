@@ -46,6 +46,7 @@ export type DrawerTokensType = {
         padding: CSSObject['padding']
         backgroundColor: CSSObject['backgroundColor']
         overflowY: CSSObject['overflowY']
+        borderRadius: CSSObject['borderRadius']
     }
     footer: {
         padding: CSSObject['padding']
@@ -76,7 +77,7 @@ export const drawerTokens: DrawerTokensType = {
         right: '16px',
     },
     handle: {
-        backgroundColor: FOUNDATION_THEME.colors.gray[300],
+        backgroundColor: FOUNDATION_THEME.colors.gray[400],
         borderRadius: FOUNDATION_THEME.border.radius.full,
         width: '48px',
         height: '6px',
@@ -101,6 +102,7 @@ export const drawerTokens: DrawerTokensType = {
         padding: FOUNDATION_THEME.unit[16],
         backgroundColor: FOUNDATION_THEME.colors.gray[0],
         overflowY: 'auto',
+        borderRadius: '14px',
     },
     footer: {
         padding: FOUNDATION_THEME.unit[16],
@@ -159,6 +161,7 @@ export const getDrawerComponentTokens = (
             padding: foundationToken.unit[16],
             backgroundColor: foundationToken.colors.gray[0],
             overflowY: 'auto',
+            borderRadius: '14px',
         },
         footer: {
             padding: foundationToken.unit[16],

@@ -57,10 +57,8 @@ type MobileDrawerPresetsProps = {
 const { ITEM_HEIGHT, VISIBLE_ITEMS, SCROLL_DEBOUNCE } = MOBILE_PICKER_CONSTANTS
 const CONTAINER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS
 
-// Get tokens
 const tokens = getCalendarToken(FOUNDATION_THEME)
 
-// Scrollable Picker Component
 const ScrollablePicker = React.memo<{
     items: (string | number)[]
     selectedIndex: number
@@ -75,7 +73,6 @@ const ScrollablePicker = React.memo<{
     const [editingValue, setEditingValue] = useState<string>('')
     const [isEditing, setIsEditing] = useState(false)
 
-    // Initialize scroll position
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = selectedIndex * ITEM_HEIGHT
@@ -83,7 +80,6 @@ const ScrollablePicker = React.memo<{
         }
     }, [selectedIndex])
 
-    // Handle scroll with improved responsiveness
     const handleScroll = useCallback(
         (e: React.UIEvent<HTMLDivElement>) => {
             e.stopPropagation()
@@ -100,13 +96,11 @@ const ScrollablePicker = React.memo<{
                 Math.min(items.length - 1, newIndex)
             )
 
-            // Immediate visual feedback
             if (clampedIndex !== selectedIndex) {
                 lastSelectedIndexRef.current = clampedIndex
                 onSelect(clampedIndex)
             }
 
-            // Snap to position with shorter delay
             scrollTimeoutRef.current = setTimeout(() => {
                 isScrollingRef.current = false
                 if (scrollRef.current) {
@@ -140,7 +134,6 @@ const ScrollablePicker = React.memo<{
         [onSelect, selectedIndex, items.length]
     )
 
-    // Cleanup
     useEffect(() => {
         return () => {
             if (scrollTimeoutRef.current) {
@@ -182,7 +175,6 @@ const ScrollablePicker = React.memo<{
                 }}
             />
 
-            {/* Top divider SVG */}
             <Block
                 position="absolute"
                 top={`${ITEM_HEIGHT}px`}
@@ -221,7 +213,6 @@ const ScrollablePicker = React.memo<{
                 </svg>
             </Block>
 
-            {/* Bottom divider SVG */}
             <Block
                 position="absolute"
                 top={`${ITEM_HEIGHT * 2}px`}
@@ -259,9 +250,7 @@ const ScrollablePicker = React.memo<{
                     </defs>
                 </svg>
             </Block>
-            {/* 3-row display */}
             <Block height={`${CONTAINER_HEIGHT}px`} position="relative">
-                {/* Top row */}
                 <Block
                     height={`${ITEM_HEIGHT}px`}
                     display="flex"
@@ -551,21 +540,18 @@ const DatePickerComponent: React.FC<{
 
         return (
             <Block marginTop={tokens.mobileDrawer.datePicker.marginTop}>
-                {/* Combined container with sticky headers and scrollable content */}
                 <Block
                     display="flex"
                     padding={tokens.mobileDrawer.datePicker.container.padding}
                     width="100%"
                     gap={tokens.mobileDrawer.datePicker.container.gap}
                 >
-                    {/* Year Column */}
                     <Block
                         flexGrow={1}
                         display="flex"
                         flexDirection="column"
                         alignItems="center"
                     >
-                        {/* Sticky Header */}
                         <Block
                             position="sticky"
                             top="0"
@@ -573,7 +559,7 @@ const DatePickerComponent: React.FC<{
                             backgroundColor={
                                 tokens.mobileDrawer.header.backgroundColor
                             }
-                            padding={tokens.mobileDrawer.header.padding}
+                            paddingBottom={tokens.mobileDrawer.header.padding}
                             width="100%"
                             display="flex"
                             justifyContent="center"
@@ -610,14 +596,12 @@ const DatePickerComponent: React.FC<{
                         />
                     </Block>
 
-                    {/* Month Column */}
                     <Block
                         flexGrow={1}
                         display="flex"
                         flexDirection="column"
                         alignItems="center"
                     >
-                        {/* Sticky Header */}
                         <Block
                             position="sticky"
                             top="0"
@@ -639,7 +623,6 @@ const DatePickerComponent: React.FC<{
                                 Month
                             </PrimitiveText>
                         </Block>
-                        {/* Scrollable Picker */}
                         <ScrollablePicker
                             items={data.months.items}
                             selectedIndex={data.months.selectedIndex}
@@ -685,7 +668,6 @@ const DatePickerComponent: React.FC<{
                                 Date
                             </PrimitiveText>
                         </Block>
-                        {/* Scrollable Picker */}
                         <ScrollablePicker
                             items={data.dates.items}
                             selectedIndex={data.dates.selectedIndex}
@@ -915,10 +897,9 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
     const renderActionButtons = () => (
         <Block
             display="flex"
-            gap={16}
-            padding="16px"
-            marginTop={24}
-            borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+            gap={FOUNDATION_THEME.unit[12]}
+            padding={FOUNDATION_THEME.unit[16]}
+            marginTop={FOUNDATION_THEME.unit[24]}
         >
             <Block flexGrow={1}>
                 <Button
@@ -956,13 +937,16 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                     mobileOffset={
                         showCustomDropdownOnly || !showPresets
                             ? { top: '50%' }
-                            : undefined
+                            : { top: '118px' }
                     }
                 >
                     <DrawerBody noPadding>
                         <Block display="flex" flexDirection="column" gap={0}>
                             {showCustomDropdownOnly || !showPresets ? (
-                                <Block width="100%">
+                                <Block
+                                    width="100%"
+                                    padding={FOUNDATION_THEME.unit[16]}
+                                >
                                     {renderCustomDateInputs()}
                                 </Block>
                             ) : (

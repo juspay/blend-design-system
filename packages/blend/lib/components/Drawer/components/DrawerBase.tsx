@@ -1,4 +1,5 @@
 'use client'
+import './Drawer.css'
 
 import React, { forwardRef } from 'react'
 import { Drawer as VaulDrawer } from 'vaul'
@@ -307,8 +308,8 @@ export const DrawerContent = forwardRef<
                             borderRadius={tokens.handle.borderRadius}
                             margin={
                                 direction === 'bottom'
-                                    ? '8px auto 0 auto'
-                                    : '0 auto 8px auto'
+                                    ? '16px auto 0 auto'
+                                    : '0 auto 16px auto'
                             }
                             flexShrink={0}
                             alignSelf="center"
@@ -403,6 +404,7 @@ export const DrawerBody = forwardRef<
             className={className}
             padding={noPadding ? 0 : tokens.body.padding}
             backgroundColor={tokens.body.backgroundColor}
+            borderRadius={tokens.body.borderRadius}
             flexGrow={1}
             overflowY={overflowY || tokens.body.overflowY}
             {...props}

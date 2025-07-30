@@ -1,0 +1,3 @@
+[data-vaul-drawer][data-vaul-drawer-direction='bottom']::after {
+    display: none;
+}
