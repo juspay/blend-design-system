@@ -899,6 +899,7 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
             display="flex"
             gap={FOUNDATION_THEME.unit[12]}
             padding={FOUNDATION_THEME.unit[16]}
+            marginBottom={FOUNDATION_THEME.unit[8]}
             marginTop={FOUNDATION_THEME.unit[24]}
         >
             <Block flexGrow={1}>
@@ -954,18 +955,30 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                                 showPresets && (
                                     <Block>
                                         {availablePresets.map(renderPresetItem)}
-                                        {isCustomExpanded && (
+
+                                        <Block
+                                            style={{
+                                                maxHeight: isCustomExpanded
+                                                    ? '800px'
+                                                    : '0px',
+                                                opacity: isCustomExpanded
+                                                    ? 1
+                                                    : 0,
+                                                overflow: 'hidden',
+                                                transition:
+                                                    'max-height 0.4s ease-in-out, opacity 0.3s ease-in-out',
+                                            }}
+                                        >
                                             <Block padding="0 16px">
                                                 {renderCustomDateInputs()}
+                                                {renderActionButtons()}
                                             </Block>
-                                        )}
+                                        </Block>
                                     </Block>
                                 )
                             )}
 
-                            {(isCustomExpanded ||
-                                showCustomDropdownOnly ||
-                                !showPresets) &&
+                            {(showCustomDropdownOnly || !showPresets) &&
                                 renderActionButtons()}
                         </Block>
                     </DrawerBody>
