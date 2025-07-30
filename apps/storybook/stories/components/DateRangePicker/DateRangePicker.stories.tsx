@@ -110,7 +110,7 @@ export const WithTimePicker: Story = {
                         fontWeight: '600',
                     }}
                 >
-                    Date Range with Time Selection
+                    DateRangePicker with Time Picker
                 </h4>
                 <DateRangePicker
                     value={dateRange}
@@ -127,6 +127,55 @@ export const WithTimePicker: Story = {
         docs: {
             description: {
                 story: 'DateRangePicker with time selection enabled for precise date and time range selection.',
+            },
+        },
+    },
+}
+
+// Date range picker with floating tabs (mobile)
+export const WithFloatingTabsMobile: Story = {
+    render: () => {
+        const [dateRange, setDateRange] = useState<DateRange>({
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        })
+
+        return (
+            <div style={{ width: '450px' }}>
+                <h4
+                    style={{
+                        margin: '0 0 12px 0',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    DateRangePicker with Floating Tabs (Mobile)
+                </h4>
+                <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    showTimePicker={true}
+                    useDrawerOnMobile={true}
+                    placeholder="Select date range"
+                    icon={React.createElement(Calendar, { size: 16 })}
+                />
+                <div
+                    style={{
+                        marginTop: '12px',
+                        fontSize: '12px',
+                        color: '#666',
+                    }}
+                >
+                    Note: Resize browser to mobile width (&lt;1024px) to see
+                    floating tabs interface
+                </div>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'DateRangePicker with floating tabs interface optimized for mobile devices. Features a 4-column layout (Year, Month, Date, Time) with tab navigation.',
             },
         },
     },
@@ -390,8 +439,13 @@ export const CustomTriggers: Story = {
                             <Button
                                 buttonType={ButtonType.PRIMARY}
                                 text="Select Date Range"
-                                leadingIcon={Calendar}
-                                trailingIcon={CalendarDays}
+                                leadingIcon={React.createElement(Calendar, {
+                                    size: 16,
+                                })}
+                                trailingIcon={React.createElement(
+                                    CalendarDays,
+                                    { size: 16 }
+                                )}
                             />
                         }
                         showPresets={true}
@@ -415,7 +469,9 @@ export const CustomTriggers: Story = {
                             <Button
                                 buttonType={ButtonType.SECONDARY}
                                 text="Choose Dates"
-                                leadingIcon={CalendarDays}
+                                leadingIcon={React.createElement(CalendarDays, {
+                                    size: 16,
+                                })}
                             />
                         }
                         showPresets={true}
@@ -440,8 +496,12 @@ export const CustomTriggers: Story = {
                             <Button
                                 buttonType={ButtonType.SECONDARY}
                                 text={`${analyticsRange.startDate.toLocaleDateString()} - ${analyticsRange.endDate.toLocaleDateString()}`}
-                                leadingIcon={TrendingUp}
-                                trailingIcon={Filter}
+                                leadingIcon={React.createElement(TrendingUp, {
+                                    size: 16,
+                                })}
+                                trailingIcon={React.createElement(Filter, {
+                                    size: 16,
+                                })}
                             />
                         }
                         showPresets={true}

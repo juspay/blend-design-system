@@ -48,7 +48,7 @@ export const MultiSelectDrawer = ({
 
     const selectMobileOffset = {
         top: '74px',
-        bottom: '0px',
+        bottom: '16px',
         left: '16px',
         right: '16px',
         ...mobileOffset,

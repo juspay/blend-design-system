@@ -1,4 +1,5 @@
 'use client'
+import './Drawer.css'
 
 import React, { forwardRef } from 'react'
 import { Drawer as VaulDrawer } from 'vaul'
@@ -28,6 +29,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
     tokens: DrawerTokensType
     direction: 'top' | 'bottom' | 'left' | 'right'
     hasSnapPoints?: boolean
+    contentDriven?: boolean
     mobileOffset?: {
         top?: string
         bottom?: string
@@ -43,7 +45,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
     display: flex;
     flex-direction: column;
 
-    ${({ direction, tokens, hasSnapPoints, mobileOffset }) => {
+    ${({ direction, tokens, hasSnapPoints, contentDriven, mobileOffset }) => {
         const offset = {
             top: mobileOffset?.top ?? tokens.mobileOffset.top,
             bottom: mobileOffset?.bottom ?? tokens.mobileOffset.bottom,
@@ -61,7 +63,9 @@ const StyledContent = styled(VaulDrawer.Content)<{
                     hasSnapPoints
                         ? `height: calc(100% - calc(${offset.top} + ${offset.bottom}));
                            max-height: calc(97% - calc(${offset.top} + ${offset.bottom}));`
-                        : `top: ${offset.top};`
+                        : contentDriven
+                          ? `max-height: calc(100% - calc(${offset.top} + ${offset.bottom}));`
+                          : `top: ${offset.top};`
                 }
                 border-radius: ${tokens.content.borderRadius};
                 
@@ -262,6 +266,7 @@ export const DrawerContent = forwardRef<
         showHandle?: boolean
         handle?: React.ReactNode
         hasSnapPoints?: boolean
+        contentDriven?: boolean
         mobileOffset?: {
             top?: string
             bottom?: string
@@ -279,6 +284,7 @@ export const DrawerContent = forwardRef<
             showHandle = true,
             handle,
             hasSnapPoints = false,
+            contentDriven = false,
             mobileOffset,
             ...props
         },
@@ -294,6 +300,7 @@ export const DrawerContent = forwardRef<
                 tokens={tokens}
                 direction={direction}
                 hasSnapPoints={hasSnapPoints}
+                contentDriven={contentDriven}
                 mobileOffset={mobileOffset}
                 {...props}
             >
@@ -307,8 +314,8 @@ export const DrawerContent = forwardRef<
                             borderRadius={tokens.handle.borderRadius}
                             margin={
                                 direction === 'bottom'
-                                    ? '8px auto 0 auto'
-                                    : '0 auto 8px auto'
+                                    ? '16px auto 0 auto'
+                                    : '0 auto 16px auto'
                             }
                             flexShrink={0}
                             alignSelf="center"
@@ -392,19 +399,20 @@ export const DrawerBody = forwardRef<
         children: React.ReactNode
         className?: string
         overflowY?: 'auto' | 'hidden' | 'scroll' | 'visible'
+        noPadding?: boolean
     }
->(({ children, className, overflowY, ...props }, ref) => {
+>(({ children, className, overflowY, noPadding = false, ...props }, ref) => {
     const tokens = useComponentToken('DRAWER') as DrawerTokensType
 
     return (
         <Block
             ref={ref}
             className={className}
-            padding={tokens.body.padding}
+            padding={noPadding ? 0 : tokens.body.padding}
             backgroundColor={tokens.body.backgroundColor}
+            borderRadius={tokens.body.borderRadius}
             flexGrow={1}
             overflowY={overflowY || tokens.body.overflowY}
-            maxHeight={tokens.body.maxHeight}
             {...props}
         >
             {children}

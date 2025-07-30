@@ -64,6 +64,7 @@ import SingleSelectDemo from './SingleSelectDemo'
 import MultiSelectDemo from './MultiSelectDemo'
 import DropdownInputDemo from './DropdownInputDemo'
 import DrawerDemo from './DrawerDemo'
+import DateRangePickerDemo from './DateRangePickerDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -107,7 +108,8 @@ const SidebarDemo = () => {
         | 'singleSelect'
         | 'multiSelect'
         | 'dropdownInput'
-    >('drawer')
+        | 'dataRangePicker'
+    >('dataRangePicker')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] = useState<string | undefined>(
@@ -204,6 +206,8 @@ const SidebarDemo = () => {
                 return <DrawerDemo />
             case 'dropdownInput':
                 return <DropdownInputDemo />
+            case 'dataRangePicker':
+                return <DateRangePickerDemo />
             default:
                 return <div>No component selected</div>
         }
@@ -470,13 +474,6 @@ const SidebarDemo = () => {
                     ),
                     onClick: () => setActiveComponent('dataTable'),
                 },
-            ],
-        },
-        {
-            label: 'Form Elements',
-            isCollapsible: true,
-            defaultOpen: true,
-            items: [
                 {
                     label: 'Date Picker',
                     leftSlot: (
@@ -484,8 +481,15 @@ const SidebarDemo = () => {
                             style={{ width: '16px', height: '16px' }}
                         />
                     ),
-                    onClick: () => setActiveComponent('datePicker'),
+                    onClick: () => setActiveComponent('dataRangePicker'),
                 },
+            ],
+        },
+        {
+            label: 'Form Elements',
+            isCollapsible: true,
+            defaultOpen: true,
+            items: [
                 {
                     label: 'Radio',
                     leftSlot: (

@@ -1461,3 +1461,208 @@ export const calculateDayCellProps = (
         showTodayIndicator: shouldShowTodayIndicator(dateStates),
     }
 }
+/**
+ * Constants for mobile date picker
+ */
+export const MOBILE_PICKER_CONSTANTS = {
+    ITEM_HEIGHT: 44,
+    VISIBLE_ITEMS: 3,
+    SCROLL_DEBOUNCE: 50,
+} as const
+
+/**
+ * Validates time input - only allows numbers and colon
+ * @param input The input string to validate
+ * @returns True if input is valid
+ */
+export const isValidTimeInput = (input: string): boolean => {
+    return /^[0-9:]*$/.test(input)
+}
+
+/**
+ * Formats time input as HH:MM
+ * @param input The input string to format
+ * @returns Formatted time string
+ */
+export const formatTimeInput = (input: string): string => {
+    const cleaned = input.replace(/[^0-9:]/g, '')
+
+    if (cleaned.length <= 2) {
+        return cleaned
+    } else if (cleaned.length === 3 && !cleaned.includes(':')) {
+        return cleaned.slice(0, 2) + ':' + cleaned.slice(2)
+    } else if (cleaned.length >= 4) {
+        const parts = cleaned.split(':')
+        if (parts.length >= 2) {
+            const hours = parts[0].slice(0, 2)
+            const minutes = parts[1].slice(0, 2)
+            return hours + ':' + minutes
+        }
+    }
+
+    return cleaned
+}
+
+/**
+ * Generates picker data for date/time selection
+ * @param tabType Whether this is for start or end date
+ * @param selectedRange Current selected date range
+ * @param startTime Current start time
+ * @param endTime Current end time
+ * @returns Object with picker data for all columns
+ */
+export const generatePickerData = (
+    tabType: 'start' | 'end',
+    selectedRange: DateRange,
+    startTime: string,
+    endTime: string
+) => {
+    const targetDate =
+        tabType === 'start' ? selectedRange.startDate : selectedRange.endDate
+    const targetTime = tabType === 'start' ? startTime : endTime
+
+    const currentYear = new Date().getFullYear()
+    const allYears = Array.from(
+        { length: currentYear + 5 - 2012 + 1 },
+        (_, i) => 2012 + i
+    )
+    const allMonths = Array.from({ length: 12 }, (_, i) => i)
+    const daysInCurrentMonth = new Date(
+        targetDate.getFullYear(),
+        targetDate.getMonth() + 1,
+        0
+    ).getDate()
+    const allDates = Array.from({ length: daysInCurrentMonth }, (_, i) => i + 1)
+
+    const allTimes = []
+    for (let h = 0; h < 24; h++) {
+        for (let m = 0; m < 60; m += 15) {
+            allTimes.push(
+                `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
+            )
+        }
+    }
+
+    return {
+        years: {
+            items: allYears,
+            selectedIndex: allYears.indexOf(targetDate.getFullYear()),
+        },
+        months: {
+            items: allMonths.map((m) => getMonthName(m).slice(0, 3)),
+            selectedIndex: targetDate.getMonth(),
+        },
+        dates: {
+            items: allDates,
+            selectedIndex: allDates.indexOf(targetDate.getDate()),
+        },
+        times: {
+            items: allTimes,
+            selectedIndex: Math.max(0, allTimes.indexOf(targetTime)),
+        },
+    }
+}
+
+/**
+ * Creates selection handler for picker columns
+ * @param tabType Whether this is for start or end date
+ * @param type The type of selection (year, month, date, time)
+ * @param selectedRange Current selected range
+ * @param dateFormat Date format string
+ * @param handleStartTimeChange Start time change handler
+ * @param handleEndTimeChange End time change handler
+ * @param setSelectedRange Range setter function
+ * @param setStartDate Start date setter function
+ * @param setEndDate End date setter function
+ * @returns Selection handler function
+ */
+export const createSelectionHandler = (
+    tabType: 'start' | 'end',
+    type: 'year' | 'month' | 'date' | 'time',
+    selectedRange: DateRange,
+    dateFormat: string,
+    handleStartTimeChange: (time: string) => void,
+    handleEndTimeChange: (time: string) => void,
+    setSelectedRange: (range: DateRange) => void,
+    setStartDate: (date: string) => void,
+    setEndDate: (date: string) => void
+) => {
+    return (index: number) => {
+        const targetDate =
+            tabType === 'start'
+                ? selectedRange.startDate
+                : selectedRange.endDate
+        const newDate = new Date(targetDate)
+
+        switch (type) {
+            case 'year': {
+                const years = Array.from(
+                    { length: new Date().getFullYear() + 5 - 2012 + 1 },
+                    (_, i) => 2012 + i
+                )
+                newDate.setFullYear(years[index])
+                break
+            }
+            case 'month': {
+                newDate.setMonth(index)
+                break
+            }
+            case 'date': {
+                const daysInMonth = new Date(
+                    newDate.getFullYear(),
+                    newDate.getMonth() + 1,
+                    0
+                ).getDate()
+                const dates = Array.from(
+                    { length: daysInMonth },
+                    (_, i) => i + 1
+                )
+                newDate.setDate(dates[index])
+                break
+            }
+            case 'time': {
+                const times = []
+                for (let h = 0; h < 24; h++) {
+                    for (let m = 0; m < 60; m += 15) {
+                        times.push(
+                            `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
+                        )
+                    }
+                }
+                const time = times[index]
+                if (tabType === 'start') {
+                    handleStartTimeChange(time)
+                } else {
+                    handleEndTimeChange(time)
+                }
+                return
+            }
+        }
+
+        if (tabType === 'start') {
+            setSelectedRange({ ...selectedRange, startDate: newDate })
+            setStartDate(formatDate(newDate, dateFormat))
+        } else {
+            setSelectedRange({ ...selectedRange, endDate: newDate })
+            setEndDate(formatDate(newDate, dateFormat))
+        }
+    }
+}
+
+/**
+ * Gets preset display label with custom mappings
+ * @param preset The preset to get label for
+ * @returns Display label for the preset
+ */
+export const getPresetDisplayLabel = (preset: DateRangePreset): string => {
+    switch (preset) {
+        case DateRangePreset.LAST_1_HOUR:
+            return 'Last 6 hours'
+        case DateRangePreset.LAST_6_HOURS:
+            return 'Last 6 hours'
+        case DateRangePreset.LAST_7_DAYS:
+            return 'Last 2 Days'
+        default:
+            return getPresetLabel(preset)
+    }
+}
