@@ -23,7 +23,12 @@ import {
 } from '../../../../packages/blend/lib/components/Accordion'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { useBreakpoints } from '../../../../packages/blend/lib/hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../../../packages/blend/lib/breakpoints/breakPoints'
 const AccordionDemo = () => {
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakPointLabel === 'sm'
+
     // Playground state
     const [playgroundType, setPlaygroundType] = useState<AccordionType>(
         AccordionType.NO_BORDER
@@ -144,224 +149,227 @@ const AccordionDemo = () => {
                         />
                     </div>
 
-                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-4">
-                        <div className="w-full max-w-2xl">
-                            <Accordion
-                                accordionType={playgroundType}
-                                isMultiple={isMultiple}
-                                value={
-                                    isMultiple ? activeItems : activeItems[0]
+                    <div className="w-full max-w-2xl">
+                        <Accordion
+                            accordionType={playgroundType}
+                            isMultiple={isMultiple}
+                            value={isMultiple ? activeItems : activeItems[0]}
+                            onValueChange={handleValueChange}
+                        >
+                            <AccordionItem
+                                value="item1"
+                                title="General Information"
+                                subtext={
+                                    showSubtext
+                                        ? 'Basic details and overview'
+                                        : undefined
                                 }
-                                onValueChange={handleValueChange}
+                                leftSlot={
+                                    showIcons
+                                        ? getIconForItem('item1')
+                                        : undefined
+                                }
+                                rightSlot={
+                                    showRightSlot
+                                        ? getRightSlotForItem('item1')
+                                        : undefined
+                                }
+                                chevronPosition={playgroundChevronPosition}
+                                isDisabled={isDisabled}
                             >
-                                <AccordionItem
-                                    value="item1"
-                                    title="General Information"
-                                    subtext={
-                                        showSubtext
-                                            ? 'Basic details and overview'
-                                            : undefined
-                                    }
-                                    leftSlot={
-                                        showIcons
-                                            ? getIconForItem('item1')
-                                            : undefined
-                                    }
-                                    rightSlot={
-                                        showRightSlot
-                                            ? getRightSlotForItem('item1')
-                                            : undefined
-                                    }
-                                    chevronPosition={playgroundChevronPosition}
-                                    isDisabled={isDisabled}
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
                                 >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h4 className="font-semibold mb-2">
-                                            General Information
-                                        </h4>
-                                        <p className="text-gray-600 mb-3">
-                                            This section contains general
-                                            information about the system,
-                                            including basic configuration
-                                            details and overview of features.
-                                        </p>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center gap-2">
-                                                <CheckCircle
-                                                    size={16}
-                                                    className="text-green-500"
-                                                />
-                                                <span className="text-sm">
-                                                    System is running normally
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Info
-                                                    size={16}
-                                                    className="text-blue-500"
-                                                />
-                                                <span className="text-sm">
-                                                    Last updated: 2 hours ago
-                                                </span>
-                                            </div>
+                                    <h4 className="font-semibold mb-2">
+                                        General Information
+                                    </h4>
+                                    <p className="text-gray-600 mb-3">
+                                        This section contains general
+                                        information about the system, including
+                                        basic configuration details and overview
+                                        of features.
+                                    </p>
+                                    <div className="space-y-2">
+                                        <div className="flex items-center gap-2">
+                                            <CheckCircle
+                                                size={16}
+                                                className="text-green-500"
+                                            />
+                                            <span className="text-sm">
+                                                System is running normally
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Info
+                                                size={16}
+                                                className="text-blue-500"
+                                            />
+                                            <span className="text-sm">
+                                                Last updated: 2 hours ago
+                                            </span>
                                         </div>
                                     </div>
-                                </AccordionItem>
+                                </div>
+                            </AccordionItem>
 
-                                <AccordionItem
-                                    value="item2"
-                                    title="User Settings"
-                                    subtext={
-                                        showSubtext
-                                            ? 'Personal preferences and account settings'
-                                            : undefined
-                                    }
-                                    leftSlot={
-                                        showIcons
-                                            ? getIconForItem('item2')
-                                            : undefined
-                                    }
-                                    rightSlot={
-                                        showRightSlot
-                                            ? getRightSlotForItem('item2')
-                                            : undefined
-                                    }
-                                    chevronPosition={playgroundChevronPosition}
-                                    isDisabled={isDisabled}
+                            <AccordionItem
+                                value="item2"
+                                title="User Settings"
+                                subtext={
+                                    showSubtext
+                                        ? 'Personal preferences and account settings'
+                                        : undefined
+                                }
+                                leftSlot={
+                                    showIcons
+                                        ? getIconForItem('item2')
+                                        : undefined
+                                }
+                                rightSlot={
+                                    showRightSlot
+                                        ? getRightSlotForItem('item2')
+                                        : undefined
+                                }
+                                chevronPosition={playgroundChevronPosition}
+                                isDisabled={isDisabled}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
                                 >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h4 className="font-semibold mb-2">
-                                            User Settings
-                                        </h4>
-                                        <p className="text-gray-600 mb-3">
-                                            Manage your personal preferences,
-                                            account settings, and profile
-                                            information.
-                                        </p>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-sm">
-                                                    Email notifications
-                                                </span>
-                                                <div className="w-8 h-4 bg-gray-200 rounded-full"></div>
-                                            </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-sm">
-                                                    Dark mode
-                                                </span>
-                                                <div className="w-8 h-4 bg-gray-200 rounded-full"></div>
-                                            </div>
+                                    <h4 className="font-semibold mb-2">
+                                        User Settings
+                                    </h4>
+                                    <p className="text-gray-600 mb-3">
+                                        Manage your personal preferences,
+                                        account settings, and profile
+                                        information.
+                                    </p>
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm">
+                                                Email notifications
+                                            </span>
+                                            <div className="w-8 h-4 bg-gray-200 rounded-full"></div>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm">
+                                                Dark mode
+                                            </span>
+                                            <div className="w-8 h-4 bg-gray-200 rounded-full"></div>
                                         </div>
                                     </div>
-                                </AccordionItem>
+                                </div>
+                            </AccordionItem>
 
-                                <AccordionItem
-                                    value="item3"
-                                    title="System Configuration"
-                                    subtext={
-                                        showSubtext
-                                            ? 'Advanced system settings and configuration'
-                                            : undefined
-                                    }
-                                    leftSlot={
-                                        showIcons
-                                            ? getIconForItem('item3')
-                                            : undefined
-                                    }
-                                    rightSlot={
-                                        showRightSlot
-                                            ? getRightSlotForItem('item3')
-                                            : undefined
-                                    }
-                                    chevronPosition={playgroundChevronPosition}
-                                    isDisabled={isDisabled}
+                            <AccordionItem
+                                value="item3"
+                                title="System Configuration"
+                                subtext={
+                                    showSubtext
+                                        ? 'Advanced system settings and configuration'
+                                        : undefined
+                                }
+                                leftSlot={
+                                    showIcons
+                                        ? getIconForItem('item3')
+                                        : undefined
+                                }
+                                rightSlot={
+                                    showRightSlot
+                                        ? getRightSlotForItem('item3')
+                                        : undefined
+                                }
+                                chevronPosition={playgroundChevronPosition}
+                                isDisabled={isDisabled}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
                                 >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h4 className="font-semibold mb-2">
-                                            System Configuration
-                                        </h4>
-                                        <p className="text-gray-600 mb-3">
-                                            Advanced system settings,
-                                            performance configurations, and
-                                            technical details.
-                                        </p>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center gap-2">
-                                                <AlertCircle
-                                                    size={16}
-                                                    className="text-yellow-500"
-                                                />
-                                                <span className="text-sm">
-                                                    Performance optimization
-                                                    recommended
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <CheckCircle
-                                                    size={16}
-                                                    className="text-green-500"
-                                                />
-                                                <span className="text-sm">
-                                                    All services running
-                                                </span>
-                                            </div>
+                                    <h4 className="font-semibold mb-2">
+                                        System Configuration
+                                    </h4>
+                                    <p className="text-gray-600 mb-3">
+                                        Advanced system settings, performance
+                                        configurations, and technical details.
+                                    </p>
+                                    <div className="space-y-2">
+                                        <div className="flex items-center gap-2">
+                                            <AlertCircle
+                                                size={16}
+                                                className="text-yellow-500"
+                                            />
+                                            <span className="text-sm">
+                                                Performance optimization
+                                                recommended
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <CheckCircle
+                                                size={16}
+                                                className="text-green-500"
+                                            />
+                                            <span className="text-sm">
+                                                All services running
+                                            </span>
                                         </div>
                                     </div>
-                                </AccordionItem>
+                                </div>
+                            </AccordionItem>
 
-                                <AccordionItem
-                                    value="item4"
-                                    title="Documentation"
-                                    subtext={
-                                        showSubtext
-                                            ? 'Help guides and documentation'
-                                            : undefined
-                                    }
-                                    leftSlot={
-                                        showIcons
-                                            ? getIconForItem('item4')
-                                            : undefined
-                                    }
-                                    rightSlot={
-                                        showRightSlot
-                                            ? getRightSlotForItem('item4')
-                                            : undefined
-                                    }
-                                    chevronPosition={playgroundChevronPosition}
-                                    isDisabled={isDisabled}
+                            <AccordionItem
+                                value="item4"
+                                title="Documentation"
+                                subtext={
+                                    showSubtext
+                                        ? 'Help guides and documentation'
+                                        : undefined
+                                }
+                                leftSlot={
+                                    showIcons
+                                        ? getIconForItem('item4')
+                                        : undefined
+                                }
+                                rightSlot={
+                                    showRightSlot
+                                        ? getRightSlotForItem('item4')
+                                        : undefined
+                                }
+                                chevronPosition={playgroundChevronPosition}
+                                isDisabled={isDisabled}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
                                 >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h4 className="font-semibold mb-2">
-                                            Documentation
-                                        </h4>
-                                        <p className="text-gray-600 mb-3">
-                                            Access help guides, tutorials, and
-                                            comprehensive documentation.
-                                        </p>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center gap-2">
-                                                <FileText
-                                                    size={16}
-                                                    className="text-blue-500"
-                                                />
-                                                <span className="text-sm">
-                                                    User Guide
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <FileText
-                                                    size={16}
-                                                    className="text-blue-500"
-                                                />
-                                                <span className="text-sm">
-                                                    API Documentation
-                                                </span>
-                                            </div>
+                                    <h4 className="font-semibold mb-2">
+                                        Documentation
+                                    </h4>
+                                    <p className="text-gray-600 mb-3">
+                                        Access help guides, tutorials, and
+                                        comprehensive documentation.
+                                    </p>
+                                    <div className="space-y-2">
+                                        <div className="flex items-center gap-2">
+                                            <FileText
+                                                size={16}
+                                                className="text-blue-500"
+                                            />
+                                            <span className="text-sm">
+                                                User Guide
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <FileText
+                                                size={16}
+                                                className="text-blue-500"
+                                            />
+                                            <span className="text-sm">
+                                                API Documentation
+                                            </span>
                                         </div>
                                     </div>
-                                </AccordionItem>
-                            </Accordion>
-                        </div>
+                                </div>
+                            </AccordionItem>
+                        </Accordion>
                     </div>
                 </div>
             </div>
@@ -388,7 +396,9 @@ const AccordionDemo = () => {
                                     subtext="Learn the basics and get up to speed quickly"
                                     leftSlot={<Home size={16} />}
                                 >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
+                                    <div
+                                        className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                    >
                                         <h4 className="font-semibold mb-2">
                                             Getting Started
                                         </h4>
@@ -406,7 +416,9 @@ const AccordionDemo = () => {
                                     subtext="Explore advanced functionality and customization options"
                                     leftSlot={<Settings size={16} />}
                                 >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
+                                    <div
+                                        className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                    >
                                         <h4 className="font-semibold mb-2">
                                             Advanced Features
                                         </h4>
@@ -423,7 +435,9 @@ const AccordionDemo = () => {
                                     subtext="Common issues and their solutions"
                                     leftSlot={<AlertCircle size={16} />}
                                 >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
+                                    <div
+                                        className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                    >
                                         <h4 className="font-semibold mb-2">
                                             Troubleshooting
                                         </h4>
@@ -455,7 +469,9 @@ const AccordionDemo = () => {
                                     chevronPosition={position}
                                     leftSlot={<BarChart3 size={16} />}
                                 >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
+                                    <div
+                                        className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                    >
                                         <h4 className="font-semibold mb-2">
                                             Dashboard Overview
                                         </h4>
@@ -472,7 +488,9 @@ const AccordionDemo = () => {
                                     chevronPosition={position}
                                     leftSlot={<User size={16} />}
                                 >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
+                                    <div
+                                        className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                    >
                                         <h4 className="font-semibold mb-2">
                                             User Management
                                         </h4>
@@ -489,7 +507,9 @@ const AccordionDemo = () => {
                                     chevronPosition={position}
                                     leftSlot={<FileText size={16} />}
                                 >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
+                                    <div
+                                        className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                    >
                                         <h4 className="font-semibold mb-2">
                                             File Management
                                         </h4>
@@ -520,7 +540,9 @@ const AccordionDemo = () => {
                             leftSlot={<User size={16} />}
                             rightSlot={<Star size={14} />}
                         >
-                            <div className="p-4 bg-gray-50 rounded-lg">
+                            <div
+                                className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                            >
                                 <h4 className="font-semibold mb-2">
                                     Account Settings
                                 </h4>
@@ -538,7 +560,9 @@ const AccordionDemo = () => {
                             leftSlot={<Bell size={16} />}
                             rightSlot={<Heart size={14} />}
                         >
-                            <div className="p-4 bg-gray-50 rounded-lg">
+                            <div
+                                className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                            >
                                 <h4 className="font-semibold mb-2">
                                     Notifications
                                 </h4>
@@ -556,7 +580,9 @@ const AccordionDemo = () => {
                             leftSlot={<Settings size={16} />}
                             rightSlot={<Mail size={14} />}
                         >
-                            <div className="p-4 bg-gray-50 rounded-lg">
+                            <div
+                                className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                            >
                                 <h4 className="font-semibold mb-2">
                                     Data & Privacy
                                 </h4>
@@ -584,7 +610,9 @@ const AccordionDemo = () => {
                             subtext="This item is enabled and can be opened"
                             leftSlot={<CheckCircle size={16} />}
                         >
-                            <div className="p-4 bg-gray-50 rounded-lg">
+                            <div
+                                className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                            >
                                 <h4 className="font-semibold mb-2">
                                     Active Item
                                 </h4>
@@ -602,7 +630,9 @@ const AccordionDemo = () => {
                             leftSlot={<AlertCircle size={16} />}
                             isDisabled={true}
                         >
-                            <div className="p-4 bg-gray-50 rounded-lg">
+                            <div
+                                className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                            >
                                 <h4 className="font-semibold mb-2">
                                     Disabled Item
                                 </h4>
@@ -619,7 +649,9 @@ const AccordionDemo = () => {
                             subtext="This item is also enabled"
                             leftSlot={<Info size={16} />}
                         >
-                            <div className="p-4 bg-gray-50 rounded-lg">
+                            <div
+                                className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                            >
                                 <h4 className="font-semibold mb-2">
                                     Another Active Item
                                 </h4>
@@ -649,7 +681,9 @@ const AccordionDemo = () => {
                                 subtext="Learn how to securely reset your account password"
                                 leftSlot={<AlertCircle size={16} />}
                             >
-                                <div className="p-4 bg-gray-50 rounded-lg">
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                >
                                     <h4 className="font-semibold mb-2">
                                         Password Reset Process
                                     </h4>
@@ -677,7 +711,9 @@ const AccordionDemo = () => {
                                 subtext="Secure your account with 2FA"
                                 leftSlot={<Settings size={16} />}
                             >
-                                <div className="p-4 bg-gray-50 rounded-lg">
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                >
                                     <h4 className="font-semibold mb-2">
                                         Two-Factor Authentication Setup
                                     </h4>
@@ -706,7 +742,9 @@ const AccordionDemo = () => {
                                 subtext="Learn about supported payment options"
                                 leftSlot={<Download size={16} />}
                             >
-                                <div className="p-4 bg-gray-50 rounded-lg">
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                >
                                     <h4 className="font-semibold mb-2">
                                         Accepted Payment Methods
                                     </h4>
