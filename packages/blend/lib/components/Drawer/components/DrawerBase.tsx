@@ -29,6 +29,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
     tokens: DrawerTokensType
     direction: 'top' | 'bottom' | 'left' | 'right'
     hasSnapPoints?: boolean
+    contentDriven?: boolean
     mobileOffset?: {
         top?: string
         bottom?: string
@@ -44,7 +45,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
     display: flex;
     flex-direction: column;
 
-    ${({ direction, tokens, hasSnapPoints, mobileOffset }) => {
+    ${({ direction, tokens, hasSnapPoints, contentDriven, mobileOffset }) => {
         const offset = {
             top: mobileOffset?.top ?? tokens.mobileOffset.top,
             bottom: mobileOffset?.bottom ?? tokens.mobileOffset.bottom,
@@ -62,7 +63,9 @@ const StyledContent = styled(VaulDrawer.Content)<{
                     hasSnapPoints
                         ? `height: calc(100% - calc(${offset.top} + ${offset.bottom}));
                            max-height: calc(97% - calc(${offset.top} + ${offset.bottom}));`
-                        : `top: ${offset.top};`
+                        : contentDriven
+                          ? `max-height: calc(100% - calc(${offset.top} + ${offset.bottom}));`
+                          : `top: ${offset.top};`
                 }
                 border-radius: ${tokens.content.borderRadius};
                 
@@ -263,6 +266,7 @@ export const DrawerContent = forwardRef<
         showHandle?: boolean
         handle?: React.ReactNode
         hasSnapPoints?: boolean
+        contentDriven?: boolean
         mobileOffset?: {
             top?: string
             bottom?: string
@@ -280,6 +284,7 @@ export const DrawerContent = forwardRef<
             showHandle = true,
             handle,
             hasSnapPoints = false,
+            contentDriven = false,
             mobileOffset,
             ...props
         },
@@ -295,6 +300,7 @@ export const DrawerContent = forwardRef<
                 tokens={tokens}
                 direction={direction}
                 hasSnapPoints={hasSnapPoints}
+                contentDriven={contentDriven}
                 mobileOffset={mobileOffset}
                 {...props}
             >

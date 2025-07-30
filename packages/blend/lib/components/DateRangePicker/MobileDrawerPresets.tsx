@@ -934,10 +934,11 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
             <DrawerPortal>
                 <DrawerOverlay />
                 <DrawerContent
+                    contentDriven={showPresets && !showCustomDropdownOnly}
                     mobileOffset={
                         showCustomDropdownOnly || !showPresets
                             ? { top: '50%' }
-                            : { top: '118px' }
+                            : undefined
                     }
                 >
                     <DrawerBody noPadding>
