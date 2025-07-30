@@ -38,4 +38,6 @@ export type DateRangePickerProps = {
     disableFutureDates?: boolean
     disablePastDates?: boolean
     triggerElement?: ReactNode
+    useDrawerOnMobile?: boolean
+    skipQuickFiltersOnMobile?: boolean
 }
