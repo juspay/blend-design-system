@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
     images: {
         unoptimized: true,
     },
+    // Environment variables for build time
+    env: {
+        SKIP_BUILD_STATIC_GENERATION: process.env.CI ? 'true' : 'false',
+    },
 }
 
 export default nextConfig

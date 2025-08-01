@@ -21,14 +21,14 @@ const dbConfig = {
             : process.env.DATABASE_HOST
               ? { rejectUnauthorized: false }
               : false,
-    max: 10, // Reduced from 20 to 10 for better connection management
-    idleTimeoutMillis: 10000, // Reduced from 30000 to 10000
-    connectionTimeoutMillis: 5000, // Increased from 2000 to 5000
-    acquireTimeoutMillis: 10000, // Added acquire timeout
-    createTimeoutMillis: 10000, // Added create timeout
-    destroyTimeoutMillis: 5000, // Added destroy timeout
-    reapIntervalMillis: 1000, // Added reap interval
-    createRetryIntervalMillis: 200, // Added retry interval
+    max: 20, // Increased back to 20 for better concurrency
+    idleTimeoutMillis: 30000, // Increased to 30 seconds
+    connectionTimeoutMillis: 20000, // Increased to 20 seconds
+    acquireTimeoutMillis: 30000, // Increased to 30 seconds
+    createTimeoutMillis: 30000, // Increased to 30 seconds
+    destroyTimeoutMillis: 10000, // Increased to 10 seconds
+    reapIntervalMillis: 5000, // Increased to 5 seconds
+    createRetryIntervalMillis: 500, // Increased retry interval
 }
 
 // Global connection pool
