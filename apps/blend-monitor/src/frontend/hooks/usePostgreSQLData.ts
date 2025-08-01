@@ -17,11 +17,7 @@ const POLLING_INTERVALS = {
 } as const
 
 // Generic polling hook with intelligent caching
-function usePolling<T>(
-    fetchFunction: () => Promise<T>,
-    interval: number,
-    dependencies: unknown[] = []
-) {
+function usePolling<T>(fetchFunction: () => Promise<T>, interval: number) {
     const [data, setData] = useState<T | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -43,7 +39,7 @@ function usePolling<T>(
                 setLoading(false)
             }
         }
-    }, dependencies)
+    }, [fetchFunction])
 
     useEffect(() => {
         mountedRef.current = true
@@ -60,7 +56,7 @@ function usePolling<T>(
                 clearInterval(intervalRef.current)
             }
         }
-    }, dependencies)
+    }, [fetchData, interval])
 
     const refetch = useCallback(() => {
         fetchData()
@@ -275,7 +271,7 @@ export function useRecentActivity(limit: number = 10) {
         loading,
         error,
         refetch,
-    } = usePolling(fetchActivity, POLLING_INTERVALS.activity, [limit])
+    } = usePolling(fetchActivity, POLLING_INTERVALS.activity)
 
     return {
         activities: activities || [],
@@ -333,10 +329,7 @@ export function useUserActivity(userId: string, limit: number = 50) {
         loading,
         error,
         refetch,
-    } = usePolling(fetchUserActivity, POLLING_INTERVALS.activity, [
-        userId,
-        limit,
-    ])
+    } = usePolling(fetchUserActivity, POLLING_INTERVALS.activity)
 
     return {
         activities: activities || [],
@@ -375,10 +368,9 @@ export function useRealtimeUpdates() {
 // Enhanced hook that responds to manual refresh events
 function usePollingWithRefresh<T>(
     fetchFunction: () => Promise<T>,
-    interval: number,
-    dependencies: unknown[] = []
+    interval: number
 ) {
-    const baseHook = usePolling(fetchFunction, interval, dependencies)
+    const baseHook = usePolling(fetchFunction, interval)
 
     // Listen for manual refresh events
     useEffect(() => {

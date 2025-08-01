@@ -13,8 +13,6 @@ import {
     TextInput,
     TextInputSize,
     SingleSelect,
-    Snackbar,
-    SnackbarVariant,
     DataTable,
     ColumnDefinition,
     ColumnType,
@@ -98,35 +96,11 @@ function UserManagement() {
     const [inviteRole, setInviteRole] = useState('viewer')
     const [inviting, setInviting] = useState(false)
     const [emailError, setEmailError] = useState('')
-    const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false)
-    const [showErrorSnackbar, setShowErrorSnackbar] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('')
     const { canManageUsers } = usePermissions()
 
     // Use PostgreSQL user management hooks
-    const {
-        users,
-        loading,
-        error,
-        updateUserRole,
-        updateUserStatus,
-        createUser,
-    } = useUserManagement()
-
-    // Show success snackbar on initial load to indicate PostgreSQL connection
-    useEffect(() => {
-        if (!loading && users.length >= 0) {
-            setShowSuccessSnackbar(true)
-        }
-    }, [loading, users.length])
-
-    // Show error snackbar when there's an error
-    useEffect(() => {
-        if (error) {
-            setErrorMessage(error)
-            setShowErrorSnackbar(true)
-        }
-    }, [error])
+    const { users, loading, updateUserRole, updateUserStatus, createUser } =
+        useUserManagement()
 
     const handleRoleChange = async (userId: string, newRole: string) => {
         if (!canManageUsers) return

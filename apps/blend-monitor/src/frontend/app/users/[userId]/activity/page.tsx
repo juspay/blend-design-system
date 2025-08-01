@@ -67,20 +67,20 @@ function UserActivity() {
     // Check if user can view this activity
     const canViewActivity = userId === auth.currentUser?.uid || canManageUsers
 
-    const loadUserData = async () => {
-        try {
-            const data = await roleService.getUserData(userId)
-            setUserData(data)
-        } catch (error) {
-            console.error('Error loading user data:', error)
-        }
-    }
-
     useEffect(() => {
         if (!canViewActivity) {
             setError("You do not have permission to view this user's activity")
             setLoading(false)
             return
+        }
+
+        const loadUserData = async () => {
+            try {
+                const data = await roleService.getUserData(userId)
+                setUserData(data)
+            } catch (error) {
+                console.error('Error loading user data:', error)
+            }
         }
 
         loadUserData()
@@ -95,7 +95,7 @@ function UserActivity() {
         )
 
         return () => unsubscribe()
-    }, [userId, canViewActivity, loadUserData])
+    }, [userId, canViewActivity])
 
     const formatTimestamp = (timestamp: string) => {
         const date = new Date(timestamp)
