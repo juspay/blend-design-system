@@ -70,6 +70,7 @@ const ComponentPreview = ({
                                 key={tab.id}
                                 value={tab.id}
                                 className="px-2 h-10 relative cursor-pointer data-[state=active]:text-[var(--foreground)] data-[state=inactive]:text-[var(--muted-foreground)] font-medium text-sm after:content-[''] after:block after:w-full after:h-[2px] after:bg-blue-500 after:absolute after:bottom-0 after:left-0 after:opacity-0 data-[state=active]:after:opacity-100 focus:outline-none"
+                                data-nav-content
                             >
                                 {tab.label}
                             </Tabs.Trigger>

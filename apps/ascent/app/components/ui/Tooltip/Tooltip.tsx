@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import * as RadixTooltip from '@radix-ui/react-tooltip'
 
@@ -19,10 +20,29 @@ const Tooltip = ({
     alignOffset = 0,
 }: TooltipProps) => {
     const [open, setOpen] = useState(false)
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            setOpen(!open)
+        } else if (e.key === 'Escape') {
+            setOpen(false)
+        }
+    }
+
     return (
         <RadixTooltip.Provider>
             <RadixTooltip.Root open={open} onOpenChange={setOpen}>
-                <RadixTooltip.Trigger asChild onClick={() => setOpen(true)}>
+                <RadixTooltip.Trigger
+                    asChild
+                    onClick={() => setOpen(true)}
+                    onKeyDown={handleKeyDown}
+                    data-nav-content
+                    tabIndex={0}
+                    role="button"
+                    aria-label="Show tooltip information"
+                    aria-expanded={open}
+                >
                     {children}
                 </RadixTooltip.Trigger>
                 <RadixTooltip.Content
@@ -32,7 +52,7 @@ const Tooltip = ({
                     alignOffset={alignOffset}
                     className={
                         typeof content === 'string'
-                            ? 'bg-black dark:bg-white text-white dark:text-black rounded-xl py-1 px-3 shadow-md max-w-60 md:max-w-100'
+                            ? 'bg-black text-white dark:bg-white dark:text-black rounded-xl py-1 px-3 shadow-md max-w-60 md:max-w-100 z-50'
                             : ''
                     }
                 >

@@ -1,10 +1,12 @@
 import React, { ComponentPropsWithoutRef } from 'react'
 import Link from 'next/link'
 import { highlight } from 'sugar-high'
-import CodeBlock from './app/components/CodeBlock'
-import DocsTypeTable from './app/components/DocsTypeTable'
-import Preview from './app/components/Preview'
-import PreviewWrapper from './app/components/PreviewWrapper'
+import {
+    CodeBlock,
+    DocsTypeTable,
+    Preview,
+    PreviewWrapper,
+} from './app/components'
 
 // Create wrapper components for each preview
 const ButtonPreview = () => <PreviewWrapper component="ButtonPreview" />
@@ -132,14 +134,24 @@ const components = {
             'text-blue-500 hover:text-blue-700 dark:text-gray-400 hover:dark:text-gray-300 dark:underline dark:underline-offset-2 dark:decoration-gray-800'
         if (href?.startsWith('/')) {
             return (
-                <Link href={href} className={className} {...props}>
+                <Link
+                    href={href}
+                    className={className}
+                    data-nav-content
+                    {...props}
+                >
                     {children}
                 </Link>
             )
         }
         if (href?.startsWith('#')) {
             return (
-                <a href={href} className={className} {...props}>
+                <a
+                    href={href}
+                    className={className}
+                    data-nav-content
+                    {...props}
+                >
                     {children}
                 </a>
             )
@@ -150,6 +162,7 @@ const components = {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={className}
+                data-nav-content
                 {...props}
             >
                 {children}
