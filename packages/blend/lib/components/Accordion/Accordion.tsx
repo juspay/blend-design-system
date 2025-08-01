@@ -4,7 +4,7 @@ import { forwardRef } from 'react'
 import { styled } from 'styled-components'
 import { type AccordionProps, AccordionType } from './types'
 import type { AccordionTokenType } from './accordion.tokens'
-import { useComponentToken } from '../../context/useComponentToken'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const StyledAccordionRoot = styled(RadixAccordion.Root)<{
     $accordionType: AccordionType
@@ -29,16 +29,26 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
         },
         ref
     ) => {
-        const accordionToken = useComponentToken(
-            'ACCORDION'
-        ) as AccordionTokenType
+        const accordionToken =
+            useResponsiveTokens<AccordionTokenType>('ACCORDION')
         const renderChildren = () => {
-            return React.Children.map(children, (child) => {
+            return React.Children.map(children, (child, index) => {
                 if (!React.isValidElement(child)) return child
+
+                const childrenArray = React.Children.toArray(children).filter(
+                    React.isValidElement
+                )
+                const totalItems = childrenArray.length
+                const isFirst = index === 0
+                const isLast = index === totalItems - 1
+                const isIntermediate = !isFirst && !isLast
 
                 const childProps = {
                     ...(child.props as object),
                     accordionType: accordionType,
+                    isFirst,
+                    isLast,
+                    isIntermediate,
                 }
 
                 return React.cloneElement(child, childProps)
