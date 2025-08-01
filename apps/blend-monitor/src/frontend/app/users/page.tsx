@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { auth } from '../../lib/firebase'
 import { onAuthStateChanged, User } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
+import Loader from '../../components/shared/Loader'
 import {
     Button,
     ButtonType,
@@ -12,6 +13,11 @@ import {
     TextInput,
     TextInputSize,
     SingleSelect,
+    Snackbar,
+    SnackbarVariant,
+    DataTable,
+    ColumnDefinition,
+    ColumnType,
 } from 'blend-v1'
 import { UserPlus, Activity } from 'lucide-react'
 import { useUserManagement } from '../../hooks/usePostgreSQLData'
@@ -66,9 +72,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
+            <Loader fullScreen size="large" text="Loading authentication..." />
         )
     }
 
@@ -219,11 +223,7 @@ function UserManagement() {
     }
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
-        )
+        return <Loader fullScreen size="large" text="Loading users..." />
     }
 
     return (

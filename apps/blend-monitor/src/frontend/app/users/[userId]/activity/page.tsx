@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { auth } from '../../../../lib/firebase'
 import { usePermissions } from '../../../../components/auth/PermissionGuard'
 import ProtectedRoute from '../../../../components/auth/ProtectedRoute'
+import Loader from '../../../../components/shared/Loader'
 import { Button, ButtonType, ButtonSize } from 'blend-v1'
 import { ArrowLeft, Activity, Clock, User as LucideUser } from 'lucide-react'
 
@@ -149,9 +150,7 @@ function UserActivity() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
+            <Loader fullScreen size="large" text="Loading user activity..." />
         )
     }
 

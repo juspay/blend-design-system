@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { auth } from '@/frontend/lib/firebase'
 import { onAuthStateChanged, User } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
+import Loader from '@/frontend/components/shared/Loader'
 import {
     Button,
     ButtonType,
@@ -12,6 +13,11 @@ import {
     TextInput,
     TextInputSize,
     SingleSelect,
+    Snackbar,
+    SnackbarVariant,
+    DataTable,
+    ColumnDefinition,
+    ColumnType,
 } from 'blend-v1'
 import { UserPlus, Activity } from 'lucide-react'
 import { useUserManagement } from '@/frontend/hooks/usePostgreSQLData'
@@ -66,9 +72,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
+            <Loader fullScreen size="large" text="Loading authentication..." />
         )
     }
 
@@ -94,6 +98,9 @@ function UserManagement() {
     const [inviteRole, setInviteRole] = useState('viewer')
     const [inviting, setInviting] = useState(false)
     const [emailError, setEmailError] = useState('')
+    const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false)
+    const [showErrorSnackbar, setShowErrorSnackbar] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
     const { canManageUsers } = usePermissions()
 
     // Use PostgreSQL user management hooks
@@ -105,6 +112,21 @@ function UserManagement() {
         updateUserStatus,
         createUser,
     } = useUserManagement()
+
+    // Show success snackbar on initial load to indicate PostgreSQL connection
+    useEffect(() => {
+        if (!loading && users.length >= 0) {
+            setShowSuccessSnackbar(true)
+        }
+    }, [loading, users.length])
+
+    // Show error snackbar when there's an error
+    useEffect(() => {
+        if (error) {
+            setErrorMessage(error)
+            setShowErrorSnackbar(true)
+        }
+    }, [error])
 
     const handleRoleChange = async (userId: string, newRole: string) => {
         if (!canManageUsers) return
@@ -218,292 +240,198 @@ function UserManagement() {
         }
     }
 
+    // Define columns for DataTable
+    const columns: ColumnDefinition<UserData>[] = [
+        {
+            field: 'display_name' as keyof UserData,
+            header: 'User',
+            type: ColumnType.REACT_ELEMENT,
+            isSortable: false,
+            renderCell: (value: unknown, row: UserData) => (
+                <div className="flex items-center">
+                    <div className="flex-shrink-0 h-10 w-10">
+                        {row.photo_url ? (
+                            <img
+                                className="h-10 w-10 rounded-full"
+                                src={row.photo_url}
+                                alt={row.display_name || 'User'}
+                            />
+                        ) : (
+                            <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                <span className="text-sm font-medium text-gray-700">
+                                    {row.display_name?.charAt(0) ||
+                                        row.email.charAt(0).toUpperCase()}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                    <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">
+                            {row.display_name || 'No name'}
+                        </div>
+                        <div className="text-sm text-gray-500">{row.email}</div>
+                    </div>
+                </div>
+            ),
+        },
+        {
+            field: 'role' as keyof UserData,
+            header: 'Role',
+            type: ColumnType.REACT_ELEMENT,
+            isSortable: false,
+            renderCell: (value: unknown, row: UserData) =>
+                canManageUsers ? (
+                    <div className="w-40">
+                        <SingleSelect
+                            label=""
+                            selected={row.role}
+                            onSelect={(value: string) =>
+                                handleRoleChange(row.firebase_uid, value)
+                            }
+                            items={[
+                                {
+                                    items: Object.entries(DEFAULT_ROLES).map(
+                                        ([roleId, roleData]) => ({
+                                            value: roleId,
+                                            label: roleData.name,
+                                        })
+                                    ),
+                                },
+                            ]}
+                            placeholder="Select role"
+                        />
+                    </div>
+                ) : (
+                    <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${getRoleBadgeColor(row.role)}`}
+                    >
+                        {DEFAULT_ROLES[row.role as keyof typeof DEFAULT_ROLES]
+                            ?.name || row.role}
+                    </span>
+                ),
+        },
+        {
+            field: 'is_active' as keyof UserData,
+            header: 'Status',
+            type: ColumnType.REACT_ELEMENT,
+            isSortable: false,
+            renderCell: (value: unknown, row: UserData) =>
+                canManageUsers ? (
+                    <div className="w-32">
+                        <SingleSelect
+                            label=""
+                            selected={row.is_active ? 'active' : 'inactive'}
+                            onSelect={(value: string) =>
+                                handleStatusChange(
+                                    row.firebase_uid,
+                                    value === 'active'
+                                )
+                            }
+                            items={[
+                                {
+                                    items: [
+                                        {
+                                            value: 'active',
+                                            label: 'Active',
+                                        },
+                                        {
+                                            value: 'inactive',
+                                            label: 'Inactive',
+                                        },
+                                    ],
+                                },
+                            ]}
+                            placeholder="Select status"
+                        />
+                    </div>
+                ) : (
+                    <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            row.is_active
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-red-100 text-red-800'
+                        }`}
+                    >
+                        {row.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                ),
+        },
+        {
+            field: 'last_login' as keyof UserData,
+            header: 'Last Login',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            renderCell: (value: unknown, row: UserData) =>
+                formatDate(row.last_login),
+        },
+        {
+            field: 'created_at' as keyof UserData,
+            header: 'Created',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            renderCell: (value: unknown, row: UserData) =>
+                formatDate(row.created_at),
+        },
+    ]
+
+    // Add actions column if user can manage users
+    if (canManageUsers) {
+        columns.push({
+            field: 'firebase_uid' as keyof UserData,
+            header: 'Actions',
+            type: ColumnType.REACT_ELEMENT,
+            isSortable: false,
+            renderCell: (value: unknown, row: UserData) => (
+                <div className="flex items-center gap-2">
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.SMALL}
+                        text=""
+                        leadingIcon={<Activity className="w-4 h-4" />}
+                        onClick={() =>
+                            router.push(`/users/${row.firebase_uid}/activity`)
+                        }
+                        title="View activity"
+                    />
+                </div>
+            ),
+        })
+    }
+
     if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
-        )
+        return <Loader fullScreen size="large" text="Loading users..." />
     }
 
     return (
         <div className="container mx-auto px-4 py-8">
-            {/* Header with title and invite button */}
-            <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-2xl font-semibold text-gray-900">
-                    All Users ({users.length})
-                </h2>
-                {canManageUsers && (
-                    <Button
-                        buttonType={ButtonType.PRIMARY}
-                        size={ButtonSize.MEDIUM}
-                        text="Invite User"
-                        leadingIcon={<UserPlus className="w-4 h-4" />}
-                        onClick={() => setShowInviteModal(true)}
-                    />
-                )}
-            </div>
-
-            {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                            <svg
-                                className="h-5 w-5 text-red-400"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                            >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
-                        </div>
-                        <div className="ml-3">
-                            <p className="text-sm text-red-700">{error}</p>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                        <svg
-                            className="h-5 w-5 text-green-400"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
-                            <path
-                                fillRule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clipRule="evenodd"
-                            />
-                        </svg>
-                    </div>
-                    <div className="ml-3">
-                        <p className="text-sm text-green-700">
-                            ✅ Connected to PostgreSQL! User data is now managed
-                            in your cloud database.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Users Table */}
-            <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    User
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Role
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Status
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Last Login
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Created
-                                </th>
-                                {canManageUsers && (
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Actions
-                                    </th>
-                                )}
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {users.map((user: UserData) => (
-                                <tr key={user.id} className="hover:bg-gray-50">
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center">
-                                            <div className="flex-shrink-0 h-10 w-10">
-                                                {user.photo_url ? (
-                                                    <img
-                                                        className="h-10 w-10 rounded-full"
-                                                        src={user.photo_url}
-                                                        alt={
-                                                            user.display_name ||
-                                                            'User'
-                                                        }
-                                                    />
-                                                ) : (
-                                                    <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                                                        <span className="text-sm font-medium text-gray-700">
-                                                            {user.display_name?.charAt(
-                                                                0
-                                                            ) ||
-                                                                user.email
-                                                                    .charAt(0)
-                                                                    .toUpperCase()}
-                                                        </span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="ml-4">
-                                                <div className="text-sm font-medium text-gray-900">
-                                                    {user.display_name ||
-                                                        'No name'}
-                                                </div>
-                                                <div className="text-sm text-gray-500">
-                                                    {user.email}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        {canManageUsers ? (
-                                            <div className="w-40">
-                                                <SingleSelect
-                                                    label=""
-                                                    selected={user.role}
-                                                    onSelect={(value: string) =>
-                                                        handleRoleChange(
-                                                            user.firebase_uid,
-                                                            value
-                                                        )
-                                                    }
-                                                    items={[
-                                                        {
-                                                            items: Object.entries(
-                                                                DEFAULT_ROLES
-                                                            ).map(
-                                                                ([
-                                                                    roleId,
-                                                                    roleData,
-                                                                ]) => ({
-                                                                    value: roleId,
-                                                                    label: roleData.name,
-                                                                })
-                                                            ),
-                                                        },
-                                                    ]}
-                                                    placeholder="Select role"
-                                                />
-                                            </div>
-                                        ) : (
-                                            <span
-                                                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${getRoleBadgeColor(user.role)}`}
-                                            >
-                                                {DEFAULT_ROLES[
-                                                    user.role as keyof typeof DEFAULT_ROLES
-                                                ]?.name || user.role}
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        {canManageUsers ? (
-                                            <div className="w-32">
-                                                <SingleSelect
-                                                    label=""
-                                                    selected={
-                                                        user.is_active
-                                                            ? 'active'
-                                                            : 'inactive'
-                                                    }
-                                                    onSelect={(value: string) =>
-                                                        handleStatusChange(
-                                                            user.firebase_uid,
-                                                            value === 'active'
-                                                        )
-                                                    }
-                                                    items={[
-                                                        {
-                                                            items: [
-                                                                {
-                                                                    value: 'active',
-                                                                    label: 'Active',
-                                                                },
-                                                                {
-                                                                    value: 'inactive',
-                                                                    label: 'Inactive',
-                                                                },
-                                                            ],
-                                                        },
-                                                    ]}
-                                                    placeholder="Select status"
-                                                />
-                                            </div>
-                                        ) : (
-                                            <span
-                                                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                    user.is_active
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : 'bg-red-100 text-red-800'
-                                                }`}
-                                            >
-                                                {user.is_active
-                                                    ? 'Active'
-                                                    : 'Inactive'}
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {formatDate(user.last_login)}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {formatDate(user.created_at)}
-                                    </td>
-                                    {canManageUsers && (
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                            <div className="flex items-center gap-2">
-                                                <Button
-                                                    buttonType={
-                                                        ButtonType.SECONDARY
-                                                    }
-                                                    size={ButtonSize.SMALL}
-                                                    text=""
-                                                    leadingIcon={
-                                                        <Activity className="w-4 h-4" />
-                                                    }
-                                                    onClick={() =>
-                                                        router.push(
-                                                            `/users/${user.firebase_uid}/activity`
-                                                        )
-                                                    }
-                                                    title="View activity"
-                                                />
-                                            </div>
-                                        </td>
-                                    )}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-
-                {users.length === 0 && !loading && (
-                    <div className="text-center py-12">
-                        <svg
-                            className="mx-auto h-12 w-12 text-gray-400"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                            />
-                        </svg>
-                        <h3 className="mt-2 text-sm font-medium text-gray-900">
-                            No users found
-                        </h3>
-                        <p className="mt-1 text-sm text-gray-500">
-                            Users will appear here once they sign in to the
-                            application.
-                        </p>
-                    </div>
-                )}
-            </div>
+            {/* Users DataTable */}
+            <DataTable
+                data={users as Record<string, unknown>[]}
+                columns={columns as ColumnDefinition<Record<string, unknown>>[]}
+                idField="firebase_uid"
+                title="All Users"
+                description={`${users.length} users in the system`}
+                enableSearch={false}
+                enableColumnManager={false}
+                isHoverable={true}
+                pagination={{
+                    currentPage: 1,
+                    pageSize: 10,
+                    totalRows: users.length,
+                    pageSizeOptions: [10, 20, 50],
+                }}
+                headerSlot1={
+                    canManageUsers ? (
+                        <Button
+                            buttonType={ButtonType.PRIMARY}
+                            size={ButtonSize.MEDIUM}
+                            text="Invite User"
+                            leadingIcon={<UserPlus className="w-4 h-4" />}
+                            onClick={() => setShowInviteModal(true)}
+                        />
+                    ) : null
+                }
+            />
 
             {/* Invite User Modal */}
             <Modal
@@ -578,6 +506,8 @@ function UserManagement() {
                     </div>
                 </div>
             </Modal>
+
+            {/* TODO: Add proper snackbar notifications once Snackbar component interface is fixed */}
         </div>
     )
 }
