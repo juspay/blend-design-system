@@ -5,18 +5,22 @@ import { styled } from 'styled-components'
 import type { AccordionItemProps } from './types'
 import { AccordionType, AccordionChevronPosition } from './types'
 import type { AccordionTokenType } from './accordion.tokens'
-import { useComponentToken } from '../../context/useComponentToken'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { foundationToken } from '../../foundationToken'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 
 const StyledAccordionItem = styled(RadixAccordion.Item)<{
     $accordionType: AccordionType
     $isDisabled: boolean
     $accordionToken: AccordionTokenType
+    $isSmallScreen: boolean
 }>((props) => ({
     border: props.$accordionToken.item.trigger.border[props.$accordionType]
         .default,
+
     borderRadius: props.$accordionToken.borderRadius[props.$accordionType],
     overflow:
         props.$accordionType === AccordionType.BORDER ? 'hidden' : 'visible',
@@ -26,6 +30,41 @@ const StyledAccordionItem = styled(RadixAccordion.Item)<{
                 props.$accordionToken.item.trigger.backgroundColor[
                     props.$accordionType
                 ].disabled,
+        }),
+
+    ...(props.$isSmallScreen &&
+        props.$accordionType === AccordionType.BORDER && {
+            '&:first-child': {
+                borderBottomLeftRadius: 'unset',
+                borderBottomRightRadius: 'unset',
+            },
+
+            '&:last-child': {
+                borderTop: 'none',
+                borderTopLeftRadius: 'unset',
+                borderTopRightRadius: 'unset',
+            },
+
+            '&:not(:first-child):not(:last-child)': {
+                borderTop: 'none',
+                borderRadius: 'unset',
+            },
+        }),
+    ...(props.$isSmallScreen &&
+        props.$accordionType === AccordionType.NO_BORDER && {
+            '&': {
+                border: 'none',
+                borderRadius: 'unset',
+                borderBottom:
+                    props.$accordionToken.item.trigger.border[
+                        props.$accordionType
+                    ].default,
+            },
+            '&:last-child': {
+                ...(props.$isDisabled && {
+                    borderBottom: 'none',
+                }),
+            },
         }),
 }))
 
@@ -37,6 +76,10 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
     $accordionType: AccordionType
     $isDisabled: boolean
     $accordionToken: AccordionTokenType
+    $isSmallScreen: boolean
+    $isFirst?: boolean
+    $isLast?: boolean
+    $isIntermediate?: boolean
 }>((props) => ({
     display: 'flex',
     width: '100%',
@@ -57,22 +100,51 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
             ].disabled,
         cursor: 'not-allowed',
     }),
-    '&[data-state="open"]': {
-        backgroundColor:
-            props.$accordionToken.item.trigger.backgroundColor[
-                props.$accordionType
-            ].open,
-    },
-    '&:hover:not(:disabled)': {
-        backgroundColor:
-            props.$accordionToken.item.trigger.backgroundColor[
-                props.$accordionType
-            ].hover,
-    },
+    ...(!props.$isSmallScreen && {
+        '&[data-state="open"]': {
+            backgroundColor:
+                props.$accordionToken.item.trigger.backgroundColor[
+                    props.$accordionType
+                ].open,
+        },
+    }),
+    ...(!props.$isSmallScreen && {
+        '&:hover:not(:disabled)': {
+            backgroundColor:
+                props.$accordionToken.item.trigger.backgroundColor[
+                    props.$accordionType
+                ].hover,
+        },
+    }),
+
     '&:focus-visible': {
         outline: `2px solid ${foundationToken.colors.primary[500]}`,
         outlineOffset: foundationToken.spacing[2],
     },
+
+    ...(props.$accordionType === AccordionType.NO_BORDER &&
+        props.$isSmallScreen &&
+        props.$isDisabled && {
+            ...(props.$isFirst && {
+                borderRadius: 'unset',
+                borderTopLeftRadius:
+                    props.$accordionToken.borderRadius[props.$accordionType],
+                borderTopRightRadius:
+                    props.$accordionToken.borderRadius[props.$accordionType],
+            }),
+
+            ...(props.$isLast && {
+                borderRadius: 'unset',
+                borderBottomLeftRadius:
+                    props.$accordionToken.borderRadius[props.$accordionType],
+                borderBottomRightRadius:
+                    props.$accordionToken.borderRadius[props.$accordionType],
+            }),
+
+            ...(props.$isIntermediate && {
+                borderRadius: 'unset',
+            }),
+        }),
 }))
 
 const StyledAccordionContent = styled(RadixAccordion.Content)<{
@@ -118,6 +190,9 @@ const AccordionItem = forwardRef<
     AccordionItemProps & {
         accordionType?: AccordionType
         chevronPosition?: AccordionChevronPosition
+        isFirst?: boolean
+        isLast?: boolean
+        isIntermediate?: boolean
     }
 >(
     (
@@ -133,12 +208,17 @@ const AccordionItem = forwardRef<
             chevronPosition = AccordionChevronPosition.RIGHT,
             className,
             accordionType = AccordionType.NO_BORDER,
+            // Position props
+            isFirst,
+            isLast,
+            isIntermediate,
         },
         ref
     ) => {
-        const accordionToken = useComponentToken(
-            'ACCORDION'
-        ) as AccordionTokenType
+        const accordionToken =
+            useResponsiveTokens<AccordionTokenType>('ACCORDION')
+        const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+        const isSmallScreen = breakPointLabel === 'sm'
 
         const getChevronIcon = () => {
             const iconStyles = {
@@ -174,6 +254,7 @@ const AccordionItem = forwardRef<
                 className={className}
                 ref={ref}
                 data-disabled={isDisabled || undefined}
+                $isSmallScreen={isSmallScreen}
                 $accordionType={accordionType}
                 $isDisabled={isDisabled}
                 $accordionToken={accordionToken}
@@ -186,6 +267,10 @@ const AccordionItem = forwardRef<
                         disabled={isDisabled}
                         data-type={accordionType}
                         data-disabled={isDisabled || undefined}
+                        $isSmallScreen={isSmallScreen}
+                        $isFirst={isFirst}
+                        $isLast={isLast}
+                        $isIntermediate={isIntermediate}
                     >
                         <Block width="100%" position="relative">
                             <Block
@@ -279,7 +364,7 @@ const AccordionItem = forwardRef<
                                                     .subtext.gap
                                             }
                                         >
-                                            {subtext && (
+                                            {subtext && !isSmallScreen && (
                                                 <PrimitiveText
                                                     fontSize={
                                                         accordionToken.item

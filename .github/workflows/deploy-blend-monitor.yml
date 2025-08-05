@@ -1,0 +1,58 @@
+name: Deploy Blend Monitor to Cloud Run
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - 'apps/blend-monitor/**'
+            - '.github/workflows/deploy-blend-monitor.yml'
+    workflow_dispatch:
+
+env:
+    PROJECT_ID: storybook-452807
+    REGION: us-central1
+    SERVICE_NAME: blend-monitor
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Authenticate to Google Cloud
+              uses: google-github-actions/auth@v2
+              with:
+                  credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+            - name: Set up Cloud SDK
+              uses: google-github-actions/setup-gcloud@v2
+
+            - name: Configure Docker for GCR
+              run: |
+                  gcloud auth configure-docker
+
+            - name: Build and Deploy using Cloud Build
+              run: |
+                  gcloud builds submit \
+                    --config=apps/blend-monitor/cloudbuild.yaml \
+                    --substitutions="_INSTANCE_CONNECTION_NAME=${{ secrets.CLOUD_SQL_CONNECTION_NAME }},_DATABASE_NAME=${{ secrets.DATABASE_NAME }},_DATABASE_USER=${{ secrets.DATABASE_USER }},_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }},_FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }},_FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }},_FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }},_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }},_FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }},_FIREBASE_DATABASE_URL=${{ secrets.FIREBASE_DATABASE_URL }},_FIREBASE_CLIENT_EMAIL=${{ secrets.FIREBASE_CLIENT_EMAIL }}" \
+                    .
+
+            - name: Get Cloud Run URL
+              id: get-url
+              run: |
+                  URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} \
+                    --region=${{ env.REGION }} \
+                    --format='value(status.url)')
+                  echo "url=$URL" >> $GITHUB_OUTPUT
+
+            - name: Output Deployment URL
+              run: |
+                  echo "🚀 Deployment successful!"
+                  echo "📍 URL: ${{ steps.get-url.outputs.url }}"

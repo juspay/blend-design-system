@@ -1,0 +1,67 @@
+steps:
+    # Build the container image
+    - name: 'gcr.io/cloud-builders/docker'
+      args:
+          - 'build'
+          - '-t'
+          - 'gcr.io/$PROJECT_ID/blend-monitor:$BUILD_ID'
+          - '-t'
+          - 'gcr.io/$PROJECT_ID/blend-monitor:latest'
+          - '.'
+
+    # Push the container image to Container Registry
+    - name: 'gcr.io/cloud-builders/docker'
+      args: ['push', '--all-tags', 'gcr.io/$PROJECT_ID/blend-monitor']
+
+    # Deploy container image to Cloud Run
+    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+      entrypoint: gcloud
+      args:
+          - 'run'
+          - 'deploy'
+          - 'blend-monitor'
+          - '--image'
+          - 'gcr.io/$PROJECT_ID/blend-monitor:$BUILD_ID'
+          - '--region'
+          - 'us-central1'
+          - '--platform'
+          - 'managed'
+          - '--allow-unauthenticated'
+          - '--add-cloudsql-instances'
+          - '$_INSTANCE_CONNECTION_NAME'
+          - '--set-env-vars'
+          - 'NODE_ENV=production,INSTANCE_CONNECTION_NAME=$_INSTANCE_CONNECTION_NAME,DATABASE_NAME=$_DATABASE_NAME,DATABASE_USER=$_DATABASE_USER,NEXT_PUBLIC_FIREBASE_API_KEY=$_FIREBASE_API_KEY,NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=$_FIREBASE_AUTH_DOMAIN,NEXT_PUBLIC_FIREBASE_PROJECT_ID=$_FIREBASE_PROJECT_ID,NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=$_FIREBASE_STORAGE_BUCKET,NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=$_FIREBASE_MESSAGING_SENDER_ID,NEXT_PUBLIC_FIREBASE_APP_ID=$_FIREBASE_APP_ID,NEXT_PUBLIC_FIREBASE_DATABASE_URL=$_FIREBASE_DATABASE_URL,FIREBASE_PROJECT_ID=$_FIREBASE_PROJECT_ID,FIREBASE_CLIENT_EMAIL=$_FIREBASE_CLIENT_EMAIL'
+          - '--set-secrets'
+          - 'DATABASE_PASSWORD=blend-monitor-db-password:latest,FIREBASE_PRIVATE_KEY=blend-monitor-firebase-key:latest'
+          - '--memory'
+          - '512Mi'
+          - '--cpu'
+          - '1'
+          - '--timeout'
+          - '300'
+          - '--min-instances'
+          - '0'
+          - '--max-instances'
+          - '10'
+          - '--service-account'
+          - 'blend-monitor-sa@storybook-452807.iam.gserviceaccount.com'
+
+images:
+    - 'gcr.io/$PROJECT_ID/blend-monitor:$BUILD_ID'
+    - 'gcr.io/$PROJECT_ID/blend-monitor:latest'
+
+substitutions:
+    _INSTANCE_CONNECTION_NAME: 'storybook-452807:us-central1:blend-dashboard'
+    _DATABASE_NAME: 'blend_monitor'
+    _DATABASE_USER: 'admin'
+    _FIREBASE_API_KEY: 'AIzaSyD2aRkOI4iCwiZOW5kEejrL9jv9JvytKpo'
+    _FIREBASE_AUTH_DOMAIN: 'storybook-452807.firebaseapp.com'
+    _FIREBASE_PROJECT_ID: 'storybook-452807'
+    _FIREBASE_STORAGE_BUCKET: 'storybook-452807.firebasestorage.app'
+    _FIREBASE_MESSAGING_SENDER_ID: '567047894553'
+    _FIREBASE_APP_ID: '1:567047894553:web:1cd999e1c9bf9b81ff5c88'
+    _FIREBASE_DATABASE_URL: 'https://storybook-452807-default-rtdb.asia-southeast1.firebasedatabase.app'
+    _FIREBASE_CLIENT_EMAIL: 'firebase-adminsdk-fbsvc@storybook-452807.iam.gserviceaccount.com'
+
+options:
+    logging: CLOUD_LOGGING_ONLY

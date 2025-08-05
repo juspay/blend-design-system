@@ -5,7 +5,7 @@ import InputFooter from '../utils/InputFooter/InputFooter'
 import type { TextAreaProps } from './types'
 import type { TextAreaTokensType } from './textarea.token'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
@@ -36,7 +36,6 @@ const TextArea = ({
     const [isFocused, setIsFocused] = useState(false)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
-    const labelRef = useRef<HTMLDivElement>(null)
 
     const inputFocusedOrWithValue = isFocused || value.length > 0
 
@@ -62,7 +61,6 @@ const TextArea = ({
             )}
             {label && isSmallScreen && (
                 <Block
-                    ref={labelRef}
                     position="absolute"
                     top={5}
                     left={paddingX}

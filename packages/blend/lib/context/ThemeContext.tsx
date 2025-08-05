@@ -57,7 +57,7 @@ import {
     type ResponsiveCheckboxTokens,
 } from '../components/Checkbox/checkbox.token'
 import {
-    type TabsTokensType,
+    ResponsiveTabsTokens,
     getTabsTokens,
 } from '../components/Tabs/tabs.token' // Added TABS
 import {
@@ -93,8 +93,8 @@ import {
     getCalendarToken,
 } from '../components/DateRangePicker/dateRangePicker.tokens'
 import {
-    type AccordionTokenType,
     getAccordionToken,
+    type ResponsiveAccordionTokens,
 } from '../components/Accordion/accordion.tokens'
 import {
     getStatCardToken,
@@ -128,7 +128,7 @@ export type ComponentTokenType = {
     MULTI_VALUE_INPUT?: MultiValueInputTokensType
     DROPDOWN_INPUT?: ResponsiveDropdownInputTokens
     CHECKBOX?: ResponsiveCheckboxTokens
-    TABS?: TabsTokensType
+    TABS?: ResponsiveTabsTokens
     BUTTON?: ResponsiveButtonTokens
     MODAL?: ModalTokensType
     BREADCRUMB?: ResponsiveBreadcrumbTokens
@@ -138,7 +138,7 @@ export type ComponentTokenType = {
     SINGLE_SELECT?: ResponsiveSingleSelectTokens
     TABLE?: TableTokenType
     CALENDAR?: CalendarTokenType
-    ACCORDION?: AccordionTokenType
+    ACCORDION?: ResponsiveAccordionTokens
     STAT_CARD?: StatCardTokenType
     PROGRESS_BAR?: ProgressBarTokenType
     DRAWER?: DrawerTokensType

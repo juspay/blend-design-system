@@ -1,3 +1,4 @@
-# Changelog for v0.0.5-beta.0
+# Changelog for v0.0.7-beta
 
-- feat: enhance release workflow with NPM environment setup (#174) (5097ef1)
+- chore: bump version to 0.0.6 (#186) (f68de63)
+- chore(release): v0.0.5-beta (#185) (89f1812)

@@ -4,7 +4,7 @@ import type { ResponsiveTagTokens } from '../components/Tags/tag.tokens'
 import type { ResponsiveRadioTokens } from '../components/Radio/radio.token'
 import type { ResponsiveSwitchTokens } from '../components/Switch/switch.token'
 import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
-import type { TabsTokensType } from '../components/Tabs/tabs.token'
+import type { ResponsiveTabsTokens } from '../components/Tabs/tabs.token'
 import { type ComponentTokenType, useTheme } from './ThemeContext'
 import type { ResponsiveTextInputTokens } from '../components/Inputs/TextInput/textInput.tokens'
 import type { ResponsiveNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
@@ -22,7 +22,7 @@ import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { TableTokenType } from '../components/DataTable/dataTable.tokens'
 import type { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
-import type { AccordionTokenType } from '../components/Accordion/accordion.tokens'
+import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
 import type { StatCardTokenType } from '../components/StatCard/statcard.tokens'
 import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
 import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
@@ -43,7 +43,7 @@ export const useComponentToken = (
     | MultiValueInputTokensType
     | ResponsiveSwitchTokens
     | ResponsiveCheckboxTokens
-    | TabsTokensType
+    | ResponsiveTabsTokens
     | TooltipTokensType
     | ResponsiveDropdownInputTokens
     | ResponsiveButtonTokens
@@ -55,7 +55,7 @@ export const useComponentToken = (
     | ResponsiveSingleSelectTokens
     | TableTokenType
     | CalendarTokenType
-    | AccordionTokenType
+    | ResponsiveAccordionTokens
     | StatCardTokenType
     | ProgressBarTokenType
     | DrawerTokensType => {

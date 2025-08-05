@@ -5,25 +5,19 @@ on:
         branches:
             - main
             - dev
+        paths-ignore:
+            - 'docs/CHANGELOG.md'
     workflow_dispatch:
         inputs:
             version_type:
                 description: 'Version bump type'
                 required: true
-                default: 'auto'
+                default: 'patch'
                 type: choice
                 options:
-                    - auto
                     - patch
                     - minor
                     - major
-                    - prepatch
-                    - preminor
-                    - premajor
-            custom_version:
-                description: 'Custom version (optional)'
-                required: false
-                type: string
             dry_run:
                 description: 'Dry run (skip publishing)'
                 required: false
@@ -43,6 +37,7 @@ jobs:
             version: ${{ steps.bump_version.outputs.new_version }}
             tag: ${{ steps.bump_version.outputs.tag }}
             dry_run: ${{ steps.config.outputs.dry_run }}
+            is_beta: ${{ steps.bump_version.outputs.is_beta }}
 
         steps:
             - name: Checkout Repo
@@ -51,18 +46,35 @@ jobs:
                   fetch-depth: 0
                   token: ${{ secrets.GITHUB_TOKEN }}
 
+            - name: Check if should skip release
+              id: skip_check
+              run: |
+                  COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+                  echo "Commit message: $COMMIT_MESSAGE"
+
+                  # Skip if commit message contains [skip ci] or is a release commit
+                  if [[ "$COMMIT_MESSAGE" == *"[skip ci]"* ]] || [[ "$COMMIT_MESSAGE" == *"chore(release):"* ]]; then
+                    echo "Skipping release workflow"
+                    echo "should_skip=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "should_skip=false" >> $GITHUB_OUTPUT
+                  fi
+
             - name: Setup Node.js 22 and pnpm
+              if: steps.skip_check.outputs.should_skip != 'true'
               uses: actions/setup-node@v4
               with:
                   node-version: 22
                   registry-url: 'https://registry.npmjs.org'
 
             - name: Enable corepack & install deps
+              if: steps.skip_check.outputs.should_skip != 'true'
               run: |
                   corepack enable
                   pnpm install --frozen-lockfile
 
             - name: Configure Dry Run
+              if: steps.skip_check.outputs.should_skip != 'true'
               id: config
               run: |
                   if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.dry_run }}" == "true" ]]; then
@@ -71,69 +83,77 @@ jobs:
                     echo "dry_run=false" >> $GITHUB_OUTPUT
                   fi
 
-            - name: Determine Release Type
-              id: release_type
-              run: |
-                  BRANCH="${GITHUB_REF_NAME}"
-                  EVENT="${GITHUB_EVENT_NAME}"
-                  CUSTOM_VERSION="${{ inputs.custom_version }}"
-                  VERSION_TYPE="${{ inputs.version_type }}"
-
-                  if [[ "$EVENT" == "workflow_dispatch" && -n "$CUSTOM_VERSION" ]]; then
-                    echo "type=custom" >> $GITHUB_OUTPUT
-                    echo "semver=custom" >> $GITHUB_OUTPUT
-                    echo "custom_version=$CUSTOM_VERSION" >> $GITHUB_OUTPUT
-                    echo "npm_tag=latest" >> $GITHUB_OUTPUT
-
-                  elif [[ "$BRANCH" == "dev" ]]; then
-                    echo "type=beta" >> $GITHUB_OUTPUT
-                    if [[ "$VERSION_TYPE" == "auto" ]]; then
-                      echo "semver=prepatch" >> $GITHUB_OUTPUT
-                    else
-                      echo "semver=pre$VERSION_TYPE" >> $GITHUB_OUTPUT
-                    fi
-                    echo "npm_tag=beta" >> $GITHUB_OUTPUT
-                    echo "preid=beta" >> $GITHUB_OUTPUT
-
-                  else
-                    echo "type=stable" >> $GITHUB_OUTPUT
-                    if [[ "$VERSION_TYPE" == "auto" ]]; then
-                      echo "semver=patch" >> $GITHUB_OUTPUT
-                    else
-                      echo "semver=$VERSION_TYPE" >> $GITHUB_OUTPUT
-                    fi
-                    echo "npm_tag=latest" >> $GITHUB_OUTPUT
-                    echo "preid=" >> $GITHUB_OUTPUT
-                  fi
-
             - name: Get Current Version
+              if: steps.skip_check.outputs.should_skip != 'true'
               id: current_version
               run: |
                   CURRENT=$(node -p "require('./packages/blend/package.json').version")
                   echo "version=$CURRENT" >> $GITHUB_OUTPUT
+                  echo "Current version: $CURRENT"
+
+            - name: Clean Existing Tags
+              if: steps.skip_check.outputs.should_skip != 'true'
+              run: |
+                  # Clean up any existing local tags to avoid conflicts
+                  git tag -l | xargs -r git tag -d
+                  git fetch --tags
 
             - name: Bump Version
+              if: steps.skip_check.outputs.should_skip != 'true'
               id: bump_version
               run: |
                   cd packages/blend
-                  if [[ "${{ steps.release_type.outputs.type }}" == "custom" ]]; then
-                    npm version "${{ steps.release_type.outputs.custom_version }}" --no-git-tag-version
-                  elif [[ "${{ steps.release_type.outputs.type }}" == "beta" ]]; then
-                    npm version "${{ steps.release_type.outputs.semver }}" --preid beta --no-git-tag-version
-                  else
-                    npm version "${{ steps.release_type.outputs.semver }}" --no-git-tag-version
-                  fi
-                  VERSION=$(node -p "require('./package.json').version")
-                  echo "new_version=$VERSION" >> $GITHUB_OUTPUT
-                  echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+                  BRANCH="${GITHUB_REF_NAME}"
+                  VERSION_TYPE="${{ inputs.version_type || 'patch' }}"
+                  CURRENT_VERSION=$(node -p "require('./package.json').version")
 
-            - name: Clean Existing Tag
-              run: |
-                  TAG="${{ steps.bump_version.outputs.tag }}"
-                  git tag -d "$TAG" 2>/dev/null || true
-                  git push origin ":refs/tags/$TAG" || true
+                  echo "Branch: $BRANCH"
+                  echo "Version type: $VERSION_TYPE"
+                  echo "Current version: $CURRENT_VERSION"
+
+                  if [[ "$BRANCH" == "dev" ]]; then
+                    # For dev branch: create beta version
+                    if [[ "$CURRENT_VERSION" == *"-beta" ]]; then
+                      # Already a beta version, just use it as is (no multiple betas)
+                      NEW_VERSION="$CURRENT_VERSION"
+                      echo "Already a beta version: $NEW_VERSION"
+                    else
+                      # Create new beta version
+                      npm version "$VERSION_TYPE" --no-git-tag-version
+                      BUMPED_VERSION=$(node -p "require('./package.json').version")
+                      NEW_VERSION="${BUMPED_VERSION}-beta"
+                      npm pkg set version="$NEW_VERSION"
+                      echo "Created new beta version: $NEW_VERSION"
+                    fi
+                    
+                    echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+                    echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
+                    echo "is_beta=true" >> $GITHUB_OUTPUT
+                    echo "npm_tag=beta" >> $GITHUB_OUTPUT
+                    
+                  elif [[ "$BRANCH" == "main" ]]; then
+                    # For main branch: create stable version
+                    if [[ "$CURRENT_VERSION" == *"-beta" ]]; then
+                      # Remove -beta suffix for stable release
+                      STABLE_VERSION="${CURRENT_VERSION%-beta}"
+                      npm pkg set version="$STABLE_VERSION"
+                      NEW_VERSION="$STABLE_VERSION"
+                      echo "Converted beta to stable: $NEW_VERSION"
+                    else
+                      # Normal version bump for main
+                      npm version "$VERSION_TYPE" --no-git-tag-version
+                      NEW_VERSION=$(node -p "require('./package.json').version")
+                      echo "Bumped stable version: $NEW_VERSION"
+                    fi
+                    
+                    echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+                    echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
+                    echo "is_beta=false" >> $GITHUB_OUTPUT
+                    echo "npm_tag=latest" >> $GITHUB_OUTPUT
+                  fi
 
             - name: Generate Changelog
+              if: steps.skip_check.outputs.should_skip != 'true'
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
                   LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
@@ -150,13 +170,16 @@ jobs:
                   fi
 
             - name: Format Generated Files
+              if: steps.skip_check.outputs.should_skip != 'true'
               run: |
                   pnpm format
 
             - name: Build Package
+              if: steps.skip_check.outputs.should_skip != 'true'
               run: pnpm --filter @juspay/blend-design-system build
 
             - name: Upload Artifacts
+              if: steps.skip_check.outputs.should_skip != 'true'
               uses: actions/upload-artifact@v4
               with:
                   name: build-${{ steps.bump_version.outputs.new_version }}
@@ -166,7 +189,7 @@ jobs:
                       docs/CHANGELOG.md
 
             - name: Create Release Tag
-              if: steps.config.outputs.dry_run != 'true'
+              if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
                   TAG="v$VERSION"
@@ -175,12 +198,12 @@ jobs:
                   git tag "$TAG" -m "Release $TAG"
                   git push origin "$TAG"
 
-            - name: Create Release PR
-              if: steps.config.outputs.dry_run != 'true'
+            - name: Create Version Update PR
+              if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
               uses: peter-evans/create-pull-request@v6
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  branch: release/${{ steps.bump_version.outputs.new_version }}
+                  branch: release/update-version-${{ steps.bump_version.outputs.new_version }}
                   title: 'chore(release): ${{ steps.bump_version.outputs.tag }}'
                   body: |
                       Release ${{ steps.bump_version.outputs.tag }}
@@ -194,6 +217,8 @@ jobs:
                       - Updated package.json version
                       - Generated changelog
                       - Formatted files
+
+                      **Note:** This PR should be merged to update the version in the repository after the release has been published.
                   labels: |
                       automated
                       release
@@ -209,7 +234,9 @@ jobs:
                       packages/blend/package.json
                       docs/CHANGELOG.md
                       .
+
             - name: Verify NPM Token
+              if: steps.skip_check.outputs.should_skip != 'true'
               run: |
                   # Debug: Check if token is set (without revealing it)
                   if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
@@ -226,14 +253,15 @@ jobs:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Publish to NPM
-              if: steps.config.outputs.dry_run != 'true'
+              if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
               run: |
                   cd packages/blend
 
                   PACKAGE_NAME=$(node -p "require('./package.json').name")
                   NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+                  NPM_TAG="${{ steps.bump_version.outputs.npm_tag }}"
 
-                  echo "Publishing $PACKAGE_NAME@$NEW_VERSION to NPM..."
+                  echo "Publishing $PACKAGE_NAME@$NEW_VERSION to NPM with tag: $NPM_TAG"
 
                   # Check if version already exists
                   if npm view "$PACKAGE_NAME@$NEW_VERSION" version 2>/dev/null; then
@@ -241,21 +269,21 @@ jobs:
                     exit 0
                   fi
 
-                  # Publish to NPM
-                  npm publish --access public
-                  echo "Successfully published $PACKAGE_NAME@$NEW_VERSION to NPM"
+                  # Publish to NPM with appropriate tag
+                  npm publish --access public --tag "$NPM_TAG"
+                  echo "Successfully published $PACKAGE_NAME@$NEW_VERSION to NPM with tag $NPM_TAG"
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Create GitHub Release
-              if: steps.config.outputs.dry_run != 'true'
+              if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
               uses: softprops/action-gh-release@v2
               with:
                   tag_name: ${{ steps.bump_version.outputs.tag }}
                   name: Release ${{ steps.bump_version.outputs.tag }}
                   body_path: docs/CHANGELOG.md
                   draft: false
-                  prerelease: ${{ steps.release_type.outputs.type == 'beta' }}
+                  prerelease: ${{ steps.bump_version.outputs.is_beta == 'true' }}
 
     backmerge:
         name: Back-merge main → dev

@@ -48,6 +48,8 @@ const borderTokens: BorderTokensType = {
         12: '12px',
         16: '16px',
         20: '20px',
+        24: '24px',
+        28: '28px',
         full: '9999px',
     },
 }

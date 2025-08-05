@@ -1,21 +1,79 @@
 'use client'
-import { Snackbar } from '@juspay/blend-design-system'
 import Link from 'next/link'
+import { motion } from 'motion/react'
 
 export default function Home() {
     return (
-        <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-            <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-                <Snackbar />
-                <div className="flex gap-4 items-center flex-col sm:flex-row">
+        <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex items-center justify-center px-4">
+            <div className="max-w-2xl mx-auto text-center">
+                {/* Logo/Brand */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="mb-8"
+                >
+                    <h1 className="text-7xl sm:text-8xl font-bold text-[var(--foreground)] mb-4">
+                        Blend
+                    </h1>
+                    <p className="text-xl text-[var(--muted-foreground)] font-light">
+                        Design System
+                    </p>
+                </motion.div>
+
+                {/* Coming Soon Badge */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="mb-8"
+                >
+                    <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-[var(--muted)] border border-[var(--border)] text-sm text-[var(--muted-foreground)]">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
+                        Coming Soon
+                    </div>
+                </motion.div>
+
+                {/* Description */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    className="mb-12"
+                >
+                    <p className="text-lg text-[var(--muted-foreground)] leading-relaxed max-w-lg mx-auto">
+                        A comprehensive design system for modern applications.
+                        Explore our documentation to get started.
+                    </p>
+                </motion.div>
+
+                {/* CTA Button */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
+                >
                     <Link
                         href="/docs"
-                        className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
+                        className="inline-flex items-center px-6 py-3 text-base font-medium text-[var(--foreground)] bg-[var(--muted)] border border-[var(--border)] rounded-lg hover:bg-[var(--sidebar-item-hover)] transition-colors duration-200"
                     >
-                        Docs
+                        <span>View Documentation</span>
+                        <svg
+                            className="ml-2 w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 5l7 7-7 7"
+                            />
+                        </svg>
                     </Link>
-                </div>
-            </main>
+                </motion.div>
+            </div>
         </div>
     )
 }

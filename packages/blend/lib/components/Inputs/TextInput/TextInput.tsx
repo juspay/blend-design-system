@@ -103,18 +103,12 @@ const TextInput = ({
                 {label && isSmallScreenWithLargeSize && (
                     <Block
                         position="absolute"
-                        top={
-                            inputFocusedOrWithValue
-                                ? toPixels(paddingY - paddingY / 1.3)
-                                : '50%'
-                        }
+                        top={inputFocusedOrWithValue ? paddingY : '50%'}
                         left={paddingInlineStart}
                         height={'max-content'}
                         style={{
                             transition: 'all 0.2s ease-in-out',
-                            transform: inputFocusedOrWithValue
-                                ? 'scale(0.95)'
-                                : 'translateY(-50%) scale(1)',
+                            transform: 'translateY(-50%)',
                             transformOrigin: 'left center',
                             pointerEvents: 'none',
                             zIndex: 1,
