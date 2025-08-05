@@ -112,6 +112,10 @@ import {
     getSingleSelectTokens,
     ResponsiveSingleSelectTokens,
 } from '../components/SingleSelect/singleSelect.tokens'
+import {
+    getChartTokens,
+    ResponsiveChartTokens,
+} from '../components/Charts/chart.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -142,6 +146,7 @@ export type ComponentTokenType = {
     STAT_CARD?: StatCardTokenType
     PROGRESS_BAR?: ProgressBarTokenType
     DRAWER?: DrawerTokensType
+    CHARTS?: ResponsiveChartTokens
 }
 
 type ThemeContextType = {
@@ -181,6 +186,7 @@ const ThemeContext = createContext<ThemeContextType>({
         STAT_CARD: getStatCardToken(FOUNDATION_THEME),
         PROGRESS_BAR: progressBarTokens,
         DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
+        CHARTS: getChartTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })
