@@ -75,7 +75,7 @@ const Charts: React.FC<ChartsProps> = ({
 
                 if (screen.orientation && 'lock' in screen.orientation) {
                     try {
-                        // Disable eslint for this line because TypeScript doesn't have proper types for orientation lock yet
+                        // Disabled eslint for this line because TypeScript doesn't have proper types for orientation lock yet
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         await (screen.orientation as any).lock('landscape')
                     } catch (err) {
@@ -93,11 +93,11 @@ const Charts: React.FC<ChartsProps> = ({
             if (!document.fullscreenElement) {
                 await document.documentElement.requestFullscreen()
 
-                // Disable eslint for this line because TypeScript doesn't have proper types for orientation lock yet
+                // Disabled eslint for this line because TypeScript doesn't have proper types for orientation lock yet
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 if (screen.orientation && (screen.orientation as any).lock) {
                     try {
-                        // Disable eslint for this line because TypeScript doesn't have proper types for orientation lock yet
+                        // Disabled eslint for this line because TypeScript doesn't have proper types for orientation lock yet
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         await (screen.orientation as any).lock('landscape')
                     } catch (err) {
