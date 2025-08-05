@@ -38,7 +38,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
         if (!legendItemsContainerRef.current) return
         const { right: containerRight } =
             legendItemsContainerRef.current.getBoundingClientRect()
-        const BUFFER = 120
+        const BUFFER = 30
         const legendItems = Array.from(legendItemsContainerRef.current.children)
 
         let currentIndex = 0

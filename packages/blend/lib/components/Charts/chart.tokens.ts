@@ -12,6 +12,7 @@ export type ChartState =
 export type ChartSize = 'sm' | 'md' | 'lg'
 export type ChartVariant = 'container' | 'no-container'
 
+export type ChartHeight = 'default' | 'fullscreen' | 'small'
 export type ChartTokensType = {
     container: {
         backgroundColor: {
@@ -55,9 +56,7 @@ export type ChartTokensType = {
             [key in ChartSize]: CSSObject['gap']
         }
         height: {
-            default: CSSObject['height']
-            fullscreen: CSSObject['height']
-            small: CSSObject['height']
+            [key in ChartHeight]: CSSObject['height']
         }
     }
     legend: {
@@ -108,21 +107,6 @@ export type ChartTokensType = {
         content: {
             height: CSSObject['height']
             padding: CSSObject['padding']
-        }
-    }
-    responsive: {
-        chart: {
-            height: {
-                [key in keyof BreakpointType]: CSSObject['height']
-            }
-        }
-        legend: {
-            display: {
-                [key in keyof BreakpointType]: CSSObject['display']
-            }
-            flexDirection: {
-                [key in keyof BreakpointType]: CSSObject['flexDirection']
-            }
         }
     }
 }
@@ -278,24 +262,6 @@ export const getChartTokens = (
                     padding: foundationToken.unit[12],
                 },
             },
-            responsive: {
-                chart: {
-                    height: {
-                        sm: 250,
-                        lg: 300,
-                    },
-                },
-                legend: {
-                    display: {
-                        sm: 'flex',
-                        lg: 'flex',
-                    },
-                    flexDirection: {
-                        sm: 'column',
-                        lg: 'column',
-                    },
-                },
-            },
         },
         lg: {
             container: {
@@ -438,24 +404,6 @@ export const getChartTokens = (
                 content: {
                     height: 250,
                     padding: foundationToken.unit[16],
-                },
-            },
-            responsive: {
-                chart: {
-                    height: {
-                        sm: 300,
-                        lg: 400,
-                    },
-                },
-                legend: {
-                    display: {
-                        sm: 'none',
-                        lg: 'flex',
-                    },
-                    flexDirection: {
-                        sm: 'column',
-                        lg: 'row',
-                    },
                 },
             },
         },

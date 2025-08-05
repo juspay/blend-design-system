@@ -27,7 +27,7 @@ export enum ChartType {
     PIE = 'pie',
 }
 
-export enum ChangeType {
+export enum LegendsChangeType {
     INCREASE = 'increase',
     DECREASE = 'decrease',
 }
@@ -42,7 +42,7 @@ export type NewNestedDataPoint = {
 export type StackedLegendsDataPoint = {
     value: number
     delta: number
-    changeType: ChangeType
+    changeType: LegendsChangeType
 }
 
 export type RenderChartProps = {

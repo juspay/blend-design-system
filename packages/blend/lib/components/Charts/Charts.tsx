@@ -14,6 +14,7 @@ import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { Button, ButtonSize, ButtonSubType, ButtonType } from '../Button'
 import { ChevronDown } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import useScrollLock from '../../hooks/useScrollLock'
 
 const Charts: React.FC<ChartsProps> = ({
     chartType = ChartType.LINE,
@@ -39,6 +40,8 @@ const Charts: React.FC<ChartsProps> = ({
     const [showLegend, setShowLegend] = useState(false)
     const [isFullscreen, setIsFullscreen] = useState(false)
 
+    useScrollLock(isFullscreen)
+
     if (!colors || colors.length === 0) colors = DEFAULT_COLORS
     const flattenedData = transformNestedData(data, selectedKeys)
 
@@ -48,12 +51,43 @@ const Charts: React.FC<ChartsProps> = ({
         return window.innerWidth >= 1024
     }
 
+    const isIOSOrSafari = () => {
+        const userAgent = navigator.userAgent
+        const isIOS = /iPad|iPhone|iPod/.test(userAgent)
+
+        return isIOS
+    }
+
     const handleFullscreen = useCallback(async () => {
         try {
             if (isLargeScreen()) {
                 console.log(
                     'Fullscreen only available for small screens (<=786px)'
                 )
+                return
+            }
+
+            if (
+                isIOSOrSafari() ||
+                !document.documentElement.requestFullscreen
+            ) {
+                setIsFullscreen(true)
+
+                if (screen.orientation && 'lock' in screen.orientation) {
+                    try {
+                        // TypeScript doesn't have proper types for orientation lock yet
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        await (screen.orientation as any).lock('landscape')
+                    } catch (err) {
+                        console.log('Orientation lock not supported:', err)
+                    }
+                }
+
+                // Hide address bar on mobile browsers by scrolling
+                setTimeout(() => {
+                    window.scrollTo(0, 1)
+                }, 100)
+
                 return
             }
 
@@ -75,6 +109,8 @@ const Charts: React.FC<ChartsProps> = ({
             }
         } catch (err) {
             console.error('Error entering fullscreen:', err)
+            alert('Error entering fullscreen:' + err)
+            setIsFullscreen(true)
         }
     }, [])
 
@@ -83,12 +119,15 @@ const Charts: React.FC<ChartsProps> = ({
             if (document.fullscreenElement) {
                 await document.exitFullscreen()
             }
+
             if (screen.orientation && screen.orientation.unlock) {
                 screen.orientation.unlock()
             }
+
             setIsFullscreen(false)
         } catch (err) {
             console.error('Error exiting fullscreen:', err)
+            setIsFullscreen(false)
         }
     }, [])
 

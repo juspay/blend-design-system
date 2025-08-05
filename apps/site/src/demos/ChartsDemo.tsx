@@ -11,7 +11,7 @@ import {
 import { useState } from 'react'
 import { SelectMenuVariant } from '../../../../packages/blend/lib/components/Select'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
-import { ChangeType } from '../../../../packages/blend/lib/components/Charts/types'
+import { LegendsChangeType } from '../../../../packages/blend/lib/components/Charts/types'
 
 const ChartDemo = () => {
     const financialData: NewNestedDataPoint[] = [
@@ -373,10 +373,10 @@ const ChartDemo = () => {
     }
 
     const stackedLegendsData = [
-        { value: 50.21, delta: 20.1, changeType: ChangeType.INCREASE },
-        { value: 30.21, delta: 10.1, changeType: ChangeType.DECREASE },
-        { value: 20.21, delta: 5.1, changeType: ChangeType.INCREASE },
-        { value: 10.21, delta: 2.1, changeType: ChangeType.DECREASE },
+        { value: 50.21, delta: 20.1, changeType: LegendsChangeType.INCREASE },
+        { value: 30.21, delta: 10.1, changeType: LegendsChangeType.DECREASE },
+        { value: 20.21, delta: 5.1, changeType: LegendsChangeType.INCREASE },
+        { value: 10.21, delta: 2.1, changeType: LegendsChangeType.DECREASE },
     ]
 
     return (
@@ -388,7 +388,7 @@ const ChartDemo = () => {
             {/* Main Interactive Chart */}
             <div className="chart-example-container">
                 <Charts
-                    // stackedLegends={true}
+                    stackedLegends={true}
                     stackedLegendsData={stackedLegendsData}
                     data={getCurrentData()}
                     chartType={selectedChartType}
