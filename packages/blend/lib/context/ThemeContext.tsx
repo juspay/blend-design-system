@@ -93,8 +93,8 @@ import {
     getCalendarToken,
 } from '../components/DateRangePicker/dateRangePicker.tokens'
 import {
-    type AccordionTokenType,
     getAccordionToken,
+    type ResponsiveAccordionTokens,
 } from '../components/Accordion/accordion.tokens'
 import {
     getStatCardToken,
@@ -142,7 +142,7 @@ export type ComponentTokenType = {
     SINGLE_SELECT?: ResponsiveSingleSelectTokens
     TABLE?: TableTokenType
     CALENDAR?: CalendarTokenType
-    ACCORDION?: AccordionTokenType
+    ACCORDION?: ResponsiveAccordionTokens
     STAT_CARD?: StatCardTokenType
     PROGRESS_BAR?: ProgressBarTokenType
     DRAWER?: DrawerTokensType
