@@ -1,24 +1,40 @@
 import { ChartHeaderProps } from './types'
 import Block from '../../components/Primitives/Block/Block'
+import { ChartTokensType } from './chart.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
+import { Expand } from 'lucide-react'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const ChartHeader: React.FC<ChartHeaderProps> = ({
     slot1,
     slot2,
     slot3,
     chartHeaderSlot,
+    onFullscreen,
+    onExitFullscreen,
+    isFullscreen,
+    isSmallScreen = false,
 }) => {
+    const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
+    const headerTokens = chartTokens.header
+
+    const handleExpandClick = () => {
+        if (onFullscreen) {
+            onFullscreen()
+        }
+    }
+
     return (
         <Block
             display="flex"
             alignItems="center"
             justifyContent="space-between"
-            gap={FOUNDATION_THEME.unit[8]}
-            padding={FOUNDATION_THEME.unit[16]}
-            paddingLeft={FOUNDATION_THEME.unit[18]}
-            paddingRight={FOUNDATION_THEME.unit[18]}
-            backgroundColor={FOUNDATION_THEME.colors.gray[25]}
-            borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+            gap={headerTokens.gap}
+            padding={headerTokens.padding[isSmallScreen ? 'sm' : 'lg']}
+            paddingLeft={headerTokens.padding[isSmallScreen ? 'sm' : 'lg']}
+            paddingRight={headerTokens.padding[isSmallScreen ? 'sm' : 'lg']}
+            backgroundColor={headerTokens.backgroundColor}
+            borderBottom={headerTokens.borderBottom}
             borderRadius={FOUNDATION_THEME.border.radius[8]}
             borderBottomLeftRadius={FOUNDATION_THEME.border.radius[0]}
             borderBottomRightRadius={FOUNDATION_THEME.border.radius[0]}
@@ -27,11 +43,50 @@ export const ChartHeader: React.FC<ChartHeaderProps> = ({
             <Block
                 display="flex"
                 alignItems="center"
-                gap={FOUNDATION_THEME.unit[8]}
+                gap={headerTokens.gap}
                 flexShrink={0}
             >
-                {slot1}
-                {slot2}
+                {isSmallScreen ? (
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        width={FOUNDATION_THEME.unit[20]}
+                        onClick={
+                            isFullscreen ? onExitFullscreen : handleExpandClick
+                        }
+                    >
+                        <Expand
+                            size={18}
+                            color={FOUNDATION_THEME.colors.gray[400]}
+                            className="cursor-pointer"
+                        />
+                    </Block>
+                ) : (
+                    <>
+                        {slot1}
+                        {slot2}
+                        {isFullscreen && (
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                                width={FOUNDATION_THEME.unit[20]}
+                                onClick={
+                                    isFullscreen
+                                        ? onExitFullscreen
+                                        : handleExpandClick
+                                }
+                            >
+                                <Expand
+                                    size={18}
+                                    color={FOUNDATION_THEME.colors.gray[400]}
+                                    className="cursor-pointer"
+                                />
+                            </Block>
+                        )}
+                    </>
+                )}
                 {slot3}
             </Block>
         </Block>
