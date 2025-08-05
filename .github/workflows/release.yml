@@ -53,9 +53,15 @@ jobs:
                   echo "Commit message: $COMMIT_MESSAGE"
 
                   # Skip if commit message contains [skip ci] or is a release commit
+                  # BUT allow release commits on main branch (for stable releases)
                   if [[ "$COMMIT_MESSAGE" == *"[skip ci]"* ]] || [[ "$COMMIT_MESSAGE" == *"chore(release):"* ]]; then
-                    echo "Skipping release workflow"
-                    echo "should_skip=true" >> $GITHUB_OUTPUT
+                    if [[ "${GITHUB_REF_NAME}" == "main" && "$COMMIT_MESSAGE" == *"chore(release):"* ]]; then
+                      echo "Release commit on main branch - proceeding with stable release"
+                      echo "should_skip=false" >> $GITHUB_OUTPUT
+                    else
+                      echo "Skipping release workflow"
+                      echo "should_skip=true" >> $GITHUB_OUTPUT
+                    fi
                   else
                     echo "should_skip=false" >> $GITHUB_OUTPUT
                   fi
@@ -305,7 +311,21 @@ jobs:
                   title: 'chore: backmerge release ${{ needs.release.outputs.version }} to dev'
                   body: |
                       Backmerging release changes from `main` into `dev`
+
+                      This PR syncs the stable release back to dev branch.
+
+                      **Changes:**
+                      - Stable version: ${{ needs.release.outputs.version }}
+                      - Updated changelog
+                      - Version sync from main to dev
                   labels: |
                       automated
                       release
+                      backmerge
                   assignees: ${{ github.actor }}
+                  commit-message: |
+                      chore: backmerge release ${{ needs.release.outputs.version }} to dev
+
+                      Sync stable release from main to dev branch
+
+                      [skip ci]
