@@ -110,7 +110,7 @@ const SidebarDemo = () => {
         | 'multiSelect'
         | 'dropdownInput'
         | 'dataRangePicker'
-    >('dataRangePicker')
+    >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] = useState<string | undefined>(

@@ -439,8 +439,8 @@ const SimpleDataTableExample = () => {
                     >[]
                 }
                 idField="id"
-                title="Product Inventory"
-                description="Simple product management table demonstrating DROPDOWN and DATE column types with inline editing capabilities. Click on category dropdowns to see the SingleSelect component with icons in action!"
+                title="Product Inventory (Mobile: 2 Columns + Overflow)"
+                description="Simple product management table demonstrating DROPDOWN and DATE column types with inline editing capabilities. Click on category dropdowns to see the SingleSelect component with icons in action! On mobile, only 2 columns are shown with a chevron icon to view more details."
                 enableSearch={true}
                 enableFiltering={true}
                 enableAdvancedFilter={false}
@@ -449,6 +449,7 @@ const SimpleDataTableExample = () => {
                 enableRowSelection={true}
                 enableColumnManager={false}
                 columnFreeze={0}
+                mobileColumnsToShow={2}
                 pagination={{
                     currentPage: 1,
                     pageSize: 10,
@@ -479,6 +480,97 @@ const SimpleDataTableExample = () => {
                     </Button>
                 }
             />
+
+            <div style={{ marginTop: '40px' }}>
+                <div
+                    style={{
+                        marginBottom: '20px',
+                        padding: '16px',
+                        backgroundColor: '#eff6ff',
+                        borderRadius: '8px',
+                        border: '1px solid #bfdbfe',
+                    }}
+                >
+                    <h3
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#1e40af',
+                        }}
+                    >
+                        📱 Mobile: All Columns (No Overflow)
+                    </h3>
+                    <p
+                        style={{
+                            margin: 0,
+                            fontSize: '14px',
+                            color: '#1e3a8a',
+                        }}
+                    >
+                        🎯 <strong>MOBILE SCROLLING DEMO:</strong> This table
+                        shows all columns on mobile with horizontal scrolling.
+                        No overflow drawer is used - users can scroll
+                        horizontally to see all columns. This is achieved by not
+                        setting <code>mobileColumnsToShow</code> or setting it
+                        to <code>undefined</code>.
+                    </p>
+                </div>
+
+                <DataTable
+                    data={productTableData}
+                    columns={
+                        productColumns as unknown as ColumnDefinition<
+                            Record<string, unknown>
+                        >[]
+                    }
+                    idField="id"
+                    title="Product Inventory (Mobile: All Columns)"
+                    description="Same table but on mobile shows all columns with horizontal scrolling instead of using the overflow drawer."
+                    enableSearch={true}
+                    enableFiltering={true}
+                    enableAdvancedFilter={false}
+                    enableInlineEdit={false}
+                    enableRowExpansion={false}
+                    enableRowSelection={true}
+                    enableColumnManager={false}
+                    columnFreeze={0}
+                    // mobileColumnsToShow is not set, so all columns are shown on mobile
+                    pagination={{
+                        currentPage: 1,
+                        pageSize: 10,
+                        totalRows: productTableData.length,
+                        pageSizeOptions: [5, 10, 20],
+                    }}
+                    onRowSave={handleProductSave}
+                    onRowCancel={handleProductCancel}
+                    onFieldChange={handleFieldChange}
+                    headerSlot1={
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Package />}
+                            size={ButtonSize.SMALL}
+                            onClick={() =>
+                                console.log('Product action clicked')
+                            }
+                        >
+                            Manage Products
+                        </Button>
+                    }
+                    headerSlot2={
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Calendar />}
+                            size={ButtonSize.SMALL}
+                            onClick={() =>
+                                console.log('Calendar action clicked')
+                            }
+                        >
+                            Schedule
+                        </Button>
+                    }
+                />
+            </div>
         </div>
     )
 }
