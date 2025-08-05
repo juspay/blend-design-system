@@ -264,13 +264,13 @@ export const getChartTokens = (
             fullscreen: {
                 container: {
                     position: 'fixed',
-                    top: '50vh',
-                    left: '50vw',
-                    width: '100vh',
-                    height: '100vw',
+                    top: '0',
+                    left: '0',
+                    width: '100vw',
+                    height: '100vh',
                     zIndex: 9999,
                     backgroundColor: foundationToken.colors.gray[0],
-                    transform: 'rotate(90deg) translate(-50%, -50%)',
+                    transform: 'rotate(0deg)',
                     transformOrigin: '0 0',
                 },
                 content: {
@@ -426,13 +426,13 @@ export const getChartTokens = (
             fullscreen: {
                 container: {
                     position: 'fixed',
-                    top: '50vh',
-                    left: '50vw',
-                    width: '100vh',
-                    height: '100vw',
+                    top: '0',
+                    left: '0',
+                    width: '100vw',
+                    height: '100vh',
                     zIndex: 9999,
                     backgroundColor: foundationToken.colors.gray[0],
-                    transform: 'rotate(90deg) translate(-50%, -50%)',
+                    transform: 'rotate(0deg)',
                     transformOrigin: '0 0',
                 },
                 content: {
