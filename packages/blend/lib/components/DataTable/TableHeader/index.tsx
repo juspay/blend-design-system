@@ -10,6 +10,7 @@ import { CheckboxSize } from '../../Checkbox/types'
 import { ColumnManager } from '../ColumnManager'
 import { TableTokenType } from '../dataTable.tokens'
 import { useComponentToken } from '../../../context/useComponentToken'
+import { useMobileDataTable } from '../hooks/useMobileDataTable'
 
 import { TableHeaderProps } from './types'
 import { SortDirection } from '../types'
@@ -87,6 +88,7 @@ const TableHeader = forwardRef<
         >({})
 
         const tableToken = useComponentToken('TABLE') as TableTokenType
+        const mobileConfig = useMobileDataTable()
 
         const sortHandlers = createSortHandlers(sortState, setSortState, onSort)
         const filterHandlers = createFilterHandlers(setFilterState)
@@ -496,6 +498,27 @@ const TableHeader = forwardRef<
                             </th>
                         )
                     })}
+
+                    {mobileConfig.enableColumnOverflow && (
+                        <th
+                            style={{
+                                ...tableToken.dataTable.table.header.cell,
+                                width: '40px',
+                                minWidth: '40px',
+                                maxWidth: '40px',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                boxSizing: 'border-box',
+                            }}
+                        >
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                            />
+                        </th>
+                    )}
 
                     {enableInlineEdit && (
                         <th

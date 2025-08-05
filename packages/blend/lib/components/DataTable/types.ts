@@ -299,4 +299,7 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     bulkActions?: BulkAction[]
 
     getRowStyle?: (row: T, index: number) => React.CSSProperties
+
+    // Mobile configuration
+    mobileColumnsToShow?: number
 }

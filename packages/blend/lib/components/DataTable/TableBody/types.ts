@@ -1,4 +1,5 @@
 import { ColumnDefinition } from '../types'
+import { MobileDataTableConfig } from '../hooks/useMobileDataTable'
 
 export type TableBodyProps<T extends Record<string, unknown>> = {
     currentData: T[]
@@ -13,6 +14,9 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     enableRowExpansion?: boolean
     enableRowSelection?: boolean
     columnFreeze?: number
+    mobileConfig?: MobileDataTableConfig
+    mobileOverflowColumns?: ColumnDefinition<T>[]
+    onMobileOverflowClick?: (row: T) => void
     renderExpandedRow?: (expandedData: {
         row: T
         index: number
