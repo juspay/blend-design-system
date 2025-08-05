@@ -1,4 +1,6 @@
-# Changelog for v0.0.7-beta
+# Changelog for v0.0.7
 
-- chore: bump version to 0.0.6 (#186) (f68de63)
-- chore(release): v0.0.5-beta (#185) (89f1812)
+- Merge pull request #188 from juspay/dev (f2a0e76)
+- chore(release): v0.0.7-beta (#187) (76c7673)
+- Merge pull request #176 from juspay/dev (5ca0859)
+- Merge pull request #147 from juspay/dev (355d05a)
