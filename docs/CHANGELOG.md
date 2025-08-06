@@ -1,7 +1,4 @@
-# Changelog for v0.0.8-beta
+# Changelog for v0.0.8
 
-- fix(release): handle existing tags before creating new ones (#195) (bffe51b)
-- Merge pull request #193 from juspay/testBranch (56a5f75)
-- Merge branch 'main' of https://github.com/juspay/blend-design-system into testBranch (774bedc)
-- chore(release): v0.0.8-beta (#192) (2666baa)
-- chore(release): v0.0.7 (#190) (04d889d)
+- Merge pull request #194 from juspay/dev (2976c68)
+- chore(release): v0.0.8-beta (#196) (160355d)
