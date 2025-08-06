@@ -27,11 +27,22 @@ export enum ChartType {
     PIE = 'pie',
 }
 
+export enum LegendsChangeType {
+    INCREASE = 'increase',
+    DECREASE = 'decrease',
+}
+
 export type NewNestedDataPoint = {
     name: string
     data: {
         [key: string]: DataPoint
     }
+}
+
+export type StackedLegendsDataPoint = {
+    value: number
+    delta: number
+    changeType: LegendsChangeType
 }
 
 export type RenderChartProps = {
@@ -45,6 +56,7 @@ export type RenderChartProps = {
     yAxisLabel?: string
     data: NewNestedDataPoint[]
     selectedKeys: string[]
+    isSmallScreen?: boolean
 }
 
 export type ChartsProps = {
@@ -59,6 +71,8 @@ export type ChartsProps = {
     slot3?: ReactNode
     legendPosition?: ChartLegendPosition
     chartHeaderSlot: ReactNode
+    stackedLegends?: boolean
+    stackedLegendsData?: StackedLegendsDataPoint[]
 }
 
 export type FlattenedDataPoint = {
@@ -71,6 +85,10 @@ export type ChartHeaderProps = {
     slot2: React.ReactNode
     slot3: React.ReactNode
     chartHeaderSlot: ReactNode
+    onFullscreen?: () => void
+    onExitFullscreen?: () => void
+    isFullscreen?: boolean
+    isSmallScreen?: boolean
 }
 
 export type ChartLegendsProps = {
@@ -85,6 +103,8 @@ export type ChartLegendsProps = {
     hoveredKey: string | null
     activeKeys: string[] | null
     stacked?: boolean
+    isSmallScreen?: boolean
+    stackedLegendsData?: StackedLegendsDataPoint[]
 }
 
 export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {

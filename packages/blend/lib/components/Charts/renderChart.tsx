@@ -27,6 +27,7 @@ export const renderChart = ({
     yAxisLabel,
     data: originalData,
     selectedKeys,
+    isSmallScreen = false,
 }: RenderChartProps) => {
     const getColor = (key: string, chartType: ChartType) => {
         const originalIndex = lineKeys.indexOf(key)
@@ -83,7 +84,7 @@ export const renderChart = ({
                         }}
                         dy={10}
                         label={
-                            xAxisLabel
+                            xAxisLabel && !isSmallScreen
                                 ? {
                                       value: xAxisLabel,
                                       position: 'bottom',
@@ -100,32 +101,35 @@ export const renderChart = ({
                         vertical={false}
                         stroke={chartConfig.gridStroke}
                     />
-                    <YAxis
-                        width={50}
-                        axisLine={false}
-                        tickLine={false}
-                        tickFormatter={(value) => formatNumber(value)}
-                        tick={{
-                            fill: FOUNDATION_THEME.colors.gray[400],
-                            fontSize: 14,
-                            fontWeight: FOUNDATION_THEME.font.weight[500],
-                        }}
-                        label={
-                            yAxisLabel
-                                ? {
-                                      value: yAxisLabel,
-                                      angle: -90,
-                                      position: 'insideLeft',
-                                      style: { textAnchor: 'middle' },
-                                      offset: -15,
-                                      fill: FOUNDATION_THEME.colors.gray[400],
-                                      fontSize: 14,
-                                      fontWeight:
-                                          FOUNDATION_THEME.font.weight[500],
-                                  }
-                                : undefined
-                        }
-                    />
+                    {!isSmallScreen && (
+                        <YAxis
+                            width={50}
+                            axisLine={false}
+                            tickLine={false}
+                            tickFormatter={(value) => formatNumber(value)}
+                            tick={{
+                                fill: FOUNDATION_THEME.colors.gray[400],
+                                fontSize: 14,
+                                fontWeight: FOUNDATION_THEME.font.weight[500],
+                            }}
+                            label={
+                                yAxisLabel
+                                    ? {
+                                          value: yAxisLabel,
+                                          angle: -90,
+                                          position: 'insideLeft',
+                                          style: { textAnchor: 'middle' },
+                                          offset: -15,
+                                          fill: FOUNDATION_THEME.colors
+                                              .gray[400],
+                                          fontSize: 14,
+                                          fontWeight:
+                                              FOUNDATION_THEME.font.weight[500],
+                                      }
+                                    : undefined
+                            }
+                        />
+                    )}
                     <Tooltip
                         cursor={{
                             strokeDasharray: '6 5',
@@ -184,7 +188,7 @@ export const renderChart = ({
                         }}
                         dy={10}
                         label={
-                            xAxisLabel
+                            xAxisLabel && !isSmallScreen
                                 ? {
                                       value: xAxisLabel,
                                       position: 'bottom',
@@ -197,32 +201,35 @@ export const renderChart = ({
                                 : undefined
                         }
                     />
-                    <YAxis
-                        width={50}
-                        axisLine={false}
-                        tickLine={false}
-                        tickFormatter={(value) => formatNumber(value)}
-                        tick={{
-                            fill: FOUNDATION_THEME.colors.gray[400],
-                            fontSize: 14,
-                            fontWeight: FOUNDATION_THEME.font.weight[500],
-                        }}
-                        label={
-                            yAxisLabel
-                                ? {
-                                      value: yAxisLabel,
-                                      angle: -90,
-                                      position: 'insideLeft',
-                                      style: { textAnchor: 'middle' },
-                                      offset: -15,
-                                      fill: FOUNDATION_THEME.colors.gray[400],
-                                      fontSize: 14,
-                                      fontWeight:
-                                          FOUNDATION_THEME.font.weight[500],
-                                  }
-                                : undefined
-                        }
-                    />
+                    {!isSmallScreen && (
+                        <YAxis
+                            width={50}
+                            axisLine={false}
+                            tickLine={false}
+                            tickFormatter={(value) => formatNumber(value)}
+                            tick={{
+                                fill: FOUNDATION_THEME.colors.gray[400],
+                                fontSize: 14,
+                                fontWeight: FOUNDATION_THEME.font.weight[500],
+                            }}
+                            label={
+                                yAxisLabel
+                                    ? {
+                                          value: yAxisLabel,
+                                          angle: -90,
+                                          position: 'insideLeft',
+                                          style: { textAnchor: 'middle' },
+                                          offset: -15,
+                                          fill: FOUNDATION_THEME.colors
+                                              .gray[400],
+                                          fontSize: 14,
+                                          fontWeight:
+                                              FOUNDATION_THEME.font.weight[500],
+                                      }
+                                    : undefined
+                            }
+                        />
+                    )}
                     <Tooltip
                         cursor={{ fill: FOUNDATION_THEME.colors.gray[150] }}
                         content={(props) =>
@@ -255,7 +262,7 @@ export const renderChart = ({
             }))
 
             return (
-                <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 30 }}>
                     <Pie
                         data={pieData}
                         cx="50%"
