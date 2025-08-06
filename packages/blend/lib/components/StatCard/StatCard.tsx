@@ -66,7 +66,15 @@ const StatCard = ({
             : variant
 
     const formattedChange = change ? (
-        <Block display="flex" alignItems="center">
+        <Block
+            display="flex"
+            alignItems="center"
+            color={
+                change?.type === ChangeType.INCREASE
+                    ? statCardToken.stats.change.text.increase.color
+                    : statCardToken.stats.change.text.decrease.color
+            }
+        >
             {change.type === ChangeType.INCREASE ? (
                 <ArrowUp
                     size={parseInt(
@@ -90,7 +98,11 @@ const StatCard = ({
                     }}
                 />
             )}
-            <Text as="span">
+            <Text
+                as="span"
+                fontSize={statCardToken.stats.change.text.fontSize}
+                fontWeight={statCardToken.stats.change.text.fontWeight}
+            >
                 {change.value >= 0 ? '+' : ''}
                 {change.value.toFixed(2)}%
             </Text>
@@ -315,24 +327,7 @@ const StatCard = ({
                                                 .marginLeft
                                         }
                                     >
-                                        <Text
-                                            as="span"
-                                            color={
-                                                change?.type ===
-                                                ChangeType.INCREASE
-                                                    ? statCardToken.stats.change
-                                                          .text.increase.color
-                                                    : statCardToken.stats.change
-                                                          .text.decrease.color
-                                            }
-                                            variant="body.sm"
-                                            fontWeight={
-                                                statCardToken.stats.change.text
-                                                    .fontWeight
-                                            }
-                                        >
-                                            {formattedChange}
-                                        </Text>
+                                        {formattedChange}
                                     </Block>
                                 )}
                             </Block>
