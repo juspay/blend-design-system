@@ -297,6 +297,7 @@ const StatCard = ({
                             display="flex"
                             flexDirection="column"
                             alignItems="flex-start"
+                            gap={8}
                         >
                             <Block
                                 width="100%"
@@ -363,6 +364,8 @@ const StatCard = ({
                                     variant={SelectMenuVariant.NO_CONTAINER}
                                     useDrawerOnMobile={false}
                                     size={SelectMenuSize.SMALL}
+                                    inline={true}
+                                    minWidth={100}
                                 />
                             )}
                         </Block>
@@ -450,6 +453,7 @@ const StatCard = ({
                         display="flex"
                         flexDirection="column"
                         alignItems="center"
+                        gap={8}
                     >
                         <Block
                             width="100%"
@@ -532,6 +536,8 @@ const StatCard = ({
                                 variant={SelectMenuVariant.NO_CONTAINER}
                                 useDrawerOnMobile={false}
                                 size={SelectMenuSize.SMALL}
+                                inline={true}
+                                minWidth={100}
                             />
                         )}
                     </Block>
