@@ -1,0 +1,106 @@
+const avatarMeta = {
+    componentName: 'Avatar',
+    componentDescription:
+        'A circular component for displaying user profile pictures, initials, or placeholder icons.',
+    features: [
+        'Multiple sizes (small, medium, large)',
+        'Image, initials, or icon display',
+        'Fallback handling for broken images',
+        'Status indicators',
+        'Customizable styling',
+    ],
+    usageExamples: [
+        {
+            title: 'Basic Avatar',
+            description: 'Simple avatar usage',
+            code: '<Avatar />',
+        },
+    ],
+    props: [
+        {
+            propName: 'src',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'src prop for Avatar',
+            llmContext: 'src prop for Avatar - general property for Avatar',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'alt',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'alt prop for Avatar',
+            llmContext: 'alt prop for Avatar - general property for Avatar',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'fallback',
+            propType: 'React.ReactNode',
+            typeDefinition: `React.ReactNode`,
+            propDescription: 'fallback prop for Avatar',
+            llmContext:
+                'fallback prop for Avatar - general property for Avatar',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'size',
+            propType: 'AvatarSize',
+            typeDefinition: `AvatarSize`,
+            propDescription: 'size prop for Avatar',
+            llmContext: 'size prop for Avatar - appearance property for Avatar',
+            propDefault: 'undefined',
+            category: 'Appearance',
+            required: false,
+        },
+        {
+            propName: 'shape',
+            propType: 'AvatarShape',
+            typeDefinition: `AvatarShape`,
+            propDescription: 'shape prop for Avatar',
+            llmContext: 'shape prop for Avatar - general property for Avatar',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'online',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'online prop for Avatar',
+            llmContext: 'online prop for Avatar - events property for Avatar',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'leadingSlot',
+            propType: 'React.ReactNode',
+            typeDefinition: `React.ReactNode`,
+            propDescription: 'leadingSlot prop for Avatar',
+            llmContext:
+                'leadingSlot prop for Avatar - general property for Avatar',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'trailingSlot',
+            propType: 'React.ReactNode',
+            typeDefinition: `React.ReactNode`,
+            propDescription: 'trailingSlot prop for Avatar',
+            llmContext:
+                'trailingSlot prop for Avatar - general property for Avatar',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+    ],
+}
+
+export default avatarMeta

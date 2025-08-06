@@ -1,0 +1,330 @@
+const multiselectMeta = {
+    componentName: 'MultiSelect',
+    componentDescription:
+        'A form control that allows users to select multiple options from a dropdown list.',
+    features: [
+        'Customizable appearance and behavior',
+        'Accessible design',
+        'Responsive layout',
+        'Part of the Blend design system',
+    ],
+    usageExamples: [
+        {
+            title: 'Basic MultiSelect',
+            description: 'Simple multiselect usage',
+            code: '<MultiSelect />',
+        },
+    ],
+    props: [
+        {
+            propName: 'height',
+            propType: 'number',
+            typeDefinition: `number`,
+            propDescription: 'height prop for MultiSelect',
+            llmContext:
+                'height prop for MultiSelect - layout property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Layout',
+            required: false,
+        },
+        {
+            propName: 'selectedValues',
+            propType: 'string[]',
+            typeDefinition: `string[]`,
+            propDescription: 'selectedValues prop for MultiSelect',
+            llmContext:
+                'selectedValues prop for MultiSelect - general property for MultiSelect',
+            propDefault: '-',
+            category: 'General',
+            required: true,
+        },
+        {
+            propName: 'onChange',
+            propType: '(selectedValue: string) => void',
+            typeDefinition: `(selectedValue: string) => void`,
+            propDescription: 'onChange prop for MultiSelect',
+            llmContext:
+                'onChange prop for MultiSelect - events property for MultiSelect',
+            propDefault: '-',
+            category: 'Events',
+            required: true,
+        },
+        {
+            propName: 'items',
+            propType: 'MultiSelectMenuGroupType[]',
+            typeDefinition: `MultiSelectMenuGroupType[]`,
+            propDescription: 'items prop for MultiSelect',
+            llmContext:
+                'items prop for MultiSelect - general property for MultiSelect',
+            propDefault: '-',
+            category: 'General',
+            required: true,
+        },
+        {
+            propName: 'label',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'label prop for MultiSelect',
+            llmContext:
+                'label prop for MultiSelect - content property for MultiSelect',
+            propDefault: '-',
+            category: 'Content',
+            required: true,
+        },
+        {
+            propName: 'sublabel',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'sublabel prop for MultiSelect',
+            llmContext:
+                'sublabel prop for MultiSelect - content property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Content',
+            required: false,
+        },
+        {
+            propName: 'disabled',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'disabled prop for MultiSelect',
+            llmContext:
+                'disabled prop for MultiSelect - state property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'State',
+            required: false,
+        },
+        {
+            propName: 'helpIconHintText',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'helpIconHintText prop for MultiSelect',
+            llmContext:
+                'helpIconHintText prop for MultiSelect - events property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'name',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'name prop for MultiSelect',
+            llmContext:
+                'name prop for MultiSelect - general property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'required',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'required prop for MultiSelect',
+            llmContext:
+                'required prop for MultiSelect - general property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'variant',
+            propType: 'MultiSelectVariant',
+            typeDefinition: `MultiSelectVariant`,
+            propDescription: 'variant prop for MultiSelect',
+            llmContext:
+                'variant prop for MultiSelect - appearance property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Appearance',
+            required: false,
+        },
+        {
+            propName: 'selectionTagType',
+            propType: 'MultiSelectSelectionTagType',
+            typeDefinition: `MultiSelectSelectionTagType`,
+            propDescription: 'selectionTagType prop for MultiSelect',
+            llmContext:
+                'selectionTagType prop for MultiSelect - events property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'slot',
+            propType: 'React.ReactNode',
+            typeDefinition: `React.ReactNode`,
+            propDescription: 'slot prop for MultiSelect',
+            llmContext:
+                'slot prop for MultiSelect - general property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'hintText',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'hintText prop for MultiSelect',
+            llmContext:
+                'hintText prop for MultiSelect - content property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Content',
+            required: false,
+        },
+        {
+            propName: 'placeholder',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'placeholder prop for MultiSelect',
+            llmContext:
+                'placeholder prop for MultiSelect - general property for MultiSelect',
+            propDefault: '-',
+            category: 'General',
+            required: true,
+        },
+        {
+            propName: 'size',
+            propType: 'MultiSelectMenuSize',
+            typeDefinition: `MultiSelectMenuSize`,
+            propDescription: 'size prop for MultiSelect',
+            llmContext:
+                'size prop for MultiSelect - appearance property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Appearance',
+            required: false,
+        },
+        {
+            propName: 'enableSearch',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'enableSearch prop for MultiSelect',
+            llmContext:
+                'enableSearch prop for MultiSelect - general property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'searchPlaceholder',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'searchPlaceholder prop for MultiSelect',
+            llmContext:
+                'searchPlaceholder prop for MultiSelect - general property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'enableSelectAll',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'enableSelectAll prop for MultiSelect',
+            llmContext:
+                'enableSelectAll prop for MultiSelect - general property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'selectAllText',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'selectAllText prop for MultiSelect',
+            llmContext:
+                'selectAllText prop for MultiSelect - content property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Content',
+            required: false,
+        },
+        {
+            propName: 'useDrawerOnMobile',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'useDrawerOnMobile prop for MultiSelect',
+            llmContext:
+                'useDrawerOnMobile prop for MultiSelect - events property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'minWidth',
+            propType: 'number',
+            typeDefinition: `number`,
+            propDescription: 'minWidth prop for MultiSelect',
+            llmContext:
+                'minWidth prop for MultiSelect - layout property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Layout',
+            required: false,
+        },
+        {
+            propName: 'maxWidth',
+            propType: 'number',
+            typeDefinition: `number`,
+            propDescription: 'maxWidth prop for MultiSelect',
+            llmContext:
+                'maxWidth prop for MultiSelect - layout property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Layout',
+            required: false,
+        },
+        {
+            propName: 'maxHeight',
+            propType: 'number',
+            typeDefinition: `number`,
+            propDescription: 'maxHeight prop for MultiSelect',
+            llmContext:
+                'maxHeight prop for MultiSelect - layout property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Layout',
+            required: false,
+        },
+        {
+            propName: 'alignment',
+            propType: 'MultiSelectMenuAlignment',
+            typeDefinition: `MultiSelectMenuAlignment`,
+            propDescription: 'alignment prop for MultiSelect',
+            llmContext:
+                'alignment prop for MultiSelect - layout property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Layout',
+            required: false,
+        },
+        {
+            propName: 'side',
+            propType: 'MultiSelectMenuSide',
+            typeDefinition: `MultiSelectMenuSide`,
+            propDescription: 'side prop for MultiSelect',
+            llmContext:
+                'side prop for MultiSelect - general property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'sideOffset',
+            propType: 'number',
+            typeDefinition: `number`,
+            propDescription: 'sideOffset prop for MultiSelect',
+            llmContext:
+                'sideOffset prop for MultiSelect - general property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'alignOffset',
+            propType: 'number',
+            typeDefinition: `number`,
+            propDescription: 'alignOffset prop for MultiSelect',
+            llmContext:
+                'alignOffset prop for MultiSelect - layout property for MultiSelect',
+            propDefault: 'undefined',
+            category: 'Layout',
+            required: false,
+        },
+    ],
+}
+
+export default multiselectMeta

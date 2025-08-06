@@ -1,8 +1,7 @@
 {
-    "name": "@design-juspay/blend-mcp-server",
+    "name": "blend-mcp-server",
     "version": "1.0.0",
     "description": "MCP server for Blend design system - provides tools for generating React components and documentation",
-    "private": true,
     "type": "module",
     "bin": {
         "blend-mcp-server": "./index.js"
@@ -10,7 +9,9 @@
     "files": [
         "index.js",
         "metaReader.js",
-        "README.md"
+        "meta/",
+        "README.md",
+        "PUBLISHING.md"
     ],
     "scripts": {
         "build": "node -e \"require('fs').chmodSync('index.js', '755')\"",

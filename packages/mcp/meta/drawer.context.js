@@ -1,0 +1,217 @@
+const drawerMeta = {
+    componentName: 'Drawer',
+    componentDescription:
+        'A slide-out panel component that can be used for navigation, forms, or additional content.',
+    features: [
+        'Customizable appearance and behavior',
+        'Accessible design',
+        'Responsive layout',
+        'Part of the Blend design system',
+    ],
+    usageExamples: [
+        {
+            title: 'Basic Drawer',
+            description: 'Simple drawer usage',
+            code: '<Drawer />',
+        },
+    ],
+    props: [
+        {
+            propName: 'open',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'open prop for Drawer',
+            llmContext: 'open prop for Drawer - state property for Drawer',
+            propDefault: 'undefined',
+            category: 'State',
+            required: false,
+        },
+        {
+            propName: 'onOpenChange',
+            propType: '(open: boolean) => void',
+            typeDefinition: `(open: boolean) => void`,
+            propDescription: 'onOpenChange prop for Drawer',
+            llmContext:
+                'onOpenChange prop for Drawer - events property for Drawer',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'direction',
+            propType: 'DrawerDirection',
+            typeDefinition: `DrawerDirection`,
+            propDescription: 'direction prop for Drawer',
+            llmContext:
+                'direction prop for Drawer - events property for Drawer',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'modal',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'modal prop for Drawer',
+            llmContext: 'modal prop for Drawer - general property for Drawer',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'dismissible',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'dismissible prop for Drawer',
+            llmContext:
+                'dismissible prop for Drawer - general property for Drawer',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'showHandle',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'showHandle prop for Drawer',
+            llmContext:
+                'showHandle prop for Drawer - general property for Drawer',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'handle',
+            propType: 'ReactNode',
+            typeDefinition: `ReactNode`,
+            propDescription: 'handle prop for Drawer',
+            llmContext: 'handle prop for Drawer - general property for Drawer',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'nested',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'nested prop for Drawer',
+            llmContext: 'nested prop for Drawer - general property for Drawer',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'snapPoints',
+            propType: '(string | number)[]',
+            typeDefinition: `(string | number)[]`,
+            propDescription: 'snapPoints prop for Drawer',
+            llmContext:
+                'snapPoints prop for Drawer - general property for Drawer',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'activeSnapPoint',
+            propType: 'number | string | null',
+            typeDefinition: `number | string | null`,
+            propDescription: 'activeSnapPoint prop for Drawer',
+            llmContext:
+                'activeSnapPoint prop for Drawer - state property for Drawer',
+            propDefault: 'undefined',
+            category: 'State',
+            required: false,
+        },
+        {
+            propName: 'onSnapPointChange',
+            propType: '(activeSnapPoint: number | string | null) => void',
+            typeDefinition: `(activeSnapPoint: number | string | null) => void`,
+            propDescription: 'onSnapPointChange prop for Drawer',
+            llmContext:
+                'onSnapPointChange prop for Drawer - events property for Drawer',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'fadeFromIndex',
+            propType: 'number',
+            typeDefinition: `number`,
+            propDescription: 'fadeFromIndex prop for Drawer',
+            llmContext:
+                'fadeFromIndex prop for Drawer - general property for Drawer',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'snapToSequentialPoint',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'snapToSequentialPoint prop for Drawer',
+            llmContext:
+                'snapToSequentialPoint prop for Drawer - general property for Drawer',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'mobileOffset',
+            propType:
+                '{         top?: string         bottom?: string         left?: string         right?: string     }',
+            typeDefinition: `{         top?: string         bottom?: string         left?: string         right?: string     }`,
+            propDescription: 'mobileOffset prop for Drawer',
+            llmContext:
+                'mobileOffset prop for Drawer - general property for Drawer',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'className',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'className prop for Drawer',
+            llmContext:
+                'className prop for Drawer - styling property for Drawer',
+            propDefault: 'undefined',
+            category: 'Styling',
+            required: false,
+        },
+        {
+            propName: 'overlayClassName',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'overlayClassName prop for Drawer',
+            llmContext:
+                'overlayClassName prop for Drawer - styling property for Drawer',
+            propDefault: 'undefined',
+            category: 'Styling',
+            required: false,
+        },
+        {
+            propName: 'style',
+            propType: 'React.CSSProperties',
+            typeDefinition: `React.CSSProperties`,
+            propDescription: 'style prop for Drawer',
+            llmContext:
+                'style prop for Drawer - appearance property for Drawer',
+            propDefault: 'undefined',
+            category: 'Appearance',
+            required: false,
+        },
+        {
+            propName: 'children',
+            propType: 'ReactNode',
+            typeDefinition: `ReactNode`,
+            propDescription: 'children prop for Drawer',
+            llmContext:
+                'children prop for Drawer - content property for Drawer',
+            propDefault: '-',
+            category: 'Content',
+            required: true,
+        },
+    ],
+}
+
+export default drawerMeta

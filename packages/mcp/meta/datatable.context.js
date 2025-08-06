@@ -1,0 +1,493 @@
+const datatableMeta = {
+    componentName: 'DataTable',
+    componentDescription:
+        'A powerful table component for displaying and manipulating large datasets with sorting, filtering, and pagination.',
+    features: [
+        'Sortable columns',
+        'Filtering and search',
+        'Pagination support',
+        'Row selection',
+        'Responsive design',
+    ],
+    usageExamples: [
+        {
+            title: 'Basic DataTable',
+            description: 'Simple datatable usage',
+            code: '<DataTable />',
+        },
+        {
+            title: 'Data Table with Columns',
+            description: 'Table with defined columns and data',
+            code: '<DataTable \n  columns={[\n    { header: "Name", field: "name" },\n    { header: "Email", field: "email" }\n  ]}\n  data={users}\n/>',
+        },
+    ],
+    props: [
+        {
+            propName: 'data',
+            propType: 'T[]',
+            typeDefinition: `T[]`,
+            propDescription: 'data prop for DataTable',
+            llmContext:
+                'data prop for DataTable - general property for DataTable',
+            propDefault: '-',
+            category: 'General',
+            required: true,
+        },
+        {
+            propName: 'columns',
+            propType: 'ColumnDefinition<T>[]',
+            typeDefinition: `ColumnDefinition<T>[]`,
+            propDescription: 'columns prop for DataTable',
+            llmContext:
+                'columns prop for DataTable - general property for DataTable',
+            propDefault: '-',
+            category: 'General',
+            required: true,
+        },
+        {
+            propName: 'idField',
+            propType: 'keyof T',
+            typeDefinition: `keyof T`,
+            propDescription: 'idField prop for DataTable',
+            llmContext:
+                'idField prop for DataTable - general property for DataTable',
+            propDefault: '-',
+            category: 'General',
+            required: true,
+        },
+        {
+            propName: 'title',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'title prop for DataTable',
+            llmContext:
+                'title prop for DataTable - content property for DataTable',
+            propDefault: 'undefined',
+            category: 'Content',
+            required: false,
+        },
+        {
+            propName: 'description',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'description prop for DataTable',
+            llmContext:
+                'description prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'className',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'className prop for DataTable',
+            llmContext:
+                'className prop for DataTable - styling property for DataTable',
+            propDefault: 'undefined',
+            category: 'Styling',
+            required: false,
+        },
+        {
+            propName: 'isHoverable',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'isHoverable prop for DataTable',
+            llmContext:
+                'isHoverable prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'defaultSort',
+            propType: 'SortConfig',
+            typeDefinition: `SortConfig`,
+            propDescription: 'defaultSort prop for DataTable',
+            llmContext:
+                'defaultSort prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'onSortChange',
+            propType: '(sortConfig: SortConfig) => void',
+            typeDefinition: `(sortConfig: SortConfig) => void`,
+            propDescription: 'onSortChange prop for DataTable',
+            llmContext:
+                'onSortChange prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'enableSearch',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'enableSearch prop for DataTable',
+            llmContext:
+                'enableSearch prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'searchPlaceholder',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'searchPlaceholder prop for DataTable',
+            llmContext:
+                'searchPlaceholder prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'serverSideSearch',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'serverSideSearch prop for DataTable',
+            llmContext:
+                'serverSideSearch prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'onSearchChange',
+            propType: '(searchConfig: SearchConfig) => void',
+            typeDefinition: `(searchConfig: SearchConfig) => void`,
+            propDescription: 'onSearchChange prop for DataTable',
+            llmContext:
+                'onSearchChange prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'enableFiltering',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'enableFiltering prop for DataTable',
+            llmContext:
+                'enableFiltering prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'enableAdvancedFilter',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'enableAdvancedFilter prop for DataTable',
+            llmContext:
+                'enableAdvancedFilter prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'advancedFilterComponent',
+            propType: 'React.ComponentType<AdvancedFilterProps>',
+            typeDefinition: `React.ComponentType<AdvancedFilterProps>`,
+            propDescription: 'advancedFilterComponent prop for DataTable',
+            llmContext:
+                'advancedFilterComponent prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'advancedFilters',
+            propType: 'unknown[]',
+            typeDefinition: `unknown[]`,
+            propDescription: 'advancedFilters prop for DataTable',
+            llmContext:
+                'advancedFilters prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'serverSideFiltering',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'serverSideFiltering prop for DataTable',
+            llmContext:
+                'serverSideFiltering prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'onFilterChange',
+            propType: '(filters: ColumnFilter[]) => void',
+            typeDefinition: `(filters: ColumnFilter[]) => void`,
+            propDescription: 'onFilterChange prop for DataTable',
+            llmContext:
+                'onFilterChange prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'onAdvancedFiltersChange',
+            propType: '(filters: unknown[]) => void',
+            typeDefinition: `(filters: unknown[]) => void`,
+            propDescription: 'onAdvancedFiltersChange prop for DataTable',
+            llmContext:
+                'onAdvancedFiltersChange prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'columnFreeze',
+            propType: 'number',
+            typeDefinition: `number`,
+            propDescription: 'columnFreeze prop for DataTable',
+            llmContext:
+                'columnFreeze prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'enableColumnManager',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'enableColumnManager prop for DataTable',
+            llmContext:
+                'enableColumnManager prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'pagination',
+            propType: 'PaginationConfig',
+            typeDefinition: `PaginationConfig`,
+            propDescription: 'pagination prop for DataTable',
+            llmContext:
+                'pagination prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'serverSidePagination',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'serverSidePagination prop for DataTable',
+            llmContext:
+                'serverSidePagination prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'onPageChange',
+            propType: '(page: number) => void',
+            typeDefinition: `(page: number) => void`,
+            propDescription: 'onPageChange prop for DataTable',
+            llmContext:
+                'onPageChange prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'onPageSizeChange',
+            propType: '(pageSize: number) => void',
+            typeDefinition: `(pageSize: number) => void`,
+            propDescription: 'onPageSizeChange prop for DataTable',
+            llmContext:
+                'onPageSizeChange prop for DataTable - appearance property for DataTable',
+            propDefault: 'undefined',
+            category: 'Appearance',
+            required: false,
+        },
+        {
+            propName: 'isLoading',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'isLoading prop for DataTable',
+            llmContext:
+                'isLoading prop for DataTable - state property for DataTable',
+            propDefault: 'undefined',
+            category: 'State',
+            required: false,
+        },
+        {
+            propName: 'showToolbar',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'showToolbar prop for DataTable',
+            llmContext:
+                'showToolbar prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'headerSlot1',
+            propType: 'ReactNode',
+            typeDefinition: `ReactNode`,
+            propDescription: 'headerSlot1 prop for DataTable',
+            llmContext:
+                'headerSlot1 prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'headerSlot2',
+            propType: 'ReactNode',
+            typeDefinition: `ReactNode`,
+            propDescription: 'headerSlot2 prop for DataTable',
+            llmContext:
+                'headerSlot2 prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'enableInlineEdit',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'enableInlineEdit prop for DataTable',
+            llmContext:
+                'enableInlineEdit prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'onRowSave',
+            propType: '(rowId: unknown, updatedRow: T) => void',
+            typeDefinition: `(rowId: unknown, updatedRow: T) => void`,
+            propDescription: 'onRowSave prop for DataTable',
+            llmContext:
+                'onRowSave prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'onRowCancel',
+            propType: '(rowId: unknown) => void',
+            typeDefinition: `(rowId: unknown) => void`,
+            propDescription: 'onRowCancel prop for DataTable',
+            llmContext:
+                'onRowCancel prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'onRowClick',
+            propType: '(row: T, index: number) => void',
+            typeDefinition: `(row: T, index: number) => void`,
+            propDescription: 'onRowClick prop for DataTable',
+            llmContext:
+                'onRowClick prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'onFieldChange',
+            propType:
+                '(rowId: unknown, fieldName: keyof T, value: unknown) => void',
+            typeDefinition: `(rowId: unknown, fieldName: keyof T, value: unknown) => void`,
+            propDescription: 'onFieldChange prop for DataTable',
+            llmContext:
+                'onFieldChange prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'enableRowExpansion',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'enableRowExpansion prop for DataTable',
+            llmContext:
+                'enableRowExpansion prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'renderExpandedRow',
+            propType:
+                '(expandedData: {         row: T         index: number         isExpanded: boolean         toggleExpansion: () => void     }) => ReactNode',
+            typeDefinition: `(expandedData: {         row: T         index: number         isExpanded: boolean         toggleExpansion: () => void     }) => ReactNode`,
+            propDescription: 'renderExpandedRow prop for DataTable',
+            llmContext:
+                'renderExpandedRow prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'isRowExpandable',
+            propType: '(row: T, index: number) => boolean',
+            typeDefinition: `(row: T, index: number) => boolean`,
+            propDescription: 'isRowExpandable prop for DataTable',
+            llmContext:
+                'isRowExpandable prop for DataTable - general property for DataTable',
+            propDefault: 'undefined',
+            category: 'General',
+            required: false,
+        },
+        {
+            propName: 'onRowExpansionChange',
+            propType:
+                '(         rowId: unknown,         isExpanded: boolean,         rowData: T     ) => void',
+            typeDefinition: `(         rowId: unknown,         isExpanded: boolean,         rowData: T     ) => void`,
+            propDescription: 'onRowExpansionChange prop for DataTable',
+            llmContext:
+                'onRowExpansionChange prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'enableRowSelection',
+            propType: 'boolean',
+            typeDefinition: `boolean`,
+            propDescription: 'enableRowSelection prop for DataTable',
+            llmContext:
+                'enableRowSelection prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'bulkActions',
+            propType: 'BulkAction[]',
+            typeDefinition: `BulkAction[]`,
+            propDescription: 'bulkActions prop for DataTable',
+            llmContext:
+                'bulkActions prop for DataTable - events property for DataTable',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'getRowStyle',
+            propType: '(row: T, index: number) => React.CSSProperties',
+            typeDefinition: `(row: T, index: number) => React.CSSProperties`,
+            propDescription: 'getRowStyle prop for DataTable',
+            llmContext:
+                'getRowStyle prop for DataTable - appearance property for DataTable',
+            propDefault: 'undefined',
+            category: 'Appearance',
+            required: false,
+        },
+    ],
+}
+
+export default datatableMeta

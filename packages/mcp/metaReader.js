@@ -14,7 +14,8 @@ function findMetaPath() {
 
     // Try to find it relative to the MCP package
     const possiblePaths = [
-        path.join(__dirname, '..', '..', 'apps', 'docs', 'meta'),
+        path.join(__dirname, 'meta'), // Local meta directory (for published package)
+        path.join(__dirname, '..', '..', 'apps', 'docs', 'meta'), // Monorepo structure
         path.join(process.cwd(), 'apps', 'docs', 'meta'),
         path.join(__dirname, '..', 'docs', 'meta'),
     ]
@@ -47,7 +48,7 @@ if (!META_PATH) {
 export async function getComponentMeta(componentName) {
     const metaFilePath = path.join(
         META_PATH,
-        `${componentName.toLowerCase()}.context.ts`
+        `${componentName.toLowerCase()}.context.js`
     )
 
     if (!fs.existsSync(metaFilePath)) {
@@ -57,37 +58,13 @@ export async function getComponentMeta(componentName) {
     }
 
     try {
-        // For now, let's use a simpler approach - dynamic import with temporary file conversion
-        // This is more robust than regex parsing
-        const fileContent = fs.readFileSync(metaFilePath, 'utf-8')
+        // Direct import of JS file
+        const metaModule = await import(
+            `file://${metaFilePath}?t=${Date.now()}`
+        )
+        const metaObject = metaModule.default
 
-        // Create a temporary JS file for import
-        const tempJsContent = fileContent
-            .replace(/import type.*?;/g, '') // Remove type imports
-            .replace(/:\s*ComponentMeta/g, '') // Remove type annotations
-            .replace(/\.ts/g, '.js') // Fix any .ts references
-
-        const tempFilePath = metaFilePath.replace('.context.ts', '.temp.js')
-        fs.writeFileSync(tempFilePath, tempJsContent)
-
-        try {
-            // Dynamic import the temporary file
-            const metaModule = await import(
-                `file://${tempFilePath}?t=${Date.now()}`
-            )
-            const metaObject = metaModule.default
-
-            // Clean up temp file
-            fs.unlinkSync(tempFilePath)
-
-            return metaObject
-        } catch (importError) {
-            // Clean up temp file on error
-            if (fs.existsSync(tempFilePath)) {
-                fs.unlinkSync(tempFilePath)
-            }
-            throw importError
-        }
+        return metaObject
     } catch (error) {
         throw new Error(
             `Error reading meta file for ${componentName}: ${error.message}`
@@ -103,10 +80,10 @@ export async function listAvailableComponents() {
     try {
         const metaFiles = fs
             .readdirSync(META_PATH)
-            .filter((file) => file.endsWith('.context.ts'))
+            .filter((file) => file.endsWith('.context.js'))
             .map((file) => {
                 // Convert filename to component name (capitalize first letter)
-                const baseName = file.replace('.context.ts', '')
+                const baseName = file.replace('.context.js', '')
                 return baseName.charAt(0).toUpperCase() + baseName.slice(1)
             })
 
@@ -124,7 +101,7 @@ export async function listAvailableComponents() {
 export function hasComponentMeta(componentName) {
     const metaFilePath = path.join(
         META_PATH,
-        `${componentName.toLowerCase()}.context.ts`
+        `${componentName.toLowerCase()}.context.js`
     )
     return fs.existsSync(metaFilePath)
 }

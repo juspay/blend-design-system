@@ -1,0 +1,116 @@
+const alertMeta = {
+    componentName: 'Alert',
+    componentDescription: 'A alert component from the Blend design system.',
+    features: [
+        'Customizable appearance and behavior',
+        'Accessible design',
+        'Responsive layout',
+        'Part of the Blend design system',
+    ],
+    usageExamples: [
+        {
+            title: 'Basic Alert',
+            description: 'Simple alert usage',
+            code: '<Alert />',
+        },
+    ],
+    props: [
+        {
+            propName: 'heading',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'heading prop for Alert',
+            llmContext: 'heading prop for Alert - general property for Alert',
+            propDefault: '-',
+            category: 'General',
+            required: true,
+        },
+        {
+            propName: 'description',
+            propType: 'string',
+            typeDefinition: `string`,
+            propDescription: 'description prop for Alert',
+            llmContext:
+                'description prop for Alert - events property for Alert',
+            propDefault: '-',
+            category: 'Events',
+            required: true,
+        },
+        {
+            propName: 'variant',
+            propType: 'AlertVariant',
+            typeDefinition: `AlertVariant`,
+            propDescription: 'variant prop for Alert',
+            llmContext:
+                'variant prop for Alert - appearance property for Alert',
+            propDefault: 'undefined',
+            category: 'Appearance',
+            required: false,
+        },
+        {
+            propName: 'style',
+            propType: 'AlertStyle',
+            typeDefinition: `AlertStyle`,
+            propDescription: 'style prop for Alert',
+            llmContext: 'style prop for Alert - appearance property for Alert',
+            propDefault: 'undefined',
+            category: 'Appearance',
+            required: false,
+        },
+        {
+            propName: 'primaryAction',
+            propType: 'AlertAction',
+            typeDefinition: `AlertAction`,
+            propDescription: 'primaryAction prop for Alert',
+            llmContext:
+                'primaryAction prop for Alert - events property for Alert',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'secondaryAction',
+            propType: 'AlertAction',
+            typeDefinition: `AlertAction`,
+            propDescription: 'secondaryAction prop for Alert',
+            llmContext:
+                'secondaryAction prop for Alert - events property for Alert',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'onClose',
+            propType: '() => void',
+            typeDefinition: `() => void`,
+            propDescription: 'onClose prop for Alert',
+            llmContext: 'onClose prop for Alert - events property for Alert',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'icon',
+            propType: 'ReactNode',
+            typeDefinition: `ReactNode`,
+            propDescription: 'icon prop for Alert',
+            llmContext: 'icon prop for Alert - events property for Alert',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+        {
+            propName: 'actionPlacement',
+            propType: 'AlertActionPlacement',
+            typeDefinition: `AlertActionPlacement`,
+            propDescription: 'actionPlacement prop for Alert',
+            llmContext:
+                'actionPlacement prop for Alert - events property for Alert',
+            propDefault: 'undefined',
+            category: 'Events',
+            required: false,
+        },
+    ],
+}
+
+export default alertMeta
