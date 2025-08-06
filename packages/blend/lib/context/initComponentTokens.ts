@@ -28,6 +28,7 @@ import { getAccordionToken } from '../components/Accordion/accordion.tokens'
 import { getStatCardToken } from '../components/StatCard/statcard.tokens'
 import progressBarTokens from '../components/ProgressBar/progressbar.tokens'
 import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
+import { getChartTokens } from '../components/Charts/chart.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -86,6 +87,7 @@ const initTokens = (
         DRAWER:
             componentTokens.DRAWER ??
             getDrawerComponentTokens(foundationTokens),
+        CHARTS: componentTokens.CHARTS ?? getChartTokens(foundationTokens),
     }
 }
 
