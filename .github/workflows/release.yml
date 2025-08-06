@@ -201,8 +201,23 @@ jobs:
                   TAG="v$VERSION"
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
+
+                  # Check if tag already exists locally or remotely
+                  if git tag -l | grep -q "^$TAG$"; then
+                    echo "Tag $TAG already exists locally, deleting it"
+                    git tag -d "$TAG"
+                  fi
+
+                  # Check if tag exists on remote
+                  if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
+                    echo "Tag $TAG already exists on remote, deleting it"
+                    git push origin ":refs/tags/$TAG" || echo "Failed to delete remote tag, continuing..."
+                  fi
+
+                  # Create and push the tag
                   git tag "$TAG" -m "Release $TAG"
                   git push origin "$TAG"
+                  echo "Successfully created and pushed tag $TAG"
 
             - name: Create Version Update PR
               if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
