@@ -27,19 +27,19 @@ const StatCardDemo = () => {
     const [playgroundVariant, setPlaygroundVariant] = useState<StatCardVariant>(
         StatCardVariant.NUMBER
     )
-    const [playgroundTitle, setPlaygroundTitle] = useState('Total Revenue')
-    const [playgroundValue, setPlaygroundValue] = useState('$12,345')
-    const [playgroundSubtitle, setPlaygroundSubtitle] =
-        useState('vs last month')
+    const [playgroundTitle, setPlaygroundTitle] = useState('Authorization Rate')
+    const [playgroundValue, setPlaygroundValue] = useState('83.24%')
+    const [playgroundSubtitle, setPlaygroundSubtitle] = useState('Last 7 days')
     const [showChange, setShowChange] = useState(true)
     const [changeType, setChangeType] = useState<ChangeType>(
         ChangeType.INCREASE
     )
-    const [changeValue, setChangeValue] = useState(12.5)
+    const [changeValue, setChangeValue] = useState(23.45)
     const [showTitleIcon, setShowTitleIcon] = useState(true)
     const [showActionIcon, setShowActionIcon] = useState(false)
     const [showHelpIcon, setShowHelpIcon] = useState(false)
     const [progressValue, setProgressValue] = useState(75)
+    const [dropdownValue, setDropdownValue] = useState('INR')
 
     // Sample chart data
     const sampleLineData = [
@@ -90,6 +90,10 @@ const StatCardDemo = () => {
 
     const getActionIcon = () => {
         return <Settings size={16} />
+    }
+
+    const handleDropdownSelect = (value: string) => {
+        setDropdownValue(value)
     }
 
     return (
@@ -190,58 +194,68 @@ const StatCardDemo = () => {
                         />
                     </div>
 
-                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-4">
-                        <div className="w-full max-w-md">
-                            <StatCard
-                                title={playgroundTitle}
-                                value={playgroundValue}
-                                subtitle={playgroundSubtitle}
-                                variant={playgroundVariant}
-                                change={
-                                    showChange
-                                        ? {
-                                              value: changeValue,
-                                              type: changeType,
-                                          }
-                                        : undefined
-                                }
-                                titleIcon={
-                                    showTitleIcon
-                                        ? getIconForVariant(playgroundVariant)
-                                        : undefined
-                                }
-                                actionIcon={
-                                    showActionIcon ? getActionIcon() : undefined
-                                }
-                                helpIconText={
-                                    showHelpIcon
-                                        ? 'This metric shows the total revenue generated over the selected period.'
-                                        : undefined
-                                }
-                                chartData={
-                                    playgroundVariant === StatCardVariant.LINE
-                                        ? sampleLineData
-                                        : playgroundVariant ===
-                                            StatCardVariant.BAR
-                                          ? sampleBarData
-                                          : undefined
-                                }
-                                progressValue={
-                                    playgroundVariant ===
-                                    StatCardVariant.PROGRESS_BAR
-                                        ? progressValue
-                                        : undefined
-                                }
-                            />
-                        </div>
-                    </div>
+                    <StatCard
+                        dropdownProps={{
+                            label: 'Currency',
+                            placeholder: 'Currency',
+                            items: [
+                                {
+                                    items: [
+                                        { label: 'USD', value: 'USD' },
+                                        { label: 'EUR', value: 'EUR' },
+                                        { label: 'GBP', value: 'GBP' },
+                                        { label: 'INR', value: 'INR' },
+                                    ],
+                                },
+                            ],
+                            selected: dropdownValue,
+                            onSelect: handleDropdownSelect,
+                        }}
+                        title={playgroundTitle}
+                        value={playgroundValue}
+                        subtitle={playgroundSubtitle}
+                        variant={playgroundVariant}
+                        change={
+                            showChange
+                                ? {
+                                      value: changeValue,
+                                      type: changeType,
+                                  }
+                                : undefined
+                        }
+                        titleIcon={
+                            showTitleIcon
+                                ? getIconForVariant(playgroundVariant)
+                                : undefined
+                        }
+                        actionIcon={
+                            showActionIcon ? getActionIcon() : undefined
+                        }
+                        helpIconText={
+                            showHelpIcon
+                                ? 'This metric shows the total revenue generated over the selected period.'
+                                : undefined
+                        }
+                        chartData={
+                            playgroundVariant === StatCardVariant.LINE
+                                ? sampleLineData
+                                : playgroundVariant === StatCardVariant.BAR
+                                  ? sampleBarData
+                                  : undefined
+                        }
+                        progressValue={
+                            playgroundVariant === StatCardVariant.PROGRESS_BAR
+                                ? progressValue
+                                : undefined
+                        }
+                    />
                 </div>
             </div>
 
             {/* StatCard Variants */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">StatCard Variants</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
                             Number Variant
@@ -256,12 +270,44 @@ const StatCardDemo = () => {
                                 type: ChangeType.INCREASE,
                             }}
                             titleIcon={<DollarSign size={16} />}
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                         />
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Line Chart</h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Revenue Trend"
                             value="$8,234"
                             subtitle="last 7 days"
@@ -278,6 +324,22 @@ const StatCardDemo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Bar Chart</h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Daily Sales"
                             value="$1,234"
                             subtitle="today's sales"
@@ -294,6 +356,22 @@ const StatCardDemo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Progress Bar</h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Goal Progress"
                             value="75%"
                             subtitle="target: 100%"
@@ -308,12 +386,28 @@ const StatCardDemo = () => {
             {/* Change Indicators */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Change Indicators</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
                             Positive Change
                         </h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Active Users"
                             value="2,847"
                             subtitle="vs last week"
@@ -331,6 +425,22 @@ const StatCardDemo = () => {
                             Negative Change
                         </h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Bounce Rate"
                             value="23.4%"
                             subtitle="vs last week"
@@ -348,12 +458,28 @@ const StatCardDemo = () => {
             {/* With Icons */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">With Icons</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
                             Title Icon Only
                         </h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Downloads"
                             value="1,234"
                             subtitle="this month"
@@ -369,6 +495,22 @@ const StatCardDemo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Action Icon</h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Uploads"
                             value="567"
                             subtitle="this month"
@@ -385,6 +527,22 @@ const StatCardDemo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Help Icon</h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Conversion Rate"
                             value="3.2%"
                             subtitle="vs last month"
@@ -403,12 +561,28 @@ const StatCardDemo = () => {
             {/* Chart Variants with Data */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Chart Variants</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
                             Line Chart - Trending Up
                         </h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Revenue Growth"
                             value="$45,678"
                             subtitle="last 30 days"
@@ -427,6 +601,22 @@ const StatCardDemo = () => {
                             Bar Chart - Daily Metrics
                         </h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Daily Orders"
                             value="234"
                             subtitle="today's orders"
@@ -445,10 +635,26 @@ const StatCardDemo = () => {
             {/* Progress Variants */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Progress Variants</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Low Progress</h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Task Completion"
                             value="25%"
                             subtitle="4 of 16 tasks"
@@ -463,6 +669,22 @@ const StatCardDemo = () => {
                             Medium Progress
                         </h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Project Milestone"
                             value="60%"
                             subtitle="3 of 5 phases"
@@ -475,6 +697,22 @@ const StatCardDemo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">High Progress</h3>
                         <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
                             title="Sales Target"
                             value="90%"
                             subtitle="$9,000 of $10,000"
@@ -494,8 +732,24 @@ const StatCardDemo = () => {
                         <h3 className="text-lg font-semibold">
                             Dashboard Overview
                         </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                             <StatCard
+                                dropdownProps={{
+                                    label: 'Currency',
+                                    placeholder: 'Currency',
+                                    items: [
+                                        {
+                                            items: [
+                                                { label: 'USD', value: 'USD' },
+                                                { label: 'EUR', value: 'EUR' },
+                                                { label: 'GBP', value: 'GBP' },
+                                                { label: 'INR', value: 'INR' },
+                                            ],
+                                        },
+                                    ],
+                                    selected: dropdownValue,
+                                    onSelect: handleDropdownSelect,
+                                }}
                                 title="Total Revenue"
                                 value="$124,567"
                                 subtitle="this quarter"
@@ -509,6 +763,22 @@ const StatCardDemo = () => {
                             />
 
                             <StatCard
+                                dropdownProps={{
+                                    label: 'Currency',
+                                    placeholder: 'Currency',
+                                    items: [
+                                        {
+                                            items: [
+                                                { label: 'USD', value: 'USD' },
+                                                { label: 'EUR', value: 'EUR' },
+                                                { label: 'GBP', value: 'GBP' },
+                                                { label: 'INR', value: 'INR' },
+                                            ],
+                                        },
+                                    ],
+                                    selected: dropdownValue,
+                                    onSelect: handleDropdownSelect,
+                                }}
                                 title="Active Users"
                                 value="12,847"
                                 subtitle="current users"
@@ -522,6 +792,22 @@ const StatCardDemo = () => {
                             />
 
                             <StatCard
+                                dropdownProps={{
+                                    label: 'Currency',
+                                    placeholder: 'Currency',
+                                    items: [
+                                        {
+                                            items: [
+                                                { label: 'USD', value: 'USD' },
+                                                { label: 'EUR', value: 'EUR' },
+                                                { label: 'GBP', value: 'GBP' },
+                                                { label: 'INR', value: 'INR' },
+                                            ],
+                                        },
+                                    ],
+                                    selected: dropdownValue,
+                                    onSelect: handleDropdownSelect,
+                                }}
                                 title="Conversion Rate"
                                 value="3.8%"
                                 subtitle="vs last month"
@@ -535,6 +821,22 @@ const StatCardDemo = () => {
                             />
 
                             <StatCard
+                                dropdownProps={{
+                                    label: 'Currency',
+                                    placeholder: 'Currency',
+                                    items: [
+                                        {
+                                            items: [
+                                                { label: 'USD', value: 'USD' },
+                                                { label: 'EUR', value: 'EUR' },
+                                                { label: 'GBP', value: 'GBP' },
+                                                { label: 'INR', value: 'INR' },
+                                            ],
+                                        },
+                                    ],
+                                    selected: dropdownValue,
+                                    onSelect: handleDropdownSelect,
+                                }}
                                 title="Monthly Goal"
                                 value="85%"
                                 subtitle="$85,000 of $100,000"

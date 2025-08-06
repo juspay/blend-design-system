@@ -20,8 +20,15 @@ import {
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { ChangeType, StatCardVariant, type StatCardProps } from './types'
-import { useComponentToken } from '../../context/useComponentToken'
 import type { StatCardTokenType } from './statcard.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import {
+    SelectMenuSize,
+    SelectMenuVariant,
+    SingleSelect,
+} from '../SingleSelect'
 
 const StatCard = ({
     title,
@@ -34,8 +41,15 @@ const StatCard = ({
     titleIcon,
     actionIcon,
     helpIconText,
+    dropdownProps,
 }: StatCardProps) => {
-    const statCardToken = useComponentToken('STAT_CARD') as StatCardTokenType
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakPointLabel === 'sm'
+
+    const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
+
+    const { label, placeholder, items, selected, onSelect } =
+        dropdownProps || {}
 
     const gradientId = useMemo(
         () => `colorGradient-${Math.random().toString(36).slice(2, 11)}`,
@@ -175,10 +189,11 @@ const StatCard = ({
             // gap={statCardToken.gap}
             justifyContent="space-between"
             data-statcard-variant={normalizedVariant}
+            maxWidth={isSmallScreen ? '200px' : '350px'}
         >
             {effectiveVariant !== StatCardVariant.NUMBER && (
                 <Block display="flex" gap={statCardToken.header.gap}>
-                    {titleIcon && (
+                    {titleIcon && !isSmallScreen && (
                         <Block
                             width={statCardToken.header.titleIcon.width}
                             height={statCardToken.header.titleIcon.height}
@@ -210,7 +225,11 @@ const StatCard = ({
                             >
                                 <Text
                                     as="span"
-                                    variant="body.md"
+                                    fontSize={
+                                        statCardToken.header.title[
+                                            effectiveVariant
+                                        ].fontSize
+                                    }
                                     fontWeight={
                                         statCardToken.header.title[
                                             effectiveVariant
@@ -250,7 +269,7 @@ const StatCard = ({
                                     </Block>
                                 )}
                             </Block>
-                            {actionIcon && (
+                            {actionIcon && !isSmallScreen && (
                                 <Block
                                     display="flex"
                                     alignItems="center"
@@ -317,22 +336,40 @@ const StatCard = ({
                                     </Block>
                                 )}
                             </Block>
-                            <Text
-                                as="span"
-                                variant="body.sm"
-                                color={
-                                    statCardToken.stats.subtitle[
-                                        effectiveVariant
-                                    ].color
-                                }
-                                fontWeight={
-                                    statCardToken.stats.subtitle[
-                                        effectiveVariant
-                                    ].fontWeight
-                                }
-                            >
-                                {subtitle}
-                            </Text>
+                            {!isSmallScreen && (
+                                <Text
+                                    as="span"
+                                    fontSize={
+                                        statCardToken.stats.subtitle[
+                                            effectiveVariant
+                                        ].fontSize
+                                    }
+                                    color={
+                                        statCardToken.stats.subtitle[
+                                            effectiveVariant
+                                        ].color
+                                    }
+                                    fontWeight={
+                                        statCardToken.stats.subtitle[
+                                            effectiveVariant
+                                        ].fontWeight
+                                    }
+                                >
+                                    {subtitle}
+                                </Text>
+                            )}
+                            {isSmallScreen && (
+                                <SingleSelect
+                                    label={label || ''}
+                                    placeholder={placeholder || ''}
+                                    items={items || []}
+                                    selected={selected || ''}
+                                    onSelect={onSelect || (() => {})}
+                                    variant={SelectMenuVariant.NO_CONTAINER}
+                                    useDrawerOnMobile={false}
+                                    size={SelectMenuSize.SMALL}
+                                />
+                            )}
                         </Block>
                     </Block>
                 </Block>
@@ -343,17 +380,17 @@ const StatCard = ({
                     display="flex"
                     flexDirection="column"
                     height="100%"
-                    alignItems="center"
+                    alignItems={isSmallScreen ? 'flex-start' : 'center'}
                     justifyContent="center"
                     gap={statCardToken.headerStatGap.gap}
                 >
                     <Block
                         display="flex"
                         flexDirection="column"
-                        alignItems="center"
+                        alignItems={'center'}
                         gap={statCardToken.header.titleIcon.marginBottom}
                     >
-                        {titleIcon && (
+                        {titleIcon && !isSmallScreen && (
                             <Block
                                 display="flex"
                                 alignItems="center"
@@ -372,7 +409,10 @@ const StatCard = ({
                         >
                             <Text
                                 as="span"
-                                variant="body.md"
+                                fontSize={
+                                    statCardToken.header.title[effectiveVariant]
+                                        .fontSize
+                                }
                                 fontWeight={
                                     statCardToken.header.title[effectiveVariant]
                                         .fontWeight
@@ -424,7 +464,10 @@ const StatCard = ({
                         >
                             <Text
                                 as="span"
-                                variant="heading.xl"
+                                fontSize={
+                                    statCardToken.stats.value[effectiveVariant]
+                                        .fontSize
+                                }
                                 fontWeight={
                                     statCardToken.stats.value[effectiveVariant]
                                         .fontWeight
@@ -451,7 +494,10 @@ const StatCard = ({
                                                 : statCardToken.stats.change
                                                       .text.decrease.color
                                         }
-                                        variant="body.sm"
+                                        fontSize={
+                                            statCardToken.stats.change.text
+                                                .fontSize
+                                        }
                                         fontWeight={
                                             statCardToken.stats.change.text
                                                 .fontWeight
@@ -462,20 +508,37 @@ const StatCard = ({
                                 </Block>
                             )}
                         </Block>
-                        <Text
-                            as="span"
-                            variant="body.sm"
-                            color={
-                                statCardToken.stats.subtitle[effectiveVariant]
-                                    .color
-                            }
-                            fontWeight={
-                                statCardToken.stats.subtitle[effectiveVariant]
-                                    .fontWeight
-                            }
-                        >
-                            {subtitle}
-                        </Text>
+                        {!isSmallScreen && (
+                            <Text
+                                as="span"
+                                variant="body.sm"
+                                color={
+                                    statCardToken.stats.subtitle[
+                                        effectiveVariant
+                                    ].color
+                                }
+                                fontWeight={
+                                    statCardToken.stats.subtitle[
+                                        effectiveVariant
+                                    ].fontWeight
+                                }
+                            >
+                                {subtitle}
+                            </Text>
+                        )}
+
+                        {isSmallScreen && (
+                            <SingleSelect
+                                label={label || ''}
+                                placeholder={placeholder || ''}
+                                items={items || []}
+                                selected={selected || ''}
+                                onSelect={onSelect || (() => {})}
+                                variant={SelectMenuVariant.NO_CONTAINER}
+                                useDrawerOnMobile={false}
+                                size={SelectMenuSize.SMALL}
+                            />
+                        )}
                     </Block>
                 </Block>
             )}

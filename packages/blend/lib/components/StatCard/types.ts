@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { SingleSelectProps } from '../SingleSelect'
 
 export enum StatCardVariant {
     LINE = 'line',
@@ -34,4 +35,5 @@ export type StatCardProps = {
     titleIcon?: ReactNode
     actionIcon?: ReactNode
     helpIconText?: string
+    dropdownProps?: SingleSelectProps
 }
