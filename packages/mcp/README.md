@@ -102,12 +102,14 @@ Or if you have blend-v1 installed as a dependency:
             ],
             "env": {
                 "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1",
-                "BLEND_LIBRARY_PATH": "./node_modules/blend-v1/lib/components"
+                "BLEND_LIBRARY_PATH": "./node_modules/blend-v1/dist/components"
             }
         }
     }
 }
 ```
+
+**Note**: When using blend-v1 as an npm package, the components are typically located in `./node_modules/blend-v1/dist/components` rather than `lib/components`. The MCP server will automatically try both paths, but you can set the correct one explicitly using the `BLEND_LIBRARY_PATH` environment variable.
 
 #### VS Code with Continue/Cline
 
@@ -322,6 +324,40 @@ For issues and questions:
 - Ensure you're using the latest version
 
 ## Changelog
+
+### v1.0.5
+
+- **Enhanced TypeScript parser**: Now supports `.tsx` types files and multiple naming patterns
+- **Improved component coverage**: Fixed parsing for Charts (13 props), Tags (9 props), and other components
+- **Better pattern matching**: Handles `ChartsProps`, `ComponentV2Props`, and other naming variations
+- **Increased success rate**: Now successfully parses 97.1% of components (33/34, excluding Primitives collection)
+- **Added test suite**: Comprehensive testing script to validate parser against all components
+
+### v1.0.4
+
+- **MAJOR IMPROVEMENT**: Added TypeScript parser for accurate component prop extraction
+- **Fixed prop value formatting**: String props now correctly include quotes (e.g., `title="Total Revenue"` instead of `title={Total Revenue}`)
+- **Enhanced component information**: Now includes ThemeProvider requirements, enums, and nested types
+- **Improved accuracy**: Props are now extracted directly from TypeScript source files when available
+- **Better error handling**: Graceful fallback from TypeScript parsing to embedded metadata
+- **Added context awareness**: Components that require ThemeProvider are now properly documented
+
+### v1.0.3
+
+- Removed Text component from the available components list
+- Updated scaffolding functions to use HTML h2 elements instead of Text component
+- Fixed modal example to use standard HTML p element instead of Text component
+
+### v1.0.2
+
+- Fixed path resolution for npm package installations (`./node_modules/blend-v1/dist/components`)
+- Enhanced fallback logic to gracefully handle library path errors
+- Improved error handling for better reliability across different repository setups
+- Updated documentation with correct path configurations
+
+### v1.0.1
+
+- Bug fixes and stability improvements
 
 ### v1.0.0
 

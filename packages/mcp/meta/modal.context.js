@@ -18,7 +18,7 @@ const modalMeta = {
         {
             title: 'Modal with Content',
             description: 'Modal with title and content',
-            code: '<Modal isOpen={true} title="Confirm Action">\n  <Text>Are you sure you want to proceed?</Text>\n</Modal>',
+            code: '<Modal isOpen={true} title="Confirm Action">\n  <p>Are you sure you want to proceed?</p>\n</Modal>',
         },
     ],
     props: [

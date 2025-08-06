@@ -13,6 +13,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import { getComponentMeta, hasComponentMeta } from './metaReader.js'
+import { parseComponentFromSource, getAvailableComponents } from './tsParser.js'
 
 // Get the directory of the current module
 const __filename = fileURLToPath(import.meta.url)
@@ -42,6 +43,13 @@ function findBlendLibraryPath() {
             process.cwd(),
             'node_modules',
             'blend-v1',
+            'dist',
+            'components'
+        ),
+        path.join(
+            process.cwd(),
+            'node_modules',
+            'blend-v1',
             'lib',
             'components'
         ),
@@ -62,17 +70,21 @@ const BLEND_LIBRARY_PACKAGE_NAME =
     process.env.BLEND_LIBRARY_PACKAGE_NAME || 'blend-v1'
 
 if (!BLEND_LIBRARY_PATH) {
-    console.error(`[ERROR] Could not find Blend library components directory.`)
     console.error(
-        `Please set the BLEND_LIBRARY_PATH environment variable to the path containing Blend components.`
+        `[WARNING] Could not find Blend library components directory.`
+    )
+    console.error(`The MCP server will work with embedded metadata only.`)
+    console.error(
+        `For full functionality, install blend-v1: npm install blend-v1`
     )
     console.error(
-        `Example: export BLEND_LIBRARY_PATH="/path/to/blend/lib/components"`
+        `Or set BLEND_LIBRARY_PATH: export BLEND_LIBRARY_PATH="/path/to/blend/lib/components"`
     )
-    process.exit(1)
+    // Don't exit - continue with embedded metadata
+} else {
+    console.error(`[INFO] Using Blend library path: ${BLEND_LIBRARY_PATH}`)
 }
 
-console.error(`[INFO] Using Blend library path: ${BLEND_LIBRARY_PATH}`)
 console.error(`[INFO] Using Blend package name: ${BLEND_LIBRARY_PACKAGE_NAME}`)
 
 function formatPropValue(value, propTypeString) {
@@ -450,9 +462,9 @@ function generateFintechKpiSummaryWithChart(options, includeImports) {
 
     let code = `
 <div>
-  <Text variant="heading.lg" style={{ marginBottom: '20px' }}>
+  <h2 style={{ marginBottom: '20px', fontSize: '1.5rem', fontWeight: '600' }}>
     ${title}
-  </Text>
+  </h2>
   <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '30px' }}>
 ${kpiCardsString}
   </div>
@@ -462,7 +474,7 @@ ${chartString}
 </div>`
 
     if (includeImports) {
-        const imports = `import { Text, StatCard, Charts, StatCardVariant, ChangeType, ChartType } from "${BLEND_LIBRARY_PACKAGE_NAME}";\n\n`
+        const imports = `import { StatCard, Charts, StatCardVariant, ChangeType, ChartType } from "${BLEND_LIBRARY_PACKAGE_NAME}";\n\n`
         code = imports + code
     }
     return code.trim()
@@ -608,9 +620,9 @@ function generateTransactionListWithControls(options, includeImports) {
 
     let code = `
 <div>
-  <Text variant="heading.lg" style={{ marginBottom: '20px' }}>
+  <h2 style={{ marginBottom: '20px', fontSize: '1.5rem', fontWeight: '600' }}>
     ${title}
-  </Text>
+  </h2>
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
 ${filterControlsString}
@@ -623,7 +635,7 @@ ${mainActionsString}
 </div>`
 
     if (includeImports) {
-        const usedComponents = new Set(['Text', 'DataTable'])
+        const usedComponents = new Set(['DataTable'])
         filters.forEach((f) => usedComponents.add(f.type))
         mainActions.forEach((a) => usedComponents.add(a.component))
         if (Array.from(usedComponents).some((c) => c === 'Button')) {
@@ -766,12 +778,42 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     switch (request.params.name) {
         case 'list_blend_components': {
             try {
-                const entries = fs.readdirSync(BLEND_LIBRARY_PATH, {
-                    withFileTypes: true,
-                })
-                const componentNames = entries
-                    .filter((entry) => entry.isDirectory())
-                    .map((entry) => entry.name)
+                let componentNames = []
+
+                // Try library path first using TypeScript parser
+                if (BLEND_LIBRARY_PATH) {
+                    try {
+                        componentNames =
+                            getAvailableComponents(BLEND_LIBRARY_PATH)
+                        // Filter out Text component as requested
+                        componentNames = componentNames.filter(
+                            (name) => name !== 'Text'
+                        )
+                    } catch (libraryError) {
+                        console.warn(
+                            `Failed to read library path: ${libraryError.message}`
+                        )
+                        // Continue to fallback
+                    }
+                }
+
+                // Fallback to embedded metadata if library path failed or is empty
+                if (componentNames.length === 0) {
+                    const metaDir = path.join(__dirname, 'meta')
+                    if (fs.existsSync(metaDir)) {
+                        const metaFiles = fs.readdirSync(metaDir)
+                        componentNames = metaFiles
+                            .filter((file) => file.endsWith('.context.js'))
+                            .map((file) => {
+                                const baseName = file.replace('.context.js', '')
+                                return (
+                                    baseName.charAt(0).toUpperCase() +
+                                    baseName.slice(1)
+                                )
+                            })
+                    }
+                }
+
                 return {
                     content: [
                         { type: 'text', text: JSON.stringify(componentNames) },
@@ -792,7 +834,49 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     'Missing componentName argument.'
                 )
 
-            // Try meta-based approach first
+            // Try TypeScript parser first if library path is available
+            if (BLEND_LIBRARY_PATH) {
+                try {
+                    const componentData = await parseComponentFromSource(
+                        componentName,
+                        BLEND_LIBRARY_PATH
+                    )
+
+                    const propsData = {
+                        componentDescription:
+                            componentData.componentDescription,
+                        requiresThemeProvider:
+                            componentData.requiresThemeProvider,
+                        enums: componentData.enums,
+                        nestedTypes: componentData.nestedTypes,
+                        props: componentData.props.map((prop) => ({
+                            name: prop.propName,
+                            type: prop.propType,
+                            required: prop.required,
+                            description: prop.propDescription,
+                            category: prop.category,
+                            defaultValue: prop.propDefault,
+                        })),
+                        usageExamples: componentData.usageExamples,
+                    }
+
+                    return {
+                        content: [
+                            {
+                                type: 'text',
+                                text: JSON.stringify(propsData, null, 2),
+                            },
+                        ],
+                    }
+                } catch (tsError) {
+                    console.warn(
+                        `TypeScript parsing failed for ${componentName}: ${tsError.message}`
+                    )
+                    // Fall back to meta-based approach
+                }
+            }
+
+            // Fallback to meta-based approach
             if (hasComponentMeta(componentName)) {
                 try {
                     const propsData =
@@ -814,7 +898,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             } else {
                 throw new McpError(
                     ErrorCode.InvalidParams,
-                    `No meta file found for component ${componentName}`
+                    `No component information found for ${componentName}`
                 )
             }
         }
