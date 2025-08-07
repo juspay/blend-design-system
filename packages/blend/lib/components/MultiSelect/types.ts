@@ -85,6 +85,9 @@ export type MultiSelectProps = {
     side?: MultiSelectMenuSide
     sideOffset?: number
     alignOffset?: number
+
+    // inline
+    inline?: boolean
 }
 
 // Multi Select Menu Dropdpown

@@ -482,7 +482,6 @@ const SingleSelect = ({
                         trigger={
                             <PrimitiveButton
                                 position="relative"
-                                maxHeight={singleSelectTokens.trigger.height}
                                 width={'100%'}
                                 display="flex"
                                 alignItems="center"
@@ -493,6 +492,11 @@ const SingleSelect = ({
                                 boxShadow={
                                     singleSelectTokens.trigger.boxShadow[
                                         variant
+                                    ]
+                                }
+                                outline={
+                                    singleSelectTokens.trigger.outline[variant][
+                                        open ? 'open' : 'closed'
                                     ]
                                 }
                                 {...((!inline ||
@@ -506,6 +510,8 @@ const SingleSelect = ({
                                             open ? 'open' : 'closed'
                                         ],
                                     height: singleSelectTokens.trigger.height,
+                                    maxHeight:
+                                        singleSelectTokens.trigger.height,
                                     _hover: {
                                         outline:
                                             singleSelectTokens.trigger.outline[
@@ -527,11 +533,6 @@ const SingleSelect = ({
                                                 .focus,
                                     },
                                 })}
-                                outline={
-                                    singleSelectTokens.trigger.outline[variant][
-                                        open ? 'open' : 'closed'
-                                    ]
-                                }
                             >
                                 <Block
                                     display="flex"
