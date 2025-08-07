@@ -107,16 +107,17 @@ const SingleSelect = ({
     if (isMobile && useDrawerOnMobile) {
         return (
             <Block width="100%" display="flex" flexDirection="column" gap={8}>
-                {variant === SelectMenuVariant.CONTAINER && (
-                    <InputLabels
-                        label={label}
-                        sublabel={subLabel}
-                        disabled={disabled}
-                        helpIconHintText={helpIconText}
-                        name={name}
-                        required={required}
-                    />
-                )}
+                {variant === SelectMenuVariant.CONTAINER &&
+                    (!isSmallScreen || size !== SelectMenuSize.LARGE) && (
+                        <InputLabels
+                            label={label}
+                            sublabel={subLabel}
+                            disabled={disabled}
+                            helpIconHintText={helpIconText}
+                            name={name}
+                            required={required}
+                        />
+                    )}
 
                 <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
                     <DrawerTrigger>
@@ -137,6 +138,7 @@ const SingleSelect = ({
                                 isSmallScreenWithLargeSize
                             }
                             isItemSelected={isItemSelected}
+                            inline={inline}
                         />
                     </DrawerTrigger>
 

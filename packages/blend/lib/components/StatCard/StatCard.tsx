@@ -364,7 +364,6 @@ const StatCard = ({
                                     selected={selected || ''}
                                     onSelect={onSelect || (() => {})}
                                     variant={SelectMenuVariant.NO_CONTAINER}
-                                    useDrawerOnMobile={false}
                                     size={SelectMenuSize.SMALL}
                                     inline={true}
                                     minWidth={100}
@@ -537,7 +536,6 @@ const StatCard = ({
                                 selected={selected || ''}
                                 onSelect={onSelect || (() => {})}
                                 variant={SelectMenuVariant.NO_CONTAINER}
-                                useDrawerOnMobile={false}
                                 size={SelectMenuSize.SMALL}
                                 inline={true}
                                 minWidth={100}

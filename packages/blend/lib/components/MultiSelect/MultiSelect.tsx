@@ -94,16 +94,17 @@ const MultiSelect = ({
     if (isMobile && useDrawerOnMobile) {
         return (
             <Block width="100%" display="flex" flexDirection="column" gap={8}>
-                {variant === MultiSelectVariant.CONTAINER && (
-                    <InputLabels
-                        label={label}
-                        sublabel={sublabel}
-                        disabled={disabled}
-                        helpIconHintText={helpIconHintText}
-                        name={name}
-                        required={required}
-                    />
-                )}
+                {variant === MultiSelectVariant.CONTAINER &&
+                    (!isSmallScreen || size !== MultiSelectMenuSize.LARGE) && (
+                        <InputLabels
+                            label={label}
+                            sublabel={sublabel}
+                            disabled={disabled}
+                            helpIconHintText={helpIconHintText}
+                            name={name}
+                            required={required}
+                        />
+                    )}
 
                 <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
                     <DrawerTrigger>
