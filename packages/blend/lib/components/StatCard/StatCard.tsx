@@ -82,8 +82,7 @@ const StatCard = ({
                             '14'
                     )}
                     style={{
-                        marginRight:
-                            statCardToken.stats.change.arrow.marginRight,
+                        margin: statCardToken.stats.change.arrow.margin,
                     }}
                 />
             ) : (
@@ -93,15 +92,18 @@ const StatCard = ({
                             '14'
                     )}
                     style={{
-                        marginRight:
-                            statCardToken.stats.change.arrow.marginRight,
+                        margin: statCardToken.stats.change.arrow.margin,
                     }}
                 />
             )}
             <Text
                 as="span"
-                fontSize={statCardToken.stats.change.text.fontSize}
-                fontWeight={statCardToken.stats.change.text.fontWeight}
+                fontSize={
+                    statCardToken.stats.change.text[change?.type].fontSize
+                }
+                fontWeight={
+                    statCardToken.stats.change.text[change?.type].fontWeight
+                }
             >
                 {change.value >= 0 ? '+' : ''}
                 {change.value.toFixed(2)}%
@@ -323,9 +325,8 @@ const StatCard = ({
                                 </Text>
                                 {formattedChange && (
                                     <Block
-                                        marginLeft={
-                                            statCardToken.stats.change
-                                                .marginLeft
+                                        margin={
+                                            statCardToken.stats.change.margin
                                         }
                                     >
                                         {formattedChange}
@@ -386,7 +387,7 @@ const StatCard = ({
                         display="flex"
                         flexDirection="column"
                         alignItems={'center'}
-                        gap={statCardToken.header.titleIcon.marginBottom}
+                        gap={16}
                     >
                         {titleIcon && !isSmallScreen && (
                             <Block
@@ -480,26 +481,27 @@ const StatCard = ({
                             </Text>
                             {formattedChange && (
                                 <Block
-                                    marginLeft={
-                                        statCardToken.stats.change.marginLeft
-                                    }
+                                    margin={statCardToken.stats.change.margin}
                                 >
                                     <Text
                                         as="span"
                                         color={
-                                            change?.type === ChangeType.INCREASE
-                                                ? statCardToken.stats.change
-                                                      .text.increase.color
-                                                : statCardToken.stats.change
-                                                      .text.decrease.color
+                                            statCardToken.stats.change.text[
+                                                change?.type ??
+                                                    ChangeType.INCREASE
+                                            ].color
                                         }
                                         fontSize={
-                                            statCardToken.stats.change.text
-                                                .fontSize
+                                            statCardToken.stats.change.text[
+                                                change?.type ??
+                                                    ChangeType.INCREASE
+                                            ].fontSize
                                         }
                                         fontWeight={
-                                            statCardToken.stats.change.text
-                                                .fontWeight
+                                            statCardToken.stats.change.text[
+                                                change?.type ??
+                                                    ChangeType.INCREASE
+                                            ].fontWeight
                                         }
                                     >
                                         {formattedChange}

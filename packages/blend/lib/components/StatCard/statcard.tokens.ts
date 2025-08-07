@@ -1,7 +1,8 @@
+import { toPixels } from './../../global-utils/GlobalUtils'
 //statcard.tokens.ts
 
 import type { CSSObject } from 'styled-components'
-import { StatCardVariant } from './types'
+import { ChangeType, StatCardVariant } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
@@ -25,7 +26,7 @@ export type StatCardTokenType = {
         titleIcon: {
             width: CSSObject['width']
             height: CSSObject['height']
-            marginBottom: CSSObject['marginBottom']
+            margin: CSSObject['margin']
         }
         title: {
             [key in StatCardVariant]: {
@@ -54,19 +55,16 @@ export type StatCardTokenType = {
             }
         }
         change: {
-            marginLeft: CSSObject['marginLeft']
+            margin: CSSObject['margin']
             arrow: {
                 width: CSSObject['width']
                 height: CSSObject['height']
-                marginRight: CSSObject['marginRight']
+                margin: CSSObject['margin']
             }
             text: {
-                fontSize: CSSObject['fontSize']
-                fontWeight: CSSObject['fontWeight']
-                increase: {
-                    color: CSSObject['color']
-                }
-                decrease: {
+                [key in ChangeType]: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
                     color: CSSObject['color']
                 }
             }
@@ -160,7 +158,7 @@ export const getStatCardToken = (
 ): ResponsiveStatCardTokens => {
     return {
         sm: {
-            maxWidth: '200px',
+            maxWidth: foundationToken.unit[200],
             height: 'auto',
             border: {
                 default: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
@@ -178,7 +176,7 @@ export const getStatCardToken = (
                 titleIcon: {
                     width: foundationToken.unit[20],
                     height: foundationToken.unit[20],
-                    marginBottom: foundationToken.unit[16],
+                    margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[16])} ${String(foundationToken.unit[0])}`,
                 },
                 title: {
                     [StatCardVariant.NUMBER]: {
@@ -203,8 +201,8 @@ export const getStatCardToken = (
                     },
                 },
                 helpIcon: {
-                    width: '16px',
-                    height: '16px',
+                    width: foundationToken.unit[16],
+                    height: foundationToken.unit[16],
                     color: foundationToken.colors.gray[400],
                 },
             },
@@ -236,19 +234,23 @@ export const getStatCardToken = (
                     },
                 },
                 change: {
-                    marginLeft: foundationToken.unit[8],
+                    margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[8])}`,
                     arrow: {
-                        width: '14px',
-                        height: '14px',
-                        marginRight: foundationToken.unit[2],
+                        width: foundationToken.unit[14],
+                        height: foundationToken.unit[14],
+                        margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[2])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])}`,
                     },
                     text: {
-                        fontSize: foundationToken.font.size.body.xs.fontSize,
-                        fontWeight: foundationToken.font.weight[600],
                         increase: {
+                            fontSize:
+                                foundationToken.font.size.body.xs.fontSize,
+                            fontWeight: foundationToken.font.weight[600],
                             color: foundationToken.colors.green[600],
                         },
                         decrease: {
+                            fontSize:
+                                foundationToken.font.size.body.xs.fontSize,
+                            fontWeight: foundationToken.font.weight[600],
                             color: foundationToken.colors.red[600],
                         },
                     },
@@ -279,7 +281,7 @@ export const getStatCardToken = (
 
             // Chart section (all chart types)
             chart: {
-                height: '50px',
+                height: foundationToken.unit[50],
                 colors: {
                     line: {
                         increase: foundationToken.colors.green[500],
@@ -296,14 +298,19 @@ export const getStatCardToken = (
                     },
                 },
                 line: {
-                    strokeWidth: 2,
+                    strokeWidth: toPixels(foundationToken.unit[2]),
                     activeDot: {
-                        radius: 4,
+                        radius: toPixels(foundationToken.unit[4]),
                         fill: foundationToken.colors.gray[0],
                     },
                 },
                 bar: {
-                    radius: [2, 2, 0, 0],
+                    radius: [
+                        toPixels(foundationToken.unit[2]),
+                        toPixels(foundationToken.unit[2]),
+                        toPixels(foundationToken.unit[0]),
+                        toPixels(foundationToken.unit[0]),
+                    ],
                     fill: foundationToken.colors.primary[500],
                     activeBar: {
                         fill: foundationToken.colors.primary[100],
@@ -329,7 +336,7 @@ export const getStatCardToken = (
                 },
                 tooltip: {
                     cursor: {
-                        strokeDasharray: '6 5',
+                        strokeDasharray: `${foundationToken.unit[6]} ${foundationToken.unit[5]}`,
                         stroke: foundationToken.colors.gray[400],
                     },
                     container: {
@@ -349,8 +356,8 @@ export const getStatCardToken = (
             },
         },
         lg: {
-            maxWidth: '350px',
-            height: '190px',
+            maxWidth: foundationToken.unit[350],
+            height: foundationToken.unit[190],
             border: {
                 default: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             },
@@ -367,7 +374,7 @@ export const getStatCardToken = (
                 titleIcon: {
                     width: foundationToken.unit[20],
                     height: foundationToken.unit[20],
-                    marginBottom: foundationToken.unit[16],
+                    margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[16])} ${String(foundationToken.unit[0])}`,
                 },
                 title: {
                     [StatCardVariant.NUMBER]: {
@@ -392,8 +399,8 @@ export const getStatCardToken = (
                     },
                 },
                 helpIcon: {
-                    width: '16px',
-                    height: '16px',
+                    width: foundationToken.unit[16],
+                    height: foundationToken.unit[16],
                     color: foundationToken.colors.gray[400],
                 },
             },
@@ -425,20 +432,24 @@ export const getStatCardToken = (
                     },
                 },
                 change: {
-                    marginLeft: foundationToken.unit[8],
+                    margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[8])}`,
                     arrow: {
-                        width: '14px',
-                        height: '14px',
-                        marginRight: foundationToken.unit[2],
+                        width: foundationToken.unit[14],
+                        height: foundationToken.unit[14],
+                        margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[2])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])}`,
                     },
                     text: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[600],
                         increase: {
                             color: foundationToken.colors.green[600],
+                            fontSize:
+                                foundationToken.font.size.body.sm.fontSize,
+                            fontWeight: foundationToken.font.weight[600],
                         },
                         decrease: {
                             color: foundationToken.colors.red[600],
+                            fontSize:
+                                foundationToken.font.size.body.sm.fontSize,
+                            fontWeight: foundationToken.font.weight[600],
                         },
                     },
                 },
@@ -468,7 +479,7 @@ export const getStatCardToken = (
 
             // Chart section (all chart types)
             chart: {
-                height: '50px',
+                height: foundationToken.unit[50],
                 colors: {
                     line: {
                         increase: foundationToken.colors.green[500],
@@ -485,14 +496,19 @@ export const getStatCardToken = (
                     },
                 },
                 line: {
-                    strokeWidth: 2,
+                    strokeWidth: toPixels(foundationToken.unit[2]),
                     activeDot: {
-                        radius: 4,
+                        radius: toPixels(foundationToken.unit[4]),
                         fill: foundationToken.colors.gray[0],
                     },
                 },
                 bar: {
-                    radius: [2, 2, 0, 0],
+                    radius: [
+                        toPixels(foundationToken.unit[2]),
+                        toPixels(foundationToken.unit[2]),
+                        toPixels(foundationToken.unit[0]),
+                        toPixels(foundationToken.unit[0]),
+                    ],
                     fill: foundationToken.colors.primary[500],
                     activeBar: {
                         fill: foundationToken.colors.primary[100],
@@ -518,7 +534,7 @@ export const getStatCardToken = (
                 },
                 tooltip: {
                     cursor: {
-                        strokeDasharray: '6 5',
+                        strokeDasharray: `${foundationToken.unit[6]} ${foundationToken.unit[5]}`,
                         stroke: foundationToken.colors.gray[400],
                     },
                     container: {
