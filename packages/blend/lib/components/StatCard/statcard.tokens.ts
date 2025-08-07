@@ -1,4 +1,3 @@
-import { toPixels } from './../../global-utils/GlobalUtils'
 //statcard.tokens.ts
 
 import type { CSSObject } from 'styled-components'
@@ -98,12 +97,15 @@ export type StatCardTokenType = {
         line: {
             strokeWidth: CSSObject['strokeWidth']
             activeDot: {
-                radius: number
+                borderRadius: CSSObject['borderRadius']
                 fill: CSSObject['fill']
             }
         }
         bar: {
-            radius: number[]
+            borderTopRightRadius: CSSObject['borderTopRightRadius']
+            borderTopLeftRadius: CSSObject['borderTopLeftRadius']
+            borderBottomRightRadius: CSSObject['borderBottomRightRadius']
+            borderBottomLeftRadius: CSSObject['borderBottomLeftRadius']
             fill: CSSObject['fill']
             activeBar: {
                 fill: CSSObject['fill']
@@ -298,19 +300,17 @@ export const getStatCardToken = (
                     },
                 },
                 line: {
-                    strokeWidth: toPixels(foundationToken.unit[2]),
+                    strokeWidth: foundationToken.unit[2],
                     activeDot: {
-                        radius: toPixels(foundationToken.unit[4]),
+                        borderRadius: foundationToken.border.radius[4],
                         fill: foundationToken.colors.gray[0],
                     },
                 },
                 bar: {
-                    radius: [
-                        toPixels(foundationToken.unit[2]),
-                        toPixels(foundationToken.unit[2]),
-                        toPixels(foundationToken.unit[0]),
-                        toPixels(foundationToken.unit[0]),
-                    ],
+                    borderTopRightRadius: foundationToken.border.radius[2],
+                    borderTopLeftRadius: foundationToken.border.radius[2],
+                    borderBottomRightRadius: foundationToken.border.radius[0],
+                    borderBottomLeftRadius: foundationToken.border.radius[0],
                     fill: foundationToken.colors.primary[500],
                     activeBar: {
                         fill: foundationToken.colors.primary[100],
@@ -496,19 +496,18 @@ export const getStatCardToken = (
                     },
                 },
                 line: {
-                    strokeWidth: toPixels(foundationToken.unit[2]),
+                    strokeWidth: foundationToken.unit[2],
                     activeDot: {
-                        radius: toPixels(foundationToken.unit[4]),
+                        borderRadius: foundationToken.border.radius[4],
                         fill: foundationToken.colors.gray[0],
                     },
                 },
                 bar: {
-                    radius: [
-                        toPixels(foundationToken.unit[2]),
-                        toPixels(foundationToken.unit[2]),
-                        toPixels(foundationToken.unit[0]),
-                        toPixels(foundationToken.unit[0]),
-                    ],
+                    borderTopRightRadius: foundationToken.border.radius[2],
+                    borderTopLeftRadius: foundationToken.border.radius[2],
+                    borderBottomRightRadius: foundationToken.border.radius[0],
+                    borderBottomLeftRadius: foundationToken.border.radius[0],
+
                     fill: foundationToken.colors.primary[500],
                     activeBar: {
                         fill: foundationToken.colors.primary[100],

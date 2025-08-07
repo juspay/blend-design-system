@@ -29,6 +29,7 @@ import {
     SelectMenuVariant,
     SingleSelect,
 } from '../SingleSelect'
+import { toPixels } from '../../global-utils/GlobalUtils'
 
 const StatCard = ({
     title,
@@ -615,8 +616,10 @@ const StatCard = ({
                                         }
                                         fill={`url(#${gradientId})`}
                                         activeDot={{
-                                            r: statCardToken.chart.line
-                                                .activeDot.radius,
+                                            r: toPixels(
+                                                statCardToken.chart.line
+                                                    .activeDot.borderRadius
+                                            ),
                                             fill: statCardToken.chart.line
                                                 .activeDot.fill,
                                             stroke: lineColor,
@@ -652,14 +655,24 @@ const StatCard = ({
                                     <Bar
                                         dataKey="value"
                                         fill={statCardToken.chart.bar.fill}
-                                        radius={
-                                            statCardToken.chart.bar.radius as [
-                                                number,
-                                                number,
-                                                number,
-                                                number,
-                                            ]
-                                        }
+                                        radius={[
+                                            toPixels(
+                                                statCardToken.chart.bar
+                                                    .borderTopRightRadius
+                                            ),
+                                            toPixels(
+                                                statCardToken.chart.bar
+                                                    .borderTopLeftRadius
+                                            ),
+                                            toPixels(
+                                                statCardToken.chart.bar
+                                                    .borderBottomRightRadius
+                                            ),
+                                            toPixels(
+                                                statCardToken.chart.bar
+                                                    .borderBottomLeftRadius
+                                            ),
+                                        ]}
                                         isAnimationActive={false}
                                         activeBar={{
                                             fill: statCardToken.chart.bar
