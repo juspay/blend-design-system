@@ -298,11 +298,211 @@ export function getAvailableComponents(libraryPath) {
         }
 
         const entries = fs.readdirSync(libraryPath, { withFileTypes: true })
-        return entries
+        const allComponents = entries
             .filter((entry) => entry.isDirectory())
             .map((entry) => entry.name)
             .filter((name) => !name.startsWith('.')) // Filter out hidden directories
+
+        // Filter to only include components that are actually exported
+        return getExportedComponents(allComponents, libraryPath)
     } catch (error) {
         return []
     }
+}
+
+/**
+ * Filter components to only include those that are actually exported from the main library
+ */
+function getExportedComponents(allComponents, libraryPath) {
+    // Try to read main.ts to get the actual exports dynamically
+    try {
+        const mainTsPath = path.join(libraryPath, '..', 'main.ts')
+        if (fs.existsSync(mainTsPath)) {
+            const mainTsContent = fs.readFileSync(mainTsPath, 'utf-8')
+            const exportedDirectories = new Set() // Use Set to prevent duplicates
+
+            // Parse export statements to extract component directory names
+            const exportMatches = mainTsContent.matchAll(
+                /export \* from ['"`]\.\/components\/(\w+)['"`]/g
+            )
+            for (const match of exportMatches) {
+                exportedDirectories.add(match[1])
+            }
+
+            if (exportedDirectories.size > 0) {
+                // Get actual exported component names by reading index files
+                const actualComponents = new Set()
+
+                for (const componentDir of exportedDirectories) {
+                    const componentPath = path.join(libraryPath, componentDir)
+                    if (fs.existsSync(componentPath)) {
+                        const actualExports = getActualExportsFromComponent(
+                            componentPath,
+                            componentDir
+                        )
+                        actualExports.forEach((comp) =>
+                            actualComponents.add(comp)
+                        )
+                    }
+                }
+
+                return Array.from(actualComponents).sort()
+            }
+        }
+    } catch (error) {
+        console.warn(
+            'Could not read main.ts for dynamic exports, using static list'
+        )
+    }
+
+    // Fallback: Use exact mapping from main.ts exports
+    const mainTsExportMapping = {
+        Button: ['Button'],
+        ButtonGroup: ['ButtonGroup'],
+        Tabs: ['Tabs'],
+        SplitTag: ['SplitTag'],
+        Alert: ['Alert'],
+        Tags: ['Tag'], // Tags directory exports Tag component
+        Breadcrumb: ['Breadcrumb'],
+        Avatar: ['Avatar'],
+        AvatarGroup: ['AvatarGroup'],
+        Modal: ['Modal'],
+        Tooltip: ['Tooltip'],
+        Accordion: ['Accordion'],
+        Snackbar: ['Snackbar'],
+        Popover: ['Popover'],
+        Checkbox: ['Checkbox'],
+        Radio: ['Radio'],
+        Switch: ['Switch'],
+        Charts: ['Charts'],
+        DateRangePicker: ['DateRangePicker'],
+        StatCard: ['StatCard'],
+        Inputs: [
+            'TextInput',
+            'NumberInput',
+            'DropdownInput',
+            'SearchInput',
+            'OTPInput',
+            'UnitInput',
+            'MultiValueInput',
+            'TextArea',
+        ],
+        Menu: ['Menu'],
+        DataTable: ['DataTable'],
+        Sidebar: ['Sidebar'],
+        MultiSelect: ['MultiSelect'],
+        SingleSelect: ['SingleSelect'],
+        Slider: ['Slider'],
+        ProgressBar: ['ProgressBar'],
+        Drawer: ['Drawer'],
+    }
+
+    const exportedComponents = []
+    for (const [dir, components] of Object.entries(mainTsExportMapping)) {
+        if (allComponents.includes(dir)) {
+            exportedComponents.push(...components)
+        }
+    }
+
+    return [...new Set(exportedComponents)].sort() // Remove duplicates and sort
+}
+
+/**
+ * Check if a component is a main component (not a sub-component or utility)
+ */
+function isMainComponent(componentName) {
+    // Filter out sub-components and utility components
+    const subComponentPatterns = [
+        'Item', // AccordionItem
+        'Group', // RadioGroup, SwitchGroup (but keep ButtonGroup)
+        'Trigger', // MultiSelectTrigger
+        'Presets', // MobileDrawerPresets
+        'Utils', // Various utils
+        'Helper', // Helper components
+    ]
+
+    // Special cases to keep
+    const keepComponents = ['ButtonGroup', 'AvatarGroup']
+
+    if (keepComponents.includes(componentName)) {
+        return true
+    }
+
+    // Filter out components that match sub-component patterns
+    return !subComponentPatterns.some((pattern) =>
+        componentName.includes(pattern)
+    )
+}
+
+/**
+ * Get actual exported component names from a component directory
+ */
+function getActualExportsFromComponent(componentPath, componentDir) {
+    // Use exact mapping based on main.ts exports to avoid sub-components
+    const mainTsExportMapping = {
+        Button: ['Button'],
+        ButtonGroup: ['ButtonGroup'],
+        Tabs: ['Tabs'],
+        SplitTag: ['SplitTag'],
+        Alert: ['Alert'],
+        Tags: ['Tag'], // Tags directory exports Tag component
+        Breadcrumb: ['Breadcrumb'],
+        Avatar: ['Avatar'],
+        AvatarGroup: ['AvatarGroup'],
+        Modal: ['Modal'],
+        Tooltip: ['Tooltip'],
+        Accordion: ['Accordion'],
+        Snackbar: ['Snackbar'],
+        Popover: ['Popover'],
+        Checkbox: ['Checkbox'],
+        Radio: ['Radio'],
+        Switch: ['Switch'],
+        Charts: ['Charts'],
+        DateRangePicker: ['DateRangePicker'],
+        StatCard: ['StatCard'],
+        Inputs: [
+            'TextInput',
+            'NumberInput',
+            'DropdownInput',
+            'SearchInput',
+            'OTPInput',
+            'UnitInput',
+            'MultiValueInput',
+            'TextArea',
+        ],
+        Menu: ['Menu'],
+        DataTable: ['DataTable'],
+        Sidebar: ['Sidebar'],
+        MultiSelect: ['MultiSelect'],
+        SingleSelect: ['SingleSelect'],
+        Slider: ['Slider'],
+        ProgressBar: ['ProgressBar'],
+        Drawer: ['Drawer'],
+    }
+
+    return mainTsExportMapping[componentDir] || []
+}
+
+/**
+ * Check if a directory represents a valid component
+ */
+function isValidComponentDirectory(componentPath, componentDir) {
+    // Skip utility directories and type-only exports
+    if (
+        componentDir.toLowerCase().includes('type') ||
+        componentDir.toLowerCase().includes('util') ||
+        componentDir === 'types'
+    ) {
+        return false
+    }
+
+    // Check if it has a main component file
+    const possibleFiles = [
+        path.join(componentPath, `${componentDir}.tsx`),
+        path.join(componentPath, `${componentDir}.ts`),
+        path.join(componentPath, 'index.tsx'),
+        path.join(componentPath, 'index.ts'),
+    ]
+
+    return possibleFiles.some((file) => fs.existsSync(file))
 }

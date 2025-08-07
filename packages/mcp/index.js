@@ -14,6 +14,12 @@ import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import { getComponentMeta, hasComponentMeta } from './metaReader.js'
 import { parseComponentFromSource, getAvailableComponents } from './tsParser.js'
+import {
+    getComponentRelationship,
+    getPropDependencies,
+    isComplexComponent,
+    getRequiredChildren,
+} from './componentRelationships.js'
 
 // Get the directory of the current module
 const __filename = fileURLToPath(import.meta.url)
@@ -87,22 +93,48 @@ if (!BLEND_LIBRARY_PATH) {
 
 console.error(`[INFO] Using Blend package name: ${BLEND_LIBRARY_PACKAGE_NAME}`)
 
-function formatPropValue(value, propTypeString) {
+function formatPropValue(value, propTypeString, componentData = null) {
     const normalizedPropType = propTypeString
         ?.toLowerCase()
         .replace(/\s*\|\s*undefined$/, '')
         .trim()
 
     if (typeof value === 'string') {
+        // Handle enum values like ButtonType.PRIMARY
+        if (value.includes('.') && value.match(/^[A-Z][a-zA-Z]*\.[A-Z_]+$/)) {
+            return `{${value}}`
+        }
+
+        // Check if this is an enum value that needs to be formatted
+        if (componentData && componentData.enums) {
+            for (const [enumName, enumValues] of Object.entries(
+                componentData.enums
+            )) {
+                const enumValue = enumValues.find(
+                    (ev) => ev.value === value || ev.key === value
+                )
+                if (enumValue) {
+                    return `{${enumName}.${enumValue.key}}`
+                }
+            }
+        }
+
+        // Handle JSX expressions that are already wrapped
         if (value.startsWith('{') && value.endsWith('}')) {
             return value
         }
+
+        // Handle string literals - always wrap in quotes for string types
         if (
             normalizedPropType === 'string' ||
+            normalizedPropType?.includes('string') ||
+            !normalizedPropType ||
             (normalizedPropType && normalizedPropType.includes("'"))
         ) {
             return `"${value.replace(/"/g, '\\"')}"`
         }
+
+        // For other types, wrap in JSX expression
         return `{${value}}`
     }
 
@@ -216,10 +248,100 @@ async function getBlendComponentPropsFromMeta(componentName) {
     }
 }
 
+// Enhanced component generation with smart logic
+function generateSmartComponent(
+    componentName,
+    componentProps,
+    childrenInput,
+    componentData = null
+) {
+    // Check if this is a complex component that needs special handling
+    const relationship = getComponentRelationship(componentName)
+
+    if (relationship && relationship.type === 'container' && !childrenInput) {
+        // Auto-generate children for container components like Accordion
+        return generateContainerComponent(
+            componentName,
+            componentProps,
+            relationship,
+            componentData
+        )
+    }
+
+    // For regular components, use enhanced generation with component data
+    return _generateSingleComponentJSX(
+        componentName,
+        componentProps,
+        childrenInput,
+        componentData
+    )
+}
+
+function generateContainerComponent(
+    componentName,
+    componentProps,
+    relationship,
+    componentData
+) {
+    // Generate default children based on relationship configuration
+    const defaultChildren = []
+    const childCount = relationship.defaultChildCount || 2
+
+    for (let i = 0; i < childCount; i++) {
+        const childComponentName = relationship.requiredChildren[0] // Use first required child type
+        const childConfig = relationship.childProps[childComponentName]
+
+        if (childConfig) {
+            const childProps = {}
+
+            // Generate required props
+            childConfig.required.forEach((propName) => {
+                if (childConfig.defaults && childConfig.defaults[propName]) {
+                    const defaultFunc = childConfig.defaults[propName]
+                    childProps[propName] =
+                        typeof defaultFunc === 'function'
+                            ? defaultFunc(i)
+                            : defaultFunc
+                }
+            })
+
+            // Generate suggested props
+            if (childConfig.suggested) {
+                childConfig.suggested.forEach((propName) => {
+                    if (
+                        childConfig.defaults &&
+                        childConfig.defaults[propName]
+                    ) {
+                        const defaultFunc = childConfig.defaults[propName]
+                        childProps[propName] =
+                            typeof defaultFunc === 'function'
+                                ? defaultFunc(i)
+                                : defaultFunc
+                    }
+                })
+            }
+
+            defaultChildren.push({
+                componentName: childComponentName,
+                props: childProps,
+                children: childProps.children || null,
+            })
+        }
+    }
+
+    return _generateSingleComponentJSX(
+        componentName,
+        componentProps,
+        defaultChildren,
+        componentData
+    )
+}
+
 function _generateSingleComponentJSX(
     componentName,
     componentProps,
-    childrenInput
+    childrenInput,
+    componentData = null
 ) {
     if (!componentName || typeof componentName !== 'string') {
         throw new McpError(
@@ -234,12 +356,25 @@ function _generateSingleComponentJSX(
         )
     }
 
+    // Validate prop combinations
+    const warnings = validatePropCombinations(componentName, componentProps)
+    if (warnings.length > 0) {
+        console.warn(
+            `[WARNING] ${componentName} prop issues:`,
+            warnings.join(', ')
+        )
+    }
+
     let propsString = ''
     for (const [key, value] of Object.entries(componentProps)) {
         if (typeof value === 'boolean' && value === true) {
             propsString += ` ${key}`
         } else {
-            propsString += ` ${key}=${formatPropValue(value)}`
+            // Get prop type for better formatting
+            const propType = componentData?.props?.find(
+                (p) => p.propName === key
+            )?.propType
+            propsString += ` ${key}=${formatPropValue(value, propType, componentData)}`
         }
     }
 
@@ -260,7 +395,8 @@ function _generateSingleComponentJSX(
                     _generateSingleComponentJSX(
                         childReq.componentName,
                         childReq.props,
-                        childReq.children
+                        childReq.children,
+                        componentData
                     )
                         .split('\n')
                         .map((line) => `  ${line}`)
@@ -277,6 +413,54 @@ function _generateSingleComponentJSX(
         componentCode += ` />`
     }
     return componentCode
+}
+
+// Prop validation function
+function validatePropCombinations(componentName, props) {
+    const dependencies = getPropDependencies(componentName)
+    const warnings = []
+
+    Object.entries(dependencies).forEach(([propName, rule]) => {
+        if (rule.required && !props[propName]) {
+            warnings.push(`Missing required prop: ${propName}`)
+        }
+
+        if (rule.suggested && !props[propName]) {
+            warnings.push(
+                `Suggested prop missing: ${propName} (${rule.description || 'recommended for better functionality'})`
+            )
+        }
+
+        if (rule.affects && props[propName]) {
+            const affectedProp = rule.affects
+            if (propName === 'isMultiple' && props[propName] === true) {
+                if (props.value && typeof props.value === 'string') {
+                    warnings.push(
+                        `When isMultiple=true, value should be an array, not string`
+                    )
+                }
+            }
+        }
+    })
+
+    return warnings
+}
+
+// Enhanced import generation with enum support
+function generateImportsWithEnums(componentNames, componentData) {
+    const imports = new Set(componentNames)
+
+    // Add enum imports based on component data
+    if (componentData?.enums) {
+        Object.keys(componentData.enums).forEach((enumName) => {
+            imports.add(enumName)
+        })
+    }
+
+    // Always add ThemeProvider
+    imports.add('ThemeProvider')
+
+    return `import { ${Array.from(imports).sort().join(', ')} } from "${BLEND_LIBRARY_PACKAGE_NAME}";`
 }
 
 function generateFintechKpiSummaryWithChart(options, includeImports) {
@@ -474,8 +658,11 @@ ${chartString}
 </div>`
 
     if (includeImports) {
-        const imports = `import { StatCard, Charts, StatCardVariant, ChangeType, ChartType } from "${BLEND_LIBRARY_PACKAGE_NAME}";\n\n`
-        code = imports + code
+        const imports = `import { StatCard, Charts, StatCardVariant, ChangeType, ChartType, ThemeProvider } from "${BLEND_LIBRARY_PACKAGE_NAME}";\n\n`
+        code = `${imports}<ThemeProvider>\n  ${code
+            .split('\n')
+            .map((line) => `  ${line}`)
+            .join('\n')}\n</ThemeProvider>`
     }
     return code.trim()
 }
@@ -641,8 +828,12 @@ ${mainActionsString}
         if (Array.from(usedComponents).some((c) => c === 'Button')) {
             usedComponents.add('ButtonType')
         }
+        usedComponents.add('ThemeProvider')
         const imports = `import { ${Array.from(usedComponents).sort().join(', ')} } from "${BLEND_LIBRARY_PACKAGE_NAME}";\n\n`
-        code = imports + code
+        code = `${imports}<ThemeProvider>\n  ${code
+            .split('\n')
+            .map((line) => `  ${line}`)
+            .join('\n')}\n</ThemeProvider>`
     }
     return code.trim()
 }
@@ -908,6 +1099,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 props: componentProps,
                 children,
                 includeImports = true,
+                includeThemeProvider = true,
             } = request.params.arguments
 
             if (!componentName || typeof componentName !== 'string')
@@ -921,24 +1113,62 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     'Missing or invalid props argument.'
                 )
 
-            let componentCode = _generateSingleComponentJSX(
+            // Get component data for enhanced generation
+            let componentData = null
+            if (BLEND_LIBRARY_PATH) {
+                try {
+                    componentData = await parseComponentFromSource(
+                        componentName,
+                        BLEND_LIBRARY_PATH
+                    )
+                } catch (error) {
+                    console.warn(
+                        `Could not parse component data for ${componentName}: ${error.message}`
+                    )
+                }
+            }
+
+            // Use smart component generation
+            let componentCode = generateSmartComponent(
                 componentName,
                 componentProps,
-                children
+                children,
+                componentData
             )
 
-            if (includeImports) {
-                const allComponentNames = new Set([componentName])
-                function collectComponentNames(childInput) {
-                    if (Array.isArray(childInput)) {
-                        childInput.forEach((child) => {
-                            allComponentNames.add(child.componentName)
-                            collectComponentNames(child.children)
-                        })
-                    }
+            // Collect all component names (including auto-generated children)
+            const allComponentNames = new Set([componentName])
+
+            function collectComponentNames(childInput) {
+                if (Array.isArray(childInput)) {
+                    childInput.forEach((child) => {
+                        allComponentNames.add(child.componentName)
+                        collectComponentNames(child.children)
+                    })
                 }
-                collectComponentNames(children)
-                componentCode = `import { ${Array.from(allComponentNames).sort().join(', ')} } from "${BLEND_LIBRARY_PACKAGE_NAME}";\n\n${componentCode}`
+            }
+            collectComponentNames(children)
+
+            // Add required children for complex components
+            const relationship = getComponentRelationship(componentName)
+            if (relationship && relationship.requiredChildren) {
+                relationship.requiredChildren.forEach((childName) => {
+                    allComponentNames.add(childName)
+                })
+            }
+
+            if (includeImports) {
+                // Generate enhanced imports with enums
+                let imports = generateImportsWithEnums(
+                    Array.from(allComponentNames),
+                    componentData
+                )
+
+                // Always wrap with ThemeProvider
+                componentCode = `${imports}\n\n<ThemeProvider>\n  ${componentCode
+                    .split('\n')
+                    .map((line) => `  ${line}`)
+                    .join('\n')}\n</ThemeProvider>`
             }
 
             return { content: [{ type: 'text', text: componentCode }] }

@@ -1,6 +1,6 @@
 {
     "name": "blend-mcp-server",
-    "version": "1.0.5",
+    "version": "1.1.1",
     "description": "MCP server for Blend design system - provides tools for generating React components and documentation",
     "type": "module",
     "bin": {
@@ -10,9 +10,11 @@
         "index.js",
         "metaReader.js",
         "tsParser.js",
+        "componentRelationships.js",
         "meta/",
         "README.md",
-        "PUBLISHING.md"
+        "PUBLISHING.md",
+        "USAGE_GUIDE.md"
     ],
     "scripts": {
         "build": "node -e \"require('fs').chmodSync('index.js', '755')\"",
