@@ -64,9 +64,13 @@ const unitTokens: UnitTokensType = {
     36: '36px',
     40: '40px',
     48: '48px',
+    50: '50px',
     52: '52px',
     56: '56px',
     64: '64px',
+    190: '190px',
+    200: '200px',
+    350: '350px',
     auto: 'auto',
 }
 

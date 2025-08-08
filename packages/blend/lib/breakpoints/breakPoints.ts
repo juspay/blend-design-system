@@ -3,6 +3,6 @@ export type BreakpointType = {
     lg: number
 }
 export const BREAKPOINTS: BreakpointType = {
-    sm: 380,
+    sm: 320,
     lg: 1024,
 }

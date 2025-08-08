@@ -79,6 +79,7 @@ const SingleSelect = ({
     minWidth,
     maxWidth,
     maxHeight,
+    inline = false,
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -106,16 +107,17 @@ const SingleSelect = ({
     if (isMobile && useDrawerOnMobile) {
         return (
             <Block width="100%" display="flex" flexDirection="column" gap={8}>
-                {variant === SelectMenuVariant.CONTAINER && (
-                    <InputLabels
-                        label={label}
-                        sublabel={subLabel}
-                        disabled={disabled}
-                        helpIconHintText={helpIconText}
-                        name={name}
-                        required={required}
-                    />
-                )}
+                {variant === SelectMenuVariant.CONTAINER &&
+                    (!isSmallScreen || size !== SelectMenuSize.LARGE) && (
+                        <InputLabels
+                            label={label}
+                            sublabel={subLabel}
+                            disabled={disabled}
+                            helpIconHintText={helpIconText}
+                            name={name}
+                            required={required}
+                        />
+                    )}
 
                 <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
                     <DrawerTrigger>
@@ -136,6 +138,7 @@ const SingleSelect = ({
                                 isSmallScreenWithLargeSize
                             }
                             isItemSelected={isItemSelected}
+                            inline={inline}
                         />
                     </DrawerTrigger>
 
@@ -444,8 +447,10 @@ const SingleSelect = ({
                 )}
             <Block
                 display="flex"
-                height={singleSelectTokens.trigger.height}
-                maxHeight={singleSelectTokens.trigger.height}
+                {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
+                    height: singleSelectTokens.trigger.height,
+                    maxHeight: singleSelectTokens.trigger.height,
+                })}
             >
                 <Block
                     width={
@@ -479,8 +484,6 @@ const SingleSelect = ({
                         trigger={
                             <PrimitiveButton
                                 position="relative"
-                                height={singleSelectTokens.trigger.height}
-                                maxHeight={singleSelectTokens.trigger.height}
                                 width={'100%'}
                                 display="flex"
                                 alignItems="center"
@@ -493,35 +496,45 @@ const SingleSelect = ({
                                         variant
                                     ]
                                 }
-                                paddingX={paddingX}
-                                paddingY={paddingY}
-                                backgroundColor={
-                                    singleSelectTokens.trigger.backgroundColor
-                                        .container[open ? 'open' : 'closed']
-                                }
                                 outline={
                                     singleSelectTokens.trigger.outline[variant][
                                         open ? 'open' : 'closed'
                                     ]
                                 }
-                                _hover={{
-                                    outline:
-                                        singleSelectTokens.trigger.outline[
-                                            variant
-                                        ].hover,
+                                {...((!inline ||
+                                    variant ===
+                                        SelectMenuVariant.CONTAINER) && {
+                                    paddingX: paddingX,
+                                    paddingY: paddingY,
                                     backgroundColor:
                                         singleSelectTokens.trigger
-                                            .backgroundColor.container.hover,
-                                }}
-                                _focus={{
-                                    outline:
-                                        singleSelectTokens.trigger.outline[
-                                            variant
-                                        ].focus,
-                                    backgroundColor:
-                                        singleSelectTokens.trigger
-                                            .backgroundColor.container.focus,
-                                }}
+                                            .backgroundColor.container[
+                                            open ? 'open' : 'closed'
+                                        ],
+                                    height: singleSelectTokens.trigger.height,
+                                    maxHeight:
+                                        singleSelectTokens.trigger.height,
+                                    _hover: {
+                                        outline:
+                                            singleSelectTokens.trigger.outline[
+                                                variant
+                                            ].hover,
+                                        backgroundColor:
+                                            singleSelectTokens.trigger
+                                                .backgroundColor.container
+                                                .hover,
+                                    },
+                                    _focus: {
+                                        outline:
+                                            singleSelectTokens.trigger.outline[
+                                                variant
+                                            ].focus,
+                                        backgroundColor:
+                                            singleSelectTokens.trigger
+                                                .backgroundColor.container
+                                                .focus,
+                                    },
+                                })}
                             >
                                 <Block
                                     display="flex"

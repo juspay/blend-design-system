@@ -34,6 +34,7 @@ export type DropdownInputProps = {
     onDropdownClose?: () => void
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
+    maxDropdownHeight?: number
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
     'size' | 'style' | 'className' | 'onBlur' | 'onFocus'

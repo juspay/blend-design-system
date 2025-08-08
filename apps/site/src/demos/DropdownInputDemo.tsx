@@ -339,6 +339,7 @@ const DropdownInputDemo = () => {
                                 onDropdownClose={() => {
                                     console.log('focus is not on dropdown')
                                 }}
+                                maxDropdownHeight={200}
                             />
                         </div>
                     </div>

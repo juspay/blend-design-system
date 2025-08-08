@@ -20,8 +20,16 @@ import {
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { ChangeType, StatCardVariant, type StatCardProps } from './types'
-import { useComponentToken } from '../../context/useComponentToken'
 import type { StatCardTokenType } from './statcard.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import {
+    SelectMenuSize,
+    SelectMenuVariant,
+    SingleSelect,
+} from '../SingleSelect'
+import { toPixels } from '../../global-utils/GlobalUtils'
 
 const StatCard = ({
     title,
@@ -34,8 +42,15 @@ const StatCard = ({
     titleIcon,
     actionIcon,
     helpIconText,
+    dropdownProps,
 }: StatCardProps) => {
-    const statCardToken = useComponentToken('STAT_CARD') as StatCardTokenType
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakPointLabel === 'sm'
+
+    const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
+
+    const { label, placeholder, items, selected, onSelect } =
+        dropdownProps || {}
 
     const gradientId = useMemo(
         () => `colorGradient-${Math.random().toString(36).slice(2, 11)}`,
@@ -52,7 +67,15 @@ const StatCard = ({
             : variant
 
     const formattedChange = change ? (
-        <Block display="flex" alignItems="center">
+        <Block
+            display="flex"
+            alignItems="center"
+            color={
+                change?.type === ChangeType.INCREASE
+                    ? statCardToken.stats.change.text.increase.color
+                    : statCardToken.stats.change.text.decrease.color
+            }
+        >
             {change.type === ChangeType.INCREASE ? (
                 <ArrowUp
                     size={parseInt(
@@ -60,8 +83,7 @@ const StatCard = ({
                             '14'
                     )}
                     style={{
-                        marginRight:
-                            statCardToken.stats.change.arrow.marginRight,
+                        margin: statCardToken.stats.change.arrow.margin,
                     }}
                 />
             ) : (
@@ -71,12 +93,19 @@ const StatCard = ({
                             '14'
                     )}
                     style={{
-                        marginRight:
-                            statCardToken.stats.change.arrow.marginRight,
+                        margin: statCardToken.stats.change.arrow.margin,
                     }}
                 />
             )}
-            <Text as="span">
+            <Text
+                as="span"
+                fontSize={
+                    statCardToken.stats.change.text[change?.type].fontSize
+                }
+                fontWeight={
+                    statCardToken.stats.change.text[change?.type].fontWeight
+                }
+            >
                 {change.value >= 0 ? '+' : ''}
                 {change.value.toFixed(2)}%
             </Text>
@@ -175,10 +204,11 @@ const StatCard = ({
             // gap={statCardToken.gap}
             justifyContent="space-between"
             data-statcard-variant={normalizedVariant}
+            maxWidth={isSmallScreen ? '200px' : '350px'}
         >
             {effectiveVariant !== StatCardVariant.NUMBER && (
                 <Block display="flex" gap={statCardToken.header.gap}>
-                    {titleIcon && (
+                    {titleIcon && !isSmallScreen && (
                         <Block
                             width={statCardToken.header.titleIcon.width}
                             height={statCardToken.header.titleIcon.height}
@@ -210,7 +240,11 @@ const StatCard = ({
                             >
                                 <Text
                                     as="span"
-                                    variant="body.md"
+                                    fontSize={
+                                        statCardToken.header.title[
+                                            effectiveVariant
+                                        ].fontSize
+                                    }
                                     fontWeight={
                                         statCardToken.header.title[
                                             effectiveVariant
@@ -250,7 +284,7 @@ const StatCard = ({
                                     </Block>
                                 )}
                             </Block>
-                            {actionIcon && (
+                            {actionIcon && !isSmallScreen && (
                                 <Block
                                     display="flex"
                                     alignItems="center"
@@ -266,6 +300,7 @@ const StatCard = ({
                             display="flex"
                             flexDirection="column"
                             alignItems="flex-start"
+                            gap={8}
                         >
                             <Block
                                 width="100%"
@@ -291,48 +326,49 @@ const StatCard = ({
                                 </Text>
                                 {formattedChange && (
                                     <Block
-                                        marginLeft={
-                                            statCardToken.stats.change
-                                                .marginLeft
+                                        margin={
+                                            statCardToken.stats.change.margin
                                         }
                                     >
-                                        <Text
-                                            as="span"
-                                            color={
-                                                change?.type ===
-                                                ChangeType.INCREASE
-                                                    ? statCardToken.stats.change
-                                                          .text.increase.color
-                                                    : statCardToken.stats.change
-                                                          .text.decrease.color
-                                            }
-                                            variant="body.sm"
-                                            fontWeight={
-                                                statCardToken.stats.change.text
-                                                    .fontWeight
-                                            }
-                                        >
-                                            {formattedChange}
-                                        </Text>
+                                        {formattedChange}
                                     </Block>
                                 )}
                             </Block>
-                            <Text
-                                as="span"
-                                variant="body.sm"
-                                color={
-                                    statCardToken.stats.subtitle[
-                                        effectiveVariant
-                                    ].color
-                                }
-                                fontWeight={
-                                    statCardToken.stats.subtitle[
-                                        effectiveVariant
-                                    ].fontWeight
-                                }
-                            >
-                                {subtitle}
-                            </Text>
+                            {!isSmallScreen && (
+                                <Text
+                                    as="span"
+                                    fontSize={
+                                        statCardToken.stats.subtitle[
+                                            effectiveVariant
+                                        ].fontSize
+                                    }
+                                    color={
+                                        statCardToken.stats.subtitle[
+                                            effectiveVariant
+                                        ].color
+                                    }
+                                    fontWeight={
+                                        statCardToken.stats.subtitle[
+                                            effectiveVariant
+                                        ].fontWeight
+                                    }
+                                >
+                                    {subtitle}
+                                </Text>
+                            )}
+                            {isSmallScreen && (
+                                <SingleSelect
+                                    label={label || ''}
+                                    placeholder={placeholder || ''}
+                                    items={items || []}
+                                    selected={selected || ''}
+                                    onSelect={onSelect || (() => {})}
+                                    variant={SelectMenuVariant.NO_CONTAINER}
+                                    size={SelectMenuSize.SMALL}
+                                    inline={true}
+                                    minWidth={100}
+                                />
+                            )}
                         </Block>
                     </Block>
                 </Block>
@@ -343,17 +379,17 @@ const StatCard = ({
                     display="flex"
                     flexDirection="column"
                     height="100%"
-                    alignItems="center"
+                    alignItems={isSmallScreen ? 'flex-start' : 'center'}
                     justifyContent="center"
                     gap={statCardToken.headerStatGap.gap}
                 >
                     <Block
                         display="flex"
                         flexDirection="column"
-                        alignItems="center"
-                        gap={statCardToken.header.titleIcon.marginBottom}
+                        alignItems={'center'}
+                        gap={16}
                     >
-                        {titleIcon && (
+                        {titleIcon && !isSmallScreen && (
                             <Block
                                 display="flex"
                                 alignItems="center"
@@ -372,7 +408,10 @@ const StatCard = ({
                         >
                             <Text
                                 as="span"
-                                variant="body.md"
+                                fontSize={
+                                    statCardToken.header.title[effectiveVariant]
+                                        .fontSize
+                                }
                                 fontWeight={
                                     statCardToken.header.title[effectiveVariant]
                                         .fontWeight
@@ -415,6 +454,7 @@ const StatCard = ({
                         display="flex"
                         flexDirection="column"
                         alignItems="center"
+                        gap={8}
                     >
                         <Block
                             width="100%"
@@ -424,7 +464,10 @@ const StatCard = ({
                         >
                             <Text
                                 as="span"
-                                variant="heading.xl"
+                                fontSize={
+                                    statCardToken.stats.value[effectiveVariant]
+                                        .fontSize
+                                }
                                 fontWeight={
                                     statCardToken.stats.value[effectiveVariant]
                                         .fontWeight
@@ -438,23 +481,27 @@ const StatCard = ({
                             </Text>
                             {formattedChange && (
                                 <Block
-                                    marginLeft={
-                                        statCardToken.stats.change.marginLeft
-                                    }
+                                    margin={statCardToken.stats.change.margin}
                                 >
                                     <Text
                                         as="span"
                                         color={
-                                            change?.type === ChangeType.INCREASE
-                                                ? statCardToken.stats.change
-                                                      .text.increase.color
-                                                : statCardToken.stats.change
-                                                      .text.decrease.color
+                                            statCardToken.stats.change.text[
+                                                change?.type ??
+                                                    ChangeType.INCREASE
+                                            ].color
                                         }
-                                        variant="body.sm"
+                                        fontSize={
+                                            statCardToken.stats.change.text[
+                                                change?.type ??
+                                                    ChangeType.INCREASE
+                                            ].fontSize
+                                        }
                                         fontWeight={
-                                            statCardToken.stats.change.text
-                                                .fontWeight
+                                            statCardToken.stats.change.text[
+                                                change?.type ??
+                                                    ChangeType.INCREASE
+                                            ].fontWeight
                                         }
                                     >
                                         {formattedChange}
@@ -462,20 +509,38 @@ const StatCard = ({
                                 </Block>
                             )}
                         </Block>
-                        <Text
-                            as="span"
-                            variant="body.sm"
-                            color={
-                                statCardToken.stats.subtitle[effectiveVariant]
-                                    .color
-                            }
-                            fontWeight={
-                                statCardToken.stats.subtitle[effectiveVariant]
-                                    .fontWeight
-                            }
-                        >
-                            {subtitle}
-                        </Text>
+                        {!isSmallScreen && (
+                            <Text
+                                as="span"
+                                variant="body.sm"
+                                color={
+                                    statCardToken.stats.subtitle[
+                                        effectiveVariant
+                                    ].color
+                                }
+                                fontWeight={
+                                    statCardToken.stats.subtitle[
+                                        effectiveVariant
+                                    ].fontWeight
+                                }
+                            >
+                                {subtitle}
+                            </Text>
+                        )}
+
+                        {isSmallScreen && (
+                            <SingleSelect
+                                label={label || ''}
+                                placeholder={placeholder || ''}
+                                items={items || []}
+                                selected={selected || ''}
+                                onSelect={onSelect || (() => {})}
+                                variant={SelectMenuVariant.NO_CONTAINER}
+                                size={SelectMenuSize.SMALL}
+                                inline={true}
+                                minWidth={100}
+                            />
+                        )}
                     </Block>
                 </Block>
             )}
@@ -549,8 +614,10 @@ const StatCard = ({
                                         }
                                         fill={`url(#${gradientId})`}
                                         activeDot={{
-                                            r: statCardToken.chart.line
-                                                .activeDot.radius,
+                                            r: toPixels(
+                                                statCardToken.chart.line
+                                                    .activeDot.borderRadius
+                                            ),
                                             fill: statCardToken.chart.line
                                                 .activeDot.fill,
                                             stroke: lineColor,
@@ -586,14 +653,24 @@ const StatCard = ({
                                     <Bar
                                         dataKey="value"
                                         fill={statCardToken.chart.bar.fill}
-                                        radius={
-                                            statCardToken.chart.bar.radius as [
-                                                number,
-                                                number,
-                                                number,
-                                                number,
-                                            ]
-                                        }
+                                        radius={[
+                                            toPixels(
+                                                statCardToken.chart.bar
+                                                    .borderTopRightRadius
+                                            ),
+                                            toPixels(
+                                                statCardToken.chart.bar
+                                                    .borderTopLeftRadius
+                                            ),
+                                            toPixels(
+                                                statCardToken.chart.bar
+                                                    .borderBottomRightRadius
+                                            ),
+                                            toPixels(
+                                                statCardToken.chart.bar
+                                                    .borderBottomLeftRadius
+                                            ),
+                                        ]}
                                         isAnimationActive={false}
                                         activeBar={{
                                             fill: statCardToken.chart.bar

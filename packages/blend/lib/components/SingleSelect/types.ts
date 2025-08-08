@@ -87,4 +87,5 @@ export type SingleSelectProps = {
     minWidth?: number
     maxWidth?: number
     maxHeight?: number
+    inline?: boolean
 }

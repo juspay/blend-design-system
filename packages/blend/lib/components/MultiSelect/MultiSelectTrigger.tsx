@@ -28,6 +28,7 @@ export type MultiSelectTriggerProps = {
     open: boolean
     onClick?: () => void
     multiSelectTokens: MultiSelectTokensType
+    inline?: boolean
 }
 const MultiSelectTrigger = ({
     selectedValues,
@@ -45,6 +46,7 @@ const MultiSelectTrigger = ({
     open,
     onClick,
     multiSelectTokens,
+    inline = false,
 }: MultiSelectTriggerProps) => {
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
@@ -64,8 +66,10 @@ const MultiSelectTrigger = ({
     return (
         <Block
             display="flex"
-            height={toPixels(multiSelectTokens.trigger.height)}
-            maxHeight={toPixels(multiSelectTokens.trigger.height)}
+            {...((!inline || variant === MultiSelectVariant.CONTAINER) && {
+                height: toPixels(multiSelectTokens.trigger.height),
+                maxHeight: toPixels(multiSelectTokens.trigger.height),
+            })}
         >
             <Block
                 width={
@@ -80,9 +84,8 @@ const MultiSelectTrigger = ({
                 alignItems="center"
             >
                 <PrimitiveButton
+                    onClick={onClick}
                     position="relative"
-                    height={toPixels(multiSelectTokens.trigger.height)}
-                    maxHeight={toPixels(multiSelectTokens.trigger.height)}
                     width={'100%'}
                     display="flex"
                     alignItems="center"
@@ -91,33 +94,42 @@ const MultiSelectTrigger = ({
                     gap={8}
                     borderRadius={appliedBorderRadius}
                     boxShadow={multiSelectTokens.trigger.boxShadow[variant]}
-                    paddingX={multiSelectTokens.trigger.paddingX[size]}
-                    paddingY={paddingY}
-                    backgroundColor={
-                        multiSelectTokens.trigger.backgroundColor.container[
-                            open ? 'open' : 'closed'
-                        ]
-                    }
                     outline={
                         multiSelectTokens.trigger.outline[variant][
                             open ? 'open' : 'closed'
                         ]
                     }
-                    onClick={onClick}
-                    _hover={{
-                        outline:
-                            multiSelectTokens.trigger.outline[variant].hover,
+                    {...((!inline ||
+                        variant === MultiSelectVariant.CONTAINER) && {
+                        height: multiSelectTokens.trigger.height,
+
+                        maxHeight: multiSelectTokens.trigger.height,
+
+                        paddingX: multiSelectTokens.trigger.paddingX[size],
+
+                        paddingY: paddingY,
                         backgroundColor:
-                            multiSelectTokens.trigger.backgroundColor.container
-                                .hover,
-                    }}
-                    _focus={{
-                        outline:
-                            multiSelectTokens.trigger.outline[variant].focus,
-                        backgroundColor:
-                            multiSelectTokens.trigger.backgroundColor.container
-                                .focus,
-                    }}
+                            multiSelectTokens.trigger.backgroundColor.container[
+                                open ? 'open' : 'closed'
+                            ],
+
+                        _hover: {
+                            outline:
+                                multiSelectTokens.trigger.outline[variant]
+                                    .hover,
+                            backgroundColor:
+                                multiSelectTokens.trigger.backgroundColor
+                                    .container.hover,
+                        },
+                        _focus: {
+                            outline:
+                                multiSelectTokens.trigger.outline[variant]
+                                    .focus,
+                            backgroundColor:
+                                multiSelectTokens.trigger.backgroundColor
+                                    .container.focus,
+                        },
+                    })}
                 >
                     {slot && (
                         <Block as="span" ref={slotRef} contentCentered>
@@ -153,6 +165,7 @@ const MultiSelectTrigger = ({
                                 {label}
                             </Text>
                         )}
+
                         {isSmallScreenWithLargeSize &&
                             variant === MultiSelectVariant.CONTAINER && (
                                 <Block
@@ -243,6 +256,7 @@ const MultiSelectTrigger = ({
                         <ChevronDown size={16} />
                     </Block>
                 </PrimitiveButton>
+
                 {variant === MultiSelectVariant.CONTAINER &&
                     selectedValues.length > 0 && (
                         <PrimitiveButton

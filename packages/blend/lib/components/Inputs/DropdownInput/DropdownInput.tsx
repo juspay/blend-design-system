@@ -66,6 +66,7 @@ const DropdownInput = ({
     onDropdownClose,
     onBlur,
     onFocus,
+    maxDropdownHeight,
     ...rest
 }: DropdownInputProps) => {
     const dropdownInputTokens =
@@ -237,6 +238,7 @@ const DropdownInput = ({
                     contentCentered
                 >
                     <SelectMenu
+                        maxHeight={maxDropdownHeight}
                         items={dropDownItems}
                         enableSearch={false}
                         alignment={SelectMenuAlignment.END}

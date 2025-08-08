@@ -23,7 +23,7 @@ import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/mult
 import type { TableTokenType } from '../components/DataTable/dataTable.tokens'
 import type { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
-import type { StatCardTokenType } from '../components/StatCard/statcard.tokens'
+import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
 import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
 import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
 import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
@@ -58,7 +58,7 @@ export const useComponentToken = (
     | TableTokenType
     | CalendarTokenType
     | ResponsiveAccordionTokens
-    | StatCardTokenType
+    | ResponsiveStatCardTokens
     | ProgressBarTokenType
     | DrawerTokensType
     | ResponsiveChartTokens

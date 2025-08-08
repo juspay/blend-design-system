@@ -98,7 +98,7 @@ import {
 } from '../components/Accordion/accordion.tokens'
 import {
     getStatCardToken,
-    type StatCardTokenType,
+    type ResponsiveStatCardTokens,
 } from '../components/StatCard/statcard.tokens'
 import progressBarTokens, {
     type ProgressBarTokenType,
@@ -147,7 +147,7 @@ export type ComponentTokenType = {
     TABLE?: TableTokenType
     CALENDAR?: CalendarTokenType
     ACCORDION?: ResponsiveAccordionTokens
-    STAT_CARD?: StatCardTokenType
+    STAT_CARD?: ResponsiveStatCardTokens
     PROGRESS_BAR?: ProgressBarTokenType
     DRAWER?: DrawerTokensType
     CHARTS?: ResponsiveChartTokens
