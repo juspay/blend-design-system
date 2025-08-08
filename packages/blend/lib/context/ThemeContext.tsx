@@ -116,6 +116,10 @@ import {
     getChartTokens,
     ResponsiveChartTokens,
 } from '../components/Charts/chart.tokens'
+import {
+    getSnackbarTokens,
+    ResponsiveSnackbarTokens,
+} from '../components/Snackbar/snackbar.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -147,6 +151,7 @@ export type ComponentTokenType = {
     PROGRESS_BAR?: ProgressBarTokenType
     DRAWER?: DrawerTokensType
     CHARTS?: ResponsiveChartTokens
+    SNACKBAR?: ResponsiveSnackbarTokens
 }
 
 type ThemeContextType = {
@@ -187,6 +192,7 @@ const ThemeContext = createContext<ThemeContextType>({
         PROGRESS_BAR: progressBarTokens,
         DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
         CHARTS: getChartTokens(FOUNDATION_THEME),
+        SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })
