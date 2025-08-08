@@ -7,6 +7,7 @@ import {
     addSnackbar,
     SnackbarVariant,
 } from '../../../../packages/blend/lib/components/Snackbar'
+import { StyledToast } from '../../../../packages/blend/lib/components/Snackbar/Snackbar'
 
 const SnackbarDemo = () => {
     const showInfoSnackbar = () => {
@@ -78,6 +79,129 @@ const SnackbarDemo = () => {
                     to users. They appear temporarily at the top of the screen
                     and can include actions.
                 </p>
+            </div>
+
+            {/* StyledToast Playground */}
+            <div className="flex flex-col gap-6">
+                <h2 className="text-lg font-semibold">
+                    StyledToast Playground
+                </h2>
+                <p className="text-sm text-gray-600">
+                    Interactive preview of StyledToast component in all variants
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Info Variant */}
+                    <div className="space-y-3">
+                        <h3 className="text-md font-medium text-blue-800">
+                            Info Variant
+                        </h3>
+                        <StyledToast
+                            header={'Data synced successfully'}
+                            description={
+                                'Your dashboard now shows the latest data. Please check it once'
+                            }
+                            variant={SnackbarVariant.INFO}
+                            onClose={() => {}}
+                            actionButton={{
+                                label: 'View Dashboard',
+                                onClick: () => {
+                                    console.log(
+                                        'View Dashboard action triggered'
+                                    )
+                                },
+                            }}
+                        />
+                    </div>
+
+                    {/* Success Variant */}
+                    <div className="space-y-3">
+                        <h3 className="text-md font-medium text-green-800">
+                            Success Variant
+                        </h3>
+                        <StyledToast
+                            header={'Payment processed successfully'}
+                            description={
+                                'Your payment of $150.00 has been processed and confirmed'
+                            }
+                            variant={SnackbarVariant.SUCCESS}
+                            onClose={() => {}}
+                            actionButton={{
+                                label: 'View Receipt',
+                                onClick: () => {
+                                    console.log('View Receipt action triggered')
+                                },
+                            }}
+                        />
+                    </div>
+
+                    {/* Warning Variant */}
+                    <div className="space-y-3">
+                        <h3 className="text-md font-medium text-yellow-800">
+                            Warning Variant
+                        </h3>
+                        <StyledToast
+                            header={'Storage space running low'}
+                            description={
+                                'You have used 95% of your storage. Consider upgrading your plan'
+                            }
+                            variant={SnackbarVariant.WARNING}
+                            onClose={() => {}}
+                            actionButton={{
+                                label: 'Upgrade Plan',
+                                onClick: () => {
+                                    console.log('Upgrade Plan action triggered')
+                                },
+                            }}
+                        />
+                    </div>
+
+                    {/* Error Variant */}
+                    <div className="space-y-3">
+                        <h3 className="text-md font-medium text-red-800">
+                            Error Variant
+                        </h3>
+                        <StyledToast
+                            header={'Connection failed'}
+                            description={
+                                'Unable to connect to the server. Please check your internet connection'
+                            }
+                            variant={SnackbarVariant.ERROR}
+                            onClose={() => {}}
+                            actionButton={{
+                                label: 'Retry',
+                                onClick: () => {
+                                    console.log('Retry action triggered')
+                                },
+                            }}
+                        />
+                    </div>
+                </div>
+
+                {/* Toast without action button */}
+                <div className="space-y-3">
+                    <h3 className="text-md font-medium">
+                        Without Action Button
+                    </h3>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <StyledToast
+                            header={'Settings updated'}
+                            description={
+                                'Your account preferences have been saved successfully'
+                            }
+                            variant={SnackbarVariant.SUCCESS}
+                            onClose={() => {}}
+                        />
+                        <StyledToast
+                            header={'Session expired'}
+                            description={
+                                'Please log in again to continue using the application'
+                            }
+                            variant={SnackbarVariant.WARNING}
+                            onClose={() => {}}
+                        />
+                    </div>
+                </div>
             </div>
 
             {/* Basic Variants */}

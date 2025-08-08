@@ -3,105 +3,134 @@
 import type React from 'react'
 import { toast as sonnerToast, Toaster as Snackbar } from 'sonner'
 import { Info, X } from 'lucide-react'
-import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
-import Text, { type VariantType } from '../Text/Text'
+import Text from '../Text/Text'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import {
     type AddToastOptions,
     type CustomToastProps,
     SnackbarVariant,
 } from './types'
-import snackbarTokens from './snackbar.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { SnackbarTokens } from './snackbar.tokens'
 
-const StyledToast: React.FC<CustomToastProps> = ({
+export const StyledToast: React.FC<CustomToastProps> = ({
     header,
     description,
     variant,
     onClose,
     actionButton,
 }) => {
-    const getIconColor = () => {
-        switch (variant) {
-            case 'info':
-                return snackbarTokens.icon.color.info
-            case 'success':
-                return snackbarTokens.icon.color.success
-            case 'warning':
-                return snackbarTokens.icon.color.warning
-            case 'error':
-                return snackbarTokens.icon.color.error
-        }
-    }
+    const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
 
     return (
         <Block
-            backgroundColor={snackbarTokens.container.backgroundColor}
-            borderRadius={snackbarTokens.container.borderRadius}
-            padding={snackbarTokens.container.padding}
-            minWidth={snackbarTokens.container.minWidth}
-            maxWidth={snackbarTokens.container.maxWidth}
-            boxShadow={snackbarTokens.container.boxShadow}
+            display="flex"
+            justifyContent="space-between"
+            gap={snackbarTokens.gap}
+            backgroundColor={snackbarTokens.backgroundColor}
+            borderRadius={snackbarTokens.borderRadius}
+            padding={snackbarTokens.padding}
+            minWidth={snackbarTokens.minWidth}
+            maxWidth={snackbarTokens.maxWidth}
+            boxShadow={snackbarTokens.boxShadow}
         >
-            <Block
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                gap={snackbarTokens.header.layout.gap}
-                marginBottom={snackbarTokens.header.layout.marginBottom}
-            >
+            <Block display="flex" gap={snackbarTokens.content.gap}>
+                <Block paddingTop={'4px'}>
+                    <Info
+                        size={snackbarTokens.content.infoIcon.size[variant]}
+                        color={snackbarTokens.content.infoIcon.color[variant]}
+                    />
+                </Block>
                 <Block
                     display="flex"
-                    alignItems="center"
-                    gap={snackbarTokens.header.layout.iconGap}
+                    flexDirection="column"
+                    gap={snackbarTokens.content.container.gap}
                 >
-                    <Info size={16} color={getIconColor()} />
-                    <Text
-                        variant={
-                            snackbarTokens.header.text.variant as VariantType
-                        }
-                        color={snackbarTokens.header.text.color}
+                    <Block
+                        display="flex"
+                        gap={snackbarTokens.content.container.textContainer.gap}
+                        flexDirection="column"
                     >
-                        {header}
-                    </Text>
+                        <Text
+                            color={
+                                snackbarTokens.content.container.textContainer
+                                    .header.color
+                            }
+                            fontSize={
+                                snackbarTokens.content.container.textContainer
+                                    .header.fontSize
+                            }
+                            fontWeight={
+                                snackbarTokens.content.container.textContainer
+                                    .header.fontWeight
+                            }
+                        >
+                            {header}
+                        </Text>
+                        <Text
+                            color={
+                                snackbarTokens.content.container.textContainer
+                                    .description.color
+                            }
+                            fontSize={
+                                snackbarTokens.content.container.textContainer
+                                    .description.fontSize
+                            }
+                            fontWeight={
+                                snackbarTokens.content.container.textContainer
+                                    .description.fontWeight
+                            }
+                        >
+                            {description}
+                        </Text>
+                    </Block>
+                    {actionButton && (
+                        <PrimitiveButton
+                            backgroundColor="transparent"
+                            paddingX={
+                                snackbarTokens.content.container.actionButton
+                                    .layout.paddingX
+                            }
+                            color={
+                                snackbarTokens.content.container.actionButton
+                                    .text.color
+                            }
+                            onClick={actionButton.onClick}
+                        >
+                            <Text
+                                color={
+                                    snackbarTokens.content.container
+                                        .actionButton.text.color
+                                }
+                                fontSize={
+                                    snackbarTokens.content.container
+                                        .actionButton.text.fontSize
+                                }
+                                fontWeight={
+                                    snackbarTokens.content.container
+                                        .actionButton.text.fontWeight
+                                }
+                            >
+                                {actionButton.label}
+                            </Text>
+                        </PrimitiveButton>
+                    )}
                 </Block>
+            </Block>
+
+            <Block>
+                {' '}
                 <PrimitiveButton
                     backgroundColor="transparent"
                     contentCentered
                     onClick={onClose}
                 >
-                    <X size={16} color={FOUNDATION_THEME.colors['gray'][0]} />
+                    <X
+                        size={snackbarTokens.crossIcon.size}
+                        color={snackbarTokens.crossIcon.color}
+                    />
                 </PrimitiveButton>
-            </Block>
-
-            <Block
-                paddingLeft={snackbarTokens.description.layout.paddingLeft}
-                display="flex"
-                flexDirection="column"
-                gap={snackbarTokens.description.layout.gap}
-            >
-                <Text
-                    variant={snackbarTokens.description.text.variant}
-                    color={snackbarTokens.description.text.color}
-                >
-                    {description}
-                </Text>
-                {actionButton && (
-                    <PrimitiveButton
-                        backgroundColor="transparent"
-                        contentCentered
-                        paddingX={snackbarTokens.actionButton.layout.paddingX}
-                        color={snackbarTokens.actionButton.text.color}
-                        onClick={actionButton.onClick}
-                    >
-                        <Text
-                            variant={snackbarTokens.actionButton.text.variant}
-                            color={snackbarTokens.actionButton.text.color}
-                        >
-                            {actionButton.label}
-                        </Text>
-                    </PrimitiveButton>
-                )}
             </Block>
         </Block>
     )
