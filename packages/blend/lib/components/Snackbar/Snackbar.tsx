@@ -35,34 +35,37 @@ export const StyledToast: React.FC<CustomToastProps> = ({
             maxWidth={snackbarTokens.maxWidth}
             boxShadow={snackbarTokens.boxShadow}
         >
-            <Block display="flex" gap={snackbarTokens.content.gap}>
+            <Block display="flex" gap={snackbarTokens.container.gap}>
                 <Block paddingTop={'4px'}>
                     <Info
-                        size={snackbarTokens.content.infoIcon.size[variant]}
-                        color={snackbarTokens.content.infoIcon.color[variant]}
+                        size={
+                            snackbarTokens.container.infoIcon[variant]
+                                .size as number
+                        }
+                        color={snackbarTokens.container.infoIcon[variant].color}
                     />
                 </Block>
                 <Block
                     display="flex"
                     flexDirection="column"
-                    gap={snackbarTokens.content.container.gap}
+                    gap={snackbarTokens.container.content.gap}
                 >
                     <Block
                         display="flex"
-                        gap={snackbarTokens.content.container.textContainer.gap}
+                        gap={snackbarTokens.container.content.textContainer.gap}
                         flexDirection="column"
                     >
                         <Text
                             color={
-                                snackbarTokens.content.container.textContainer
+                                snackbarTokens.container.content.textContainer
                                     .header.color
                             }
                             fontSize={
-                                snackbarTokens.content.container.textContainer
+                                snackbarTokens.container.content.textContainer
                                     .header.fontSize
                             }
                             fontWeight={
-                                snackbarTokens.content.container.textContainer
+                                snackbarTokens.container.content.textContainer
                                     .header.fontWeight
                             }
                         >
@@ -70,15 +73,15 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                         </Text>
                         <Text
                             color={
-                                snackbarTokens.content.container.textContainer
+                                snackbarTokens.container.content.textContainer
                                     .description.color
                             }
                             fontSize={
-                                snackbarTokens.content.container.textContainer
+                                snackbarTokens.container.content.textContainer
                                     .description.fontSize
                             }
                             fontWeight={
-                                snackbarTokens.content.container.textContainer
+                                snackbarTokens.container.content.textContainer
                                     .description.fontWeight
                             }
                         >
@@ -89,27 +92,27 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                         <PrimitiveButton
                             backgroundColor="transparent"
                             paddingX={
-                                snackbarTokens.content.container.actionButton
-                                    .layout.paddingX
+                                snackbarTokens.container.content.actionButton
+                                    .padding
                             }
                             color={
-                                snackbarTokens.content.container.actionButton
-                                    .text.color
+                                snackbarTokens.container.content.actionButton
+                                    .color
                             }
                             onClick={actionButton.onClick}
                         >
                             <Text
                                 color={
-                                    snackbarTokens.content.container
-                                        .actionButton.text.color
+                                    snackbarTokens.container.content
+                                        .actionButton.color
                                 }
                                 fontSize={
-                                    snackbarTokens.content.container
-                                        .actionButton.text.fontSize
+                                    snackbarTokens.container.content
+                                        .actionButton.fontSize
                                 }
                                 fontWeight={
-                                    snackbarTokens.content.container
-                                        .actionButton.text.fontWeight
+                                    snackbarTokens.container.content
+                                        .actionButton.fontWeight
                                 }
                             >
                                 {actionButton.label}

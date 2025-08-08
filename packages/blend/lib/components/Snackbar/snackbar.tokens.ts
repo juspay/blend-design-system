@@ -4,24 +4,22 @@ import { FoundationTokenType } from '../../tokens/theme.token'
 import { SnackbarVariant } from './types'
 
 export type SnackbarTokens = Readonly<{
-    backgroundColor: CSSObject['color']
+    backgroundColor: CSSObject['backgroundColor']
     borderRadius: CSSObject['borderRadius']
     padding: CSSObject['padding']
     minWidth: CSSObject['minWidth']
     maxWidth: CSSObject['maxWidth']
     boxShadow: CSSObject['boxShadow']
     gap: CSSObject['gap']
-    content: {
+    container: {
         gap: CSSObject['gap']
         infoIcon: {
-            color: {
-                [key in SnackbarVariant]: CSSObject['color']
-            }
-            size: {
-                [key in SnackbarVariant]: CSSObject['fontSize']
+            [key in SnackbarVariant]: {
+                color: CSSObject['color']
+                size: CSSObject['size']
             }
         }
-        container: {
+        content: {
             gap: CSSObject['gap']
             textContainer: {
                 gap: CSSObject['gap']
@@ -37,14 +35,10 @@ export type SnackbarTokens = Readonly<{
                 }
             }
             actionButton: {
-                layout: {
-                    paddingX: CSSObject['padding']
-                }
-                text: {
-                    color: CSSObject['color']
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                }
+                padding: CSSObject['padding']
+                color: CSSObject['color']
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
             }
         }
     }
@@ -71,23 +65,27 @@ export const getSnackbarTokens = (
             maxWidth: 350,
             boxShadow: foundationToken.shadows.lg,
             gap: foundationToken.unit[10],
-            content: {
+            container: {
                 gap: foundationToken.unit[10],
                 infoIcon: {
-                    color: {
-                        info: foundationToken.colors.primary[300],
-                        success: foundationToken.colors.green[500],
-                        warning: foundationToken.colors.yellow[500],
-                        error: foundationToken.colors.red[500],
+                    info: {
+                        color: foundationToken.colors.primary[300],
+                        size: foundationToken.unit[16],
                     },
-                    size: {
-                        info: foundationToken.unit[16],
-                        success: foundationToken.unit[16],
-                        warning: foundationToken.unit[16],
-                        error: foundationToken.unit[16],
+                    success: {
+                        color: foundationToken.colors.green[500],
+                        size: foundationToken.unit[16],
+                    },
+                    warning: {
+                        color: foundationToken.colors.yellow[500],
+                        size: foundationToken.unit[16],
+                    },
+                    error: {
+                        color: foundationToken.colors.red[500],
+                        size: foundationToken.unit[16],
                     },
                 },
-                container: {
+                content: {
                     gap: foundationToken.unit[14],
                     textContainer: {
                         gap: foundationToken.unit[6],
@@ -103,19 +101,15 @@ export const getSnackbarTokens = (
                         },
                     },
                     actionButton: {
-                        layout: {
-                            paddingX: foundationToken.unit[2],
-                        },
-                        text: {
-                            color: foundationToken.colors.gray[100],
-                            fontSize: 14,
-                            fontWeight: foundationToken.font.weight[600],
-                        },
+                        padding: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[2])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[2])}`,
+                        color: foundationToken.colors.gray[100],
+                        fontSize: 14,
+                        fontWeight: foundationToken.font.weight[600],
                     },
                 },
             },
             crossIcon: {
-                size: 16,
+                size: foundationToken.unit[16],
                 color: foundationToken.colors.gray[0],
             },
         },
@@ -127,23 +121,27 @@ export const getSnackbarTokens = (
             maxWidth: 420,
             boxShadow: foundationToken.shadows.lg,
             gap: foundationToken.unit[10],
-            content: {
+            container: {
                 gap: foundationToken.unit[8],
                 infoIcon: {
-                    color: {
-                        info: foundationToken.colors.primary[300],
-                        success: foundationToken.colors.green[500],
-                        warning: foundationToken.colors.yellow[500],
-                        error: foundationToken.colors.red[500],
+                    info: {
+                        color: foundationToken.colors.primary[300],
+                        size: foundationToken.unit[16],
                     },
-                    size: {
-                        info: foundationToken.unit[16],
-                        success: foundationToken.unit[16],
-                        warning: foundationToken.unit[16],
-                        error: foundationToken.unit[16],
+                    success: {
+                        color: foundationToken.colors.green[500],
+                        size: foundationToken.unit[16],
+                    },
+                    warning: {
+                        color: foundationToken.colors.yellow[500],
+                        size: foundationToken.unit[16],
+                    },
+                    error: {
+                        color: foundationToken.colors.red[500],
+                        size: foundationToken.unit[16],
                     },
                 },
-                container: {
+                content: {
                     gap: foundationToken.unit[18],
                     textContainer: {
                         gap: foundationToken.unit[6],
@@ -159,20 +157,17 @@ export const getSnackbarTokens = (
                         },
                     },
                     actionButton: {
-                        layout: {
-                            paddingX: foundationToken.unit[2],
-                        },
-                        text: {
-                            color: foundationToken.colors.gray[100],
-                            fontSize: 14,
-                            fontWeight: foundationToken.font.weight[600],
-                        },
+                        padding: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[2])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[2])}`,
+
+                        color: foundationToken.colors.gray[100],
+                        fontSize: 14,
+                        fontWeight: foundationToken.font.weight[600],
                     },
                 },
             },
 
             crossIcon: {
-                size: 16,
+                size: foundationToken.unit[16],
                 color: foundationToken.colors.gray[0],
             },
         },
