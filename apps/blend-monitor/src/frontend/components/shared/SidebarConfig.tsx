@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Home, Link, Package, Zap, Users } from 'lucide-react'
+import { Home, Link, Package, Zap, Users, Palette } from 'lucide-react'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 
 export const tenants = [
@@ -31,6 +31,19 @@ export const getNavigationData = (
                 leftSlot: <Home className="w-4 h-4" />,
                 onClick: () => router.push('/'),
                 isActive: pathname === '/',
+            },
+        ],
+    },
+    {
+        label: 'Design System',
+        items: [
+            {
+                label: 'Tokenizer',
+                leftSlot: <Palette className="w-4 h-4" />,
+                onClick: () => router.push('/tokenizer'),
+                isActive:
+                    pathname === '/tokenizer' ||
+                    pathname.startsWith('/tokenizer/'),
             },
         ],
     },

@@ -15,12 +15,7 @@ const dbConfig = {
     database: process.env.DATABASE_NAME || 'blend_monitor',
     user: process.env.DATABASE_USER || 'postgres',
     password: process.env.DATABASE_PASSWORD,
-    ssl:
-        process.env.NODE_ENV === 'production'
-            ? false // Cloud SQL uses Unix socket, no SSL needed
-            : process.env.DATABASE_HOST
-              ? { rejectUnauthorized: false }
-              : false,
+    ssl: false, // Cloud SQL Proxy handles encryption, no SSL needed
     max: 20, // Increased back to 20 for better concurrency
     idleTimeoutMillis: 30000, // Increased to 30 seconds
     connectionTimeoutMillis: 20000, // Increased to 20 seconds

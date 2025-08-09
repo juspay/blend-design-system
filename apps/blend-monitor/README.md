@@ -38,6 +38,7 @@ apps/blend-monitor/
 - **Code Connect Integration**: Track Figma Code Connect adoption
 - **User Management**: Role-based access control for team members
 - **Activity Tracking**: Real-time activity feed and audit logs
+- **Tokenizer Module**: Comprehensive design token customization and theme management system
 
 ## Technology Stack
 
@@ -50,55 +51,197 @@ apps/blend-monitor/
 
 ## Development
 
+> 📖 **For comprehensive step-by-step setup instructions, see the [Development Setup Guide](./docs/Development-Setup-Guide.md)**
+
 ### Prerequisites
 
 - Node.js 18+
-- PostgreSQL database
+- Google Cloud SDK (gcloud CLI)
+- Access to Google Cloud SQL instance
 - Firebase project (for authentication)
 - Environment variables configured
 
-### Setup
+### One-Time Setup
 
-1. Install dependencies:
+1. **Install dependencies:**
 
     ```bash
-    npm install
+    # From project root
+    pnpm install
     ```
 
-2. Set up environment variables:
+2. **Set up Google Cloud authentication:**
 
     ```bash
-    cp .env.example .env.local
+    # Login to Google Cloud
+    gcloud auth login
+
+    # Set project
+    gcloud config set project storybook-452807
     ```
 
-3. Initialize the database:
+3. **Download Cloud SQL Proxy:**
 
     ```bash
-    npm run db:init
+    # From project root directory
+    curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.darwin.amd64
+    chmod +x cloud_sql_proxy
     ```
 
-4. Run development server:
+4. **Configure environment variables:**
     ```bash
+    # Copy and configure environment file
+    cp apps/blend-monitor/.env.example apps/blend-monitor/.env.local
+    ```
+
+### Daily Development Workflow
+
+**Every time you start development, follow these steps:**
+
+1. **Start Cloud SQL Proxy:**
+
+    ```bash
+    # From project root directory
+    ./cloud_sql_proxy -instances=storybook-452807:us-central1:blend-dashboard=tcp:5433 &
+    ```
+
+    ✅ **Success indicators:**
+    - You'll see: `Ready for new connections`
+    - Proxy listens on `localhost:5433`
+
+2. **Start development server:**
+
+    ```bash
+    cd apps/blend-monitor
     npm run dev
     ```
 
+    ✅ **Success indicators:**
+    - Server starts on `http://localhost:3000`
+    - Database connections show: `Database connected successfully`
+
+3. **Access the application:**
+    - **Main Dashboard:** http://localhost:3000
+    - **Tokenizer:** http://localhost:3000/tokenizer
+    - **API Test:** http://localhost:3000/api-test
+
 ### Environment Variables
 
-Required environment variables:
+Your `.env.local` should contain:
 
 ```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/blend_monitor
+# Firebase Client Configuration (Public)
+NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyD2aRkOI4iCwiZOW5kEejrL9jv9JvytKpo
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=storybook-452807.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=storybook-452807
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=storybook-452807.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=567047894553
+NEXT_PUBLIC_FIREBASE_APP_ID=1:567047894553:web:1cd999e1c9bf9b81ff5c88
+NEXT_PUBLIC_FIREBASE_DATABASE_URL=https://storybook-452807-default-rtdb.asia-southeast1.firebasedatabase.app
 
-# Firebase
-NEXT_PUBLIC_FIREBASE_API_KEY=
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-FIREBASE_SERVICE_ACCOUNT_KEY=
+# Firebase Admin Configuration (Private)
+FIREBASE_PROJECT_ID=storybook-452807
+FIREBASE_DATABASE_URL=https://storybook-452807-default-rtdb.asia-southeast1.firebasedatabase.app
+FIREBASE_CLIENT_EMAIL=firebase-adminsdk-fbsvc@storybook-452807.iam.gserviceaccount.com
+FIREBASE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n[YOUR_PRIVATE_KEY]\n-----END PRIVATE KEY-----
 
-# External APIs
-NPM_API_BASE_URL=https://registry.npmjs.org
-FIGMA_API_TOKEN=
+# PostgreSQL Configuration (Google Cloud SQL via Cloud SQL Proxy)
+DATABASE_HOST=localhost
+DATABASE_PORT=5433
+DATABASE_NAME=blend_monitor
+DATABASE_USER=admin
+DATABASE_PASSWORD=Juspay@123
+
+# Database URL for migrations and seeding (via Cloud SQL Proxy)
+DATABASE_URL=postgresql://admin:Juspay@123@localhost:5433/blend_monitor
+
+# Application Settings
+NODE_ENV=development
+```
+
+### Troubleshooting
+
+**Common Issues:**
+
+1. **Port 5433 already in use:**
+
+    ```bash
+    # Check what's using the port
+    lsof -i :5433
+
+    # Kill the process if needed
+    pkill -f cloud_sql_proxy
+    ```
+
+2. **Database connection errors:**
+
+    ```bash
+    # Verify Cloud SQL Proxy is running
+    lsof -i :5433
+
+    # Check proxy logs for errors
+    # Restart proxy if needed
+    ```
+
+3. **SSL connection errors:**
+    - The app is configured to disable SSL (Cloud SQL Proxy handles encryption)
+    - No action needed - this is expected behavior
+
+4. **Authentication errors:**
+    ```bash
+    # Re-authenticate with Google Cloud
+    gcloud auth login
+    gcloud auth application-default login
+    ```
+
+### Database Management
+
+**Check token data:**
+
+```bash
+cd apps/blend-monitor
+node scripts/check-tokens.js
+```
+
+**Seed token data (if needed):**
+
+```bash
+cd apps/blend-monitor
+node scripts/seed-token-management.js
+```
+
+### Quick Start Script
+
+Create a startup script for convenience:
+
+```bash
+# Create apps/blend-monitor/start-local.sh
+#!/bin/bash
+echo "🚀 Starting Blend Monitor Development Environment..."
+
+# Start Cloud SQL Proxy
+echo "📡 Starting Cloud SQL Proxy..."
+cd ../..
+./cloud_sql_proxy -instances=storybook-452807:us-central1:blend-dashboard=tcp:5433 &
+PROXY_PID=$!
+
+# Wait for proxy to start
+sleep 3
+
+# Start development server
+echo "🖥️  Starting development server..."
+cd apps/blend-monitor
+npm run dev
+
+# Cleanup on exit
+trap "kill $PROXY_PID" EXIT
+```
+
+Then run:
+
+```bash
+chmod +x apps/blend-monitor/start-local.sh
+./apps/blend-monitor/start-local.sh
 ```
 
 ## Project Structure Details
@@ -187,10 +330,28 @@ Common types and interfaces used across frontend and backend:
 - `PUT /api/users/:userId/role`: Update user role
 - `GET /api/users/activity`: Get user activity logs
 
+### Tokenizer
+
+- `GET /api/themes`: Get all themes
+- `POST /api/themes`: Create new theme
+- `GET /api/themes/:id`: Get specific theme
+- `PUT /api/themes/:id`: Update theme
+- `DELETE /api/themes/:id`: Delete theme
+- `POST /api/tokens/validate`: Validate token configuration
+- `POST /api/export/typescript`: Export theme as TypeScript
+- `POST /api/export/json`: Export theme as JSON
+- `POST /api/export/css`: Export theme as CSS
+
 ### System
 
 - `GET /api/health`: Health check endpoint
 - `GET /api/activity/recent`: Get recent system activity
+
+## Documentation
+
+### Product Requirements
+
+- **[Tokenizer Module PRD](./docs/PRD-Tokenizer-Module.md)**: Comprehensive product requirements document for the design token customization system
 
 ## Contributing
 

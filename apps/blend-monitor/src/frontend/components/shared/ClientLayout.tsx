@@ -12,9 +12,16 @@ export default function ClientLayout({
 }) {
     const pathname = usePathname()
     const isLoginPage = pathname === '/login'
+    const isApiTestPage = pathname === '/api-test'
+    const isTokenizerPage = pathname.startsWith('/tokenizer')
 
-    if (isLoginPage) {
+    if (isLoginPage || isApiTestPage) {
         return <>{children}</>
+    }
+
+    if (isTokenizerPage) {
+        // Tokenizer pages bypass auth but use AppShell for sidebar
+        return <AppShell>{children}</AppShell>
     }
 
     return (
