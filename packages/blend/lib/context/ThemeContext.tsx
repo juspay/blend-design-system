@@ -93,12 +93,12 @@ import {
     getCalendarToken,
 } from '../components/DateRangePicker/dateRangePicker.tokens'
 import {
-    type AccordionTokenType,
     getAccordionToken,
+    type ResponsiveAccordionTokens,
 } from '../components/Accordion/accordion.tokens'
 import {
     getStatCardToken,
-    type StatCardTokenType,
+    type ResponsiveStatCardTokens,
 } from '../components/StatCard/statcard.tokens'
 import progressBarTokens, {
     type ProgressBarTokenType,
@@ -112,6 +112,10 @@ import {
     getSingleSelectTokens,
     ResponsiveSingleSelectTokens,
 } from '../components/SingleSelect/singleSelect.tokens'
+import {
+    getChartTokens,
+    ResponsiveChartTokens,
+} from '../components/Charts/chart.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -138,10 +142,11 @@ export type ComponentTokenType = {
     SINGLE_SELECT?: ResponsiveSingleSelectTokens
     TABLE?: TableTokenType
     CALENDAR?: CalendarTokenType
-    ACCORDION?: AccordionTokenType
-    STAT_CARD?: StatCardTokenType
+    ACCORDION?: ResponsiveAccordionTokens
+    STAT_CARD?: ResponsiveStatCardTokens
     PROGRESS_BAR?: ProgressBarTokenType
     DRAWER?: DrawerTokensType
+    CHARTS?: ResponsiveChartTokens
 }
 
 type ThemeContextType = {
@@ -181,6 +186,7 @@ const ThemeContext = createContext<ThemeContextType>({
         STAT_CARD: getStatCardToken(FOUNDATION_THEME),
         PROGRESS_BAR: progressBarTokens,
         DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
+        CHARTS: getChartTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

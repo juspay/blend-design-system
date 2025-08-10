@@ -66,6 +66,7 @@ import DropdownInputDemo from './DropdownInputDemo'
 import DrawerDemo from './DrawerDemo'
 import DateRangePickerDemo from './DateRangePickerDemo'
 import DataTableDemo from './dataTableDemo'
+import ChartsDemo from './ChartsDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -211,6 +212,8 @@ const SidebarDemo = () => {
                 return <DateRangePickerDemo />
             case 'dataTable':
                 return <DataTableDemo />
+            case 'charts':
+                return <ChartsDemo />
             default:
                 return <div>No component selected</div>
         }
