@@ -15,7 +15,7 @@ import {
     TableTokenType,
 } from '../../../main'
 import { foundationToken } from '../../../foundationToken'
-import { useComponentToken } from '../../../context/useComponentToken'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const TableRow = styled.tr<{
     $isClickable?: boolean
@@ -153,7 +153,7 @@ const TableBody = forwardRef<
             enableColumnManager,
         ])
 
-        const tableToken = useComponentToken('TABLE') as TableTokenType
+        const tableToken = useResponsiveTokens('TABLE') as TableTokenType
 
         return (
             <tbody ref={ref}>

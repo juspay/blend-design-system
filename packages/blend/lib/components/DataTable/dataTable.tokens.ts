@@ -1,5 +1,6 @@
 import type { CSSObject } from 'styled-components'
 import type { FoundationTokenType } from '../../tokens/theme.token'
+import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type TableTokenType = {
     padding: CSSObject['padding']
@@ -21,6 +22,26 @@ export type TableTokenType = {
         headerSlot1: CSSObject
         headerSlot2: CSSObject
         headerSlot3: CSSObject
+        titleRow: {
+            gap: CSSObject['gap']
+            marginBottom: CSSObject['marginBottom']
+            justifyContent: CSSObject['justifyContent']
+            alignItems: CSSObject['alignItems']
+        }
+        descriptionRow: {
+            marginTop: CSSObject['marginTop']
+        }
+        actionIcons: {
+            gap: CSSObject['gap']
+            searchIcon: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+            }
+            filterIcon: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+            }
+        }
     }
     dataTable: {
         borderRadius: CSSObject['borderRadius']
@@ -173,221 +194,505 @@ export type TableTokenType = {
     }
 }
 
+export type ResponsiveTableTokens = {
+    [key in keyof BreakpointType]: TableTokenType
+}
+
 export const getTableToken = (
     foundationToken: FoundationTokenType
-): TableTokenType => {
+): ResponsiveTableTokens => {
     return {
-        width: '100%',
-        height: 'calc(100vh - 280px)',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: foundationToken.unit[2],
-        position: 'relative',
-        header: {
+        sm: {
+            width: '100%',
+            height: 'calc(100vh - 280px)',
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            marginBottom: foundationToken.unit[16],
-            gap: foundationToken.unit[20],
-            maxWidth: '100%',
-            overflowX: 'hidden',
-            title: {
-                fontSize: foundationToken.font.size.heading.md.fontSize,
-                fontWeight: 600,
-                color: foundationToken.colors.gray[800],
-            },
-            description: {
-                fontSize: foundationToken.font.size.body.md.fontSize,
-                color: foundationToken.colors.gray[500],
-                lineHeight: foundationToken.unit[20],
-                maxWidth: '70%',
-            },
-            headerSlot1: {
-                maxHeight: foundationToken.unit[36],
-                flexShrink: 0,
-            },
-            headerSlot2: {
-                maxHeight: foundationToken.unit[36],
-                flexShrink: 0,
-            },
-            headerSlot3: {
-                maxHeight: foundationToken.unit[36],
-                flexShrink: 0,
-            },
-        },
-        dataTable: {
-            borderRadius: foundationToken.border.radius[8],
-            border: `1px solid ${foundationToken.colors.gray[200]}`,
-            maxHeight: 'calc(100vh - 280px)',
-            bulkActions: {
-                top: '80%',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 1000,
-                backgroundColor: foundationToken.colors.gray[0],
-                color: foundationToken.colors.gray[700],
-                borderRadius: foundationToken.border.radius[12],
-                padding: `${foundationToken.unit[10]} ${foundationToken.unit[16]}`,
-                height: foundationToken.unit[56],
-                boxShadow: foundationToken.shadows.lg,
+            flexDirection: 'column',
+            padding: foundationToken.unit[2],
+            position: 'relative',
+            header: {
                 display: 'flex',
-                alignItems: 'center',
-                gap: foundationToken.unit[12],
-                minWidth: '320px',
-                border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
-                selectText: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                    flex: 1,
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: foundationToken.unit[16],
+                gap: foundationToken.unit[20],
+                maxWidth: '100%',
+                overflowX: 'hidden',
+                title: {
+                    fontSize: foundationToken.font.size.heading.sm.fontSize,
+                    fontWeight: 600,
+                    color: foundationToken.colors.gray[800],
+                },
+                description: {
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
                     color: foundationToken.colors.gray[500],
+                    lineHeight: foundationToken.unit[18],
+                    maxWidth: '100%',
+                },
+                headerSlot1: {
+                    maxHeight: foundationToken.unit[36],
+                    flexShrink: 0,
+                },
+                headerSlot2: {
+                    maxHeight: foundationToken.unit[36],
+                    flexShrink: 0,
+                },
+                headerSlot3: {
+                    maxHeight: foundationToken.unit[36],
+                    flexShrink: 0,
+                },
+                titleRow: {
+                    gap: foundationToken.unit[8],
+                    marginBottom: foundationToken.unit[12],
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                },
+                descriptionRow: {
+                    marginTop: foundationToken.unit[12],
+                },
+                actionIcons: {
+                    gap: foundationToken.unit[8],
+                    searchIcon: {
+                        width: foundationToken.unit[20],
+                        height: foundationToken.unit[20],
+                    },
+                    filterIcon: {
+                        width: foundationToken.unit[20],
+                        height: foundationToken.unit[20],
+                    },
                 },
             },
-            table: {
-                width: '100%',
-                tableLayout: 'auto',
-                borderCollapse: 'separate',
-                borderSpacing: 0,
-                position: 'relative',
-                minWidth: 'calc(100vw - 280px)',
-                header: {
-                    backgroundColor: foundationToken.colors.gray[25],
-                    borderBottom: `1px solid ${foundationToken.colors.gray[150]}`,
-                    height: foundationToken.unit[40],
-                    row: {
-                        height: foundationToken.unit[56],
-                        '&:hover': {
-                            backgroundColor: foundationToken.colors.gray[50],
+            dataTable: {
+                borderRadius: foundationToken.border.radius[8],
+                border: `1px solid ${foundationToken.colors.gray[200]}`,
+                maxHeight: 'calc(100vh - 280px)',
+                bulkActions: {
+                    top: '80%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 1000,
+                    backgroundColor: foundationToken.colors.gray[0],
+                    color: foundationToken.colors.gray[700],
+                    borderRadius: foundationToken.border.radius[12],
+                    padding: `${foundationToken.unit[10]} ${foundationToken.unit[16]}`,
+                    height: foundationToken.unit[56],
+                    boxShadow: foundationToken.shadows.lg,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: foundationToken.unit[12],
+                    minWidth: '320px',
+                    border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
+                    selectText: {
+                        fontSize: foundationToken.font.size.body.md.fontSize,
+                        fontWeight: foundationToken.font.weight[600],
+                        flex: 1,
+                        color: foundationToken.colors.gray[500],
+                    },
+                },
+                table: {
+                    width: '100%',
+                    tableLayout: 'auto',
+                    borderCollapse: 'separate',
+                    borderSpacing: 0,
+                    position: 'relative',
+                    minWidth: 'calc(100vw - 280px)',
+                    header: {
+                        backgroundColor: foundationToken.colors.gray[25],
+                        borderBottom: `1px solid ${foundationToken.colors.gray[150]}`,
+                        height: foundationToken.unit[40],
+                        row: {
+                            height: foundationToken.unit[56],
+                            '&:hover': {
+                                backgroundColor:
+                                    foundationToken.colors.gray[50],
+                            },
+                        },
+                        cell: {
+                            padding: `${foundationToken.unit[4]} ${foundationToken.unit[16]}`,
+                            textAlign: 'left',
+                            fontWeight: foundationToken.font.weight[600],
+                            color: foundationToken.colors.gray[400],
+                            fontSize:
+                                foundationToken.font.size.body.sm.fontSize,
+                            width: foundationToken.unit[40],
+                        },
+                        sortable: {
+                            cursor: 'pointer',
+                            userSelect: 'none',
+                        },
+                        filter: {
+                            backgroundColor: foundationToken.colors.gray[25],
+                            borderRadius: foundationToken.border.radius[4],
+                            border: `1px solid ${foundationToken.colors.gray[150]}`,
+                            cursor: 'pointer',
+                            textColor: foundationToken.colors.gray[600],
+                            maxHeight: '200px',
+                            overflowY: 'auto',
+                            gap: foundationToken.unit[4],
+                            sortOption: {
+                                padding: foundationToken.unit[8],
+                                borderRadius: foundationToken.border.radius[4],
+                                hoverBackground:
+                                    foundationToken.colors.gray[50],
+                                iconColor: foundationToken.colors.gray[900],
+                                textColor: foundationToken.colors.gray[600],
+                                fontSize:
+                                    foundationToken.font.size.body.md.fontSize,
+                                fontWeight: foundationToken.font.weight[400],
+                            },
+                            // Non-primary selected states (using gray colors)
+                            selectedBackground:
+                                foundationToken.colors.gray[100],
+                            hoverBackground: foundationToken.colors.gray[50],
+                            selectedTextColor: foundationToken.colors.gray[800],
+                            normalTextColor: foundationToken.colors.gray[700],
+                            selectedFontWeight:
+                                foundationToken.font.weight[600],
+                            normalFontWeight: foundationToken.font.weight[400],
+                            itemPadding: `${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
+                            itemGap: foundationToken.unit[8],
+                            itemBorderRadius: foundationToken.border.radius[4],
+                            itemFontSize:
+                                foundationToken.font.size.body.md.fontSize,
+                            groupLabelFontSize:
+                                foundationToken.font.size.body.xs.fontSize,
+                            groupLabelFontWeight:
+                                foundationToken.font.weight[600],
+                            groupLabelColor: foundationToken.colors.gray[400],
+                            groupLabelPadding: `${foundationToken.unit[4]} 0`,
+                            groupLabelTextTransform: 'uppercase',
+                            separatorHeight: '1px',
+                            separatorColor: foundationToken.colors.gray[200],
                         },
                     },
-                    cell: {
-                        padding: `${foundationToken.unit[4]} ${foundationToken.unit[16]}`,
-                        textAlign: 'left',
-                        fontWeight: foundationToken.font.weight[600],
-                        color: foundationToken.colors.gray[400],
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        width: foundationToken.unit[40],
-                    },
-                    sortable: {
-                        cursor: 'pointer',
-                        userSelect: 'none',
-                    },
-                    filter: {
+                    body: {
                         backgroundColor: foundationToken.colors.gray[25],
-                        borderRadius: foundationToken.border.radius[4],
-                        border: `1px solid ${foundationToken.colors.gray[150]}`,
-                        cursor: 'pointer',
-                        textColor: foundationToken.colors.gray[600],
-                        maxHeight: '200px',
-                        overflowY: 'auto',
-                        gap: foundationToken.unit[4],
-                        sortOption: {
-                            padding: foundationToken.unit[8],
-                            borderRadius: foundationToken.border.radius[4],
-                            hoverBackground: foundationToken.colors.gray[50],
-                            iconColor: foundationToken.colors.gray[900],
-                            textColor: foundationToken.colors.gray[600],
+                        borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
+                        row: {
+                            height: foundationToken.unit[56],
+                            '&:hover': {
+                                backgroundColor:
+                                    foundationToken.colors.gray[50],
+                                cursor: 'pointer',
+                            },
+                            backgroundColor: foundationToken.colors.gray[25],
+                        },
+                        cell: {
+                            padding: `${foundationToken.unit[4]} ${foundationToken.unit[16]}`,
+                            fontWeight: foundationToken.font.weight[500],
+                            color: foundationToken.colors.gray[700],
                             fontSize:
                                 foundationToken.font.size.body.md.fontSize,
-                            fontWeight: foundationToken.font.weight[400],
-                        },
-                        // Non-primary selected states (using gray colors)
-                        selectedBackground: foundationToken.colors.gray[100],
-                        hoverBackground: foundationToken.colors.gray[50],
-                        selectedTextColor: foundationToken.colors.gray[800],
-                        normalTextColor: foundationToken.colors.gray[700],
-                        selectedFontWeight: foundationToken.font.weight[600],
-                        normalFontWeight: foundationToken.font.weight[400],
-                        itemPadding: `${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
-                        itemGap: foundationToken.unit[8],
-                        itemBorderRadius: foundationToken.border.radius[4],
-                        itemFontSize:
-                            foundationToken.font.size.body.md.fontSize,
-                        groupLabelFontSize:
-                            foundationToken.font.size.body.xs.fontSize,
-                        groupLabelFontWeight: foundationToken.font.weight[600],
-                        groupLabelColor: foundationToken.colors.gray[400],
-                        groupLabelPadding: `${foundationToken.unit[4]} 0`,
-                        groupLabelTextTransform: 'uppercase',
-                        separatorHeight: '1px',
-                        separatorColor: foundationToken.colors.gray[200],
-                    },
-                },
-                body: {
-                    backgroundColor: foundationToken.colors.gray[25],
-                    borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
-                    row: {
-                        height: foundationToken.unit[56],
-                        '&:hover': {
-                            backgroundColor: foundationToken.colors.gray[50],
-                            cursor: 'pointer',
-                        },
-                        backgroundColor: foundationToken.colors.gray[25],
-                    },
-                    cell: {
-                        padding: `${foundationToken.unit[4]} ${foundationToken.unit[16]}`,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[700],
-                        fontSize: foundationToken.font.size.body.md.fontSize,
-                        borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
-                        expandable: {
-                            padding: foundationToken.unit[16],
                             borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
-                            expandButton: {
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: foundationToken.unit[32],
-                                height: foundationToken.unit[32],
-                                borderRadius: foundationToken.border.radius[4],
-                                backgroundColor: 'transparent',
-                                cursor: 'pointer',
-                                transition: 'background-color 0.2s',
-                                color: foundationToken.colors.gray[500],
-                                border: 'none',
-                                '&:hover': {
-                                    backgroundColor:
-                                        foundationToken.colors.gray[100],
-                                    color: foundationToken.colors.gray[700],
+                            expandable: {
+                                padding: foundationToken.unit[16],
+                                borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
+                                expandButton: {
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: foundationToken.unit[32],
+                                    height: foundationToken.unit[32],
+                                    borderRadius:
+                                        foundationToken.border.radius[4],
+                                    backgroundColor: 'transparent',
+                                    cursor: 'pointer',
+                                    transition: 'background-color 0.2s',
+                                    color: foundationToken.colors.gray[500],
+                                    border: 'none',
+                                    '&:hover': {
+                                        backgroundColor:
+                                            foundationToken.colors.gray[100],
+                                        color: foundationToken.colors.gray[700],
+                                    },
                                 },
                             },
                         },
                     },
+                    footer: {
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: `${foundationToken.unit[4]} ${foundationToken.unit[16]}`,
+                        borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
+                        height: foundationToken.unit[48],
+                        position: 'sticky',
+                        bottom: 0,
+                        backgroundColor: foundationToken.colors.gray[25],
+                        zIndex: 50,
+                        flexShrink: 0,
+                        pagination: {
+                            pageText: {
+                                fontSize:
+                                    foundationToken.font.size.body.md.fontSize,
+                                color: foundationToken.colors.gray[600],
+                            },
+                            pageSizeSelector: {
+                                gap: foundationToken.unit[4],
+                                padding: `${foundationToken.unit[4]} ${foundationToken.unit[8]}`,
+                                borderRadius: foundationToken.border.radius[2],
+                                backgroundColor:
+                                    foundationToken.colors.gray[25],
+                                display: 'flex',
+                                alignItems: 'center',
+                                border: 'none',
+                                background: 'none',
+                                cursor: 'pointer',
+                                color: foundationToken.colors.gray[600],
+                                fontSize:
+                                    foundationToken.font.size.body.md.fontSize,
+                                hoverColor: foundationToken.colors.gray[50],
+                            },
+                            pageNavigation: {
+                                gap: foundationToken.unit[4],
+                            },
+                        },
+                    },
                 },
-                footer: {
-                    display: 'flex',
+            },
+        },
+        lg: {
+            width: '100%',
+            height: 'calc(100vh - 280px)',
+            display: 'flex',
+            flexDirection: 'column',
+            padding: foundationToken.unit[2],
+            position: 'relative',
+            header: {
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: foundationToken.unit[16],
+                gap: foundationToken.unit[20],
+                maxWidth: '100%',
+                overflowX: 'hidden',
+                title: {
+                    fontSize: foundationToken.font.size.heading.md.fontSize,
+                    fontWeight: 600,
+                    color: foundationToken.colors.gray[800],
+                },
+                description: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    color: foundationToken.colors.gray[500],
+                    lineHeight: foundationToken.unit[20],
+                    maxWidth: '70%',
+                },
+                headerSlot1: {
+                    maxHeight: foundationToken.unit[36],
+                    flexShrink: 0,
+                },
+                headerSlot2: {
+                    maxHeight: foundationToken.unit[36],
+                    flexShrink: 0,
+                },
+                headerSlot3: {
+                    maxHeight: foundationToken.unit[36],
+                    flexShrink: 0,
+                },
+                titleRow: {
+                    gap: foundationToken.unit[8],
+                    marginBottom: foundationToken.unit[12],
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    padding: `${foundationToken.unit[4]} ${foundationToken.unit[16]}`,
-                    borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
-                    height: foundationToken.unit[48],
-                    position: 'sticky',
-                    bottom: 0,
-                    backgroundColor: foundationToken.colors.gray[25],
-                    zIndex: 50,
-                    flexShrink: 0,
-                    pagination: {
-                        pageText: {
-                            fontSize:
-                                foundationToken.font.size.body.md.fontSize,
-                            color: foundationToken.colors.gray[600],
+                },
+                descriptionRow: {
+                    marginTop: foundationToken.unit[12],
+                },
+                actionIcons: {
+                    gap: foundationToken.unit[8],
+                    searchIcon: {
+                        width: foundationToken.unit[20],
+                        height: foundationToken.unit[20],
+                    },
+                    filterIcon: {
+                        width: foundationToken.unit[20],
+                        height: foundationToken.unit[20],
+                    },
+                },
+            },
+            dataTable: {
+                borderRadius: foundationToken.border.radius[8],
+                border: `1px solid ${foundationToken.colors.gray[200]}`,
+                maxHeight: 'calc(100vh - 280px)',
+                bulkActions: {
+                    top: '80%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 1000,
+                    backgroundColor: foundationToken.colors.gray[0],
+                    color: foundationToken.colors.gray[700],
+                    borderRadius: foundationToken.border.radius[12],
+                    padding: `${foundationToken.unit[10]} ${foundationToken.unit[16]}`,
+                    height: foundationToken.unit[56],
+                    boxShadow: foundationToken.shadows.lg,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: foundationToken.unit[12],
+                    minWidth: '320px',
+                    border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
+                    selectText: {
+                        fontSize: foundationToken.font.size.body.md.fontSize,
+                        fontWeight: foundationToken.font.weight[600],
+                        flex: 1,
+                        color: foundationToken.colors.gray[500],
+                    },
+                },
+                table: {
+                    width: '100%',
+                    tableLayout: 'auto',
+                    borderCollapse: 'separate',
+                    borderSpacing: 0,
+                    position: 'relative',
+                    minWidth: 'calc(100vw - 280px)',
+                    header: {
+                        backgroundColor: foundationToken.colors.gray[25],
+                        borderBottom: `1px solid ${foundationToken.colors.gray[150]}`,
+                        height: foundationToken.unit[40],
+                        row: {
+                            height: foundationToken.unit[56],
+                            '&:hover': {
+                                backgroundColor:
+                                    foundationToken.colors.gray[50],
+                            },
                         },
-                        pageSizeSelector: {
-                            gap: foundationToken.unit[4],
-                            padding: `${foundationToken.unit[4]} ${foundationToken.unit[8]}`,
-                            borderRadius: foundationToken.border.radius[2],
-                            backgroundColor: foundationToken.colors.gray[25],
-                            display: 'flex',
-                            alignItems: 'center',
-                            border: 'none',
-                            background: 'none',
+                        cell: {
+                            padding: `${foundationToken.unit[4]} ${foundationToken.unit[16]}`,
+                            textAlign: 'left',
+                            fontWeight: foundationToken.font.weight[600],
+                            color: foundationToken.colors.gray[400],
+                            fontSize:
+                                foundationToken.font.size.body.sm.fontSize,
+                            width: foundationToken.unit[40],
+                        },
+                        sortable: {
                             cursor: 'pointer',
-                            color: foundationToken.colors.gray[600],
+                            userSelect: 'none',
+                        },
+                        filter: {
+                            backgroundColor: foundationToken.colors.gray[25],
+                            borderRadius: foundationToken.border.radius[4],
+                            border: `1px solid ${foundationToken.colors.gray[150]}`,
+                            cursor: 'pointer',
+                            textColor: foundationToken.colors.gray[600],
+                            maxHeight: '200px',
+                            overflowY: 'auto',
+                            gap: foundationToken.unit[4],
+                            sortOption: {
+                                padding: foundationToken.unit[8],
+                                borderRadius: foundationToken.border.radius[4],
+                                hoverBackground:
+                                    foundationToken.colors.gray[50],
+                                iconColor: foundationToken.colors.gray[900],
+                                textColor: foundationToken.colors.gray[600],
+                                fontSize:
+                                    foundationToken.font.size.body.md.fontSize,
+                                fontWeight: foundationToken.font.weight[400],
+                            },
+                            // Non-primary selected states (using gray colors)
+                            selectedBackground:
+                                foundationToken.colors.gray[100],
+                            hoverBackground: foundationToken.colors.gray[50],
+                            selectedTextColor: foundationToken.colors.gray[800],
+                            normalTextColor: foundationToken.colors.gray[700],
+                            selectedFontWeight:
+                                foundationToken.font.weight[600],
+                            normalFontWeight: foundationToken.font.weight[400],
+                            itemPadding: `${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
+                            itemGap: foundationToken.unit[8],
+                            itemBorderRadius: foundationToken.border.radius[4],
+                            itemFontSize:
+                                foundationToken.font.size.body.md.fontSize,
+                            groupLabelFontSize:
+                                foundationToken.font.size.body.xs.fontSize,
+                            groupLabelFontWeight:
+                                foundationToken.font.weight[600],
+                            groupLabelColor: foundationToken.colors.gray[400],
+                            groupLabelPadding: `${foundationToken.unit[4]} 0`,
+                            groupLabelTextTransform: 'uppercase',
+                            separatorHeight: '1px',
+                            separatorColor: foundationToken.colors.gray[200],
+                        },
+                    },
+                    body: {
+                        backgroundColor: foundationToken.colors.gray[25],
+                        borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
+                        row: {
+                            height: foundationToken.unit[56],
+                            '&:hover': {
+                                backgroundColor:
+                                    foundationToken.colors.gray[50],
+                                cursor: 'pointer',
+                            },
+                            backgroundColor: foundationToken.colors.gray[25],
+                        },
+                        cell: {
+                            padding: `${foundationToken.unit[4]} ${foundationToken.unit[16]}`,
+                            fontWeight: foundationToken.font.weight[500],
+                            color: foundationToken.colors.gray[700],
                             fontSize:
                                 foundationToken.font.size.body.md.fontSize,
-                            hoverColor: foundationToken.colors.gray[50],
+                            borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
+                            expandable: {
+                                padding: foundationToken.unit[16],
+                                borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
+                                expandButton: {
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: foundationToken.unit[32],
+                                    height: foundationToken.unit[32],
+                                    borderRadius:
+                                        foundationToken.border.radius[4],
+                                    backgroundColor: 'transparent',
+                                    cursor: 'pointer',
+                                    transition: 'background-color 0.2s',
+                                    color: foundationToken.colors.gray[500],
+                                    border: 'none',
+                                    '&:hover': {
+                                        backgroundColor:
+                                            foundationToken.colors.gray[100],
+                                        color: foundationToken.colors.gray[700],
+                                    },
+                                },
+                            },
                         },
-                        pageNavigation: {
-                            gap: foundationToken.unit[4],
+                    },
+                    footer: {
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: `${foundationToken.unit[4]} ${foundationToken.unit[16]}`,
+                        borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
+                        height: foundationToken.unit[48],
+                        position: 'sticky',
+                        bottom: 0,
+                        backgroundColor: foundationToken.colors.gray[25],
+                        zIndex: 50,
+                        flexShrink: 0,
+                        pagination: {
+                            pageText: {
+                                fontSize:
+                                    foundationToken.font.size.body.md.fontSize,
+                                color: foundationToken.colors.gray[600],
+                            },
+                            pageSizeSelector: {
+                                gap: foundationToken.unit[4],
+                                padding: `${foundationToken.unit[4]} ${foundationToken.unit[8]}`,
+                                borderRadius: foundationToken.border.radius[2],
+                                backgroundColor:
+                                    foundationToken.colors.gray[25],
+                                display: 'flex',
+                                alignItems: 'center',
+                                border: 'none',
+                                background: 'none',
+                                cursor: 'pointer',
+                                color: foundationToken.colors.gray[600],
+                                fontSize:
+                                    foundationToken.font.size.body.md.fontSize,
+                                hoverColor: foundationToken.colors.gray[50],
+                            },
+                            pageNavigation: {
+                                gap: foundationToken.unit[4],
+                            },
                         },
                     },
                 },

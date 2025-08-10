@@ -9,7 +9,7 @@ import { Checkbox } from '../../Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
 import { ColumnManager } from '../ColumnManager'
 import { TableTokenType } from '../dataTable.tokens'
-import { useComponentToken } from '../../../context/useComponentToken'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useMobileDataTable } from '../hooks/useMobileDataTable'
 
 import { TableHeaderProps } from './types'
@@ -87,7 +87,7 @@ const TableHeader = forwardRef<
             Record<string, boolean>
         >({})
 
-        const tableToken = useComponentToken('TABLE') as TableTokenType
+        const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const mobileConfig = useMobileDataTable()
 
         const sortHandlers = createSortHandlers(sortState, setSortState, onSort)

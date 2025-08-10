@@ -33,10 +33,10 @@ import { Settings, Check } from 'lucide-react'
 import Menu from '../Menu/Menu'
 import { MenuV2GroupType, MenuAlignment } from '../Menu/types'
 
-import { useComponentToken } from '../../context/useComponentToken'
 import { foundationToken } from '../../foundationToken'
 import { useMobileDataTable } from './hooks/useMobileDataTable'
 import MobileColumnDrawer from './MobileColumnDrawer'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const DataTable = forwardRef(
     <T extends Record<string, unknown>>(
@@ -90,7 +90,7 @@ const DataTable = forwardRef(
         }: DataTableProps<T>,
         ref: React.Ref<HTMLDivElement>
     ) => {
-        const tableToken = useComponentToken('TABLE') as TableTokenType
+        const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
 
         const [sortConfig, setSortConfig] = useState<SortConfig | null>(

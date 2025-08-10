@@ -1,5 +1,5 @@
-import { forwardRef } from 'react'
-import { Filter } from 'lucide-react'
+import { forwardRef, useState } from 'react'
+import { Filter, Search, ListFilter } from 'lucide-react'
 import { DataTableHeaderProps } from './types'
 import { Button } from '../../../main'
 import { ButtonSize, ButtonType } from '../../Button/types'
@@ -10,8 +10,9 @@ import { FOUNDATION_THEME } from '../../../tokens'
 import { TableTokenType } from '../dataTable.tokens'
 import { Popover } from '../../Popover'
 import { PopoverSize } from '../../Popover/types'
-import { useComponentToken } from '../../../context/useComponentToken'
 import { useMobileDataTable } from '../hooks/useMobileDataTable'
+import { Drawer } from '../../Drawer'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const DataTableHeader = forwardRef<
     HTMLDivElement,
@@ -37,8 +38,10 @@ const DataTableHeader = forwardRef<
         },
         ref
     ) => {
-        const tableToken = useComponentToken('TABLE') as TableTokenType
+        const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const mobileConfig = useMobileDataTable()
+
+        const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
         if (!title && !description && !showToolbar) {
             return null
@@ -51,18 +54,20 @@ const DataTableHeader = forwardRef<
                     display="flex"
                     flexDirection="column"
                     marginBottom={tableToken.header.marginBottom}
-                    gap={FOUNDATION_THEME.unit[8]}
                     maxWidth={tableToken.header.maxWidth}
                     overflowX={tableToken.header.overflowX}
                     overflowY="hidden"
                     style={{ minWidth: 0, height: 'auto' }}
                 >
-                    {/* Title and Filters Row */}
+                    {/* First Row: Title + Search Icon + Filter Icon */}
                     <Block
                         display="flex"
-                        justifyContent="space-between"
-                        alignItems="center"
-                        gap={FOUNDATION_THEME.unit[8]}
+                        justifyContent={
+                            tableToken.header.titleRow.justifyContent
+                        }
+                        alignItems={tableToken.header.titleRow.alignItems}
+                        gap={tableToken.header.titleRow.gap}
+                        marginBottom={tableToken.header.titleRow.marginBottom}
                         style={{ minWidth: 0 }}
                     >
                         {title && (
@@ -86,175 +91,211 @@ const DataTableHeader = forwardRef<
                             <Block
                                 display="flex"
                                 alignItems="center"
-                                gap={FOUNDATION_THEME.unit[8]}
+                                gap={tableToken.header.actionIcons.gap}
                                 style={{ flexShrink: 0 }}
                             >
-                                {(enableSearch || enableAdvancedFilter) && (
-                                    <Block
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={FOUNDATION_THEME.unit[8]}
-                                    >
-                                        {enableSearch && (
-                                            <Block
-                                                display="flex"
-                                                alignItems="center"
-                                                style={{
-                                                    minWidth: '120px',
-                                                    maxWidth: '150px',
-                                                }}
-                                            >
-                                                <SearchInput
-                                                    placeholder={
-                                                        searchPlaceholder
-                                                    }
-                                                    value={searchConfig.query}
-                                                    onChange={(
-                                                        event: React.ChangeEvent<HTMLInputElement>
-                                                    ) =>
-                                                        onSearch(
-                                                            event.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </Block>
-                                        )}
-
-                                        {enableAdvancedFilter &&
-                                            AdvancedFilterComponent && (
-                                                <Block
-                                                    display="flex"
-                                                    alignItems="center"
-                                                >
-                                                    <Popover
-                                                        trigger={
-                                                            <Button
-                                                                buttonType={
-                                                                    advancedFilters.length >
-                                                                    0
-                                                                        ? ButtonType.PRIMARY
-                                                                        : ButtonType.SECONDARY
-                                                                }
-                                                                leadingIcon={
-                                                                    <Filter />
-                                                                }
-                                                                size={
-                                                                    ButtonSize.SMALL
-                                                                }
-                                                            >
-                                                                {advancedFilters.length >
-                                                                    0 &&
-                                                                    `(${advancedFilters.length})`}
-                                                            </Button>
-                                                        }
-                                                        size={
-                                                            PopoverSize.MEDIUM
-                                                        }
-                                                        align="end"
-                                                        alignOffset={-20}
-                                                        secondaryAction={{
-                                                            onClick:
-                                                                onClearAllFilters,
-                                                            isDisabled:
-                                                                !searchConfig.query.trim() &&
-                                                                advancedFilters.length ===
-                                                                    0,
-                                                        }}
-                                                    >
-                                                        <Block
-                                                            display="flex"
-                                                            flexDirection="column"
-                                                            gap={
-                                                                FOUNDATION_THEME
-                                                                    .unit[8]
-                                                            }
-                                                            style={{
-                                                                maxHeight:
-                                                                    '400px',
-                                                                overflowY:
-                                                                    'auto',
-                                                                minWidth:
-                                                                    '300px',
-                                                            }}
-                                                        >
-                                                            <AdvancedFilterComponent
-                                                                filters={
-                                                                    advancedFilters
-                                                                }
-                                                                onFiltersChange={
-                                                                    onAdvancedFiltersChange ||
-                                                                    (() => {})
-                                                                }
-                                                                onClearFilters={
-                                                                    onClearAllFilters
-                                                                }
-                                                            />
-                                                        </Block>
-                                                    </Popover>
-                                                </Block>
-                                            )}
-                                    </Block>
+                                {enableSearch && (
+                                    <Button
+                                        buttonType={ButtonType.SECONDARY}
+                                        leadingIcon={
+                                            <Search
+                                                size={parseInt(
+                                                    String(
+                                                        tableToken.header
+                                                            .actionIcons
+                                                            .searchIcon.width
+                                                    )
+                                                )}
+                                            />
+                                        }
+                                        size={ButtonSize.SMALL}
+                                        onClick={() => setIsDrawerOpen(true)}
+                                    />
                                 )}
 
-                                {headerSlot1 && (
-                                    <Block
-                                        display="flex"
-                                        alignItems="center"
-                                        maxHeight={
-                                            tableToken.header.headerSlot1
-                                                .maxHeight
+                                {enableAdvancedFilter && (
+                                    <Button
+                                        buttonType={
+                                            advancedFilters.length > 0
+                                                ? ButtonType.PRIMARY
+                                                : ButtonType.SECONDARY
                                         }
-                                        flexShrink={0}
-                                    >
-                                        {headerSlot1}
-                                    </Block>
-                                )}
-
-                                {headerSlot2 && (
-                                    <Block
-                                        display="flex"
-                                        alignItems="center"
-                                        maxHeight={
-                                            tableToken.header.headerSlot2
-                                                .maxHeight
+                                        leadingIcon={
+                                            <ListFilter
+                                                size={parseInt(
+                                                    String(
+                                                        tableToken.header
+                                                            .actionIcons
+                                                            .filterIcon.width
+                                                    )
+                                                )}
+                                            />
                                         }
-                                        flexShrink={0}
-                                    >
-                                        {headerSlot2}
-                                    </Block>
-                                )}
-
-                                {headerSlot3 && (
-                                    <Block
-                                        display="flex"
-                                        alignItems="center"
-                                        maxHeight={
-                                            tableToken.header.headerSlot3
-                                                .maxHeight
-                                        }
-                                        flexShrink={0}
-                                    >
-                                        {headerSlot3}
-                                    </Block>
+                                        size={ButtonSize.SMALL}
+                                        onClick={() => setIsDrawerOpen(true)}
+                                    />
                                 )}
                             </Block>
                         )}
                     </Block>
 
+                    {/* Second Row: Description */}
                     {description && (
-                        <PrimitiveText
-                            as="p"
-                            fontSize={tableToken.header.description.fontSize}
-                            color={tableToken.header.description.color}
-                            style={{
-                                lineHeight: '1.4',
-                                minWidth: 0,
-                                width: '100%',
-                            }}
+                        <Block
+                            marginTop={
+                                tableToken.header.descriptionRow.marginTop
+                            }
                         >
-                            {description}
-                        </PrimitiveText>
+                            <PrimitiveText
+                                as="p"
+                                fontSize={
+                                    tableToken.header.description.fontSize
+                                }
+                                color={tableToken.header.description.color}
+                                style={{
+                                    lineHeight: '1.4',
+                                    minWidth: 0,
+                                    width: '100%',
+                                }}
+                            >
+                                {description}
+                            </PrimitiveText>
+                        </Block>
                     )}
+
+                    {/* Mobile Drawer for Search and Filters */}
+                    <Drawer
+                        open={isDrawerOpen}
+                        onOpenChange={setIsDrawerOpen}
+                        direction="bottom"
+                    >
+                        <Block
+                            display="flex"
+                            flexDirection="column"
+                            gap={FOUNDATION_THEME.unit[16]}
+                            padding={FOUNDATION_THEME.unit[16]}
+                        >
+                            <PrimitiveText
+                                as="h3"
+                                fontSize={
+                                    FOUNDATION_THEME.font.size.heading.sm
+                                        .fontSize
+                                }
+                                fontWeight={FOUNDATION_THEME.font.weight[600]}
+                                color={FOUNDATION_THEME.colors.gray[800]}
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[16],
+                                }}
+                            >
+                                Search & Filters
+                            </PrimitiveText>
+
+                            {enableSearch && (
+                                <Block>
+                                    <PrimitiveText
+                                        as="h4"
+                                        fontSize={
+                                            FOUNDATION_THEME.font.size.body.md
+                                                .fontSize
+                                        }
+                                        fontWeight={
+                                            FOUNDATION_THEME.font.weight[600]
+                                        }
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[800]
+                                        }
+                                        style={{
+                                            marginBottom:
+                                                FOUNDATION_THEME.unit[8],
+                                        }}
+                                    >
+                                        Search
+                                    </PrimitiveText>
+                                    <SearchInput
+                                        placeholder={searchPlaceholder}
+                                        value={searchConfig.query}
+                                        onChange={(
+                                            event: React.ChangeEvent<HTMLInputElement>
+                                        ) => onSearch(event.target.value)}
+                                    />
+                                </Block>
+                            )}
+
+                            {enableAdvancedFilter &&
+                                AdvancedFilterComponent && (
+                                    <Block>
+                                        <PrimitiveText
+                                            as="h4"
+                                            fontSize={
+                                                FOUNDATION_THEME.font.size.body
+                                                    .md.fontSize
+                                            }
+                                            fontWeight={
+                                                FOUNDATION_THEME.font
+                                                    .weight[600]
+                                            }
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[800]
+                                            }
+                                            style={{
+                                                marginBottom:
+                                                    FOUNDATION_THEME.unit[8],
+                                            }}
+                                        >
+                                            Advanced Filters
+                                        </PrimitiveText>
+                                        <AdvancedFilterComponent
+                                            filters={advancedFilters}
+                                            onFiltersChange={
+                                                onAdvancedFiltersChange ||
+                                                (() => {})
+                                            }
+                                            onClearFilters={onClearAllFilters}
+                                        />
+                                    </Block>
+                                )}
+
+                            {(headerSlot1 || headerSlot2 || headerSlot3) && (
+                                <Block>
+                                    <PrimitiveText
+                                        as="h4"
+                                        fontSize={
+                                            FOUNDATION_THEME.font.size.body.md
+                                                .fontSize
+                                        }
+                                        fontWeight={
+                                            FOUNDATION_THEME.font.weight[600]
+                                        }
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[800]
+                                        }
+                                        style={{
+                                            marginBottom:
+                                                FOUNDATION_THEME.unit[8],
+                                        }}
+                                    >
+                                        Actions
+                                    </PrimitiveText>
+                                    <Block
+                                        display="flex"
+                                        flexDirection="column"
+                                        gap={FOUNDATION_THEME.unit[8]}
+                                    >
+                                        {headerSlot1 && (
+                                            <Block>{headerSlot1}</Block>
+                                        )}
+                                        {headerSlot2 && (
+                                            <Block>{headerSlot2}</Block>
+                                        )}
+                                        {headerSlot3 && (
+                                            <Block>{headerSlot3}</Block>
+                                        )}
+                                    </Block>
+                                </Block>
+                            )}
+                        </Block>
+                    </Drawer>
                 </Block>
             )
         }

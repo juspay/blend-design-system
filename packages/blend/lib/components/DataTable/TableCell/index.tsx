@@ -5,11 +5,11 @@ import { TableTokenType } from '../dataTable.tokens'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { useComponentToken } from '../../../context/useComponentToken'
 import { ColumnType, DropdownColumnProps, DateColumnProps } from '../types'
 import SingleSelect from '../../SingleSelect/SingleSelect'
 import { SelectMenuVariant } from '../../Select'
 import { SelectMenuGroupType } from '../../Select/types'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const StyledTableCell = styled.td<{
     width?: React.CSSProperties
@@ -40,7 +40,7 @@ const TableCell = forwardRef<
         },
         ref
     ) => {
-        const tableToken = useComponentToken('TABLE') as TableTokenType
+        const tableToken = useResponsiveTokens('TABLE') as TableTokenType
 
         // Apply formatting if getDisplayValue is provided and we're not editing
         const displayValue =

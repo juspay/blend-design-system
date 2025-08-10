@@ -9,6 +9,7 @@ import { useComponentToken } from '../../context/useComponentToken'
 import { SelectMenuSize, SelectMenuVariant } from '../Select/types'
 import SingleSelect from '../SingleSelect/SingleSelect'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 type DataTablePaginationProps = {
     currentPage: number
@@ -29,7 +30,7 @@ export function DataTablePagination({
     onPageChange,
     onPageSizeChange,
 }: DataTablePaginationProps) {
-    const tableToken = useComponentToken('TABLE') as TableTokenType
+    const tableToken = useResponsiveTokens('TABLE') as TableTokenType
     const { breakPointLabel } = useBreakpoints()
     const isMobile = breakPointLabel === 'sm'
 

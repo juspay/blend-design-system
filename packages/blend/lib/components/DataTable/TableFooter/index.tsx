@@ -3,7 +3,7 @@ import { TableFooterProps } from './types'
 import { DataTablePagination } from '../DataTablePagination'
 import Block from '../../Primitives/Block/Block'
 import { TableTokenType } from '../dataTable.tokens'
-import { useComponentToken } from '../../../context/useComponentToken'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
     (
@@ -18,7 +18,7 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
         },
         ref
     ) => {
-        const tableToken = useComponentToken('TABLE') as TableTokenType
+        const tableToken = useResponsiveTokens('TABLE') as TableTokenType
 
         if (!pagination) {
             return null
