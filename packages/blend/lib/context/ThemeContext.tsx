@@ -86,7 +86,7 @@ import {
 } from '../components/MultiSelect/multiSelect.tokens'
 import {
     getTableToken,
-    type TableTokenType,
+    type ResponsiveTableTokens,
 } from '../components/DataTable/dataTable.tokens'
 import {
     type CalendarTokenType,
@@ -140,7 +140,7 @@ export type ComponentTokenType = {
     MENU?: ResponsiveMenuTokensType
     MULTI_SELECT?: ResponsiveMultiSelectTokens
     SINGLE_SELECT?: ResponsiveSingleSelectTokens
-    TABLE?: TableTokenType
+    TABLE?: ResponsiveTableTokens
     CALENDAR?: CalendarTokenType
     ACCORDION?: ResponsiveAccordionTokens
     STAT_CARD?: ResponsiveStatCardTokens

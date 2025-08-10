@@ -6,7 +6,7 @@ import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { useComponentToken } from '../../../context/useComponentToken'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { TableTokenType } from '../dataTable.tokens'
 
 export type BulkActionBarProps = {
@@ -18,7 +18,7 @@ export type BulkActionBarProps = {
 
 const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
     ({ selectedCount, onExport, onDeselectAll, customActions }, ref) => {
-        const tableToken = useComponentToken('TABLE') as TableTokenType
+        const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         if (selectedCount === 0) return null
 
         return (
