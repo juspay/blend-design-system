@@ -8,8 +8,6 @@ import {
     DrawerPortal,
     DrawerOverlay,
     DrawerContent,
-    DrawerHeader,
-    DrawerTitle,
     DrawerBody,
 } from '../../Drawer'
 
