@@ -11,7 +11,13 @@ import { TableTokenType } from '../dataTable.tokens'
 import { Popover } from '../../Popover'
 import { PopoverSize } from '../../Popover/types'
 import { useMobileDataTable } from '../hooks/useMobileDataTable'
-import { Drawer } from '../../Drawer'
+import {
+    Drawer,
+    DrawerPortal,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerBody,
+} from '../../Drawer'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const DataTableHeader = forwardRef<
@@ -42,6 +48,7 @@ const DataTableHeader = forwardRef<
         const mobileConfig = useMobileDataTable()
 
         const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+        const [isSearchOpen, setIsSearchOpen] = useState(false)
 
         if (!title && !description && !showToolbar) {
             return null
@@ -57,6 +64,7 @@ const DataTableHeader = forwardRef<
                     maxWidth={tableToken.header.maxWidth}
                     overflowX={tableToken.header.overflowX}
                     overflowY="hidden"
+                    padding={`0 ${FOUNDATION_THEME.unit[16]}`}
                     style={{ minWidth: 0, height: 'auto' }}
                 >
                     {/* First Row: Title + Search Icon + Filter Icon */}
@@ -67,15 +75,18 @@ const DataTableHeader = forwardRef<
                         }
                         alignItems={tableToken.header.titleRow.alignItems}
                         gap={tableToken.header.titleRow.gap}
-                        marginBottom={tableToken.header.titleRow.marginBottom}
+                        marginBottom={FOUNDATION_THEME.unit[12]}
                         style={{ minWidth: 0 }}
                     >
                         {title && (
                             <PrimitiveText
                                 as="h2"
-                                fontSize={tableToken.header.title.fontSize}
-                                fontWeight={tableToken.header.title.fontWeight}
-                                color={tableToken.header.title.color}
+                                fontSize={
+                                    FOUNDATION_THEME.font.size.heading.md
+                                        .fontSize
+                                }
+                                fontWeight={FOUNDATION_THEME.font.weight[600]}
+                                color={FOUNDATION_THEME.colors.gray[800]}
                                 style={{
                                     minWidth: 0,
                                     lineHeight: '1.2',
@@ -96,7 +107,11 @@ const DataTableHeader = forwardRef<
                             >
                                 {enableSearch && (
                                     <Button
-                                        buttonType={ButtonType.SECONDARY}
+                                        buttonType={
+                                            isSearchOpen || searchConfig.query
+                                                ? ButtonType.PRIMARY
+                                                : ButtonType.SECONDARY
+                                        }
                                         leadingIcon={
                                             <Search
                                                 size={parseInt(
@@ -109,11 +124,16 @@ const DataTableHeader = forwardRef<
                                             />
                                         }
                                         size={ButtonSize.SMALL}
-                                        onClick={() => setIsDrawerOpen(true)}
+                                        onClick={() =>
+                                            setIsSearchOpen(!isSearchOpen)
+                                        }
                                     />
                                 )}
 
-                                {enableAdvancedFilter && (
+                                {(enableAdvancedFilter ||
+                                    headerSlot1 ||
+                                    headerSlot2 ||
+                                    headerSlot3) && (
                                     <Button
                                         buttonType={
                                             advancedFilters.length > 0
@@ -139,23 +159,53 @@ const DataTableHeader = forwardRef<
                         )}
                     </Block>
 
+                    {/* Search Bar Row (when search is open) */}
+                    {isSearchOpen && enableSearch && (
+                        <Block
+                            marginBottom={FOUNDATION_THEME.unit[12]}
+                            style={{ minWidth: 0 }}
+                        >
+                            <SearchInput
+                                placeholder={searchPlaceholder}
+                                value={searchConfig.query}
+                                onChange={(
+                                    event: React.ChangeEvent<HTMLInputElement>
+                                ) => onSearch(event.target.value)}
+                                autoFocus
+                            />
+                        </Block>
+                    )}
+
                     {/* Second Row: Description */}
                     {description && (
                         <Block
-                            marginTop={
-                                tableToken.header.descriptionRow.marginTop
-                            }
+                            style={{
+                                width: '100%',
+                                minHeight: 'auto',
+                                height: 'auto',
+                                overflow: 'visible',
+                            }}
                         >
                             <PrimitiveText
                                 as="p"
                                 fontSize={
-                                    tableToken.header.description.fontSize
+                                    FOUNDATION_THEME.font.size.body.md.fontSize
                                 }
-                                color={tableToken.header.description.color}
+                                color={FOUNDATION_THEME.colors.gray[500]}
                                 style={{
                                     lineHeight: '1.4',
                                     minWidth: 0,
                                     width: '100%',
+                                    whiteSpace: 'normal',
+                                    wordWrap: 'break-word',
+                                    overflowWrap: 'break-word',
+                                    margin: 0,
+                                    padding: 0,
+                                    height: 'auto',
+                                    minHeight: 'auto',
+                                    maxHeight: 'none',
+                                    overflow: 'visible',
+                                    display: 'block',
                                 }}
                             >
                                 {description}
@@ -163,138 +213,150 @@ const DataTableHeader = forwardRef<
                         </Block>
                     )}
 
-                    {/* Mobile Drawer for Search and Filters */}
+                    {/* Mobile Drawer for Filters and Actions */}
                     <Drawer
                         open={isDrawerOpen}
                         onOpenChange={setIsDrawerOpen}
                         direction="bottom"
+                        modal={true}
+                        dismissible={true}
                     >
-                        <Block
-                            display="flex"
-                            flexDirection="column"
-                            gap={FOUNDATION_THEME.unit[16]}
-                            padding={FOUNDATION_THEME.unit[16]}
-                        >
-                            <PrimitiveText
-                                as="h3"
-                                fontSize={
-                                    FOUNDATION_THEME.font.size.heading.sm
-                                        .fontSize
-                                }
-                                fontWeight={FOUNDATION_THEME.font.weight[600]}
-                                color={FOUNDATION_THEME.colors.gray[800]}
-                                style={{
-                                    marginBottom: FOUNDATION_THEME.unit[16],
-                                }}
-                            >
-                                Search & Filters
-                            </PrimitiveText>
-
-                            {enableSearch && (
-                                <Block>
-                                    <PrimitiveText
-                                        as="h4"
-                                        fontSize={
-                                            FOUNDATION_THEME.font.size.body.md
-                                                .fontSize
-                                        }
-                                        fontWeight={
-                                            FOUNDATION_THEME.font.weight[600]
-                                        }
-                                        color={
-                                            FOUNDATION_THEME.colors.gray[800]
-                                        }
-                                        style={{
-                                            marginBottom:
-                                                FOUNDATION_THEME.unit[8],
-                                        }}
-                                    >
-                                        Search
-                                    </PrimitiveText>
-                                    <SearchInput
-                                        placeholder={searchPlaceholder}
-                                        value={searchConfig.query}
-                                        onChange={(
-                                            event: React.ChangeEvent<HTMLInputElement>
-                                        ) => onSearch(event.target.value)}
-                                    />
-                                </Block>
-                            )}
-
-                            {enableAdvancedFilter &&
-                                AdvancedFilterComponent && (
-                                    <Block>
-                                        <PrimitiveText
-                                            as="h4"
-                                            fontSize={
-                                                FOUNDATION_THEME.font.size.body
-                                                    .md.fontSize
-                                            }
-                                            fontWeight={
-                                                FOUNDATION_THEME.font
-                                                    .weight[600]
-                                            }
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[800]
-                                            }
-                                            style={{
-                                                marginBottom:
-                                                    FOUNDATION_THEME.unit[8],
-                                            }}
-                                        >
-                                            Advanced Filters
-                                        </PrimitiveText>
-                                        <AdvancedFilterComponent
-                                            filters={advancedFilters}
-                                            onFiltersChange={
-                                                onAdvancedFiltersChange ||
-                                                (() => {})
-                                            }
-                                            onClearFilters={onClearAllFilters}
-                                        />
-                                    </Block>
-                                )}
-
-                            {(headerSlot1 || headerSlot2 || headerSlot3) && (
-                                <Block>
-                                    <PrimitiveText
-                                        as="h4"
-                                        fontSize={
-                                            FOUNDATION_THEME.font.size.body.md
-                                                .fontSize
-                                        }
-                                        fontWeight={
-                                            FOUNDATION_THEME.font.weight[600]
-                                        }
-                                        color={
-                                            FOUNDATION_THEME.colors.gray[800]
-                                        }
-                                        style={{
-                                            marginBottom:
-                                                FOUNDATION_THEME.unit[8],
-                                        }}
-                                    >
-                                        Actions
-                                    </PrimitiveText>
+                        <DrawerPortal>
+                            <DrawerOverlay />
+                            <DrawerContent contentDriven={true}>
+                                <DrawerBody>
                                     <Block
                                         display="flex"
                                         flexDirection="column"
-                                        gap={FOUNDATION_THEME.unit[8]}
+                                        gap={FOUNDATION_THEME.unit[16]}
                                     >
-                                        {headerSlot1 && (
-                                            <Block>{headerSlot1}</Block>
+                                        {enableAdvancedFilter &&
+                                            AdvancedFilterComponent && (
+                                                <Block>
+                                                    <PrimitiveText
+                                                        as="h4"
+                                                        fontSize={
+                                                            FOUNDATION_THEME
+                                                                .font.size.body
+                                                                .md.fontSize
+                                                        }
+                                                        fontWeight={
+                                                            FOUNDATION_THEME
+                                                                .font
+                                                                .weight[600]
+                                                        }
+                                                        color={
+                                                            FOUNDATION_THEME
+                                                                .colors
+                                                                .gray[800]
+                                                        }
+                                                        style={{
+                                                            marginBottom:
+                                                                FOUNDATION_THEME
+                                                                    .unit[8],
+                                                        }}
+                                                    >
+                                                        Advanced Filters
+                                                    </PrimitiveText>
+                                                    <AdvancedFilterComponent
+                                                        filters={
+                                                            advancedFilters
+                                                        }
+                                                        onFiltersChange={
+                                                            onAdvancedFiltersChange ||
+                                                            (() => {})
+                                                        }
+                                                        onClearFilters={
+                                                            onClearAllFilters
+                                                        }
+                                                    />
+                                                </Block>
+                                            )}
+
+                                        {(headerSlot1 ||
+                                            headerSlot2 ||
+                                            headerSlot3) && (
+                                            <Block>
+                                                <PrimitiveText
+                                                    as="h4"
+                                                    fontSize={
+                                                        FOUNDATION_THEME.font
+                                                            .size.body.md
+                                                            .fontSize
+                                                    }
+                                                    fontWeight={
+                                                        FOUNDATION_THEME.font
+                                                            .weight[600]
+                                                    }
+                                                    color={
+                                                        FOUNDATION_THEME.colors
+                                                            .gray[800]
+                                                    }
+                                                    style={{
+                                                        marginBottom:
+                                                            FOUNDATION_THEME
+                                                                .unit[8],
+                                                    }}
+                                                >
+                                                    Actions
+                                                </PrimitiveText>
+                                                <Block
+                                                    display="flex"
+                                                    flexDirection="column"
+                                                    gap={
+                                                        FOUNDATION_THEME.unit[8]
+                                                    }
+                                                >
+                                                    {headerSlot1 && (
+                                                        <Block>
+                                                            {headerSlot1}
+                                                        </Block>
+                                                    )}
+                                                    {headerSlot2 && (
+                                                        <Block>
+                                                            {headerSlot2}
+                                                        </Block>
+                                                    )}
+                                                    {headerSlot3 && (
+                                                        <Block>
+                                                            {headerSlot3}
+                                                        </Block>
+                                                    )}
+                                                </Block>
+                                            </Block>
                                         )}
-                                        {headerSlot2 && (
-                                            <Block>{headerSlot2}</Block>
-                                        )}
-                                        {headerSlot3 && (
-                                            <Block>{headerSlot3}</Block>
-                                        )}
+
+                                        {/* Clear All Button */}
+                                        {enableAdvancedFilter &&
+                                            advancedFilters.length > 0 && (
+                                                <Block
+                                                    display="flex"
+                                                    justifyContent="center"
+                                                    marginTop={
+                                                        FOUNDATION_THEME
+                                                            .unit[16]
+                                                    }
+                                                >
+                                                    <Button
+                                                        buttonType={
+                                                            ButtonType.SECONDARY
+                                                        }
+                                                        size={ButtonSize.SMALL}
+                                                        onClick={() => {
+                                                            onClearAllFilters()
+                                                            setIsDrawerOpen(
+                                                                false
+                                                            )
+                                                        }}
+                                                    >
+                                                        Clear All
+                                                    </Button>
+                                                </Block>
+                                            )}
                                     </Block>
-                                </Block>
-                            )}
-                        </Block>
+                                </DrawerBody>
+                            </DrawerContent>
+                        </DrawerPortal>
                     </Drawer>
                 </Block>
             )

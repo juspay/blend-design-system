@@ -204,7 +204,7 @@ export function DataTablePagination({
                     <Block
                         display="flex"
                         alignItems="center"
-                        gap={FOUNDATION_THEME.unit[4]}
+                        gap={FOUNDATION_THEME.unit[12]}
                     >
                         {pageNumbers.map((page, index) =>
                             typeof page === 'number' ? (

@@ -68,6 +68,7 @@ const TableHeader = forwardRef<
         },
         ref
     ) => {
+        const mobileConfig = useMobileDataTable()
         const [editingField, setEditingField] = useState<string | null>(null)
         const [hoveredField, setHoveredField] = useState<string | null>(null)
         const [localColumns, setLocalColumns] = useState(visibleColumns)
@@ -88,7 +89,6 @@ const TableHeader = forwardRef<
         >({})
 
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
-        const mobileConfig = useMobileDataTable()
 
         const sortHandlers = createSortHandlers(sortState, setSortState, onSort)
         const filterHandlers = createFilterHandlers(setFilterState)
@@ -499,7 +499,8 @@ const TableHeader = forwardRef<
                         )
                     })}
 
-                    {mobileConfig.enableColumnOverflow && (
+                    {/* Mobile overflow column header - empty cell for alignment */}
+                    {mobileConfig?.enableColumnOverflow && (
                         <th
                             style={{
                                 ...tableToken.dataTable.table.header.cell,
@@ -512,11 +513,7 @@ const TableHeader = forwardRef<
                                 boxSizing: 'border-box',
                             }}
                         >
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
-                            />
+                            {/* Empty cell to match mobile overflow column in body */}
                         </th>
                     )}
 

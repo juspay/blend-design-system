@@ -46,8 +46,14 @@ const SimpleDataTableExample = () => {
         category: DropdownColumnProps
         price: number
         launchDate: DateColumnProps
-        status: string
+        status: TagColumnProps
         inStock: boolean
+        manager: AvatarColumnProps
+        rating: number
+        tags: {
+            values: string[]
+            labels: string[]
+        }
     }
     const productData: ProductRow[] = [
         {
@@ -88,8 +94,23 @@ const SimpleDataTableExample = () => {
                 date: '2023-10-30',
                 format: 'MMM dd, yyyy',
             },
-            status: 'Active',
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
             inStock: true,
+            manager: {
+                label: 'Tim Cook',
+                sublabel: 'CEO',
+                imageUrl: 'https://randomuser.me/api/portraits/men/1.jpg',
+            },
+            rating: 4.8,
+            tags: {
+                values: ['premium', 'professional'],
+                labels: ['Premium', 'Professional'],
+            },
         },
         {
             id: 2,
@@ -129,8 +150,23 @@ const SimpleDataTableExample = () => {
                 date: '2023-09-22',
                 format: 'MMM dd, yyyy',
             },
-            status: 'Active',
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
             inStock: true,
+            manager: {
+                label: 'Craig Federighi',
+                sublabel: 'SVP Software Engineering',
+                imageUrl: 'https://randomuser.me/api/portraits/men/2.jpg',
+            },
+            rating: 4.9,
+            tags: {
+                values: ['flagship', 'mobile'],
+                labels: ['Flagship', 'Mobile'],
+            },
         },
         {
             id: 3,
@@ -170,8 +206,23 @@ const SimpleDataTableExample = () => {
                 date: '2023-08-15',
                 format: 'MMM dd, yyyy',
             },
-            status: 'Discontinued',
+            status: {
+                text: 'Discontinued',
+                variant: 'subtle' as const,
+                color: 'error' as const,
+                size: 'sm' as const,
+            },
             inStock: false,
+            manager: {
+                label: 'John Ternus',
+                sublabel: 'SVP Hardware Engineering',
+                imageUrl: 'https://randomuser.me/api/portraits/men/3.jpg',
+            },
+            rating: 4.3,
+            tags: {
+                values: ['tablet', 'creative'],
+                labels: ['Tablet', 'Creative'],
+            },
         },
         {
             id: 4,
@@ -211,8 +262,23 @@ const SimpleDataTableExample = () => {
                 date: '2023-06-05',
                 format: 'MMM dd, yyyy',
             },
-            status: 'Active',
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
             inStock: true,
+            manager: {
+                label: 'Johny Srouji',
+                sublabel: 'SVP Hardware Technologies',
+                imageUrl: 'https://randomuser.me/api/portraits/men/4.jpg',
+            },
+            rating: 4.7,
+            tags: {
+                values: ['professional', 'desktop', 'powerful'],
+                labels: ['Professional', 'Desktop', 'Powerful'],
+            },
         },
         {
             id: 5,
@@ -258,8 +324,23 @@ const SimpleDataTableExample = () => {
                 date: '2023-09-22',
                 format: 'MMM dd, yyyy',
             },
-            status: 'Active',
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
             inStock: true,
+            manager: {
+                label: 'Kevin Lynch',
+                sublabel: 'VP Technology',
+                imageUrl: 'https://randomuser.me/api/portraits/men/5.jpg',
+            },
+            rating: 4.6,
+            tags: {
+                values: ['wearable', 'health', 'fitness'],
+                labels: ['Wearable', 'Health', 'Fitness'],
+            },
         },
     ]
 
@@ -272,16 +353,6 @@ const SimpleDataTableExample = () => {
             isEditable: true,
             minWidth: '200px',
             maxWidth: '300px',
-        },
-        {
-            field: 'category',
-            header: 'Category',
-            headerSubtext: 'Product Category',
-            type: ColumnType.DROPDOWN,
-            isSortable: true,
-            isEditable: false,
-            minWidth: '150px',
-            maxWidth: '200px',
         },
         {
             field: 'price',
@@ -314,8 +385,185 @@ const SimpleDataTableExample = () => {
             type: ColumnType.DATE,
             isSortable: true,
             isEditable: false,
+            renderCell: (value: unknown): React.ReactNode => {
+                const dateValue = value as DateColumnProps
+                const date = new Date(dateValue.date)
+                return (
+                    <span>
+                        {date.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                        })}
+                    </span>
+                )
+            },
             minWidth: '140px',
             maxWidth: '180px',
+        },
+        {
+            field: 'status',
+            header: 'Status',
+            type: ColumnType.TAG,
+            isSortable: true,
+            isEditable: false,
+            renderCell: (value: TagColumnProps) => (
+                <Tag
+                    text={value.text}
+                    variant={TagVariant.SUBTLE}
+                    color={
+                        value.color === 'success'
+                            ? TagColor.SUCCESS
+                            : value.color === 'error'
+                              ? TagColor.ERROR
+                              : value.color === 'warning'
+                                ? TagColor.WARNING
+                                : TagColor.NEUTRAL
+                    }
+                    size={TagSize.SM}
+                />
+            ),
+            minWidth: '100px',
+            maxWidth: '140px',
+        },
+        {
+            field: 'category',
+            header: 'Category',
+            headerSubtext: 'Product Category',
+            type: ColumnType.DROPDOWN,
+            isSortable: true,
+            isEditable: false,
+            renderCell: (value: unknown): React.ReactNode => {
+                const dropdownValue = value as DropdownColumnProps
+                const selectedOption = dropdownValue.options.find(
+                    (opt) => opt.value === dropdownValue.selectedValue
+                )
+                return selectedOption ? (
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                        }}
+                    >
+                        {selectedOption.icon}
+                        <span>{selectedOption.label}</span>
+                    </div>
+                ) : (
+                    // @ts-expect-error
+                    <span>{dropdownValue.selectedValue}</span>
+                )
+            },
+            minWidth: '150px',
+            maxWidth: '200px',
+        },
+        {
+            field: 'manager',
+            header: 'Product Manager',
+            headerSubtext: 'Responsible Person',
+            type: ColumnType.AVATAR,
+            isSortable: true,
+            isEditable: false,
+            renderCell: (value: AvatarColumnProps) => (
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                    }}
+                >
+                    <Avatar src={value.imageUrl} alt={value.label} />
+                    <div>
+                        <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                            {value.label}
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                            {value.sublabel}
+                        </div>
+                    </div>
+                </div>
+            ),
+            minWidth: '200px',
+            maxWidth: '280px',
+        },
+        {
+            field: 'rating',
+            header: 'Rating',
+            type: ColumnType.NUMBER,
+            isSortable: true,
+            isEditable: false,
+            renderCell: (value: number) => (
+                <span
+                    style={{
+                        fontWeight: 500,
+                        color:
+                            value >= 4.5
+                                ? '#16a34a'
+                                : value >= 4.0
+                                  ? '#d97706'
+                                  : '#dc2626',
+                    }}
+                >
+                    ⭐ {value.toFixed(1)}
+                </span>
+            ),
+            minWidth: '80px',
+            maxWidth: '120px',
+        },
+        {
+            field: 'tags',
+            header: 'Product Tags',
+            headerSubtext: 'Categories & Features',
+            type: ColumnType.REACT_ELEMENT,
+            isSortable: false,
+            renderCell: (value: unknown) => {
+                const tagsData = value as {
+                    values: string[]
+                    labels: string[]
+                }
+                const getTagColor = (tag: string): TagColor => {
+                    switch (tag.toLowerCase()) {
+                        case 'premium':
+                        case 'flagship':
+                            return TagColor.SUCCESS
+                        case 'professional':
+                        case 'powerful':
+                            return TagColor.WARNING
+                        case 'creative':
+                        case 'health':
+                            return TagColor.NEUTRAL
+                        default:
+                            return TagColor.NEUTRAL
+                    }
+                }
+
+                return (
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexWrap: 'nowrap',
+                            gap: '4px',
+                            overflow: 'auto',
+                            whiteSpace: 'nowrap',
+                            minWidth: '150px',
+                            maxWidth: '100%',
+                            scrollbarWidth: 'thin',
+                        }}
+                    >
+                        {tagsData.values.map((tag, index) => (
+                            <Tag
+                                key={index}
+                                text={tagsData.labels?.[index] || tag}
+                                variant={TagVariant.SUBTLE}
+                                color={getTagColor(tag)}
+                                size={TagSize.SM}
+                            />
+                        ))}
+                    </div>
+                )
+            },
+            minWidth: '150px',
+            maxWidth: '250px',
         },
         {
             field: 'inStock',
@@ -1685,6 +1933,7 @@ const DataTableDemo = () => {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         marginBottom: '12px',
+                        overflow: 'scroll',
                     }}
                 >
                     <div>

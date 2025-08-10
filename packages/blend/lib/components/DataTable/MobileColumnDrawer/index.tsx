@@ -22,6 +22,92 @@ export interface MobileColumnDrawerProps<T extends Record<string, unknown>> {
 const MobileColumnDrawer: React.FC<
     MobileColumnDrawerProps<Record<string, unknown>>
 > = ({ isOpen, onClose, row, overflowColumns, getDisplayValue }) => {
+    /**
+     * Renders cell value using the exact same logic as table cells
+     * This ensures consistency between desktop table and mobile drawer
+     */
+    const renderCellValue = (
+        column: ColumnDefinition<Record<string, unknown>>,
+        value: unknown
+    ): React.ReactNode => {
+        if (column.renderCell) {
+            try {
+                // @ts-expect-error error may occur if renderCell is not defined for the column
+                return column.renderCell(value, row, 0)
+            } catch (error) {
+                console.warn('Error in column renderCell function:', error)
+                return value != null ? String(value) : '-'
+            }
+        }
+
+        if (getDisplayValue) {
+            try {
+                const displayValue = getDisplayValue(value, column)
+                return displayValue != null ? String(displayValue) : '-'
+            } catch (error) {
+                console.warn('Error in getDisplayValue function:', error)
+                return value != null ? String(value) : '-'
+            }
+        }
+        return value != null ? String(value) : '-'
+    }
+
+    const renderDrawerRow = (
+        column: ColumnDefinition<Record<string, unknown>>
+    ) => {
+        const value = row[column.field]
+        const renderedValue = renderCellValue(column, value)
+
+        return (
+            <Block
+                key={String(column.field)}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                style={{ minHeight: FOUNDATION_THEME.unit[32] }}
+            >
+                {/* Column Label */}
+                <PrimitiveText
+                    fontSize={FOUNDATION_THEME.font.size.body.md.fontSize}
+                    fontWeight={FOUNDATION_THEME.font.weight[400]}
+                    color={FOUNDATION_THEME.colors.gray[500]}
+                >
+                    {column.header}
+                </PrimitiveText>
+
+                {/* Column Value */}
+                <Block
+                    style={{
+                        flex: '1 1 auto',
+                        marginLeft: FOUNDATION_THEME.unit[16],
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        alignItems: 'center',
+                    }}
+                >
+                    {typeof renderedValue === 'string' ||
+                    typeof renderedValue === 'number' ? (
+                        <PrimitiveText
+                            fontSize={
+                                FOUNDATION_THEME.font.size.body.md.fontSize
+                            }
+                            fontWeight={FOUNDATION_THEME.font.weight[500]}
+                            color={FOUNDATION_THEME.colors.gray[700]}
+                            style={{
+                                wordBreak: 'break-word',
+                                textAlign: 'right',
+                            }}
+                        >
+                            {renderedValue}
+                        </PrimitiveText>
+                    ) : (
+                        renderedValue
+                    )}
+                </Block>
+            </Block>
+        )
+    }
+
     return (
         <Drawer
             open={isOpen}
@@ -34,11 +120,12 @@ const MobileColumnDrawer: React.FC<
             <DrawerPortal>
                 <DrawerOverlay />
                 <DrawerContent contentDriven={true}>
+                    {/* Drawer Header */}
                     <Block
                         display="flex"
                         justifyContent="center"
                         alignItems="center"
-                        padding={FOUNDATION_THEME.unit[16]}
+                        padding={`${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[20]}`}
                     >
                         <PrimitiveText
                             fontSize={
@@ -47,7 +134,7 @@ const MobileColumnDrawer: React.FC<
                             fontWeight={FOUNDATION_THEME.font.weight[600]}
                             color={FOUNDATION_THEME.colors.gray[900]}
                         >
-                            Insights
+                            Details
                         </PrimitiveText>
                     </Block>
 
@@ -55,120 +142,10 @@ const MobileColumnDrawer: React.FC<
                         <Block
                             display="flex"
                             flexDirection="column"
-                            gap={FOUNDATION_THEME.unit[8]}
-                            padding={FOUNDATION_THEME.unit[16]}
+                            gap={FOUNDATION_THEME.unit[16]}
+                            padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[20]} ${FOUNDATION_THEME.unit[16]} ${FOUNDATION_THEME.unit[20]}`}
                         >
-                            {overflowColumns.map((column) => {
-                                const value = row[column.field]
-                                let displayValue = getDisplayValue
-                                    ? getDisplayValue(value, column)
-                                    : value
-
-                                // Handle date column objects
-                                if (
-                                    value &&
-                                    typeof value === 'object' &&
-                                    'date' in value
-                                ) {
-                                    const dateObj = value as {
-                                        date: string
-                                        format?: string
-                                    }
-                                    const date = new Date(dateObj.date)
-                                    displayValue = date.toLocaleDateString(
-                                        'en-US',
-                                        {
-                                            year: 'numeric',
-                                            month: 'short',
-                                            day: 'numeric',
-                                        }
-                                    )
-                                }
-
-                                // Handle dropdown column objects
-                                if (
-                                    value &&
-                                    typeof value === 'object' &&
-                                    'selectedValue' in value
-                                ) {
-                                    const dropdownObj = value as {
-                                        selectedValue: string
-                                        options: Array<{
-                                            label: string
-                                            value: string
-                                        }>
-                                    }
-                                    const selectedOption =
-                                        dropdownObj.options.find(
-                                            (opt) =>
-                                                opt.value ===
-                                                dropdownObj.selectedValue
-                                        )
-                                    displayValue =
-                                        selectedOption?.label ||
-                                        dropdownObj.selectedValue
-                                }
-
-                                return (
-                                    <Block
-                                        key={String(column.field)}
-                                        display="flex"
-                                        justifyContent="space-between"
-                                        alignItems="center"
-                                        padding={`${FOUNDATION_THEME.unit[12]} 0`}
-                                        borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                                    >
-                                        <PrimitiveText
-                                            fontSize={
-                                                FOUNDATION_THEME.font.size.body
-                                                    .md.fontSize
-                                            }
-                                            fontWeight={
-                                                FOUNDATION_THEME.font
-                                                    .weight[500]
-                                            }
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[600]
-                                            }
-                                            style={{
-                                                textTransform: 'uppercase',
-                                                letterSpacing: '0.5px',
-                                                flex: '0 0 auto',
-                                            }}
-                                        >
-                                            {column.header}
-                                        </PrimitiveText>
-
-                                        <PrimitiveText
-                                            fontSize={
-                                                FOUNDATION_THEME.font.size.body
-                                                    .md.fontSize
-                                            }
-                                            fontWeight={
-                                                FOUNDATION_THEME.font
-                                                    .weight[500]
-                                            }
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[900]
-                                            }
-                                            style={{
-                                                wordBreak: 'break-word',
-                                                lineHeight: '1.4',
-                                                textAlign: 'right',
-                                                flex: '1 1 auto',
-                                                marginLeft:
-                                                    FOUNDATION_THEME.unit[16],
-                                            }}
-                                        >
-                                            {displayValue != null
-                                                ? String(displayValue)
-                                                : '-'}
-                                        </PrimitiveText>
-                                    </Block>
-                                )
-                            })}
+                            {overflowColumns.map(renderDrawerRow)}
                         </Block>
                     </DrawerBody>
                 </DrawerContent>
