@@ -23,11 +23,12 @@ import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/mult
 import type { TableTokenType } from '../components/DataTable/dataTable.tokens'
 import type { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
-import type { StatCardTokenType } from '../components/StatCard/statcard.tokens'
+import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
 import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
 import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
 import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
+import { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -57,10 +58,11 @@ export const useComponentToken = (
     | TableTokenType
     | CalendarTokenType
     | ResponsiveAccordionTokens
-    | StatCardTokenType
+    | ResponsiveStatCardTokens
     | ProgressBarTokenType
     | DrawerTokensType
-    | ResponsiveChartTokens => {
+    | ResponsiveChartTokens
+    | ResponsiveSnackbarTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -122,6 +124,8 @@ export const useComponentToken = (
             return componentTokens.SINGLE_SELECT
         case 'CHARTS':
             return componentTokens.CHARTS
+        case 'SNACKBAR':
+            return componentTokens.SNACKBAR
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

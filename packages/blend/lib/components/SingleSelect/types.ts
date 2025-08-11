@@ -87,4 +87,11 @@ export type SingleSelectProps = {
     minWidth?: number
     maxWidth?: number
     maxHeight?: number
+    inline?: boolean
+    onBlur?: () => void
+    onFocus?: () => void
+
+    // error
+    error?: boolean
+    errorMessage?: string
 }

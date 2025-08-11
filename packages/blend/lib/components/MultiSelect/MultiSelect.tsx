@@ -61,6 +61,11 @@ const MultiSelect = ({
     side,
     sideOffset,
     alignOffset,
+    inline = false,
+    onBlur,
+    onFocus,
+    error,
+    errorMessage,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -93,18 +98,29 @@ const MultiSelect = ({
     if (isMobile && useDrawerOnMobile) {
         return (
             <Block width="100%" display="flex" flexDirection="column" gap={8}>
-                {variant === MultiSelectVariant.CONTAINER && (
-                    <InputLabels
-                        label={label}
-                        sublabel={sublabel}
-                        disabled={disabled}
-                        helpIconHintText={helpIconHintText}
-                        name={name}
-                        required={required}
-                    />
-                )}
+                {variant === MultiSelectVariant.CONTAINER &&
+                    (!isSmallScreen || size !== MultiSelectMenuSize.LARGE) && (
+                        <InputLabels
+                            label={label}
+                            sublabel={sublabel}
+                            disabled={disabled}
+                            helpIconHintText={helpIconHintText}
+                            name={name}
+                            required={required}
+                        />
+                    )}
 
-                <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+                <Drawer
+                    open={drawerOpen}
+                    onOpenChange={(isOpen) => {
+                        setDrawerOpen(isOpen)
+                        if (isOpen) {
+                            onFocus?.()
+                        } else {
+                            onBlur?.()
+                        }
+                    }}
+                >
                     <DrawerTrigger>
                         <MultiSelectTrigger
                             onChange={onChange}
@@ -122,6 +138,7 @@ const MultiSelect = ({
                             slot={slot}
                             onClick={() => setDrawerOpen(true)}
                             multiSelectTokens={multiSelectTokens}
+                            error={error}
                         />
                     </DrawerTrigger>
 
@@ -425,7 +442,11 @@ const MultiSelect = ({
                 </Drawer>
 
                 {variant === MultiSelectVariant.CONTAINER && (
-                    <InputFooter hintText={hintText} />
+                    <InputFooter
+                        hintText={hintText}
+                        error={error}
+                        errorMessage={errorMessage}
+                    />
                 )}
             </Block>
         )
@@ -479,12 +500,24 @@ const MultiSelect = ({
                 sideOffset={sideOffset}
                 alignOffset={alignOffset}
                 open={open}
-                onOpenChange={setOpen}
+                onOpenChange={(isOpen) => {
+                    setOpen(isOpen)
+                    if (isOpen) {
+                        onFocus?.()
+                    } else {
+                        onBlur?.()
+                    }
+                }}
                 trigger={
                     <Block
                         display="flex"
-                        height={toPixels(multiSelectTokens.trigger.height)}
-                        maxHeight={toPixels(multiSelectTokens.trigger.height)}
+                        {...((!inline ||
+                            variant === MultiSelectVariant.CONTAINER) && {
+                            height: toPixels(multiSelectTokens.trigger.height),
+                            maxHeight: toPixels(
+                                multiSelectTokens.trigger.height
+                            ),
+                        })}
                     >
                         <Block
                             width={
@@ -502,12 +535,6 @@ const MultiSelect = ({
                         >
                             <PrimitiveButton
                                 position="relative"
-                                height={toPixels(
-                                    multiSelectTokens.trigger.height
-                                )}
-                                maxHeight={toPixels(
-                                    multiSelectTokens.trigger.height
-                                )}
                                 width={'100%'}
                                 display="flex"
                                 alignItems="center"
@@ -518,37 +545,61 @@ const MultiSelect = ({
                                 boxShadow={
                                     multiSelectTokens.trigger.boxShadow[variant]
                                 }
-                                paddingX={
-                                    multiSelectTokens.trigger.paddingX[size]
-                                }
-                                paddingY={paddingY}
-                                backgroundColor={
-                                    multiSelectTokens.trigger.backgroundColor
-                                        .container[open ? 'open' : 'closed']
-                                }
                                 outline={
                                     multiSelectTokens.trigger.outline[variant][
-                                        open ? 'open' : 'closed'
+                                        error
+                                            ? 'error'
+                                            : open
+                                              ? 'open'
+                                              : 'closed'
                                     ]
                                 }
-                                _hover={{
-                                    outline:
-                                        multiSelectTokens.trigger.outline[
-                                            variant
-                                        ].hover,
+                                {...((!inline ||
+                                    variant ===
+                                        MultiSelectVariant.CONTAINER) && {
+                                    height: multiSelectTokens.trigger.height,
+
+                                    maxHeight: multiSelectTokens.trigger.height,
+
+                                    paddingX:
+                                        multiSelectTokens.trigger.paddingX[
+                                            size
+                                        ],
+
+                                    paddingY: paddingY,
                                     backgroundColor:
                                         multiSelectTokens.trigger
-                                            .backgroundColor.container.hover,
-                                }}
-                                _focus={{
-                                    outline:
-                                        multiSelectTokens.trigger.outline[
-                                            variant
-                                        ].focus,
-                                    backgroundColor:
-                                        multiSelectTokens.trigger
-                                            .backgroundColor.container.focus,
-                                }}
+                                            .backgroundColor.container[
+                                            error
+                                                ? 'error'
+                                                : open
+                                                  ? 'open'
+                                                  : 'closed'
+                                        ],
+
+                                    _hover: {
+                                        outline:
+                                            multiSelectTokens.trigger.outline[
+                                                variant
+                                            ][error ? 'error' : 'hover'],
+                                        backgroundColor:
+                                            multiSelectTokens.trigger
+                                                .backgroundColor.container[
+                                                error ? 'error' : 'hover'
+                                            ],
+                                    },
+                                    _focus: {
+                                        outline:
+                                            multiSelectTokens.trigger.outline[
+                                                variant
+                                            ][error ? 'error' : 'focus'],
+                                        backgroundColor:
+                                            multiSelectTokens.trigger
+                                                .backgroundColor.container[
+                                                error ? 'error' : 'focus'
+                                            ],
+                                    },
+                                })}
                             >
                                 {slot && (
                                     <Block
@@ -716,7 +767,7 @@ const MultiSelect = ({
                                         outline={
                                             multiSelectTokens.trigger.outline[
                                                 variant
-                                            ].closed
+                                            ][error ? 'error' : 'closed']
                                         }
                                         _hover={{
                                             backgroundColor:
@@ -745,7 +796,11 @@ const MultiSelect = ({
             />
 
             {variant === MultiSelectVariant.CONTAINER && (
-                <InputFooter hintText={hintText} />
+                <InputFooter
+                    hintText={hintText}
+                    error={error}
+                    errorMessage={errorMessage}
+                />
             )}
         </Block>
     )

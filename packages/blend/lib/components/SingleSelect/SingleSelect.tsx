@@ -62,6 +62,8 @@ const SingleSelect = ({
     required,
     helpIconText,
     placeholder,
+    error = false,
+    errorMessage,
     size = SelectMenuSize.MEDIUM,
     items = [],
     name,
@@ -79,6 +81,9 @@ const SingleSelect = ({
     minWidth,
     maxWidth,
     maxHeight,
+    onBlur,
+    onFocus,
+    inline = false,
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -106,18 +111,29 @@ const SingleSelect = ({
     if (isMobile && useDrawerOnMobile) {
         return (
             <Block width="100%" display="flex" flexDirection="column" gap={8}>
-                {variant === SelectMenuVariant.CONTAINER && (
-                    <InputLabels
-                        label={label}
-                        sublabel={subLabel}
-                        disabled={disabled}
-                        helpIconHintText={helpIconText}
-                        name={name}
-                        required={required}
-                    />
-                )}
+                {variant === SelectMenuVariant.CONTAINER &&
+                    (!isSmallScreen || size !== SelectMenuSize.LARGE) && (
+                        <InputLabels
+                            label={label}
+                            sublabel={subLabel}
+                            disabled={disabled}
+                            helpIconHintText={helpIconText}
+                            name={name}
+                            required={required}
+                        />
+                    )}
 
-                <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+                <Drawer
+                    open={drawerOpen}
+                    onOpenChange={(isOpen) => {
+                        setDrawerOpen(isOpen)
+                        if (isOpen) {
+                            onFocus?.()
+                        } else {
+                            onBlur?.()
+                        }
+                    }}
+                >
                     <DrawerTrigger>
                         <SingleSelectTrigger
                             singleSelectTokens={singleSelectTokens}
@@ -128,7 +144,7 @@ const SingleSelect = ({
                             placeholder={placeholder}
                             required={required || false}
                             valueLabelMap={valueLabelMap}
-                            open={open}
+                            open={drawerOpen}
                             onClick={() => setDrawerOpen(true)}
                             slot={slot}
                             variant={variant}
@@ -136,6 +152,8 @@ const SingleSelect = ({
                                 isSmallScreenWithLargeSize
                             }
                             isItemSelected={isItemSelected}
+                            inline={inline}
+                            error={error}
                         />
                     </DrawerTrigger>
 
@@ -163,6 +181,9 @@ const SingleSelect = ({
                                                 backgroundColor: '#f3f4f6',
                                                 border: '1px solid #d1d5db',
                                                 cursor: 'pointer',
+                                            }}
+                                            onClick={() => {
+                                                setDrawerOpen(false)
                                             }}
                                         >
                                             <X size={16} color="#6b7280" />
@@ -417,7 +438,11 @@ const SingleSelect = ({
                 </Drawer>
 
                 {variant === SelectMenuVariant.CONTAINER && (
-                    <InputFooter hintText={hintText} />
+                    <InputFooter
+                        hintText={hintText}
+                        error={error}
+                        errorMessage={errorMessage}
+                    />
                 )}
             </Block>
         )
@@ -444,8 +469,10 @@ const SingleSelect = ({
                 )}
             <Block
                 display="flex"
-                height={singleSelectTokens.trigger.height}
-                maxHeight={singleSelectTokens.trigger.height}
+                {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
+                    height: singleSelectTokens.trigger.height,
+                    maxHeight: singleSelectTokens.trigger.height,
+                })}
             >
                 <Block
                     width={
@@ -463,7 +490,14 @@ const SingleSelect = ({
                 >
                     <SingleSelectMenu
                         open={open}
-                        onOpenChange={setOpen}
+                        onOpenChange={(isOpen) => {
+                            setOpen(isOpen)
+                            if (isOpen) {
+                                onFocus?.()
+                            } else {
+                                onBlur?.()
+                            }
+                        }}
                         items={items}
                         selected={selected}
                         onSelect={onSelect}
@@ -479,8 +513,6 @@ const SingleSelect = ({
                         trigger={
                             <PrimitiveButton
                                 position="relative"
-                                height={singleSelectTokens.trigger.height}
-                                maxHeight={singleSelectTokens.trigger.height}
                                 width={'100%'}
                                 display="flex"
                                 alignItems="center"
@@ -493,35 +525,55 @@ const SingleSelect = ({
                                         variant
                                     ]
                                 }
-                                paddingX={paddingX}
-                                paddingY={paddingY}
-                                backgroundColor={
-                                    singleSelectTokens.trigger.backgroundColor
-                                        .container[open ? 'open' : 'closed']
-                                }
                                 outline={
                                     singleSelectTokens.trigger.outline[variant][
-                                        open ? 'open' : 'closed'
+                                        error
+                                            ? 'error'
+                                            : open
+                                              ? 'open'
+                                              : 'closed'
                                     ]
                                 }
-                                _hover={{
-                                    outline:
-                                        singleSelectTokens.trigger.outline[
-                                            variant
-                                        ].hover,
+                                {...((!inline ||
+                                    variant ===
+                                        SelectMenuVariant.CONTAINER) && {
+                                    paddingX: paddingX,
+                                    paddingY: paddingY,
                                     backgroundColor:
                                         singleSelectTokens.trigger
-                                            .backgroundColor.container.hover,
-                                }}
-                                _focus={{
-                                    outline:
-                                        singleSelectTokens.trigger.outline[
-                                            variant
-                                        ].focus,
-                                    backgroundColor:
-                                        singleSelectTokens.trigger
-                                            .backgroundColor.container.focus,
-                                }}
+                                            .backgroundColor.container[
+                                            error
+                                                ? 'error'
+                                                : open
+                                                  ? 'open'
+                                                  : 'closed'
+                                        ],
+                                    height: singleSelectTokens.trigger.height,
+                                    maxHeight:
+                                        singleSelectTokens.trigger.height,
+                                    _hover: {
+                                        outline:
+                                            singleSelectTokens.trigger.outline[
+                                                variant
+                                            ][error ? 'error' : 'hover'],
+                                        backgroundColor:
+                                            singleSelectTokens.trigger
+                                                .backgroundColor.container[
+                                                error ? 'error' : 'hover'
+                                            ],
+                                    },
+                                    _focus: {
+                                        outline:
+                                            singleSelectTokens.trigger.outline[
+                                                variant
+                                            ][error ? 'error' : 'focus'],
+                                        backgroundColor:
+                                            singleSelectTokens.trigger
+                                                .backgroundColor.container[
+                                                error ? 'error' : 'focus'
+                                            ],
+                                    },
+                                })}
                             >
                                 <Block
                                     display="flex"
@@ -630,7 +682,11 @@ const SingleSelect = ({
                 </Block>
             </Block>
             {variant === SelectMenuVariant.CONTAINER && (
-                <InputFooter hintText={hintText} />
+                <InputFooter
+                    hintText={hintText}
+                    error={error}
+                    errorMessage={errorMessage}
+                />
             )}
         </Block>
     )

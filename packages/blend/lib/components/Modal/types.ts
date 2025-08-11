@@ -20,4 +20,5 @@ export type ModalProps = {
     customFooter?: ReactNode
     headerRightSlot?: ReactNode
     showDivider?: boolean
+    minWidth?: string
 }

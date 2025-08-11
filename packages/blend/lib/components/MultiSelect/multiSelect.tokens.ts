@@ -8,7 +8,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
-type TriggerStates = 'open' | 'closed' | 'hover' | 'focus'
+type TriggerStates = 'open' | 'closed' | 'hover' | 'focus' | 'error'
 
 export type SingleSelectItemStates =
     | 'default'
@@ -97,122 +97,6 @@ export type ResponsiveMultiSelectTokens = {
     [key in keyof BreakpointType]: MultiSelectTokensType
 }
 
-export const multiSelectTokens: MultiSelectTokensType = {
-    trigger: {
-        height: FOUNDATION_THEME.unit[52],
-        paddingX: {
-            sm: FOUNDATION_THEME.unit[14],
-            md: FOUNDATION_THEME.unit[14],
-            lg: FOUNDATION_THEME.unit[14],
-        },
-        paddingY: {
-            sm: FOUNDATION_THEME.unit[6],
-            md: FOUNDATION_THEME.unit[8],
-            lg: FOUNDATION_THEME.unit[10],
-        },
-        borderRadius: {
-            sm: FOUNDATION_THEME.unit[10],
-            md: FOUNDATION_THEME.unit[10],
-            lg: FOUNDATION_THEME.unit[10],
-        },
-        boxShadow: {
-            container: FOUNDATION_THEME.shadows.sm,
-            'no-container': 'none',
-        },
-        backgroundColor: {
-            container: {
-                open: FOUNDATION_THEME.colors.gray[25],
-                closed: FOUNDATION_THEME.colors.gray[0],
-                hover: FOUNDATION_THEME.colors.gray[50],
-                focus: FOUNDATION_THEME.colors.gray[50],
-            },
-        },
-        outline: {
-            container: {
-                open: `1px solid ${FOUNDATION_THEME.colors.gray[200]} !important`,
-                closed: `1px solid ${FOUNDATION_THEME.colors.gray[200]} !important`,
-                hover: `1px solid ${FOUNDATION_THEME.colors.gray[200]} !important`,
-                focus: `1px solid ${FOUNDATION_THEME.colors.gray[200]} !important`,
-            },
-            'no-container': {
-                open: undefined,
-                closed: undefined,
-                hover: undefined,
-                focus: undefined,
-            },
-        },
-        selectionTag: {
-            container: {
-                [MultiSelectSelectionTagType.TEXT]: {
-                    color: FOUNDATION_THEME.colors.gray[700],
-                    backgroundColor: 'transparent',
-                    fontWeight: 500,
-                },
-                [MultiSelectSelectionTagType.COUNT]: {
-                    color: FOUNDATION_THEME.colors.gray[0],
-                    backgroundColor: FOUNDATION_THEME.colors.primary[600],
-                    fontWeight: 500,
-                },
-            },
-        },
-    },
-    dropdown: {
-        shadow: FOUNDATION_THEME.shadows.sm,
-        backgroundColor: FOUNDATION_THEME.colors.gray[0],
-        paddingTop: FOUNDATION_THEME.unit[4],
-        paddingBottom: FOUNDATION_THEME.unit[4],
-        border: FOUNDATION_THEME.colors.gray[200],
-        outline: FOUNDATION_THEME.colors.gray[200],
-        borderRadius: FOUNDATION_THEME.unit[10],
-        item: {
-            padding: FOUNDATION_THEME.unit[4],
-            margin: FOUNDATION_THEME.unit[4],
-            borderRadius: FOUNDATION_THEME.unit[10],
-            gap: FOUNDATION_THEME.unit[4],
-            backgroundColor: {
-                default: FOUNDATION_THEME.colors.gray[0],
-                hover: FOUNDATION_THEME.colors.gray[50],
-                active: FOUNDATION_THEME.colors.gray[100],
-                focus: FOUNDATION_THEME.colors.gray[100],
-                focusVisible: FOUNDATION_THEME.colors.gray[100],
-                disabled: FOUNDATION_THEME.colors.gray[50],
-                selected: FOUNDATION_THEME.colors.gray[50],
-            },
-            label: {
-                fontSize: 14,
-                fontWeight: 500,
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[600],
-                    hover: FOUNDATION_THEME.colors.gray[700],
-                    active: FOUNDATION_THEME.colors.gray[700],
-                    focus: FOUNDATION_THEME.colors.gray[700],
-                    focusVisible: FOUNDATION_THEME.colors.gray[700],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    selected: FOUNDATION_THEME.colors.gray[700],
-                },
-            },
-            subLabel: {
-                fontSize: 12,
-                fontWeight: 400,
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[600],
-                    hover: FOUNDATION_THEME.colors.gray[700],
-                    active: FOUNDATION_THEME.colors.gray[700],
-                    focus: FOUNDATION_THEME.colors.gray[700],
-                    focusVisible: FOUNDATION_THEME.colors.gray[700],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    selected: FOUNDATION_THEME.colors.gray[700],
-                },
-            },
-        },
-        seperator: {
-            color: FOUNDATION_THEME.colors.gray[200],
-            height: 1,
-            margin: `${FOUNDATION_THEME.unit[6]} 0`,
-        },
-    },
-}
-
 export const getMultiSelectTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveMultiSelectTokens => {
@@ -245,6 +129,7 @@ export const getMultiSelectTokens = (
                         closed: foundationToken.colors.gray[0],
                         hover: foundationToken.colors.gray[50],
                         focus: foundationToken.colors.gray[50],
+                        error: foundationToken.colors.gray[0],
                     },
                 },
                 outline: {
@@ -253,12 +138,14 @@ export const getMultiSelectTokens = (
                         closed: `1px solid ${foundationToken.colors.gray[200]} !important`,
                         hover: `1px solid ${foundationToken.colors.gray[200]} !important`,
                         focus: `1px solid ${foundationToken.colors.gray[200]} !important`,
+                        error: `1px solid ${foundationToken.colors.red[600]} !important`,
                     },
                     'no-container': {
                         open: undefined,
                         closed: undefined,
                         hover: undefined,
                         focus: undefined,
+                        error: undefined,
                     },
                 },
                 selectionTag: {
@@ -361,6 +248,7 @@ export const getMultiSelectTokens = (
                         closed: foundationToken.colors.gray[0],
                         hover: foundationToken.colors.gray[50],
                         focus: foundationToken.colors.gray[50],
+                        error: foundationToken.colors.gray[0],
                     },
                 },
                 outline: {
@@ -369,12 +257,14 @@ export const getMultiSelectTokens = (
                         closed: `1px solid ${foundationToken.colors.gray[200]} !important`,
                         hover: `1px solid ${foundationToken.colors.gray[200]} !important`,
                         focus: `1px solid ${foundationToken.colors.gray[200]} !important`,
+                        error: `1px solid ${foundationToken.colors.red[600]} !important`,
                     },
                     'no-container': {
                         open: undefined,
                         closed: undefined,
                         hover: undefined,
                         focus: undefined,
+                        error: undefined,
                     },
                 },
                 selectionTag: {
