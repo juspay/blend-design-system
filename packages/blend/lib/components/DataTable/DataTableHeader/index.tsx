@@ -1,10 +1,11 @@
 import { forwardRef, useState } from 'react'
-import { Filter, Search, ListFilter } from 'lucide-react'
+import { Filter, Search, ListFilter, X } from 'lucide-react'
 import { DataTableHeaderProps } from './types'
 import { Button } from '../../../main'
 import { ButtonSize, ButtonType } from '../../Button/types'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
+import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import { SearchInput } from '../../Inputs/SearchInput'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { TableTokenType } from '../dataTable.tokens'
@@ -19,6 +20,57 @@ import {
     DrawerBody,
 } from '../../Drawer'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+
+const SearchCloseButton = ({ onClose }: { onClose: () => void }) => (
+    <PrimitiveButton
+        onClick={onClose}
+        contentCentered
+        padding="4px"
+        borderRadius="4px"
+        backgroundColor="transparent"
+        border="none"
+        cursor="pointer"
+        _hover={{
+            backgroundColor: FOUNDATION_THEME.colors.gray[100],
+        }}
+    >
+        <X size={16} color={FOUNDATION_THEME.colors.gray[600]} />
+    </PrimitiveButton>
+)
+
+const MobileSearchInput = ({
+    searchPlaceholder,
+    searchConfig,
+    onSearch,
+    onClose,
+}: {
+    searchPlaceholder: string
+    searchConfig: { query: string }
+    onSearch: (query: string) => void
+    onClose: () => void
+}) => (
+    <Block style={{ minWidth: '150px', maxWidth: '200px' }}>
+        <SearchInput
+            placeholder={searchPlaceholder}
+            value={searchConfig.query}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                onSearch(event.target.value)
+            }
+            onBlur={() => {
+                if (!searchConfig.query.trim()) {
+                    onClose()
+                }
+            }}
+            onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+                if (event.key === 'Escape') {
+                    onClose()
+                }
+            }}
+            rightSlot={<SearchCloseButton onClose={onClose} />}
+            autoFocus
+        />
+    </Block>
+)
 
 const DataTableHeader = forwardRef<
     HTMLDivElement,
@@ -67,7 +119,6 @@ const DataTableHeader = forwardRef<
                     padding={`0 ${FOUNDATION_THEME.unit[16]}`}
                     style={{ minWidth: 0, height: 'auto' }}
                 >
-                    {/* First Row: Title + Search Icon + Filter Icon */}
                     <Block
                         display="flex"
                         justifyContent={
@@ -105,13 +156,18 @@ const DataTableHeader = forwardRef<
                                 gap={tableToken.header.actionIcons.gap}
                                 style={{ flexShrink: 0 }}
                             >
-                                {enableSearch && (
+                                {enableSearch && isSearchOpen && (
+                                    <MobileSearchInput
+                                        searchPlaceholder={searchPlaceholder}
+                                        searchConfig={searchConfig}
+                                        onSearch={onSearch}
+                                        onClose={() => setIsSearchOpen(false)}
+                                    />
+                                )}
+
+                                {enableSearch && !isSearchOpen && (
                                     <Button
-                                        buttonType={
-                                            isSearchOpen || searchConfig.query
-                                                ? ButtonType.PRIMARY
-                                                : ButtonType.SECONDARY
-                                        }
+                                        buttonType={ButtonType.SECONDARY}
                                         leadingIcon={
                                             <Search
                                                 size={parseInt(
@@ -124,9 +180,7 @@ const DataTableHeader = forwardRef<
                                             />
                                         }
                                         size={ButtonSize.SMALL}
-                                        onClick={() =>
-                                            setIsSearchOpen(!isSearchOpen)
-                                        }
+                                        onClick={() => setIsSearchOpen(true)}
                                     />
                                 )}
 
@@ -159,24 +213,6 @@ const DataTableHeader = forwardRef<
                         )}
                     </Block>
 
-                    {/* Search Bar Row (when search is open) */}
-                    {isSearchOpen && enableSearch && (
-                        <Block
-                            marginBottom={FOUNDATION_THEME.unit[12]}
-                            style={{ minWidth: 0 }}
-                        >
-                            <SearchInput
-                                placeholder={searchPlaceholder}
-                                value={searchConfig.query}
-                                onChange={(
-                                    event: React.ChangeEvent<HTMLInputElement>
-                                ) => onSearch(event.target.value)}
-                                autoFocus
-                            />
-                        </Block>
-                    )}
-
-                    {/* Second Row: Description */}
                     {description && (
                         <Block
                             style={{
@@ -213,7 +249,6 @@ const DataTableHeader = forwardRef<
                         </Block>
                     )}
 
-                    {/* Mobile Drawer for Filters and Actions */}
                     <Drawer
                         open={isDrawerOpen}
                         onOpenChange={setIsDrawerOpen}
@@ -326,7 +361,6 @@ const DataTableHeader = forwardRef<
                                             </Block>
                                         )}
 
-                                        {/* Clear All Button */}
                                         {enableAdvancedFilter &&
                                             advancedFilters.length > 0 && (
                                                 <Block

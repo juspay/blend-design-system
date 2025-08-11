@@ -925,6 +925,15 @@ const DataTable = forwardRef(
                                 column as ColumnDefinition<T>
                             )
                         }
+                        onFieldChange={(field, value) => {
+                            setSelectedRowForDrawer((prev) =>
+                                prev ? { ...prev, [field]: value } : null
+                            )
+                            if (onFieldChange && selectedRowForDrawer) {
+                                const rowId = selectedRowForDrawer[idField]
+                                onFieldChange(rowId, field as keyof T, value)
+                            }
+                        }}
                     />
                 )}
             </Block>
