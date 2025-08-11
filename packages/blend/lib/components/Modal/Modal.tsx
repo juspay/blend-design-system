@@ -160,6 +160,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             closeOnBackdropClick = true,
             headerRightSlot,
             showDivider = true,
+            minWidth = '500px',
         },
         ref
     ) => {
@@ -206,8 +207,9 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     flexDirection="column"
                     position="relative"
                     backgroundColor={FOUNDATION_THEME.colors.gray[0]}
-                    maxWidth="500px"
-                    maxHeight="500px"
+                    minWidth={minWidth}
+                    maxWidth={'calc(100vw - 156px)'}
+                    maxHeight={'calc(100vh - 156px)'}
                     borderRadius={FOUNDATION_THEME.border.radius[12]}
                     boxShadow={FOUNDATION_THEME.shadows.xs}
                     role="dialog"
