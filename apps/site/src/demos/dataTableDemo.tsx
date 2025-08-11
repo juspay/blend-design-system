@@ -492,21 +492,27 @@ const SimpleDataTableExample = () => {
             type: ColumnType.NUMBER,
             isSortable: true,
             isEditable: false,
-            renderCell: (value: number) => (
-                <span
-                    style={{
-                        fontWeight: 500,
-                        color:
-                            value >= 4.5
-                                ? '#16a34a'
-                                : value >= 4.0
-                                  ? '#d97706'
-                                  : '#dc2626',
-                    }}
-                >
-                    ⭐ {value.toFixed(1)}
-                </span>
-            ),
+            renderCell: (value: unknown) => {
+                const numValue =
+                    typeof value === 'number'
+                        ? value
+                        : parseFloat(String(value)) || 0
+                return (
+                    <span
+                        style={{
+                            fontWeight: 500,
+                            color:
+                                numValue >= 4.5
+                                    ? '#16a34a'
+                                    : numValue >= 4.0
+                                      ? '#d97706'
+                                      : '#dc2626',
+                        }}
+                    >
+                        ⭐ {numValue.toFixed(1)}
+                    </span>
+                )
+            },
             minWidth: '80px',
             maxWidth: '120px',
         },

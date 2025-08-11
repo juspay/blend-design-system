@@ -9,6 +9,7 @@ import {
     DrawerOverlay,
     DrawerContent,
     DrawerBody,
+    DrawerTitle,
 } from '../../Drawer'
 
 export interface MobileColumnDrawerProps<T extends Record<string, unknown>> {
@@ -120,23 +121,25 @@ const MobileColumnDrawer: React.FC<
             <DrawerPortal>
                 <DrawerOverlay />
                 <DrawerContent contentDriven={true}>
-                    {/* Drawer Header */}
-                    <Block
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        padding={`${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[20]}`}
-                    >
-                        <PrimitiveText
-                            fontSize={
-                                FOUNDATION_THEME.font.size.heading.md.fontSize
-                            }
-                            fontWeight={FOUNDATION_THEME.font.weight[600]}
-                            color={FOUNDATION_THEME.colors.gray[900]}
+                    <DrawerTitle>
+                        <Block
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            padding={`${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[20]}`}
                         >
-                            Details
-                        </PrimitiveText>
-                    </Block>
+                            <PrimitiveText
+                                fontSize={
+                                    FOUNDATION_THEME.font.size.heading.md
+                                        .fontSize
+                                }
+                                fontWeight={FOUNDATION_THEME.font.weight[600]}
+                                color={FOUNDATION_THEME.colors.gray[900]}
+                            >
+                                Insights
+                            </PrimitiveText>
+                        </Block>
+                    </DrawerTitle>
 
                     <DrawerBody noPadding>
                         <Block

@@ -443,7 +443,7 @@ export const getTableToken = (
                                 hoverColor: foundationToken.colors.gray[50],
                             },
                             pageNavigation: {
-                                gap: foundationToken.unit[4],
+                                gap: foundationToken.unit[12],
                             },
                         },
                     },
