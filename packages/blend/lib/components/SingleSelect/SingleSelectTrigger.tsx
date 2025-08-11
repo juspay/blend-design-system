@@ -25,6 +25,8 @@ export type SingleSelectTriggerProps = {
     isItemSelected: boolean
     singleSelectTokens: SingleSelectTokensType
     inline?: boolean
+    error?: boolean
+    errorMessage?: string
 }
 
 const SingleSelectTrigger = ({
@@ -43,6 +45,7 @@ const SingleSelectTrigger = ({
     isItemSelected,
     singleSelectTokens,
     inline = false,
+    error,
 }: SingleSelectTriggerProps) => {
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
@@ -66,7 +69,7 @@ const SingleSelectTrigger = ({
             boxShadow={singleSelectTokens.trigger.boxShadow[variant]}
             outline={
                 singleSelectTokens.trigger.outline[variant][
-                    open ? 'open' : 'closed'
+                    error ? 'error' : open ? 'open' : 'closed'
                 ]
             }
             {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
@@ -79,10 +82,14 @@ const SingleSelectTrigger = ({
                 height: singleSelectTokens.trigger.height,
                 maxHeight: singleSelectTokens.trigger.height,
                 _hover: {
-                    outline: singleSelectTokens.trigger.outline[variant].hover,
+                    outline:
+                        singleSelectTokens.trigger.outline[variant][
+                            error ? 'error' : 'hover'
+                        ],
                     backgroundColor:
-                        singleSelectTokens.trigger.backgroundColor.container
-                            .hover,
+                        singleSelectTokens.trigger.backgroundColor.container[
+                            error ? 'error' : 'hover'
+                        ],
                 },
                 _focus: {
                     outline: singleSelectTokens.trigger.outline[variant].focus,

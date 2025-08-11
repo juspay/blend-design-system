@@ -21,7 +21,7 @@ const InputFooter = ({
                 {error && errorMessage && (
                     <Text
                         variant="body.md"
-                        color={FOUNDATION_THEME.colors.red[500]}
+                        color={FOUNDATION_THEME.colors.red[600]}
                     >
                         {errorMessage}
                     </Text>

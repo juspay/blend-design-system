@@ -88,6 +88,12 @@ export type MultiSelectProps = {
 
     // inline
     inline?: boolean
+    onBlur?: () => void
+    onFocus?: () => void
+
+    // error
+    error?: boolean
+    errorMessage?: string
 }
 
 // Multi Select Menu Dropdpown
