@@ -52,24 +52,6 @@ jobs:
                   COMMIT_MESSAGE=$(git log -1 --pretty=%B)
                   echo "Commit message: $COMMIT_MESSAGE"
 
-                  # Never skip if manually triggered
-                  if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-                    echo "Manually triggered workflow - checking if version is new..."
-                    cd packages/blend
-                    CURRENT_VERSION=$(node -p "require('./package.json').version")
-                    PACKAGE_NAME=$(node -p "require('./package.json').name")
-                    cd ../..
-                    
-                    if npm view "$PACKAGE_NAME@$CURRENT_VERSION" version 2>/dev/null; then
-                      echo "Version $CURRENT_VERSION already exists on NPM, skipping release"
-                      echo "should_skip=true" >> $GITHUB_OUTPUT
-                    else
-                      echo "Version $CURRENT_VERSION is new - proceeding with release"
-                      echo "should_skip=false" >> $GITHUB_OUTPUT
-                    fi
-                    exit 0
-                  fi
-
                   # Skip if commit message contains [skip ci] or is a release commit
                   # BUT allow release commits on main branch (for stable releases)
                   if [[ "$COMMIT_MESSAGE" == *"[skip ci]"* ]] || [[ "$COMMIT_MESSAGE" == *"chore(release):"* ]]; then
