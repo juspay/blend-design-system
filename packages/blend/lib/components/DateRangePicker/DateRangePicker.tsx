@@ -15,7 +15,10 @@ import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
 import TimeSelector from './TimeSelector'
 import MobileDrawerPresets from './MobileDrawerPresets'
-import { CalendarTokenType } from './dateRangePicker.tokens'
+import {
+    ResponsiveCalendarTokens,
+    CalendarTokenType,
+} from './dateRangePicker.tokens'
 import { SwitchSize } from '../Switch/types'
 import { Switch } from '../Switch/Switch'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -61,7 +64,11 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
     calendarToken,
 }) => (
     <Block padding={calendarToken.calendar.inputs.padding}>
-        <Block display="flex" flexDirection="column">
+        <Block
+            display="flex"
+            flexDirection="column"
+            gap={calendarToken.calendar.inputs.dateInput.gap}
+        >
             <Block
                 display="flex"
                 gap={calendarToken.calendar.inputs.dateInput.gap}
@@ -70,6 +77,12 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                 <PrimitiveText
                     as="span"
                     color={calendarToken.calendar.inputs.dateInput.label.color}
+                    fontWeight={
+                        calendarToken.calendar.inputs.dateInput.label.fontWeight
+                    }
+                    fontSize={
+                        calendarToken.calendar.inputs.dateInput.label.fontSize
+                    }
                     style={{
                         minWidth:
                             calendarToken.calendar.inputs.dateInput.label
@@ -266,9 +279,14 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const [drawerOpen, setDrawerOpen] = useState(false)
         const [showTimePickerState, setShowTimePickerState] =
             useState(showTimePicker)
-        const calendarToken = useComponentToken('CALENDAR') as CalendarTokenType
+        const responsiveCalendarTokens = useComponentToken(
+            'CALENDAR'
+        ) as ResponsiveCalendarTokens
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
+        const calendarToken = isMobile
+            ? responsiveCalendarTokens.sm
+            : responsiveCalendarTokens.lg
 
         const [selectedRange, setSelectedRange] = useState<DateRange>(
             value || getPresetDateRange(DateRangePreset.TODAY)
@@ -608,7 +626,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             )
         }
 
-        // Render popover on desktop
         return (
             <Block ref={ref} display="flex">
                 {showPresets && (

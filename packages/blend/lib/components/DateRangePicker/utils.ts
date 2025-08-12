@@ -739,7 +739,7 @@ export const getDayNames = (): string[] => {
  * @returns Height in pixels
  */
 export const getMonthHeight = (): number => {
-    return 40 + 6 * 40
+    return 4 + 6 * 40
 }
 
 /**

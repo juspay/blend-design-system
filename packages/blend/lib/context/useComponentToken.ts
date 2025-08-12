@@ -21,7 +21,7 @@ import type { PopoverTokenType } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { TableTokenType } from '../components/DataTable/dataTable.tokens'
-import type { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
+import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
 import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
 import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
@@ -56,7 +56,7 @@ export const useComponentToken = (
     | ResponsiveMultiSelectTokens
     | ResponsiveSingleSelectTokens
     | TableTokenType
-    | CalendarTokenType
+    | ResponsiveCalendarTokens
     | ResponsiveAccordionTokens
     | ResponsiveStatCardTokens
     | ProgressBarTokenType

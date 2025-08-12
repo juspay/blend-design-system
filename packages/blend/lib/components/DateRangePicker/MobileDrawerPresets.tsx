@@ -57,7 +57,8 @@ type MobileDrawerPresetsProps = {
 const { ITEM_HEIGHT, VISIBLE_ITEMS, SCROLL_DEBOUNCE } = MOBILE_PICKER_CONSTANTS
 const CONTAINER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS
 
-const tokens = getCalendarToken(FOUNDATION_THEME)
+const responsiveTokens = getCalendarToken(FOUNDATION_THEME)
+const tokens = responsiveTokens.sm
 
 const ScrollablePicker = React.memo<{
     items: (string | number)[]

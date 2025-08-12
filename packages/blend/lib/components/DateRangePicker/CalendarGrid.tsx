@@ -8,7 +8,10 @@ import {
 } from 'react'
 import styled, { CSSObject } from 'styled-components'
 import { DateRange } from './types'
-import { CalendarTokenType } from './dateRangePicker.tokens'
+import {
+    ResponsiveCalendarTokens,
+    CalendarTokenType,
+} from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
 import {
     handleCalendarDateClick,
@@ -82,9 +85,11 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         const [months, setMonths] = useState<{ month: number; year: number }[]>(
             []
         )
-        const calendarToken = useComponentToken('CALENDAR') as CalendarTokenType
+        const responsiveCalendarTokens = useComponentToken(
+            'CALENDAR'
+        ) as ResponsiveCalendarTokens
+        const calendarToken = responsiveCalendarTokens.lg // Use lg for desktop calendar
 
-        // Initialize months
         useEffect(() => {
             const initialMonths = generateInitialMonths(today)
             setMonths(initialMonths)
@@ -100,7 +105,6 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             2
         )
 
-        // Handle loading more months
         const loadMoreMonths = useCallback(
             async (direction: 'past' | 'future') => {
                 if (direction === 'past') setIsLoadingPast(true)
@@ -276,109 +280,121 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                             {monthData.monthName} {year}
                         </Block>
 
-                        {monthData.weeks.map(
-                            (week: (number | null)[], weekIndex: number) => (
-                                <Block
-                                    style={{
-                                        ...calendarToken.calendar.calendarGrid
-                                            .week.row,
-                                    }}
-                                    key={weekIndex}
-                                >
-                                    {week.map(
-                                        (
-                                            day: number | null,
-                                            dayIndex: number
-                                        ) => {
-                                            if (day === null) {
-                                                return (
-                                                    <Block
-                                                        style={{
-                                                            ...calendarToken
-                                                                .calendar
-                                                                .calendarGrid
-                                                                .day.empty,
-                                                        }}
-                                                        key={dayIndex}
-                                                    />
-                                                )
-                                            }
-
-                                            const date = new Date(
-                                                year,
-                                                month,
-                                                day
-                                            )
-                                            const cellProps =
-                                                calculateDayCellProps(
-                                                    date,
-                                                    selectedRange,
-                                                    today,
-                                                    disableFutureDates,
-                                                    disablePastDates,
-                                                    calendarToken
-                                                )
-
-                                            const isSelected =
-                                                cellProps.dateStates.isStart ||
-                                                cellProps.dateStates.isEnd ||
-                                                cellProps.dateStates
-                                                    .isSingleDate
-
-                                            return (
-                                                <StyledDayCell
-                                                    key={`${year}-${month}-${day}`}
-                                                    $cellStyles={
-                                                        cellProps.styles as CSSObject
-                                                    }
-                                                    $textColor={String(
-                                                        cellProps.textColor ||
-                                                            ''
-                                                    )}
-                                                    $isDisabled={
-                                                        cellProps.dateStates
-                                                            .isDisabled
-                                                    }
-                                                    $isSelected={isSelected}
-                                                    $calendarToken={
-                                                        calendarToken
-                                                    }
-                                                    onClick={() =>
-                                                        handleDateClick(
-                                                            year,
-                                                            month,
-                                                            day,
-                                                            false
-                                                        )
-                                                    }
-                                                    onDoubleClick={() =>
-                                                        handleDateClick(
-                                                            year,
-                                                            month,
-                                                            day,
-                                                            true
-                                                        )
-                                                    }
-                                                >
-                                                    {day}
-                                                    {cellProps.showTodayIndicator && (
+                        <Block
+                            style={{
+                                ...calendarToken.calendar.calendarGrid.week
+                                    .container,
+                            }}
+                        >
+                            {monthData.weeks.map(
+                                (
+                                    week: (number | null)[],
+                                    weekIndex: number
+                                ) => (
+                                    <Block
+                                        style={{
+                                            ...calendarToken.calendar
+                                                .calendarGrid.week.row,
+                                        }}
+                                        key={weekIndex}
+                                    >
+                                        {week.map(
+                                            (
+                                                day: number | null,
+                                                dayIndex: number
+                                            ) => {
+                                                if (day === null) {
+                                                    return (
                                                         <Block
                                                             style={{
                                                                 ...calendarToken
                                                                     .calendar
                                                                     .calendarGrid
-                                                                    .day
-                                                                    .todayIndicator,
+                                                                    .day.empty,
                                                             }}
+                                                            key={dayIndex}
                                                         />
-                                                    )}
-                                                </StyledDayCell>
-                                            )
-                                        }
-                                    )}
-                                </Block>
-                            )
-                        )}
+                                                    )
+                                                }
+
+                                                const date = new Date(
+                                                    year,
+                                                    month,
+                                                    day
+                                                )
+                                                const cellProps =
+                                                    calculateDayCellProps(
+                                                        date,
+                                                        selectedRange,
+                                                        today,
+                                                        disableFutureDates,
+                                                        disablePastDates,
+                                                        calendarToken
+                                                    )
+
+                                                const isSelected =
+                                                    cellProps.dateStates
+                                                        .isStart ||
+                                                    cellProps.dateStates
+                                                        .isEnd ||
+                                                    cellProps.dateStates
+                                                        .isSingleDate
+
+                                                return (
+                                                    <StyledDayCell
+                                                        key={`${year}-${month}-${day}`}
+                                                        $cellStyles={
+                                                            cellProps.styles as CSSObject
+                                                        }
+                                                        $textColor={String(
+                                                            cellProps.textColor ||
+                                                                ''
+                                                        )}
+                                                        $isDisabled={
+                                                            cellProps.dateStates
+                                                                .isDisabled
+                                                        }
+                                                        $isSelected={isSelected}
+                                                        $calendarToken={
+                                                            calendarToken
+                                                        }
+                                                        onClick={() =>
+                                                            handleDateClick(
+                                                                year,
+                                                                month,
+                                                                day,
+                                                                false
+                                                            )
+                                                        }
+                                                        onDoubleClick={() =>
+                                                            handleDateClick(
+                                                                year,
+                                                                month,
+                                                                day,
+                                                                true
+                                                            )
+                                                        }
+                                                    >
+                                                        {day}
+                                                        {cellProps.showTodayIndicator && (
+                                                            <Block
+                                                                style={{
+                                                                    ...calendarToken
+                                                                        .calendar
+                                                                        .calendarGrid
+                                                                        .day
+                                                                        .todayIndicator,
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </StyledDayCell>
+                                                )
+                                            }
+                                        )}
+                                    </Block>
+                                )
+                            )}
+                        </Block>
                     </Block>
                 )
             },

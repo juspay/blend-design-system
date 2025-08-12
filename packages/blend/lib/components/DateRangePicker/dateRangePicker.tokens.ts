@@ -1,6 +1,7 @@
 import { FOUNDATION_THEME } from '../../tokens'
 import type { CSSObject } from 'styled-components'
 import type { FoundationTokenType } from '../../tokens/theme.token'
+import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type CalendarTokenType = {
     quickRange: {
@@ -179,7 +180,11 @@ export type CalendarTokenType = {
                 label: {
                     color: CSSObject['color']
                     minWidth: CSSObject['minWidth']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
                 }
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
             }
         }
         calendarGrid: {
@@ -207,6 +212,11 @@ export type CalendarTokenType = {
                     gridTemplateColumns: CSSObject['gridTemplateColumns']
                     padding: CSSObject['padding']
                 }
+                container: {
+                    display: CSSObject['display']
+                    flexDirection: CSSObject['flexDirection']
+                    gap: CSSObject['gap']
+                }
                 header: {
                     display: CSSObject['display']
                     gridTemplateColumns: CSSObject['gridTemplateColumns']
@@ -221,6 +231,9 @@ export type CalendarTokenType = {
                 }
                 dayName: {
                     padding: CSSObject['padding']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color']
                 }
             }
             day: {
@@ -232,6 +245,11 @@ export type CalendarTokenType = {
                     fontWeight: CSSObject['fontWeight']
                     boxSizing: CSSObject['boxSizing']
                     border: CSSObject['border']
+                    height: CSSObject['height']
+                    fontSize: CSSObject['fontSize']
+                    display: CSSObject['display']
+                    alignItems: CSSObject['alignItems']
+                    justifyContent: CSSObject['justifyContent']
                 }
                 hover: {
                     border: CSSObject['border']
@@ -283,10 +301,14 @@ export type CalendarTokenType = {
     }
 }
 
+export type ResponsiveCalendarTokens = {
+    [key in keyof BreakpointType]: CalendarTokenType
+}
+
 export const getCalendarToken = (
     foundationToken: FoundationTokenType
-): CalendarTokenType => {
-    return {
+): ResponsiveCalendarTokens => {
+    const baseTokens: CalendarTokenType = {
         mobileDrawer: {
             picker: {
                 itemHeight: foundationToken.unit[44],
@@ -476,18 +498,22 @@ export const getCalendarToken = (
             boxShadow: foundationToken.shadows.lg,
             zIndex: 1000,
             inputs: {
-                padding: `${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
+                padding: foundationToken.unit[16],
                 dateInput: {
-                    gap: foundationToken.unit[16],
+                    gap: foundationToken.unit[12],
                     label: {
-                        color: foundationToken.colors.gray[400],
+                        color: foundationToken.colors.gray[500],
                         minWidth: foundationToken.unit[36],
+                        fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                        fontWeight: foundationToken.font.weight[500],
                     },
+                    fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                    fontWeight: foundationToken.font.weight[500],
                 },
             },
             calendarGrid: {
                 container: {
-                    maxHeight: '380px',
+                    maxHeight: '300px',
                     overflowY: 'auto',
                     overflow: 'auto',
                     position: 'relative',
@@ -510,6 +536,11 @@ export const getCalendarToken = (
                         gridTemplateColumns: 'repeat(7, 1fr)',
                         padding: `0 ${foundationToken.unit[12]}`,
                     },
+                    container: {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: foundationToken.unit[4],
+                    },
                     header: {
                         display: 'grid',
                         gridTemplateColumns: 'repeat(7, 1fr)',
@@ -524,17 +555,25 @@ export const getCalendarToken = (
                     },
                     dayName: {
                         padding: `${foundationToken.unit[12]} ${foundationToken.unit[8]}`,
+                        fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                        fontWeight: foundationToken.font.weight[600],
+                        color: foundationToken.colors.gray[400],
                     },
                 },
                 day: {
                     cell: {
                         cursor: 'pointer',
                         textAlign: 'center',
-                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[8]}`,
+                        padding: `${foundationToken.unit[10]} ${foundationToken.unit[8]}`,
                         position: 'relative',
                         fontWeight: foundationToken.font.weight[500],
                         boxSizing: 'border-box',
                         border: '1px solid transparent',
+                        height: foundationToken.unit[36],
+                        fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                     },
                     hover: {
                         border: `1px solid ${foundationToken.colors.primary[500]}`,
@@ -610,7 +649,7 @@ export const getCalendarToken = (
                 },
             },
             footer: {
-                padding: foundationToken.unit[16],
+                padding: foundationToken.unit[12],
                 borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
                 timerange: {
                     gap: foundationToken.unit[8],
@@ -623,5 +662,10 @@ export const getCalendarToken = (
                 },
             },
         },
+    }
+
+    return {
+        sm: baseTokens,
+        lg: baseTokens,
     }
 }
