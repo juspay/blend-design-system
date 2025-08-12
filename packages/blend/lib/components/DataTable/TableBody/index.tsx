@@ -15,7 +15,7 @@ import {
     TableTokenType,
 } from '../../../main'
 import { foundationToken } from '../../../foundationToken'
-import { useComponentToken } from '../../../context/useComponentToken'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const TableRow = styled.tr<{
     $isClickable?: boolean
@@ -120,6 +120,9 @@ const TableBody = forwardRef<
             enableRowExpansion = false,
             enableRowSelection = true,
             columnFreeze = 0,
+            mobileConfig,
+            mobileOverflowColumns = [],
+            onMobileOverflowClick,
             renderExpandedRow,
             isRowExpandable,
             onRowSelect,
@@ -150,7 +153,7 @@ const TableBody = forwardRef<
             enableColumnManager,
         ])
 
-        const tableToken = useComponentToken('TABLE') as TableTokenType
+        const tableToken = useResponsiveTokens('TABLE') as TableTokenType
 
         return (
             <tbody ref={ref}>
@@ -453,6 +456,58 @@ const TableBody = forwardRef<
                                               )
                                           }
                                       )}
+
+                                      {mobileConfig?.enableColumnOverflow &&
+                                          mobileOverflowColumns.length > 0 &&
+                                          onMobileOverflowClick && (
+                                              <StyledTableCell
+                                                  $width="40px"
+                                                  $customBackgroundColor={
+                                                      rowStyling.backgroundColor
+                                                  }
+                                                  $hasCustomBackground={
+                                                      hasCustomBackground
+                                                  }
+                                                  style={{
+                                                      minWidth: '40px',
+                                                      maxWidth: '40px',
+                                                      fontSize:
+                                                          tableToken.dataTable
+                                                              .table.body.cell
+                                                              .fontSize,
+                                                  }}
+                                              >
+                                                  <Block
+                                                      display="flex"
+                                                      alignItems="center"
+                                                      justifyContent="center"
+                                                      onClick={(e) => {
+                                                          e.stopPropagation()
+                                                          onMobileOverflowClick(
+                                                              row
+                                                          )
+                                                      }}
+                                                  >
+                                                      <ExpandButton
+                                                          onClick={() =>
+                                                              onMobileOverflowClick(
+                                                                  row
+                                                              )
+                                                          }
+                                                          title="View more details"
+                                                          style={{
+                                                              color: FOUNDATION_THEME
+                                                                  .colors
+                                                                  .gray[800],
+                                                          }}
+                                                      >
+                                                          <ChevronRight
+                                                              size={16}
+                                                          />
+                                                      </ExpandButton>
+                                                  </Block>
+                                              </StyledTableCell>
+                                          )}
 
                                       {enableInlineEdit && (
                                           <StyledTableCell

@@ -9,7 +9,8 @@ import { Checkbox } from '../../Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
 import { ColumnManager } from '../ColumnManager'
 import { TableTokenType } from '../dataTable.tokens'
-import { useComponentToken } from '../../../context/useComponentToken'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useMobileDataTable } from '../hooks/useMobileDataTable'
 
 import { TableHeaderProps } from './types'
 import { SortDirection } from '../types'
@@ -67,6 +68,7 @@ const TableHeader = forwardRef<
         },
         ref
     ) => {
+        const mobileConfig = useMobileDataTable()
         const [editingField, setEditingField] = useState<string | null>(null)
         const [hoveredField, setHoveredField] = useState<string | null>(null)
         const [localColumns, setLocalColumns] = useState(visibleColumns)
@@ -86,7 +88,7 @@ const TableHeader = forwardRef<
             Record<string, boolean>
         >({})
 
-        const tableToken = useComponentToken('TABLE') as TableTokenType
+        const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
 
         const sortHandlers = createSortHandlers(sortState, setSortState, onSort)
         const filterHandlers = createFilterHandlers(setFilterState)
@@ -496,6 +498,24 @@ const TableHeader = forwardRef<
                             </th>
                         )
                     })}
+
+                    {/* Mobile overflow column header - empty cell for alignment */}
+                    {mobileConfig?.enableColumnOverflow && (
+                        <th
+                            style={{
+                                ...tableToken.dataTable.table.header.cell,
+                                width: '40px',
+                                minWidth: '40px',
+                                maxWidth: '40px',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                boxSizing: 'border-box',
+                            }}
+                        >
+                            {/* Empty cell to match mobile overflow column in body */}
+                        </th>
+                    )}
 
                     {enableInlineEdit && (
                         <th
