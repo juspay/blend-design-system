@@ -1,13 +1,6 @@
 name: Release
 
 on:
-    push:
-        branches:
-            - main
-            - dev
-            - fix/release-workflow
-        paths-ignore:
-            - 'docs/CHANGELOG.md'
     workflow_dispatch:
         inputs:
             version_type:
@@ -33,6 +26,7 @@ jobs:
     release:
         name: Publish Release
         runs-on: ubuntu-latest
+        timeout-minutes: 30
         environment: npm
         outputs:
             version: ${{ steps.bump_version.outputs.new_version }}
@@ -55,39 +49,18 @@ jobs:
                   git status
                   git log -1 --pretty=full
 
-            - name: Check if should skip release
-              id: skip_check
-              run: |
-                  COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-                  echo "Commit message: $COMMIT_MESSAGE"
-
-                  if [[ "$COMMIT_MESSAGE" == *"[skip ci]"* ]] || [[ "$COMMIT_MESSAGE" == *"chore(release):"* ]]; then
-                    if [[ "${GITHUB_REF_NAME}" == "main" && "$COMMIT_MESSAGE" == *"chore(release):"* ]]; then
-                      echo "Release commit on main branch - proceeding with stable release"
-                      echo "should_skip=false" >> $GITHUB_OUTPUT
-                    else
-                      echo "Skipping release workflow"
-                      echo "should_skip=true" >> $GITHUB_OUTPUT
-                    fi
-                  else
-                    echo "should_skip=false" >> $GITHUB_OUTPUT
-                  fi
-
             - name: Setup Node.js 22 and pnpm
-              if: steps.skip_check.outputs.should_skip != 'true'
               uses: actions/setup-node@v4
               with:
                   node-version: 22
                   registry-url: 'https://registry.npmjs.org'
 
             - name: Enable corepack & install deps
-              if: steps.skip_check.outputs.should_skip != 'true'
               run: |
                   corepack enable
                   pnpm install --frozen-lockfile
 
             - name: Configure Dry Run
-              if: steps.skip_check.outputs.should_skip != 'true'
               id: config
               run: |
                   if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.dry_run }}" == "true" ]]; then
@@ -97,7 +70,6 @@ jobs:
                   fi
 
             - name: Get Current Version
-              if: steps.skip_check.outputs.should_skip != 'true'
               id: current_version
               run: |
                   CURRENT=$(node -p "require('./packages/blend/package.json').version")
@@ -105,13 +77,11 @@ jobs:
                   echo "Current version: $CURRENT"
 
             - name: Clean Existing Tags
-              if: steps.skip_check.outputs.should_skip != 'true'
               run: |
-                  git tag -l | xargs -r git tag -d
-                  git fetch --tags
+                  echo "Fetching latest tags from remote"
+                  git fetch --tags --force
 
             - name: Bump Version
-              if: steps.skip_check.outputs.should_skip != 'true'
               id: bump_version
               run: |
                   set -x
@@ -167,7 +137,6 @@ jobs:
                   fi
 
             - name: Generate Changelog
-              if: steps.skip_check.outputs.should_skip != 'true'
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
                   LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
@@ -181,15 +150,12 @@ jobs:
                   fi
 
             - name: Format Generated Files
-              if: steps.skip_check.outputs.should_skip != 'true'
               run: pnpm format
 
             - name: Build Package
-              if: steps.skip_check.outputs.should_skip != 'true'
               run: pnpm --filter @juspay/blend-design-system build
 
             - name: Commit & Push Changes
-              if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
                   git config user.name "Release Bot"
@@ -201,7 +167,6 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
 
             - name: Create Release Tag
-              if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
                   TAG="v$VERSION"
@@ -209,7 +174,6 @@ jobs:
                   git push origin "$TAG"
 
             - name: Verify NPM Token
-              if: steps.skip_check.outputs.should_skip != 'true'
               run: |
                   if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
                     echo "NPM_TOKEN secret is not set!"
@@ -220,7 +184,6 @@ jobs:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Publish to NPM
-              if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
               run: |
                   cd packages/blend
                   PACKAGE_NAME=$(node -p "require('./package.json').name")
@@ -236,7 +199,6 @@ jobs:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Create GitHub Release
-              if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
               uses: softprops/action-gh-release@v2
               with:
                   tag_name: ${{ steps.bump_version.outputs.tag }}
