@@ -103,6 +103,9 @@ export default function TokenizerDashboard() {
     const [componentLoading, setComponentLoading] = useState(true)
     const [selectedComponent, setSelectedComponent] = useState('')
 
+    // Total counts for stats
+    const [totalFoundationTokens, setTotalFoundationTokens] = useState(0)
+
     // Modal state for foundation tokens
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalTokens, setModalTokens] = useState<FoundationToken[]>([])
@@ -140,6 +143,8 @@ export default function TokenizerDashboard() {
 
     useEffect(() => {
         fetchCategories()
+        fetchTotalFoundationTokens()
+        fetchComponentCollections() // Fetch component collections on page load
     }, [])
 
     useEffect(() => {
@@ -325,6 +330,22 @@ export default function TokenizerDashboard() {
             setComponentTokens([])
         } finally {
             setComponentLoading(false)
+        }
+    }
+
+    const fetchTotalFoundationTokens = async () => {
+        try {
+            const response = await fetch('/api/foundation-tokens?limit=10000')
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+            const data = await response.json()
+            if (data.success) {
+                setTotalFoundationTokens(data.data.length)
+            }
+        } catch (error) {
+            console.error('Error fetching total foundation tokens:', error)
+            setTotalFoundationTokens(0)
         }
     }
 
@@ -773,7 +794,7 @@ export default function TokenizerDashboard() {
                     />
                     <StatCard
                         title="Foundation Tokens"
-                        value={177}
+                        value={totalFoundationTokens}
                         variant={StatCardVariant.NUMBER}
                         titleIcon={
                             <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
@@ -783,7 +804,7 @@ export default function TokenizerDashboard() {
                     />
                     <StatCard
                         title="Component Collections"
-                        value={25}
+                        value={componentCollections.length}
                         variant={StatCardVariant.NUMBER}
                         titleIcon={
                             <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
