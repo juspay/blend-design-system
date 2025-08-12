@@ -1,14 +1,19 @@
-name: Release
+name: Legacy Release (DEPRECATED)
+
+# This workflow is deprecated. Use the new manual workflows instead:
+# - create-beta-release.yml: Create beta releases from dev branch
+# - publish-beta-npm.yml: Publish beta to NPM
+# - create-stable-release.yml: Create stable releases on main branch
+# - publish-stable-npm.yml: Publish stable to NPM
 
 on:
-    push:
-        branches:
-            - main
-            - dev
-        paths-ignore:
-            - 'docs/CHANGELOG.md'
+    # Disabled automatic triggers - only manual for emergency use
     workflow_dispatch:
         inputs:
+            emergency_release:
+                description: 'Type "EMERGENCY" to confirm this legacy workflow usage'
+                required: true
+                type: string
             version_type:
                 description: 'Version bump type'
                 required: true
@@ -21,7 +26,7 @@ on:
             dry_run:
                 description: 'Dry run (skip publishing)'
                 required: false
-                default: false
+                default: true
                 type: boolean
 
 concurrency:
@@ -30,9 +35,10 @@ concurrency:
 
 jobs:
     release:
-        name: Publish Release
+        name: Legacy Release (Emergency Only)
         runs-on: ubuntu-latest
         environment: npm
+        if: github.event.inputs.emergency_release == 'EMERGENCY'
         outputs:
             version: ${{ steps.bump_version.outputs.new_version }}
             tag: ${{ steps.bump_version.outputs.tag }}

@@ -1,0 +1,142 @@
+name: Publish Beta to NPM
+
+on:
+    workflow_dispatch:
+        inputs:
+            confirm_publish:
+                description: 'Type "PUBLISH" to confirm publishing to NPM'
+                required: true
+                type: string
+
+concurrency:
+    group: publish-beta-npm-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    publish-beta:
+        name: Publish Beta Version to NPM
+        runs-on: ubuntu-latest
+        environment: npm
+        if: github.ref == 'refs/heads/dev' && github.event.inputs.confirm_publish == 'PUBLISH'
+
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Setup Node.js 22 and pnpm
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  registry-url: 'https://registry.npmjs.org'
+
+            - name: Enable corepack & install deps
+              run: |
+                  corepack enable
+                  pnpm install --frozen-lockfile
+
+            - name: Verify Beta Version
+              id: verify_version
+              run: |
+                  cd packages/blend
+                  CURRENT_VERSION=$(node -p "require('./package.json').version")
+
+                  if [[ "$CURRENT_VERSION" != *"-beta" ]]; then
+                    echo "ERROR: Current version ($CURRENT_VERSION) is not a beta version!"
+                    echo "This workflow should only be used to publish beta versions."
+                    exit 1
+                  fi
+
+                  echo "Verified beta version: $CURRENT_VERSION"
+                  echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+            - name: Build Package
+              run: pnpm --filter @juspay/blend-design-system build
+
+            - name: Verify NPM Token
+              run: |
+                  if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+                    echo "NPM_TOKEN secret is not set!"
+                    exit 1
+                  else
+                    echo "NPM_TOKEN secret is configured"
+                  fi
+
+                  echo "Testing NPM authentication..."
+                  npm whoami || echo "NPM authentication test failed, but continuing..."
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Check if Version Already Published
+              id: check_published
+              run: |
+                  cd packages/blend
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  VERSION="${{ steps.verify_version.outputs.version }}"
+
+                  echo "Checking if $PACKAGE_NAME@$VERSION is already published..."
+
+                  if npm view "$PACKAGE_NAME@$VERSION" version 2>/dev/null; then
+                    echo "already_published=true" >> $GITHUB_OUTPUT
+                    echo "Version $VERSION already exists on NPM"
+                  else
+                    echo "already_published=false" >> $GITHUB_OUTPUT
+                    echo "Version $VERSION is not yet published"
+                  fi
+
+            - name: Publish Beta to NPM
+              if: steps.check_published.outputs.already_published != 'true'
+              run: |
+                  cd packages/blend
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  VERSION="${{ steps.verify_version.outputs.version }}"
+
+                  echo "Publishing $PACKAGE_NAME@$VERSION to NPM with beta tag"
+                  npm publish --access public --tag beta
+                  echo "Successfully published $PACKAGE_NAME@$VERSION to NPM with beta tag"
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Create Dev to Main PR
+              if: steps.check_published.outputs.already_published != 'true'
+              uses: peter-evans/create-pull-request@v6
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  head: dev
+                  base: main
+                  title: 'feat: promote beta ${{ steps.verify_version.outputs.version }} to stable'
+                  body: |
+                      **Promote Beta to Stable Release**
+
+                      Beta version `${{ steps.verify_version.outputs.version }}` has been published to NPM and is ready for promotion to stable.
+
+                      **Current Status:**
+                      - ✅ Beta version published to NPM with `beta` tag
+                      - ✅ GitHub beta release created
+                      - 🔄 Ready for stable release process
+
+                      **Next Steps After Merging:**
+                      1. This will trigger creation of stable version (removing `-beta` suffix)
+                      2. Trigger "Create Stable Release" workflow to create stable GitHub release
+                      3. Trigger "Publish Stable to NPM" workflow to publish with `latest` tag
+                      4. Auto-backmerge to dev will be created
+
+                      **Version Info:**
+                      - Beta: `${{ steps.verify_version.outputs.version }}`
+                      - Stable: `${{ steps.verify_version.outputs.version | replace('-beta', '') }}`
+
+                      ---
+                      *This PR was automatically created after successful beta NPM publish*
+                  labels: |
+                      automated
+                      release
+                      stable-promotion
+                  assignees: ${{ github.actor }}
+
+            - name: Skip Publishing (Already Published)
+              if: steps.check_published.outputs.already_published == 'true'
+              run: |
+                  echo "Version ${{ steps.verify_version.outputs.version }} is already published on NPM"
+                  echo "Skipping publish step"
