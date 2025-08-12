@@ -99,6 +99,15 @@ jobs:
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+            - name: Calculate Stable Version
+              if: steps.check_published.outputs.already_published != 'true'
+              id: stable_version
+              run: |
+                  BETA_VERSION="${{ steps.verify_version.outputs.version }}"
+                  STABLE_VERSION="${BETA_VERSION%-beta}"
+                  echo "stable_version=$STABLE_VERSION" >> $GITHUB_OUTPUT
+                  echo "Stable version will be: $STABLE_VERSION"
+
             - name: Create Dev to Main PR
               if: steps.check_published.outputs.already_published != 'true'
               uses: peter-evans/create-pull-request@v6
@@ -125,7 +134,7 @@ jobs:
 
                       **Version Info:**
                       - Beta: `${{ steps.verify_version.outputs.version }}`
-                      - Stable: `${{ steps.verify_version.outputs.version | replace('-beta', '') }}`
+                      - Stable: `${{ steps.stable_version.outputs.stable_version }}` (will be created when promoted)
 
                       ---
                       *This PR was automatically created after successful beta NPM publish*
