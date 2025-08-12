@@ -10,6 +10,10 @@ import {
     Palette,
     Database,
     Zap,
+    Trash2,
+    MoreVertical,
+    Check,
+    Star,
 } from 'lucide-react'
 import {
     Button,
@@ -27,6 +31,10 @@ import {
     TagColor,
     TagSize,
 } from 'blend-v1'
+import ExportModal from './components/ExportModal'
+import CreateCollectionModal from './components/CreateCollectionModal'
+import DeleteCollectionModal from './components/DeleteCollectionModal'
+import ErrorModal from './components/ErrorModal'
 
 interface FoundationCollection {
     id: string
@@ -106,6 +114,30 @@ export default function TokenizerDashboard() {
     const [modalSelectedCategory, setModalSelectedCategory] = useState('')
     const [modalSelectedSubcategory, setModalSelectedSubcategory] = useState('')
 
+    // Export modal state
+    const [isExportModalOpen, setIsExportModalOpen] = useState(false)
+
+    // Create collection modal state
+    const [isCreateCollectionModalOpen, setIsCreateCollectionModalOpen] =
+        useState(false)
+
+    // Delete collection modal state
+    const [isDeleteCollectionModalOpen, setIsDeleteCollectionModalOpen] =
+        useState(false)
+    const [collectionToDelete, setCollectionToDelete] =
+        useState<FoundationCollection | null>(null)
+
+    // Error modal state
+    const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
+    const [errorModalTitle, setErrorModalTitle] = useState('')
+    const [errorModalMessage, setErrorModalMessage] = useState('')
+
+    // Dropdown menu state
+    const [openDropdownId, setOpenDropdownId] = useState<string | null>(null)
+
+    // Mock current user - in real app this would come from auth context
+    const currentUser = { id: '550e8400-e29b-41d4-a716-446655440000' } // This should be replaced with actual user from auth context
+
     useEffect(() => {
         fetchCategories()
     }, [])
@@ -143,6 +175,8 @@ export default function TokenizerDashboard() {
             setSelectedCategory(availableCategories[0])
         }
     }, [availableCategories])
+
+    // Note: Removed click outside to close functionality to prevent interference with button clicks
 
     // Modal filters effect
     useEffect(() => {
@@ -312,9 +346,10 @@ export default function TokenizerDashboard() {
             setModalSelectedCategory(defaultCategory)
             setModalSelectedSubcategory(defaultSubcategory)
 
-            // Fetch tokens with the default filters
+            // Fetch tokens with the default filters AND collection filter
             const params = new URLSearchParams({
                 limit: '1000',
+                collection_id: collection.id, // Filter by specific collection
             })
 
             if (defaultCategory) {
@@ -348,6 +383,11 @@ export default function TokenizerDashboard() {
                 limit: '1000',
             })
 
+            // Always filter by the selected collection
+            if (selectedCollection) {
+                params.append('collection_id', selectedCollection.id)
+            }
+
             if (modalSelectedCategory) {
                 params.append('category', modalSelectedCategory)
             }
@@ -372,6 +412,123 @@ export default function TokenizerDashboard() {
             setModalTokens([])
         } finally {
             setModalLoading(false)
+        }
+    }
+
+    const handleCreateCollectionSuccess = () => {
+        // Refresh collections list after successful creation
+        fetchCollections()
+    }
+
+    const handleDeleteCollection = (collection: FoundationCollection) => {
+        // Check if this is a default collection - show error modal instead
+        if (collection.is_default) {
+            setErrorModalTitle('Cannot Delete Default Collection')
+            setErrorModalMessage(
+                `"${collection.name}" is the default collection and cannot be deleted. Please set another collection as default first.`
+            )
+            setIsErrorModalOpen(true)
+            return
+        }
+
+        // Proceed with normal delete flow for non-default collections
+        setCollectionToDelete(collection)
+        setIsDeleteCollectionModalOpen(true)
+    }
+
+    const handleDeleteCollectionSuccess = () => {
+        // Refresh collections list after successful deletion
+        fetchCollections()
+        setCollectionToDelete(null)
+    }
+
+    const handleSetActiveCollection = async (
+        collection: FoundationCollection
+    ) => {
+        console.log(
+            'handleSetActiveCollection called for:',
+            collection.name,
+            'current active:',
+            collection.is_active
+        )
+        try {
+            const response = await fetch(
+                `/api/foundation-collections/${collection.id}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        is_active: !collection.is_active,
+                    }),
+                }
+            )
+
+            console.log('PATCH response status:', response.status)
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+
+            const data = await response.json()
+            console.log('PATCH response data:', data)
+
+            if (data.success) {
+                // Refresh collections list to show updated status
+                fetchCollections()
+                setOpenDropdownId(null) // Close dropdown
+            } else {
+                throw new Error(data.error || 'Failed to update collection')
+            }
+        } catch (error) {
+            console.error('Error updating collection active status:', error)
+            setErrorModalTitle('Update Failed')
+            setErrorModalMessage(
+                'Failed to update collection active status. Please try again.'
+            )
+            setIsErrorModalOpen(true)
+        }
+    }
+
+    const handleSetDefaultCollection = async (
+        collection: FoundationCollection
+    ) => {
+        try {
+            const response = await fetch(
+                `/api/foundation-collections/${collection.id}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        is_default: true,
+                    }),
+                }
+            )
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+
+            const data = await response.json()
+            if (data.success) {
+                // Refresh collections list to show updated status
+                fetchCollections()
+                setOpenDropdownId(null) // Close dropdown
+            } else {
+                throw new Error(
+                    data.error || 'Failed to set as default collection'
+                )
+            }
+        } catch (error) {
+            console.error('Error setting default collection:', error)
+            setErrorModalTitle('Update Failed')
+            setErrorModalMessage(
+                'Failed to set as default collection. Please try again.'
+            )
+            setIsErrorModalOpen(true)
         }
     }
 
@@ -474,6 +631,11 @@ export default function TokenizerDashboard() {
                                     Default
                                 </span>
                             )}
+                            {collection.is_active && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                                    Active
+                                </span>
+                            )}
                         </div>
                         <p className="text-sm text-gray-500">
                             {collection.token_count} tokens
@@ -488,6 +650,74 @@ export default function TokenizerDashboard() {
                         leadingIcon={<Eye className="w-4 h-4" />}
                         onClick={() => fetchAllTokensForCollection(collection)}
                     />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.SMALL}
+                        text="Delete"
+                        leadingIcon={<Trash2 className="w-4 h-4" />}
+                        onClick={() => handleDeleteCollection(collection)}
+                    />
+
+                    {/* Three-dot menu */}
+                    <div className="relative">
+                        <button
+                            onClick={() =>
+                                setOpenDropdownId(
+                                    openDropdownId === collection.id
+                                        ? null
+                                        : collection.id
+                                )
+                            }
+                            className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+                        >
+                            <MoreVertical className="w-4 h-4 text-gray-500" />
+                        </button>
+
+                        {openDropdownId === collection.id && (
+                            <div
+                                className="absolute right-0 top-8 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-10"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        console.log(
+                                            'Set Active/Inactive clicked for:',
+                                            collection.name
+                                        )
+                                        handleSetActiveCollection(collection)
+                                    }}
+                                    className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                >
+                                    <Check className="w-4 h-4 mr-2" />
+                                    {collection.is_active
+                                        ? 'Set Inactive'
+                                        : 'Set Active'}
+                                </button>
+
+                                {!collection.is_default && (
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                            console.log(
+                                                'Set as Default clicked for:',
+                                                collection.name
+                                            )
+                                            handleSetDefaultCollection(
+                                                collection
+                                            )
+                                        }}
+                                        className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                    >
+                                        <Star className="w-4 h-4 mr-2" />
+                                        Set as Default
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
@@ -498,7 +728,7 @@ export default function TokenizerDashboard() {
             {/* Header */}
             <div className="px-6 py-6">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold text-gray-900">
+                    <h1 className="text-2xl font-bold text-gray-900">
                         Blend Tokenizer
                     </h1>
                     <div className="flex items-center space-x-3">
@@ -514,16 +744,14 @@ export default function TokenizerDashboard() {
                             size={ButtonSize.MEDIUM}
                             text="Export All"
                             leadingIcon={<Download className="w-4 h-4" />}
-                            onClick={() => console.log('Export All clicked')}
+                            onClick={() => setIsExportModalOpen(true)}
                         />
                         <Button
                             buttonType={ButtonType.PRIMARY}
                             size={ButtonSize.MEDIUM}
                             text="Create Collection"
                             leadingIcon={<Plus className="w-4 h-4" />}
-                            onClick={() =>
-                                console.log('Create Collection clicked')
-                            }
+                            onClick={() => setIsCreateCollectionModalOpen(true)}
                         />
                     </div>
                 </div>
@@ -785,6 +1013,45 @@ export default function TokenizerDashboard() {
                     </div>
                 </div>
             </div>
+
+            {/* Export Modal */}
+            <ExportModal
+                isOpen={isExportModalOpen}
+                onClose={() => setIsExportModalOpen(false)}
+                collections={collections}
+                componentCollections={componentCollections}
+                availableCategories={availableCategories}
+                availableComponents={Array.from(
+                    new Set(
+                        componentTokens.map((token) => token.component_name)
+                    )
+                )}
+            />
+
+            {/* Create Collection Modal */}
+            <CreateCollectionModal
+                isOpen={isCreateCollectionModalOpen}
+                onClose={() => setIsCreateCollectionModalOpen(false)}
+                onSuccess={handleCreateCollectionSuccess}
+                currentUser={currentUser}
+                existingCollections={collections}
+            />
+
+            {/* Delete Collection Modal */}
+            <DeleteCollectionModal
+                isOpen={isDeleteCollectionModalOpen}
+                onClose={() => setIsDeleteCollectionModalOpen(false)}
+                onSuccess={handleDeleteCollectionSuccess}
+                collection={collectionToDelete}
+            />
+
+            {/* Error Modal */}
+            <ErrorModal
+                isOpen={isErrorModalOpen}
+                onClose={() => setIsErrorModalOpen(false)}
+                title={errorModalTitle}
+                message={errorModalMessage}
+            />
 
             {/* Foundation Tokens Modal */}
             <Modal

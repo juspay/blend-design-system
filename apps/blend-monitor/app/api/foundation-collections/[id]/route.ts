@@ -1,26 +1,110 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Pool } from 'pg'
+import { query, withTransaction } from '@/src/backend/lib/database'
 
-// Database connection
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl:
-        process.env.NODE_ENV === 'production'
-            ? { rejectUnauthorized: false }
-            : false,
-})
+// PATCH /api/foundation-collections/[id] - Update a foundation token collection
+export async function PATCH(
+    request: NextRequest,
+    { params }: { params: { id: string } }
+) {
+    try {
+        const collectionId = params.id
+        const body = await request.json()
+        const { is_active, is_default } = body
 
-// GET /api/foundation-collections/[id] - Get a specific foundation collection
+        // Validation
+        if (is_active === undefined && is_default === undefined) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: 'At least one field (is_active or is_default) is required',
+                },
+                { status: 400 }
+            )
+        }
+
+        const result = await withTransaction(async (client) => {
+            // Check if collection exists
+            const collectionResult = await client.query(
+                'SELECT * FROM foundation_token_collections WHERE id = $1',
+                [collectionId]
+            )
+
+            if (collectionResult.rows.length === 0) {
+                throw new Error('Collection not found')
+            }
+
+            // If setting as default, unset other defaults first
+            if (is_default === true) {
+                await client.query(
+                    `
+                    UPDATE foundation_token_collections 
+                    SET is_default = false 
+                    WHERE is_default = true AND id != $1
+                `,
+                    [collectionId]
+                )
+            }
+
+            // Build dynamic update query
+            const updateFields = []
+            const updateValues = []
+            let paramIndex = 1
+
+            if (is_active !== undefined) {
+                updateFields.push(`is_active = $${paramIndex}`)
+                updateValues.push(is_active)
+                paramIndex++
+            }
+
+            if (is_default !== undefined) {
+                updateFields.push(`is_default = $${paramIndex}`)
+                updateValues.push(is_default)
+                paramIndex++
+            }
+
+            updateFields.push(`updated_at = NOW()`)
+            updateValues.push(collectionId)
+
+            const updateQuery = `
+                UPDATE foundation_token_collections 
+                SET ${updateFields.join(', ')}
+                WHERE id = $${paramIndex}
+                RETURNING *
+            `
+
+            const updateResult = await client.query(updateQuery, updateValues)
+            return updateResult.rows[0]
+        })
+
+        return NextResponse.json({
+            success: true,
+            data: result,
+            message: 'Foundation collection updated successfully',
+        })
+    } catch (error) {
+        console.error('Error updating foundation collection:', error)
+        return NextResponse.json(
+            {
+                success: false,
+                error:
+                    error instanceof Error
+                        ? error.message
+                        : 'Failed to update foundation collection',
+            },
+            { status: 500 }
+        )
+    }
+}
+
+// GET /api/foundation-collections/[id] - Get a specific foundation token collection
 export async function GET(
     request: NextRequest,
     { params }: { params: { id: string } }
 ) {
-    const client = await pool.connect()
-
     try {
-        const { id } = params
+        const collectionId = params.id
 
-        const result = await client.query(
+        const result = await query(
             `
             SELECT 
                 id,
@@ -35,12 +119,12 @@ export async function GET(
             FROM foundation_token_collections ftc
             WHERE id = $1
         `,
-            [id]
+            [collectionId]
         )
 
         if (result.rows.length === 0) {
             return NextResponse.json(
-                { success: false, error: 'Foundation collection not found' },
+                { success: false, error: 'Collection not found' },
                 { status: 404 }
             )
         }
@@ -55,140 +139,75 @@ export async function GET(
             { success: false, error: 'Failed to fetch foundation collection' },
             { status: 500 }
         )
-    } finally {
-        client.release()
     }
 }
 
-// PUT /api/foundation-collections/[id] - Update a foundation collection
-export async function PUT(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
-    const client = await pool.connect()
-
-    try {
-        const { id } = params
-        const body = await request.json()
-        const { name, description, is_active, is_default } = body
-
-        await client.query('BEGIN')
-
-        // If setting as default, unset other defaults
-        if (is_default) {
-            await client.query(
-                `
-                UPDATE foundation_token_collections 
-                SET is_default = false 
-                WHERE is_default = true AND id != $1
-            `,
-                [id]
-            )
-        }
-
-        const result = await client.query(
-            `
-            UPDATE foundation_token_collections 
-            SET 
-                name = COALESCE($1, name),
-                description = COALESCE($2, description),
-                is_active = COALESCE($3, is_active),
-                is_default = COALESCE($4, is_default),
-                updated_at = NOW()
-            WHERE id = $5
-            RETURNING *
-        `,
-            [name, description, is_active, is_default, id]
-        )
-
-        if (result.rows.length === 0) {
-            await client.query('ROLLBACK')
-            return NextResponse.json(
-                { success: false, error: 'Foundation collection not found' },
-                { status: 404 }
-            )
-        }
-
-        await client.query('COMMIT')
-
-        return NextResponse.json({
-            success: true,
-            data: result.rows[0],
-            message: 'Foundation collection updated successfully',
-        })
-    } catch (error) {
-        await client.query('ROLLBACK')
-        console.error('Error updating foundation collection:', error)
-        return NextResponse.json(
-            { success: false, error: 'Failed to update foundation collection' },
-            { status: 500 }
-        )
-    } finally {
-        client.release()
-    }
-}
-
-// DELETE /api/foundation-collections/[id] - Delete a foundation collection
+// DELETE /api/foundation-collections/[id] - Delete a specific foundation token collection
 export async function DELETE(
     request: NextRequest,
     { params }: { params: { id: string } }
 ) {
-    const client = await pool.connect()
-
     try {
-        const { id } = params
+        const collectionId = params.id
 
-        await client.query('BEGIN')
-
-        // Check if collection exists and is not default
-        const checkResult = await client.query(
-            `
-            SELECT is_default FROM foundation_token_collections WHERE id = $1
-        `,
-            [id]
-        )
-
-        if (checkResult.rows.length === 0) {
-            await client.query('ROLLBACK')
-            return NextResponse.json(
-                { success: false, error: 'Foundation collection not found' },
-                { status: 404 }
+        const result = await withTransaction(async (client) => {
+            // Check if collection exists and get its details
+            const collectionResult = await client.query(
+                'SELECT * FROM foundation_token_collections WHERE id = $1',
+                [collectionId]
             )
-        }
 
-        if (checkResult.rows[0].is_default) {
-            await client.query('ROLLBACK')
-            return NextResponse.json(
-                {
-                    success: false,
-                    error: 'Cannot delete default foundation collection',
-                },
-                { status: 400 }
+            if (collectionResult.rows.length === 0) {
+                throw new Error('Collection not found')
+            }
+
+            const collection = collectionResult.rows[0]
+
+            // Prevent deletion of default collection if it has tokens
+            if (collection.is_default) {
+                const tokenCount = await client.query(
+                    'SELECT COUNT(*) as count FROM foundation_tokens WHERE collection_id = $1',
+                    [collectionId]
+                )
+
+                if (parseInt(tokenCount.rows[0].count) > 0) {
+                    throw new Error(
+                        'Cannot delete default collection that contains tokens. Please set another collection as default first.'
+                    )
+                }
+            }
+
+            // Delete all foundation tokens in this collection first
+            await client.query(
+                'DELETE FROM foundation_tokens WHERE collection_id = $1',
+                [collectionId]
             )
-        }
 
-        // Delete the collection (cascade will handle tokens)
-        await client.query(
-            `
-            DELETE FROM foundation_token_collections WHERE id = $1
-        `,
-            [id]
-        )
+            // Delete the collection
+            const deleteResult = await client.query(
+                'DELETE FROM foundation_token_collections WHERE id = $1 RETURNING *',
+                [collectionId]
+            )
 
-        await client.query('COMMIT')
+            return deleteResult.rows[0]
+        })
 
         return NextResponse.json({
             success: true,
+            data: result,
             message: 'Foundation collection deleted successfully',
         })
     } catch (error) {
-        await client.query('ROLLBACK')
         console.error('Error deleting foundation collection:', error)
         return NextResponse.json(
-            { success: false, error: 'Failed to delete foundation collection' },
+            {
+                success: false,
+                error:
+                    error instanceof Error
+                        ? error.message
+                        : 'Failed to delete foundation collection',
+            },
             { status: 500 }
         )
-    } finally {
-        client.release()
     }
 }

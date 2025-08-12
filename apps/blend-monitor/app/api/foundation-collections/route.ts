@@ -91,3 +91,78 @@ export async function POST(request: NextRequest) {
         )
     }
 }
+
+// DELETE /api/foundation-collections - Delete a foundation token collection
+export async function DELETE(request: NextRequest) {
+    try {
+        const { searchParams } = new URL(request.url)
+        const collectionId = searchParams.get('id')
+
+        if (!collectionId) {
+            return NextResponse.json(
+                { success: false, error: 'Collection ID is required' },
+                { status: 400 }
+            )
+        }
+
+        const result = await withTransaction(async (client) => {
+            // Check if collection exists and get its details
+            const collectionResult = await client.query(
+                'SELECT * FROM foundation_token_collections WHERE id = $1',
+                [collectionId]
+            )
+
+            if (collectionResult.rows.length === 0) {
+                throw new Error('Collection not found')
+            }
+
+            const collection = collectionResult.rows[0]
+
+            // Prevent deletion of default collection if it has tokens
+            if (collection.is_default) {
+                const tokenCount = await client.query(
+                    'SELECT COUNT(*) as count FROM foundation_tokens WHERE collection_id = $1',
+                    [collectionId]
+                )
+
+                if (parseInt(tokenCount.rows[0].count) > 0) {
+                    throw new Error(
+                        'Cannot delete default collection that contains tokens. Please set another collection as default first.'
+                    )
+                }
+            }
+
+            // Delete all foundation tokens in this collection first
+            await client.query(
+                'DELETE FROM foundation_tokens WHERE collection_id = $1',
+                [collectionId]
+            )
+
+            // Delete the collection
+            const deleteResult = await client.query(
+                'DELETE FROM foundation_token_collections WHERE id = $1 RETURNING *',
+                [collectionId]
+            )
+
+            return deleteResult.rows[0]
+        })
+
+        return NextResponse.json({
+            success: true,
+            data: result,
+            message: 'Foundation collection deleted successfully',
+        })
+    } catch (error) {
+        console.error('Error deleting foundation collection:', error)
+        return NextResponse.json(
+            {
+                success: false,
+                error:
+                    error instanceof Error
+                        ? error.message
+                        : 'Failed to delete foundation collection',
+            },
+            { status: 500 }
+        )
+    }
+}

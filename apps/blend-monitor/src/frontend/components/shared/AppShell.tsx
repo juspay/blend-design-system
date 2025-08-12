@@ -47,7 +47,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 data={navigationData}
                 topbar={
                     <div className="sticky top-0 z-50 bg-white">
-                        <div className="flex items-center justify-between px-6 py-3">
+                        <div className="flex items-center justify-between py-3">
                             <h2 className="text-lg font-semibold text-gray-900">
                                 Blend Monitoring
                             </h2>
