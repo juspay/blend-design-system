@@ -5,6 +5,7 @@ on:
         branches:
             - main
             - dev
+            - fix/release-workflow
         paths-ignore:
             - 'docs/CHANGELOG.md'
     workflow_dispatch:
@@ -44,7 +45,15 @@ jobs:
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
-                  token: ${{ secrets.GITHUB_TOKEN }}
+                  token: ${{ secrets.GH_BOT_TOKEN }}
+
+            - name: Debug Git Context
+              run: |
+                  echo "Branch: $GITHUB_REF_NAME"
+                  echo "Event: $GITHUB_EVENT_NAME"
+                  echo "Actor: $GITHUB_ACTOR"
+                  git status
+                  git log -1 --pretty=full
 
             - name: Check if should skip release
               id: skip_check
@@ -52,8 +61,6 @@ jobs:
                   COMMIT_MESSAGE=$(git log -1 --pretty=%B)
                   echo "Commit message: $COMMIT_MESSAGE"
 
-                  # Skip if commit message contains [skip ci] or is a release commit
-                  # BUT allow release commits on main branch (for stable releases)
                   if [[ "$COMMIT_MESSAGE" == *"[skip ci]"* ]] || [[ "$COMMIT_MESSAGE" == *"chore(release):"* ]]; then
                     if [[ "${GITHUB_REF_NAME}" == "main" && "$COMMIT_MESSAGE" == *"chore(release):"* ]]; then
                       echo "Release commit on main branch - proceeding with stable release"
@@ -100,7 +107,6 @@ jobs:
             - name: Clean Existing Tags
               if: steps.skip_check.outputs.should_skip != 'true'
               run: |
-                  # Clean up any existing local tags to avoid conflicts
                   git tag -l | xargs -r git tag -d
                   git fetch --tags
 
@@ -108,6 +114,7 @@ jobs:
               if: steps.skip_check.outputs.should_skip != 'true'
               id: bump_version
               run: |
+                  set -x
                   cd packages/blend
                   BRANCH="${GITHUB_REF_NAME}"
                   VERSION_TYPE="${{ inputs.version_type || 'patch' }}"
@@ -118,40 +125,41 @@ jobs:
                   echo "Current version: $CURRENT_VERSION"
 
                   if [[ "$BRANCH" == "dev" ]]; then
-                    # For dev branch: create beta version
                     if [[ "$CURRENT_VERSION" == *"-beta" ]]; then
-                      # Already a beta version, just use it as is (no multiple betas)
                       NEW_VERSION="$CURRENT_VERSION"
-                      echo "Already a beta version: $NEW_VERSION"
+                      echo "Already beta: $NEW_VERSION"
                     else
-                      # Create new beta version
                       npm version "$VERSION_TYPE" --no-git-tag-version
                       BUMPED_VERSION=$(node -p "require('./package.json').version")
                       NEW_VERSION="${BUMPED_VERSION}-beta"
                       npm pkg set version="$NEW_VERSION"
-                      echo "Created new beta version: $NEW_VERSION"
                     fi
-                    
                     echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
                     echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
                     echo "is_beta=true" >> $GITHUB_OUTPUT
                     echo "npm_tag=beta" >> $GITHUB_OUTPUT
-                    
                   elif [[ "$BRANCH" == "main" ]]; then
-                    # For main branch: create stable version
                     if [[ "$CURRENT_VERSION" == *"-beta" ]]; then
-                      # Remove -beta suffix for stable release
                       STABLE_VERSION="${CURRENT_VERSION%-beta}"
                       npm pkg set version="$STABLE_VERSION"
                       NEW_VERSION="$STABLE_VERSION"
-                      echo "Converted beta to stable: $NEW_VERSION"
                     else
-                      # Normal version bump for main
                       npm version "$VERSION_TYPE" --no-git-tag-version
                       NEW_VERSION=$(node -p "require('./package.json').version")
-                      echo "Bumped stable version: $NEW_VERSION"
                     fi
-                    
+                    echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+                    echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
+                    echo "is_beta=false" >> $GITHUB_OUTPUT
+                    echo "npm_tag=latest" >> $GITHUB_OUTPUT
+                  elif [[ "$BRANCH" == "fix/release-workflow" ]]; then
+                    if [[ "$CURRENT_VERSION" == *"-beta" ]]; then
+                      STABLE_VERSION="${CURRENT_VERSION%-beta}"
+                      npm pkg set version="$STABLE_VERSION"
+                      NEW_VERSION="$STABLE_VERSION"
+                    else
+                      npm version "$VERSION_TYPE" --no-git-tag-version
+                      NEW_VERSION=$(node -p "require('./package.json').version")
+                    fi
                     echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
                     echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
                     echo "is_beta=false" >> $GITHUB_OUTPUT
@@ -163,10 +171,7 @@ jobs:
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
                   LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-
-                  # Create docs directory if it doesn't exist
                   mkdir -p docs
-
                   echo "# Changelog for v$VERSION" > docs/CHANGELOG.md
                   echo "" >> docs/CHANGELOG.md
                   if [[ -n "$LAST_TAG" ]]; then
@@ -177,99 +182,40 @@ jobs:
 
             - name: Format Generated Files
               if: steps.skip_check.outputs.should_skip != 'true'
-              run: |
-                  pnpm format
+              run: pnpm format
 
             - name: Build Package
               if: steps.skip_check.outputs.should_skip != 'true'
               run: pnpm --filter @juspay/blend-design-system build
 
-            - name: Upload Artifacts
-              if: steps.skip_check.outputs.should_skip != 'true'
-              uses: actions/upload-artifact@v4
-              with:
-                  name: build-${{ steps.bump_version.outputs.new_version }}
-                  path: |
-                      packages/blend/dist
-                      packages/blend/package.json
-                      docs/CHANGELOG.md
+            - name: Commit & Push Changes
+              if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
+              run: |
+                  VERSION=${{ steps.bump_version.outputs.new_version }}
+                  git config user.name "Release Bot"
+                  git config user.email "release-bot@example.com"
+                  git add packages/blend/package.json docs/CHANGELOG.md
+                  git commit -m "chore(release): v$VERSION [skip ci]" || echo "No changes to commit"
+                  git push origin HEAD
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
 
             - name: Create Release Tag
               if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
                   TAG="v$VERSION"
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
-
-                  # Check if tag already exists locally or remotely
-                  if git tag -l | grep -q "^$TAG$"; then
-                    echo "Tag $TAG already exists locally, deleting it"
-                    git tag -d "$TAG"
-                  fi
-
-                  # Check if tag exists on remote
-                  if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
-                    echo "Tag $TAG already exists on remote, deleting it"
-                    git push origin ":refs/tags/$TAG" || echo "Failed to delete remote tag, continuing..."
-                  fi
-
-                  # Create and push the tag
                   git tag "$TAG" -m "Release $TAG"
                   git push origin "$TAG"
-                  echo "Successfully created and pushed tag $TAG"
-
-            - name: Create Version Update PR
-              if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
-              uses: peter-evans/create-pull-request@v6
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  branch: release/update-version-${{ steps.bump_version.outputs.new_version }}
-                  title: 'chore(release): ${{ steps.bump_version.outputs.tag }}'
-                  body: |
-                      Release ${{ steps.bump_version.outputs.tag }}
-
-                      - Bump version to ${{ steps.bump_version.outputs.new_version }}
-                      - Update changelog
-
-                      This PR was automatically created by the release workflow.
-
-                      **Changes included:**
-                      - Updated package.json version
-                      - Generated changelog
-                      - Formatted files
-
-                      **Note:** This PR should be merged to update the version in the repository after the release has been published.
-                  labels: |
-                      automated
-                      release
-                  assignees: ${{ github.actor }}
-                  commit-message: |
-                      chore(release): ${{ steps.bump_version.outputs.tag }}
-
-                      - Bump version to ${{ steps.bump_version.outputs.new_version }}
-                      - Update changelog
-
-                      [skip ci]
-                  add-paths: |
-                      packages/blend/package.json
-                      docs/CHANGELOG.md
-                      .
 
             - name: Verify NPM Token
               if: steps.skip_check.outputs.should_skip != 'true'
               run: |
-                  # Debug: Check if token is set (without revealing it)
                   if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
                     echo "NPM_TOKEN secret is not set!"
                     exit 1
-                  else
-                    echo "NPM_TOKEN secret is configured"
                   fi
-
-                  # Test authentication using NODE_AUTH_TOKEN
-                  echo "Testing NPM authentication..."
-                  npm whoami || echo "NPM authentication test failed, but continuing..."
+                  npm whoami || echo "NPM authentication failed"
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -277,22 +223,15 @@ jobs:
               if: steps.skip_check.outputs.should_skip != 'true' && steps.config.outputs.dry_run != 'true'
               run: |
                   cd packages/blend
-
                   PACKAGE_NAME=$(node -p "require('./package.json').name")
                   NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
                   NPM_TAG="${{ steps.bump_version.outputs.npm_tag }}"
-
-                  echo "Publishing $PACKAGE_NAME@$NEW_VERSION to NPM with tag: $NPM_TAG"
-
-                  # Check if version already exists
-                  if npm view "$PACKAGE_NAME@$NEW_VERSION" version 2>/dev/null; then
-                    echo "Version $NEW_VERSION already exists on NPM, skipping publish"
+                  echo "Publishing $PACKAGE_NAME@$NEW_VERSION"
+                  if npm view "$PACKAGE_NAME@$NEW_VERSION" version >/dev/null 2>&1; then
+                    echo "Version exists, skipping"
                     exit 0
                   fi
-
-                  # Publish to NPM with appropriate tag
                   npm publish --access public --tag "$NPM_TAG"
-                  echo "Successfully published $PACKAGE_NAME@$NEW_VERSION to NPM with tag $NPM_TAG"
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -305,42 +244,3 @@ jobs:
                   body_path: docs/CHANGELOG.md
                   draft: false
                   prerelease: ${{ steps.bump_version.outputs.is_beta == 'true' }}
-
-    backmerge:
-        name: Back-merge main → dev
-        needs: release
-        if: github.ref == 'refs/heads/main' && needs.release.outputs.dry_run != 'true'
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-                  token: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Create PR main → dev
-              uses: peter-evans/create-pull-request@v6
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  base: dev
-                  branch: backmerge/main-to-dev-${{ needs.release.outputs.version }}
-                  title: 'chore: backmerge release ${{ needs.release.outputs.version }} to dev'
-                  body: |
-                      Backmerging release changes from `main` into `dev`
-
-                      This PR syncs the stable release back to dev branch.
-
-                      **Changes:**
-                      - Stable version: ${{ needs.release.outputs.version }}
-                      - Updated changelog
-                      - Version sync from main to dev
-                  labels: |
-                      automated
-                      release
-                      backmerge
-                  assignees: ${{ github.actor }}
-                  commit-message: |
-                      chore: backmerge release ${{ needs.release.outputs.version }} to dev
-
-                      Sync stable release from main to dev branch
-
-                      [skip ci]
