@@ -10,7 +10,7 @@ import {
     getPresetDisplayLabel,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
-import { getCalendarToken } from './dateRangePicker.tokens'
+import { CalendarTokenType, getCalendarToken } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { ButtonType, ButtonSize, Button } from '../../main'
@@ -31,6 +31,7 @@ import {
     TabsSize,
 } from '../Tabs'
 import Text from '../Text/Text'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 type MobileDrawerPresetsProps = {
     drawerOpen: boolean
@@ -57,8 +58,8 @@ type MobileDrawerPresetsProps = {
 const { ITEM_HEIGHT, VISIBLE_ITEMS, SCROLL_DEBOUNCE } = MOBILE_PICKER_CONSTANTS
 const CONTAINER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS
 
-const responsiveTokens = getCalendarToken(FOUNDATION_THEME)
-const tokens = responsiveTokens.sm
+const responsiveTokens = useResponsiveTokens<CalendarTokenType>('CALENDAR')
+const tokens = responsiveTokens
 
 const ScrollablePicker = React.memo<{
     items: (string | number)[]

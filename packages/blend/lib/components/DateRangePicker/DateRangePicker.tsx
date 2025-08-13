@@ -28,6 +28,7 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { ButtonType, ButtonSize, Button } from '../../main'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 type DateInputsSectionProps = {
     startDate: string
     endDate: string
@@ -255,14 +256,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const [popoverKey, setPopoverKey] = useState(0)
         const [isQuickRangeOpen, setIsQuickRangeOpen] = useState(false)
         const [drawerOpen, setDrawerOpen] = useState(false)
-        const responsiveCalendarTokens = useComponentToken(
-            'CALENDAR'
-        ) as ResponsiveCalendarTokens
+        const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
-        const calendarToken = isMobile
-            ? responsiveCalendarTokens.sm
-            : responsiveCalendarTokens.lg
 
         const [selectedRange, setSelectedRange] = useState<DateRange>(
             value || getPresetDateRange(DateRangePreset.TODAY)
