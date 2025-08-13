@@ -33,6 +33,7 @@ const Charts: React.FC<ChartsProps> = ({
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
+    const [isExpanded, setIsExpanded] = useState(true)
 
     const chartContainerRef = useRef<HTMLDivElement>(null!)
     const [hoveredKey, setHoveredKey] = useState<string | null>(null)
@@ -204,116 +205,124 @@ const Charts: React.FC<ChartsProps> = ({
                     onFullscreen={handleFullscreen}
                     onExitFullscreen={handleExitFullscreen}
                     isFullscreen={isFullscreen}
+                    isExpanded={isExpanded}
+                    setIsExpanded={setIsExpanded}
                 />
-                {showHorizontallyStackedLegends() ? (
-                    <Block
-                        padding={chartTokens.content.padding.lg}
-                        paddingLeft={chartTokens.content.paddingX.lg}
-                        paddingRight={chartTokens.content.paddingX.lg}
-                        display="flex"
-                        flexDirection="column"
-                        gap={chartTokens.content.gap.lg}
-                    >
-                        {
-                            <ChartLegends
-                                chartContainerRef={chartContainerRef}
-                                keys={lineKeys}
-                                colors={colors}
-                                handleLegendClick={handleLegendClick}
-                                handleLegendEnter={handleLegendEnter}
-                                handleLegendLeave={handleLegendLeave}
-                                selectedKeys={selectedKeys}
-                                setSelectedKeys={setSelectedKeys}
-                                hoveredKey={hoveredKey}
-                                activeKeys={selectedKeys}
-                                stacked={false}
-                            />
-                        }
-                        <Block
-                            display="flex"
-                            flexDirection="column"
-                            gap={chartTokens.content.gap.lg}
-                            alignItems="center"
-                        >
-                            <ResponsiveContainer
-                                width="100%"
-                                height={chartTokens.fullscreen.content.height}
-                            >
-                                {renderChart({
-                                    flattenedData,
-                                    chartType,
-                                    hoveredKey,
-                                    lineKeys,
-                                    colors,
-                                    setHoveredKey,
-                                    xAxisLabel,
-                                    yAxisLabel: isSmallScreen
-                                        ? undefined
-                                        : yAxisLabel,
-                                    data,
-                                    selectedKeys,
-                                    isSmallScreen: false,
-                                })}
-                            </ResponsiveContainer>
-                        </Block>
-                    </Block>
-                ) : (
-                    <Block
-                        padding={chartTokens.content.padding.lg}
-                        paddingLeft={chartTokens.content.paddingX.lg}
-                        paddingRight={chartTokens.content.paddingX.lg}
-                        display="flex"
-                        gap={chartTokens.content.gap.lg}
-                    >
-                        <Block style={{ flex: 1, width: '100%' }}>
-                            <ResponsiveContainer
-                                width="100%"
-                                height={chartTokens.content.height.default}
-                            >
-                                {renderChart({
-                                    flattenedData,
-                                    chartType,
-                                    hoveredKey,
-                                    lineKeys,
-                                    colors,
-                                    setHoveredKey,
-                                    xAxisLabel,
-                                    yAxisLabel: isSmallScreen
-                                        ? undefined
-                                        : yAxisLabel,
-                                    data,
-                                    selectedKeys,
-                                    isSmallScreen,
-                                })}
-                            </ResponsiveContainer>
-                        </Block>
-                        <Block
-                            width={
-                                chartTokens.legend.width[
-                                    ChartLegendPosition.RIGHT
-                                ]
-                            }
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                        >
-                            <ChartLegends
-                                chartContainerRef={chartContainerRef}
-                                keys={lineKeys}
-                                colors={colors}
-                                handleLegendClick={handleLegendClick}
-                                handleLegendEnter={handleLegendEnter}
-                                handleLegendLeave={handleLegendLeave}
-                                selectedKeys={selectedKeys}
-                                setSelectedKeys={setSelectedKeys}
-                                hoveredKey={hoveredKey}
-                                activeKeys={selectedKeys}
-                                stacked={true}
-                                stackedLegendsData={stackedLegendsData}
-                            />
-                        </Block>
-                    </Block>
-                )}
+                {showHorizontallyStackedLegends()
+                    ? isExpanded && (
+                          <Block
+                              padding={chartTokens.content.padding.lg}
+                              paddingLeft={chartTokens.content.paddingX.lg}
+                              paddingRight={chartTokens.content.paddingX.lg}
+                              display="flex"
+                              flexDirection="column"
+                              gap={chartTokens.content.gap.lg}
+                          >
+                              {
+                                  <ChartLegends
+                                      chartContainerRef={chartContainerRef}
+                                      keys={lineKeys}
+                                      colors={colors}
+                                      handleLegendClick={handleLegendClick}
+                                      handleLegendEnter={handleLegendEnter}
+                                      handleLegendLeave={handleLegendLeave}
+                                      selectedKeys={selectedKeys}
+                                      setSelectedKeys={setSelectedKeys}
+                                      hoveredKey={hoveredKey}
+                                      activeKeys={selectedKeys}
+                                      stacked={false}
+                                  />
+                              }
+                              <Block
+                                  display="flex"
+                                  flexDirection="column"
+                                  gap={chartTokens.content.gap.lg}
+                                  alignItems="center"
+                              >
+                                  <ResponsiveContainer
+                                      width="100%"
+                                      height={
+                                          chartTokens.fullscreen.content.height
+                                      }
+                                  >
+                                      {renderChart({
+                                          flattenedData,
+                                          chartType,
+                                          hoveredKey,
+                                          lineKeys,
+                                          colors,
+                                          setHoveredKey,
+                                          xAxisLabel,
+                                          yAxisLabel: isSmallScreen
+                                              ? undefined
+                                              : yAxisLabel,
+                                          data,
+                                          selectedKeys,
+                                          isSmallScreen: false,
+                                      })}
+                                  </ResponsiveContainer>
+                              </Block>
+                          </Block>
+                      )
+                    : isExpanded && (
+                          <Block
+                              padding={chartTokens.content.padding.lg}
+                              paddingLeft={chartTokens.content.paddingX.lg}
+                              paddingRight={chartTokens.content.paddingX.lg}
+                              display="flex"
+                              gap={chartTokens.content.gap.lg}
+                          >
+                              <Block style={{ flex: 1, width: '100%' }}>
+                                  <ResponsiveContainer
+                                      width="100%"
+                                      height={
+                                          chartTokens.content.height.default
+                                      }
+                                  >
+                                      {renderChart({
+                                          flattenedData,
+                                          chartType,
+                                          hoveredKey,
+                                          lineKeys,
+                                          colors,
+                                          setHoveredKey,
+                                          xAxisLabel,
+                                          yAxisLabel: isSmallScreen
+                                              ? undefined
+                                              : yAxisLabel,
+                                          data,
+                                          selectedKeys,
+                                          isSmallScreen,
+                                      })}
+                                  </ResponsiveContainer>
+                              </Block>
+                              <Block
+                                  width={
+                                      chartTokens.legend.width[
+                                          ChartLegendPosition.RIGHT
+                                      ]
+                                  }
+                                  display="flex"
+                                  alignItems="center"
+                                  justifyContent="center"
+                              >
+                                  <ChartLegends
+                                      chartContainerRef={chartContainerRef}
+                                      keys={lineKeys}
+                                      colors={colors}
+                                      handleLegendClick={handleLegendClick}
+                                      handleLegendEnter={handleLegendEnter}
+                                      handleLegendLeave={handleLegendLeave}
+                                      selectedKeys={selectedKeys}
+                                      setSelectedKeys={setSelectedKeys}
+                                      hoveredKey={hoveredKey}
+                                      activeKeys={selectedKeys}
+                                      stacked={true}
+                                      stackedLegendsData={stackedLegendsData}
+                                  />
+                              </Block>
+                          </Block>
+                      )}
             </Block>
         </Block>
     )
@@ -366,222 +375,240 @@ const Charts: React.FC<ChartsProps> = ({
                     chartHeaderSlot={chartHeaderSlot}
                     onFullscreen={handleFullscreen}
                     isSmallScreen={isSmallScreen}
+                    isExpanded={isExpanded}
+                    setIsExpanded={setIsExpanded}
                 />
-                {showHorizontallyStackedLegends() ? (
-                    <Block
-                        padding={
-                            chartTokens.content.padding[
-                                isSmallScreen ? 'sm' : 'lg'
-                            ]
-                        }
-                        paddingLeft={
-                            chartTokens.content.paddingX[
-                                isSmallScreen ? 'sm' : 'lg'
-                            ]
-                        }
-                        paddingRight={
-                            chartTokens.content.paddingX[
-                                isSmallScreen ? 'sm' : 'lg'
-                            ]
-                        }
-                        display="flex"
-                        flexDirection="column"
-                        gap={
-                            chartTokens.content.gap[isSmallScreen ? 'sm' : 'lg']
-                        }
-                    >
-                        {!isSmallScreen && (
-                            <Block>
-                                <ChartLegends
-                                    chartContainerRef={chartContainerRef}
-                                    keys={lineKeys}
-                                    colors={colors}
-                                    handleLegendClick={handleLegendClick}
-                                    handleLegendEnter={handleLegendEnter}
-                                    handleLegendLeave={handleLegendLeave}
-                                    selectedKeys={selectedKeys}
-                                    setSelectedKeys={setSelectedKeys}
-                                    hoveredKey={hoveredKey}
-                                    activeKeys={selectedKeys}
-                                    stacked={false}
-                                />
-                            </Block>
-                        )}
-                        <Block
-                            display="flex"
-                            flexDirection="column"
-                            alignItems="center"
-                        >
-                            <ResponsiveContainer
-                                width="100%"
-                                height={chartTokens.content.height.default}
-                            >
-                                {renderChart({
-                                    flattenedData,
-                                    chartType,
-                                    hoveredKey,
-                                    lineKeys,
-                                    colors,
-                                    setHoveredKey,
-                                    xAxisLabel,
-                                    yAxisLabel: isSmallScreen
-                                        ? undefined
-                                        : yAxisLabel,
-                                    data,
-                                    selectedKeys,
-                                    isSmallScreen,
-                                })}
-                            </ResponsiveContainer>
-                            {isSmallScreen && (
-                                <Block
-                                    display="flex"
-                                    flexDirection="column"
-                                    gap={chartTokens.legend.gap.lg}
-                                    width={'100%'}
-                                >
-                                    {(showLegend || !stackedLegends) && (
-                                        <ChartLegends
-                                            isSmallScreen={isSmallScreen}
-                                            chartContainerRef={
-                                                chartContainerRef
-                                            }
-                                            keys={lineKeys}
-                                            colors={colors}
-                                            handleLegendClick={
-                                                handleLegendClick
-                                            }
-                                            handleLegendEnter={
-                                                handleLegendEnter
-                                            }
-                                            handleLegendLeave={
-                                                handleLegendLeave
-                                            }
-                                            selectedKeys={selectedKeys}
-                                            setSelectedKeys={setSelectedKeys}
-                                            hoveredKey={hoveredKey}
-                                            activeKeys={selectedKeys}
-                                            stacked={stackedLegends}
-                                            stackedLegendsData={
-                                                stackedLegendsData
-                                            }
-                                        />
-                                    )}
-                                    {stackedLegends && (
-                                        <Block
-                                            display="flex"
-                                            alignItems="center"
-                                            justifyContent="center"
-                                        >
-                                            <Button
-                                                buttonType={
-                                                    ButtonType.SECONDARY
-                                                }
-                                                subType={ButtonSubType.INLINE}
-                                                size={ButtonSize.SMALL}
-                                                text={
-                                                    showLegend
-                                                        ? 'Hide Legend'
-                                                        : 'Show Legend'
-                                                }
-                                                trailingIcon={
-                                                    <ChevronDown
-                                                        color={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[400]
-                                                        }
-                                                        size={14}
-                                                        style={{
-                                                            transform:
-                                                                showLegend
-                                                                    ? 'rotate(180deg)'
-                                                                    : 'rotate(0deg)',
-                                                            transition:
-                                                                'transform 0.3s ease-in-out',
-                                                        }}
-                                                    />
-                                                }
-                                                onClick={() => {
-                                                    setShowLegend(!showLegend)
-                                                }}
-                                            />
-                                        </Block>
-                                    )}
-                                </Block>
-                            )}
-                        </Block>
-                    </Block>
-                ) : (
-                    <Block
-                        padding={
-                            chartTokens.content.padding[
-                                isSmallScreen ? 'sm' : 'lg'
-                            ]
-                        }
-                        paddingLeft={
-                            chartTokens.content.paddingX[
-                                isSmallScreen ? 'sm' : 'lg'
-                            ]
-                        }
-                        paddingRight={
-                            chartTokens.content.paddingX[
-                                isSmallScreen ? 'sm' : 'lg'
-                            ]
-                        }
-                        display="flex"
-                        gap={
-                            chartTokens.content.gap[isSmallScreen ? 'sm' : 'lg']
-                        }
-                    >
-                        <Block style={{ flex: 1, width: '100%' }}>
-                            <ResponsiveContainer
-                                width="100%"
-                                height={chartTokens.content.height.default}
-                            >
-                                {renderChart({
-                                    flattenedData,
-                                    chartType,
-                                    hoveredKey,
-                                    lineKeys,
-                                    colors,
-                                    setHoveredKey,
-                                    xAxisLabel,
-                                    yAxisLabel: isSmallScreen
-                                        ? undefined
-                                        : yAxisLabel,
-                                    data,
-                                    selectedKeys,
-                                    isSmallScreen,
-                                })}
-                            </ResponsiveContainer>
-                        </Block>
-                        <Block
-                            width={
-                                chartTokens.legend.width[
-                                    ChartLegendPosition.RIGHT
-                                ]
-                            }
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                        >
-                            <ChartLegends
-                                chartContainerRef={chartContainerRef}
-                                keys={lineKeys}
-                                colors={colors}
-                                handleLegendClick={handleLegendClick}
-                                handleLegendEnter={handleLegendEnter}
-                                handleLegendLeave={handleLegendLeave}
-                                selectedKeys={selectedKeys}
-                                setSelectedKeys={setSelectedKeys}
-                                hoveredKey={hoveredKey}
-                                activeKeys={selectedKeys}
-                                stacked={true}
-                                stackedLegendsData={stackedLegendsData}
-                            />
-                        </Block>
-                    </Block>
-                )}
+                {showHorizontallyStackedLegends()
+                    ? isExpanded && (
+                          <Block
+                              padding={
+                                  chartTokens.content.padding[
+                                      isSmallScreen ? 'sm' : 'lg'
+                                  ]
+                              }
+                              paddingLeft={
+                                  chartTokens.content.paddingX[
+                                      isSmallScreen ? 'sm' : 'lg'
+                                  ]
+                              }
+                              paddingRight={
+                                  chartTokens.content.paddingX[
+                                      isSmallScreen ? 'sm' : 'lg'
+                                  ]
+                              }
+                              display="flex"
+                              flexDirection="column"
+                              gap={
+                                  chartTokens.content.gap[
+                                      isSmallScreen ? 'sm' : 'lg'
+                                  ]
+                              }
+                          >
+                              {!isSmallScreen && (
+                                  <Block>
+                                      <ChartLegends
+                                          chartContainerRef={chartContainerRef}
+                                          keys={lineKeys}
+                                          colors={colors}
+                                          handleLegendClick={handleLegendClick}
+                                          handleLegendEnter={handleLegendEnter}
+                                          handleLegendLeave={handleLegendLeave}
+                                          selectedKeys={selectedKeys}
+                                          setSelectedKeys={setSelectedKeys}
+                                          hoveredKey={hoveredKey}
+                                          activeKeys={selectedKeys}
+                                          stacked={false}
+                                      />
+                                  </Block>
+                              )}
+                              <Block
+                                  display="flex"
+                                  flexDirection="column"
+                                  alignItems="center"
+                              >
+                                  <ResponsiveContainer
+                                      width="100%"
+                                      height={
+                                          chartTokens.content.height.default
+                                      }
+                                  >
+                                      {renderChart({
+                                          flattenedData,
+                                          chartType,
+                                          hoveredKey,
+                                          lineKeys,
+                                          colors,
+                                          setHoveredKey,
+                                          xAxisLabel,
+                                          yAxisLabel: isSmallScreen
+                                              ? undefined
+                                              : yAxisLabel,
+                                          data,
+                                          selectedKeys,
+                                          isSmallScreen,
+                                      })}
+                                  </ResponsiveContainer>
+                                  {isSmallScreen && (
+                                      <Block
+                                          display="flex"
+                                          flexDirection="column"
+                                          gap={chartTokens.legend.gap.lg}
+                                          width={'100%'}
+                                      >
+                                          {(showLegend || !stackedLegends) && (
+                                              <ChartLegends
+                                                  isSmallScreen={isSmallScreen}
+                                                  chartContainerRef={
+                                                      chartContainerRef
+                                                  }
+                                                  keys={lineKeys}
+                                                  colors={colors}
+                                                  handleLegendClick={
+                                                      handleLegendClick
+                                                  }
+                                                  handleLegendEnter={
+                                                      handleLegendEnter
+                                                  }
+                                                  handleLegendLeave={
+                                                      handleLegendLeave
+                                                  }
+                                                  selectedKeys={selectedKeys}
+                                                  setSelectedKeys={
+                                                      setSelectedKeys
+                                                  }
+                                                  hoveredKey={hoveredKey}
+                                                  activeKeys={selectedKeys}
+                                                  stacked={stackedLegends}
+                                                  stackedLegendsData={
+                                                      stackedLegendsData
+                                                  }
+                                              />
+                                          )}
+                                          {stackedLegends && (
+                                              <Block
+                                                  display="flex"
+                                                  alignItems="center"
+                                                  justifyContent="center"
+                                              >
+                                                  <Button
+                                                      buttonType={
+                                                          ButtonType.SECONDARY
+                                                      }
+                                                      subType={
+                                                          ButtonSubType.INLINE
+                                                      }
+                                                      size={ButtonSize.SMALL}
+                                                      text={
+                                                          showLegend
+                                                              ? 'Hide Legend'
+                                                              : 'Show Legend'
+                                                      }
+                                                      trailingIcon={
+                                                          <ChevronDown
+                                                              color={
+                                                                  FOUNDATION_THEME
+                                                                      .colors
+                                                                      .gray[400]
+                                                              }
+                                                              size={14}
+                                                              style={{
+                                                                  transform:
+                                                                      showLegend
+                                                                          ? 'rotate(180deg)'
+                                                                          : 'rotate(0deg)',
+                                                                  transition:
+                                                                      'transform 0.3s ease-in-out',
+                                                              }}
+                                                          />
+                                                      }
+                                                      onClick={() => {
+                                                          setShowLegend(
+                                                              !showLegend
+                                                          )
+                                                      }}
+                                                  />
+                                              </Block>
+                                          )}
+                                      </Block>
+                                  )}
+                              </Block>
+                          </Block>
+                      )
+                    : isExpanded && (
+                          <Block
+                              padding={
+                                  chartTokens.content.padding[
+                                      isSmallScreen ? 'sm' : 'lg'
+                                  ]
+                              }
+                              paddingLeft={
+                                  chartTokens.content.paddingX[
+                                      isSmallScreen ? 'sm' : 'lg'
+                                  ]
+                              }
+                              paddingRight={
+                                  chartTokens.content.paddingX[
+                                      isSmallScreen ? 'sm' : 'lg'
+                                  ]
+                              }
+                              display="flex"
+                              gap={
+                                  chartTokens.content.gap[
+                                      isSmallScreen ? 'sm' : 'lg'
+                                  ]
+                              }
+                          >
+                              <Block style={{ flex: 1, width: '100%' }}>
+                                  <ResponsiveContainer
+                                      width="100%"
+                                      height={
+                                          chartTokens.content.height.default
+                                      }
+                                  >
+                                      {renderChart({
+                                          flattenedData,
+                                          chartType,
+                                          hoveredKey,
+                                          lineKeys,
+                                          colors,
+                                          setHoveredKey,
+                                          xAxisLabel,
+                                          yAxisLabel: isSmallScreen
+                                              ? undefined
+                                              : yAxisLabel,
+                                          data,
+                                          selectedKeys,
+                                          isSmallScreen,
+                                      })}
+                                  </ResponsiveContainer>
+                              </Block>
+                              <Block
+                                  width={
+                                      chartTokens.legend.width[
+                                          ChartLegendPosition.RIGHT
+                                      ]
+                                  }
+                                  display="flex"
+                                  alignItems="center"
+                                  justifyContent="center"
+                              >
+                                  <ChartLegends
+                                      chartContainerRef={chartContainerRef}
+                                      keys={lineKeys}
+                                      colors={colors}
+                                      handleLegendClick={handleLegendClick}
+                                      handleLegendEnter={handleLegendEnter}
+                                      handleLegendLeave={handleLegendLeave}
+                                      selectedKeys={selectedKeys}
+                                      setSelectedKeys={setSelectedKeys}
+                                      hoveredKey={hoveredKey}
+                                      activeKeys={selectedKeys}
+                                      stacked={true}
+                                      stackedLegendsData={stackedLegendsData}
+                                  />
+                              </Block>
+                          </Block>
+                      )}
             </Block>
             {isFullscreen && renderFullscreenChart()}
         </>

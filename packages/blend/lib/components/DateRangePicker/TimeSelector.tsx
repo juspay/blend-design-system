@@ -1,74 +1,290 @@
-import { forwardRef, useMemo } from 'react'
-import { SingleSelect } from '../SingleSelect'
-import {
-    SelectMenuGroupType,
-    SelectMenuVariant,
-    SelectMenuSize,
-    SelectMenuAlignment,
-    SelectMenuSide,
-} from '../Select'
+import React, {
+    forwardRef,
+    useState,
+    useMemo,
+    useCallback,
+    useEffect,
+    useRef,
+} from 'react'
 import Block from '../Primitives/Block/Block'
+import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
+import Menu from '../Menu/Menu'
+import {
+    MenuItemV2Type,
+    MenuV2GroupType,
+    MenuAlignment,
+    MenuSide,
+} from '../Menu/types'
+import { FOUNDATION_THEME } from '../../tokens'
 
 type TimeSelectorProps = {
     value: string
     onChange: (time: string) => void
     className?: string
+    autoFocus?: boolean
+    tabIndex?: number
+}
+
+const formatTimeFor12Hour = (hour: number, minute: number): string => {
+    const period = hour >= 12 ? 'PM' : 'AM'
+    const displayHour = hour % 12 === 0 ? 12 : hour % 12
+    return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`
+}
+
+const formatTimeStringFor12Hour = (timeString: string): string => {
+    const [hour, minute] = timeString.split(':').map(Number)
+    return formatTimeFor12Hour(hour, minute)
+}
+
+const parseTimeInput = (
+    input: string
+): {
+    hour: number
+    minute: number
+    isValid: boolean
+    originalInput: string
+} => {
+    const originalInput = input.trim()
+    if (!originalInput) {
+        return { hour: 0, minute: 0, isValid: false, originalInput }
+    }
+
+    const cleanInput = input.replace(/\s+/g, ' ').trim().toUpperCase()
+
+    const timeRegex = /^(\d{1,2})(?::(\d{1,2}))?\s*(AM|PM)?$/i
+    const match = cleanInput.match(timeRegex)
+
+    if (!match) {
+        return { hour: 0, minute: 0, isValid: false, originalInput }
+    }
+
+    let hour = parseInt(match[1], 10)
+    const minute = parseInt(match[2] || '0', 10)
+    const period = match[3]?.toUpperCase()
+
+    if (!period) {
+        if (hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59) {
+            return { hour, minute, isValid: true, originalInput }
+        }
+        if (hour >= 1 && hour <= 12 && minute >= 0 && minute <= 59) {
+            const currentHour = new Date().getHours()
+            const defaultToPM = currentHour >= 12
+            if (defaultToPM && hour !== 12) {
+                hour += 12
+            } else if (!defaultToPM && hour === 12) {
+                hour = 0
+            }
+            return { hour, minute, isValid: true, originalInput }
+        }
+    } else {
+        if (hour < 1 || hour > 12 || minute < 0 || minute > 59) {
+            return { hour: 0, minute: 0, isValid: false, originalInput }
+        }
+
+        if (period === 'PM' && hour !== 12) {
+            hour += 12
+        } else if (period === 'AM' && hour === 12) {
+            hour = 0
+        }
+        return { hour, minute, isValid: true, originalInput }
+    }
+
+    return { hour: 0, minute: 0, isValid: false, originalInput }
+}
+
+const generateTimeOptions = (
+    onSelect: (timeValue: string) => void
+): MenuV2GroupType[] => {
+    const options: MenuItemV2Type[] = []
+
+    for (let hour = 0; hour < 24; hour++) {
+        for (let minute = 0; minute < 60; minute += 15) {
+            const timeValue = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+            const displayText = formatTimeFor12Hour(hour, minute)
+
+            options.push({
+                label: displayText,
+                onClick: () => onSelect(timeValue),
+            })
+        }
+    }
+
+    return [{ items: options }]
 }
 
 const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
-    ({ value, onChange }, ref) => {
-        const formatTimeFor12Hour = (hour: number, minute: number): string => {
-            const period = hour >= 12 ? 'PM' : 'AM'
-            const displayHour = hour % 12 === 0 ? 12 : hour % 12
-            const formattedHour = displayHour.toString().padStart(2, '0')
-            const formattedMinute = minute.toString().padStart(2, '0')
-            return `${formattedHour}:${formattedMinute} ${period}`
-        }
+    ({ value, onChange, autoFocus = true, tabIndex }, ref) => {
+        const [isOpen, setIsOpen] = useState(false)
+        const [inputValue, setInputValue] = useState('')
+        const [isValidTime, setIsValidTime] = useState(true)
+        const [isProcessingSelection, setIsProcessingSelection] =
+            useState(false)
+        const inputRef = useRef<HTMLInputElement>(null)
 
-        const timeSelectItems: SelectMenuGroupType[] = useMemo(() => {
-            const options = []
-            for (let h = 0; h < 24; h++) {
-                for (let m = 0; m < 60; m += 15) {
-                    const timeValue = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
-                    const display = formatTimeFor12Hour(h, m)
-                    options.push({
-                        value: timeValue,
-                        label: display,
-                    })
-                }
+        useEffect(() => {
+            if (value) {
+                const displayValue = formatTimeStringFor12Hour(value)
+                setInputValue(displayValue)
+                setIsValidTime(true)
             }
-            return [{ items: options }]
-        }, [])
+        }, [value])
 
-        const getClosestTimeValue = (inputValue: string): string => {
-            const [hour, minute] = inputValue.split(':').map(Number)
-            const roundedMinute = Math.round(minute / 15) * 15
-            const finalMinute = roundedMinute === 60 ? 0 : roundedMinute
-            const finalHour = roundedMinute === 60 ? (hour + 1) % 24 : hour
-            return `${finalHour.toString().padStart(2, '0')}:${finalMinute.toString().padStart(2, '0')}`
-        }
+        const handleTimeSelect = useCallback(
+            (timeValue: string) => {
+                setIsProcessingSelection(true)
+                setInputValue(formatTimeStringFor12Hour(timeValue))
+                setIsValidTime(true)
+                onChange(timeValue)
+                setIsOpen(false)
 
-        const selectedValue = getClosestTimeValue(value)
+                setTimeout(() => {
+                    setIsProcessingSelection(false)
+                    inputRef.current?.blur()
+                }, 100)
+            },
+            [onChange]
+        )
 
-        const handleTimeSelect = (timeValue: string) => {
-            onChange(timeValue)
-        }
+        const timeOptions = useMemo(
+            () => generateTimeOptions(handleTimeSelect),
+            [handleTimeSelect]
+        )
+
+        const handleOpenChange = useCallback(
+            (open: boolean) => {
+                if (!isProcessingSelection) {
+                    setIsOpen(open)
+                }
+            },
+            [isProcessingSelection]
+        )
+
+        const handleInputChange = useCallback(
+            (e: React.ChangeEvent<HTMLInputElement>) => {
+                const newValue = e.target.value
+                setInputValue(newValue)
+
+                const parsed = parseTimeInput(newValue)
+                setIsValidTime(parsed.isValid || newValue.trim() === '')
+            },
+            []
+        )
+
+        const handleInputFocus = useCallback(() => {
+            if (!isProcessingSelection && autoFocus) {
+                setIsOpen(true)
+            }
+        }, [isProcessingSelection, autoFocus])
+
+        const handleInputBlur = useCallback(() => {
+            if (isProcessingSelection) {
+                return
+            }
+
+            setTimeout(() => {
+                if (!isOpen && !isProcessingSelection) {
+                    const trimmedInput = inputValue.trim()
+
+                    if (!trimmedInput) {
+                        setInputValue(formatTimeStringFor12Hour(value))
+                        setIsValidTime(true)
+                        return
+                    }
+
+                    const parsed = parseTimeInput(trimmedInput)
+
+                    if (parsed.isValid) {
+                        const finalTimeValue = `${parsed.hour.toString().padStart(2, '0')}:${parsed.minute.toString().padStart(2, '0')}`
+                        const finalDisplayValue =
+                            formatTimeStringFor12Hour(finalTimeValue)
+
+                        setInputValue(finalDisplayValue)
+                        setIsValidTime(true)
+                        onChange(finalTimeValue)
+                    } else {
+                        setInputValue(formatTimeStringFor12Hour(value))
+                        setIsValidTime(true)
+                    }
+                }
+            }, 150)
+        }, [inputValue, value, onChange, isOpen, isProcessingSelection])
+
+        const handleInputKeyDown = useCallback(
+            (e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault()
+                    setIsOpen(false)
+                    inputRef.current?.blur()
+                } else if (e.key === 'Escape') {
+                    e.preventDefault()
+                    setInputValue(formatTimeStringFor12Hour(value))
+                    setIsValidTime(true)
+                    setIsOpen(false)
+                    inputRef.current?.blur()
+                }
+            },
+            [value]
+        )
+
+        const triggerElement = (
+            <PrimitiveInput
+                ref={inputRef}
+                type="text"
+                value={inputValue}
+                onChange={handleInputChange}
+                onBlur={handleInputBlur}
+                onFocus={handleInputFocus}
+                onKeyDown={handleInputKeyDown}
+                placeholder="12:00 PM"
+                width="118px"
+                height="32px"
+                paddingX={FOUNDATION_THEME.unit[10]}
+                paddingY={FOUNDATION_THEME.unit[6]}
+                fontSize={FOUNDATION_THEME.font.size.body.md.fontSize}
+                fontWeight={500}
+                lineHeight={FOUNDATION_THEME.unit[20]}
+                borderRadius={FOUNDATION_THEME.unit[10]}
+                border="none"
+                tabIndex={tabIndex}
+                outline={
+                    isValidTime
+                        ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
+                        : `1px solid ${FOUNDATION_THEME.colors.red[500]}`
+                }
+                boxShadow={FOUNDATION_THEME.shadows.sm}
+                backgroundColor={FOUNDATION_THEME.colors.gray[0]}
+                color={FOUNDATION_THEME.colors.gray[800]}
+                cursor="text"
+                _hover={{
+                    outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
+                    boxShadow: FOUNDATION_THEME.shadows.sm,
+                }}
+                _focus={{
+                    outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                    boxShadow: FOUNDATION_THEME.shadows.focusPrimary,
+                }}
+                _disabled={{
+                    backgroundColor: FOUNDATION_THEME.colors.gray[50],
+                    color: FOUNDATION_THEME.colors.gray[300],
+                    outline: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                    cursor: 'not-allowed',
+                }}
+            />
+        )
 
         return (
             <Block ref={ref} style={{ width: '118px', flexShrink: 0 }}>
-                <SingleSelect
-                    items={timeSelectItems}
-                    selected={selectedValue}
-                    onSelect={handleTimeSelect}
-                    variant={SelectMenuVariant.CONTAINER}
-                    size={SelectMenuSize.MEDIUM}
-                    placeholder="Select time"
-                    alignment={SelectMenuAlignment.START}
-                    side={SelectMenuSide.BOTTOM}
+                <Menu
+                    trigger={triggerElement}
+                    items={timeOptions}
+                    open={isOpen && !isProcessingSelection}
+                    onOpenChange={handleOpenChange}
+                    side={MenuSide.BOTTOM}
+                    alignment={MenuAlignment.START}
                     sideOffset={4}
-                    maxHeight={240}
-                    minWidth={100}
-                    label=""
+                    maxHeight={200}
+                    minWidth={120}
+                    maxWidth={120}
                 />
             </Block>
         )

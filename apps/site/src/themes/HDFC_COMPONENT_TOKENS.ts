@@ -8,10 +8,12 @@ export const HDFC_COMPONENT_TOKENS: ComponentTokenType = {
                 gap: FOUNDATION_THEME.unit[8],
                 borderRadius: FOUNDATION_THEME.unit[10],
                 paddingX: {
+                    sm: FOUNDATION_THEME.unit[10],
                     md: FOUNDATION_THEME.unit[12],
                     lg: FOUNDATION_THEME.unit[14],
                 },
                 paddingY: {
+                    sm: FOUNDATION_THEME.unit[6],
                     md: FOUNDATION_THEME.unit[8],
                     lg: FOUNDATION_THEME.unit[10],
                 },
@@ -54,10 +56,12 @@ export const HDFC_COMPONENT_TOKENS: ComponentTokenType = {
                 gap: FOUNDATION_THEME.unit[8],
                 borderRadius: FOUNDATION_THEME.unit[10],
                 paddingX: {
+                    sm: FOUNDATION_THEME.unit[10],
                     md: FOUNDATION_THEME.unit[12],
                     lg: FOUNDATION_THEME.unit[14],
                 },
                 paddingY: {
+                    sm: FOUNDATION_THEME.unit[6],
                     md: FOUNDATION_THEME.unit[8],
                     lg: FOUNDATION_THEME.unit[10],
                 },
@@ -102,10 +106,12 @@ export const HDFC_COMPONENT_TOKENS: ComponentTokenType = {
                 gap: FOUNDATION_THEME.unit[8],
                 borderRadius: FOUNDATION_THEME.unit[10],
                 paddingX: {
+                    sm: FOUNDATION_THEME.unit[10],
                     md: FOUNDATION_THEME.unit[12],
                     lg: FOUNDATION_THEME.unit[14],
                 },
                 paddingY: {
+                    sm: FOUNDATION_THEME.unit[6],
                     md: FOUNDATION_THEME.unit[8],
                     lg: FOUNDATION_THEME.unit[10],
                 },
@@ -151,10 +157,12 @@ export const HDFC_COMPONENT_TOKENS: ComponentTokenType = {
                 gap: FOUNDATION_THEME.unit[8],
                 borderRadius: FOUNDATION_THEME.unit[10],
                 paddingX: {
+                    sm: FOUNDATION_THEME.unit[10],
                     md: FOUNDATION_THEME.unit[12],
                     lg: FOUNDATION_THEME.unit[14],
                 },
                 paddingY: {
+                    sm: FOUNDATION_THEME.unit[6],
                     md: FOUNDATION_THEME.unit[8],
                     lg: FOUNDATION_THEME.unit[10],
                 },

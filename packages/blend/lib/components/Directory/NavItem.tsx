@@ -155,7 +155,9 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                 </Block>
                 {hasChildren && (
                     <ChevronWrapper $isExpanded={isExpanded} aria-hidden="true">
-                        <ChevronDown />
+                        <ChevronDown
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                        />
                     </ChevronWrapper>
                 )}
             </StyledElement>

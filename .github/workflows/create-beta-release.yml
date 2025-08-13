@@ -1,0 +1,217 @@
+name: Create Beta Release
+
+on:
+    workflow_dispatch:
+        inputs:
+            version_type:
+                description: 'Version bump type'
+                required: true
+                default: 'patch'
+                type: choice
+                options:
+                    - patch
+                    - minor
+                    - major
+
+concurrency:
+    group: create-beta-release-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    create-beta-release:
+        name: Create Beta Release (No Publish)
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/dev'
+        outputs:
+            version: ${{ steps.bump_version.outputs.new_version }}
+            tag: ${{ steps.bump_version.outputs.tag }}
+
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Setup Node.js 22 and pnpm
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  registry-url: 'https://registry.npmjs.org'
+
+            - name: Enable corepack & install deps
+              run: |
+                  corepack enable
+                  pnpm install --frozen-lockfile
+
+            - name: Get Current Version and Bump
+              id: bump_version
+              run: |
+                  cd packages/blend
+                  CURRENT_VERSION=$(node -p "require('./package.json').version")
+                  VERSION_TYPE="${{ inputs.version_type }}"
+
+                  echo "Current version: $CURRENT_VERSION"
+                  echo "Version type: $VERSION_TYPE"
+
+                  # Validate version type
+                  if [[ ! "$VERSION_TYPE" =~ ^(patch|minor|major)$ ]]; then
+                    echo "ERROR: Invalid version type '$VERSION_TYPE'. Must be patch, minor, or major."
+                    exit 1
+                  fi
+
+                  # Remove any existing beta suffix to get base version
+                  BASE_VERSION="${CURRENT_VERSION%-beta}"
+                  echo "Base version (without beta): $BASE_VERSION"
+
+                  # Validate base version format
+                  if [[ ! "$BASE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                    echo "ERROR: Invalid base version format '$BASE_VERSION'. Expected format: X.Y.Z"
+                    exit 1
+                  fi
+
+                  # Create a temporary package.json to bump the base version
+                  echo "{\"version\": \"$BASE_VERSION\"}" > temp_package.json
+                  NEW_BASE_VERSION=$(npm version "$VERSION_TYPE" --no-git-tag-version --package temp_package.json | sed 's/^v//')
+                  rm temp_package.json
+
+                  # Create beta version
+                  NEW_VERSION="${NEW_BASE_VERSION}-beta"
+
+                  # Update package.json with new beta version
+                  npm pkg set version="$NEW_VERSION"
+
+                  echo "New beta version: $NEW_VERSION"
+                  echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+                  echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
+
+                  # Verify the version was set correctly
+                  UPDATED_VERSION=$(node -p "require('./package.json').version")
+                  if [[ "$UPDATED_VERSION" != "$NEW_VERSION" ]]; then
+                    echo "ERROR: Failed to update package.json version. Expected '$NEW_VERSION', got '$UPDATED_VERSION'"
+                    exit 1
+                  fi
+
+                  echo "Version successfully updated in package.json"
+
+            - name: Clean Existing Tags and Releases
+              run: |
+                  VERSION=${{ steps.bump_version.outputs.new_version }}
+                  TAG="v$VERSION"
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+
+                  echo "Cleaning up any existing tags and releases for $TAG"
+
+                  # Clean up any existing local tags
+                  git tag -l | xargs -r git tag -d 2>/dev/null || true
+                  git fetch --tags
+
+                  # Force delete remote tag if it exists
+                  if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
+                    echo "Deleting existing remote tag $TAG"
+                    git push origin ":refs/tags/$TAG" 2>/dev/null || true
+                    sleep 2  # Wait for tag deletion to propagate
+                  fi
+
+                  # Delete existing GitHub release if it exists
+                  echo "Checking for existing GitHub release $TAG"
+                  if gh release view "$TAG" >/dev/null 2>&1; then
+                    echo "Deleting existing GitHub release $TAG"
+                    gh release delete "$TAG" --yes 2>/dev/null || true
+                    sleep 2  # Wait for release deletion to propagate
+                  fi
+
+                  # Clean up local tags again after remote cleanup
+                  git fetch --tags --prune --prune-tags
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Generate Changelog
+              run: |
+                  VERSION=${{ steps.bump_version.outputs.new_version }}
+                  LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+                  # Create docs directory if it doesn't exist
+                  mkdir -p docs
+
+                  echo "# Changelog for v$VERSION (Beta)" > docs/CHANGELOG.md
+                  echo "" >> docs/CHANGELOG.md
+                  echo "This is a beta release. Changes since last tag:" >> docs/CHANGELOG.md
+                  echo "" >> docs/CHANGELOG.md
+                  if [[ -n "$LAST_TAG" ]]; then
+                    git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
+                  else
+                    git log -n 20 --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
+                  fi
+
+            - name: Format Generated Files
+              run: |
+                  pnpm format
+
+            - name: Build Package
+              run: pnpm --filter @juspay/blend-design-system build
+
+            - name: Create Release Tag
+              run: |
+                  VERSION=${{ steps.bump_version.outputs.new_version }}
+                  TAG="v$VERSION"
+
+                  echo "Creating new tag $TAG"
+                  git tag "$TAG" -m "Beta Release $TAG"
+
+                  echo "Pushing tag $TAG to origin"
+                  git push origin "$TAG"
+
+                  echo "Successfully created and pushed tag $TAG"
+
+            - name: Create GitHub Beta Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: ${{ steps.bump_version.outputs.tag }}
+                  name: Beta Release ${{ steps.bump_version.outputs.tag }}
+                  body_path: docs/CHANGELOG.md
+                  draft: false
+                  prerelease: true
+
+            - name: Create Version Update PR to Dev
+              uses: peter-evans/create-pull-request@v6
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  branch: release/update-beta-version-${{ steps.bump_version.outputs.new_version }}
+                  title: 'chore(release): ${{ steps.bump_version.outputs.tag }} [BETA]'
+                  body: |
+                      Beta Release ${{ steps.bump_version.outputs.tag }}
+
+                      - Bump version to ${{ steps.bump_version.outputs.new_version }}
+                      - Update changelog
+                      - **This is a BETA release - ready for NPM publishing**
+
+                      This PR was automatically created by the beta release workflow.
+
+                      **Next Steps:**
+                      1. Review and merge this PR
+                      2. Trigger "Publish Beta to NPM" workflow to publish to npm with beta tag
+                      3. After testing, create PR from dev → main for stable release
+
+                      **Changes included:**
+                      - Updated package.json version to beta
+                      - Generated changelog
+                      - Created GitHub release with prerelease flag
+                  labels: |
+                      automated
+                      release
+                      beta
+                  assignees: ${{ github.actor }}
+                  commit-message: |
+                      chore(release): ${{ steps.bump_version.outputs.tag }} [BETA]
+
+                      - Bump version to ${{ steps.bump_version.outputs.new_version }}
+                      - Update changelog
+                      - Create beta release
+
+                      [skip ci]
+                  add-paths: |
+                      packages/blend/package.json
+                      docs/CHANGELOG.md
+                      .

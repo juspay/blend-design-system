@@ -34,4 +34,5 @@ export type PopoverProps = {
     zIndex?: number
     size?: PopoverSize
     onClose?: () => void
+    shadow?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 }

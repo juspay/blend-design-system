@@ -46,24 +46,26 @@ const textInputTokens: Readonly<TextInputTokensType> = {
         paddingX: {
             md: FOUNDATION_THEME.unit[12],
             lg: FOUNDATION_THEME.unit[14],
+            sm: FOUNDATION_THEME.unit[10],
         },
         paddingY: {
             md: FOUNDATION_THEME.unit[8],
             lg: FOUNDATION_THEME.unit[10],
+            sm: FOUNDATION_THEME.unit[6],
         },
         border: {
-            default: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-            hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
-            focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-            error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-            disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-        },
-        outline: {
             default: 'none',
             hover: 'none',
             focus: 'none',
             error: 'none',
             disabled: 'none',
+        },
+        outline: {
+            default: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+            hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
+            focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+            error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+            disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
         },
         color: {
             default: FOUNDATION_THEME.colors.gray[800],
@@ -96,24 +98,26 @@ export const getTextInputTokens = (
                 paddingX: {
                     md: foundationTheme.unit[12],
                     lg: foundationTheme.unit[14],
+                    sm: foundationTheme.unit[10],
                 },
                 paddingY: {
                     md: foundationTheme.unit[8],
                     lg: foundationTheme.unit[14],
+                    sm: foundationTheme.unit[6],
                 },
                 border: {
-                    default: `1px solid ${foundationTheme.colors.gray[200]}`,
-                    hover: `1px solid ${foundationTheme.colors.gray[400]}`,
-                    focus: `1px solid ${foundationTheme.colors.primary[500]}`,
-                    error: `1px solid ${foundationTheme.colors.red[500]}`,
-                    disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
-                },
-                outline: {
                     default: 'none',
                     hover: 'none',
                     focus: 'none',
                     error: 'none',
                     disabled: 'none',
+                },
+                outline: {
+                    default: `1px solid ${foundationTheme.colors.gray[200]}`,
+                    hover: `1px solid ${foundationTheme.colors.gray[400]}`,
+                    focus: `1px solid ${foundationTheme.colors.primary[500]}`,
+                    error: `1px solid ${foundationTheme.colors.red[500]}`,
+                    disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
                 },
                 color: {
                     default: foundationTheme.colors.gray[800],
@@ -145,24 +149,26 @@ export const getTextInputTokens = (
                 paddingX: {
                     md: foundationTheme.unit[12],
                     lg: foundationTheme.unit[14],
+                    sm: foundationTheme.unit[10],
                 },
                 paddingY: {
                     md: foundationTheme.unit[8],
                     lg: foundationTheme.unit[10],
+                    sm: foundationTheme.unit[6],
                 },
                 border: {
-                    default: `1px solid ${foundationTheme.colors.gray[200]}`,
-                    hover: `1px solid ${foundationTheme.colors.gray[400]}`,
-                    focus: `1px solid ${foundationTheme.colors.primary[500]}`,
-                    error: `1px solid ${foundationTheme.colors.red[500]}`,
-                    disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
-                },
-                outline: {
                     default: 'none',
                     hover: 'none',
                     focus: 'none',
                     error: 'none',
                     disabled: 'none',
+                },
+                outline: {
+                    default: `1px solid ${foundationTheme.colors.gray[200]}`,
+                    hover: `1px solid ${foundationTheme.colors.gray[400]}`,
+                    focus: `1px solid ${foundationTheme.colors.primary[500]}`,
+                    error: `1px solid ${foundationTheme.colors.red[500]}`,
+                    disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
                 },
                 color: {
                     default: foundationTheme.colors.gray[800],

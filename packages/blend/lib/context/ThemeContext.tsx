@@ -89,7 +89,7 @@ import {
     type TableTokenType,
 } from '../components/DataTable/dataTable.tokens'
 import {
-    type CalendarTokenType,
+    type ResponsiveCalendarTokens,
     getCalendarToken,
 } from '../components/DateRangePicker/dateRangePicker.tokens'
 import {
@@ -145,7 +145,7 @@ export type ComponentTokenType = {
     MULTI_SELECT?: ResponsiveMultiSelectTokens
     SINGLE_SELECT?: ResponsiveSingleSelectTokens
     TABLE?: TableTokenType
-    CALENDAR?: CalendarTokenType
+    CALENDAR?: ResponsiveCalendarTokens
     ACCORDION?: ResponsiveAccordionTokens
     STAT_CARD?: ResponsiveStatCardTokens
     PROGRESS_BAR?: ProgressBarTokenType

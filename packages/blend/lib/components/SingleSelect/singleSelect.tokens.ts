@@ -34,6 +34,9 @@ export type SingleSelectTokensType = {
             container: {
                 [key in TriggerStates]: CSSObject['backgroundColor']
             }
+            'no-container': {
+                [key in TriggerStates]: CSSObject['backgroundColor']
+            }
         }
         outline: {
             [key in SelectMenuVariant]: {
@@ -117,6 +120,13 @@ export const getSingleSelectTokens = (
                         hover: foundationToken.colors.gray[50],
                         focus: foundationToken.colors.gray[50],
                         error: foundationToken.colors.gray[0],
+                    },
+                    'no-container': {
+                        open: undefined,
+                        closed: undefined,
+                        hover: undefined,
+                        focus: undefined,
+                        error: undefined,
                     },
                 },
                 outline: {
@@ -221,6 +231,13 @@ export const getSingleSelectTokens = (
                         hover: foundationToken.colors.gray[50],
                         focus: foundationToken.colors.gray[50],
                         error: foundationToken.colors.gray[0],
+                    },
+                    'no-container': {
+                        open: undefined,
+                        closed: undefined,
+                        hover: undefined,
+                        focus: undefined,
+                        error: undefined,
                     },
                 },
                 outline: {

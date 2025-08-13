@@ -496,9 +496,10 @@ const ChartDemo = () => {
                                     alignItems="center"
                                     justifyContent="center"
                                     width={FOUNDATION_THEME.unit[24]}
+                                    cursor="pointer"
                                 >
                                     <EllipsisVertical
-                                        size={24}
+                                        size={20}
                                         className="text-gray-500"
                                     />
                                 </Block>
@@ -602,95 +603,61 @@ const ChartDemo = () => {
                 <h3 className="text-xl font-bold mb-4">
                     Chart Type Variations
                 </h3>
-                <div>
+                <div className="flex flex-col gap-5">
                     {/* Line Chart Example */}
-                    <div
-                        style={{
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '8px',
-                            padding: '16px',
-                        }}
-                    >
-                        <Charts
-                            data={financialData}
-                            chartType={ChartType.LINE}
-                            colors={[
-                                '#3b82f6',
-                                '#10b981',
-                                '#f59e0b',
-                                '#ef4444',
-                            ]}
-                            chartHeaderSlot={
-                                <div className="chart-header">
-                                    <TrendingUp
-                                        size={16}
-                                        className="text-blue-600"
-                                    />
-                                    <h4 style={{ margin: 0, fontSize: '14px' }}>
-                                        Line Chart
-                                    </h4>
-                                </div>
-                            }
-                        />
-                    </div>
+
+                    <Charts
+                        data={financialData}
+                        chartType={ChartType.LINE}
+                        colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
+                        chartHeaderSlot={
+                            <div className="chart-header">
+                                <TrendingUp
+                                    size={16}
+                                    className="text-blue-600"
+                                />
+                                <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                    Line Chart
+                                </h4>
+                            </div>
+                        }
+                    />
 
                     {/* Bar Chart Example */}
-                    <div
-                        style={{
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '8px',
-                            padding: '16px',
-                        }}
-                    >
-                        <Charts
-                            data={performanceData}
-                            chartType={ChartType.BAR}
-                            colors={['#8b5cf6', '#06b6d4', '#f59e0b']}
-                            chartHeaderSlot={
-                                <div className="chart-header">
-                                    <Activity
-                                        size={16}
-                                        className="text-purple-600"
-                                    />
-                                    <h4 style={{ margin: 0, fontSize: '14px' }}>
-                                        Bar Chart
-                                    </h4>
-                                </div>
-                            }
-                        />
-                    </div>
+
+                    <Charts
+                        data={performanceData}
+                        chartType={ChartType.BAR}
+                        colors={['#8b5cf6', '#06b6d4', '#f59e0b']}
+                        chartHeaderSlot={
+                            <div className="chart-header">
+                                <Activity
+                                    size={16}
+                                    className="text-purple-600"
+                                />
+                                <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                    Bar Chart
+                                </h4>
+                            </div>
+                        }
+                    />
 
                     {/* Pie Chart Example */}
-                    <div
-                        style={{
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '8px',
-                            padding: '16px',
-                        }}
-                    >
-                        <Charts
-                            data={analyticsData}
-                            chartType={ChartType.PIE}
-                            legendPosition={ChartLegendPosition.RIGHT}
-                            colors={[
-                                '#3b82f6',
-                                '#10b981',
-                                '#f59e0b',
-                                '#ef4444',
-                            ]}
-                            chartHeaderSlot={
-                                <div className="chart-header">
-                                    <Users
-                                        size={16}
-                                        className="text-green-600"
-                                    />
-                                    <h4 style={{ margin: 0, fontSize: '14px' }}>
-                                        Pie Chart
-                                    </h4>
-                                </div>
-                            }
-                        />
-                    </div>
+
+                    <Charts
+                        data={analyticsData}
+                        chartType={ChartType.PIE}
+                        legendPosition={ChartLegendPosition.RIGHT}
+                        colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
+                        chartHeaderSlot={
+                            <div className="chart-header">
+                                <Users size={16} className="text-green-600" />
+                                <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                    Pie Chart
+                                </h4>
+                            </div>
+                        }
+                    />
                 </div>
             </div>
 
@@ -699,50 +666,36 @@ const ChartDemo = () => {
                 <h3 className="text-xl font-bold mb-4">Feature Showcase</h3>
                 <div style={{ display: 'grid', gap: '20px' }}>
                     {/* Limited Metrics Example */}
-                    <div
-                        style={{
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '8px',
-                            padding: '16px',
-                        }}
-                    >
-                        <Charts
-                            data={financialData}
-                            chartType={ChartType.LINE}
-                            metrics={['revenue', 'profit']}
-                            xAxisLabel="Month"
-                            yAxisLabel="Amount ($)"
-                            chartHeaderSlot={
-                                <div className="chart-header">
-                                    <h4 style={{ margin: 0 }}>
-                                        Limited Metrics (Revenue & Profit Only)
-                                    </h4>
-                                </div>
-                            }
-                        />
-                    </div>
+
+                    <Charts
+                        data={financialData}
+                        chartType={ChartType.LINE}
+                        metrics={['revenue', 'profit']}
+                        xAxisLabel="Month"
+                        yAxisLabel="Amount ($)"
+                        chartHeaderSlot={
+                            <div className="chart-header">
+                                <h4 style={{ margin: 0 }}>
+                                    Limited Metrics (Revenue & Profit Only)
+                                </h4>
+                            </div>
+                        }
+                    />
 
                     {/* Custom Colors Example */}
-                    <div
-                        style={{
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '8px',
-                            padding: '16px',
-                        }}
-                    >
-                        <Charts
-                            data={performanceData}
-                            chartType={ChartType.BAR}
-                            colors={['#dc2626', '#059669', '#7c3aed']}
-                            chartHeaderSlot={
-                                <div className="chart-header">
-                                    <h4 style={{ margin: 0 }}>
-                                        Custom Color Scheme
-                                    </h4>
-                                </div>
-                            }
-                        />
-                    </div>
+
+                    <Charts
+                        data={performanceData}
+                        chartType={ChartType.BAR}
+                        colors={['#dc2626', '#059669', '#7c3aed']}
+                        chartHeaderSlot={
+                            <div className="chart-header">
+                                <h4 style={{ margin: 0 }}>
+                                    Custom Color Scheme
+                                </h4>
+                            </div>
+                        }
+                    />
                 </div>
             </div>
 

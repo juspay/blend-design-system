@@ -60,7 +60,7 @@ export type SelectMenuItemType = {
 }
 
 export type SingleSelectProps = {
-    label: string
+    label?: string
     subLabel?: string
     hintText?: string
     required?: boolean

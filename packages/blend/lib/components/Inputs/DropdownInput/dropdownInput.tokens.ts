@@ -48,10 +48,12 @@ const dropdownInputTokens: Readonly<DropdownInputTokensType> = {
             disabled: FOUNDATION_THEME.shadows.sm,
         },
         paddingX: {
+            sm: FOUNDATION_THEME.unit[10],
             md: FOUNDATION_THEME.unit[12],
             lg: FOUNDATION_THEME.unit[14],
         },
         paddingY: {
+            sm: FOUNDATION_THEME.unit[6],
             md: FOUNDATION_THEME.unit[8],
             lg: FOUNDATION_THEME.unit[10],
         },
@@ -95,10 +97,12 @@ export const getDropdownInputTokens = (
                 gap: foundationTheme.unit[8],
                 borderRadius: foundationTheme.unit[10],
                 paddingX: {
+                    sm: foundationTheme.unit[10],
                     md: foundationTheme.unit[12],
                     lg: foundationTheme.unit[14],
                 },
                 paddingY: {
+                    sm: foundationTheme.unit[6],
                     md: foundationTheme.unit[8],
                     lg: foundationTheme.unit[14],
                 },
@@ -144,10 +148,12 @@ export const getDropdownInputTokens = (
                 gap: foundationTheme.unit[8],
                 borderRadius: foundationTheme.unit[10],
                 paddingX: {
+                    sm: foundationTheme.unit[10],
                     md: foundationTheme.unit[12],
                     lg: foundationTheme.unit[14],
                 },
                 paddingY: {
+                    sm: foundationTheme.unit[6],
                     md: foundationTheme.unit[8],
                     lg: foundationTheme.unit[10],
                 },

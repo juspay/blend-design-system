@@ -185,7 +185,9 @@ const NumberInput = ({
                             onChange({
                                 target: {
                                     value: String(
-                                        value ? Number(value) + (step ?? 1) : 0
+                                        value
+                                            ? Number(value) + (step ?? 1)
+                                            : 0 + (step ?? 1)
                                     ),
                                 },
                             } as React.ChangeEvent<HTMLInputElement>)

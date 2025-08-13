@@ -139,7 +139,7 @@ const SingleSelect = ({
                             singleSelectTokens={singleSelectTokens}
                             size={size}
                             selected={selected}
-                            label={label}
+                            label={label || ''}
                             name={name || ''}
                             placeholder={placeholder}
                             required={required || false}
@@ -541,7 +541,7 @@ const SingleSelect = ({
                                     paddingY: paddingY,
                                     backgroundColor:
                                         singleSelectTokens.trigger
-                                            .backgroundColor.container[
+                                            .backgroundColor[variant][
                                             error
                                                 ? 'error'
                                                 : open
@@ -632,7 +632,7 @@ const SingleSelect = ({
                                                 }}
                                             >
                                                 <FloatingLabels
-                                                    label={label}
+                                                    label={label || ''}
                                                     required={required || false}
                                                     name={name || ''}
                                                     isFocused={isItemSelected}
@@ -661,6 +661,9 @@ const SingleSelect = ({
                                                           .gray[600]
                                             }
                                             fontWeight={500}
+                                            style={{
+                                                whiteSpace: 'nowrap',
+                                            }}
                                         >
                                             {selected
                                                 ? valueLabelMap[selected]

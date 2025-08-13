@@ -1,6 +1,7 @@
 import { FOUNDATION_THEME } from '../../tokens'
 import type { CSSObject } from 'styled-components'
 import type { FoundationTokenType } from '../../tokens/theme.token'
+import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type CalendarTokenType = {
     quickRange: {
@@ -178,8 +179,12 @@ export type CalendarTokenType = {
                 gap: CSSObject['gap']
                 label: {
                     color: CSSObject['color']
-                    minWidth: CSSObject['minWidth']
+                    width: CSSObject['width']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
                 }
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
             }
         }
         calendarGrid: {
@@ -199,6 +204,7 @@ export type CalendarTokenType = {
                 container: {
                     position: CSSObject['position']
                     height: CSSObject['height']
+                    marginBottom: CSSObject['marginBottom']
                 }
             }
             week: {
@@ -206,6 +212,12 @@ export type CalendarTokenType = {
                     display: CSSObject['display']
                     gridTemplateColumns: CSSObject['gridTemplateColumns']
                     padding: CSSObject['padding']
+                    gap: CSSObject['gap']
+                }
+                container: {
+                    display: CSSObject['display']
+                    flexDirection: CSSObject['flexDirection']
+                    gap: CSSObject['gap']
                 }
                 header: {
                     display: CSSObject['display']
@@ -221,6 +233,9 @@ export type CalendarTokenType = {
                 }
                 dayName: {
                     padding: CSSObject['padding']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color']
                 }
             }
             day: {
@@ -231,10 +246,17 @@ export type CalendarTokenType = {
                     position: CSSObject['position']
                     fontWeight: CSSObject['fontWeight']
                     boxSizing: CSSObject['boxSizing']
-                    border: CSSObject['border']
+                    outline: CSSObject['outline']
+                    fontSize: CSSObject['fontSize']
+                    lineHeight: CSSObject['lineHeight']
+                    display: CSSObject['display']
+                    alignItems: CSSObject['alignItems']
+                    justifyContent: CSSObject['justifyContent']
+                    width: CSSObject['width']
+                    height: CSSObject['height']
                 }
                 hover: {
-                    border: CSSObject['border']
+                    outline: CSSObject['outline']
                     borderRadius: CSSObject['borderRadius']
                 }
                 empty: {
@@ -283,10 +305,14 @@ export type CalendarTokenType = {
     }
 }
 
+export type ResponsiveCalendarTokens = {
+    [key in keyof BreakpointType]: CalendarTokenType
+}
+
 export const getCalendarToken = (
     foundationToken: FoundationTokenType
-): CalendarTokenType => {
-    return {
+): ResponsiveCalendarTokens => {
+    const baseTokens: CalendarTokenType = {
         mobileDrawer: {
             picker: {
                 itemHeight: foundationToken.unit[44],
@@ -411,7 +437,7 @@ export const getCalendarToken = (
                 zIndex: 1000,
                 backgroundColor: FOUNDATION_THEME.colors.gray[0],
                 borderRadius: FOUNDATION_THEME.border.radius[6],
-                boxShadow: FOUNDATION_THEME.shadows.lg,
+                boxShadow: FOUNDATION_THEME.shadows.xs,
                 overflowY: 'auto',
                 overflowX: 'hidden',
             },
@@ -468,26 +494,30 @@ export const getCalendarToken = (
             borderRadiusWithoutPresets: foundationToken.border.radius[8],
         },
         calendar: {
-            minWidth: '364px',
-            width: '364px',
+            minWidth: '320px',
+            width: '320px',
             backgroundColor: foundationToken.colors.gray[0],
             border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
-            boxShadow: foundationToken.shadows.lg,
+            boxShadow: foundationToken.shadows.xs,
             zIndex: 1000,
             inputs: {
-                padding: `${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
+                padding: foundationToken.unit[16],
                 dateInput: {
-                    gap: foundationToken.unit[16],
+                    gap: foundationToken.unit[12],
                     label: {
-                        color: foundationToken.colors.gray[400],
-                        minWidth: foundationToken.unit[36],
+                        color: foundationToken.colors.gray[500],
+                        width: foundationToken.unit[32],
+                        fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                        fontWeight: foundationToken.font.weight[500],
                     },
+                    fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                    fontWeight: foundationToken.font.weight[500],
                 },
             },
             calendarGrid: {
                 container: {
-                    maxHeight: '380px',
+                    maxHeight: '340px',
                     overflowY: 'auto',
                     overflow: 'auto',
                     position: 'relative',
@@ -502,20 +532,27 @@ export const getCalendarToken = (
                     container: {
                         position: 'absolute',
                         height: 'auto',
+                        marginBottom: foundationToken.unit[8],
                     },
                 },
                 week: {
                     row: {
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(7, 1fr)',
-                        padding: `0 ${foundationToken.unit[12]}`,
+                        gridTemplateColumns: 'repeat(7, 40px)',
+                        padding: `0 ${foundationToken.unit[18]}`,
+                        gap: '0',
+                    },
+                    container: {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: foundationToken.unit[4],
                     },
                     header: {
                         display: 'grid',
                         gridTemplateColumns: 'repeat(7, 1fr)',
                         textAlign: 'center',
                         color: foundationToken.colors.gray[500],
-                        padding: `0 ${foundationToken.unit[8]}`,
+                        padding: `0 ${foundationToken.unit[16]}`,
                         position: 'sticky',
                         top: 0,
                         zIndex: 10,
@@ -523,21 +560,31 @@ export const getCalendarToken = (
                         boxShadow: `0 2px 4px -1px ${foundationToken.colors.gray[200]}`,
                     },
                     dayName: {
-                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[8]}`,
+                        padding: `${foundationToken.unit[10]} ${foundationToken.unit[8]}`,
+                        fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                        fontWeight: foundationToken.font.weight[600],
+                        color: foundationToken.colors.gray[400],
                     },
                 },
                 day: {
                     cell: {
                         cursor: 'pointer',
                         textAlign: 'center',
-                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[8]}`,
+                        padding: `${foundationToken.unit[10]} ${foundationToken.unit[8]}`, // 10px top/bottom, 8px left/right for 40x40 total
                         position: 'relative',
                         fontWeight: foundationToken.font.weight[500],
                         boxSizing: 'border-box',
-                        border: '1px solid transparent',
+                        outline: '1px solid transparent',
+                        fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                        lineHeight: `${foundationToken.unit[20]}`, // 20px line height for content
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: foundationToken.unit[40], // Fixed width of 40px
+                        height: foundationToken.unit[40], // Fixed height of 40px
                     },
                     hover: {
-                        border: `1px solid ${foundationToken.colors.primary[500]}`,
+                        outline: `1px solid ${foundationToken.colors.primary[500]}`,
                         borderRadius: foundationToken.border.radius[8],
                     },
                     empty: {
@@ -610,7 +657,7 @@ export const getCalendarToken = (
                 },
             },
             footer: {
-                padding: foundationToken.unit[16],
+                padding: foundationToken.unit[12],
                 borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
                 timerange: {
                     gap: foundationToken.unit[8],
@@ -623,5 +670,10 @@ export const getCalendarToken = (
                 },
             },
         },
+    }
+
+    return {
+        sm: baseTokens,
+        lg: baseTokens,
     }
 }

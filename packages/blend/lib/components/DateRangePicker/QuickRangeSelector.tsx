@@ -6,8 +6,8 @@ import { DateRangePreset } from './types'
 import { getPresetLabel } from './utils'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
-import { useComponentToken } from '../../context/useComponentToken'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 type QuickRangeSelectorProps = {
     isOpen: boolean
@@ -64,7 +64,9 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
         },
         ref
     ) => {
-        const calendarToken = useComponentToken('CALENDAR') as CalendarTokenType
+        const responsiveCalendarTokens =
+            useResponsiveTokens<CalendarTokenType>('CALENDAR')
+        const calendarToken = responsiveCalendarTokens
         const activePresetLabel = getPresetLabel(activePreset)
 
         const getFilteredPresets = () => {
