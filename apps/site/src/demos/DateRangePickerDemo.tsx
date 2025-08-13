@@ -20,7 +20,7 @@ const DateRangePickerDemo = () => {
                     value={selectedRange}
                     onChange={handleRangeChange}
                     showPresets={true}
-                    showTimePicker={false}
+                    showDateTimePicker={false}
                     useDrawerOnMobile={true}
                 />
             </div>
@@ -33,7 +33,7 @@ const DateRangePickerDemo = () => {
                     value={selectedRange}
                     onChange={handleRangeChange}
                     showPresets={true}
-                    showTimePicker={true}
+                    showDateTimePicker={true}
                     useDrawerOnMobile={true}
                 />
             </div>
@@ -44,7 +44,7 @@ const DateRangePickerDemo = () => {
                     value={selectedRange}
                     onChange={handleRangeChange}
                     showPresets={true}
-                    showTimePicker={true}
+                    showDateTimePicker={true}
                     useDrawerOnMobile={true}
                     skipQuickFiltersOnMobile={true}
                 />
@@ -56,7 +56,7 @@ const DateRangePickerDemo = () => {
                     value={selectedRange}
                     onChange={handleRangeChange}
                     showPresets={true}
-                    showTimePicker={false}
+                    showDateTimePicker={false}
                     useDrawerOnMobile={false}
                 />
             </div>

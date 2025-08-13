@@ -34,39 +34,80 @@ const formatTimeStringFor12Hour = (timeString: string): string => {
     return formatTimeFor12Hour(hour, minute)
 }
 
-// Parse various time input formats to 24-hour format
 const parseTimeInput = (
     input: string
-): { hour: number; minute: number; isValid: boolean } => {
-    const cleanInput = input.replace(/\s+/g, '').toUpperCase()
-    const timeRegex = /^(\d{1,2}):?(\d{0,2})\s*(AM|PM)?$/i
+): {
+    hour: number
+    minute: number
+    isValid: boolean
+    originalInput: string
+} => {
+    const originalInput = input.trim()
+    if (!originalInput) {
+        return { hour: 0, minute: 0, isValid: false, originalInput }
+    }
+
+    const cleanInput = input.replace(/\s+/g, ' ').trim().toUpperCase()
+
+    const timeRegex = /^(\d{1,2})(?::(\d{1,2}))?\s*(AM|PM)?$/i
     const match = cleanInput.match(timeRegex)
 
     if (!match) {
-        return { hour: 0, minute: 0, isValid: false }
+        return { hour: 0, minute: 0, isValid: false, originalInput }
     }
 
     let hour = parseInt(match[1], 10)
-    let minute = parseInt(match[2] || '0', 10)
+    const minute = parseInt(match[2] || '0', 10)
     const period = match[3]?.toUpperCase()
 
-    // Validate ranges
-    if (hour < 1 || hour > 12 || minute < 0 || minute > 59) {
-        return { hour: 0, minute: 0, isValid: false }
+    if (!period) {
+        if (hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59) {
+            return { hour, minute, isValid: true, originalInput }
+        }
+        if (hour >= 1 && hour <= 12 && minute >= 0 && minute <= 59) {
+            const currentHour = new Date().getHours()
+            const defaultToPM = currentHour >= 12
+            if (defaultToPM && hour !== 12) {
+                hour += 12
+            } else if (!defaultToPM && hour === 12) {
+                hour = 0
+            }
+            return { hour, minute, isValid: true, originalInput }
+        }
+    } else {
+        if (hour < 1 || hour > 12 || minute < 0 || minute > 59) {
+            return { hour: 0, minute: 0, isValid: false, originalInput }
+        }
+
+        if (period === 'PM' && hour !== 12) {
+            hour += 12
+        } else if (period === 'AM' && hour === 12) {
+            hour = 0
+        }
+        return { hour, minute, isValid: true, originalInput }
     }
 
-    // Convert to 24-hour format
-    if (period === 'PM' && hour !== 12) {
-        hour += 12
-    } else if (period === 'AM' && hour === 12) {
-        hour = 0
-    }
-
-    return { hour, minute, isValid: true }
+    return { hour: 0, minute: 0, isValid: false, originalInput }
 }
 
-const isValidTimeOption = (minute: number): boolean => {
-    return minute % 15 === 0
+const generateTimeOptions = (
+    onSelect: (timeValue: string) => void
+): MenuV2GroupType[] => {
+    const options: MenuItemV2Type[] = []
+
+    for (let hour = 0; hour < 24; hour++) {
+        for (let minute = 0; minute < 60; minute += 15) {
+            const timeValue = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+            const displayText = formatTimeFor12Hour(hour, minute)
+
+            options.push({
+                label: displayText,
+                onClick: () => onSelect(timeValue),
+            })
+        }
+    }
+
+    return [{ items: options }]
 }
 
 const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
@@ -74,113 +115,97 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
         const [isOpen, setIsOpen] = useState(false)
         const [inputValue, setInputValue] = useState('')
         const [isValidTime, setIsValidTime] = useState(true)
-        const [isDropdownClosing, setIsDropdownClosing] = useState(false)
+        const [isProcessingSelection, setIsProcessingSelection] =
+            useState(false)
         const inputRef = useRef<HTMLInputElement>(null)
 
         useEffect(() => {
             if (value) {
-                setInputValue(formatTimeStringFor12Hour(value))
+                const displayValue = formatTimeStringFor12Hour(value)
+                setInputValue(displayValue)
                 setIsValidTime(true)
             }
         }, [value])
 
         const handleTimeSelect = useCallback(
             (timeValue: string) => {
-                setIsDropdownClosing(true)
+                setIsProcessingSelection(true)
                 setInputValue(formatTimeStringFor12Hour(timeValue))
                 setIsValidTime(true)
                 onChange(timeValue)
                 setIsOpen(false)
 
                 setTimeout(() => {
-                    setIsDropdownClosing(false)
+                    setIsProcessingSelection(false)
                     inputRef.current?.blur()
                 }, 100)
             },
             [onChange]
         )
 
-        // Generate time options with 15-minute intervals
-        const timeOptions = useMemo((): MenuV2GroupType[] => {
-            const options: MenuItemV2Type[] = []
+        const timeOptions = useMemo(
+            () => generateTimeOptions(handleTimeSelect),
+            [handleTimeSelect]
+        )
 
-            for (let h = 0; h < 24; h++) {
-                for (let m = 0; m < 60; m += 15) {
-                    const timeValue = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
-                    const displayText = formatTimeFor12Hour(h, m)
-
-                    options.push({
-                        label: displayText,
-                        onClick: () => handleTimeSelect(timeValue),
-                    })
+        const handleOpenChange = useCallback(
+            (open: boolean) => {
+                if (!isProcessingSelection) {
+                    setIsOpen(open)
                 }
-            }
-
-            return [{ items: options }]
-        }, [handleTimeSelect])
+            },
+            [isProcessingSelection]
+        )
 
         const handleInputChange = useCallback(
             (e: React.ChangeEvent<HTMLInputElement>) => {
                 const newValue = e.target.value
                 setInputValue(newValue)
 
-                // Real-time validation
                 const parsed = parseTimeInput(newValue)
-                setIsValidTime(parsed.isValid)
+                setIsValidTime(parsed.isValid || newValue.trim() === '')
             },
             []
         )
 
+        const handleInputFocus = useCallback(() => {
+            if (!isProcessingSelection) {
+                setIsOpen(true)
+            }
+        }, [isProcessingSelection])
+
         const handleInputBlur = useCallback(() => {
-            if (isDropdownClosing) {
+            if (isProcessingSelection) {
                 return
             }
 
             setTimeout(() => {
-                if (!isOpen && !isDropdownClosing) {
-                    if (!inputValue.trim()) {
-                        // Reset to original value if empty
+                if (!isOpen && !isProcessingSelection) {
+                    const trimmedInput = inputValue.trim()
+
+                    if (!trimmedInput) {
                         setInputValue(formatTimeStringFor12Hour(value))
                         setIsValidTime(true)
                         return
                     }
 
-                    const parsed = parseTimeInput(inputValue)
+                    const parsed = parseTimeInput(trimmedInput)
 
                     if (parsed.isValid) {
                         const finalTimeValue = `${parsed.hour.toString().padStart(2, '0')}:${parsed.minute.toString().padStart(2, '0')}`
                         const finalDisplayValue =
                             formatTimeStringFor12Hour(finalTimeValue)
 
-                        if (isValidTimeOption(parsed.minute)) {
-                            setInputValue(finalDisplayValue)
-                            setIsValidTime(true)
-                            onChange(finalTimeValue)
-                        } else {
-                            const roundedMinute =
-                                Math.round(parsed.minute / 15) * 15
-                            const finalMinute =
-                                roundedMinute === 60 ? 0 : roundedMinute
-                            const finalHour =
-                                roundedMinute === 60
-                                    ? (parsed.hour + 1) % 24
-                                    : parsed.hour
-
-                            const roundedTimeValue = `${finalHour.toString().padStart(2, '0')}:${finalMinute.toString().padStart(2, '0')}`
-                            const roundedDisplayValue =
-                                formatTimeStringFor12Hour(roundedTimeValue)
-
-                            setInputValue(roundedDisplayValue)
-                            setIsValidTime(true)
-                            onChange(roundedTimeValue)
-                        }
+                        setInputValue(finalDisplayValue)
+                        setIsValidTime(true)
+                        onChange(finalTimeValue)
                     } else {
                         setInputValue(formatTimeStringFor12Hour(value))
                         setIsValidTime(true)
                     }
                 }
             }, 150)
-        }, [inputValue, value, onChange, isOpen, isDropdownClosing])
+        }, [inputValue, value, onChange, isOpen, isProcessingSelection])
 
         const handleInputKeyDown = useCallback(
             (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -197,21 +222,6 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                 }
             },
             [value]
-        )
-
-        const handleInputFocus = useCallback(() => {
-            if (!isDropdownClosing) {
-                setIsOpen(true)
-            }
-        }, [isDropdownClosing])
-
-        const handleOpenChange = useCallback(
-            (open: boolean) => {
-                if (!isDropdownClosing) {
-                    setIsOpen(open)
-                }
-            },
-            [isDropdownClosing]
         )
 
         const triggerElement = (
@@ -264,7 +274,7 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                 <Menu
                     trigger={triggerElement}
                     items={timeOptions}
-                    open={isOpen && !isDropdownClosing}
+                    open={isOpen && !isProcessingSelection}
                     onOpenChange={handleOpenChange}
                     side={MenuSide.BOTTOM}
                     alignment={MenuAlignment.START}

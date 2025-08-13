@@ -33,7 +33,7 @@ type DateInputsSectionProps = {
     endDate: string
     startTime: string
     endTime: string
-    showTimePicker: boolean
+    showDateTimePicker: boolean
     allowSingleDateSelection: boolean
     selectedRange: DateRange
     startDateValidation: DateValidationResult
@@ -50,6 +50,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
     endDate,
     startTime,
     endTime,
+    showDateTimePicker,
     allowSingleDateSelection,
     selectedRange,
     startDateValidation,
@@ -104,10 +105,12 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             size={TextInputSize.SMALL}
                         />
                     </Block>
-                    <TimeSelector
-                        value={startTime}
-                        onChange={onStartTimeChange}
-                    />
+                    {showDateTimePicker && (
+                        <TimeSelector
+                            value={startTime}
+                            onChange={onStartTimeChange}
+                        />
+                    )}
                 </Block>
             </Block>
 
@@ -150,10 +153,12 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 size={TextInputSize.SMALL}
                             />
                         </Block>
-                        <TimeSelector
-                            value={endTime}
-                            onChange={onEndTimeChange}
-                        />
+                        {showDateTimePicker && (
+                            <TimeSelector
+                                value={endTime}
+                                onChange={onEndTimeChange}
+                            />
+                        )}
                     </Block>
                 </Block>
             )}
@@ -168,6 +173,7 @@ type CalendarSectionProps = {
     disableFutureDates: boolean
     disablePastDates: boolean
     onDateSelect: (range: DateRange) => void
+    showDateTimePicker: boolean
 }
 
 const CalendarSection: React.FC<CalendarSectionProps> = ({
@@ -177,6 +183,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
     disableFutureDates,
     disablePastDates,
     onDateSelect,
+    showDateTimePicker,
 }) => (
     <Block>
         <CalendarGrid
@@ -186,6 +193,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
             allowSingleDateSelection={allowSingleDateSelection}
             disableFutureDates={disableFutureDates}
             disablePastDates={disablePastDates}
+            showDateTimePicker={showDateTimePicker}
         />
     </Block>
 )
@@ -230,7 +238,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         {
             value,
             onChange,
-            showTimePicker = false,
+            showDateTimePicker = true,
             showPresets = true,
             isDisabled = false,
             dateFormat = 'dd/MM/yyyy',
@@ -622,23 +630,35 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     align="start"
                     sideOffset={4}
                 >
-                    <Block style={{ ...calendarToken.calendar }}>
-                        <DateInputsSection
-                            startDate={startDate}
-                            endDate={endDate}
-                            startTime={startTime}
-                            endTime={endTime}
-                            showTimePicker={showTimePicker}
-                            allowSingleDateSelection={allowSingleDateSelection}
-                            selectedRange={selectedRange}
-                            startDateValidation={startDateValidation}
-                            endDateValidation={endDateValidation}
-                            onStartDateChange={handleStartDateChangeCallback}
-                            onEndDateChange={handleEndDateChangeCallback}
-                            onStartTimeChange={handleStartTimeChangeCallback}
-                            onEndTimeChange={handleEndTimeChangeCallback}
-                            calendarToken={calendarToken}
-                        />
+                    <Block
+                        style={{
+                            ...calendarToken.calendar,
+                        }}
+                    >
+                        {showDateTimePicker && (
+                            <DateInputsSection
+                                startDate={startDate}
+                                endDate={endDate}
+                                startTime={startTime}
+                                endTime={endTime}
+                                showDateTimePicker={showDateTimePicker}
+                                allowSingleDateSelection={
+                                    allowSingleDateSelection
+                                }
+                                selectedRange={selectedRange}
+                                startDateValidation={startDateValidation}
+                                endDateValidation={endDateValidation}
+                                onStartDateChange={
+                                    handleStartDateChangeCallback
+                                }
+                                onEndDateChange={handleEndDateChangeCallback}
+                                onStartTimeChange={
+                                    handleStartTimeChangeCallback
+                                }
+                                onEndTimeChange={handleEndTimeChangeCallback}
+                                calendarToken={calendarToken}
+                            />
+                        )}
 
                         <CalendarSection
                             selectedRange={selectedRange}
@@ -647,6 +667,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             disableFutureDates={disableFutureDates}
                             disablePastDates={disablePastDates}
                             onDateSelect={handleDateSelectCallback}
+                            showDateTimePicker={showDateTimePicker}
                         />
 
                         <FooterControls

@@ -1,6 +1,7 @@
 import { TextInputSize } from '../TextInput/types'
 
 export enum MultiValueInputSize {
+    SM = 'sm',
     MD = 'md',
     LG = 'lg',
 }

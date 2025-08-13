@@ -36,6 +36,7 @@ type CalendarGridProps = {
     allowSingleDateSelection?: boolean
     disableFutureDates?: boolean
     disablePastDates?: boolean
+    showDateTimePicker?: boolean
 }
 
 const CONTAINER_HEIGHT = 340
@@ -74,6 +75,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             allowSingleDateSelection = false,
             disableFutureDates = false,
             disablePastDates = false,
+            showDateTimePicker = true,
         },
         ref
     ) => {
@@ -463,12 +465,22 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
 
         return (
             <Block
-                style={{ ...calendarToken.calendar.calendarGrid.container }}
+                style={{
+                    ...calendarToken.calendar.calendarGrid.container,
+                    overflow: 'hidden',
+                }}
                 ref={ref}
             >
                 <Block
                     style={{
                         ...calendarToken.calendar.calendarGrid.week.header,
+                        borderTopLeftRadius: !showDateTimePicker
+                            ? FOUNDATION_THEME.border.radius[8]
+                            : '0',
+                        borderTopRightRadius: !showDateTimePicker
+                            ? FOUNDATION_THEME.border.radius[8]
+                            : '0',
+                        overflow: 'hidden',
                     }}
                 >
                     {dayNames.map((day, index) => (
