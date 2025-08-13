@@ -89,6 +89,8 @@ export type ChartHeaderProps = {
     onExitFullscreen?: () => void
     isFullscreen?: boolean
     isSmallScreen?: boolean
+    isExpanded: boolean
+    setIsExpanded: (isExpanded: boolean) => void
 }
 
 export type ChartLegendsProps = {
