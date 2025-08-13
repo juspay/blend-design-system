@@ -241,7 +241,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         display="flex"
                         alignItems="center"
                         gap="16px"
-                        padding="12px 32px"
+                        padding="16px 32px"
                         backgroundColor="hsla(0, 0%, 100%, 0.8)"
                         style={{
                             backdropFilter: 'blur(10px)',
