@@ -1,6 +1,23 @@
-# Changelog for v0.0.10-beta (Beta)
+# Changelog for v0.0.10 (Stable)
 
-This is a beta release. Changes since last tag:
+This is a stable release. Changes since last stable release:
 
+- Merge pull request #238 from juspay/dev (46773f7)
+- Merge pull request #241 from juspay/fix/merge-conlict (317b40b)
+- Merge branch 'dev' of github.com:juspay/blend-design-system into fix/merge-conlict (28939db)
+- chore(release): v0.0.10-beta [BETA] (#240) (a984145)
 - chore(release): v0.0.9 (#239) (fab10f8)
+- Merge branch 'main' of github.com:juspay/blend-design-system into fix/merge-conlict (96b2ccb)
 - chore(release): v0.0.9-beta [BETA] (#237) (4515995)
+- fix(DateRangePicker): update calendar UI (#222) (c93da77)
+- Merge pull request #227 from juspay/223-expand-and-collapse-functionality-in-the-graph-component (84cd922)
+- fix: fixed minor styling changes (af1fe0a)
+- fix: enhance version validation and cleanup in release workflows (#226) (952ef4f)
+- Merge branch 'dev' of https://github.com/juspay/blend-design-system into 223-expand-and-collapse-functionality-in-the-graph-component (b4e88c7)
+- feat: added collapse state for charts (fcb8cb8)
+- 208 sidebar uistyling fix (#224) (8317c95)
+- feat: add stable version calculation to beta publish workflow (#220) (0044868)
+- Merge pull request #219 from juspay/fix/npm-workflow (50b7be8)
+- feat: add new workflows for beta and stable releases (c7e35b9)
+- Merge pull request #198 from juspay/release/update-version-0.0.9 (774b247)
+- chore(release): v0.0.9 (d6f7ca1)
