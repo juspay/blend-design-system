@@ -731,7 +731,7 @@ export const getMonthName = (monthIndex: number): string => {
  * @returns Array of day names
  */
 export const getDayNames = (): string[] => {
-    return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    return ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
 }
 
 /**

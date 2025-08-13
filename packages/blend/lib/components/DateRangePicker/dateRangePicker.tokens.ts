@@ -179,7 +179,7 @@ export type CalendarTokenType = {
                 gap: CSSObject['gap']
                 label: {
                     color: CSSObject['color']
-                    minWidth: CSSObject['minWidth']
+                    width: CSSObject['width']
                     fontSize: CSSObject['fontSize']
                     fontWeight: CSSObject['fontWeight']
                 }
@@ -506,7 +506,7 @@ export const getCalendarToken = (
                     gap: foundationToken.unit[12],
                     label: {
                         color: foundationToken.colors.gray[500],
-                        minWidth: foundationToken.unit[36],
+                        width: foundationToken.unit[32],
                         fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
                         fontWeight: foundationToken.font.weight[500],
                     },
@@ -550,7 +550,7 @@ export const getCalendarToken = (
                         gridTemplateColumns: 'repeat(7, 1fr)',
                         textAlign: 'center',
                         color: foundationToken.colors.gray[500],
-                        padding: `0 ${foundationToken.unit[8]}`,
+                        padding: `0 ${foundationToken.unit[16]}`,
                         position: 'sticky',
                         top: 0,
                         zIndex: 10,
@@ -558,7 +558,7 @@ export const getCalendarToken = (
                         boxShadow: `0 2px 4px -1px ${foundationToken.colors.gray[200]}`,
                     },
                     dayName: {
-                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[8]}`,
+                        padding: `${foundationToken.unit[10]} ${foundationToken.unit[8]}`,
                         fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
                         fontWeight: foundationToken.font.weight[600],
                         color: foundationToken.colors.gray[400],

@@ -23,7 +23,7 @@ const Popover = ({
     align = 'center',
     alignOffset = 0,
     width,
-    minWidth = 320,
+    minWidth = 300,
     maxWidth = 400,
     height,
     minHeight,
