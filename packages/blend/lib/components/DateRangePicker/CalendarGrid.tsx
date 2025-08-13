@@ -38,7 +38,7 @@ type CalendarGridProps = {
     disablePastDates?: boolean
 }
 
-const CONTAINER_HEIGHT = 300
+const CONTAINER_HEIGHT = 340
 const MONTH_HEIGHT = getMonthHeight()
 const LOAD_THRESHOLD = 100
 
@@ -58,7 +58,7 @@ const StyledDayCell = styled(Block)<{
         !props.$isSelected &&
         `
     &:hover {
-      border: ${props.$calendarToken.calendar.calendarGrid.day.hover.border};
+      outline: ${props.$calendarToken.calendar.calendarGrid.day.hover.outline};
       border-radius: ${props.$calendarToken.calendar.calendarGrid.day.hover.borderRadius};
     }
   `}
@@ -88,7 +88,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         const responsiveCalendarTokens = useComponentToken(
             'CALENDAR'
         ) as ResponsiveCalendarTokens
-        const calendarToken = responsiveCalendarTokens.lg // Use lg for desktop calendar
+        const calendarToken = responsiveCalendarTokens.lg
 
         useEffect(() => {
             const initialMonths = generateInitialMonths(today)
@@ -184,7 +184,6 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             [loadMoreMonths, isLoadingPast, isLoadingFuture]
         )
 
-        // Initialize scroll position
         useEffect(() => {
             if (
                 !isInitialized.current &&
@@ -193,16 +192,23 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             ) {
                 const currentMonthIndex = findCurrentMonthIndex(months, today)
                 if (currentMonthIndex !== -1) {
+                    // Center the current month in the viewport
                     const scrollPosition = getScrollToMonth(
                         currentMonthIndex,
                         MONTH_HEIGHT
                     )
 
+                    // Adjust to center the month in the viewport
+                    const centeredPosition = Math.max(
+                        0,
+                        scrollPosition - CONTAINER_HEIGHT / 2 + MONTH_HEIGHT / 2
+                    )
+
                     requestAnimationFrame(() => {
                         if (scrollContainerRef.current) {
                             scrollContainerRef.current.scrollTop =
-                                scrollPosition
-                            setScrollTop(scrollPosition)
+                                centeredPosition
+                            setScrollTop(centeredPosition)
                             isInitialized.current = true
                         }
                     })
@@ -375,7 +381,19 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                             )
                                                         }
                                                     >
-                                                        {day}
+                                                        <span
+                                                            style={{
+                                                                display:
+                                                                    'inline-block',
+                                                                // width: '24px',
+                                                                // height: '20px',
+                                                                // lineHeight: '20px',
+                                                                textAlign:
+                                                                    'center',
+                                                            }}
+                                                        >
+                                                            {day}
+                                                        </span>
                                                         {cellProps.showTodayIndicator && (
                                                             <Block
                                                                 style={{

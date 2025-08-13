@@ -211,6 +211,7 @@ export type CalendarTokenType = {
                     display: CSSObject['display']
                     gridTemplateColumns: CSSObject['gridTemplateColumns']
                     padding: CSSObject['padding']
+                    gap: CSSObject['gap']
                 }
                 container: {
                     display: CSSObject['display']
@@ -244,15 +245,17 @@ export type CalendarTokenType = {
                     position: CSSObject['position']
                     fontWeight: CSSObject['fontWeight']
                     boxSizing: CSSObject['boxSizing']
-                    border: CSSObject['border']
-                    height: CSSObject['height']
+                    outline: CSSObject['outline']
                     fontSize: CSSObject['fontSize']
+                    lineHeight: CSSObject['lineHeight']
                     display: CSSObject['display']
                     alignItems: CSSObject['alignItems']
                     justifyContent: CSSObject['justifyContent']
+                    width: CSSObject['width']
+                    height: CSSObject['height']
                 }
                 hover: {
-                    border: CSSObject['border']
+                    outline: CSSObject['outline']
                     borderRadius: CSSObject['borderRadius']
                 }
                 empty: {
@@ -490,8 +493,8 @@ export const getCalendarToken = (
             borderRadiusWithoutPresets: foundationToken.border.radius[8],
         },
         calendar: {
-            minWidth: '364px',
-            width: '364px',
+            minWidth: '304px',
+            width: '304px',
             backgroundColor: foundationToken.colors.gray[0],
             border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
@@ -513,7 +516,7 @@ export const getCalendarToken = (
             },
             calendarGrid: {
                 container: {
-                    maxHeight: '300px',
+                    maxHeight: '340px',
                     overflowY: 'auto',
                     overflow: 'auto',
                     position: 'relative',
@@ -533,8 +536,9 @@ export const getCalendarToken = (
                 week: {
                     row: {
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(7, 1fr)',
+                        gridTemplateColumns: 'repeat(7, 40px)', // Fixed 40px columns to eliminate gaps
                         padding: `0 ${foundationToken.unit[12]}`,
+                        gap: '0', // Remove any gaps between cells
                     },
                     container: {
                         display: 'flex',
@@ -564,19 +568,21 @@ export const getCalendarToken = (
                     cell: {
                         cursor: 'pointer',
                         textAlign: 'center',
-                        padding: `${foundationToken.unit[10]} ${foundationToken.unit[8]}`,
+                        padding: `${foundationToken.unit[10]} ${foundationToken.unit[8]}`, // 10px top/bottom, 8px left/right for 40x40 total
                         position: 'relative',
                         fontWeight: foundationToken.font.weight[500],
                         boxSizing: 'border-box',
-                        border: '1px solid transparent',
-                        height: foundationToken.unit[36],
+                        outline: '1px solid transparent',
                         fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                        lineHeight: `${foundationToken.unit[20]}`, // 20px line height for content
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        width: foundationToken.unit[40], // Fixed width of 40px
+                        height: foundationToken.unit[40], // Fixed height of 40px
                     },
                     hover: {
-                        border: `1px solid ${foundationToken.colors.primary[500]}`,
+                        outline: `1px solid ${foundationToken.colors.primary[500]}`,
                         borderRadius: foundationToken.border.radius[8],
                     },
                     empty: {

@@ -16,6 +16,7 @@ type PrimitiveInputProps = StateStyles & {
     color?: CSSObject['color']
     fontSize?: CSSObject['fontSize']
     fontWeight?: CSSObject['fontWeight']
+    lineHeight?: CSSObject['lineHeight']
     // Positioning
     position?: CSSObject['position']
     inset?: CSSObject['inset']
@@ -114,6 +115,11 @@ type PrimitiveInputProps = StateStyles & {
 }
 
 const blockedProps = [
+    // Typography
+    'color',
+    'fontSize',
+    'fontWeight',
+    'lineHeight',
     // All base props
     'padding',
     'paddingTop',
@@ -165,6 +171,11 @@ const blockedProps = [
     'borderLeft',
     'borderRight',
     'boxShadow',
+    'outline',
+    'outlineColor',
+    'outlineWidth',
+    'outlineStyle',
+    'outlineOffset',
     'cursor',
     'overflow',
     'overflowX',
@@ -216,6 +227,7 @@ const getStyles = (props: PrimitiveInputProps): CSSObject => {
     if (props.color !== undefined) styles.color = props.color
     if (props.fontSize !== undefined) styles.fontSize = props.fontSize
     if (props.fontWeight !== undefined) styles.fontWeight = props.fontWeight
+    if (props.lineHeight !== undefined) styles.lineHeight = props.lineHeight
 
     if (props.position !== undefined) styles.position = props.position
     if (props.inset !== undefined) styles.inset = props.inset
@@ -322,6 +334,16 @@ const getStyles = (props: PrimitiveInputProps): CSSObject => {
     if (props.borderLeft !== undefined) styles.borderLeft = props.borderLeft
     if (props.borderRight !== undefined) styles.borderRight = props.borderRight
     if (props.boxShadow !== undefined) styles.boxShadow = props.boxShadow
+
+    if (props.outline !== undefined) styles.outline = props.outline
+    if (props.outlineColor !== undefined)
+        styles.outlineColor = props.outlineColor
+    if (props.outlineWidth !== undefined)
+        styles.outlineWidth = props.outlineWidth
+    if (props.outlineStyle !== undefined)
+        styles.outlineStyle = props.outlineStyle
+    if (props.outlineOffset !== undefined)
+        styles.outlineOffset = props.outlineOffset
 
     if (props.overflow !== undefined) styles.overflow = props.overflow
     if (props.overflowX !== undefined) styles.overflowX = props.overflowX
