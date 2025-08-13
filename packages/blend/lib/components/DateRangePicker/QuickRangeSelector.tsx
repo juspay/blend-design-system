@@ -4,13 +4,10 @@ import { styled } from 'styled-components'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { DateRangePreset } from './types'
 import { getPresetLabel } from './utils'
-import {
-    ResponsiveCalendarTokens,
-    CalendarTokenType,
-} from './dateRangePicker.tokens'
+import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
-import { useComponentToken } from '../../context/useComponentToken'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 type QuickRangeSelectorProps = {
     isOpen: boolean
@@ -67,10 +64,9 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
         },
         ref
     ) => {
-        const responsiveCalendarTokens = useComponentToken(
-            'CALENDAR'
-        ) as ResponsiveCalendarTokens
-        const calendarToken = responsiveCalendarTokens.lg // Use lg for desktop quick range selector
+        const responsiveCalendarTokens =
+            useResponsiveTokens<CalendarTokenType>('CALENDAR')
+        const calendarToken = responsiveCalendarTokens
         const activePresetLabel = getPresetLabel(activePreset)
 
         const getFilteredPresets = () => {

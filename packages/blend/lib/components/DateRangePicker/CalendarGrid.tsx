@@ -8,10 +8,7 @@ import {
 } from 'react'
 import styled, { CSSObject } from 'styled-components'
 import { DateRange } from './types'
-import {
-    ResponsiveCalendarTokens,
-    CalendarTokenType,
-} from './dateRangePicker.tokens'
+import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
 import {
     handleCalendarDateClick,
@@ -26,8 +23,8 @@ import {
     createCalendarMonthData,
     calculateDayCellProps,
 } from './utils'
-import { useComponentToken } from '../../context/useComponentToken'
 import { FOUNDATION_THEME } from '../../tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 type CalendarGridProps = {
     selectedRange: DateRange
@@ -88,10 +85,9 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         const [months, setMonths] = useState<{ month: number; year: number }[]>(
             []
         )
-        const responsiveCalendarTokens = useComponentToken(
-            'CALENDAR'
-        ) as ResponsiveCalendarTokens
-        const calendarToken = responsiveCalendarTokens.lg
+        const responsiveCalendarTokens =
+            useResponsiveTokens<CalendarTokenType>('CALENDAR')
+        const calendarToken = responsiveCalendarTokens
 
         useEffect(() => {
             const initialMonths = generateInitialMonths(today)
