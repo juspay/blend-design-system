@@ -10,7 +10,7 @@ import {
     getPresetDisplayLabel,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
-import { CalendarTokenType, getCalendarToken } from './dateRangePicker.tokens'
+import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { ButtonType, ButtonSize, Button } from '../../main'
@@ -58,9 +58,6 @@ type MobileDrawerPresetsProps = {
 const { ITEM_HEIGHT, VISIBLE_ITEMS, SCROLL_DEBOUNCE } = MOBILE_PICKER_CONSTANTS
 const CONTAINER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS
 
-const responsiveTokens = useResponsiveTokens<CalendarTokenType>('CALENDAR')
-const tokens = responsiveTokens
-
 const ScrollablePicker = React.memo<{
     items: (string | number)[]
     selectedIndex: number
@@ -68,6 +65,9 @@ const ScrollablePicker = React.memo<{
     isTimeColumn?: boolean
     columnId: string
 }>(({ items, selectedIndex, onSelect, isTimeColumn = false, columnId }) => {
+    const responsiveTokens = useResponsiveTokens<CalendarTokenType>('CALENDAR')
+    const tokens = responsiveTokens
+
     const scrollRef = useRef<HTMLDivElement>(null)
     const isScrollingRef = useRef(false)
     const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -532,6 +532,9 @@ const DatePickerComponent: React.FC<{
     setStartDate,
     setEndDate,
 }) => {
+    const responsiveTokens = useResponsiveTokens<CalendarTokenType>('CALENDAR')
+    const tokens = responsiveTokens
+
     const renderTabContent = (tabType: 'start' | 'end') => {
         const data = generatePickerData(
             tabType,

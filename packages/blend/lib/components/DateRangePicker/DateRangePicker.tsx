@@ -15,15 +15,11 @@ import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
 import TimeSelector from './TimeSelector'
 import MobileDrawerPresets from './MobileDrawerPresets'
-import {
-    ResponsiveCalendarTokens,
-    CalendarTokenType,
-} from './dateRangePicker.tokens'
+import { CalendarTokenType } from './dateRangePicker.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
 import { Popover } from '../Popover'
 import { TextInput, TextInputSize } from '../Inputs/TextInput'
-import { useComponentToken } from '../../context/useComponentToken'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { ButtonType, ButtonSize, Button } from '../../main'
