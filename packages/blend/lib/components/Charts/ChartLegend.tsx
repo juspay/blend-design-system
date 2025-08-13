@@ -276,7 +276,6 @@ const StackedLegends: React.FC<{
         }
         return 1
     }
-    console.log({ stackedLegendsData })
 
     return (
         <Block

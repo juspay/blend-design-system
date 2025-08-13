@@ -2,7 +2,7 @@ import { ChartHeaderProps } from './types'
 import Block from '../../components/Primitives/Block/Block'
 import { ChartTokensType } from './chart.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
-import { Expand } from 'lucide-react'
+import { ChevronsDownUp, Expand } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const ChartHeader: React.FC<ChartHeaderProps> = ({
@@ -14,6 +14,8 @@ export const ChartHeader: React.FC<ChartHeaderProps> = ({
     onExitFullscreen,
     isFullscreen,
     isSmallScreen = false,
+    isExpanded,
+    setIsExpanded,
 }) => {
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
     const headerTokens = chartTokens.header
@@ -34,7 +36,9 @@ export const ChartHeader: React.FC<ChartHeaderProps> = ({
             paddingLeft={headerTokens.padding[isSmallScreen ? 'sm' : 'lg']}
             paddingRight={headerTokens.padding[isSmallScreen ? 'sm' : 'lg']}
             backgroundColor={headerTokens.backgroundColor}
-            borderBottom={headerTokens.borderBottom}
+            {...(isExpanded && {
+                borderBottom: headerTokens.borderBottom,
+            })}
             borderRadius={FOUNDATION_THEME.border.radius[8]}
             borderBottomLeftRadius={FOUNDATION_THEME.border.radius[0]}
             borderBottomRightRadius={FOUNDATION_THEME.border.radius[0]}
@@ -87,6 +91,18 @@ export const ChartHeader: React.FC<ChartHeaderProps> = ({
                         )}
                     </>
                 )}
+                <Block
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                >
+                    <ChevronsDownUp
+                        size={20}
+                        color={FOUNDATION_THEME.colors.gray[400]}
+                        cursor="pointer"
+                    />
+                </Block>
                 {slot3}
             </Block>
         </Block>
