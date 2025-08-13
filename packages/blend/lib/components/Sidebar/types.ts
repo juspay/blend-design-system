@@ -1,50 +1,23 @@
 import { type ReactNode } from 'react'
 import type { DirectoryData } from '../Directory/types'
 
-export type SidebarNavItem = {
-    label: string
-    leftSlot?: ReactNode
-    rightSlot?: ReactNode
-    onClick?: () => void
-}
-
-export type SidebarNavSection = {
-    label?: string
-    navItems: SidebarNavItem[]
-}
-
-export type MerchantData = {
-    label: string
-    sections: SidebarNavSection[]
-}
-
-export type TenantData = {
+export type SidebarDropdownItem = {
     label: string
     icon: ReactNode
-    merchantData: MerchantData[]
+    value?: string
 }
 
-type TenantInfo = {
-    label: string
-    icon: ReactNode
-    id?: string
-}
-
-type MerchantInfo = {
-    label: string
-    icon: ReactNode
-    id?: string
+export type LeftSidebarInfo = {
+    items: SidebarDropdownItem[]
+    selected: string
+    onSelect: (value: string) => void
 }
 
 export type SidebarProps = {
-    tenants: TenantInfo[]
-    merchants: MerchantInfo[]
     children: ReactNode
     data: DirectoryData[]
+    leftSidebar?: LeftSidebarInfo
     topbar: ReactNode
-    activeTenant?: string
-    setActiveTenant?: (tenant: string) => void
-    activeMerchant?: string
-    setActiveMerchant?: (merchant: string) => void
     footer?: ReactNode
+    sidebarTopSlot?: ReactNode
 }
