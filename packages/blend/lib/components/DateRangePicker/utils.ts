@@ -563,15 +563,16 @@ export const generateMonthWeeks = (
     year: number,
     month: number
 ): (number | null)[][] => {
-    const lastDayOfMonth = new Date(year, month + 1, 0)
-    const daysInMonth = lastDayOfMonth.getDate()
+    const daysInMonth = getDaysInMonth(year, month)
+    const firstDayOfMonth = getFirstDayOfMonth(year, month)
 
-    const firstDayOfWeek = 2
+    const firstDayAdjusted = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1
+
     const weeks = []
     let week = Array(7).fill(null)
     let dayCounter = 1
 
-    for (let i = firstDayOfWeek; i < 7 && dayCounter <= daysInMonth; i++) {
+    for (let i = firstDayAdjusted; i < 7 && dayCounter <= daysInMonth; i++) {
         week[i] = dayCounter++
     }
     weeks.push(week)
@@ -739,7 +740,7 @@ export const getDayNames = (): string[] => {
  * @returns Height in pixels
  */
 export const getMonthHeight = (): number => {
-    return 4 + 6 * 40
+    return 10 + 6 * 40
 }
 
 /**

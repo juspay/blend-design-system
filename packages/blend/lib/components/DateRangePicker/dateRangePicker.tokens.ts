@@ -204,6 +204,7 @@ export type CalendarTokenType = {
                 container: {
                     position: CSSObject['position']
                     height: CSSObject['height']
+                    marginBottom: CSSObject['marginBottom']
                 }
             }
             week: {
@@ -498,7 +499,7 @@ export const getCalendarToken = (
             backgroundColor: foundationToken.colors.gray[0],
             border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
-            boxShadow: foundationToken.shadows.lg,
+            boxShadow: foundationToken.shadows.sm,
             zIndex: 1000,
             inputs: {
                 padding: foundationToken.unit[16],
@@ -531,6 +532,7 @@ export const getCalendarToken = (
                     container: {
                         position: 'absolute',
                         height: 'auto',
+                        marginBottom: foundationToken.unit[8],
                     },
                 },
                 week: {

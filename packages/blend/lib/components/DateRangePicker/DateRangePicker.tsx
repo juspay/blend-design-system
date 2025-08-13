@@ -98,14 +98,17 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             value={startDate}
                             onChange={onStartDateChange}
                             error={!startDateValidation.isValid}
-                            errorMessage={startDateValidation.message}
                             size={TextInputSize.SMALL}
+                            autoFocus={false}
+                            tabIndex={-1}
                         />
                     </Block>
                     {showDateTimePicker && (
                         <TimeSelector
                             value={startTime}
                             onChange={onStartTimeChange}
+                            autoFocus={false}
+                            tabIndex={-1}
                         />
                     )}
                 </Block>
@@ -146,14 +149,17 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 value={endDate}
                                 onChange={onEndDateChange}
                                 error={!endDateValidation.isValid}
-                                errorMessage={endDateValidation.message}
                                 size={TextInputSize.SMALL}
+                                autoFocus={false}
+                                tabIndex={-1}
                             />
                         </Block>
                         {showDateTimePicker && (
                             <TimeSelector
                                 value={endTime}
                                 onChange={onEndTimeChange}
+                                autoFocus={false}
+                                tabIndex={-1}
                             />
                         )}
                     </Block>

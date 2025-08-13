@@ -21,6 +21,8 @@ type TimeSelectorProps = {
     value: string
     onChange: (time: string) => void
     className?: string
+    autoFocus?: boolean
+    tabIndex?: number
 }
 
 const formatTimeFor12Hour = (hour: number, minute: number): string => {
@@ -111,7 +113,7 @@ const generateTimeOptions = (
 }
 
 const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
-    ({ value, onChange }, ref) => {
+    ({ value, onChange, autoFocus = true, tabIndex }, ref) => {
         const [isOpen, setIsOpen] = useState(false)
         const [inputValue, setInputValue] = useState('')
         const [isValidTime, setIsValidTime] = useState(true)
@@ -169,10 +171,10 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
         )
 
         const handleInputFocus = useCallback(() => {
-            if (!isProcessingSelection) {
+            if (!isProcessingSelection && autoFocus) {
                 setIsOpen(true)
             }
-        }, [isProcessingSelection])
+        }, [isProcessingSelection, autoFocus])
 
         const handleInputBlur = useCallback(() => {
             if (isProcessingSelection) {
@@ -243,6 +245,7 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                 lineHeight={FOUNDATION_THEME.unit[20]}
                 borderRadius={FOUNDATION_THEME.unit[10]}
                 border="none"
+                tabIndex={tabIndex}
                 outline={
                     isValidTime
                         ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`

@@ -274,6 +274,9 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                             left: 0,
                             right: 0,
                             height: monthData.monthHeight,
+                            marginBottom:
+                                calendarToken.calendar.calendarGrid.month
+                                    .container.marginBottom,
                         }}
                     >
                         <Block
