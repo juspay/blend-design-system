@@ -437,7 +437,7 @@ export const getCalendarToken = (
                 zIndex: 1000,
                 backgroundColor: FOUNDATION_THEME.colors.gray[0],
                 borderRadius: FOUNDATION_THEME.border.radius[6],
-                boxShadow: FOUNDATION_THEME.shadows.lg,
+                boxShadow: FOUNDATION_THEME.shadows.xs,
                 overflowY: 'auto',
                 overflowX: 'hidden',
             },

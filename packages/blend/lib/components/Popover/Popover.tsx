@@ -31,6 +31,7 @@ const Popover = ({
     zIndex = 1000,
     size = PopoverSize.MEDIUM,
     onClose,
+    shadow = 'lg',
 }: PopoverProps) => {
     const [isOpen, setIsOpen] = useState(open || false)
     const popoverTokens = useComponentToken('POPOVER') as PopoverTokenType
@@ -63,7 +64,10 @@ const Popover = ({
                 <Block
                     zIndex={popoverTokens.zIndex}
                     backgroundColor={popoverTokens.background}
-                    boxShadow={popoverTokens.shadow}
+                    boxShadow={
+                        popoverTokens.shadow?.[shadow] ||
+                        popoverTokens.shadow?.lg
+                    }
                     borderRadius={popoverTokens.borderRadius}
                     border={popoverTokens.border}
                     width={width}

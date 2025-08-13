@@ -627,6 +627,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     side="bottom"
                     align="start"
                     sideOffset={4}
+                    shadow="xs"
                 >
                     <Block
                         style={{
