@@ -499,7 +499,7 @@ export const getCalendarToken = (
             backgroundColor: foundationToken.colors.gray[0],
             border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
-            boxShadow: foundationToken.shadows.sm,
+            boxShadow: foundationToken.shadows.xs,
             zIndex: 1000,
             inputs: {
                 padding: foundationToken.unit[16],
