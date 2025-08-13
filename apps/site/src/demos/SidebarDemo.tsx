@@ -577,7 +577,7 @@ const SidebarDemo = () => {
         <div className="w-screen h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
-                    leftSidebar={{
+                    leftPanel={{
                         items: tenants,
                         selected: activeTenant,
                         onSelect: (value) => setActiveTenant(value),

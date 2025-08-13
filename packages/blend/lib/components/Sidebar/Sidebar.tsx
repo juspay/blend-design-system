@@ -52,7 +52,7 @@ const ToggleButton = styled.button`
 `
 
 const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
-    ({ children, data, topbar, leftSidebar, sidebarTopSlot, footer }, ref) => {
+    ({ children, data, topbar, leftPanel, sidebarTopSlot, footer }, ref) => {
         const [isExpanded, setIsExpanded] = useState<boolean>(true)
 
         return (
@@ -65,7 +65,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             >
                 <Block
                     maxWidth={
-                        isExpanded ? (leftSidebar ? '300px' : '250px') : '0'
+                        isExpanded ? (leftPanel ? '300px' : '250px') : '0'
                     }
                     width="100%"
                     borderRight={
@@ -83,9 +83,9 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     {isExpanded && (
                         <>
                             {/* TENANTS SIDE BAR _ SECONDARY SIDE BAR */}
-                            {leftSidebar &&
-                                leftSidebar.items &&
-                                leftSidebar.items.length > 0 && (
+                            {leftPanel &&
+                                leftPanel.items &&
+                                leftPanel.items.length > 0 && (
                                     <Block
                                         width="fit-content"
                                         height="100%"
@@ -99,7 +99,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                         alignItems="center"
                                         padding="10px"
                                     >
-                                        {leftSidebar.items.map(
+                                        {leftPanel.items.map(
                                             (tenant, index) => (
                                                 // TODO: Add theme config
                                                 <Block
@@ -117,7 +117,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                     cursor="pointer"
                                                     style={{
                                                         outline: `1px solid ${
-                                                            leftSidebar.selected ===
+                                                            leftPanel.selected ===
                                                             tenant.label
                                                                 ? FOUNDATION_THEME
                                                                       .colors
@@ -130,7 +130,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                             '75ms',
                                                     }}
                                                     onClick={() =>
-                                                        leftSidebar.onSelect(
+                                                        leftPanel.onSelect(
                                                             tenant.label
                                                         )
                                                     }

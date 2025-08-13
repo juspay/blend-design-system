@@ -1,14 +1,14 @@
 import { type ReactNode } from 'react'
 import type { DirectoryData } from '../Directory/types'
 
-export type SidebarDropdownItem = {
+export type LeftPanelItem = {
     label: string
     icon: ReactNode
     value?: string
 }
 
-export type LeftSidebarInfo = {
-    items: SidebarDropdownItem[]
+export type LeftPanelInfo = {
+    items: LeftPanelItem[]
     selected: string
     onSelect: (value: string) => void
 }
@@ -16,7 +16,7 @@ export type LeftSidebarInfo = {
 export type SidebarProps = {
     children: ReactNode
     data: DirectoryData[]
-    leftSidebar?: LeftSidebarInfo
+    leftPanel?: LeftPanelInfo
     topbar: ReactNode
     footer?: ReactNode
     sidebarTopSlot?: ReactNode
