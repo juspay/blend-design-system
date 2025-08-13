@@ -8,7 +8,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
-type TriggerStates = 'open' | 'closed' | 'hover' | 'focus'
+type TriggerStates = 'open' | 'closed' | 'hover' | 'focus' | 'error'
 
 export type SingleSelectItemStates =
     | 'default'
@@ -129,6 +129,7 @@ export const getMultiSelectTokens = (
                         closed: foundationToken.colors.gray[0],
                         hover: foundationToken.colors.gray[50],
                         focus: foundationToken.colors.gray[50],
+                        error: foundationToken.colors.gray[0],
                     },
                 },
                 outline: {
@@ -137,12 +138,14 @@ export const getMultiSelectTokens = (
                         closed: `1px solid ${foundationToken.colors.gray[200]} !important`,
                         hover: `1px solid ${foundationToken.colors.gray[200]} !important`,
                         focus: `1px solid ${foundationToken.colors.gray[200]} !important`,
+                        error: `1px solid ${foundationToken.colors.red[600]} !important`,
                     },
                     'no-container': {
                         open: undefined,
                         closed: undefined,
                         hover: undefined,
                         focus: undefined,
+                        error: undefined,
                     },
                 },
                 selectionTag: {
@@ -245,6 +248,7 @@ export const getMultiSelectTokens = (
                         closed: foundationToken.colors.gray[0],
                         hover: foundationToken.colors.gray[50],
                         focus: foundationToken.colors.gray[50],
+                        error: foundationToken.colors.gray[0],
                     },
                 },
                 outline: {
@@ -253,12 +257,14 @@ export const getMultiSelectTokens = (
                         closed: `1px solid ${foundationToken.colors.gray[200]} !important`,
                         hover: `1px solid ${foundationToken.colors.gray[200]} !important`,
                         focus: `1px solid ${foundationToken.colors.gray[200]} !important`,
+                        error: `1px solid ${foundationToken.colors.red[600]} !important`,
                     },
                     'no-container': {
                         open: undefined,
                         closed: undefined,
                         hover: undefined,
                         focus: undefined,
+                        error: undefined,
                     },
                 },
                 selectionTag: {

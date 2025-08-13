@@ -1,0 +1,242 @@
+name: Create Stable Release
+
+on:
+    workflow_dispatch:
+        inputs:
+            confirm_stable:
+                description: 'Type "STABLE" to confirm creating stable release'
+                required: true
+                type: string
+
+concurrency:
+    group: create-stable-release-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    create-stable-release:
+        name: Create Stable Release (No Publish)
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main' && github.event.inputs.confirm_stable == 'STABLE'
+        outputs:
+            version: ${{ steps.convert_version.outputs.stable_version }}
+            tag: ${{ steps.convert_version.outputs.tag }}
+
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Setup Node.js 22 and pnpm
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  registry-url: 'https://registry.npmjs.org'
+
+            - name: Enable corepack & install deps
+              run: |
+                  corepack enable
+                  pnpm install --frozen-lockfile
+
+            - name: Convert Beta to Stable Version
+              id: convert_version
+              run: |
+                  cd packages/blend
+                  CURRENT_VERSION=$(node -p "require('./package.json').version")
+
+                  echo "Current version: $CURRENT_VERSION"
+
+                  if [[ "$CURRENT_VERSION" == *"-beta" ]]; then
+                    # Remove -beta suffix to get stable version
+                    STABLE_VERSION="${CURRENT_VERSION%-beta}"
+                    echo "Converting beta to stable: $CURRENT_VERSION → $STABLE_VERSION"
+                  else
+                    # Already stable, keep as is
+                    STABLE_VERSION="$CURRENT_VERSION"
+                    echo "Already stable version: $STABLE_VERSION"
+                  fi
+
+                  # Update package.json with stable version
+                  npm pkg set version="$STABLE_VERSION"
+
+                  echo "stable_version=$STABLE_VERSION" >> $GITHUB_OUTPUT
+                  echo "tag=v$STABLE_VERSION" >> $GITHUB_OUTPUT
+
+            - name: Clean Existing Tags
+              run: |
+                  VERSION=${{ steps.convert_version.outputs.stable_version }}
+                  TAG="v$VERSION"
+
+                  # Clean up any existing local tags
+                  git tag -l | xargs -r git tag -d
+                  git fetch --tags
+
+                  # Check if tag exists on remote and delete it
+                  if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
+                    echo "Tag $TAG already exists on remote, deleting it"
+                    git push origin ":refs/tags/$TAG" || echo "Failed to delete remote tag, continuing..."
+                  fi
+
+            - name: Generate Stable Changelog
+              run: |
+                  VERSION=${{ steps.convert_version.outputs.stable_version }}
+                  LAST_STABLE_TAG=$(git tag -l | grep -v beta | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || echo "")
+
+                  # Create docs directory if it doesn't exist
+                  mkdir -p docs
+
+                  echo "# Changelog for v$VERSION (Stable)" > docs/CHANGELOG.md
+                  echo "" >> docs/CHANGELOG.md
+                  echo "This is a stable release. Changes since last stable release:" >> docs/CHANGELOG.md
+                  echo "" >> docs/CHANGELOG.md
+                  if [[ -n "$LAST_STABLE_TAG" ]]; then
+                    git log $LAST_STABLE_TAG..HEAD --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
+                  else
+                    git log -n 20 --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
+                  fi
+
+            - name: Format Generated Files
+              run: |
+                  pnpm format
+
+            - name: Build Package
+              run: pnpm --filter @juspay/blend-design-system build
+
+            - name: Create Stable Release Tag
+              run: |
+                  VERSION=${{ steps.convert_version.outputs.stable_version }}
+                  TAG="v$VERSION"
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+
+                  # Create and push the tag
+                  git tag "$TAG" -m "Stable Release $TAG"
+                  git push origin "$TAG"
+                  echo "Successfully created and pushed tag $TAG"
+
+            - name: Create GitHub Stable Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: ${{ steps.convert_version.outputs.tag }}
+                  name: Release ${{ steps.convert_version.outputs.tag }}
+                  body_path: docs/CHANGELOG.md
+                  draft: false
+                  prerelease: false
+
+            - name: Create Version Update PR to Main
+              uses: peter-evans/create-pull-request@v6
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  branch: release/update-stable-version-${{ steps.convert_version.outputs.stable_version }}
+                  title: 'chore(release): ${{ steps.convert_version.outputs.tag }} [STABLE]'
+                  body: |
+                      Stable Release ${{ steps.convert_version.outputs.tag }}
+
+                      - Convert beta to stable version: ${{ steps.convert_version.outputs.stable_version }}
+                      - Update changelog for stable release
+                      - **This is a STABLE release - ready for NPM publishing**
+
+                      This PR was automatically created by the stable release workflow.
+
+                      **Next Steps:**
+                      1. Review and merge this PR
+                      2. Trigger "Publish Stable to NPM" workflow to publish to npm with latest tag
+                      3. Auto-backmerge to dev will be created
+
+                      **Changes included:**
+                      - Updated package.json version to stable (removed -beta)
+                      - Generated stable changelog
+                      - Created GitHub release (not prerelease)
+                  labels: |
+                      automated
+                      release
+                      stable
+                  assignees: ${{ github.actor }}
+                  commit-message: |
+                      chore(release): ${{ steps.convert_version.outputs.tag }} [STABLE]
+
+                      - Convert to stable version ${{ steps.convert_version.outputs.stable_version }}
+                      - Update changelog
+                      - Create stable release
+
+                      [skip ci]
+                  add-paths: |
+                      packages/blend/package.json
+                      docs/CHANGELOG.md
+                      .
+
+    create-backmerge-pr:
+        name: Create Backmerge PR (Main → Dev)
+        needs: create-stable-release
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Setup Node.js and pnpm
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+
+            - name: Enable corepack & install deps
+              run: |
+                  corepack enable
+                  pnpm install --frozen-lockfile
+
+            - name: Create Beta Version for Dev Branch
+              id: create_beta_version
+              run: |
+                  cd packages/blend
+                  STABLE_VERSION="${{ needs.create-stable-release.outputs.version }}"
+                  NEXT_BETA_VERSION="${STABLE_VERSION}-beta"
+
+                  echo "Creating next beta version: $NEXT_BETA_VERSION"
+                  npm pkg set version="$NEXT_BETA_VERSION"
+
+                  echo "next_beta_version=$NEXT_BETA_VERSION" >> $GITHUB_OUTPUT
+
+            - name: Create Main to Dev Backmerge PR
+              uses: peter-evans/create-pull-request@v6
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  head: main
+                  base: dev
+                  branch: backmerge/main-to-dev-${{ needs.create-stable-release.outputs.version }}
+                  title: 'chore: backmerge stable ${{ needs.create-stable-release.outputs.version }} to dev'
+                  body: |
+                      **Backmerge Stable Release to Dev**
+
+                      Backmerging stable release `${{ needs.create-stable-release.outputs.version }}` from `main` into `dev` branch.
+
+                      **Changes:**
+                      - Stable version: `${{ needs.create-stable-release.outputs.version }}`
+                      - Updated changelog
+                      - Prepare dev for next development cycle with beta version: `${{ steps.create_beta_version.outputs.next_beta_version }}`
+
+                      **Status:**
+                      - ✅ Stable release created on main
+                      - ✅ GitHub stable release published
+                      - 🔄 Ready for NPM stable publish
+                      - 🔄 Dev branch ready for next development cycle
+
+                      ---
+                      *This PR was automatically created after stable release creation*
+                  labels: |
+                      automated
+                      release
+                      backmerge
+                  assignees: ${{ github.actor }}
+                  commit-message: |
+                      chore: backmerge stable ${{ needs.create-stable-release.outputs.version }} to dev
+
+                      Sync stable release from main to dev and prepare for next dev cycle
+
+                      [skip ci]
+                  add-paths: |
+                      packages/blend/package.json
+                      docs/CHANGELOG.md
+                      .

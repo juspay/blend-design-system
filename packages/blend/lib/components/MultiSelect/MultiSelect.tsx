@@ -62,6 +62,10 @@ const MultiSelect = ({
     sideOffset,
     alignOffset,
     inline = false,
+    onBlur,
+    onFocus,
+    error,
+    errorMessage,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -106,7 +110,17 @@ const MultiSelect = ({
                         />
                     )}
 
-                <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+                <Drawer
+                    open={drawerOpen}
+                    onOpenChange={(isOpen) => {
+                        setDrawerOpen(isOpen)
+                        if (isOpen) {
+                            onFocus?.()
+                        } else {
+                            onBlur?.()
+                        }
+                    }}
+                >
                     <DrawerTrigger>
                         <MultiSelectTrigger
                             onChange={onChange}
@@ -124,6 +138,7 @@ const MultiSelect = ({
                             slot={slot}
                             onClick={() => setDrawerOpen(true)}
                             multiSelectTokens={multiSelectTokens}
+                            error={error}
                         />
                     </DrawerTrigger>
 
@@ -427,7 +442,11 @@ const MultiSelect = ({
                 </Drawer>
 
                 {variant === MultiSelectVariant.CONTAINER && (
-                    <InputFooter hintText={hintText} />
+                    <InputFooter
+                        hintText={hintText}
+                        error={error}
+                        errorMessage={errorMessage}
+                    />
                 )}
             </Block>
         )
@@ -481,7 +500,14 @@ const MultiSelect = ({
                 sideOffset={sideOffset}
                 alignOffset={alignOffset}
                 open={open}
-                onOpenChange={setOpen}
+                onOpenChange={(isOpen) => {
+                    setOpen(isOpen)
+                    if (isOpen) {
+                        onFocus?.()
+                    } else {
+                        onBlur?.()
+                    }
+                }}
                 trigger={
                     <Block
                         display="flex"
@@ -521,7 +547,11 @@ const MultiSelect = ({
                                 }
                                 outline={
                                     multiSelectTokens.trigger.outline[variant][
-                                        open ? 'open' : 'closed'
+                                        error
+                                            ? 'error'
+                                            : open
+                                              ? 'open'
+                                              : 'closed'
                                     ]
                                 }
                                 {...((!inline ||
@@ -540,28 +570,34 @@ const MultiSelect = ({
                                     backgroundColor:
                                         multiSelectTokens.trigger
                                             .backgroundColor.container[
-                                            open ? 'open' : 'closed'
+                                            error
+                                                ? 'error'
+                                                : open
+                                                  ? 'open'
+                                                  : 'closed'
                                         ],
 
                                     _hover: {
                                         outline:
                                             multiSelectTokens.trigger.outline[
                                                 variant
-                                            ].hover,
+                                            ][error ? 'error' : 'hover'],
                                         backgroundColor:
                                             multiSelectTokens.trigger
-                                                .backgroundColor.container
-                                                .hover,
+                                                .backgroundColor.container[
+                                                error ? 'error' : 'hover'
+                                            ],
                                     },
                                     _focus: {
                                         outline:
                                             multiSelectTokens.trigger.outline[
                                                 variant
-                                            ].focus,
+                                            ][error ? 'error' : 'focus'],
                                         backgroundColor:
                                             multiSelectTokens.trigger
-                                                .backgroundColor.container
-                                                .focus,
+                                                .backgroundColor.container[
+                                                error ? 'error' : 'focus'
+                                            ],
                                     },
                                 })}
                             >
@@ -731,7 +767,7 @@ const MultiSelect = ({
                                         outline={
                                             multiSelectTokens.trigger.outline[
                                                 variant
-                                            ].closed
+                                            ][error ? 'error' : 'closed']
                                         }
                                         _hover={{
                                             backgroundColor:
@@ -760,7 +796,11 @@ const MultiSelect = ({
             />
 
             {variant === MultiSelectVariant.CONTAINER && (
-                <InputFooter hintText={hintText} />
+                <InputFooter
+                    hintText={hintText}
+                    error={error}
+                    errorMessage={errorMessage}
+                />
             )}
         </Block>
     )

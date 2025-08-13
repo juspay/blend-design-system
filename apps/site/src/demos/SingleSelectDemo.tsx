@@ -15,6 +15,10 @@ import {
 const SingleSelectDemo = () => {
     // Playground state
     const [playgroundLabel, setPlaygroundLabel] = useState('Select Option')
+    const [playgroundError, setPlaygroundError] = useState(false)
+    const [playgroundErrorMessage, setPlaygroundErrorMessage] = useState(
+        'This is an error message'
+    )
     const [playgroundSubLabel, setPlaygroundSubLabel] = useState(
         'Choose your preference'
     )
@@ -307,6 +311,14 @@ const SingleSelectDemo = () => {
                             />
 
                             <TextInput
+                                label="Error Message"
+                                value={playgroundErrorMessage}
+                                onChange={(e) =>
+                                    setPlaygroundErrorMessage(e.target.value)
+                                }
+                            />
+
+                            <TextInput
                                 label="Placeholder"
                                 value={playgroundPlaceholder}
                                 onChange={(e) =>
@@ -367,7 +379,15 @@ const SingleSelectDemo = () => {
 
                         <div className="border rounded-lg p-6 bg-gray-50">
                             <SingleSelect
-                                useDrawerOnMobile={false}
+                                error={playgroundError}
+                                errorMessage={playgroundErrorMessage}
+                                onBlur={() => {
+                                    console.log('blur')
+                                }}
+                                onFocus={() => {
+                                    console.log('focus')
+                                }}
+                                // useDrawerOnMobile={false}
                                 label={playgroundLabel}
                                 subLabel={playgroundSubLabel}
                                 hintText={playgroundHintText}
@@ -409,6 +429,14 @@ const SingleSelectDemo = () => {
                                 label="Required"
                                 checked={playgroundRequired}
                                 onChange={setPlaygroundRequired}
+                            />
+
+                            <Switch
+                                label="Error"
+                                checked={playgroundError}
+                                onChange={() =>
+                                    setPlaygroundError(!playgroundError)
+                                }
                             />
 
                             <Switch

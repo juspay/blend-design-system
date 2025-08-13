@@ -29,6 +29,10 @@ import {
 const MultiSelectDemo = () => {
     // Playground state
     const [playgroundLabel, setPlaygroundLabel] = useState('Your label')
+    const [playgroundError, setPlaygroundError] = useState(false)
+    const [playgroundErrorMessage, setPlaygroundErrorMessage] = useState(
+        'This is an error message'
+    )
     const [playgroundSubLabel, setPlaygroundSubLabel] = useState(
         'Choose your preferences'
     )
@@ -496,6 +500,14 @@ const MultiSelectDemo = () => {
                             />
 
                             <TextInput
+                                label="Error"
+                                value={playgroundErrorMessage}
+                                onChange={(e) =>
+                                    setPlaygroundErrorMessage(e.target.value)
+                                }
+                            />
+
+                            <TextInput
                                 label="Sub Label"
                                 value={playgroundSubLabel}
                                 onChange={(e) =>
@@ -622,7 +634,15 @@ const MultiSelectDemo = () => {
                             style={{ width: '400px' }}
                         >
                             <MultiSelect
-                                useDrawerOnMobile={false}
+                                error={playgroundError}
+                                errorMessage={playgroundErrorMessage}
+                                onBlur={() => {
+                                    console.log('MultiSelect blur')
+                                }}
+                                onFocus={() => {
+                                    console.log('MultiSelect focus')
+                                }}
+                                // useDrawerOnMobile={false}
                                 height={62}
                                 enableSelectAll={true}
                                 enableSearch={true}
@@ -668,6 +688,14 @@ const MultiSelectDemo = () => {
                                 label="Required"
                                 checked={playgroundRequired}
                                 onChange={setPlaygroundRequired}
+                            />
+
+                            <Switch
+                                label="Error"
+                                checked={playgroundError}
+                                onChange={() =>
+                                    setPlaygroundError(!playgroundError)
+                                }
                             />
 
                             <Switch
