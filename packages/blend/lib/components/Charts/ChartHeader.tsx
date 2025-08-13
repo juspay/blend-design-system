@@ -50,18 +50,6 @@ export const ChartHeader: React.FC<ChartHeaderProps> = ({
                 gap={headerTokens.gap}
                 flexShrink={0}
             >
-                <Block
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    onClick={() => setIsExpanded(!isExpanded)}
-                >
-                    <ChevronsDownUp
-                        size={18}
-                        color={FOUNDATION_THEME.colors.gray[400]}
-                        cursor="pointer"
-                    />
-                </Block>
                 {isSmallScreen ? (
                     <Block
                         display="flex"
@@ -103,6 +91,18 @@ export const ChartHeader: React.FC<ChartHeaderProps> = ({
                         )}
                     </>
                 )}
+                <Block
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                >
+                    <ChevronsDownUp
+                        size={20}
+                        color={FOUNDATION_THEME.colors.gray[400]}
+                        cursor="pointer"
+                    />
+                </Block>
                 {slot3}
             </Block>
         </Block>

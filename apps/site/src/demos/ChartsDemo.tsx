@@ -496,9 +496,10 @@ const ChartDemo = () => {
                                     alignItems="center"
                                     justifyContent="center"
                                     width={FOUNDATION_THEME.unit[24]}
+                                    cursor="pointer"
                                 >
                                     <EllipsisVertical
-                                        size={24}
+                                        size={20}
                                         className="text-gray-500"
                                     />
                                 </Block>

@@ -661,6 +661,9 @@ const SingleSelect = ({
                                                           .gray[600]
                                             }
                                             fontWeight={500}
+                                            style={{
+                                                whiteSpace: 'nowrap',
+                                            }}
                                         >
                                             {selected
                                                 ? valueLabelMap[selected]
