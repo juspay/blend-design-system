@@ -54,8 +54,21 @@ jobs:
                   echo "Current version: $CURRENT_VERSION"
                   echo "Version type: $VERSION_TYPE"
 
+                  # Validate version type
+                  if [[ ! "$VERSION_TYPE" =~ ^(patch|minor|major)$ ]]; then
+                    echo "ERROR: Invalid version type '$VERSION_TYPE'. Must be patch, minor, or major."
+                    exit 1
+                  fi
+
                   # Remove any existing beta suffix to get base version
                   BASE_VERSION="${CURRENT_VERSION%-beta}"
+                  echo "Base version (without beta): $BASE_VERSION"
+
+                  # Validate base version format
+                  if [[ ! "$BASE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                    echo "ERROR: Invalid base version format '$BASE_VERSION'. Expected format: X.Y.Z"
+                    exit 1
+                  fi
 
                   # Create a temporary package.json to bump the base version
                   echo "{\"version\": \"$BASE_VERSION\"}" > temp_package.json
@@ -72,20 +85,47 @@ jobs:
                   echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
                   echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
 
-            - name: Clean Existing Tags
+                  # Verify the version was set correctly
+                  UPDATED_VERSION=$(node -p "require('./package.json').version")
+                  if [[ "$UPDATED_VERSION" != "$NEW_VERSION" ]]; then
+                    echo "ERROR: Failed to update package.json version. Expected '$NEW_VERSION', got '$UPDATED_VERSION'"
+                    exit 1
+                  fi
+
+                  echo "Version successfully updated in package.json"
+
+            - name: Clean Existing Tags and Releases
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
                   TAG="v$VERSION"
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+
+                  echo "Cleaning up any existing tags and releases for $TAG"
 
                   # Clean up any existing local tags
-                  git tag -l | xargs -r git tag -d
+                  git tag -l | xargs -r git tag -d 2>/dev/null || true
                   git fetch --tags
 
-                  # Check if tag exists on remote and delete it
+                  # Force delete remote tag if it exists
                   if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
-                    echo "Tag $TAG already exists on remote, deleting it"
-                    git push origin ":refs/tags/$TAG" || echo "Failed to delete remote tag, continuing..."
+                    echo "Deleting existing remote tag $TAG"
+                    git push origin ":refs/tags/$TAG" 2>/dev/null || true
+                    sleep 2  # Wait for tag deletion to propagate
                   fi
+
+                  # Delete existing GitHub release if it exists
+                  echo "Checking for existing GitHub release $TAG"
+                  if gh release view "$TAG" >/dev/null 2>&1; then
+                    echo "Deleting existing GitHub release $TAG"
+                    gh release delete "$TAG" --yes 2>/dev/null || true
+                    sleep 2  # Wait for release deletion to propagate
+                  fi
+
+                  # Clean up local tags again after remote cleanup
+                  git fetch --tags --prune --prune-tags
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Generate Changelog
               run: |
@@ -116,12 +156,13 @@ jobs:
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
                   TAG="v$VERSION"
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
 
-                  # Create and push the tag
+                  echo "Creating new tag $TAG"
                   git tag "$TAG" -m "Beta Release $TAG"
+
+                  echo "Pushing tag $TAG to origin"
                   git push origin "$TAG"
+
                   echo "Successfully created and pushed tag $TAG"
 
             - name: Create GitHub Beta Release

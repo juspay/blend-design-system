@@ -47,6 +47,12 @@ jobs:
 
                   echo "Current version: $CURRENT_VERSION"
 
+                  # Validate current version format
+                  if [[ ! "$CURRENT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-beta)?$ ]]; then
+                    echo "ERROR: Invalid version format '$CURRENT_VERSION'. Expected format: X.Y.Z or X.Y.Z-beta"
+                    exit 1
+                  fi
+
                   if [[ "$CURRENT_VERSION" == *"-beta" ]]; then
                     # Remove -beta suffix to get stable version
                     STABLE_VERSION="${CURRENT_VERSION%-beta}"
@@ -57,26 +63,59 @@ jobs:
                     echo "Already stable version: $STABLE_VERSION"
                   fi
 
+                  # Validate stable version format
+                  if [[ ! "$STABLE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                    echo "ERROR: Invalid stable version format '$STABLE_VERSION'. Expected format: X.Y.Z"
+                    exit 1
+                  fi
+
                   # Update package.json with stable version
                   npm pkg set version="$STABLE_VERSION"
 
                   echo "stable_version=$STABLE_VERSION" >> $GITHUB_OUTPUT
                   echo "tag=v$STABLE_VERSION" >> $GITHUB_OUTPUT
 
-            - name: Clean Existing Tags
+                  # Verify the version was set correctly
+                  UPDATED_VERSION=$(node -p "require('./package.json').version")
+                  if [[ "$UPDATED_VERSION" != "$STABLE_VERSION" ]]; then
+                    echo "ERROR: Failed to update package.json version. Expected '$STABLE_VERSION', got '$UPDATED_VERSION'"
+                    exit 1
+                  fi
+
+                  echo "Version successfully updated in package.json to stable: $STABLE_VERSION"
+
+            - name: Clean Existing Tags and Releases
               run: |
                   VERSION=${{ steps.convert_version.outputs.stable_version }}
                   TAG="v$VERSION"
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+
+                  echo "Cleaning up any existing tags and releases for $TAG"
 
                   # Clean up any existing local tags
-                  git tag -l | xargs -r git tag -d
+                  git tag -l | xargs -r git tag -d 2>/dev/null || true
                   git fetch --tags
 
-                  # Check if tag exists on remote and delete it
+                  # Force delete remote tag if it exists
                   if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
-                    echo "Tag $TAG already exists on remote, deleting it"
-                    git push origin ":refs/tags/$TAG" || echo "Failed to delete remote tag, continuing..."
+                    echo "Deleting existing remote tag $TAG"
+                    git push origin ":refs/tags/$TAG" 2>/dev/null || true
+                    sleep 2  # Wait for tag deletion to propagate
                   fi
+
+                  # Delete existing GitHub release if it exists
+                  echo "Checking for existing GitHub release $TAG"
+                  if gh release view "$TAG" >/dev/null 2>&1; then
+                    echo "Deleting existing GitHub release $TAG"
+                    gh release delete "$TAG" --yes 2>/dev/null || true
+                    sleep 2  # Wait for release deletion to propagate
+                  fi
+
+                  # Clean up local tags again after remote cleanup
+                  git fetch --tags --prune --prune-tags
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Generate Stable Changelog
               run: |
@@ -107,13 +146,14 @@ jobs:
               run: |
                   VERSION=${{ steps.convert_version.outputs.stable_version }}
                   TAG="v$VERSION"
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
 
-                  # Create and push the tag
+                  echo "Creating new stable tag $TAG"
                   git tag "$TAG" -m "Stable Release $TAG"
+
+                  echo "Pushing tag $TAG to origin"
                   git push origin "$TAG"
-                  echo "Successfully created and pushed tag $TAG"
+
+                  echo "Successfully created and pushed stable tag $TAG"
 
             - name: Create GitHub Stable Release
               uses: softprops/action-gh-release@v2
