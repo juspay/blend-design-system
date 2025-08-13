@@ -55,11 +55,12 @@ const StyledDayCell = styled(Block)<{
 
     ${(props) =>
         !props.$isDisabled &&
-        !props.$isSelected &&
         `
     &:hover {
       outline: ${props.$calendarToken.calendar.calendarGrid.day.hover.outline};
       border-radius: ${props.$calendarToken.calendar.calendarGrid.day.hover.borderRadius};
+      z-index: 10;
+      position: relative;
     }
   `}
 `

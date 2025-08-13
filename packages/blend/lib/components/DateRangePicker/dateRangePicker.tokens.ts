@@ -493,8 +493,8 @@ export const getCalendarToken = (
             borderRadiusWithoutPresets: foundationToken.border.radius[8],
         },
         calendar: {
-            minWidth: '304px',
-            width: '304px',
+            minWidth: '320px',
+            width: '320px',
             backgroundColor: foundationToken.colors.gray[0],
             border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
@@ -536,9 +536,9 @@ export const getCalendarToken = (
                 week: {
                     row: {
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(7, 40px)', // Fixed 40px columns to eliminate gaps
-                        padding: `0 ${foundationToken.unit[12]}`,
-                        gap: '0', // Remove any gaps between cells
+                        gridTemplateColumns: 'repeat(7, 40px)',
+                        padding: `0 ${foundationToken.unit[18]}`,
+                        gap: '0',
                     },
                     container: {
                         display: 'flex',
