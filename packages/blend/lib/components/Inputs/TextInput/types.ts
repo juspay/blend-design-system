@@ -1,4 +1,5 @@
 export enum TextInputSize {
+    SMALL = 'sm',
     MEDIUM = 'md',
     LARGE = 'lg',
 }

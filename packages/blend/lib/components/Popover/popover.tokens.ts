@@ -6,7 +6,7 @@ import type { FoundationTokenType } from '../../tokens/theme.token'
 export type PopoverTokenType = {
     background: CSSObject['backgroundColor']
     border: CSSObject['border']
-    shadow: CSSObject['boxShadow']
+    shadow: FoundationTokenType['shadows']
     gap: CSSObject['gap']
     zIndex: CSSObject['zIndex']
     borderRadius: CSSObject['borderRadius']
@@ -46,7 +46,7 @@ export const getPopoverTokens = (
     return {
         background: foundationTokens.colors.gray[0],
         border: foundationTokens.border.radius[8],
-        shadow: foundationTokens.shadows.lg,
+        shadow: foundationTokens.shadows,
         gap: foundationTokens.unit[12],
         zIndex: 1000,
         borderRadius: foundationTokens.border.radius[8],
