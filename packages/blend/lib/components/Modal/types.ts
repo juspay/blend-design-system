@@ -21,4 +21,5 @@ export type ModalProps = {
     headerRightSlot?: ReactNode
     showDivider?: boolean
     minWidth?: string
+    useDrawerOnMobile?: boolean
 }

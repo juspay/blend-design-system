@@ -400,25 +400,42 @@ export const DrawerBody = forwardRef<
         className?: string
         overflowY?: 'auto' | 'hidden' | 'scroll' | 'visible'
         noPadding?: boolean
+        hasFooter?: boolean
     }
->(({ children, className, overflowY, noPadding = false, ...props }, ref) => {
-    const tokens = useComponentToken('DRAWER') as DrawerTokensType
+>(
+    (
+        {
+            children,
+            className,
+            overflowY,
+            noPadding = false,
+            hasFooter = false,
+            ...props
+        },
+        ref
+    ) => {
+        const tokens = useComponentToken('DRAWER') as DrawerTokensType
 
-    return (
-        <Block
-            ref={ref}
-            className={className}
-            padding={noPadding ? 0 : tokens.body.padding}
-            backgroundColor={tokens.body.backgroundColor}
-            borderRadius={tokens.body.borderRadius}
-            flexGrow={1}
-            overflowY={overflowY || tokens.body.overflowY}
-            {...props}
-        >
-            {children}
-        </Block>
-    )
-})
+        const borderRadius = hasFooter
+            ? `${tokens.body.borderRadius} ${tokens.body.borderRadius} 0 0`
+            : tokens.body.borderRadius
+
+        return (
+            <Block
+                ref={ref}
+                className={className}
+                padding={noPadding ? 0 : tokens.body.padding}
+                backgroundColor={tokens.body.backgroundColor}
+                borderRadius={borderRadius}
+                flexGrow={1}
+                overflowY={overflowY || tokens.body.overflowY}
+                {...props}
+            >
+                {children}
+            </Block>
+        )
+    }
+)
 
 DrawerBody.displayName = 'DrawerBody'
 
@@ -432,6 +449,7 @@ export const DrawerFooter = forwardRef<HTMLDivElement, DrawerFooterProps>(
                 className={className}
                 padding={tokens.footer.padding}
                 backgroundColor={tokens.footer.backgroundColor}
+                borderRadius={`0 0 ${tokens.body.borderRadius} ${tokens.body.borderRadius}`}
                 display="flex"
                 alignItems={tokens.footer.alignItems}
                 justifyContent={tokens.footer.justifyContent}
