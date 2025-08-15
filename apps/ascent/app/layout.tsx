@@ -3,15 +3,21 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { METADATA_CONFIG } from '@/lib/config'
 import './globals.css'
 
-const geistSans = Geist({
-    variable: '--font-geist-sans',
-    subsets: ['latin'],
-    display: 'swap',
-})
+// const geistSans = Geist({
+//     variable: '--font-geist-sans',
+//     subsets: ['latin'],
+//     display: 'swap',
+// })
 
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
-    subsets: ['latin'],
+// const geistMono = Geist_Mono({
+//     variable: '--font-geist-mono',
+//     subsets: ['latin'],
+//     display: 'swap',
+// })
+
+const interDisplay = localFont({
+    src: '../public/fonts/InterDisplay-Medium.ttf',
+    variable: '--font-inter-display',
     display: 'swap',
 })
 
@@ -48,7 +54,7 @@ export default function RootLayout({
                 <meta name="theme-color" content="#000000" />
             </head>
             <body
-                className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+                className={` ${interDisplay.variable}`}
                 suppressHydrationWarning
             >
                 {children}

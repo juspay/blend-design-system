@@ -9,7 +9,12 @@ const config: Config = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+                sans: [
+                    'InterDisplay',
+                    'var(--font-geist-sans)',
+                    'system-ui',
+                    'sans-serif',
+                ],
                 mono: [
                     'var(--font-geist-mono)',
                     'Menlo',
@@ -17,6 +22,7 @@ const config: Config = {
                     'monospace',
                 ],
                 heading: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+                inter: ['var(--font-inter-display)', 'InterDisplay'],
             },
             colors: {
                 border: 'hsl(var(--border))',
