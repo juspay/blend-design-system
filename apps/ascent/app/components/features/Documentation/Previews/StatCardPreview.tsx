@@ -45,7 +45,7 @@ function MyComponent() {
       value: "$12,345",
       subtitle: "Last 30 days",
       titleIcon: <DollarSign size={20} />,
-      change: { value: 12.5, type: ChangeType.INCREASE },
+      change: { value: 12.5, valueType: ChangeType.INCREASE },
     };
 
     switch (variant) {
@@ -92,7 +92,7 @@ type chartDataPoint = {
 
 type statCardChange = {
   value: float,
-  type: changeType,
+  valueType: changeType,
 }
 
 @react.component
@@ -125,7 +125,7 @@ let make = () => {
       value: "$12,345",
       subtitle: Some("Last 30 days"),
       titleIcon: Some(<DollarSign size=20 />),
-      change: Some({value: 12.5, type: #increase}),
+      change: Some({value: 12.5, valueType: #increase}),
     }
 
     switch variant {
@@ -194,7 +194,7 @@ external make: (
             value: '$12,345',
             subtitle: 'Last 30 days',
             titleIcon: <DollarSign size={20} />,
-            change: { value: 12.5, type: ChangeType.INCREASE },
+            change: { value: 12.5, valueType: ChangeType.INCREASE },
         }
 
         switch (variant) {

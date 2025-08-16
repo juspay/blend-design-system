@@ -71,12 +71,12 @@ const StatCard = ({
             display="flex"
             alignItems="center"
             color={
-                change?.type === ChangeType.INCREASE
+                change?.valueType === ChangeType.INCREASE
                     ? statCardToken.stats.change.text.increase.color
                     : statCardToken.stats.change.text.decrease.color
             }
         >
-            {change.type === ChangeType.INCREASE ? (
+            {change.valueType === ChangeType.INCREASE ? (
                 <ArrowUp
                     size={parseInt(
                         statCardToken.stats.change.arrow.width?.toString() ||
@@ -100,10 +100,11 @@ const StatCard = ({
             <Text
                 as="span"
                 fontSize={
-                    statCardToken.stats.change.text[change?.type].fontSize
+                    statCardToken.stats.change.text[change?.valueType].fontSize
                 }
                 fontWeight={
-                    statCardToken.stats.change.text[change?.type].fontWeight
+                    statCardToken.stats.change.text[change?.valueType]
+                        .fontWeight
                 }
             >
                 {change.value >= 0 ? '+' : ''}
@@ -487,19 +488,19 @@ const StatCard = ({
                                         as="span"
                                         color={
                                             statCardToken.stats.change.text[
-                                                change?.type ??
+                                                change?.valueType ??
                                                     ChangeType.INCREASE
                                             ].color
                                         }
                                         fontSize={
                                             statCardToken.stats.change.text[
-                                                change?.type ??
+                                                change?.valueType ??
                                                     ChangeType.INCREASE
                                             ].fontSize
                                         }
                                         fontWeight={
                                             statCardToken.stats.change.text[
-                                                change?.type ??
+                                                change?.valueType ??
                                                     ChangeType.INCREASE
                                             ].fontWeight
                                         }
