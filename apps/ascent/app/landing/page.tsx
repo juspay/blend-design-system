@@ -1,6 +1,6 @@
 import Intro from './components/Intro'
 import { useState } from 'react'
-import { TabsSection } from './components/TabsSection'
+import { TabsSection } from './components/tabs/TabsSection'
 
 const page = () => {
     return (
