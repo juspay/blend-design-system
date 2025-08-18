@@ -219,7 +219,7 @@ const StatCardDemo = () => {
                             showChange
                                 ? {
                                       value: changeValue,
-                                      type: changeType,
+                                      valueType: changeType,
                                   }
                                 : undefined
                         }
@@ -267,7 +267,7 @@ const StatCardDemo = () => {
                             variant={StatCardVariant.NUMBER}
                             change={{
                                 value: 12.5,
-                                type: ChangeType.INCREASE,
+                                valueType: ChangeType.INCREASE,
                             }}
                             titleIcon={<DollarSign size={16} />}
                             dropdownProps={{
@@ -314,7 +314,7 @@ const StatCardDemo = () => {
                             variant={StatCardVariant.LINE}
                             change={{
                                 value: 8.2,
-                                type: ChangeType.INCREASE,
+                                valueType: ChangeType.INCREASE,
                             }}
                             titleIcon={<TrendingUp size={16} />}
                             chartData={sampleLineData}
@@ -346,7 +346,7 @@ const StatCardDemo = () => {
                             variant={StatCardVariant.BAR}
                             change={{
                                 value: -2.1,
-                                type: ChangeType.DECREASE,
+                                valueType: ChangeType.DECREASE,
                             }}
                             titleIcon={<BarChart3 size={16} />}
                             chartData={sampleBarData}
@@ -414,7 +414,7 @@ const StatCardDemo = () => {
                             variant={StatCardVariant.NUMBER}
                             change={{
                                 value: 15.3,
-                                type: ChangeType.INCREASE,
+                                valueType: ChangeType.INCREASE,
                             }}
                             titleIcon={<Users size={16} />}
                         />
@@ -447,7 +447,7 @@ const StatCardDemo = () => {
                             variant={StatCardVariant.NUMBER}
                             change={{
                                 value: 5.2,
-                                type: ChangeType.DECREASE,
+                                valueType: ChangeType.DECREASE,
                             }}
                             titleIcon={<TrendingDown size={16} />}
                         />
@@ -486,7 +486,7 @@ const StatCardDemo = () => {
                             variant={StatCardVariant.NUMBER}
                             change={{
                                 value: 8.7,
-                                type: ChangeType.INCREASE,
+                                valueType: ChangeType.INCREASE,
                             }}
                             titleIcon={<Download size={16} />}
                         />
@@ -517,7 +517,7 @@ const StatCardDemo = () => {
                             variant={StatCardVariant.NUMBER}
                             change={{
                                 value: 12.1,
-                                type: ChangeType.INCREASE,
+                                valueType: ChangeType.INCREASE,
                             }}
                             titleIcon={<Upload size={16} />}
                             actionIcon={<Settings size={16} />}
@@ -549,7 +549,7 @@ const StatCardDemo = () => {
                             variant={StatCardVariant.NUMBER}
                             change={{
                                 value: 0.5,
-                                type: ChangeType.INCREASE,
+                                valueType: ChangeType.INCREASE,
                             }}
                             titleIcon={<Activity size={16} />}
                             helpIconText="Conversion rate is the percentage of visitors who complete a desired action."
@@ -589,7 +589,7 @@ const StatCardDemo = () => {
                             variant={StatCardVariant.LINE}
                             change={{
                                 value: 23.4,
-                                type: ChangeType.INCREASE,
+                                valueType: ChangeType.INCREASE,
                             }}
                             titleIcon={<TrendingUp size={16} />}
                             chartData={sampleLineData}
@@ -623,7 +623,7 @@ const StatCardDemo = () => {
                             variant={StatCardVariant.BAR}
                             change={{
                                 value: 12.8,
-                                type: ChangeType.INCREASE,
+                                valueType: ChangeType.INCREASE,
                             }}
                             titleIcon={<BarChart3 size={16} />}
                             chartData={sampleBarData}
@@ -756,7 +756,7 @@ const StatCardDemo = () => {
                                 variant={StatCardVariant.NUMBER}
                                 change={{
                                     value: 18.7,
-                                    type: ChangeType.INCREASE,
+                                    valueType: ChangeType.INCREASE,
                                 }}
                                 titleIcon={<DollarSign size={16} />}
                                 actionIcon={<Settings size={16} />}
@@ -785,7 +785,7 @@ const StatCardDemo = () => {
                                 variant={StatCardVariant.LINE}
                                 change={{
                                     value: 12.3,
-                                    type: ChangeType.INCREASE,
+                                    valueType: ChangeType.INCREASE,
                                 }}
                                 titleIcon={<Users size={16} />}
                                 chartData={sampleLineData}
@@ -814,7 +814,7 @@ const StatCardDemo = () => {
                                 variant={StatCardVariant.NUMBER}
                                 change={{
                                     value: 0.4,
-                                    type: ChangeType.INCREASE,
+                                    valueType: ChangeType.INCREASE,
                                 }}
                                 titleIcon={<Activity size={16} />}
                                 helpIconText="Percentage of visitors who complete a purchase."

@@ -21,7 +21,7 @@ export type ChartDataPoint = {
 
 export type StatCardChange = {
     value: number
-    type: ChangeType
+    valueType: ChangeType
 }
 
 export type StatCardProps = {
