@@ -55,6 +55,15 @@
         linear-gradient(0deg, #050505 0%, #050505 100%),
         linear-gradient(180deg, #121316 10.86%, #0505e2 99.98%);
     --design-system-heading-background: #898989;
+    --design-system-heading-border: linear-gradient(
+        90deg,
+        rgba(153, 153, 153, 0.5),
+        rgba(255, 255, 255, 0.5),
+        rgba(153, 153, 153, 0.5)
+    );
+    --intro-text-color: #a3a3a3;
+    --button-border: #64677c;
+    --button-text-color: #b3b3b3;
 }
 
 @theme inline {

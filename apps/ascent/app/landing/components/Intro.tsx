@@ -1,9 +1,6 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
 import Logo from '../icons/Logo'
 import { LogoText } from '../icons/LogoText'
 import { BgEllipseEffect } from '../icons/BgEllipseEffect'
-import { Tabs } from './Tabs'
 
 export default function Intro() {
     return (
@@ -17,25 +14,21 @@ export default function Intro() {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-[84px] w-full items-center justify-center text-[#A3A3A3]">
+                <div className="flex flex-col gap-21 w-full items-center justify-center text-[var(--intro-text-color)]">
                     <div
-                        className="mt-[112px] text-[var(--design-system-heading-background)] opacity-[0.5] w-[636.975px] py-3 flex justify-center relative"
+                        className="mt-28 text-[var(--design-system-heading-background)] w-159 py-3 flex justify-center relative"
                         style={{
                             borderRadius: '83px',
-                            background:
-                                'linear-gradient(90deg, rgba(153, 153, 153, 0.5), rgba(255, 255, 255, 0.5), rgba(153, 153, 153, 0.5))',
+                            background: 'var(--design-system-heading-border)',
                             padding: '1px',
                         }}
                     >
-                        <div
-                            className="w-full h-full rounded-[83px] bg-black flex items-center justify-center opacity-[0.8]"
-                            style={{ padding: '8px' }}
-                        >
+                        <div className="w-full h-full rounded-[83px] bg-black flex items-center justify-center opacity-80 p-2 tracking-[12px]">
                             <p>DESIGN SYSTEM ASSISTANCE</p>
                         </div>
                     </div>
                     <div
-                        className="w-full flex items-center justify-center flex-col text-[132px] leading-[1] font-bold opacity-[0.8]"
+                        className="w-full flex items-center justify-center flex-col text-[132px] leading-[1] font-bold opacity-80"
                         style={{
                             background:
                                 'linear-gradient(90deg, #4B4B4B 0%, #F5F5F5 53.37%, #4B4B4B 100%)',
@@ -45,18 +38,17 @@ export default function Intro() {
                         <div className="bg-clip-text text-transparent">
                             Blend,
                         </div>
-                        <div className="bg-clip-text text-transparent">
+                        <div className=" text-transparent">
                             The Interface Engine.
                         </div>
                     </div>
-                    <div className="text-[32px] flex flex-col items-center justify-cente font-light opacity-[0.8]">
+                    <div className="text-[32px] flex flex-col items-center justify-center font-light opacity-80">
                         <p>
                             Blend simplifies collaboration by offering a single
                             source of truth for UI
                         </p>
                         <p>— from Figma to production-ready code.</p>
                     </div>
-                    <Tabs />
                 </div>
             </div>
         </div>

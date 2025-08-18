@@ -1,17 +1,52 @@
 'use client'
 
-import { useState } from 'react'
-import { TabButtons } from './TabButtons'
-
-export const Tabs = () => {
-    const [selectedTab, setSelectedTab] = useState('tokenizer')
-
-    const handleTabSelection = (label: string) => {
-        setSelectedTab(label)
-    }
+export const TabButtons = ({
+    text,
+    selected,
+    label,
+    handleTabSelection,
+}: {
+    text: string
+    selected: string
+    label: string
+    handleTabSelection: (label: string) => void
+}) => {
     return (
         <div
-            className=" text-[var(--design-system-heading-background)] opacity-[0.5] w-[636.975px] py-3 flex justify-center relative"
+            className={`cursor-pointer`}
+            style={{
+                borderRadius: '83px',
+                background:
+                    selected === label
+                        ? 'linear-gradient(180deg, #FEFEFE, #37373B, rgba(153, 153, 153, 0.5))'
+                        : 'transparent',
+                padding: '1px',
+            }}
+            onClick={() => {
+                handleTabSelection(label)
+            }}
+        >
+            <div className="w-full h-full rounded-[83px] bg-black opacity-[0.9] ">
+                <div
+                    className={`py-2.5 px-3 rounded-[50px] ${selected == label ? 'bg-[#FFFFFF2E] text-[#E3E3E3] ' : 'bg-transparent text-[#B3B3B3]'}`}
+                >
+                    <p>{text}</p>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export const Tabs = ({
+    selectedTab,
+    handleTabSelection,
+}: {
+    selectedTab: string
+    handleTabSelection: (label: string) => void
+}) => {
+    return (
+        <div
+            className="text-[var(--design-system-heading-background)] opacity-[0.5] w-[636.975px] py-3 flex justify-center relative"
             style={{
                 borderRadius: '83px',
                 background:
