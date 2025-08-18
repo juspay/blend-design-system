@@ -7,6 +7,11 @@ import {
     Preview,
     PreviewWrapper,
 } from './app/components'
+import {
+    VersionHeader,
+    ChangelogCard,
+    ChangelogEntry,
+} from './app/components/changelog/ChangelogComponents'
 
 // Create wrapper components for each preview
 const ButtonPreview = () => <PreviewWrapper component="ButtonPreview" />
@@ -250,6 +255,9 @@ const components = {
     MenuPreview,
     StatCardPreview,
     ChartPreview,
+    VersionHeader,
+    ChangelogCard,
+    ChangelogEntry,
 }
 
 declare global {

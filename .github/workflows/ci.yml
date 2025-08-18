@@ -39,5 +39,5 @@ jobs:
             - name: Check formatting
               run: pnpm format:check
 
-            - name: Build project (excluding firebase-app)
-              run: pnpm build --filter='!firebase-app'
+            - name: Build project
+              run: pnpm build
