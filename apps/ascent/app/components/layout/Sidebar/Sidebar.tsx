@@ -51,9 +51,9 @@ const SidebarItem = ({
 }) => {
     const pathname = usePathname()
 
-    // Handle special case for getting-started in changelog only
+    // Handle special case for home in changelog only
     const href =
-        baseRoute === '/changelog' && item.name === 'getting-started'
+        baseRoute === '/changelog' && item.name === 'home'
             ? '/changelog'
             : `${baseRoute}/${item.path}`
 
@@ -105,9 +105,7 @@ const SidebarItem = ({
         >
             <div className="flex items-center gap-2">
                 <span className="truncate">
-                    {item.name === 'getting-started'
-                        ? 'Getting Started'
-                        : capitalize(item.name)}
+                    {item.name === 'home' ? 'Home' : capitalize(item.name)}
                 </span>
             </div>
         </Link>

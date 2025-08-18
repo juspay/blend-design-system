@@ -7,16 +7,16 @@ import { compileMDX } from 'next-mdx-remote/rsc'
 import { useMDXComponents } from '../../mdx-components'
 
 export const metadata: Metadata = {
-    title: 'Getting Started - Changelog',
+    title: 'Home - Changelog',
     description:
-        'Learn how to use and contribute to the Blend Design System changelog',
+        'Welcome to the Blend Design System changelog - track all updates and improvements',
 }
 
-async function getGettingStartedContent() {
+async function getHomeContent() {
     const filePath = path.join(
         process.cwd(),
         'app/changelog/content',
-        'getting-started.mdx'
+        'home.mdx'
     )
 
     try {
@@ -39,9 +39,9 @@ async function getGettingStartedContent() {
 }
 
 const ChangelogPage = async () => {
-    const gettingStartedData = await getGettingStartedContent()
+    const homeData = await getHomeContent()
 
-    if (!gettingStartedData) {
+    if (!homeData) {
         return (
             <div className="max-w-4xl mx-auto px-6 py-8">
                 <h1 className="text-3xl font-bold text-[var(--foreground)] mb-4">
@@ -54,7 +54,7 @@ const ChangelogPage = async () => {
         )
     }
 
-    const { content } = gettingStartedData
+    const { content } = homeData
 
     return (
         <div className="max-w-4xl mx-auto px-6 py-8">
