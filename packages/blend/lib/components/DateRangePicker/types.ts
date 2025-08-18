@@ -26,7 +26,7 @@ export type DateRange = {
 export type DateRangePickerProps = {
     value?: DateRange
     onChange?: (range: DateRange) => void
-    showTimePicker?: boolean
+    showDateTimePicker?: boolean
     showPresets?: boolean
     placeholder?: string
     isDisabled?: boolean

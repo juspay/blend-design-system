@@ -60,7 +60,7 @@ export type SelectMenuItemType = {
 }
 
 export type SingleSelectProps = {
-    label: string
+    label?: string
     subLabel?: string
     hintText?: string
     required?: boolean
@@ -88,4 +88,10 @@ export type SingleSelectProps = {
     maxWidth?: number
     maxHeight?: number
     inline?: boolean
+    onBlur?: () => void
+    onFocus?: () => void
+
+    // error
+    error?: boolean
+    errorMessage?: string
 }

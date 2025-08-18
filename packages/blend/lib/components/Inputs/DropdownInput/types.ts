@@ -3,6 +3,7 @@ import { TextInputSize } from '../TextInput/types'
 import type { SelectMenuGroupType } from '../../Select/types'
 
 export enum DropdownInputSize {
+    SM = 'sm',
     MD = 'md',
     LG = 'lg',
 }

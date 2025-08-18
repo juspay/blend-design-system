@@ -10,6 +10,7 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
+import { FOUNDATION_THEME } from '../../../tokens'
 
 const TextInput = ({
     size = TextInputSize.MEDIUM,
@@ -147,18 +148,22 @@ const TextInput = ({
                     }
                     borderRadius={textInputTokens.input.borderRadius}
                     boxShadow={textInputTokens.input.boxShadow.default}
-                    border={
-                        textInputTokens.input.border[
+                    outline={
+                        textInputTokens.input.outline[
                             error ? 'error' : 'default'
                         ]
                     }
-                    fontSize={'14px'}
+                    fontSize={FOUNDATION_THEME.font.size.body.md.fontSize}
                     fontWeight={500}
-                    outline="none"
+                    lineHeight={FOUNDATION_THEME.unit[20]}
                     _hover={{
                         border: textInputTokens.input.border[
                             error ? 'error' : 'hover'
                         ],
+                        outline:
+                            textInputTokens.input.outline[
+                                error ? 'error' : 'hover'
+                            ],
                     }}
                     color={
                         textInputTokens.input.color[
@@ -166,9 +171,10 @@ const TextInput = ({
                         ]
                     }
                     _focus={{
-                        border: textInputTokens.input.border[
-                            error ? 'error' : 'focus'
-                        ],
+                        outline:
+                            textInputTokens.input.outline[
+                                error ? 'error' : 'focus'
+                            ],
                         boxShadow:
                             textInputTokens.input.boxShadow[
                                 error ? 'error' : 'focus'
@@ -178,6 +184,7 @@ const TextInput = ({
                         backgroundColor:
                             textInputTokens.input.backgroundColor.disabled,
                         border: textInputTokens.input.border.disabled,
+                        outline: textInputTokens.input.outline.disabled,
                         cursor: 'not-allowed',
                     }}
                     onFocus={(e) => {

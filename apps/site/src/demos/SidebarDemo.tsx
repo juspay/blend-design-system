@@ -26,6 +26,7 @@ import {
     CircleDot as Radio,
     Weight,
     DecimalsArrowRightIcon,
+    Search,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -50,7 +51,6 @@ import RadioDemo from './RadioDemo'
 import CheckboxDemo from './CheckboxDemo'
 import SwitchDemo from './SwitchDemo'
 import ProgressBarDemo from './ProgressBarDemo'
-import { Snackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { ThemeProvider } from '../../../../packages/blend/lib/context'
 import ALT_FOUNDATION_TOKENS from '../themes/AIT_FOUNDATION_TOKENS'
 import HDFC_COMPONENT_TOKENS from '../themes/HDFC_COMPONENT_TOKENS'
@@ -67,6 +67,14 @@ import DrawerDemo from './DrawerDemo'
 import DateRangePickerDemo from './DateRangePickerDemo'
 import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
+import {
+    Avatar,
+    AvatarShape,
+    AvatarSize,
+    TextInput,
+} from '../../../../packages/blend/lib/main'
+import Text from '../../../../packages/blend/lib/components/Text/Text'
+import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -114,9 +122,9 @@ const SidebarDemo = () => {
     >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
-    const [activeMerchant, setActiveMerchant] = useState<string | undefined>(
-        'Design System'
-    )
+    const [activeMerchant, setActiveMerchant] =
+        useState<string>('design-system')
+    const [search, setSearch] = useState<string>('')
 
     const tenants = [
         {
@@ -145,12 +153,12 @@ const SidebarDemo = () => {
         {
             label: 'Design System',
             icon: <UserIcon style={{ width: '16px', height: '16px' }} />,
-            id: 'design-system',
+            value: 'design-system',
         },
         {
             label: 'Design System 2',
             icon: <UserIcon style={{ width: '16px', height: '16px' }} />,
-            id: 'design-system-2',
+            value: 'design-system-2',
         },
     ]
 
@@ -571,33 +579,60 @@ const SidebarDemo = () => {
     return (
         <div className="w-screen h-screen">
             <ThemeProvider {...themeProps}>
-                <Snackbar />
                 <Sidebar
-                    activeTenant={activeTenant}
-                    setActiveTenant={setActiveTenant}
-                    tenants={tenants}
-                    activeMerchant={activeMerchant}
-                    setActiveMerchant={setActiveMerchant}
-                    merchants={merchants}
+                    leftPanel={{
+                        items: tenants,
+                        selected: activeTenant,
+                        onSelect: (value) => setActiveTenant(value),
+                    }}
+                    sidebarTopSlot={
+                        <SingleSelect
+                            placeholder="Select Merchant"
+                            variant={SelectMenuVariant.NO_CONTAINER}
+                            items={[
+                                {
+                                    items: merchants,
+                                },
+                            ]}
+                            selected={activeMerchant}
+                            onSelect={(value) => setActiveMerchant(value)}
+                        />
+                    }
                     data={sampleData}
                     topbar={
-                        <div className="flex justify-end">
-                            <div>
-                                <SingleSelect
-                                    slot={
-                                        <kbd
+                        <div className="flex items-center justify-between gap-2">
+                            <Block width="350px">
+                                <TextInput
+                                    placeholder="Search"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    leftSlot={
+                                        <Search
                                             style={{
-                                                fontSize: 10,
-                                                backgroundColor:
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[25],
-                                                padding: '2px 4px',
-                                                borderRadius: 4,
+                                                width: '16px',
+                                                height: '16px',
+                                            }}
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
+                                            }
+                                        />
+                                    }
+                                    rightSlot={
+                                        <span
+                                            style={{
+                                                fontSize: 14,
+                                                color: FOUNDATION_THEME.colors
+                                                    .gray[300],
                                             }}
                                         >
-                                            CMD + E
-                                        </kbd>
+                                            ⌘ + K
+                                        </span>
                                     }
+                                />
+                            </Block>
+                            <div>
+                                <SingleSelect
                                     label="Theme"
                                     placeholder="Select Theme"
                                     minWidth={200}
@@ -623,6 +658,23 @@ const SidebarDemo = () => {
                                     ]}
                                 />
                             </div>
+                        </div>
+                    }
+                    footer={
+                        <div className="flex items-center gap-2">
+                            <Avatar
+                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+                                alt="John Doe"
+                                size={AvatarSize.SM}
+                                shape={AvatarShape.ROUNDED}
+                            />
+                            <Text
+                                variant="body.md"
+                                fontWeight={600}
+                                color={FOUNDATION_THEME.colors.gray[600]}
+                            >
+                                John Doe
+                            </Text>
                         </div>
                     }
                 >

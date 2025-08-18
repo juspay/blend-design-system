@@ -1,0 +1,176 @@
+name: Publish Stable to NPM
+
+on:
+    workflow_dispatch:
+        inputs:
+            confirm_publish:
+                description: 'Type "PUBLISH" to confirm publishing stable to NPM'
+                required: true
+                type: string
+
+concurrency:
+    group: publish-stable-npm-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    publish-stable:
+        name: Publish Stable Version to NPM
+        runs-on: ubuntu-latest
+        environment: npm
+        if: github.ref == 'refs/heads/main' && github.event.inputs.confirm_publish == 'PUBLISH'
+
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Setup Node.js 22 and pnpm
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  registry-url: 'https://registry.npmjs.org'
+
+            - name: Enable corepack & install deps
+              run: |
+                  corepack enable
+                  pnpm install --frozen-lockfile
+
+            - name: Verify Stable Version
+              id: verify_version
+              run: |
+                  cd packages/blend
+                  CURRENT_VERSION=$(node -p "require('./package.json').version")
+
+                  if [[ "$CURRENT_VERSION" == *"-beta" ]]; then
+                    echo "ERROR: Current version ($CURRENT_VERSION) is a beta version!"
+                    echo "This workflow should only be used to publish stable versions."
+                    echo "Please run the 'Create Stable Release' workflow first to convert beta to stable."
+                    exit 1
+                  fi
+
+                  echo "Verified stable version: $CURRENT_VERSION"
+                  echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+            - name: Build Package
+              run: pnpm --filter @juspay/blend-design-system build
+
+            - name: Verify NPM Token
+              run: |
+                  if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+                    echo "NPM_TOKEN secret is not set!"
+                    exit 1
+                  else
+                    echo "NPM_TOKEN secret is configured"
+                  fi
+
+                  echo "Testing NPM authentication..."
+                  npm whoami || echo "NPM authentication test failed, but continuing..."
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Check if Version Already Published
+              id: check_published
+              run: |
+                  cd packages/blend
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  VERSION="${{ steps.verify_version.outputs.version }}"
+
+                  echo "Checking if $PACKAGE_NAME@$VERSION is already published..."
+
+                  if npm view "$PACKAGE_NAME@$VERSION" version 2>/dev/null; then
+                    echo "already_published=true" >> $GITHUB_OUTPUT
+                    echo "Version $VERSION already exists on NPM"
+                  else
+                    echo "already_published=false" >> $GITHUB_OUTPUT
+                    echo "Version $VERSION is not yet published"
+                  fi
+
+            - name: Publish Stable to NPM
+              if: steps.check_published.outputs.already_published != 'true'
+              run: |
+                  cd packages/blend
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  VERSION="${{ steps.verify_version.outputs.version }}"
+
+                  echo "Publishing $PACKAGE_NAME@$VERSION to NPM with latest tag"
+                  npm publish --access public --tag latest
+                  echo "Successfully published $PACKAGE_NAME@$VERSION to NPM with latest tag"
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Verify NPM Package
+              if: steps.check_published.outputs.already_published != 'true'
+              run: |
+                  cd packages/blend
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  VERSION="${{ steps.verify_version.outputs.version }}"
+
+                  echo "Verifying published package..."
+                  sleep 10  # Wait for NPM to propagate
+
+                  PUBLISHED_VERSION=$(npm view "$PACKAGE_NAME@latest" version 2>/dev/null || echo "")
+                  if [[ "$PUBLISHED_VERSION" == "$VERSION" ]]; then
+                    echo "✅ Successfully verified: $PACKAGE_NAME@$VERSION is live on NPM with latest tag"
+                  else
+                    echo "⚠️  Warning: Expected $VERSION but NPM shows $PUBLISHED_VERSION for latest tag"
+                  fi
+
+            - name: Update Release Notes
+              if: steps.check_published.outputs.already_published != 'true'
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: v${{ steps.verify_version.outputs.version }}
+                  name: Release v${{ steps.verify_version.outputs.version }}
+                  body: |
+                      # Release v${{ steps.verify_version.outputs.version }}
+
+                      🎉 **Stable release published to NPM!**
+
+                      ## Installation
+                      ```bash
+                      npm install @juspay/blend-design-system@latest
+                      # or
+                      npm install @juspay/blend-design-system@${{ steps.verify_version.outputs.version }}
+                      ```
+
+                      ## NPM Package Info
+                      - **Package**: `@juspay/blend-design-system`
+                      - **Version**: `${{ steps.verify_version.outputs.version }}`
+                      - **Tag**: `latest`
+                      - **Published**: $(date -u)
+
+                      ## What's Changed
+                      This stable release includes all changes from the corresponding beta version.
+
+                      ---
+
+                      **Full Changelog**: https://github.com/juspay/blend-design-system/releases
+                  draft: false
+                  prerelease: false
+
+            - name: Skip Publishing (Already Published)
+              if: steps.check_published.outputs.already_published == 'true'
+              run: |
+                  echo "Version ${{ steps.verify_version.outputs.version }} is already published on NPM"
+                  echo "Skipping publish step"
+
+            - name: Create Success Summary
+              if: steps.check_published.outputs.already_published != 'true'
+              run: |
+                  echo "## 🎉 Stable Release Published Successfully!" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "**Package**: \`@juspay/blend-design-system\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**Version**: \`${{ steps.verify_version.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**NPM Tag**: \`latest\`" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Installation" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+                  echo "npm install @juspay/blend-design-system@latest" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+                  echo "- ✅ Stable version is now live on NPM" >> $GITHUB_STEP_SUMMARY
+                  echo "- ✅ GitHub release updated with NPM info" >> $GITHUB_STEP_SUMMARY
+                  echo "- 🔄 Merge the auto-created backmerge PR to sync main → dev" >> $GITHUB_STEP_SUMMARY

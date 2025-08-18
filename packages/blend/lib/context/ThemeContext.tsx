@@ -89,7 +89,7 @@ import {
     type ResponsiveTableTokens,
 } from '../components/DataTable/dataTable.tokens'
 import {
-    type CalendarTokenType,
+    type ResponsiveCalendarTokens,
     getCalendarToken,
 } from '../components/DateRangePicker/dateRangePicker.tokens'
 import {
@@ -116,6 +116,10 @@ import {
     getChartTokens,
     ResponsiveChartTokens,
 } from '../components/Charts/chart.tokens'
+import {
+    getSnackbarTokens,
+    ResponsiveSnackbarTokens,
+} from '../components/Snackbar/snackbar.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -141,12 +145,13 @@ export type ComponentTokenType = {
     MULTI_SELECT?: ResponsiveMultiSelectTokens
     SINGLE_SELECT?: ResponsiveSingleSelectTokens
     TABLE?: ResponsiveTableTokens
-    CALENDAR?: CalendarTokenType
+    CALENDAR?: ResponsiveCalendarTokens
     ACCORDION?: ResponsiveAccordionTokens
     STAT_CARD?: ResponsiveStatCardTokens
     PROGRESS_BAR?: ProgressBarTokenType
     DRAWER?: DrawerTokensType
     CHARTS?: ResponsiveChartTokens
+    SNACKBAR?: ResponsiveSnackbarTokens
 }
 
 type ThemeContextType = {
@@ -187,6 +192,7 @@ const ThemeContext = createContext<ThemeContextType>({
         PROGRESS_BAR: progressBarTokens,
         DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
         CHARTS: getChartTokens(FOUNDATION_THEME),
+        SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

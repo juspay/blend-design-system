@@ -21,13 +21,14 @@ import type { PopoverTokenType } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
-import type { CalendarTokenType } from '../components/DateRangePicker/dateRangePicker.tokens'
+import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
 import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
 import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
 import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
 import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
+import { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -55,12 +56,13 @@ export const useComponentToken = (
     | ResponsiveMultiSelectTokens
     | ResponsiveSingleSelectTokens
     | ResponsiveTableTokens
-    | CalendarTokenType
+    | ResponsiveCalendarTokens
     | ResponsiveAccordionTokens
     | ResponsiveStatCardTokens
     | ProgressBarTokenType
     | DrawerTokensType
-    | ResponsiveChartTokens => {
+    | ResponsiveChartTokens
+    | ResponsiveSnackbarTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -122,6 +124,8 @@ export const useComponentToken = (
             return componentTokens.SINGLE_SELECT
         case 'CHARTS':
             return componentTokens.CHARTS
+        case 'SNACKBAR':
+            return componentTokens.SNACKBAR
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

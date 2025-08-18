@@ -16,23 +16,21 @@ import QuickRangeSelector from './QuickRangeSelector'
 import TimeSelector from './TimeSelector'
 import MobileDrawerPresets from './MobileDrawerPresets'
 import { CalendarTokenType } from './dateRangePicker.tokens'
-import { SwitchSize } from '../Switch/types'
-import { Switch } from '../Switch/Switch'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
 import { Popover } from '../Popover'
-import { TextInput } from '../Inputs/TextInput'
-import { useComponentToken } from '../../context/useComponentToken'
+import { TextInput, TextInputSize } from '../Inputs/TextInput'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { ButtonType, ButtonSize, Button } from '../../main'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 type DateInputsSectionProps = {
     startDate: string
     endDate: string
     startTime: string
     endTime: string
-    showTimePicker: boolean
+    showDateTimePicker: boolean
     allowSingleDateSelection: boolean
     selectedRange: DateRange
     startDateValidation: DateValidationResult
@@ -49,7 +47,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
     endDate,
     startTime,
     endTime,
-    showTimePicker,
+    showDateTimePicker,
     allowSingleDateSelection,
     selectedRange,
     startDateValidation,
@@ -61,7 +59,11 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
     calendarToken,
 }) => (
     <Block padding={calendarToken.calendar.inputs.padding}>
-        <Block display="flex" flexDirection="column">
+        <Block
+            display="flex"
+            flexDirection="column"
+            gap={calendarToken.calendar.inputs.dateInput.gap}
+        >
             <Block
                 display="flex"
                 gap={calendarToken.calendar.inputs.dateInput.gap}
@@ -70,10 +72,15 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                 <PrimitiveText
                     as="span"
                     color={calendarToken.calendar.inputs.dateInput.label.color}
+                    fontWeight={
+                        calendarToken.calendar.inputs.dateInput.label.fontWeight
+                    }
+                    fontSize={
+                        calendarToken.calendar.inputs.dateInput.label.fontSize
+                    }
                     style={{
                         minWidth:
-                            calendarToken.calendar.inputs.dateInput.label
-                                .minWidth,
+                            calendarToken.calendar.inputs.dateInput.label.width,
                     }}
                 >
                     Start
@@ -91,13 +98,17 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             value={startDate}
                             onChange={onStartDateChange}
                             error={!startDateValidation.isValid}
-                            errorMessage={startDateValidation.message}
+                            size={TextInputSize.SMALL}
+                            autoFocus={false}
+                            tabIndex={-1}
                         />
                     </Block>
-                    {showTimePicker && (
+                    {showDateTimePicker && (
                         <TimeSelector
                             value={startTime}
                             onChange={onStartTimeChange}
+                            autoFocus={false}
+                            tabIndex={-1}
                         />
                     )}
                 </Block>
@@ -120,7 +131,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                         style={{
                             minWidth:
                                 calendarToken.calendar.inputs.dateInput.label
-                                    .minWidth,
+                                    .width,
                         }}
                     >
                         End
@@ -138,13 +149,17 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 value={endDate}
                                 onChange={onEndDateChange}
                                 error={!endDateValidation.isValid}
-                                errorMessage={endDateValidation.message}
+                                size={TextInputSize.SMALL}
+                                autoFocus={false}
+                                tabIndex={-1}
                             />
                         </Block>
-                        {showTimePicker && (
+                        {showDateTimePicker && (
                             <TimeSelector
                                 value={endTime}
                                 onChange={onEndTimeChange}
+                                autoFocus={false}
+                                tabIndex={-1}
                             />
                         )}
                     </Block>
@@ -161,6 +176,7 @@ type CalendarSectionProps = {
     disableFutureDates: boolean
     disablePastDates: boolean
     onDateSelect: (range: DateRange) => void
+    showDateTimePicker: boolean
 }
 
 const CalendarSection: React.FC<CalendarSectionProps> = ({
@@ -170,6 +186,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
     disableFutureDates,
     disablePastDates,
     onDateSelect,
+    showDateTimePicker,
 }) => (
     <Block>
         <CalendarGrid
@@ -179,21 +196,18 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
             allowSingleDateSelection={allowSingleDateSelection}
             disableFutureDates={disableFutureDates}
             disablePastDates={disablePastDates}
+            showDateTimePicker={showDateTimePicker}
         />
     </Block>
 )
 
 type FooterControlsProps = {
-    showTimePicker: boolean
-    onTimePickerToggle: (checked: boolean) => void
     onCancel: () => void
     onApply: () => void
     calendarToken: CalendarTokenType
 }
 
 const FooterControls: React.FC<FooterControlsProps> = ({
-    showTimePicker,
-    onTimePickerToggle,
     onCancel,
     onApply,
     calendarToken,
@@ -201,30 +215,10 @@ const FooterControls: React.FC<FooterControlsProps> = ({
     <Block
         display="flex"
         alignItems="center"
-        justifyContent="space-between"
+        justifyContent="flex-end"
         padding={calendarToken.calendar.footer.padding}
         borderTop={calendarToken.calendar.footer.borderTop}
     >
-        <Block
-            display="flex"
-            alignItems="center"
-            gap={calendarToken.calendar.footer.timerange.gap}
-        >
-            <Switch
-                checked={showTimePicker}
-                onChange={onTimePickerToggle}
-                size={SwitchSize.MEDIUM}
-            />
-            <Block
-                as="span"
-                color={calendarToken.calendar.footer.timerange.color}
-                fontWeight={calendarToken.calendar.footer.timerange.fontWeight}
-                fontSize={calendarToken.calendar.footer.timerange.fontSize}
-            >
-                Time Ranges
-            </Block>
-        </Block>
-
         <Block display="flex" gap={calendarToken.calendar.footer.button.gap}>
             <Button
                 buttonType={ButtonType.SECONDARY}
@@ -247,7 +241,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         {
             value,
             onChange,
-            showTimePicker = false,
+            showDateTimePicker = true,
             showPresets = true,
             isDisabled = false,
             dateFormat = 'dd/MM/yyyy',
@@ -264,9 +258,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const [popoverKey, setPopoverKey] = useState(0)
         const [isQuickRangeOpen, setIsQuickRangeOpen] = useState(false)
         const [drawerOpen, setDrawerOpen] = useState(false)
-        const [showTimePickerState, setShowTimePickerState] =
-            useState(showTimePicker)
-        const calendarToken = useComponentToken('CALENDAR') as CalendarTokenType
+        const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
 
@@ -608,7 +600,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             )
         }
 
-        // Render popover on desktop
         return (
             <Block ref={ref} display="flex">
                 {showPresets && (
@@ -636,24 +627,37 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     side="bottom"
                     align="start"
                     sideOffset={4}
+                    shadow="xs"
                 >
-                    <Block style={{ ...calendarToken.calendar }}>
-                        <DateInputsSection
-                            startDate={startDate}
-                            endDate={endDate}
-                            startTime={startTime}
-                            endTime={endTime}
-                            showTimePicker={showTimePickerState}
-                            allowSingleDateSelection={allowSingleDateSelection}
-                            selectedRange={selectedRange}
-                            startDateValidation={startDateValidation}
-                            endDateValidation={endDateValidation}
-                            onStartDateChange={handleStartDateChangeCallback}
-                            onEndDateChange={handleEndDateChangeCallback}
-                            onStartTimeChange={handleStartTimeChangeCallback}
-                            onEndTimeChange={handleEndTimeChangeCallback}
-                            calendarToken={calendarToken}
-                        />
+                    <Block
+                        style={{
+                            ...calendarToken.calendar,
+                        }}
+                    >
+                        {showDateTimePicker && (
+                            <DateInputsSection
+                                startDate={startDate}
+                                endDate={endDate}
+                                startTime={startTime}
+                                endTime={endTime}
+                                showDateTimePicker={showDateTimePicker}
+                                allowSingleDateSelection={
+                                    allowSingleDateSelection
+                                }
+                                selectedRange={selectedRange}
+                                startDateValidation={startDateValidation}
+                                endDateValidation={endDateValidation}
+                                onStartDateChange={
+                                    handleStartDateChangeCallback
+                                }
+                                onEndDateChange={handleEndDateChangeCallback}
+                                onStartTimeChange={
+                                    handleStartTimeChangeCallback
+                                }
+                                onEndTimeChange={handleEndTimeChangeCallback}
+                                calendarToken={calendarToken}
+                            />
+                        )}
 
                         <CalendarSection
                             selectedRange={selectedRange}
@@ -662,11 +666,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             disableFutureDates={disableFutureDates}
                             disablePastDates={disablePastDates}
                             onDateSelect={handleDateSelectCallback}
+                            showDateTimePicker={showDateTimePicker}
                         />
 
                         <FooterControls
-                            showTimePicker={showTimePickerState}
-                            onTimePickerToggle={setShowTimePickerState}
                             onCancel={handleCancel}
                             onApply={handleApply}
                             calendarToken={calendarToken}

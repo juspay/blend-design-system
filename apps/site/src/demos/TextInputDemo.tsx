@@ -21,6 +21,7 @@ const InputDemo = () => {
     const sizeOptions = [
         { value: TextInputSize.MEDIUM, label: 'Medium' },
         { value: TextInputSize.LARGE, label: 'Large' },
+        { value: TextInputSize.SMALL, label: 'Small' },
     ]
 
     const leftSlotOptions = [

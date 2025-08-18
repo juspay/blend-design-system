@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { MultiSelect } from '../../../../packages/blend/lib/components/MultiSelect'
+import {
+    MultiSelect,
+    MultiSelectMenuSize,
+} from '../../../../packages/blend/lib/components/MultiSelect'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Star } from 'lucide-react'
-import { MultiSelectMenuSize } from '@juspay/blend-design-system'
 
 // Sample data for the selects
 const countryOptions = [

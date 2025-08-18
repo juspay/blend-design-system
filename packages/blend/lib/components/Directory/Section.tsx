@@ -1,17 +1,25 @@
 import React from 'react'
 import type { SectionProps } from './types'
-import { ChevronRight } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import NavItem from './NavItem'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import styled from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 
-const ChevronIcon = styled(ChevronRight)<{ $isOpen: boolean }>`
-    width: 16px;
-    height: 16px;
-    transition: transform 150ms;
-    transform: ${({ $isOpen }) => ($isOpen ? 'rotate(-90deg)' : 'rotate(0)')};
+const ChevronWrapper = styled(Block)<{ $isOpen: boolean }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+
+    & > svg {
+        width: 16px;
+        height: 16px;
+        transition: transform 150ms;
+        transform: ${({ $isOpen }) =>
+            $isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+    }
 `
 
 const Section = ({
@@ -96,6 +104,9 @@ const Section = ({
 
     return (
         <Block
+            display="flex"
+            flexDirection="column"
+            gap="4px"
             width="100%"
             padding="12px 8px"
             ref={sectionRef}
@@ -104,16 +115,11 @@ const Section = ({
         >
             {section.label && (
                 <Block
-                    height="32px"
                     display="flex"
                     alignItems="center"
                     gap="8px"
-                    marginBottom="8px"
-                    padding="0 12px"
+                    padding="2px 12px"
                     // userSelect="none"
-                    _focus={{
-                        backgroundColor: FOUNDATION_THEME.colors.gray[100],
-                    }}
                     cursor={isCollapsible ? 'pointer' : undefined}
                     ref={headerRef}
                     // $isCollapsible={isCollapsible}
@@ -136,7 +142,11 @@ const Section = ({
                         {section.label.toUpperCase()}
                     </Text>
                     {isCollapsible && (
-                        <ChevronIcon $isOpen={isOpen} aria-hidden="true" />
+                        <ChevronWrapper $isOpen={isOpen} aria-hidden="true">
+                            <ChevronDown
+                                color={FOUNDATION_THEME.colors.gray[400]}
+                            />
+                        </ChevronWrapper>
                     )}
                 </Block>
             )}

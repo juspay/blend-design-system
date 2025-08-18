@@ -168,12 +168,12 @@ export const getChartTokens = (
             },
             header: {
                 padding: {
-                    sm: foundationToken.unit[12],
-                    md: foundationToken.unit[16],
-                    lg: foundationToken.unit[20],
+                    sm: ` ${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
+                    md: ` ${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
+                    lg: ` ${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
                 },
                 gap: foundationToken.unit[12],
-                backgroundColor: 'transparent',
+                backgroundColor: foundationToken.colors.gray[25],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 minHeight: foundationToken.unit[48],
             },
@@ -312,12 +312,12 @@ export const getChartTokens = (
             },
             header: {
                 padding: {
-                    sm: foundationToken.unit[12],
-                    md: foundationToken.unit[16],
-                    lg: foundationToken.unit[20],
+                    sm: ` ${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
+                    md: ` ${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
+                    lg: ` ${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
                 },
                 gap: foundationToken.unit[12],
-                backgroundColor: 'transparent',
+                backgroundColor: foundationToken.colors.gray[25],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 minHeight: foundationToken.unit[48],
             },
