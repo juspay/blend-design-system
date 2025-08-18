@@ -11,10 +11,9 @@ import {
     DrawerBody,
     DrawerTitle,
 } from '../../Drawer'
-import { Checkbox } from '../../Checkbox'
-import { CheckboxSize } from '../../Checkbox/types'
 import { Button, ButtonType, ButtonSize } from '../../Button'
-import { SearchInput } from '../../Inputs'
+import { MultiSelect } from '../../MultiSelect'
+import { MultiSelectMenuGroupType } from '../../MultiSelect/types'
 
 export interface MobileColumnManagerDrawerProps<
     T extends Record<string, unknown>,
@@ -29,69 +28,59 @@ export interface MobileColumnManagerDrawerProps<
 const MobileColumnManagerDrawer: React.FC<
     MobileColumnManagerDrawerProps<Record<string, unknown>>
 > = ({ isOpen, onClose, columns, visibleColumns, onColumnChange }) => {
-    const [searchQuery, setSearchQuery] = useState('')
-    const [tempVisibleColumns, setTempVisibleColumns] =
-        useState<ColumnDefinition<Record<string, unknown>>[]>(visibleColumns)
+    const [selectedValues, setSelectedValues] = useState<string[]>(() =>
+        visibleColumns.map((col) => String(col.field))
+    )
 
-    // Filter columns based on search query
-    const filteredColumns = useMemo(() => {
-        if (!searchQuery.trim()) {
-            return columns
-        }
-        return columns.filter(
-            (column) =>
-                column.header
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase()) ||
-                (column.headerSubtext &&
-                    column.headerSubtext
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase()))
-        )
-    }, [columns, searchQuery])
+    const multiSelectItems: MultiSelectMenuGroupType[] = useMemo(() => {
+        return [
+            {
+                groupLabel: 'Available Columns',
+                items: columns.map((column) => ({
+                    label: column.header,
+                    value: String(column.field),
+                    subLabel: column.headerSubtext,
+                })),
+                showSeparator: false,
+            },
+        ]
+    }, [columns])
 
-    // Handle column toggle
-    const handleColumnToggle = (
-        column: ColumnDefinition<Record<string, unknown>>
-    ) => {
-        const isCurrentlyVisible = tempVisibleColumns.some(
-            (col) => col.field === column.field
-        )
-
-        if (isCurrentlyVisible) {
-            // Remove column
-            setTempVisibleColumns((prev) =>
-                prev.filter((col) => col.field !== column.field)
-            )
-        } else {
-            // Add column
-            setTempVisibleColumns((prev) => [...prev, column])
-        }
+    // Handle MultiSelect change
+    const handleMultiSelectChange = (value: string) => {
+        setSelectedValues((prev) => {
+            if (prev.includes(value)) {
+                return prev.filter((v) => v !== value)
+            } else {
+                return [...prev, value]
+            }
+        })
     }
 
     // Handle clear all
     const handleClearAll = () => {
-        setTempVisibleColumns([])
+        setSelectedValues([])
     }
 
     // Handle apply changes
     const handleApply = () => {
-        onColumnChange(tempVisibleColumns)
+        const newVisibleColumns = columns.filter((col) =>
+            selectedValues.includes(String(col.field))
+        )
+        onColumnChange(newVisibleColumns)
         onClose()
     }
 
     // Handle cancel
     const handleCancel = () => {
-        setTempVisibleColumns(visibleColumns)
-        setSearchQuery('')
+        setSelectedValues(visibleColumns.map((col) => String(col.field)))
         onClose()
     }
 
     // Reset temp state when drawer opens
     React.useEffect(() => {
         if (isOpen) {
-            setTempVisibleColumns(visibleColumns)
-            setSearchQuery('')
+            setSelectedValues(visibleColumns.map((col) => String(col.field)))
         }
     }, [isOpen, visibleColumns])
 
@@ -136,172 +125,20 @@ const MobileColumnManagerDrawer: React.FC<
                         >
                             <Block
                                 padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[20]} ${FOUNDATION_THEME.unit[16]} ${FOUNDATION_THEME.unit[20]}`}
-                            >
-                                <SearchInput
-                                    placeholder="Search"
-                                    value={searchQuery}
-                                    onChange={(
-                                        e: React.ChangeEvent<HTMLInputElement>
-                                    ) => setSearchQuery(e.target.value)}
-                                />
-                            </Block>
-
-                            <Block
                                 style={{ flex: 1 }}
-                                overflow="auto"
-                                padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[20]}`}
                             >
-                                {filteredColumns.map((column) => {
-                                    const isVisible = tempVisibleColumns.some(
-                                        (col) => col.field === column.field
-                                    )
-
-                                    return (
-                                        <Block
-                                            key={String(column.field)}
-                                            display="flex"
-                                            alignItems="center"
-                                            justifyContent="space-between"
-                                            padding={`${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[0]}`}
-                                            style={{
-                                                borderBottom: `1px solid ${FOUNDATION_THEME.colors.gray[100]}`,
-                                                cursor: 'pointer',
-                                            }}
-                                            onClick={() =>
-                                                handleColumnToggle(column)
-                                            }
-                                        >
-                                            <Block
-                                                display="flex"
-                                                alignItems="center"
-                                                gap={FOUNDATION_THEME.unit[12]}
-                                                style={{ flex: 1 }}
-                                                minWidth={0}
-                                            >
-                                                {/* Column Icon/Placeholder */}
-                                                <Block
-                                                    width={
-                                                        FOUNDATION_THEME
-                                                            .unit[24]
-                                                    }
-                                                    height={
-                                                        FOUNDATION_THEME
-                                                            .unit[24]
-                                                    }
-                                                    backgroundColor={
-                                                        FOUNDATION_THEME.colors
-                                                            .purple[100]
-                                                    }
-                                                    borderRadius={
-                                                        FOUNDATION_THEME.border
-                                                            .radius[4]
-                                                    }
-                                                    display="flex"
-                                                    alignItems="center"
-                                                    justifyContent="center"
-                                                    flexShrink={0}
-                                                >
-                                                    <Block
-                                                        width={
-                                                            FOUNDATION_THEME
-                                                                .unit[12]
-                                                        }
-                                                        height={
-                                                            FOUNDATION_THEME
-                                                                .unit[12]
-                                                        }
-                                                        backgroundColor={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .purple[400]
-                                                        }
-                                                        borderRadius={
-                                                            FOUNDATION_THEME
-                                                                .border
-                                                                .radius[2]
-                                                        }
-                                                    />
-                                                </Block>
-
-                                                {/* Column Info */}
-                                                <Block
-                                                    display="flex"
-                                                    flexDirection="column"
-                                                    minWidth={0}
-                                                    style={{ flex: 1 }}
-                                                >
-                                                    <PrimitiveText
-                                                        fontSize={
-                                                            FOUNDATION_THEME
-                                                                .font.size.body
-                                                                .md.fontSize
-                                                        }
-                                                        fontWeight={
-                                                            FOUNDATION_THEME
-                                                                .font
-                                                                .weight[500]
-                                                        }
-                                                        color={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[900]
-                                                        }
-                                                        style={{
-                                                            overflow: 'hidden',
-                                                            textOverflow:
-                                                                'ellipsis',
-                                                            whiteSpace:
-                                                                'nowrap',
-                                                        }}
-                                                    >
-                                                        {column.header}
-                                                    </PrimitiveText>
-                                                    {column.headerSubtext && (
-                                                        <PrimitiveText
-                                                            fontSize={
-                                                                FOUNDATION_THEME
-                                                                    .font.size
-                                                                    .body.sm
-                                                                    .fontSize
-                                                            }
-                                                            fontWeight={
-                                                                FOUNDATION_THEME
-                                                                    .font
-                                                                    .weight[400]
-                                                            }
-                                                            color={
-                                                                FOUNDATION_THEME
-                                                                    .colors
-                                                                    .gray[500]
-                                                            }
-                                                            style={{
-                                                                overflow:
-                                                                    'hidden',
-                                                                textOverflow:
-                                                                    'ellipsis',
-                                                                whiteSpace:
-                                                                    'nowrap',
-                                                            }}
-                                                        >
-                                                            {
-                                                                column.headerSubtext
-                                                            }
-                                                        </PrimitiveText>
-                                                    )}
-                                                </Block>
-                                            </Block>
-
-                                            {/* Checkbox */}
-                                            <Checkbox
-                                                checked={isVisible}
-                                                onCheckedChange={() =>
-                                                    handleColumnToggle(column)
-                                                }
-                                                size={CheckboxSize.MEDIUM}
-                                            />
-                                        </Block>
-                                    )
-                                })}
+                                <MultiSelect
+                                    label="Select Columns"
+                                    placeholder="Choose columns to display"
+                                    selectedValues={selectedValues}
+                                    onChange={handleMultiSelectChange}
+                                    items={multiSelectItems}
+                                    enableSearch={true}
+                                    searchPlaceholder="Search columns..."
+                                    enableSelectAll={true}
+                                    selectAllText="Select All Columns"
+                                    useDrawerOnMobile={true}
+                                />
                             </Block>
 
                             <Block
@@ -317,18 +154,16 @@ const MobileColumnManagerDrawer: React.FC<
                                         buttonType={ButtonType.SECONDARY}
                                         size={ButtonSize.MEDIUM}
                                         onClick={handleClearAll}
-                                    >
-                                        Clear All
-                                    </Button>
+                                        text="Clear All"
+                                    />
                                 </Block>
                                 <Block style={{ flex: 2 }}>
                                     <Button
                                         buttonType={ButtonType.PRIMARY}
                                         size={ButtonSize.MEDIUM}
                                         onClick={handleApply}
-                                    >
-                                        Apply
-                                    </Button>
+                                        text="Apply"
+                                    />
                                 </Block>
                             </Block>
                         </Block>

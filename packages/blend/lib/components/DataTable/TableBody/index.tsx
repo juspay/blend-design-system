@@ -475,6 +475,9 @@ const TableBody = forwardRef<
                                                           tableToken.dataTable
                                                               .table.body.cell
                                                               .fontSize,
+                                                      padding:
+                                                          FOUNDATION_THEME
+                                                              .unit[16],
                                                   }}
                                               >
                                                   <Block

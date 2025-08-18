@@ -736,6 +736,15 @@ const DataTable = forwardRef(
                                     enableRowExpansion={enableRowExpansion}
                                     enableRowSelection={enableRowSelection}
                                     data={data}
+                                    mobileConfig={mobileConfig}
+                                    mobileOverflowColumns={
+                                        mobileOverflowColumns as ColumnDefinition<
+                                            Record<string, unknown>
+                                        >[]
+                                    }
+                                    onMobileOverflowClick={(row) =>
+                                        handleMobileOverflowClick(row as T)
+                                    }
                                     onSort={handleSort}
                                     onSelectAll={handleSelectAll}
                                     onColumnChange={(columns) =>

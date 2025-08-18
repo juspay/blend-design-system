@@ -10,7 +10,6 @@ import { CheckboxSize } from '../../Checkbox/types'
 import { ColumnManager } from '../ColumnManager'
 import { TableTokenType } from '../dataTable.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import { useMobileDataTable } from '../hooks/useMobileDataTable'
 
 import { TableHeaderProps } from './types'
 import { SortDirection } from '../types'
@@ -59,6 +58,9 @@ const TableHeader = forwardRef<
             enableRowSelection = true,
             data,
             columnFreeze = 0,
+            mobileConfig,
+            mobileOverflowColumns = [],
+            onMobileOverflowClick,
             onSort,
             onSelectAll,
             onColumnChange,
@@ -68,7 +70,6 @@ const TableHeader = forwardRef<
         },
         ref
     ) => {
-        const mobileConfig = useMobileDataTable()
         const [editingField, setEditingField] = useState<string | null>(null)
         const [hoveredField, setHoveredField] = useState<string | null>(null)
         const [localColumns, setLocalColumns] = useState(visibleColumns)
@@ -500,22 +501,22 @@ const TableHeader = forwardRef<
                     })}
 
                     {/* Mobile overflow column header - empty cell for alignment */}
-                    {mobileConfig?.enableColumnOverflow && (
-                        <th
-                            style={{
-                                ...tableToken.dataTable.table.header.cell,
-                                width: '40px',
-                                minWidth: '40px',
-                                maxWidth: '40px',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                boxSizing: 'border-box',
-                            }}
-                        >
-                            {/* Empty cell to match mobile overflow column in body */}
-                        </th>
-                    )}
+                    {mobileConfig?.enableColumnOverflow &&
+                        mobileOverflowColumns.length > 0 &&
+                        onMobileOverflowClick && (
+                            <th
+                                style={{
+                                    ...tableToken.dataTable.table.header.cell,
+                                    width: '40px',
+                                    minWidth: '40px',
+                                    maxWidth: '40px',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    boxSizing: 'border-box',
+                                }}
+                            ></th>
+                        )}
 
                     {enableInlineEdit && (
                         <th

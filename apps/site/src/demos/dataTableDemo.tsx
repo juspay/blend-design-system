@@ -701,7 +701,7 @@ const SimpleDataTableExample = () => {
                 enableInlineEdit={false}
                 enableRowExpansion={false}
                 enableRowSelection={true}
-                enableColumnManager={false}
+                enableColumnManager={true}
                 columnFreeze={0}
                 mobileColumnsToShow={2}
                 pagination={{

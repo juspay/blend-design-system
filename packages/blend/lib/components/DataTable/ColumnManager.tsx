@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Checkbox } from '../Checkbox'
 import { CheckboxSize } from '../Checkbox/types'
@@ -6,12 +7,17 @@ import { MenuAlignment } from '../Menu/types'
 import { Button, ButtonSize, ButtonType } from '../Button'
 import Block from '../Primitives/Block/Block'
 import { ColumnManagerProps } from './types'
+import { useMobileDataTable } from './hooks/useMobileDataTable'
+import MobileColumnManagerDrawer from './MobileColumnManagerDrawer'
 
 export const ColumnManager = <T extends Record<string, unknown>>({
     columns,
     visibleColumns,
     onColumnChange,
 }: ColumnManagerProps<T>) => {
+    const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
+    const mobileConfig = useMobileDataTable()
+
     const toggleColumnVisibility = (field: keyof T) => {
         const isCurrentlyVisible = visibleColumns.some(
             (col) => col.field === field
@@ -60,20 +66,44 @@ export const ColumnManager = <T extends Record<string, unknown>>({
         },
     ]
 
+    const handleButtonClick = () => {
+        if (mobileConfig.isMobile) {
+            setMobileDrawerOpen(true)
+        }
+    }
+
     return (
         <Block>
-            <Menu
-                alignment={MenuAlignment.END}
-                enableSearch={false}
-                trigger={
+            {mobileConfig.isMobile ? (
+                <>
                     <Button
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
                         leadingIcon={<Plus />}
+                        onClick={handleButtonClick}
                     />
-                }
-                items={menuItems}
-            />
+                    <MobileColumnManagerDrawer
+                        isOpen={mobileDrawerOpen}
+                        onClose={() => setMobileDrawerOpen(false)}
+                        columns={managableColumns as any}
+                        visibleColumns={visibleColumns as any}
+                        onColumnChange={onColumnChange as any}
+                    />
+                </>
+            ) : (
+                <Menu
+                    alignment={MenuAlignment.END}
+                    enableSearch={false}
+                    trigger={
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
+                            leadingIcon={<Plus />}
+                        />
+                    }
+                    items={menuItems}
+                />
+            )}
         </Block>
     )
 }
