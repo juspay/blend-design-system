@@ -72,6 +72,9 @@ export type MultiSelectProps = {
     enableSelectAll?: boolean
     selectAllText?: string
 
+    // custom trigger
+    customTrigger?: React.ReactNode
+
     // responsive behavior
     useDrawerOnMobile?: boolean
 

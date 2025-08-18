@@ -73,6 +73,7 @@ const SingleSelect = ({
     onSelect,
     enableSearch,
     slot,
+    customTrigger,
     useDrawerOnMobile = true,
     alignment,
     side,
@@ -135,26 +136,28 @@ const SingleSelect = ({
                     }}
                 >
                     <DrawerTrigger>
-                        <SingleSelectTrigger
-                            singleSelectTokens={singleSelectTokens}
-                            size={size}
-                            selected={selected}
-                            label={label || ''}
-                            name={name || ''}
-                            placeholder={placeholder}
-                            required={required || false}
-                            valueLabelMap={valueLabelMap}
-                            open={drawerOpen}
-                            onClick={() => setDrawerOpen(true)}
-                            slot={slot}
-                            variant={variant}
-                            isSmallScreenWithLargeSize={
-                                isSmallScreenWithLargeSize
-                            }
-                            isItemSelected={isItemSelected}
-                            inline={inline}
-                            error={error}
-                        />
+                        {customTrigger || (
+                            <SingleSelectTrigger
+                                singleSelectTokens={singleSelectTokens}
+                                size={size}
+                                selected={selected}
+                                label={label || ''}
+                                name={name || ''}
+                                placeholder={placeholder}
+                                required={required || false}
+                                valueLabelMap={valueLabelMap}
+                                open={drawerOpen}
+                                onClick={() => setDrawerOpen(true)}
+                                slot={slot}
+                                variant={variant}
+                                isSmallScreenWithLargeSize={
+                                    isSmallScreenWithLargeSize
+                                }
+                                isItemSelected={isItemSelected}
+                                inline={inline}
+                                error={error}
+                            />
+                        )}
                     </DrawerTrigger>
 
                     <DrawerPortal>
@@ -511,175 +514,200 @@ const SingleSelect = ({
                         alignOffset={alignOffset}
                         enableSearch={enableSearch}
                         trigger={
-                            <PrimitiveButton
-                                position="relative"
-                                width={'100%'}
-                                display="flex"
-                                alignItems="center"
-                                overflow="hidden"
-                                justifyContent="space-between"
-                                gap={8}
-                                borderRadius={borderRadius}
-                                boxShadow={
-                                    singleSelectTokens.trigger.boxShadow[
-                                        variant
-                                    ]
-                                }
-                                outline={
-                                    singleSelectTokens.trigger.outline[variant][
-                                        error
-                                            ? 'error'
-                                            : open
-                                              ? 'open'
-                                              : 'closed'
-                                    ]
-                                }
-                                {...((!inline ||
-                                    variant ===
-                                        SelectMenuVariant.CONTAINER) && {
-                                    paddingX: paddingX,
-                                    paddingY: paddingY,
-                                    backgroundColor:
-                                        singleSelectTokens.trigger
-                                            .backgroundColor[variant][
+                            customTrigger || (
+                                <PrimitiveButton
+                                    position="relative"
+                                    width={'100%'}
+                                    display="flex"
+                                    alignItems="center"
+                                    overflow="hidden"
+                                    justifyContent="space-between"
+                                    gap={8}
+                                    borderRadius={borderRadius}
+                                    boxShadow={
+                                        singleSelectTokens.trigger.boxShadow[
+                                            variant
+                                        ]
+                                    }
+                                    outline={
+                                        singleSelectTokens.trigger.outline[
+                                            variant
+                                        ][
                                             error
                                                 ? 'error'
                                                 : open
                                                   ? 'open'
                                                   : 'closed'
-                                        ],
-                                    height: singleSelectTokens.trigger.height,
-                                    maxHeight:
-                                        singleSelectTokens.trigger.height,
-                                    _hover: {
-                                        outline:
-                                            singleSelectTokens.trigger.outline[
-                                                variant
-                                            ][error ? 'error' : 'hover'],
+                                        ]
+                                    }
+                                    {...((!inline ||
+                                        variant ===
+                                            SelectMenuVariant.CONTAINER) && {
+                                        paddingX: paddingX,
+                                        paddingY: paddingY,
                                         backgroundColor:
                                             singleSelectTokens.trigger
-                                                .backgroundColor.container[
-                                                error ? 'error' : 'hover'
+                                                .backgroundColor[variant][
+                                                error
+                                                    ? 'error'
+                                                    : open
+                                                      ? 'open'
+                                                      : 'closed'
                                             ],
-                                    },
-                                    _focus: {
-                                        outline:
-                                            singleSelectTokens.trigger.outline[
-                                                variant
-                                            ][error ? 'error' : 'focus'],
-                                        backgroundColor:
-                                            singleSelectTokens.trigger
-                                                .backgroundColor.container[
-                                                error ? 'error' : 'focus'
-                                            ],
-                                    },
-                                })}
-                            >
-                                <Block
-                                    display="flex"
-                                    alignItems="center"
-                                    gap={8}
+                                        height: singleSelectTokens.trigger
+                                            .height,
+                                        maxHeight:
+                                            singleSelectTokens.trigger.height,
+                                        _hover: {
+                                            outline:
+                                                singleSelectTokens.trigger
+                                                    .outline[variant][
+                                                    error ? 'error' : 'hover'
+                                                ],
+                                            backgroundColor:
+                                                singleSelectTokens.trigger
+                                                    .backgroundColor.container[
+                                                    error ? 'error' : 'hover'
+                                                ],
+                                        },
+                                        _focus: {
+                                            outline:
+                                                singleSelectTokens.trigger
+                                                    .outline[variant][
+                                                    error ? 'error' : 'focus'
+                                                ],
+                                            backgroundColor:
+                                                singleSelectTokens.trigger
+                                                    .backgroundColor.container[
+                                                    error ? 'error' : 'focus'
+                                                ],
+                                        },
+                                    })}
                                 >
-                                    {slot && (
-                                        <Block ref={slotRef} contentCentered>
-                                            {slot}
-                                        </Block>
-                                    )}
-                                    {isSmallScreenWithLargeSize &&
-                                    variant === SelectMenuVariant.CONTAINER ? (
-                                        <Block
-                                            as="span"
-                                            textAlign="left"
-                                            paddingTop={
-                                                isSmallScreenWithLargeSize &&
-                                                isItemSelected
-                                                    ? paddingY * 1.5
-                                                    : 0
-                                            }
-                                            style={{
-                                                textAlign: 'left',
-                                                flexGrow: 1,
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
-                                            }}
-                                        >
+                                    <Block
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={8}
+                                    >
+                                        {slot && (
                                             <Block
-                                                position="absolute"
-                                                top={
+                                                ref={slotRef}
+                                                contentCentered
+                                            >
+                                                {slot}
+                                            </Block>
+                                        )}
+                                        {isSmallScreenWithLargeSize &&
+                                        variant ===
+                                            SelectMenuVariant.CONTAINER ? (
+                                            <Block
+                                                as="span"
+                                                textAlign="left"
+                                                paddingTop={
+                                                    isSmallScreenWithLargeSize &&
                                                     isItemSelected
-                                                        ? toPixels(
-                                                              paddingY -
-                                                                  paddingY / 1.3
-                                                          ) +
-                                                          (!required ? 3 : 0)
-                                                        : '50%'
+                                                        ? paddingY * 1.5
+                                                        : 0
                                                 }
-                                                left={toPixels(
-                                                    paddingInlineStart
-                                                )}
-                                                height={'max-content'}
                                                 style={{
-                                                    transition:
-                                                        'all 0.2s ease-in-out',
-                                                    transform: isItemSelected
-                                                        ? 'scale(0.95)'
-                                                        : 'translateY(-50%) scale(1)',
-                                                    transformOrigin:
-                                                        'left center',
-                                                    pointerEvents: 'none',
-                                                    zIndex: 1,
+                                                    textAlign: 'left',
+                                                    flexGrow: 1,
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    whiteSpace: 'nowrap',
                                                 }}
                                             >
-                                                <FloatingLabels
-                                                    label={label || ''}
-                                                    required={required || false}
-                                                    name={name || ''}
-                                                    isFocused={isItemSelected}
-                                                />
-                                            </Block>
-                                            {selected && (
-                                                <Text
-                                                    variant="body.md"
-                                                    color={
-                                                        FOUNDATION_THEME.colors
-                                                            .gray[600]
+                                                <Block
+                                                    position="absolute"
+                                                    top={
+                                                        isItemSelected
+                                                            ? toPixels(
+                                                                  paddingY -
+                                                                      paddingY /
+                                                                          1.3
+                                                              ) +
+                                                              (!required
+                                                                  ? 3
+                                                                  : 0)
+                                                            : '50%'
                                                     }
+                                                    left={toPixels(
+                                                        paddingInlineStart
+                                                    )}
+                                                    height={'max-content'}
+                                                    style={{
+                                                        transition:
+                                                            'all 0.2s ease-in-out',
+                                                        transform:
+                                                            isItemSelected
+                                                                ? 'scale(0.95)'
+                                                                : 'translateY(-50%) scale(1)',
+                                                        transformOrigin:
+                                                            'left center',
+                                                        pointerEvents: 'none',
+                                                        zIndex: 1,
+                                                    }}
                                                 >
-                                                    {valueLabelMap[selected]}
-                                                </Text>
-                                            )}
-                                        </Block>
-                                    ) : (
-                                        <Text
-                                            variant="body.md"
+                                                    <FloatingLabels
+                                                        label={label || ''}
+                                                        required={
+                                                            required || false
+                                                        }
+                                                        name={name || ''}
+                                                        isFocused={
+                                                            isItemSelected
+                                                        }
+                                                    />
+                                                </Block>
+                                                {selected && (
+                                                    <Text
+                                                        variant="body.md"
+                                                        color={
+                                                            FOUNDATION_THEME
+                                                                .colors
+                                                                .gray[600]
+                                                        }
+                                                    >
+                                                        {
+                                                            valueLabelMap[
+                                                                selected
+                                                            ]
+                                                        }
+                                                    </Text>
+                                                )}
+                                            </Block>
+                                        ) : (
+                                            <Text
+                                                variant="body.md"
+                                                color={
+                                                    selected
+                                                        ? FOUNDATION_THEME
+                                                              .colors.gray[700]
+                                                        : FOUNDATION_THEME
+                                                              .colors.gray[600]
+                                                }
+                                                fontWeight={500}
+                                                style={{
+                                                    whiteSpace: 'nowrap',
+                                                }}
+                                            >
+                                                {selected
+                                                    ? valueLabelMap[selected]
+                                                    : placeholder}
+                                            </Text>
+                                        )}
+                                    </Block>
+                                    <Block contentCentered>
+                                        <ChevronDown
+                                            size={16}
                                             color={
-                                                selected
-                                                    ? FOUNDATION_THEME.colors
-                                                          .gray[700]
-                                                    : FOUNDATION_THEME.colors
-                                                          .gray[600]
+                                                FOUNDATION_THEME.colors
+                                                    .gray[500]
                                             }
-                                            fontWeight={500}
-                                            style={{
-                                                whiteSpace: 'nowrap',
-                                            }}
-                                        >
-                                            {selected
-                                                ? valueLabelMap[selected]
-                                                : placeholder}
-                                        </Text>
-                                    )}
-                                </Block>
-                                <Block contentCentered>
-                                    <ChevronDown
-                                        size={16}
-                                        color={
-                                            FOUNDATION_THEME.colors.gray[500]
-                                        }
-                                    />
-                                </Block>
-                            </PrimitiveButton>
+                                        />
+                                    </Block>
+                                </PrimitiveButton>
+                            )
                         }
                     />
                 </Block>

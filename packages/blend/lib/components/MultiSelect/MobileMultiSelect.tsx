@@ -315,6 +315,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     size = MultiSelectMenuSize.MEDIUM,
     enableSelectAll = false,
     selectAllText = 'Select All',
+    customTrigger,
     onBlur,
     onFocus,
     error,
@@ -353,24 +354,26 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                 }}
             >
                 <DrawerTrigger>
-                    <MultiSelectTrigger
-                        onChange={onChange}
-                        name={name || ''}
-                        label={label}
-                        placeholder={placeholder}
-                        required={required || false}
-                        selectionTagType={selectionTagType}
-                        valueLabelMap={valueLabelMap}
-                        open={false}
-                        variant={variant}
-                        size={size}
-                        isSmallScreen={isSmallScreen}
-                        selectedValues={selectedValues}
-                        slot={slot}
-                        onClick={() => setDrawerOpen(true)}
-                        multiSelectTokens={multiSelectTokens}
-                        error={error}
-                    />
+                    {customTrigger || (
+                        <MultiSelectTrigger
+                            onChange={onChange}
+                            name={name || ''}
+                            label={label}
+                            placeholder={placeholder}
+                            required={required || false}
+                            selectionTagType={selectionTagType}
+                            valueLabelMap={valueLabelMap}
+                            open={false}
+                            variant={variant}
+                            size={size}
+                            isSmallScreen={isSmallScreen}
+                            selectedValues={selectedValues}
+                            slot={slot}
+                            onClick={() => setDrawerOpen(true)}
+                            multiSelectTokens={multiSelectTokens}
+                            error={error}
+                        />
+                    )}
                 </DrawerTrigger>
 
                 <DrawerPortal>
