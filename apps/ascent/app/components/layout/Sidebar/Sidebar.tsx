@@ -52,7 +52,20 @@ const SidebarItem = ({
     const pathname = usePathname()
 
     // Handle special case for home in changelog only
+    // Encode each segment of the path to prevent XSS
+    const encodePath = (path: string) =>
+        path
+            .split('/')
+            .map((segment) => encodeURIComponent(segment))
+            .join('/')
+
     const href =
+        baseRoute === '/changelog' && item.name === 'home'
+            ? '/changelog'
+            : `${baseRoute}/${encodePath(item.path)}`
+
+    // Use unencoded path for active state comparison
+    const unEncodedHref =
         baseRoute === '/changelog' && item.name === 'home'
             ? '/changelog'
             : `${baseRoute}/${item.path}`
@@ -62,10 +75,12 @@ const SidebarItem = ({
         pathname.endsWith('/') && pathname !== '/'
             ? pathname.slice(0, -1)
             : pathname
-    const normalizedHref =
-        href.endsWith('/') && href !== '/' ? href.slice(0, -1) : href
+    const normalizedUnEncodedHref =
+        unEncodedHref.endsWith('/') && unEncodedHref !== '/'
+            ? unEncodedHref.slice(0, -1)
+            : unEncodedHref
 
-    const isActive = normalizedPathname === normalizedHref
+    const isActive = normalizedPathname === normalizedUnEncodedHref
 
     if (item.children && item.children.length > 0) {
         const isComponents = item.name.toLowerCase() === 'components'

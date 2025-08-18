@@ -162,9 +162,9 @@ export const ChangelogEntry = ({
                         ))}
                     </div>
                 )}
-                <p className="text-sm text-[var(--muted-foreground)] leading-relaxed">
+                <div className="text-sm text-[var(--muted-foreground)] leading-relaxed">
                     {children}
-                </p>
+                </div>
             </div>
         </div>
     )
