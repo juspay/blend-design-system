@@ -89,7 +89,7 @@ export async function generateStaticParams() {
         return mdxFiles.map((file) => ({
             slug: [file.replace('.mdx', '')],
         }))
-    } catch (error) {
+    } catch {
         return []
     }
 }

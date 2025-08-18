@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import React from 'react'
 import { usePathname } from 'next/navigation'
-import { BookOpen, Palette, ChevronRight, Home, Tag, Clock } from 'lucide-react'
 import { DocItem } from '../../../docs/utils/scanDirectory'
 
 const capitalize = (str: string) => {
@@ -11,28 +10,6 @@ const capitalize = (str: string) => {
         .split('-')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ')
-}
-
-const getSectionIcon = (name: string) => {
-    const iconProps = {
-        size: 16,
-        className: 'text-[var(--sidebar-section-text)]',
-    }
-
-    switch (name.toLowerCase()) {
-        case 'getting-started':
-            return <Home {...iconProps} />
-        case 'guides':
-            return <BookOpen {...iconProps} />
-        case 'foundations':
-            return <Palette {...iconProps} />
-        default:
-            // For version entries (v0.0.12, etc.)
-            if (name.startsWith('v')) {
-                return <Tag {...iconProps} />
-            }
-            return <Clock {...iconProps} />
-    }
 }
 
 interface SidebarProps {
