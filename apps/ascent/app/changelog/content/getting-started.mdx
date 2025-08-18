@@ -1,0 +1,150 @@
+---
+title: 'Getting Started'
+description: 'Learn how to use and contribute to the Blend Design System changelog'
+---
+
+# Getting Started with Blend Changelog
+
+Welcome to the Blend Design System changelog! This page will help you understand how to read, use, and contribute to our changelog system.
+
+## 📖 How to Read Changelogs
+
+Our changelog follows a structured format to make it easy to understand what changed in each release:
+
+### Version Information
+
+Each changelog entry includes:
+
+- **Version Number**: Following semantic versioning (e.g., v0.0.12)
+- **Release Status**: Stable, Beta, or Alpha
+- **Release Date**: When the version was published
+
+### Change Categories
+
+Changes are organized into expandable cards by category:
+
+- **New Features**: Latest components and functionality additions
+- **Component Enhancements**: Improvements to existing components
+- **Bug Fixes**: Resolved issues and stability improvements
+- **Performance**: Speed and efficiency improvements
+- **Developer Experience**: Tooling and development improvements
+
+### Change Types
+
+Each individual change is tagged with a type badge:
+
+<ChangelogCard summary="Change Type Reference" defaultExpanded={true}>
+
+<ChangelogEntry type="feat">
+    **Feature** - New functionality, components, or capabilities
+</ChangelogEntry>
+
+<ChangelogEntry type="fix">
+    **Bug Fix** - Resolved issues, stability improvements, and corrections
+</ChangelogEntry>
+
+<ChangelogEntry type="breaking">
+    **Breaking Change** - Updates that may require code changes in your project
+</ChangelogEntry>
+
+<ChangelogEntry type="perf">
+    **Performance** - Speed, efficiency, and optimization improvements
+</ChangelogEntry>
+
+<ChangelogEntry type="docs">
+    **Documentation** - Updates to guides, examples, and documentation
+</ChangelogEntry>
+
+<ChangelogEntry type="style">
+    **Style** - Visual improvements, theme updates, and design changes
+</ChangelogEntry>
+
+<ChangelogEntry type="refactor">
+    **Refactor** - Code improvements without changing functionality
+</ChangelogEntry>
+
+<ChangelogEntry type="test">
+    **Test** - Testing improvements and coverage enhancements
+</ChangelogEntry>
+
+<ChangelogEntry type="chore">
+    **Chore** - Build process, tooling, and maintenance updates
+</ChangelogEntry>
+
+</ChangelogCard>
+
+## 🔗 Component Links
+
+When a change affects a specific component, you'll see:
+
+- **Component Name**: The affected component(s)
+- **"View docs" Link**: Direct link to the component's documentation
+
+This makes it easy to understand the impact and learn more about the updated components.
+
+## 📋 Migration Guides
+
+For releases with breaking changes, we provide:
+
+- **Migration Guide**: Step-by-step instructions for updating your code
+- **Before/After Examples**: Code samples showing the changes needed
+- **Timeline**: When deprecated features will be removed
+
+## 🚀 Staying Updated
+
+### Subscribing to Updates
+
+- **GitHub Releases**: Watch our repository for release notifications
+- **NPM**: Follow our package for update notifications
+- **Documentation**: Check this changelog regularly for the latest updates
+
+### Version Strategy
+
+We follow semantic versioning:
+
+- **Major** (1.0.0): Breaking changes that require code updates
+- **Minor** (0.1.0): New features that are backward compatible
+- **Patch** (0.0.1): Bug fixes and small improvements
+
+## 🤝 Contributing to Changelog
+
+### For Maintainers
+
+When creating changelog entries:
+
+1. **Use Clear Descriptions**: Write user-focused descriptions of changes
+2. **Categorize Properly**: Group related changes into logical categories
+3. **Link Components**: Always link to relevant component documentation
+4. **Include Migration Info**: Provide clear upgrade instructions for breaking changes
+5. **Use Proper Types**: Tag each change with the appropriate type badge
+
+### Example Entry Structure
+
+```mdx
+<ChangelogCard summary="Category Name">
+
+<ChangelogEntry type="feat" component="ComponentName">
+    Clear description of what changed and why it matters to users.
+</ChangelogEntry>
+
+</ChangelogCard>
+```
+
+## 📚 Additional Resources
+
+- **[Component Documentation](/docs)**: Full component API and examples
+- **[GitHub Repository](https://github.com/juspay/blend-design-system)**: Source code and issues
+- **[Storybook](https://juspay.design/storybook)**: Interactive component playground
+- **[NPM Package](https://www.npmjs.com/package/@juspay/blend-design-system)**: Installation and usage
+
+## 💡 Tips for Developers
+
+1. **Read Breaking Changes First**: Always check for breaking changes before updating
+2. **Test Thoroughly**: Test your application after each update
+3. **Update Gradually**: Consider updating one major version at a time
+4. **Check Component Docs**: Review updated component documentation for new features
+5. **Report Issues**: Use GitHub issues to report problems or request features
+
+---
+
+_This changelog system is designed to keep you informed about every improvement to the Blend Design System. If you have suggestions for improving our changelog format, please let us know!_

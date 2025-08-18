@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React from 'react'
 import { usePathname } from 'next/navigation'
-import { BookOpen, Palette, ChevronRight, Home } from 'lucide-react'
+import { BookOpen, Palette, ChevronRight, Home, Tag, Clock } from 'lucide-react'
 import { DocItem } from '../../../docs/utils/scanDirectory'
 
 const capitalize = (str: string) => {
@@ -27,19 +27,45 @@ const getSectionIcon = (name: string) => {
         case 'foundations':
             return <Palette {...iconProps} />
         default:
-            return null
+            // For version entries (v0.0.12, etc.)
+            if (name.startsWith('v')) {
+                return <Tag {...iconProps} />
+            }
+            return <Clock {...iconProps} />
     }
+}
+
+interface SidebarProps {
+    items: DocItem[]
+    baseRoute?: string
 }
 
 const SidebarItem = ({
     item,
     level = 0,
+    baseRoute = '/docs',
 }: {
     item: DocItem
     level?: number
+    baseRoute?: string
 }) => {
     const pathname = usePathname()
-    const isActive = pathname === `/docs/${item.path}`
+
+    // Handle special case for getting-started in changelog only
+    const href =
+        baseRoute === '/changelog' && item.name === 'getting-started'
+            ? '/changelog'
+            : `${baseRoute}/${item.path}`
+
+    // Normalize paths by removing trailing slashes for comparison
+    const normalizedPathname =
+        pathname.endsWith('/') && pathname !== '/'
+            ? pathname.slice(0, -1)
+            : pathname
+    const normalizedHref =
+        href.endsWith('/') && href !== '/' ? href.slice(0, -1) : href
+
+    const isActive = normalizedPathname === normalizedHref
 
     if (item.children && item.children.length > 0) {
         const isComponents = item.name.toLowerCase() === 'components'
@@ -48,7 +74,6 @@ const SidebarItem = ({
         return (
             <div key={item.slug} className={`mb-6 ${marginTop}`}>
                 <div className="flex h-8 shrink-0 items-center gap-2 px-3 text-xs font-semibold text-[var(--sidebar-section-text)] uppercase tracking-wider select-none">
-                    {getSectionIcon(item.name)}
                     {capitalize(item.name)}
                 </div>
                 <div className="mt-2 space-y-1">
@@ -57,6 +82,7 @@ const SidebarItem = ({
                             key={child.slug}
                             item={child}
                             level={level + 1}
+                            baseRoute={baseRoute}
                         />
                     ))}
                 </div>
@@ -66,26 +92,29 @@ const SidebarItem = ({
 
     return (
         <Link
-            href={`/docs/${item.path}`}
+            href={href}
             className={`
                 group flex h-8 shrink-0 items-center justify-between rounded-lg px-3 text-sm font-medium transition-all duration-200 touch-manipulation
                 ${
                     isActive
-                        ? 'bg-[var(--accent)] text-white border-l-2 border-[var(--accent)]'
+                        ? 'bg-[var(--sidebar-item-hover)] text-[var(--foreground)]'
                         : 'text-[var(--muted-foreground)] hover:bg-[var(--sidebar-item-hover)] hover:text-[var(--foreground)]'
                 }
             `}
             data-sidebar-item={item.path}
         >
-            <span className="truncate">{capitalize(item.name)}</span>
-            {isActive && (
-                <ChevronRight size={14} className="text-white opacity-80" />
-            )}
+            <div className="flex items-center gap-2">
+                <span className="truncate">
+                    {item.name === 'getting-started'
+                        ? 'Getting Started'
+                        : capitalize(item.name)}
+                </span>
+            </div>
         </Link>
     )
 }
 
-const Sidebar = ({ items }: { items: DocItem[] }) => {
+const Sidebar = ({ items, baseRoute = '/docs' }: SidebarProps) => {
     const renderSidebarItem = (item: DocItem): React.ReactNode => {
         if (item.children && item.children.length > 0) {
             const isComponents = item.name.toLowerCase() === 'components'
@@ -94,7 +123,6 @@ const Sidebar = ({ items }: { items: DocItem[] }) => {
             return (
                 <div key={item.slug} className={`mb-6 ${marginTop}`}>
                     <div className="flex h-8 shrink-0 items-center gap-2 px-3 text-xs font-semibold text-[var(--sidebar-section-text)] uppercase tracking-wider select-none">
-                        {getSectionIcon(item.name)}
                         {capitalize(item.name)}
                     </div>
                     <div className="mt-2 space-y-1">
@@ -104,7 +132,7 @@ const Sidebar = ({ items }: { items: DocItem[] }) => {
             )
         }
 
-        return <SidebarItem key={item.slug} item={item} />
+        return <SidebarItem key={item.slug} item={item} baseRoute={baseRoute} />
     }
 
     return (
