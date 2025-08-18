@@ -6,6 +6,8 @@ import PopoverHeader from './PopoverHeader'
 import PopoverFooter from './PopoverFooter'
 import { PopoverTokenType } from './popover.tokens'
 import { useComponentToken } from '../../context/useComponentToken'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import MobilePopover from './MobilePopover'
 
 const Popover = ({
     heading,
@@ -32,15 +34,48 @@ const Popover = ({
     size = PopoverSize.MEDIUM,
     onClose,
     shadow = 'lg',
+    useDrawerOnMobile = true,
 }: PopoverProps) => {
     const [isOpen, setIsOpen] = useState(open || false)
     const popoverTokens = useComponentToken('POPOVER') as PopoverTokenType
+    const { innerWidth } = useBreakpoints()
+    const isMobile = innerWidth < 1024
 
     useEffect(() => {
         if (open !== undefined) {
             setIsOpen(open)
         }
     }, [open])
+
+    if (isMobile && useDrawerOnMobile) {
+        return (
+            <MobilePopover
+                open={isOpen}
+                onOpenChange={(open) => {
+                    setIsOpen(open)
+                    if (onOpenChange) {
+                        onOpenChange(open)
+                    }
+                }}
+                heading={heading}
+                description={description}
+                primaryAction={primaryAction}
+                secondaryAction={secondaryAction}
+                showCloseButton={showCloseButton}
+                onClose={() => {
+                    setIsOpen(false)
+                    if (onClose) {
+                        onClose()
+                    }
+                }}
+                trigger={trigger}
+                size={size}
+                useDrawerOnMobile={useDrawerOnMobile}
+            >
+                {children}
+            </MobilePopover>
+        )
+    }
     return (
         <RadixPopover.Root
             open={isOpen}

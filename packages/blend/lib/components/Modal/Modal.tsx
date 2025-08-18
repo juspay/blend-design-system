@@ -8,6 +8,8 @@ import type { ModalTokensType } from './modal.tokens'
 import Text from '../Text/Text'
 import { ButtonSubType, ButtonType, Button } from '../Button'
 import { useComponentToken } from '../../context/useComponentToken'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import MobileModal from './MobileModal'
 
 const ModalHeader = ({
     title,
@@ -161,10 +163,14 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             headerRightSlot,
             showDivider = true,
             minWidth = '500px',
+            useDrawerOnMobile = true,
         },
         ref
     ) => {
         const modalTokens = useComponentToken('MODAL') as ModalTokensType
+        const { innerWidth } = useBreakpoints()
+        const isMobile = innerWidth < 1024
+
         useScrollLock(isOpen)
 
         const handleBackdropClick = useCallback(() => {
@@ -174,6 +180,26 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         }, [closeOnBackdropClick, onClose])
 
         if (!isOpen) return null
+
+        if (isMobile && useDrawerOnMobile) {
+            return (
+                <MobileModal
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    title={title}
+                    subtitle={subtitle}
+                    primaryAction={primaryAction}
+                    secondaryAction={secondaryAction}
+                    className={className}
+                    showCloseButton={showCloseButton}
+                    closeOnBackdropClick={closeOnBackdropClick}
+                    headerRightSlot={headerRightSlot}
+                    showDivider={showDivider}
+                >
+                    {children}
+                </MobileModal>
+            )
+        }
 
         return (
             <Block

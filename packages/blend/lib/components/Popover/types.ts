@@ -35,4 +35,5 @@ export type PopoverProps = {
     size?: PopoverSize
     onClose?: () => void
     shadow?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
+    useDrawerOnMobile?: boolean
 }
