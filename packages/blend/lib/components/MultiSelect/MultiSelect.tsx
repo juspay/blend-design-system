@@ -21,6 +21,7 @@ import { handleSelectAll, map } from './utils'
 import { toPixels } from '../../global-utils/GlobalUtils'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { Tooltip } from '../Tooltip'
 
 const MultiSelect = ({
     selectedValues,
@@ -72,6 +73,20 @@ const MultiSelect = ({
     const valueLabelMap = map(items)
     const showCancelButton =
         variant === MultiSelectVariant.CONTAINER && selectedValues.length > 0
+
+    // Add state for truncation detection
+    const [showTooltip, setShowTooltip] = useState(false)
+    const textContainerRef = useRef<HTMLDivElement>(null)
+
+    // Function to check if text is truncated
+    const checkTruncation = () => {
+        if (textContainerRef.current) {
+            const isOverflowing =
+                textContainerRef.current.scrollWidth >
+                textContainerRef.current.clientWidth
+            setShowTooltip(isOverflowing)
+        }
+    }
 
     const isItemSelected = selectedValues.length > 0
     const isSmallScreenWithLargeSize =
@@ -206,181 +221,138 @@ const MultiSelect = ({
                                 display="flex"
                                 alignItems="center"
                             >
-                                <PrimitiveButton
-                                    position="relative"
-                                    width={'100%'}
-                                    display="flex"
-                                    alignItems="center"
-                                    overflow="hidden"
-                                    justifyContent="space-between"
-                                    gap={8}
-                                    borderRadius={appliedBorderRadius}
-                                    boxShadow={
-                                        multiSelectTokens.trigger.boxShadow[
-                                            variant
-                                        ]
+                                <Tooltip
+                                    content={
+                                        (showTooltip &&
+                                            selectedValues
+                                                .map((v) => valueLabelMap[v])
+                                                .join(', ')) ||
+                                        ''
                                     }
-                                    outline={
-                                        multiSelectTokens.trigger.outline[
-                                            variant
-                                        ][
-                                            error
-                                                ? 'error'
-                                                : open
-                                                  ? 'open'
-                                                  : 'closed'
-                                        ]
-                                    }
-                                    {...((!inline ||
-                                        variant ===
-                                            MultiSelectVariant.CONTAINER) && {
-                                        height: multiSelectTokens.trigger
-                                            .height[size],
-
-                                        maxHeight:
-                                            multiSelectTokens.trigger.height[
-                                                size
-                                            ],
-
-                                        paddingX:
-                                            multiSelectTokens.trigger.paddingX[
-                                                size
-                                            ],
-
-                                        paddingY: paddingY,
-                                        backgroundColor:
-                                            multiSelectTokens.trigger
-                                                .backgroundColor[variant][
+                                >
+                                    <PrimitiveButton
+                                        position="relative"
+                                        width={'100%'}
+                                        display="flex"
+                                        alignItems="center"
+                                        overflow="hidden"
+                                        justifyContent="space-between"
+                                        gap={8}
+                                        borderRadius={appliedBorderRadius}
+                                        boxShadow={
+                                            multiSelectTokens.trigger.boxShadow[
+                                                variant
+                                            ]
+                                        }
+                                        outline={
+                                            multiSelectTokens.trigger.outline[
+                                                variant
+                                            ][
                                                 error
                                                     ? 'error'
                                                     : open
                                                       ? 'open'
                                                       : 'closed'
-                                            ],
+                                            ]
+                                        }
+                                        {...((!inline ||
+                                            variant ===
+                                                MultiSelectVariant.CONTAINER) && {
+                                            height: multiSelectTokens.trigger
+                                                .height[size],
 
-                                        _hover: {
-                                            outline:
+                                            maxHeight:
                                                 multiSelectTokens.trigger
-                                                    .outline[variant][
-                                                    error ? 'error' : 'hover'
-                                                ],
+                                                    .height[size],
+
+                                            paddingX:
+                                                multiSelectTokens.trigger
+                                                    .paddingX[size],
+
+                                            paddingY: paddingY,
                                             backgroundColor:
                                                 multiSelectTokens.trigger
                                                     .backgroundColor[variant][
-                                                    error ? 'error' : 'hover'
+                                                    error
+                                                        ? 'error'
+                                                        : open
+                                                          ? 'open'
+                                                          : 'closed'
                                                 ],
-                                        },
-                                        _focus: {
-                                            outline:
-                                                multiSelectTokens.trigger
-                                                    .outline[variant][
-                                                    error ? 'error' : 'focus'
-                                                ],
-                                            backgroundColor:
-                                                multiSelectTokens.trigger
-                                                    .backgroundColor[variant][
-                                                    error ? 'error' : 'focus'
-                                                ],
-                                        },
-                                    })}
-                                >
-                                    {slot && (
+
+                                            _hover: {
+                                                outline:
+                                                    multiSelectTokens.trigger
+                                                        .outline[variant][
+                                                        error
+                                                            ? 'error'
+                                                            : 'hover'
+                                                    ],
+                                                backgroundColor:
+                                                    multiSelectTokens.trigger
+                                                        .backgroundColor[
+                                                        variant
+                                                    ][
+                                                        error
+                                                            ? 'error'
+                                                            : 'hover'
+                                                    ],
+                                            },
+                                            _focus: {
+                                                outline:
+                                                    multiSelectTokens.trigger
+                                                        .outline[variant][
+                                                        error
+                                                            ? 'error'
+                                                            : 'focus'
+                                                    ],
+                                                backgroundColor:
+                                                    multiSelectTokens.trigger
+                                                        .backgroundColor[
+                                                        variant
+                                                    ][
+                                                        error
+                                                            ? 'error'
+                                                            : 'focus'
+                                                    ],
+                                            },
+                                        })}
+                                    >
+                                        {slot && (
+                                            <Block
+                                                as="span"
+                                                ref={slotRef}
+                                                contentCentered
+                                            >
+                                                {slot}
+                                            </Block>
+                                        )}
                                         <Block
                                             as="span"
-                                            ref={slotRef}
-                                            contentCentered
+                                            textAlign="left"
+                                            paddingTop={
+                                                variant ===
+                                                    MultiSelectVariant.CONTAINER &&
+                                                isSmallScreenWithLargeSize &&
+                                                isItemSelected
+                                                    ? paddingY * 1.5
+                                                    : 0
+                                            }
+                                            style={{
+                                                textAlign: 'left',
+                                                flexGrow: 1,
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                            ref={textContainerRef}
+                                            onMouseEnter={() =>
+                                                checkTruncation()
+                                            }
                                         >
-                                            {slot}
-                                        </Block>
-                                    )}
-                                    <Block
-                                        as="span"
-                                        textAlign="left"
-                                        paddingTop={
-                                            variant ===
-                                                MultiSelectVariant.CONTAINER &&
-                                            isSmallScreenWithLargeSize &&
-                                            isItemSelected
-                                                ? paddingY * 1.5
-                                                : 0
-                                        }
-                                        style={{
-                                            textAlign: 'left',
-                                            flexGrow: 1,
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
-                                        }}
-                                    >
-                                        {/* NO CONTAINER Label*/}
-                                        {variant ===
-                                            MultiSelectVariant.NO_CONTAINER && (
-                                            <Text
-                                                as="span"
-                                                variant="body.md"
-                                                color={
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[700]
-                                                }
-                                                fontWeight={500}
-                                            >
-                                                {label}
-                                            </Text>
-                                        )}
-
-                                        {isSmallScreenWithLargeSize &&
-                                            variant ===
-                                                MultiSelectVariant.CONTAINER && (
-                                                <Block
-                                                    position="absolute"
-                                                    top={
-                                                        isItemSelected
-                                                            ? toPixels(
-                                                                  paddingY -
-                                                                      paddingY /
-                                                                          1.3
-                                                              ) +
-                                                              (!required
-                                                                  ? 3
-                                                                  : 0)
-                                                            : '50%'
-                                                    }
-                                                    left={toPixels(
-                                                        paddingInlineStart
-                                                    )}
-                                                    height={'max-content'}
-                                                    style={{
-                                                        transition:
-                                                            'all 0.2s ease-in-out',
-                                                        transform:
-                                                            isItemSelected
-                                                                ? 'scale(0.95)'
-                                                                : 'translateY(-50%) scale(1)',
-                                                        transformOrigin:
-                                                            'left center',
-                                                        pointerEvents: 'none',
-                                                        zIndex: 1,
-                                                    }}
-                                                >
-                                                    <FloatingLabels
-                                                        label={label}
-                                                        required={
-                                                            required || false
-                                                        }
-                                                        name={name || ''}
-                                                        isFocused={
-                                                            isItemSelected
-                                                        }
-                                                    />
-                                                </Block>
-                                            )}
-                                        {/* Variant == Container - always show the placeholder*/}
-                                        {variant ===
-                                            MultiSelectVariant.CONTAINER &&
-                                            (selectedValues.length > 0 ||
-                                                !isSmallScreen ||
-                                                size !==
-                                                    MultiSelectMenuSize.LARGE) && (
+                                            {/* NO CONTAINER Label*/}
+                                            {variant ===
+                                                MultiSelectVariant.NO_CONTAINER && (
                                                 <Text
                                                     as="span"
                                                     variant="body.md"
@@ -390,64 +362,136 @@ const MultiSelect = ({
                                                     }
                                                     fontWeight={500}
                                                 >
-                                                    {placeholder}
+                                                    {label}
                                                 </Text>
                                             )}
-                                        {selectedValues.length > 0 && (
-                                            <Text
-                                                as="span"
-                                                variant="body.md"
-                                                color={
-                                                    multiSelectTokens.trigger
-                                                        .selectionTag.container[
-                                                        selectionTagType
-                                                    ].color
-                                                }
-                                                fontWeight={500}
-                                                style={{
-                                                    height: '100%',
-                                                    marginLeft: 8,
-                                                    backgroundColor:
+
+                                            {isSmallScreenWithLargeSize &&
+                                                variant ===
+                                                    MultiSelectVariant.CONTAINER && (
+                                                    <Block
+                                                        position="absolute"
+                                                        top={
+                                                            isItemSelected
+                                                                ? toPixels(
+                                                                      paddingY -
+                                                                          paddingY /
+                                                                              1.3
+                                                                  ) +
+                                                                  (!required
+                                                                      ? 3
+                                                                      : 0)
+                                                                : '50%'
+                                                        }
+                                                        left={toPixels(
+                                                            paddingInlineStart
+                                                        )}
+                                                        height={'max-content'}
+                                                        style={{
+                                                            transition:
+                                                                'all 0.2s ease-in-out',
+                                                            transform:
+                                                                isItemSelected
+                                                                    ? 'scale(0.95)'
+                                                                    : 'translateY(-50%) scale(1)',
+                                                            transformOrigin:
+                                                                'left center',
+                                                            pointerEvents:
+                                                                'none',
+                                                            zIndex: 1,
+                                                        }}
+                                                    >
+                                                        <FloatingLabels
+                                                            label={label}
+                                                            required={
+                                                                required ||
+                                                                false
+                                                            }
+                                                            name={name || ''}
+                                                            isFocused={
+                                                                isItemSelected
+                                                            }
+                                                        />
+                                                    </Block>
+                                                )}
+                                            {/* Variant == Container - always show the placeholder*/}
+                                            {variant ===
+                                                MultiSelectVariant.CONTAINER &&
+                                                (selectedValues.length > 0 ||
+                                                    !isSmallScreen ||
+                                                    size !==
+                                                        MultiSelectMenuSize.LARGE) && (
+                                                    <Text
+                                                        as="span"
+                                                        variant="body.md"
+                                                        color={
+                                                            FOUNDATION_THEME
+                                                                .colors
+                                                                .gray[700]
+                                                        }
+                                                        fontWeight={500}
+                                                    >
+                                                        {placeholder}
+                                                    </Text>
+                                                )}
+                                            {selectedValues.length > 0 && (
+                                                <Text
+                                                    as="span"
+                                                    variant="body.md"
+                                                    color={
                                                         multiSelectTokens
                                                             .trigger
                                                             .selectionTag
                                                             .container[
                                                             selectionTagType
-                                                        ].backgroundColor,
-                                                    borderRadius: 4,
-                                                    padding:
-                                                        selectionTagType ===
-                                                        MultiSelectSelectionTagType.COUNT
-                                                            ? '0px 6px'
-                                                            : '0px 0px',
-                                                }}
-                                            >
-                                                {selectionTagType ===
-                                                MultiSelectSelectionTagType.COUNT
-                                                    ? selectedValues.length
-                                                    : selectedValues
-                                                          .map(
-                                                              (v) =>
-                                                                  valueLabelMap[
-                                                                      v
-                                                                  ]
-                                                          )
-                                                          .join(', ')}
-                                            </Text>
-                                        )}
-                                    </Block>
-                                    <Block
-                                        as="span"
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={4}
-                                        size={20}
-                                        contentCentered
-                                        flexShrink={0}
-                                    >
-                                        <ChevronDown size={16} />
-                                    </Block>
-                                </PrimitiveButton>
+                                                        ].color
+                                                    }
+                                                    fontWeight={500}
+                                                    style={{
+                                                        height: '100%',
+                                                        marginLeft: 8,
+                                                        backgroundColor:
+                                                            multiSelectTokens
+                                                                .trigger
+                                                                .selectionTag
+                                                                .container[
+                                                                selectionTagType
+                                                            ].backgroundColor,
+                                                        borderRadius: 4,
+                                                        padding:
+                                                            selectionTagType ===
+                                                            MultiSelectSelectionTagType.COUNT
+                                                                ? '0px 6px'
+                                                                : '0px 0px',
+                                                    }}
+                                                >
+                                                    {selectionTagType ===
+                                                    MultiSelectSelectionTagType.COUNT
+                                                        ? selectedValues.length
+                                                        : selectedValues
+                                                              .map(
+                                                                  (v) =>
+                                                                      valueLabelMap[
+                                                                          v
+                                                                      ]
+                                                              )
+                                                              .join(', ')}
+                                                </Text>
+                                            )}
+                                        </Block>
+                                        <Block
+                                            as="span"
+                                            display="flex"
+                                            alignItems="center"
+                                            gap={4}
+                                            size={20}
+                                            contentCentered
+                                            flexShrink={0}
+                                        >
+                                            <ChevronDown size={16} />
+                                        </Block>
+                                    </PrimitiveButton>
+                                </Tooltip>
 
                                 {variant === MultiSelectVariant.CONTAINER &&
                                     selectedValues.length > 0 && (
