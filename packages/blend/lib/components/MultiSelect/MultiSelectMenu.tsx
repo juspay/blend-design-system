@@ -54,10 +54,8 @@ const MultiSelectMenu = ({
     open,
     onOpenChange,
     showActionButtons = false,
-    applyButtonText = 'Apply',
-    clearAllButtonText = 'Clear All',
-    onApply,
-    onClearAll,
+    primaryAction,
+    secondaryAction,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -191,7 +189,7 @@ const MultiSelectMenu = ({
                     )
                 )}
 
-                {showActionButtons && (
+                {showActionButtons && (primaryAction || secondaryAction) && (
                     <Block
                         borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
                         padding={`${FOUNDATION_THEME.unit[16]}`}
@@ -200,23 +198,29 @@ const MultiSelectMenu = ({
                         justifyContent="flex-end"
                         margin="0"
                     >
-                        <Button
-                            buttonType={ButtonType.SECONDARY}
-                            size={ButtonSize.SMALL}
-                            text={clearAllButtonText}
-                            onClick={() => {
-                                onClearAll?.()
-                            }}
-                        />
-                        <Button
-                            buttonType={ButtonType.PRIMARY}
-                            size={ButtonSize.SMALL}
-                            text={applyButtonText}
-                            onClick={() => {
-                                onApply?.()
-                                onOpenChange(false)
-                            }}
-                        />
+                        {secondaryAction && (
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                text={secondaryAction.text}
+                                onClick={secondaryAction.onClick}
+                                disabled={secondaryAction.disabled}
+                                loading={secondaryAction.loading}
+                            />
+                        )}
+                        {primaryAction && (
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
+                                text={primaryAction.text}
+                                onClick={() => {
+                                    primaryAction.onClick()
+                                    onOpenChange(false)
+                                }}
+                                disabled={primaryAction.disabled}
+                                loading={primaryAction.loading}
+                            />
+                        )}
                     </Block>
                 )}
             </Content>

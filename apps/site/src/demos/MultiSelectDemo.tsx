@@ -967,17 +967,21 @@ const MultiSelectDemo = () => {
                             enableSearch={true}
                             enableSelectAll={true}
                             showActionButtons={true}
-                            applyButtonText="Apply Filters"
-                            clearAllButtonText="Clear All"
-                            onApply={() => {
-                                // Apply filters logic here
-                                console.log(
-                                    'Applied filters:',
-                                    actionButtonsSelected
-                                )
+                            primaryAction={{
+                                text: 'Apply Filters',
+                                onClick: () => {
+                                    // Apply filters logic here
+                                    console.log(
+                                        'Applied filters:',
+                                        actionButtonsSelected
+                                    )
+                                },
                             }}
-                            onClearAll={() => {
-                                setActionButtonsSelected([])
+                            secondaryAction={{
+                                text: 'Clear All',
+                                onClick: () => {
+                                    setActionButtonsSelected([])
+                                },
                             }}
                             selectionTagType={MultiSelectSelectionTagType.COUNT}
                             useDrawerOnMobile={false}
@@ -1015,17 +1019,21 @@ const MultiSelectDemo = () => {
                             placeholder="Select permissions"
                             enableSelectAll={true}
                             showActionButtons={true}
-                            applyButtonText="Grant Permissions"
-                            clearAllButtonText="Remove All"
-                            onApply={() => {
-                                // Grant permissions logic here
-                                console.log(
-                                    'Granted permissions:',
-                                    actionButtonsMobileSelected
-                                )
+                            primaryAction={{
+                                text: 'Grant Permissions',
+                                onClick: () => {
+                                    // Grant permissions logic here
+                                    console.log(
+                                        'Granted permissions:',
+                                        actionButtonsMobileSelected
+                                    )
+                                },
                             }}
-                            onClearAll={() => {
-                                setActionButtonsMobileSelected([])
+                            secondaryAction={{
+                                text: 'Remove All',
+                                onClick: () => {
+                                    setActionButtonsMobileSelected([])
+                                },
                             }}
                             selectionTagType={MultiSelectSelectionTagType.COUNT}
                             useDrawerOnMobile={true}
@@ -1060,17 +1068,21 @@ const MultiSelectDemo = () => {
                             placeholder="Select status filters"
                             variant={MultiSelectVariant.NO_CONTAINER}
                             showActionButtons={true}
-                            applyButtonText="Apply"
-                            clearAllButtonText="Reset"
-                            onApply={() => {
-                                console.log(
-                                    'Applied status filters:',
-                                    filterWithActionsSelected
-                                )
+                            primaryAction={{
+                                text: 'Apply',
+                                onClick: () => {
+                                    console.log(
+                                        'Applied status filters:',
+                                        filterWithActionsSelected
+                                    )
+                                },
                             }}
-                            onClearAll={() => {
-                                setFilterWithActionsSelected([])
-                                console.log('Reset status filters')
+                            secondaryAction={{
+                                text: 'Reset',
+                                onClick: () => {
+                                    setFilterWithActionsSelected([])
+                                    console.log('Reset status filters')
+                                },
                             }}
                             selectionTagType={MultiSelectSelectionTagType.TEXT}
                         />

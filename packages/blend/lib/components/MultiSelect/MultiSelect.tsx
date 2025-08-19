@@ -57,10 +57,8 @@ const MultiSelect = ({
     error,
     errorMessage,
     showActionButtons = false,
-    applyButtonText = 'Apply',
-    clearAllButtonText = 'Clear All',
-    onApply,
-    onClearAll,
+    primaryAction,
+    secondaryAction,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -115,10 +113,8 @@ const MultiSelect = ({
                 error={error}
                 errorMessage={errorMessage}
                 showActionButtons={showActionButtons}
-                applyButtonText={applyButtonText}
-                clearAllButtonText={clearAllButtonText}
-                onApply={onApply}
-                onClearAll={onClearAll}
+                primaryAction={primaryAction}
+                secondaryAction={secondaryAction}
             />
         )
     }
@@ -180,10 +176,8 @@ const MultiSelect = ({
                     }
                 }}
                 showActionButtons={showActionButtons}
-                applyButtonText={applyButtonText}
-                clearAllButtonText={clearAllButtonText}
-                onApply={onApply}
-                onClearAll={onClearAll}
+                primaryAction={primaryAction}
+                secondaryAction={secondaryAction}
                 trigger={
                     customTrigger || (
                         <Block

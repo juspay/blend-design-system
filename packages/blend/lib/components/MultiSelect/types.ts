@@ -100,10 +100,18 @@ export type MultiSelectProps = {
 
     // action buttons
     showActionButtons?: boolean
-    applyButtonText?: string
-    clearAllButtonText?: string
-    onApply?: () => void
-    onClearAll?: () => void
+    primaryAction?: {
+        text: string
+        onClick: () => void
+        disabled?: boolean
+        loading?: boolean
+    }
+    secondaryAction?: {
+        text: string
+        onClick: () => void
+        disabled?: boolean
+        loading?: boolean
+    }
 }
 
 // Multi Select Menu Dropdpown
@@ -134,8 +142,16 @@ export type MultiSelectMenuProps = {
 
     // action buttons
     showActionButtons?: boolean
-    applyButtonText?: string
-    clearAllButtonText?: string
-    onApply?: () => void
-    onClearAll?: () => void
+    primaryAction?: {
+        text: string
+        onClick: () => void
+        disabled?: boolean
+        loading?: boolean
+    }
+    secondaryAction?: {
+        text: string
+        onClick: () => void
+        disabled?: boolean
+        loading?: boolean
+    }
 }
