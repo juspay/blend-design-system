@@ -6,7 +6,7 @@ import { DocumentationCard } from './DocumentationCard'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 export const DocumentationCarousel = () => {
-    const [activeIndex, setActiveIndex] = useState(0)
+    const [activeIndex, setActiveIndex] = useState(1)
     const totalCards = DocumentationCardData.length
     const carouselRef = useRef<HTMLDivElement>(null)
 
@@ -38,7 +38,7 @@ export const DocumentationCarousel = () => {
 
     return (
         // New container to provide the necessary "breathing room"
-        <div className="relative w-full overflow-hidden">
+        <div className="relative w-full overflow-hidden ">
             {/* This is the visual centering container. It has overflow-visible by default. */}
             <div className="flex justify-center items-center mt-50">
                 <div

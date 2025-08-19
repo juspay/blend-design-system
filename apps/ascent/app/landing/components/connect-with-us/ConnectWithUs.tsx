@@ -22,7 +22,7 @@ export const ConnectWithUs = () => {
     }, [isModalOpen])
 
     return (
-        <div className="py-50 flex flex-col items-center gap-10 relative overflow-hidden w-full ">
+        <div className="py-50 flex flex-col items-center gap-10 relative overflow-hidden w-full">
             <div className="flex items-end">
                 <ConnectWithUsBox />
                 <p className="text-[48px] text-[#9E9E9E] font-[300] -ml-10">
@@ -30,7 +30,11 @@ export const ConnectWithUs = () => {
                 </p>
             </div>
             <div>
-                <InfoBtn text="Connect with us" onClick={handleOpenModal} />
+                <InfoBtn
+                    text="Connect with us"
+                    onClick={handleOpenModal}
+                    style="absolute z-[20]"
+                />
             </div>
             <FooterGradientAndSparkles />
             {isModalOpen && <Modal onClose={handleCloseModal} />}

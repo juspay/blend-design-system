@@ -9,10 +9,12 @@ export const InfoBtn = ({
     text,
     href,
     onClick,
+    style,
 }: {
     text: string
     href?: string
     onClick?: () => void
+    style?: string
 }) => {
     // If an href is provided, use a Link. Otherwise, use a regular button.
     if (href) {
@@ -20,7 +22,7 @@ export const InfoBtn = ({
             <Link href={href} target="_blank" rel="noopener noreferrer">
                 <button
                     onClick={onClick}
-                    className="w-50 py-3 rounded-full text-[#B3B3B3] border-[1px] border-[var(--button-border)] flex justify-center items-center text-center  opacity-70 bg-white/10 hover:bg-white/20"
+                    className={`w-50 py-3 rounded-full text-[#B3B3B3] border-[1px] border-[var(--button-border)] flex justify-center items-center text-center  opacity-70 bg-white/10 hover:bg-white/20 ${style}`}
                 >
                     {text} <ChevronRight />
                 </button>
@@ -30,10 +32,8 @@ export const InfoBtn = ({
 
     return (
         <button
-            onClick={() => {
-                console.log('button clicked')
-            }}
-            className="w-50 py-3 rounded-full text-[#B3B3B3] border-[1px] border-[var(--button-border)] flex justify-center items-center text-center  opacity-70 bg-white/10 hover:bg-white/20"
+            onClick={onClick}
+            className={`w-50 py-3 rounded-full text-[#B3B3B3] border-[1px] border-[var(--button-border)] flex justify-center items-center text-center  opacity-70 bg-white/10 hover:bg-white/20 ${style}`}
         >
             {text} <ChevronRight />
         </button>
