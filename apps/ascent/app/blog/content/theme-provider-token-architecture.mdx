@@ -1,0 +1,370 @@
+---
+title: 'Blend Design System: Theme Provider & Token Architecture'
+description: "A comprehensive guide to understanding and using Blend's sophisticated design token system and theme provider architecture."
+author: 'Design System Team'
+publishDate: '2024-01-20'
+tags: ['design-tokens', 'theming', 'architecture', 'react']
+category: 'architecture'
+featured: false
+excerpt: "Discover how Blend's two-tier token architecture and theme provider system enables scalable, consistent, and maintainable design systems."
+readTime: '15 min read'
+---
+
+# Blend Design System: Theme Provider & Token Architecture
+
+A comprehensive guide to understanding and using Blend's sophisticated design token system and theme provider architecture.
+
+## Introduction & Overview
+
+### What are Design Tokens?
+
+Design tokens are the fundamental building blocks of a design system - the "DNA" of your user interface. They store design decisions as data, making them reusable, consistent, and maintainable across your entire application.
+
+Instead of hardcoding values like `#2B7FFF` or `16px`, design tokens provide semantic names like `colors.primary[500]` or `unit[16]`. This approach offers:
+
+- **Consistency**: Same visual properties across all components
+- **Maintainability**: Change once, update everywhere
+- **Scalability**: Easy theming and brand variations
+- **Developer Experience**: IntelliSense support and type safety
+
+### Blend's Token Philosophy
+
+Blend uses a two-tier architecture:
+
+1. **Foundation Tokens**: Primitive values (colors, typography, spacing) that form the base
+2. **Component Tokens**: Semantic tokens that map foundation tokens to specific component use cases
+
+### Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    ThemeProvider                            │
+│  ┌─────────────────┐    ┌─────────────────────────────────┐ │
+│  │ Foundation      │    │ Component Tokens                │ │
+│  │ Tokens          │───▶│ Button, Input, Modal...         │ │
+│  │ • Colors        │    │ • backgroundColor               │ │
+│  │ • Typography    │    │ • color, padding                │ │
+│  │ • Spacing       │    │ • borderRadius, shadow          │ │
+│  │ • Borders       │    │ • responsive variants           │ │
+│  │ • Shadows       │    │                                 │ │
+│  └─────────────────┘    └─────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+                        ┌─────────────────────────┐
+                        │ React Components        │
+                        │ useComponentToken()     │
+                        └─────────────────────────┘
+```
+
+## Foundation Token System
+
+Foundation tokens are located in `packages/blend/lib/tokens/` and organized into six categories:
+
+### Color Tokens
+
+Blend uses a **numerical scale from 50-950** for each color family:
+
+```typescript
+// packages/blend/lib/tokens/color.tokens.ts
+const colorTokens = {
+    gray: {
+        0: '#FFFFFF', // Pure white
+        50: '#F5F7FA', // Very light gray
+        500: '#717784', // Medium gray
+        950: '#0E121B', // Very dark gray
+    },
+    primary: {
+        50: '#EFF6FF', // Very light blue
+        500: '#2B7FFF', // Primary blue
+        950: '#162456', // Very dark blue
+    },
+    // Additional families: purple, orange, red, green, yellow
+}
+```
+
+**Scale Usage:**
+
+- **50-200**: Light tints for backgrounds and subtle accents
+- **300-400**: Medium tints for disabled states and secondary elements
+- **500-600**: Primary colors for actions and emphasis
+- **700-800**: Dark shades for text and strong emphasis
+- **900-950**: Very dark shades for high contrast
+
+### Typography Tokens
+
+Organized by semantic purpose with complete font information:
+
+```typescript
+// packages/blend/lib/tokens/font.tokens.ts
+const fontTokens = {
+    family: {
+        display: 'InterDisplay', // Large headings and hero text
+        body: 'InterDisplay', // Body text and UI elements
+        heading: 'InterDisplay', // Section headings
+        mono: 'SF Mono', // Code and monospace text
+    },
+    size: {
+        body: {
+            xs: { fontSize: 10, lineHeight: 14, letterSpacing: 0 },
+            sm: { fontSize: 12, lineHeight: 18, letterSpacing: 0 },
+            md: { fontSize: 14, lineHeight: 20, letterSpacing: 0 },
+            lg: { fontSize: 16, lineHeight: 24, letterSpacing: 0 },
+        },
+        heading: {
+            sm: { fontSize: 18, lineHeight: 24, letterSpacing: 0 },
+            md: { fontSize: 20, lineHeight: 28, letterSpacing: 0 },
+            lg: { fontSize: 24, lineHeight: 32, letterSpacing: 0 },
+            xl: { fontSize: 32, lineHeight: 38, letterSpacing: 0 },
+            '2xl': { fontSize: 40, lineHeight: 46, letterSpacing: 0 },
+        },
+        display: {
+            sm: { fontSize: 48, lineHeight: 56, letterSpacing: 0 },
+            md: { fontSize: 56, lineHeight: 64, letterSpacing: 0 },
+            lg: { fontSize: 64, lineHeight: 70, letterSpacing: 0 },
+            xl: { fontSize: 72, lineHeight: 78, letterSpacing: 0 },
+        },
+    },
+}
+```
+
+### Spacing, Border, Shadow & Opacity Tokens
+
+```typescript
+// Unit-based spacing system (4px base)
+const unitTokens = {
+    0: '0px',
+    4: '4px',
+    8: '8px',
+    12: '12px',
+    16: '16px',
+    24: '24px',
+    32: '32px',
+    48: '48px',
+    64: '64px',
+}
+
+// Border system
+const borderTokens = {
+    width: { 0: '0px', 1: '1px', 1.5: '1.5px', 2: '2px', 3: '3px' },
+    radius: {
+        0: '0px',
+        6: '6px',
+        8: '8px',
+        10: '10px',
+        12: '12px',
+        full: '9999px',
+    },
+}
+
+// Elevation hierarchy
+const shadowTokens = {
+    xs: '0px 1px 1px 0px rgba(5, 5, 6, 0.04)', // Subtle depth
+    md: '0px 2px 8px 1px rgba(5, 5, 6, 0.07)', // Standard elevation
+    lg: '0px 3px 16px 3px rgba(5, 5, 6, 0.07)', // High elevation
+    focusPrimary: '0px 0px 0px 3px #EFF6FF', // Focus ring
+}
+
+// Opacity scale
+const opacityTokens = {
+    0: 0,
+    10: 0.1,
+    30: 0.3,
+    50: 0.5,
+    80: 0.8,
+    100: 1,
+}
+```
+
+## Component Token Architecture
+
+### Token Naming Convention
+
+Blend follows: **`$component.[$target].$property.[$variant].[$type].[$state]`**
+
+- **`$component`** (Required): `BUTTON`, `INPUT`, `MODAL`, etc.
+- **`[$target]`** (Optional): Component parts - `default`, `iconOnly`, `inline`
+- **`$property`** (Required): CSS property - `backgroundColor`, `color`, `padding`
+- **`[$variant]`** (Optional): Semantic variants - `primary`, `secondary`, `danger`
+- **`[$state]`** (Optional): Interactive states - `default`, `hover`, `active`, `disabled`
+
+### Token Structure Example
+
+Here's a simplified example following the naming convention:
+
+```typescript
+// Token structure: $component.[$target].$property.[$variant].[$state]
+const componentTokens = {
+    BUTTON: {
+        // $component
+        backgroundColor: {
+            // $property
+            primary: {
+                // $variant
+                default: {
+                    // $target (button style)
+                    default: foundationTokens.colors.primary[500], // $state
+                    hover: foundationTokens.colors.primary[600],
+                    disabled: foundationTokens.colors.primary[300],
+                },
+                iconOnly: {
+                    // $target
+                    default: foundationTokens.colors.primary[500],
+                    hover: foundationTokens.colors.primary[600],
+                    disabled: foundationTokens.colors.primary[300],
+                },
+            },
+        },
+        padding: {
+            // $property (no state for sizing)
+            md: {
+                // $size (acts as variant)
+                default: foundationTokens.unit[16], // $target - simple padding value
+                iconOnly: foundationTokens.unit[12], // $target - smaller for icon buttons
+            },
+        },
+    },
+}
+
+// Usage examples:
+// componentTokens.BUTTON.backgroundColor.primary.default.hover
+// componentTokens.BUTTON.padding.md.iconOnly
+```
+
+**Key Points:**
+
+- **References foundation tokens** - Component tokens map to foundation values
+- **Not all levels always present** - `padding` skips `$state` since size doesn't change on interaction
+- **Semantic naming** - Use meaningful names that describe purpose, not appearance
+
+### Responsive Design
+
+Tokens are organized by breakpoint first:
+
+```typescript
+// Breakpoint system
+export const BREAKPOINTS = { sm: 320, lg: 1024 }
+
+// Responsive token structure
+const responsiveButtonTokens = {
+    sm: {
+        /* mobile tokens */
+    },
+    lg: {
+        /* desktop tokens with different padding values */
+    },
+}
+```
+
+## Theme Provider System
+
+### Core Architecture at Blend Library Level
+
+```typescript
+// packages/blend/lib/context/ThemeProvider.tsx
+const ThemeProvider = ({
+  foundationTokens = FOUNDATION_THEME,
+  componentTokens = {},
+  breakpoints = BREAKPOINTS,
+  children,
+}) => {
+  const themeContextValue = {
+    foundationTokens,
+    componentTokens: initTokens(componentTokens, foundationTokens),
+    breakpoints,
+  }
+
+  return (
+    <ThemeContext.Provider value={themeContextValue}>
+      {children}
+    </ThemeContext.Provider>
+  )
+}
+```
+
+## Implementation Guide
+
+### Basic Setup
+
+```bash
+npm install @juspay/blend-design-system
+```
+
+```typescript
+// App.tsx
+import { ThemeProvider } from '@juspay/blend-design-system'
+
+function App() {
+  return (
+    <ThemeProvider>
+      <YourAppComponents />
+    </ThemeProvider>
+  )
+}
+```
+
+### Custom Theming
+
+#### Override Foundation Tokens
+
+```typescript
+import { FOUNDATION_THEME } from '@juspay/blend-design-system'
+
+const customTheme = {
+  ...FOUNDATION_THEME,
+  colors: {
+    ...FOUNDATION_THEME.colors,
+    primary: {
+      50: '#F0F9FF', 100: '#E0F2FE', 200: '#BAE6FD',
+      500: '#0EA5E9', // New primary color
+      600: '#0284C7', 700: '#0369A1', 950: '#082F49',
+    },
+  },
+}
+
+function App() {
+  return (
+    <ThemeProvider foundationTokens={customTheme}>
+      <YourApp />
+    </ThemeProvider>
+  )
+}
+```
+
+#### Dark Mode Implementation
+
+```typescript
+const darkTheme = {
+  ...FOUNDATION_THEME,
+  colors: {
+    ...FOUNDATION_THEME.colors,
+    gray: {
+      0: '#000000', 50: '#171717', 100: '#262626',
+      500: '#D4D4D4', 900: '#FFFFFF', 950: '#FFFFFF',
+    },
+  },
+}
+
+const ThemeSwitcher = () => {
+  const [isDark, setIsDark] = useState(false)
+
+  return (
+    <ThemeProvider foundationTokens={isDark ? darkTheme : FOUNDATION_THEME}>
+      <button onClick={() => setIsDark(!isDark)}>
+        Switch to {isDark ? 'Light' : 'Dark'} Theme
+      </button>
+      <YourApp />
+    </ThemeProvider>
+  )
+}
+```
+
+## Conclusion
+
+Blend's theme provider and token architecture provides:
+
+- **Scalable Foundation**: Robust base that grows with your needs
+- **Semantic Component Tokens**: Predictable and consistent styling
+- **Type Safety**: Full TypeScript support for confident development
+- **Responsive Design**: Built-in adaptive interface support
+- **Flexible Customization**: Theming without sacrificing consistency

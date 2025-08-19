@@ -1,7 +1,7 @@
 'use client'
 import { ButtonType, Button } from '@juspay/blend-design-system'
 import React from 'react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const ButtonPreview = () => {
     const tsCode = `import { Button, ButtonVariant, ButtonSize } from "@juspay/blend-design-system";

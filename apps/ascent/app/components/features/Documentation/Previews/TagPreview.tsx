@@ -1,7 +1,7 @@
 'use client'
 import { Tag, TagVariant, TagColor, TagSize } from '@juspay/blend-design-system'
 import React from 'react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const TagPreview = () => {
     const tsCode = `import { Tag, TagVariant, TagColor, TagSize } from "@juspay/blend-design-system";

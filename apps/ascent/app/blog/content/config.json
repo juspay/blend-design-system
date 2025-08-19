@@ -1,0 +1,9 @@
+{
+    "order": [
+        "introducing-blend-v2",
+        "design-system-best-practices",
+        "component-library-updates",
+        "getting-started-guide",
+        "migration-guide-v2"
+    ]
+}

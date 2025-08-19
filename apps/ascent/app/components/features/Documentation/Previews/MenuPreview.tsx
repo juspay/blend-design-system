@@ -7,7 +7,7 @@ import {
     MenuItemV2ActionType,
 } from '@juspay/blend-design-system'
 import React from 'react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 import { Button, ButtonType } from '@juspay/blend-design-system'
 import { Settings, User, LogOut, ChevronDown } from 'lucide-react'
 
