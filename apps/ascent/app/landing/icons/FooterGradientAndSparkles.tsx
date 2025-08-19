@@ -14,7 +14,7 @@ export const FooterGradientAndSparkles = () => {
                     cy="1265.92"
                     r="765.318"
                     fill="url(#paint0_radial_3518_5437)"
-                    fill-opacity="0.1"
+                    fillOpacity="0.1"
                 />
             </g>
             <g filter="url(#filter1_f_3518_5437)">
@@ -49,9 +49,9 @@ export const FooterGradientAndSparkles = () => {
                     width="2530.63"
                     height="2530.64"
                     filterUnits="userSpaceOnUse"
-                    color-interpolation-filters="sRGB"
+                    colorInterpolationFilters="sRGB"
                 >
-                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
                     <feBlend
                         mode="normal"
                         in="SourceGraphic"
@@ -70,9 +70,9 @@ export const FooterGradientAndSparkles = () => {
                     width="25.0781"
                     height="26.2712"
                     filterUnits="userSpaceOnUse"
-                    color-interpolation-filters="sRGB"
+                    colorInterpolationFilters="sRGB"
                 >
-                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
                     <feBlend
                         mode="normal"
                         in="SourceGraphic"
@@ -91,9 +91,9 @@ export const FooterGradientAndSparkles = () => {
                     width="25.0781"
                     height="26.2712"
                     filterUnits="userSpaceOnUse"
-                    color-interpolation-filters="sRGB"
+                    colorInterpolationFilters="sRGB"
                 >
-                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
                     <feBlend
                         mode="normal"
                         in="SourceGraphic"
@@ -112,9 +112,9 @@ export const FooterGradientAndSparkles = () => {
                     width="25.0781"
                     height="26.2712"
                     filterUnits="userSpaceOnUse"
-                    color-interpolation-filters="sRGB"
+                    colorInterpolationFilters="sRGB"
                 >
-                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
                     <feBlend
                         mode="normal"
                         in="SourceGraphic"
@@ -133,9 +133,9 @@ export const FooterGradientAndSparkles = () => {
                     width="15.6104"
                     height="16.2673"
                     filterUnits="userSpaceOnUse"
-                    color-interpolation-filters="sRGB"
+                    colorInterpolationFilters="sRGB"
                 >
-                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
                     <feBlend
                         mode="normal"
                         in="SourceGraphic"
@@ -155,8 +155,8 @@ export const FooterGradientAndSparkles = () => {
                     gradientUnits="userSpaceOnUse"
                     gradientTransform="translate(1266.19 1265.92) rotate(90) scale(765.318)"
                 >
-                    <stop stop-color="white" />
-                    <stop offset="1" stop-color="white" stop-opacity="0.8" />
+                    <stop stopColor="white" />
+                    <stop offset="1" stopColor="white" stopOpacity="0.8" />
                 </radialGradient>
             </defs>
         </svg>
