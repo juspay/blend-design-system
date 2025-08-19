@@ -310,29 +310,8 @@ const StatCard = ({
                                 alignItems="center"
                                 gap={statCardToken.stats.gap}
                             >
-                                {valueTooltip ? (
-                                    <Tooltip content={valueTooltip}>
-                                        <Text
-                                            as="span"
-                                            variant="heading.lg"
-                                            fontWeight={
-                                                statCardToken.stats.value[
-                                                    effectiveVariant
-                                                ].fontWeight
-                                            }
-                                            color={
-                                                statCardToken.stats.value[
-                                                    effectiveVariant
-                                                ].color
-                                            }
-                                            style={{
-                                                cursor: 'pointer',
-                                            }}
-                                        >
-                                            {value}
-                                        </Text>
-                                    </Tooltip>
-                                ) : (
+                                (
+                                <Tooltip content={valueTooltip || ''}>
                                     <Text
                                         as="span"
                                         variant="heading.lg"
@@ -352,30 +331,21 @@ const StatCard = ({
                                     >
                                         {value}
                                     </Text>
-                                )}
-                                {formattedChange &&
-                                    (change?.tooltip ? (
-                                        <Tooltip content={change?.tooltip}>
-                                            <Block
-                                                margin={
-                                                    statCardToken.stats.change
-                                                        .margin
-                                                }
-                                                cursor="pointer"
-                                            >
-                                                {formattedChange}
-                                            </Block>
-                                        </Tooltip>
-                                    ) : (
+                                </Tooltip>
+                                )
+                                {formattedChange && (
+                                    <Tooltip content={change?.tooltip || ''}>
                                         <Block
                                             margin={
                                                 statCardToken.stats.change
                                                     .margin
                                             }
+                                            cursor="pointer"
                                         >
                                             {formattedChange}
                                         </Block>
-                                    ))}
+                                    </Tooltip>
+                                )}
                             </Block>
                             {!isSmallScreen && (
                                 <Text
@@ -505,8 +475,8 @@ const StatCard = ({
                             alignItems="center"
                             gap={statCardToken.stats.gap}
                         >
-                            {valueTooltip ? (
-                                <Tooltip content={valueTooltip}>
+                            {
+                                <Tooltip content={valueTooltip || ''}>
                                     <Text
                                         as="span"
                                         fontSize={
@@ -531,71 +501,14 @@ const StatCard = ({
                                         {value}
                                     </Text>
                                 </Tooltip>
-                            ) : (
-                                <Text
-                                    as="span"
-                                    fontSize={
-                                        statCardToken.stats.value[
-                                            effectiveVariant
-                                        ].fontSize
-                                    }
-                                    fontWeight={
-                                        statCardToken.stats.value[
-                                            effectiveVariant
-                                        ].fontWeight
-                                    }
-                                    color={
-                                        statCardToken.stats.value[
-                                            effectiveVariant
-                                        ].color
-                                    }
-                                >
-                                    {value}
-                                </Text>
-                            )}
-                            {formattedChange &&
-                                (change?.tooltip ? (
-                                    <Tooltip content={change?.tooltip}>
-                                        <Block
-                                            margin={
-                                                statCardToken.stats.change
-                                                    .margin
-                                            }
-                                            cursor="pointer"
-                                        >
-                                            <Text
-                                                as="span"
-                                                color={
-                                                    statCardToken.stats.change
-                                                        .text[
-                                                        change?.valueType ??
-                                                            ChangeType.INCREASE
-                                                    ].color
-                                                }
-                                                fontSize={
-                                                    statCardToken.stats.change
-                                                        .text[
-                                                        change?.valueType ??
-                                                            ChangeType.INCREASE
-                                                    ].fontSize
-                                                }
-                                                fontWeight={
-                                                    statCardToken.stats.change
-                                                        .text[
-                                                        change?.valueType ??
-                                                            ChangeType.INCREASE
-                                                    ].fontWeight
-                                                }
-                                            >
-                                                {formattedChange}
-                                            </Text>
-                                        </Block>
-                                    </Tooltip>
-                                ) : (
+                            }
+                            {formattedChange && (
+                                <Tooltip content={change?.tooltip || ''}>
                                     <Block
                                         margin={
                                             statCardToken.stats.change.margin
                                         }
+                                        cursor="pointer"
                                     >
                                         <Text
                                             as="span"
@@ -621,7 +534,8 @@ const StatCard = ({
                                             {formattedChange}
                                         </Text>
                                     </Block>
-                                ))}
+                                </Tooltip>
+                            )}
                         </Block>
                         {!isSmallScreen && (
                             <Text
