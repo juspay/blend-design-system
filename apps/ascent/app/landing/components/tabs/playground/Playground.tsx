@@ -8,7 +8,7 @@ export const PlaygroundComp = () => {
         <section className="w-[100vw] py-20 mt-50 min-h-[90vh] rounded-[200px] overflow-hidden border-t border-white/20 bg-white/5 px-50">
             <GradientHeadingBox
                 text="playground"
-                classes="w-fit tracking-[40px] text-center"
+                classes="w-[600px] tracking-[40px] text-center"
             />
             <div className="mt-40 flex">
                 <div className="w-full flex flex-col gap-25">

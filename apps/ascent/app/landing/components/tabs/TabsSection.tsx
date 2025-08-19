@@ -4,11 +4,13 @@ import { useState } from 'react'
 import { Tabs } from './Tabs'
 import { BlendBorderHeading } from '../BlendBorderHeading'
 import { Separator } from '../Separator'
-import { DocumentationCarousel } from './documentation/DocumentationCarousel'
 import { TokenizerComp } from './tokenizer/Tokenizer'
 import { Components } from './components/Components'
 import { Documentation } from './documentation/Documentation'
 import { PlaygroundComp } from './playground/Playground'
+import { Blogs } from '../blogs/Blogs'
+import { ConnectWithUs } from '../connect-with-us/ConnectWithUs'
+import { Footer } from '../footer/Footer'
 
 export const TabsSection = () => {
     const [selectedTab, setSelectedTab] = useState('tokenizer')
@@ -31,6 +33,9 @@ export const TabsSection = () => {
             <BlendBorderHeading text="documentation" />
             <Documentation />
             <PlaygroundComp />
+            <Blogs />
+            <ConnectWithUs />
+            <Footer />
         </div>
     )
 }
