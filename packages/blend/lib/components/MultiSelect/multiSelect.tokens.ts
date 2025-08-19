@@ -241,7 +241,7 @@ export const getMultiSelectTokens = (
                 height: {
                     sm: FOUNDATION_THEME.unit[32],
                     md: FOUNDATION_THEME.unit[36],
-                    lg: FOUNDATION_THEME.unit[52],
+                    lg: FOUNDATION_THEME.unit[40],
                 },
                 paddingX: {
                     sm: FOUNDATION_THEME.unit[14],

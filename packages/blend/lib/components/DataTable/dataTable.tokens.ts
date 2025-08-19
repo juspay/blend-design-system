@@ -2,74 +2,106 @@ import type { CSSObject } from 'styled-components'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
-export type TableTokenType = {
+type BasicCSSProps = {
+    padding?: CSSObject['padding']
+    width?: CSSObject['width']
+    height?: CSSObject['height']
+    display?: CSSObject['display']
+    flexDirection?: CSSObject['flexDirection']
+    position?: CSSObject['position']
+}
+
+type BulkActionsType = {
+    top: CSSObject['top']
+    left: CSSObject['left']
+    transform: CSSObject['transform']
+    zIndex: CSSObject['zIndex']
+    backgroundColor: CSSObject['backgroundColor']
+    color: CSSObject['color']
+    borderRadius: CSSObject['borderRadius']
     padding: CSSObject['padding']
-    width: CSSObject['width']
-    height: CSSObject['height']
+    boxShadow: CSSObject['boxShadow']
     display: CSSObject['display']
-    flexDirection: CSSObject['flexDirection']
-    position: CSSObject['position']
-    header: {
-        display: CSSObject['display']
+    alignItems: CSSObject['alignItems']
+    gap: CSSObject['gap']
+    minWidth?: CSSObject['minWidth']
+    width?: CSSObject['width']
+    maxWidth?: CSSObject['maxWidth']
+    border: CSSObject['border']
+    selectText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        flex?: CSSObject['flex']
+        color: CSSObject['color']
+    }
+    height: CSSObject['height']
+}
+
+type HeaderType = {
+    display: CSSObject['display']
+    justifyContent: CSSObject['justifyContent']
+    alignItems: CSSObject['alignItems']
+    marginBottom: CSSObject['marginBottom']
+    gap: CSSObject['gap']
+    maxWidth: CSSObject['maxWidth']
+    overflowX: CSSObject['overflowX']
+    title: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    description: {
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+        lineHeight: CSSObject['lineHeight']
+        maxWidth: CSSObject['maxWidth']
+    }
+    headerSlot1: {
+        maxHeight: CSSObject['maxHeight']
+        flexShrink: CSSObject['flexShrink']
+    }
+    headerSlot2: {
+        maxHeight: CSSObject['maxHeight']
+        flexShrink: CSSObject['flexShrink']
+    }
+    headerSlot3: {
+        maxHeight: CSSObject['maxHeight']
+        flexShrink: CSSObject['flexShrink']
+    }
+    titleRow: {
+        gap: CSSObject['gap']
+        marginBottom: CSSObject['marginBottom']
         justifyContent: CSSObject['justifyContent']
         alignItems: CSSObject['alignItems']
-        marginBottom: CSSObject['marginBottom']
+    }
+    descriptionRow: {
+        marginTop: CSSObject['marginTop']
+    }
+    actionIcons: {
         gap: CSSObject['gap']
-        maxWidth: CSSObject['maxWidth']
-        overflowX: CSSObject['overflowX']
-        title: CSSObject
-        description: CSSObject
-        headerSlot1: CSSObject
-        headerSlot2: CSSObject
-        headerSlot3: CSSObject
-        titleRow: {
-            gap: CSSObject['gap']
-            marginBottom: CSSObject['marginBottom']
-            justifyContent: CSSObject['justifyContent']
-            alignItems: CSSObject['alignItems']
+        searchIcon: {
+            width: CSSObject['width']
+            height: CSSObject['height']
         }
-        descriptionRow: {
-            marginTop: CSSObject['marginTop']
+        filterIcon: {
+            width: CSSObject['width']
+            height: CSSObject['height']
         }
-        actionIcons: {
-            gap: CSSObject['gap']
-            searchIcon: {
-                width: CSSObject['width']
-                height: CSSObject['height']
-            }
-            filterIcon: {
-                width: CSSObject['width']
-                height: CSSObject['height']
-            }
-            columnManagerIcon: {
-                width: CSSObject['width']
-                height: CSSObject['height']
-            }
+        columnManagerIcon: {
+            width: CSSObject['width']
+            height: CSSObject['height']
         }
     }
+}
+
+export type TableTokenType = BasicCSSProps & {
+    header: HeaderType
     dataTable: {
         borderRadius: CSSObject['borderRadius']
         border: CSSObject['border']
         maxHeight: CSSObject['maxHeight']
         minHeight?: CSSObject['minHeight']
-        bulkActions: {
-            top: CSSObject['top']
-            left: CSSObject['left']
-            transform: CSSObject['transform']
-            zIndex: CSSObject['zIndex']
-            backgroundColor: CSSObject['backgroundColor']
-            color: CSSObject['color']
-            borderRadius: CSSObject['borderRadius']
-            padding: CSSObject['padding']
-            boxShadow: CSSObject['boxShadow']
-            display: CSSObject['display']
-            alignItems: CSSObject['alignItems']
-            gap: CSSObject['gap']
-            minWidth: CSSObject['minWidth']
-            border: CSSObject['border']
-            selectText: CSSObject
-            height: CSSObject['height']
-        }
+        bulkActions: BulkActionsType
         table: {
             width: CSSObject['width']
             tableLayout: CSSObject['tableLayout']
@@ -81,11 +113,19 @@ export type TableTokenType = {
                 backgroundColor: CSSObject['backgroundColor']
                 borderBottom: CSSObject['borderBottom']
                 height: CSSObject['height']
-                row: CSSObject
-                cell: CSSObject & {
+                row: {
+                    height: CSSObject['height']
+                    '&:hover': {
+                        backgroundColor: CSSObject['backgroundColor']
+                    }
+                }
+                cell: {
+                    padding: CSSObject['padding']
+                    textAlign: CSSObject['textAlign']
+                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
                     width?: CSSObject['width']
-                    fontSize?: CSSObject['fontSize']
-                    fontWeight?: CSSObject['fontWeight']
                 }
                 sortable: {
                     cursor: CSSObject['cursor']
@@ -125,13 +165,20 @@ export type TableTokenType = {
                     groupLabelPadding: CSSObject['padding']
                     groupLabelTextTransform: CSSObject['textTransform']
                     separatorHeight: CSSObject['height']
-                    separatorColor: CSSObject['backgroundColor']
+                    separatorColor: CSSObject['color']
                 }
             }
             body: {
                 backgroundColor: CSSObject['backgroundColor']
                 borderTop: CSSObject['borderTop']
-                row: CSSObject
+                row: {
+                    height: CSSObject['height']
+                    '&:hover': {
+                        backgroundColor: CSSObject['backgroundColor']
+                        cursor: CSSObject['cursor']
+                    }
+                    backgroundColor: CSSObject['backgroundColor']
+                }
                 cell: {
                     padding: CSSObject['padding']
                     fontWeight: CSSObject['fontWeight']
@@ -153,7 +200,10 @@ export type TableTokenType = {
                             transition: CSSObject['transition']
                             color: CSSObject['color']
                             border: CSSObject['border']
-                            '&:hover': CSSObject['&:hover']
+                            '&:hover': {
+                                backgroundColor: CSSObject['backgroundColor']
+                                color: CSSObject['color']
+                            }
                         }
                     }
                 }
@@ -187,7 +237,7 @@ export type TableTokenType = {
                         cursor: CSSObject['cursor']
                         color: CSSObject['color']
                         fontSize: CSSObject['fontSize']
-                        hoverColor: CSSObject['backgroundColor']
+                        hoverColor: CSSObject['color']
                     }
                     pageNavigation: {
                         gap: CSSObject['gap']
@@ -274,20 +324,22 @@ export const getTableToken = (
                 border: `1px solid ${foundationToken.colors.gray[200]}`,
                 maxHeight: 'calc(100vh - 280px)',
                 bulkActions: {
-                    top: '80%',
+                    top: '70%',
                     left: '50%',
                     transform: 'translateX(-50%)',
                     zIndex: 1000,
                     backgroundColor: foundationToken.colors.gray[0],
                     color: foundationToken.colors.gray[700],
                     borderRadius: foundationToken.border.radius[12],
-                    padding: `${foundationToken.unit[10]} ${foundationToken.unit[16]}`,
+                    padding: `${foundationToken.unit[8] as string} ${foundationToken.unit[16] as string} ${foundationToken.unit[8] as string} ${foundationToken.unit[8] as string}`,
                     height: foundationToken.unit[56],
                     boxShadow: foundationToken.shadows.lg,
                     display: 'flex',
                     alignItems: 'center',
-                    gap: foundationToken.unit[12],
-                    minWidth: '320px',
+                    gap: foundationToken.unit[10],
+                    minWidth: '220px',
+                    width: 'auto',
+                    maxWidth: 'calc(100vw - 32px)',
                     border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
                     selectText: {
                         fontSize: foundationToken.font.size.body.md.fontSize,

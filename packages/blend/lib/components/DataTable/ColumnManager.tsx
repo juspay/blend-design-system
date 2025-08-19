@@ -1,10 +1,8 @@
-import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
-import { ColumnManagerProps, ColumnDefinition } from './types'
+import { ColumnManagerProps } from './types'
 import { useMobileDataTable } from './hooks/useMobileDataTable'
-import MobileColumnManagerDrawer from './MobileColumnManagerDrawer'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { TableTokenType } from './dataTable.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -21,7 +19,6 @@ export const ColumnManager = <T extends Record<string, unknown>>({
     visibleColumns,
     onColumnChange,
 }: ColumnManagerProps<T>) => {
-    const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
     const mobileConfig = useMobileDataTable()
     const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
 
@@ -47,7 +44,6 @@ export const ColumnManager = <T extends Record<string, unknown>>({
 
     const managableColumns = columns.filter((col) => col.canHide !== false)
 
-    // Convert columns to MultiSelect format
     const multiSelectItems: MultiSelectMenuGroupType[] = [
         {
             groupLabel: 'Manage Columns',
@@ -59,13 +55,10 @@ export const ColumnManager = <T extends Record<string, unknown>>({
         },
     ]
 
-    // Get currently selected column values
     const selectedColumnValues = visibleColumns.map((col) => String(col.field))
 
-    // Handle MultiSelect change
     const handleMultiSelectChange = (value: string) => {
         if (value === '') {
-            // Clear all - but keep at least one column visible
             if (visibleColumns.length > 1) {
                 onColumnChange([visibleColumns[0]])
             }
@@ -74,56 +67,56 @@ export const ColumnManager = <T extends Record<string, unknown>>({
         }
     }
 
-    const handleButtonClick = () => {
-        if (mobileConfig.isMobile) {
-            setMobileDrawerOpen(true)
+    const handleClearAll = () => {
+        if (visibleColumns.length > 1) {
+            onColumnChange([visibleColumns[0]])
         }
     }
 
     return (
         <Block>
             {mobileConfig.isMobile ? (
-                <>
-                    <PrimitiveButton
-                        onClick={handleButtonClick}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        width="auto"
-                        height="auto"
-                        cursor="pointer"
-                        border="none"
-                    >
-                        <Plus
-                            size={
-                                tableTokens.header.actionIcons.columnManagerIcon
-                                    .width
-                            }
-                            color={FOUNDATION_THEME.colors.gray[400]}
-                        />
-                    </PrimitiveButton>
-                    <MobileColumnManagerDrawer
-                        isOpen={mobileDrawerOpen}
-                        onClose={() => setMobileDrawerOpen(false)}
-                        columns={
-                            managableColumns as ColumnDefinition<
-                                Record<string, unknown>
-                            >[]
-                        }
-                        visibleColumns={
-                            visibleColumns as ColumnDefinition<
-                                Record<string, unknown>
-                            >[]
-                        }
-                        onColumnChange={
-                            onColumnChange as (
-                                columns: ColumnDefinition<
-                                    Record<string, unknown>
-                                >[]
-                            ) => void
-                        }
-                    />
-                </>
+                <MultiSelect
+                    label=""
+                    placeholder="Select columns to display"
+                    variant={MultiSelectVariant.CONTAINER}
+                    size={MultiSelectMenuSize.MEDIUM}
+                    items={multiSelectItems}
+                    selectedValues={selectedColumnValues}
+                    onChange={handleMultiSelectChange}
+                    enableSearch={false}
+                    enableSelectAll={true}
+                    showActionButtons={true}
+                    primaryAction={{
+                        text: 'Apply',
+                        onClick: () => {},
+                        disabled: false,
+                    }}
+                    secondaryAction={{
+                        text: 'Clear All',
+                        onClick: handleClearAll,
+                        disabled: visibleColumns.length <= 1,
+                    }}
+                    customTrigger={
+                        <PrimitiveButton
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            width="auto"
+                            height="auto"
+                            cursor="pointer"
+                            border="none"
+                        >
+                            <Plus
+                                size={
+                                    tableTokens.header.actionIcons
+                                        .columnManagerIcon.width
+                                }
+                                color={FOUNDATION_THEME.colors.gray[400]}
+                            />
+                        </PrimitiveButton>
+                    }
+                />
             ) : (
                 <MultiSelect
                     label=""
@@ -135,6 +128,17 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     selectedValues={selectedColumnValues}
                     onChange={handleMultiSelectChange}
                     enableSearch={false}
+                    showActionButtons={true}
+                    primaryAction={{
+                        text: 'Apply',
+                        onClick: () => {},
+                        disabled: false,
+                    }}
+                    secondaryAction={{
+                        text: 'Clear All',
+                        onClick: handleClearAll,
+                        disabled: visibleColumns.length <= 1,
+                    }}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"
