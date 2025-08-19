@@ -393,17 +393,17 @@ const StyledInput = styled.input.withConfig({
         },
     }
 
-    const outline: CSSObject = {
-        '&:focus-visible': {
-            outline: 'none !important',
-        },
-    }
+    // const outline: CSSObject = {
+    //     '&:focus-visible': {
+    //         outline: 'none !important',
+    //     },
+    // }
 
     return css({
         ...base,
         ...placeholderStyle,
         ...stateStyles,
-        ...outline,
+        // ...outline,
         ...hideSpinButton,
     })
 })
