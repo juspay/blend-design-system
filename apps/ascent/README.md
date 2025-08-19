@@ -1,159 +1,75 @@
 # Ascent - Blend Design System Documentation
 
-A modern, optimized Next.js documentation site for the Blend Design System, featuring comprehensive component documentation, blog, and changelog functionality.
+> Modern Next.js documentation site with blog, docs, and changelog functionality
 
-## 🚀 **Quick Start**
+## 🚀 Quick Start
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
 # Start development server
-npm run dev
+pnpm dev
 
-# Build for production
-npm run build
-
-# Start production server
-npm start
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the documentation site.
-
-## 🏗️ **Architecture Overview**
-
-### **Optimized Structure**
-
-Ascent follows a modern, scalable architecture with centralized shared infrastructure:
+## 📁 Project Structure
 
 ```
 apps/ascent/
-├── app/                          # Next.js App Router
-│   ├── lib/                      # 🆕 Centralized shared library
-│   │   ├── config/              # App & module configurations
-│   │   ├── styles/              # Shared CSS classes
-│   │   ├── types/               # TypeScript definitions
-│   │   └── index.ts             # Main exports
-│   ├── components/              # Reusable UI components
-│   │   ├── ui/                  # Base UI components
-│   │   ├── layout/              # Layout components
-│   │   └── features/            # Feature-specific components
-│   ├── blog/                    # Blog module
-│   ├── docs/                    # Documentation module
-│   ├── changelog/               # Changelog module
-│   └── layout.tsx               # Root layout with centralized config
-├── src/lib/                     # Legacy utilities (being migrated)
-├── public/                      # Static assets
-└── scripts/                     # Build scripts
+├── app/
+│   ├── lib/                    # Shared utilities & configuration
+│   │   ├── config/            # App & module configurations
+│   │   ├── types/             # TypeScript definitions
+│   │   ├── utils/             # Utility functions
+│   │   └── styles/            # Shared CSS classes
+│   ├── components/            # Reusable UI components
+│   │   ├── ui/               # Base UI components
+│   │   ├── layout/           # Layout components
+│   │   ├── features/         # Feature-specific components
+│   │   └── mdx/              # MDX components
+│   ├── docs/                 # Documentation module
+│   ├── blog/                 # Blog module
+│   ├── changelog/            # Changelog module
+│   └── layout.tsx            # Root layout
+├── public/                   # Static assets
+├── scripts/                  # Build scripts
+└── mdx-components.tsx        # Global MDX components
 ```
 
-### **Key Optimizations**
+## 🛠️ Development
 
-✅ **Single Source of Truth**: All configuration centralized in `app/lib/config/`  
-✅ **Enhanced TypeScript**: Comprehensive path aliases and type safety  
-✅ **Consistent Styling**: Shared CSS classes across all modules  
-✅ **Clean Imports**: Barrel exports for better developer experience  
-✅ **Performance**: Optimized builds with reduced duplication
-
-## 📚 **Modules**
-
-### **Documentation (`/docs`)**
-
-- Component documentation with live previews
-- Interactive examples and code snippets
-- Comprehensive API documentation
-- Search functionality
-
-### **Blog (`/blog`)**
-
-- Technical articles and tutorials
-- Design system insights
-- Featured posts and categories
-- MDX-powered content
-
-### **Changelog (`/changelog`)**
-
-- Version history and release notes
-- Breaking changes documentation
-- Component updates tracking
-- Semantic versioning
-
-## 🛠️ **Development**
-
-### **Project Structure**
-
-#### **Centralized Configuration**
-
-```typescript
-// app/lib/config/app.ts - App-level configuration
-export const APP_CONFIG = {
-    name: 'Blend Design System',
-    description: '...',
-    features: { search: true, darkMode: true },
-    // ... comprehensive app settings
-}
-
-// app/lib/config/modules.ts - Module configurations
-export const SHARED_ROUTES = { DOCS: '/docs', BLOG: '/blog' }
-export const SHARED_EXTERNAL_URLS = { GITHUB: '...', STORYBOOK: '...' }
-```
-
-#### **Shared Styling**
-
-```typescript
-// app/lib/styles/classes.ts - Consistent CSS classes
-export const SHARED_NAV_CLASSES = {
-    BUTTON: 'p-2 rounded-md text-[var(--muted-foreground)] ...',
-    LINK: 'flex items-center font-semibold ...',
-}
-```
-
-#### **Type Safety**
-
-```typescript
-// app/lib/types/common.ts - Comprehensive types
-export interface BaseMetadata {
-    title: string
-    description: string
-}
-export interface NavigationItem {
-    label: string
-    href: string
-}
-```
-
-### **Enhanced Import Paths**
-
-```typescript
-// Clean, organized imports
-import { APP_CONFIG, SHARED_ROUTES } from '@/lib/config'
-import { SHARED_NAV_CLASSES } from '@/lib/styles'
-import { BaseMetadata } from '@/lib/types'
-import { SearchBar } from '@/components'
-```
-
-### **Available Scripts**
+### Available Scripts
 
 ```bash
-npm run dev          # Development server with hot reload
-npm run build        # Production build with optimization
-npm run start        # Start production server
-npm run lint         # ESLint with strict rules
-npm run lint:fix     # Auto-fix linting issues
+pnpm dev             # Development server with hot reload
+pnpm build           # Production build with static export
+pnpm start           # Start production server
+pnpm lint            # ESLint with strict rules
+pnpm lint:fix        # Auto-fix linting issues
 ```
 
-### **Adding New Content**
+### Key Features
 
-#### **Blog Posts**
+- **Static Site Generation** - Optimized for performance
+- **MDX Support** - Markdown with React components
+- **Search Functionality** - Real-time content search
+- **TypeScript** - Full type safety
+- **Responsive Design** - Mobile-first approach
+
+## 📝 Adding Content
+
+### Blog Posts
 
 ```bash
 # Create new blog post
-touch app/blog/content/my-new-post.mdx
+touch app/blog/content/my-post.mdx
 ```
 
 ```mdx
 ---
-title: 'My New Blog Post'
+title: 'My Blog Post'
 description: 'Post description'
 author: 'Author Name'
 publishDate: '2024-01-15'
@@ -162,56 +78,128 @@ tags: ['react', 'design-system']
 featured: false
 ---
 
-# My New Blog Post
+# My Blog Post
 
 Content here...
 ```
 
-#### **Documentation**
+### Documentation
 
 ```bash
 # Add component documentation
 touch app/docs/content/components/my-component.mdx
 ```
 
-#### **Changelog Entries**
+```mdx
+---
+title: 'My Component'
+description: 'Component description'
+category: 'components'
+---
+
+# My Component
+
+Documentation content...
+```
+
+### Changelog Entries
 
 ```bash
 # Add changelog entry
 touch app/changelog/content/v1.0.0.mdx
 ```
 
-## 🎨 **Customization**
+```mdx
+---
+title: 'Version 1.0.0'
+description: 'Release notes'
+publishDate: '2024-01-15'
+version: '1.0.0'
+---
 
-### **App Configuration**
+## What's New
 
-Modify `app/lib/config/app.ts` to customize:
+- Feature 1
+- Feature 2
+```
 
-- App name, description, and metadata
-- Feature flags (search, analytics, dark mode)
-- UI configuration (navbar, sidebar, icons)
-- Performance settings
+## ⚙️ Configuration
 
-### **Styling**
+### App Configuration
 
-Update `app/lib/styles/classes.ts` to modify:
+Edit `app/lib/config/app.ts`:
 
-- Navigation styling
-- Layout patterns
-- Content presentation
-- Card components
+```typescript
+export const APP_CONFIG = {
+    name: 'Blend Design System',
+    description: 'Modern React component library',
+    features: {
+        search: true,
+        darkMode: true,
+        analytics: false,
+    },
+}
+```
 
-### **Module Settings**
+### Module Settings
 
-Each module has its own config file:
-
-- `app/blog/config.ts` - Blog-specific settings
+- `app/blog/config.ts` - Blog configuration
 - `app/docs/config.ts` - Documentation settings
 - `app/changelog/config.ts` - Changelog settings
 
-## 🔧 **Technical Details**
+### Styling
 
-### **Built With**
+Shared CSS classes in `app/lib/styles/classes.ts`:
+
+```typescript
+export const SHARED_NAV_CLASSES = {
+    BUTTON: 'p-2 rounded-md text-[var(--muted-foreground)]',
+    LINK: 'flex items-center font-semibold',
+}
+```
+
+## 🚀 Deployment
+
+### Firebase Hosting
+
+The Ascent app is deployed to Firebase Hosting alongside Storybook:
+
+```bash
+# Deploy to staging
+npm run deploy:dev
+
+# Deploy to production
+npm run deploy:prod
+```
+
+**Live URLs:**
+
+- **Production**: [https://juspay.design](https://juspay.design)
+- **Staging**: [https://blend-staging.web.app](https://blend-staging.web.app)
+
+### Manual Build
+
+```bash
+pnpm build  # Generates static files in 'out/' directory
+```
+
+### Architecture
+
+- **Firebase Project**: `storybook-452807`
+- **Path Routing**: `/` → Ascent docs, `/storybook` → Storybook
+- **Static Export**: Next.js static site generation
+- **Search Index**: Pre-generated at build time
+
+## 🔍 Search
+
+The site includes automatic search functionality:
+
+- Search index generated during build
+- Real-time search across all content
+- Keyboard navigation support
+- Results from docs, blog, and changelog
+
+## 🧰 Tech Stack
 
 - **Next.js 15** - App Router with static export
 - **TypeScript** - Full type safety
@@ -220,134 +208,43 @@ Each module has its own config file:
 - **Lucide React** - Icon system
 - **Sugar High** - Syntax highlighting
 
-### **Performance Features**
+## 🎯 Best Practices
 
-- Static site generation (SSG)
-- Optimized bundle splitting
-- Image optimization
-- Font optimization with Geist
-- Search index pre-generation
-
-### **Developer Experience**
-
-- Hot reload development
-- TypeScript path aliases
-- ESLint with strict rules
-- Comprehensive error handling
-- Auto-generated search index
-
-## 📖 **Documentation Standards**
-
-### **File Naming**
-
-- Use kebab-case: `my-component.mdx`
-- Descriptive names: `button-group-usage.mdx`
-- Avoid special characters
-
-### **Frontmatter Requirements**
-
-```yaml
----
-title: 'Required - Clear, descriptive title'
-description: 'Required - SEO-friendly description'
-author: 'Required - Author name'
-publishDate: 'Required - ISO date (YYYY-MM-DD)'
-category: 'Required - Content category'
-tags: ['optional', 'array', 'of', 'tags']
-featured: false # Optional boolean
----
-```
-
-### **Content Guidelines**
-
-- Use clear, concise language
-- Include code examples
-- Add interactive previews where possible
-- Follow accessibility best practices
-
-## 🚀 **Deployment**
-
-### **Static Export**
-
-The site is configured for static export:
-
-```bash
-npm run build  # Generates static files in 'out/' directory
-```
-
-### **Vercel Deployment**
-
-```bash
-# Deploy to Vercel
-vercel --prod
-```
-
-### **Custom Deployment**
-
-Serve the `out/` directory with any static hosting provider.
-
-## 🔍 **Search Functionality**
-
-The site includes a powerful search system:
-
-- Pre-generated search index
-- Real-time search across all content
-- Keyboard navigation support
-- Category filtering
-
-Search index is automatically generated during build from all MDX content.
-
-## 🎯 **Best Practices**
-
-### **Performance**
+### Performance
 
 - Use React.memo for expensive components
-- Implement proper loading states
 - Optimize images and assets
 - Minimize bundle size
 
-### **Accessibility**
+### Content Guidelines
 
-- Semantic HTML structure
-- Proper ARIA labels
-- Keyboard navigation support
-- Color contrast compliance
+- Use clear, descriptive titles
+- Include proper frontmatter
+- Add code examples where relevant
+- Follow accessibility best practices
 
-### **SEO**
+### Development
 
-- Comprehensive metadata
-- Open Graph tags
-- Twitter Card support
-- Structured data
-
-## 🤝 **Contributing**
-
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Make your changes** following the established patterns
-4. **Test thoroughly**: `npm run build` and `npm run lint`
-5. **Commit your changes**: `git commit -m 'Add amazing feature'`
-6. **Push to the branch**: `git push origin feature/amazing-feature`
-7. **Open a Pull Request**
-
-### **Development Guidelines**
-
-- Follow the established architecture patterns
+- Follow TypeScript strict mode
 - Use shared configurations and styles
-- Add comprehensive TypeScript types
-- Include proper documentation
+- Add comprehensive type definitions
 - Test across all modules
 
-## 📄 **License**
+## 🤝 Contributing
 
-This project is part of the Blend Design System by Juspay.
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes following established patterns
+4. Test: `pnpm build` and `pnpm lint`
+5. Commit: `git commit -m 'Add amazing feature'`
+6. Push: `git push origin feature/amazing-feature`
+7. Open a Pull Request
 
-## 🔗 **Links**
+## 🔗 Links
 
 - **Live Site**: [Blend Design System](https://blend.juspay.in)
 - **Storybook**: [Component Library](https://juspay.design/storybook)
 - **GitHub**: [Source Code](https://github.com/juspay/blend-design-system)
-- **Juspay**: [Company Website](https://juspay.in)
 
 ---
 
