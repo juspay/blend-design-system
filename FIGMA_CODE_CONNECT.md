@@ -184,7 +184,6 @@ blend-design-system/
             "**/dist/**",
             "**/build/**",
             "apps/ascent/**",
-            "apps/firebase-app/**",
             "apps/site/**"
         ],
         "parser": "react"
