@@ -7,7 +7,7 @@ import { IsoIcon } from '../../icons/IsoIcon'
 
 export const Footer = () => {
     return (
-        <footer className="px-[160px] pt-[80px] pb-[20px] border-t-[1px] border-white/20 rounded-[100px] w-full items-center justify-center flex flex-col gap-[48px] bg-[#0C0C0C]">
+        <footer className="px-[160px] pt-[80px] pb-[20px] border-t-[1px] border-white/20 rounded-[100px] w-full items-center justify-center flex flex-col gap-[48px] bg-[#0C0C0C] z-30">
             <div className="flex gap-32">
                 <div className="flex flex-col gap-[68px] pr-8">
                     <div className="flex items-center gap-1">

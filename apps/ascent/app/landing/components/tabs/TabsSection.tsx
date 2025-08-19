@@ -84,9 +84,9 @@ export const TabsSection = () => {
             case 'playground':
                 playgroundRef.current?.scrollIntoView({ behavior: 'smooth' })
                 break
-            case 'blogs':
-                blogsRef.current?.scrollIntoView({ behavior: 'smooth' })
-                break
+            // case 'blogs':
+            //     blogsRef.current?.scrollIntoView({ behavior: 'smooth' })
+            //     break
             default:
                 break
         }
@@ -117,9 +117,9 @@ export const TabsSection = () => {
                 <PlaygroundComp />
             </div>
 
-            <div ref={blogsRef}>
+            {/* <div ref={blogsRef}>
                 <Blogs />
-            </div>
+            </div> */}
 
             <ConnectWithUs />
             <Footer />

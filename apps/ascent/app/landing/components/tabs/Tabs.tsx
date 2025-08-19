@@ -79,12 +79,12 @@ export const Tabs = ({
                     text="Playground"
                     handleTabSelection={handleTabSelection}
                 />
-                <TabButtons
+                {/* <TabButtons
                     label="blogs"
                     selected={selectedTab}
                     text="Blogs"
                     handleTabSelection={handleTabSelection}
-                />
+                /> */}
             </div>
         </div>
     )

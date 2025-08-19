@@ -6,7 +6,7 @@ export const FooterGradientAndSparkles = () => {
             height="2532"
             viewBox="0 0 2532 2532"
             fill="none"
-            style={{ position: 'absolute' }}
+            style={{ position: 'absolute', top: '-150px' }}
         >
             <g filter="url(#filter0_f_3518_5437)">
                 <circle
