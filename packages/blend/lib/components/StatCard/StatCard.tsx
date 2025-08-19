@@ -34,6 +34,7 @@ import { toPixels } from '../../global-utils/GlobalUtils'
 const StatCard = ({
     title,
     value,
+    valueTooltip,
     change,
     subtitle,
     variant,
@@ -309,30 +310,41 @@ const StatCard = ({
                                 alignItems="center"
                                 gap={statCardToken.stats.gap}
                             >
-                                <Text
-                                    as="span"
-                                    variant="heading.lg"
-                                    fontWeight={
-                                        statCardToken.stats.value[
-                                            effectiveVariant
-                                        ].fontWeight
-                                    }
-                                    color={
-                                        statCardToken.stats.value[
-                                            effectiveVariant
-                                        ].color
-                                    }
-                                >
-                                    {value}
-                                </Text>
-                                {formattedChange && (
-                                    <Block
-                                        margin={
-                                            statCardToken.stats.change.margin
+                                (
+                                <Tooltip content={valueTooltip || ''}>
+                                    <Text
+                                        as="span"
+                                        variant="heading.lg"
+                                        fontWeight={
+                                            statCardToken.stats.value[
+                                                effectiveVariant
+                                            ].fontWeight
                                         }
+                                        color={
+                                            statCardToken.stats.value[
+                                                effectiveVariant
+                                            ].color
+                                        }
+                                        style={{
+                                            cursor: 'pointer',
+                                        }}
                                     >
-                                        {formattedChange}
-                                    </Block>
+                                        {value}
+                                    </Text>
+                                </Tooltip>
+                                )
+                                {formattedChange && (
+                                    <Tooltip content={change?.tooltip || ''}>
+                                        <Block
+                                            margin={
+                                                statCardToken.stats.change
+                                                    .margin
+                                            }
+                                            cursor="pointer"
+                                        >
+                                            {formattedChange}
+                                        </Block>
+                                    </Tooltip>
                                 )}
                             </Block>
                             {!isSmallScreen && (
@@ -463,51 +475,66 @@ const StatCard = ({
                             alignItems="center"
                             gap={statCardToken.stats.gap}
                         >
-                            <Text
-                                as="span"
-                                fontSize={
-                                    statCardToken.stats.value[effectiveVariant]
-                                        .fontSize
-                                }
-                                fontWeight={
-                                    statCardToken.stats.value[effectiveVariant]
-                                        .fontWeight
-                                }
-                                color={
-                                    statCardToken.stats.value[effectiveVariant]
-                                        .color
-                                }
-                            >
-                                {value}
-                            </Text>
-                            {formattedChange && (
-                                <Block
-                                    margin={statCardToken.stats.change.margin}
-                                >
+                            {
+                                <Tooltip content={valueTooltip || ''}>
                                     <Text
                                         as="span"
-                                        color={
-                                            statCardToken.stats.change.text[
-                                                change?.valueType ??
-                                                    ChangeType.INCREASE
-                                            ].color
-                                        }
                                         fontSize={
-                                            statCardToken.stats.change.text[
-                                                change?.valueType ??
-                                                    ChangeType.INCREASE
+                                            statCardToken.stats.value[
+                                                effectiveVariant
                                             ].fontSize
                                         }
                                         fontWeight={
-                                            statCardToken.stats.change.text[
-                                                change?.valueType ??
-                                                    ChangeType.INCREASE
+                                            statCardToken.stats.value[
+                                                effectiveVariant
                                             ].fontWeight
                                         }
+                                        color={
+                                            statCardToken.stats.value[
+                                                effectiveVariant
+                                            ].color
+                                        }
+                                        style={{
+                                            cursor: 'pointer',
+                                        }}
                                     >
-                                        {formattedChange}
+                                        {value}
                                     </Text>
-                                </Block>
+                                </Tooltip>
+                            }
+                            {formattedChange && (
+                                <Tooltip content={change?.tooltip || ''}>
+                                    <Block
+                                        margin={
+                                            statCardToken.stats.change.margin
+                                        }
+                                        cursor="pointer"
+                                    >
+                                        <Text
+                                            as="span"
+                                            color={
+                                                statCardToken.stats.change.text[
+                                                    change?.valueType ??
+                                                        ChangeType.INCREASE
+                                                ].color
+                                            }
+                                            fontSize={
+                                                statCardToken.stats.change.text[
+                                                    change?.valueType ??
+                                                        ChangeType.INCREASE
+                                                ].fontSize
+                                            }
+                                            fontWeight={
+                                                statCardToken.stats.change.text[
+                                                    change?.valueType ??
+                                                        ChangeType.INCREASE
+                                                ].fontWeight
+                                            }
+                                        >
+                                            {formattedChange}
+                                        </Text>
+                                    </Block>
+                                </Tooltip>
                             )}
                         </Block>
                         {!isSmallScreen && (
