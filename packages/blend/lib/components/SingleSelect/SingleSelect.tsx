@@ -512,6 +512,7 @@ const SingleSelect = ({
                         enableSearch={enableSearch}
                         trigger={
                             <PrimitiveButton
+                                name={name}
                                 position="relative"
                                 width={'100%'}
                                 display="flex"
