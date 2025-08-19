@@ -1,9 +1,24 @@
-import { User, MapPin, Star, Shield, Briefcase } from 'lucide-react'
+import {
+    User,
+    MapPin,
+    Star,
+    Shield,
+    Briefcase,
+    Settings,
+    Database,
+    Target,
+} from 'lucide-react'
 import { useState } from 'react'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
+import {
+    Button,
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+} from '../../../../packages/blend/lib/components/Button'
 import {
     type SelectMenuGroupType,
     SelectMenuSize,
@@ -733,6 +748,190 @@ const SingleSelectDemo = () => {
                             </div>
                         )}
                     </div>
+                </div>
+            </div>
+
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Custom Trigger Examples</h2>
+                <p className="text-gray-600">
+                    Use the{' '}
+                    <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                        customTrigger
+                    </code>{' '}
+                    prop to provide your own trigger element for opening the
+                    SingleSelect dropdown.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Button Component Trigger
+                        </h3>
+                        <SingleSelect
+                            label="Product Selection"
+                            items={groupedItems}
+                            selected={groupedItemsSelected}
+                            onSelect={(value) => {
+                                setGroupedItemsSelected(value)
+                                addSnackbar({
+                                    header: 'Product Selected via Button',
+                                    description: `Selected: ${value}`,
+                                })
+                            }}
+                            placeholder="Select product"
+                            customTrigger={
+                                <Button
+                                    buttonType={ButtonType.PRIMARY}
+                                    size={ButtonSize.MEDIUM}
+                                    text="Choose Product"
+                                    leadingIcon={<Star size={16} />}
+                                />
+                            }
+                        />
+                        {groupedItemsSelected && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>Selected via Button:</strong>{' '}
+                                    {groupedItemsSelected}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Secondary Button Trigger
+                        </h3>
+                        <SingleSelect
+                            label="Location"
+                            items={nestedItems}
+                            selected={nestedMenuSelected}
+                            onSelect={(value) => {
+                                setNestedMenuSelected(value)
+                                addSnackbar({
+                                    header: 'Location Selected via Button',
+                                    description: `Selected: ${value}`,
+                                })
+                            }}
+                            placeholder="Choose location"
+                            customTrigger={
+                                <Button
+                                    buttonType={ButtonType.SECONDARY}
+                                    size={ButtonSize.MEDIUM}
+                                    text="Select Location"
+                                    leadingIcon={<MapPin size={16} />}
+                                    trailingIcon={<Settings size={16} />}
+                                />
+                            }
+                        />
+                        {nestedMenuSelected && (
+                            <div className="p-3 bg-yellow-50 rounded-lg">
+                                <p className="text-sm text-yellow-700">
+                                    <strong>Selected via Button:</strong>{' '}
+                                    {nestedMenuSelected}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Icon-Only Button Trigger
+                        </h3>
+                        <SingleSelect
+                            label="Options"
+                            items={simpleItems}
+                            selected={basicSimpleSelected}
+                            onSelect={(value) => {
+                                setBasicSimpleSelected(value)
+                                addSnackbar({
+                                    header: 'Option Selected via Icon',
+                                    description: `Selected: ${value}`,
+                                })
+                            }}
+                            placeholder="Select option"
+                            customTrigger={
+                                <div className="flex items-center gap-2">
+                                    <Button
+                                        buttonType={ButtonType.SECONDARY}
+                                        size={ButtonSize.MEDIUM}
+                                        subType={ButtonSubType.ICON_ONLY}
+                                        leadingIcon={<Database size={16} />}
+                                    />
+                                    <span className="text-sm text-gray-700">
+                                        Click to select option
+                                    </span>
+                                </div>
+                            }
+                        />
+                        {basicSimpleSelected && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>Selected via Icon:</strong>{' '}
+                                    {basicSimpleSelected}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Custom Styled Trigger</h3>
+                        <SingleSelect
+                            label="Filter Options"
+                            items={simpleItems}
+                            selected={basicIconSelected}
+                            onSelect={(value) => {
+                                setBasicIconSelected(value)
+                                addSnackbar({
+                                    header: 'Filter Selected',
+                                    description: `Selected: ${value}`,
+                                })
+                            }}
+                            placeholder="All options"
+                            customTrigger={
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full hover:bg-gray-200 cursor-pointer transition-colors">
+                                    <Target
+                                        size={14}
+                                        className="text-gray-600"
+                                    />
+                                    <span className="text-sm font-medium text-gray-700">
+                                        Filter Options
+                                    </span>
+                                    {basicIconSelected && (
+                                        <span className="px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full">
+                                            1
+                                        </span>
+                                    )}
+                                </div>
+                            }
+                        />
+                        {basicIconSelected && (
+                            <div className="p-3 bg-gray-50 rounded-lg">
+                                <p className="text-sm text-gray-700">
+                                    <strong>Active Filter:</strong>{' '}
+                                    {basicIconSelected}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-blue-50 rounded-lg">
+                    <h4 className="font-semibold text-blue-900 mb-2">
+                        Custom Trigger Benefits:
+                    </h4>
+                    <ul className="text-sm text-blue-800 space-y-1">
+                        <li>
+                            • Use any React element as a trigger (buttons,
+                            icons, cards, etc.)
+                        </li>
+                        <li>• Maintain full control over styling and layout</li>
+                        <li>
+                            • Works seamlessly with all SingleSelect features
+                        </li>
+                        <li>• Supports both desktop and mobile versions</li>
+                        <li>• Perfect for integrating with design systems</li>
+                    </ul>
                 </div>
             </div>
 

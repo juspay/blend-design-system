@@ -359,11 +359,12 @@ const SingleSelectMenu = ({
                 alignOffset={alignOffset}
                 side={side}
                 style={{
-                    minWidth,
-                    width: 'var(--radix-dropdown-menu-trigger-width)',
-                    maxWidth: maxWidth
-                        ? maxWidth
-                        : 'var(--radix-dropdown-menu-trigger-width)',
+                    minWidth: minWidth || 250,
+                    width:
+                        minWidth || maxWidth
+                            ? 'auto'
+                            : 'max(var(--radix-dropdown-menu-trigger-width), 250px)',
+                    maxWidth: maxWidth || 400,
                     maxHeight,
                 }}
             >

@@ -75,6 +75,10 @@ export type SingleSelectProps = {
     slot?: React.ReactNode
     disabled?: boolean
     name?: string
+
+    // custom trigger
+    customTrigger?: React.ReactNode
+
     // responsive behavior
     useDrawerOnMobile?: boolean
     // alignment

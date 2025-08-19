@@ -67,6 +67,7 @@ import DrawerDemo from './DrawerDemo'
 import DateRangePickerDemo from './DateRangePickerDemo'
 import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
+import PopoverDemo from './PopoverDemo'
 import {
     Avatar,
     AvatarShape,
@@ -222,6 +223,8 @@ const SidebarDemo = () => {
                 return <DataTableDemo />
             case 'charts':
                 return <ChartsDemo />
+            case 'popover':
+                return <PopoverDemo />
             default:
                 return <div>No component selected</div>
         }
