@@ -1,12 +1,16 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import { compileMDX } from 'next-mdx-remote/rsc'
-import { getBlogPost, getAllBlogPosts, BlogPost } from '../utils/getBlogPosts'
-import { extractHeadings } from '../../docs/utils/toc'
-import { BlogPostWithTOC, TOCItem } from '../../components/features/Blog'
+import {
+    getBlogPost,
+    getAllBlogPosts,
+    BlogPost,
+} from '@/blog/utils/getBlogPosts'
+import { extractHeadings } from '@/docs/utils'
+import { BlogPostWithTOC, TOCItem } from '@/components/features/Blog'
 
 // Import MDX components directly to avoid hook issues
-import { components as mdxComponents } from '../../../mdx-components'
+import { components as mdxComponents } from '@/mdx-components'
 
 interface PageProps {
     params: Promise<{

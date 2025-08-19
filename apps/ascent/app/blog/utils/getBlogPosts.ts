@@ -1,10 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
-import {
-    BlogPost,
-    BlogPostWithContent,
-} from '../../components/features/Blog/types'
+import { BlogPost, BlogPostWithContent } from '@/components/features/Blog/types'
 
 // Re-export types for backward compatibility
 export type { BlogPost, BlogPostWithContent }

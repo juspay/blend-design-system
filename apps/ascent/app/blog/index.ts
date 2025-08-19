@@ -10,9 +10,7 @@ export {
     EXTERNAL_URLS,
     NAVIGATION_LABELS,
     ROUTES,
-    CSS_CLASSES,
     LAYOUT_CONFIG,
-    ICON_PATHS,
     CONTENT_PATHS,
     DEFAULT_FRONTMATTER,
 } from './config'
@@ -35,9 +33,6 @@ export {
     searchPosts,
     sortPosts,
 } from './utils'
-
-// Icon components
-export * from './icons'
 
 // Blog post utilities
 export * from './utils/getBlogPosts'

@@ -1,8 +1,8 @@
 'use client'
 
-import { TOCItem } from '../../layout/Navigation/TableOfContents'
-import TableOfContents from '../../layout/Navigation/TableOfContents'
-import { BlogPost } from '../../../blog/utils/getBlogPosts'
+import { TOCItem } from '@/components/layout/Navigation/TableOfContents'
+import TableOfContents from '@/components/layout/Navigation/TableOfContents'
+import { BlogPost } from '@/blog/utils/getBlogPosts'
 
 interface BlogSidebarProps {
     headings: TOCItem[]

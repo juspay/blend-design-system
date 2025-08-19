@@ -5,7 +5,7 @@ import {
     SnackbarVariant,
 } from '@juspay/blend-design-system'
 import React from 'react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const SnackbarPreview = () => {
     const tsCode = `import { Snackbar, addSnackbar, SnackbarVariant } from "@juspay/blend-design-system";

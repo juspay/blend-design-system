@@ -1,4 +1,4 @@
-import { BLOG_CONSTANTS } from './constants'
+import { BLOG_CONSTANTS } from '@/components/features/Blog/constants'
 
 /**
  * Formats a date string to a human-readable format

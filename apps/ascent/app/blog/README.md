@@ -9,15 +9,23 @@ blog/
 ├── [...slug]/          # Dynamic blog post pages
 ├── content/            # Blog post MDX files
 ├── utils/              # Blog post utilities
-├── config.ts           # All configuration and constants
-├── icons.ts            # Blog-specific icon components
+├── config.ts           # Configuration using shared constants
 ├── types.ts            # Essential TypeScript types
 ├── utils.ts            # Core utility functions
 ├── index.ts            # Centralized exports
-├── layout.tsx          # Blog layout component
+├── layout.tsx          # Blog layout component (uses shared icons)
 ├── page.tsx            # Blog listing page
 └── README.md           # This documentation
 ```
+
+## 🔗 Shared Infrastructure
+
+The blog module now uses shared infrastructure for consistency:
+
+- **Icons**: Uses shared icon components from `../components/ui/Icons`
+- **Configuration**: Leverages shared constants from `../shared/config`
+- **CSS Classes**: Uses shared styling from `../shared/styles`
+- **Types**: Extends shared types from `../shared/types`
 
 ## 🚀 Quick Start
 

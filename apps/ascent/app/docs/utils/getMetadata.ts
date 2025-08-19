@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { getFileContent, PageMetadata } from './getFileContent'
+import { getFileContent, PageMetadata } from '@/docs/utils'
 
 export async function generateMetadata({
     params,

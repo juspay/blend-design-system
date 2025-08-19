@@ -5,15 +5,17 @@ import {
     SearchProvider,
     ThemeToggle,
     GlobalKeyboardNavigationProvider,
-} from '../components'
+    DocumentIcon,
+    ChangelogIcon,
+    StorybookIcon,
+} from '@/components'
 import {
     EXTERNAL_URLS,
     NAVIGATION_LABELS,
     ROUTES,
-    CSS_CLASSES,
     LAYOUT_CONFIG,
-} from './config'
-import { DocumentIcon, ChangelogIcon, StorybookIcon } from './icons'
+} from '@/blog/config'
+import { SHARED_NAV_CLASSES } from '@/lib/styles'
 
 interface BlogLayoutProps {
     children: React.ReactNode
@@ -27,7 +29,7 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ children }) => {
                     <div className="flex items-center gap-4">
                         <Link
                             href={ROUTES.BLOG}
-                            className={CSS_CLASSES.NAV_LINK}
+                            className={SHARED_NAV_CLASSES.LINK}
                             data-nav-topbar
                         >
                             <span>{NAVIGATION_LABELS.BLOG_TITLE}</span>
@@ -43,7 +45,7 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ children }) => {
                         </div>
                         <Link
                             href={ROUTES.DOCS}
-                            className={CSS_CLASSES.NAV_BUTTON}
+                            className={SHARED_NAV_CLASSES.BUTTON}
                             aria-label={NAVIGATION_LABELS.VIEW_DOCS}
                             data-nav-topbar
                         >
@@ -51,7 +53,7 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ children }) => {
                         </Link>
                         <Link
                             href={ROUTES.CHANGELOG}
-                            className={CSS_CLASSES.NAV_BUTTON}
+                            className={SHARED_NAV_CLASSES.BUTTON}
                             aria-label={NAVIGATION_LABELS.VIEW_CHANGELOG}
                             data-nav-topbar
                         >
@@ -61,7 +63,7 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ children }) => {
                             href={EXTERNAL_URLS.STORYBOOK}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={CSS_CLASSES.NAV_BUTTON}
+                            className={SHARED_NAV_CLASSES.BUTTON}
                             aria-label={NAVIGATION_LABELS.VIEW_STORYBOOK}
                             data-nav-topbar
                         >
@@ -71,7 +73,7 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ children }) => {
                             href={EXTERNAL_URLS.GITHUB}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={CSS_CLASSES.NAV_BUTTON}
+                            className={SHARED_NAV_CLASSES.BUTTON}
                             aria-label={NAVIGATION_LABELS.VIEW_GITHUB}
                             data-nav-topbar
                         >

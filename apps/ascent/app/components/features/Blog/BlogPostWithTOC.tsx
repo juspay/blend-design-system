@@ -1,8 +1,8 @@
 'use client'
 
-import { BlogTableOfContents } from './index'
-import { BlogPostWithTOCProps } from './types'
-import { formatDate } from './utils'
+import { BlogTableOfContents } from '@/components/features/Blog'
+import { BlogPostWithTOCProps } from '@/components/features/Blog/types'
+import { formatDate } from '@/components/features/Blog/utils'
 import Link from 'next/link'
 
 // Simple constants for this component

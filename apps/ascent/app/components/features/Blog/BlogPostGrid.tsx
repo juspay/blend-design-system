@@ -1,5 +1,5 @@
-import { BlogPost } from '../../../blog/utils/getBlogPosts'
-import { BlogPostCard } from './BlogPostCard'
+import { BlogPost } from '@/blog/utils/getBlogPosts'
+import { BlogPostCard } from '@/components/features/Blog/BlogPostCard'
 
 interface BlogPostGridProps {
     posts: BlogPost[]

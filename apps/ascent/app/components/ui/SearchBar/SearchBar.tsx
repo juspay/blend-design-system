@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { Drawer } from 'vaul'
-import { SearchResult } from '../../../docs/utils/searchContent'
+import { SearchResult } from '@/docs/utils'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 

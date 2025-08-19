@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React from 'react'
 import { usePathname } from 'next/navigation'
-import { DocItem } from '../../../docs/utils/scanDirectory'
+import { DocItem } from '@/docs/utils'
 
 const capitalize = (str: string) => {
     return str

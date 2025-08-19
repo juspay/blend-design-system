@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BlogPost } from '../../../blog/utils/getBlogPosts'
+import { BlogPost } from '@/blog/utils/getBlogPosts'
 
 interface BlogPostCardProps {
     post: BlogPost

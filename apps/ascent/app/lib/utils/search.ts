@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 
-export interface SearchResult {
+export interface DetailedSearchResult {
     title: string
     description?: string
     path: string
@@ -19,7 +19,7 @@ export interface SearchResult {
 }
 
 export interface SearchIndex {
-    [key: string]: SearchResult
+    [key: string]: DetailedSearchResult
 }
 
 // Function to extract section headers from MDX
@@ -104,7 +104,7 @@ export const buildSearchIndex = (contentDir: string): SearchIndex => {
                         const slug = entry.name.replace(/\.mdx$/, '')
                         const docPath = relativePath.replace(/\.mdx$/, '')
 
-                        const searchResult: SearchResult = {
+                        const searchResult: DetailedSearchResult = {
                             title: data.title || slug,
                             description: data.description,
                             path: docPath,
@@ -136,11 +136,11 @@ export const searchContent = (
     query: string,
     index: SearchIndex,
     maxResults: number = 10
-): SearchResult[] => {
+): DetailedSearchResult[] => {
     if (!query.trim()) return []
 
     const searchTerms = query.toLowerCase().split(/\s+/)
-    const results: Array<SearchResult & { score: number }> = []
+    const results: Array<DetailedSearchResult & { score: number }> = []
 
     for (const [, result] of Object.entries(index)) {
         let score = 0

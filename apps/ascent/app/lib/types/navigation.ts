@@ -1,10 +1,4 @@
 // Navigation-related type definitions
-export interface NavigationItem {
-    title: string
-    path: string
-    children?: NavigationItem[]
-}
-
 export enum NavigationZone {
     TOPBAR = 'topbar',
     SIDEBAR = 'sidebar',

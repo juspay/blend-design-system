@@ -3,7 +3,7 @@
  * Simplified to include only actively used utilities
  */
 
-import { BlogPost, BlogPostFrontmatter } from './types'
+import { BlogPost, BlogPostFrontmatter } from '@/blog/types'
 
 /**
  * Validates blog post frontmatter

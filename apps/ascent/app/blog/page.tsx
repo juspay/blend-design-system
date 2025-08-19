@@ -3,13 +3,13 @@ import {
     getAllBlogPosts,
     getFeaturedBlogPosts,
     BlogPost,
-} from './utils/getBlogPosts'
+} from '@/blog/utils/getBlogPosts'
 import {
     BlogHeader,
     FeaturedPosts,
     BlogPostGrid,
-} from '../components/features/Blog'
-import { BLOG_CONFIG } from './config'
+} from '@/components/features/Blog'
+import { BLOG_CONFIG } from '@/blog/config'
 
 /**
  * Blog page component with optimized performance

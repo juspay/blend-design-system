@@ -1,15 +1,5 @@
 // Search-related type definitions
-export interface SearchResult {
-    title: string
-    description?: string
-    path: string
-    slug: string
-    category: string
-    tags?: string[]
-    content: string
-    excerpt: string
-    sections: Section[]
-}
+import type { SearchResult } from './common'
 
 export interface Section {
     title: string
