@@ -1,0 +1,548 @@
+---
+title: 'Blend MCP Server Documentation'
+description: "A comprehensive guide to the Blend MCP (Model Context Protocol) Server - your AI assistant's gateway to the Blend design system."
+author: 'Blend Team'
+publishDate: '2024-01-15'
+tags: ['mcp', 'ai', 'documentation', 'tools']
+category: 'tools'
+featured: false
+excerpt: 'Learn how to use the Blend MCP Server to accelerate UI development with AI assistance and automated component generation.'
+readTime: '12 min read'
+---
+
+# Blend MCP Server Documentation
+
+A comprehensive guide to the Blend MCP (Model Context Protocol) Server - your AI assistant's gateway to the Blend design system.
+
+## Overview
+
+### What is the Blend MCP Server?
+
+The Blend MCP Server bridges AI assistants and the Blend design system, enabling:
+
+- **Component Generation**: Create properly typed React components with correct props
+- **UI Pattern Scaffolding**: Build common dashboard and FinTech interface patterns
+- **Real-time Documentation**: Access component prop information and usage examples
+- **Development Automation**: Speed up UI development with AI assistance
+
+### Why Use It?
+
+**For Developers:**
+
+- Generate components instantly instead of manual coding
+- Ensure consistent design system usage
+- Learn component capabilities through AI exploration
+
+**For Teams:**
+
+- Standardize component usage across members
+- Accelerate onboarding for new developers
+- Maintain up-to-date documentation automatically
+
+**For AI Assistants:**
+
+- Understand Blend component capabilities and constraints
+- Generate type-safe React code
+- Access comprehensive component metadata
+
+## Quick Start
+
+### 1. Install and Run
+
+```bash
+# Test immediately with npx
+npx blend-mcp-server
+```
+
+### 2. Configure AI Assistant
+
+**Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+{
+    "mcpServers": {
+        "blend": {
+            "command": "npx",
+            "args": ["blend-mcp-server"],
+            "env": {
+                "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1"
+            }
+        }
+    }
+}
+```
+
+### 3. Generate Your First Component
+
+Ask your AI assistant:
+
+```
+"Generate a primary button with the text 'Get Started'"
+```
+
+Expected output:
+
+```tsx
+import { Button } from 'blend-v1'
+;<Button text="Get Started" variant="primary" size="medium" />
+```
+
+### 4. Explore Components
+
+```
+"List all available Blend components"
+"What props does the Button component accept?"
+"Create a FinTech dashboard with KPI cards"
+```
+
+## Installation & Configuration
+
+### Installation Methods
+
+**NPX (Recommended)**:
+
+```bash
+npx blend-mcp-server
+```
+
+**Local Development**:
+
+```bash
+git clone https://github.com/juspay/blend-design-system.git
+cd blend-design-system/packages/mcp
+npm install && node index.js
+```
+
+### Environment Variables
+
+```bash
+# Customize paths and package names
+export BLEND_LIBRARY_PATH="/path/to/blend/lib/components"
+export BLEND_LIBRARY_PACKAGE_NAME="@your-org/design-system"
+export META_PATH="/path/to/meta/files"
+export DEBUG=true
+```
+
+### Client Configurations
+
+**VS Code with Cline/Continue**:
+
+```json
+{
+    "mcpServers": {
+        "blend": {
+            "command": "npx",
+            "args": ["blend-mcp-server"],
+            "env": { "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1" }
+        }
+    }
+}
+```
+
+## Available Tools
+
+### 1. list_blend_components
+
+Lists all available Blend components.
+
+**Usage**: `"List all available Blend components"`
+
+### 2. get_blend_component_props
+
+Retrieves detailed prop information for a component.
+
+**Usage**: `"What props does the Button component accept?"`
+
+**Output**:
+
+```json
+{
+    "componentDescription": "A button component for user interactions",
+    "props": [
+        {
+            "name": "variant",
+            "type": "'primary' | 'secondary' | 'danger' | 'success'",
+            "required": false,
+            "description": "Visual style variant",
+            "defaultValue": "primary"
+        }
+    ]
+}
+```
+
+### 3. generate_blend_component
+
+Generates React code for components with specified props.
+
+**Simple Component**:
+
+```
+"Create a danger button with text 'Delete'"
+```
+
+**Component with Children**:
+
+```
+"Generate a modal with title 'Confirmation' and a warning message inside"
+```
+
+**Nested Components**:
+
+```
+"Create an alert with a dismiss button inside"
+```
+
+### 4. scaffold_dashboard_section
+
+Generates common UI patterns for dashboards.
+
+**Available Patterns**:
+
+- `fintech_kpi_summary_with_chart`: KPI cards with charts
+- `transaction_list_with_controls`: Data tables with filters
+
+**Usage**:
+
+```
+"Create a financial dashboard with revenue and user metrics"
+"Generate a transaction list with search and status filters"
+```
+
+### 5. generate_component_documentation
+
+Creates markdown documentation for components.
+
+**Usage**: `"Generate documentation for the Button component"`
+
+## Usage Guide
+
+### Component Generation Patterns
+
+**Semantic Variants**:
+
+```tsx
+<Button variant="primary" />    // Main actions
+<Button variant="danger" />     // Destructive actions
+<Alert variant="warning" />     // Warning messages
+```
+
+**Consistent Sizing**:
+
+```tsx
+<Button size="small" />   // Compact interfaces
+<Button size="medium" />  // Default size
+<Button size="large" />   // Prominent actions
+```
+
+**Interactive States**:
+
+```tsx
+<Button loading={true} disabled={!isValid} />
+<TextInput error="Invalid input" />
+```
+
+### Dashboard Scaffolding
+
+**FinTech KPI Dashboard**:
+
+```
+"Create a financial overview with revenue $1.2M (15% increase),
+profit $300K (8% increase), and a line chart showing monthly trends"
+```
+
+**Transaction Management**:
+
+```
+"Generate a transaction list with ID, amount, status columns,
+search filter, and export button"
+```
+
+### Best Practices
+
+1. **Use Semantic Variants**: Choose meaningful variants over custom styling
+2. **Maintain Consistency**: Use consistent sizes and patterns across components
+3. **Include Accessibility**: Add proper labels and ARIA attributes
+4. **Handle States**: Include loading, error, and disabled states
+
+### Common Workflows
+
+**Building a Dashboard**:
+
+1. List available components
+2. Generate KPI section with charts
+3. Add data table with controls
+4. Create modals for actions
+5. Generate documentation
+
+**Learning the Design System**:
+
+1. Explore component props
+2. Generate different variants
+3. Practice component composition
+4. Document learnings
+
+## Troubleshooting
+
+### Common Issues
+
+**Server Won't Start**:
+
+```bash
+# Check Blend installation
+npm list blend-v1
+
+# Set explicit path
+export BLEND_LIBRARY_PATH="/path/to/blend/lib/components"
+npx blend-mcp-server
+```
+
+**Component Not Found**:
+
+```bash
+# List available components first
+# Use exact component names: "Button" not "button"
+```
+
+**Configuration Issues**:
+
+```json
+// Verify JSON syntax in config files
+// Restart AI assistant after config changes
+```
+
+**Performance Issues**:
+
+```bash
+# Use local installation for better performance
+npm install -g @design-juspay/blend-mcp-server
+
+# Enable caching
+export ENABLE_CACHE=true
+```
+
+### Debugging
+
+```bash
+# Enable debug logging
+export DEBUG=true
+npx blend-mcp-server
+
+# Use MCP Inspector for interactive testing
+npm run inspector
+```
+
+### FAQ
+
+<details>
+<summary><strong>1: Can I use the MCP server with my custom design system instead of Blend?</strong></summary>
+
+Yes! The MCP server is designed to be adaptable. Configure these environment variables:
+
+```bash
+export BLEND_LIBRARY_PACKAGE_NAME="@your-company/design-system"
+export BLEND_LIBRARY_PATH="/path/to/your/components"
+export META_PATH="/path/to/your/meta/files"
+```
+
+You'll need to create metadata files for your components or use the auto-generation script to extract them from TypeScript definitions.
+
+</details>
+
+<details>
+<summary><strong>2: The server says "Component not found" but I know it exists. What's wrong?</strong></summary>
+
+This usually happens due to:
+
+1. **Case sensitivity**: Use exact component names (`Button` not `button`)
+2. **Missing metadata**: The component needs a metadata file in the meta directory
+3. **Path issues**: Check that `BLEND_LIBRARY_PATH` points to the correct directory
+4. **Package not installed**: Ensure the design system package is installed
+
+Try running `"List all available Blend components"` first to see what's actually available.
+
+</details>
+
+<details>
+<summary><strong>3: How do I add new components to the MCP server?</strong></summary>
+
+Follow these steps:
+
+1. **Add the component** to your Blend library or design system
+2. **Create metadata file** in `apps/docs/meta/componentname.context.ts`
+3. **Or auto-generate** metadata: `node generateMetaFiles.js`
+4. **Restart the server** to pick up new components
+5. **Test** by asking AI to list components or generate the new component
+
+</details>
+
+<details>
+<summary><strong>4: Which AI assistants work with the MCP server?</strong></summary>
+
+Any MCP-compatible client works:
+
+- **Claude Desktop** (official support with easy configuration)
+- **VS Code with Cline/Continue** (popular for development workflows)
+- **Custom MCP clients** (build your own integration)
+- **Any tool implementing MCP protocol** (growing ecosystem)
+
+Each may have slightly different configuration requirements, but the core functionality remains the same.
+
+</details>
+
+<details>
+<summary><strong>5: How do I update to the latest version?</strong></summary>
+
+Depends on your installation method:
+
+```bash
+# For npx usage (automatic latest)
+npx @design-juspay/blend-mcp-server@latest
+
+# For global installation
+npm update -g @design-juspay/blend-mcp-server
+
+# For local development
+cd packages/mcp && git pull && npm install
+```
+
+</details>
+
+<details>
+<summary><strong>6: The server is slow or uses too much memory. How can I optimize it?</strong></summary>
+
+Try these optimizations:
+
+```bash
+# Use local installation instead of npx
+npm install -g @design-juspay/blend-mcp-server
+
+# Enable caching
+export ENABLE_CACHE=true
+
+# Limit memory usage
+node --max-old-space-size=4096 index.js
+
+# Check for memory leaks
+top -p $(pgrep node)
+```
+
+Also consider using the server only when needed rather than keeping it running continuously.
+
+</details>
+
+<details>
+<summary><strong>7: Can I use this in production or CI/CD pipelines?</strong></summary>
+
+Yes, but with considerations:
+
+**For Production:**
+
+- Use local installation for better performance
+- Set up proper error monitoring and logging
+- Configure appropriate caching strategies
+- Use environment-specific configurations
+
+**For CI/CD:**
+
+- Automate component documentation generation
+- Validate component usage in pull requests
+- Generate design system artifacts automatically
+
+</details>
+
+<details>
+<summary><strong>8: How do I debug issues with component generation?</strong></summary>
+
+Enable debug mode and use these tools:
+
+```bash
+# Enable detailed logging
+export DEBUG=true
+npx blend-mcp-server
+
+# Use MCP Inspector for interactive testing
+npm run inspector
+
+# Check component metadata
+cat apps/docs/meta/componentname.context.ts
+
+# Validate component exists
+ls packages/blend/lib/components/ComponentName
+```
+
+Check the console output for specific error messages and stack traces.
+
+</details>
+
+<details>
+<summary><strong>9: Can I customize the generated code format or add my own patterns?</strong></summary>
+
+Yes! You can extend the server:
+
+**Custom Code Formatting:**
+Modify the `formatPropValue` function in `index.js` to change how props are formatted.
+
+**Custom Scaffolding Patterns:**
+Add new patterns to the `scaffold_dashboard_section` tool by implementing pattern functions and registering them.
+
+**Custom Tools:**
+Add entirely new tools by extending the server's tool handlers.
+
+See the [Development & Extension](#development--extension) section for detailed examples.
+
+</details>
+
+<details>
+<summary><strong>10: What happens if I have conflicting component names between different libraries?</strong></summary>
+
+The MCP server uses the package name and path configuration to resolve components. If you have conflicts:
+
+1. **Use specific package names** in your environment variables
+2. **Namespace your components** in the metadata files
+3. **Use fully qualified imports** in generated code
+4. **Consider component aliasing** in your build system
+
+The server will use whatever is configured in `BLEND_LIBRARY_PACKAGE_NAME` for imports.
+
+</details>
+
+<details>
+<summary><strong>11: How do I contribute new features or report bugs?</strong></summary>
+
+We welcome contributions!
+
+**For Bugs:**
+
+1. Check [existing issues](https://github.com/juspay/blend-design-system/issues)
+2. Create a new issue with reproduction steps
+3. Include your environment details and configuration
+
+**For Features:**
+
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Update documentation
+5. Submit a pull request
+
+See our [Contributing Guide](https://github.com/juspay/blend-design-system/blob/main/CONTRIBUTING.md) for detailed guidelines.
+
+</details>
+
+## Conclusion
+
+The Blend MCP Server accelerates UI development by providing AI assistants with deep understanding of the Blend design system. It enables faster development, better consistency, and improved learning through AI-assisted component generation.
+
+### Key Benefits
+
+- **Speed**: Generate components instantly with proper typing
+- **Consistency**: Ensure design system compliance automatically
+- **Learning**: Discover capabilities through AI exploration
+- **Quality**: Reduce errors with validated prop usage
+
+### Next Steps
+
+1. Follow the [Quick Start](#quick-start) guide
+2. Explore different components and patterns
+3. Integrate into your development workflow
+4. Contribute improvements to the community

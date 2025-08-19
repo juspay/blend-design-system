@@ -35,6 +35,46 @@ const layout = ({ children }: { children: React.ReactNode }) => {
                         <div className="max-w-sm" data-nav-topbar>
                             <SearchProvider />
                         </div>
+                        <Link
+                            href="/blog"
+                            className="p-2 rounded-md text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--sidebar-item-hover)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2"
+                            aria-label="View Blog"
+                            data-nav-topbar
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                            </svg>
+                        </Link>
+                        <Link
+                            href="/changelog"
+                            className="p-2 rounded-md text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--sidebar-item-hover)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2"
+                            aria-label="View Changelog"
+                            data-nav-topbar
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M3 3v18h18" />
+                                <path d="M7 12l3 3 7-7" />
+                            </svg>
+                        </Link>
                         <a
                             href="https://juspay.design/storybook"
                             target="_blank"
