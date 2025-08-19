@@ -325,6 +325,9 @@ const StatCard = ({
                                                     effectiveVariant
                                                 ].color
                                             }
+                                            style={{
+                                                cursor: 'pointer',
+                                            }}
                                         >
                                             {value}
                                         </Text>
@@ -343,6 +346,9 @@ const StatCard = ({
                                                 effectiveVariant
                                             ].color
                                         }
+                                        style={{
+                                            cursor: 'pointer',
+                                        }}
                                     >
                                         {value}
                                     </Text>
@@ -355,6 +361,7 @@ const StatCard = ({
                                                     statCardToken.stats.change
                                                         .margin
                                                 }
+                                                cursor="pointer"
                                             >
                                                 {formattedChange}
                                             </Block>
@@ -517,6 +524,9 @@ const StatCard = ({
                                                 effectiveVariant
                                             ].color
                                         }
+                                        style={{
+                                            cursor: 'pointer',
+                                        }}
                                     >
                                         {value}
                                     </Text>
@@ -551,6 +561,7 @@ const StatCard = ({
                                                 statCardToken.stats.change
                                                     .margin
                                             }
+                                            cursor="pointer"
                                         >
                                             <Text
                                                 as="span"
