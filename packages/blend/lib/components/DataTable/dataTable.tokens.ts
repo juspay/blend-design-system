@@ -41,6 +41,10 @@ export type TableTokenType = {
                 width: CSSObject['width']
                 height: CSSObject['height']
             }
+            columnManagerIcon: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+            }
         }
     }
     dataTable: {
@@ -259,6 +263,10 @@ export const getTableToken = (
                         width: foundationToken.unit[20],
                         height: foundationToken.unit[20],
                     },
+                    columnManagerIcon: {
+                        width: foundationToken.unit[14],
+                        height: foundationToken.unit[14],
+                    },
                 },
             },
             dataTable: {
@@ -412,7 +420,7 @@ export const getTableToken = (
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        padding: `${foundationToken.unit[4]} ${foundationToken.unit[16]}`,
+                        padding: `${foundationToken.unit[6]} ${foundationToken.unit[16]}`,
                         borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
                         height: foundationToken.unit[48],
                         position: 'sticky',
@@ -507,6 +515,10 @@ export const getTableToken = (
                         width: foundationToken.unit[20],
                         height: foundationToken.unit[20],
                     },
+                    columnManagerIcon: {
+                        width: foundationToken.unit[16],
+                        height: foundationToken.unit[16],
+                    },
                 },
             },
             dataTable: {
@@ -660,7 +672,7 @@ export const getTableToken = (
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        padding: `${foundationToken.unit[4]} ${foundationToken.unit[16]}`,
+                        padding: `${foundationToken.unit[6]} ${foundationToken.unit[16]}`,
                         borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
                         height: foundationToken.unit[48],
                         position: 'sticky',

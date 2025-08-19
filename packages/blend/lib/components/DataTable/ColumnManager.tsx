@@ -1,14 +1,20 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import { Checkbox } from '../Checkbox'
-import { CheckboxSize } from '../Checkbox/types'
-import Menu from '../Menu/Menu'
-import { MenuAlignment } from '../Menu/types'
-import { Button, ButtonSize, ButtonType } from '../Button'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
-import { ColumnManagerProps } from './types'
+import { ColumnManagerProps, ColumnDefinition } from './types'
 import { useMobileDataTable } from './hooks/useMobileDataTable'
 import MobileColumnManagerDrawer from './MobileColumnManagerDrawer'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { TableTokenType } from './dataTable.tokens'
+import { FOUNDATION_THEME } from '../../tokens'
+import { MultiSelect } from '../MultiSelect'
+import {
+    MultiSelectVariant,
+    MultiSelectMenuAlignment,
+    MultiSelectMenuSize,
+    type MultiSelectMenuGroupType,
+} from '../MultiSelect/types'
 
 export const ColumnManager = <T extends Record<string, unknown>>({
     columns,
@@ -17,6 +23,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
 }: ColumnManagerProps<T>) => {
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
     const mobileConfig = useMobileDataTable()
+    const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
 
     const toggleColumnVisibility = (field: keyof T) => {
         const isCurrentlyVisible = visibleColumns.some(
@@ -40,31 +47,32 @@ export const ColumnManager = <T extends Record<string, unknown>>({
 
     const managableColumns = columns.filter((col) => col.canHide !== false)
 
-    const menuItems = [
+    // Convert columns to MultiSelect format
+    const multiSelectItems: MultiSelectMenuGroupType[] = [
         {
             groupLabel: 'Manage Columns',
             showSeparator: false,
-            items: managableColumns.map((column) => {
-                const isVisible = visibleColumns.some(
-                    (col) => col.field === column.field
-                )
-                return {
-                    label: column.header,
-                    value: String(column.field),
-                    slot1: (
-                        <Checkbox
-                            checked={isVisible}
-                            onCheckedChange={() =>
-                                toggleColumnVisibility(column.field)
-                            }
-                            size={CheckboxSize.SMALL}
-                        />
-                    ),
-                    onClick: () => toggleColumnVisibility(column.field),
-                }
-            }),
+            items: managableColumns.map((column) => ({
+                label: column.header,
+                value: String(column.field),
+            })),
         },
     ]
+
+    // Get currently selected column values
+    const selectedColumnValues = visibleColumns.map((col) => String(col.field))
+
+    // Handle MultiSelect change
+    const handleMultiSelectChange = (value: string) => {
+        if (value === '') {
+            // Clear all - but keep at least one column visible
+            if (visibleColumns.length > 1) {
+                onColumnChange([visibleColumns[0]])
+            }
+        } else {
+            toggleColumnVisibility(value as keyof T)
+        }
+    }
 
     const handleButtonClick = () => {
         if (mobileConfig.isMobile) {
@@ -76,32 +84,76 @@ export const ColumnManager = <T extends Record<string, unknown>>({
         <Block>
             {mobileConfig.isMobile ? (
                 <>
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        size={ButtonSize.SMALL}
-                        leadingIcon={<Plus />}
+                    <PrimitiveButton
                         onClick={handleButtonClick}
-                    />
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        width="auto"
+                        height="auto"
+                        cursor="pointer"
+                        border="none"
+                    >
+                        <Plus
+                            size={
+                                tableTokens.header.actionIcons.columnManagerIcon
+                                    .width
+                            }
+                            color={FOUNDATION_THEME.colors.gray[400]}
+                        />
+                    </PrimitiveButton>
                     <MobileColumnManagerDrawer
                         isOpen={mobileDrawerOpen}
                         onClose={() => setMobileDrawerOpen(false)}
-                        columns={managableColumns as any}
-                        visibleColumns={visibleColumns as any}
-                        onColumnChange={onColumnChange as any}
+                        columns={
+                            managableColumns as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        visibleColumns={
+                            visibleColumns as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        onColumnChange={
+                            onColumnChange as (
+                                columns: ColumnDefinition<
+                                    Record<string, unknown>
+                                >[]
+                            ) => void
+                        }
                     />
                 </>
             ) : (
-                <Menu
-                    alignment={MenuAlignment.END}
+                <MultiSelect
+                    label=""
+                    placeholder="Manage Columns"
+                    variant={MultiSelectVariant.NO_CONTAINER}
+                    alignment={MultiSelectMenuAlignment.END}
+                    size={MultiSelectMenuSize.SMALL}
+                    items={multiSelectItems}
+                    selectedValues={selectedColumnValues}
+                    onChange={handleMultiSelectChange}
                     enableSearch={false}
-                    trigger={
-                        <Button
-                            buttonType={ButtonType.SECONDARY}
-                            size={ButtonSize.SMALL}
-                            leadingIcon={<Plus />}
-                        />
+                    customTrigger={
+                        <PrimitiveButton
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            width="auto"
+                            height="auto"
+                            cursor="pointer"
+                            border="none"
+                        >
+                            <Plus
+                                size={
+                                    tableTokens.header.actionIcons
+                                        .columnManagerIcon.width
+                                }
+                                color={FOUNDATION_THEME.colors.gray[400]}
+                            />
+                        </PrimitiveButton>
                     }
-                    items={menuItems}
                 />
             )}
         </Block>
