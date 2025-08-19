@@ -175,7 +175,10 @@ const SingleSelect = ({
                         }}
                         items={items}
                         selected={selected}
-                        onSelect={onSelect}
+                        onSelect={(value) => {
+                            onSelect(value)
+                            setOpen(false)
+                        }}
                         disabled={disabled}
                         minWidth={minWidth}
                         maxWidth={maxWidth}
