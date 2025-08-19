@@ -90,6 +90,16 @@ const MultiSelectDemo = () => {
         'postgresql',
     ])
 
+    // Action Buttons Examples state
+    const [actionButtonsSelected, setActionButtonsSelected] = useState<
+        string[]
+    >([])
+    const [actionButtonsMobileSelected, setActionButtonsMobileSelected] =
+        useState<string[]>([])
+    const [filterWithActionsSelected, setFilterWithActionsSelected] = useState<
+        string[]
+    >([])
+
     // Position & Alignment state
     const [topSideSelected, setTopSideSelected] = useState<string[]>([])
     const [bottomSideSelected, setBottomSideSelected] = useState<string[]>([])
@@ -927,6 +937,184 @@ const MultiSelectDemo = () => {
                             </p>
                         )}
                     </div>
+                </div>
+            </div>
+
+            {/* Action Buttons Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Action Buttons Examples</h2>
+                <p className="text-gray-600">
+                    Use action buttons to provide Apply and Clear All
+                    functionality. Perfect for filter scenarios where users want
+                    to confirm their selections.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Desktop with Action Buttons
+                        </h3>
+                        <MultiSelect
+                            label="Filter Technologies"
+                            sublabel="Select technologies to filter by"
+                            items={skillItems}
+                            selectedValues={actionButtonsSelected}
+                            onChange={handleMultiSelectChange(
+                                actionButtonsSelected,
+                                setActionButtonsSelected
+                            )}
+                            placeholder="Choose technologies"
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            showActionButtons={true}
+                            applyButtonText="Apply Filters"
+                            clearAllButtonText="Clear All"
+                            onApply={() => {
+                                // Apply filters logic here
+                                console.log(
+                                    'Applied filters:',
+                                    actionButtonsSelected
+                                )
+                            }}
+                            onClearAll={() => {
+                                setActionButtonsSelected([])
+                            }}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {actionButtonsSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        Selected Technologies (
+                                        {actionButtonsSelected.length}):
+                                    </strong>{' '}
+                                    {actionButtonsSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    Click "Apply Filters" to confirm your
+                                    selection
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Mobile Drawer with Action Buttons
+                        </h3>
+                        <MultiSelect
+                            label="User Permissions"
+                            sublabel="Grant permissions to user"
+                            items={permissionItems}
+                            selectedValues={actionButtonsMobileSelected}
+                            onChange={handleMultiSelectChange(
+                                actionButtonsMobileSelected,
+                                setActionButtonsMobileSelected
+                            )}
+                            placeholder="Select permissions"
+                            enableSelectAll={true}
+                            showActionButtons={true}
+                            applyButtonText="Grant Permissions"
+                            clearAllButtonText="Remove All"
+                            onApply={() => {
+                                // Grant permissions logic here
+                                console.log(
+                                    'Granted permissions:',
+                                    actionButtonsMobileSelected
+                                )
+                            }}
+                            onClearAll={() => {
+                                setActionButtonsMobileSelected([])
+                            }}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={true}
+                        />
+                        {actionButtonsMobileSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        Pending Permissions (
+                                        {actionButtonsMobileSelected.length}):
+                                    </strong>{' '}
+                                    {actionButtonsMobileSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    On mobile, the drawer will show action
+                                    buttons and hide the X icon
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Filter Use Case</h3>
+                        <MultiSelect
+                            label="Advanced Filters"
+                            items={statusItems}
+                            selectedValues={filterWithActionsSelected}
+                            onChange={handleMultiSelectChange(
+                                filterWithActionsSelected,
+                                setFilterWithActionsSelected
+                            )}
+                            placeholder="Select status filters"
+                            variant={MultiSelectVariant.NO_CONTAINER}
+                            showActionButtons={true}
+                            applyButtonText="Apply"
+                            clearAllButtonText="Reset"
+                            onApply={() => {
+                                console.log(
+                                    'Applied status filters:',
+                                    filterWithActionsSelected
+                                )
+                            }}
+                            onClearAll={() => {
+                                setFilterWithActionsSelected([])
+                                console.log('Reset status filters')
+                            }}
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                        />
+                        {filterWithActionsSelected.length > 0 && (
+                            <div className="p-3 bg-purple-50 rounded-lg">
+                                <p className="text-sm text-purple-700">
+                                    <strong>Active Filters:</strong>{' '}
+                                    {filterWithActionsSelected.join(', ')}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-green-50 rounded-lg">
+                    <h4 className="font-semibold text-green-900 mb-2">
+                        Action Buttons Features:
+                    </h4>
+                    <ul className="text-sm text-green-800 space-y-1">
+                        <li>
+                            • <strong>Apply Button:</strong> Primary button to
+                            confirm selections and close dropdown/drawer
+                        </li>
+                        <li>
+                            • <strong>Clear All Button:</strong> Secondary
+                            button to clear all selections
+                        </li>
+                        <li>
+                            • <strong>Mobile Behavior:</strong> In mobile
+                            drawer, hides the X icon and centers the title
+                        </li>
+                        <li>
+                            • <strong>Customizable Text:</strong> Both button
+                            texts can be customized via props
+                        </li>
+                        <li>
+                            • <strong>Border Separation:</strong> Action buttons
+                            are separated with a top border
+                        </li>
+                        <li>
+                            • <strong>Perfect for Filters:</strong> Ideal for
+                            filter scenarios where confirmation is needed
+                        </li>
+                    </ul>
                 </div>
             </div>
 

@@ -56,6 +56,11 @@ const MultiSelect = ({
     onFocus,
     error,
     errorMessage,
+    showActionButtons = false,
+    applyButtonText = 'Apply',
+    clearAllButtonText = 'Clear All',
+    onApply,
+    onClearAll,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -109,6 +114,11 @@ const MultiSelect = ({
                 onFocus={onFocus}
                 error={error}
                 errorMessage={errorMessage}
+                showActionButtons={showActionButtons}
+                applyButtonText={applyButtonText}
+                clearAllButtonText={clearAllButtonText}
+                onApply={onApply}
+                onClearAll={onClearAll}
             />
         )
     }
@@ -169,6 +179,11 @@ const MultiSelect = ({
                         onBlur?.()
                     }
                 }}
+                showActionButtons={showActionButtons}
+                applyButtonText={applyButtonText}
+                clearAllButtonText={clearAllButtonText}
+                onApply={onApply}
+                onClearAll={onClearAll}
                 trigger={
                     customTrigger || (
                         <Block
@@ -176,10 +191,10 @@ const MultiSelect = ({
                             {...((!inline ||
                                 variant === MultiSelectVariant.CONTAINER) && {
                                 height: toPixels(
-                                    multiSelectTokens.trigger.height
+                                    multiSelectTokens.trigger.height[size]
                                 ),
                                 maxHeight: toPixels(
-                                    multiSelectTokens.trigger.height
+                                    multiSelectTokens.trigger.height[size]
                                 ),
                             })}
                         >
@@ -226,10 +241,12 @@ const MultiSelect = ({
                                         variant ===
                                             MultiSelectVariant.CONTAINER) && {
                                         height: multiSelectTokens.trigger
-                                            .height,
+                                            .height[size],
 
                                         maxHeight:
-                                            multiSelectTokens.trigger.height,
+                                            multiSelectTokens.trigger.height[
+                                                size
+                                            ],
 
                                         paddingX:
                                             multiSelectTokens.trigger.paddingX[
@@ -239,7 +256,7 @@ const MultiSelect = ({
                                         paddingY: paddingY,
                                         backgroundColor:
                                             multiSelectTokens.trigger
-                                                .backgroundColor.container[
+                                                .backgroundColor[variant][
                                                 error
                                                     ? 'error'
                                                     : open
@@ -255,7 +272,7 @@ const MultiSelect = ({
                                                 ],
                                             backgroundColor:
                                                 multiSelectTokens.trigger
-                                                    .backgroundColor.container[
+                                                    .backgroundColor[variant][
                                                     error ? 'error' : 'hover'
                                                 ],
                                         },
@@ -267,7 +284,7 @@ const MultiSelect = ({
                                                 ],
                                             backgroundColor:
                                                 multiSelectTokens.trigger
-                                                    .backgroundColor.container[
+                                                    .backgroundColor[variant][
                                                     error ? 'error' : 'focus'
                                                 ],
                                         },

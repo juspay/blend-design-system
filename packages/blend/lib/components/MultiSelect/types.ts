@@ -97,6 +97,13 @@ export type MultiSelectProps = {
     // error
     error?: boolean
     errorMessage?: string
+
+    // action buttons
+    showActionButtons?: boolean
+    applyButtonText?: string
+    clearAllButtonText?: string
+    onApply?: () => void
+    onClearAll?: () => void
 }
 
 // Multi Select Menu Dropdpown
@@ -124,4 +131,11 @@ export type MultiSelectMenuProps = {
     // open
     open: boolean
     onOpenChange: (open: boolean) => void
+
+    // action buttons
+    showActionButtons?: boolean
+    applyButtonText?: string
+    clearAllButtonText?: string
+    onApply?: () => void
+    onClearAll?: () => void
 }

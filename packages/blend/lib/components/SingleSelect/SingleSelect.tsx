@@ -473,8 +473,8 @@ const SingleSelect = ({
             <Block
                 display="flex"
                 {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
-                    height: singleSelectTokens.trigger.height,
-                    maxHeight: singleSelectTokens.trigger.height,
+                    height: singleSelectTokens.trigger.height[size],
+                    maxHeight: singleSelectTokens.trigger.height[size],
                 })}
             >
                 <Block
@@ -555,9 +555,11 @@ const SingleSelect = ({
                                                       : 'closed'
                                             ],
                                         height: singleSelectTokens.trigger
-                                            .height,
+                                            .height[size],
                                         maxHeight:
-                                            singleSelectTokens.trigger.height,
+                                            singleSelectTokens.trigger.height[
+                                                size
+                                            ],
                                         _hover: {
                                             outline:
                                                 singleSelectTokens.trigger

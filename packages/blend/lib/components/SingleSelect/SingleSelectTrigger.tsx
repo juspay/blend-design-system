@@ -76,11 +76,11 @@ const SingleSelectTrigger = ({
                 paddingX: paddingX,
                 paddingY: paddingY,
                 backgroundColor:
-                    singleSelectTokens.trigger.backgroundColor.container[
+                    singleSelectTokens.trigger.backgroundColor[variant][
                         open ? 'open' : 'closed'
                     ],
-                height: singleSelectTokens.trigger.height,
-                maxHeight: singleSelectTokens.trigger.height,
+                height: singleSelectTokens.trigger.height[size],
+                maxHeight: singleSelectTokens.trigger.height[size],
                 _hover: {
                     outline:
                         singleSelectTokens.trigger.outline[variant][

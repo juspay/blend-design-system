@@ -17,6 +17,8 @@ import { SearchInput } from '../Inputs'
 import { filterMenuGroups, getAllAvailableValues } from './utils'
 import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import Button from '../Button/Button'
+import { ButtonType, ButtonSize } from '../Button/types'
 
 const Content = styled(RadixMenu.Content)(() => ({
     position: 'relative',
@@ -51,6 +53,11 @@ const MultiSelectMenu = ({
     alignOffset = 0,
     open,
     onOpenChange,
+    showActionButtons = false,
+    applyButtonText = 'Apply',
+    clearAllButtonText = 'Clear All',
+    onApply,
+    onClearAll,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -182,6 +189,35 @@ const MultiSelectMenu = ({
                                 )}
                         </React.Fragment>
                     )
+                )}
+
+                {showActionButtons && (
+                    <Block
+                        borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                        padding={`${FOUNDATION_THEME.unit[16]}`}
+                        display="flex"
+                        gap={8}
+                        justifyContent="flex-end"
+                        margin="0"
+                    >
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
+                            text={clearAllButtonText}
+                            onClick={() => {
+                                onClearAll?.()
+                            }}
+                        />
+                        <Button
+                            buttonType={ButtonType.PRIMARY}
+                            size={ButtonSize.SMALL}
+                            text={applyButtonText}
+                            onClick={() => {
+                                onApply?.()
+                                onOpenChange(false)
+                            }}
+                        />
+                    </Block>
                 )}
             </Content>
         </RadixMenu.Root>

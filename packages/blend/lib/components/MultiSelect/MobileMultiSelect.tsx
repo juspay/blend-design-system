@@ -13,7 +13,7 @@ import {
 import { X } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import { Button, ButtonType, ButtonSize, MultiSelectTrigger } from '../../main'
+import { MultiSelectTrigger } from '../../main'
 import { FOUNDATION_THEME } from '../../tokens'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
@@ -32,6 +32,8 @@ import {
     MultiSelectVariant,
     MultiSelectSelectionTagType,
 } from './types'
+import Button from '../Button/Button'
+import { ButtonType, ButtonSize } from '../Button/types'
 
 type MobileMultiSelectProps = MultiSelectProps
 
@@ -244,59 +246,6 @@ const MultiSelectItem = ({
     )
 }
 
-const SelectedItemsSection = ({
-    selectedValues,
-    valueLabelMap,
-    onChange,
-}: {
-    selectedValues: string[]
-    valueLabelMap: Record<string, string>
-    onChange: (value: string) => void
-}) => {
-    if (selectedValues.length === 0) return null
-
-    return (
-        <Block
-            marginTop={16}
-            padding={12}
-            backgroundColor={FOUNDATION_THEME.colors.gray[50]}
-            borderRadius={8}
-        >
-            <Block marginBottom={8}>
-                <Text variant="body.sm" fontWeight={500}>
-                    Selected ({selectedValues.length}):
-                </Text>
-            </Block>
-            <Block display="flex" flexWrap="wrap" gap={8}>
-                {selectedValues.map((value) => (
-                    <Block
-                        key={value}
-                        display="flex"
-                        alignItems="center"
-                        gap={4}
-                        padding="4px 8px"
-                        backgroundColor={FOUNDATION_THEME.colors.primary[100]}
-                        borderRadius={4}
-                    >
-                        <Text
-                            variant="body.xs"
-                            color={FOUNDATION_THEME.colors.primary[700]}
-                        >
-                            {valueLabelMap[value]}
-                        </Text>
-                        <Button
-                            buttonType={ButtonType.SECONDARY}
-                            size={ButtonSize.SMALL}
-                            leadingIcon={<X size={12} />}
-                            onClick={() => onChange(value)}
-                        />
-                    </Block>
-                ))}
-            </Block>
-        </Block>
-    )
-}
-
 const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     selectedValues,
     onChange,
@@ -320,6 +269,11 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     onFocus,
     error,
     errorMessage,
+    showActionButtons = false,
+    applyButtonText = 'Apply',
+    clearAllButtonText = 'Clear All',
+    onApply,
+    onClearAll,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -382,29 +336,49 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                         <DrawerHeader>
                             <Block
                                 display="flex"
-                                justifyContent="space-between"
+                                justifyContent={
+                                    showActionButtons
+                                        ? 'center'
+                                        : 'space-between'
+                                }
                                 alignItems="center"
                             >
                                 <DrawerTitle>
                                     {label || 'Select Options'}
                                 </DrawerTitle>
-                                <DrawerClose>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            width: '32px',
-                                            height: '32px',
-                                            borderRadius: '6px',
-                                            backgroundColor: '#f3f4f6',
-                                            border: '1px solid #d1d5db',
-                                            cursor: 'pointer',
-                                        }}
-                                    >
-                                        <X size={16} color="#6b7280" />
-                                    </div>
-                                </DrawerClose>
+                                {!showActionButtons && (
+                                    <DrawerClose>
+                                        <Block
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            width={FOUNDATION_THEME.unit[32]}
+                                            height={FOUNDATION_THEME.unit[32]}
+                                            borderRadius={
+                                                FOUNDATION_THEME.unit[6]
+                                            }
+                                            backgroundColor={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[100]
+                                            }
+                                            border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                                            cursor="pointer"
+                                            _hover={{
+                                                backgroundColor:
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[200],
+                                            }}
+                                        >
+                                            <X
+                                                size={16}
+                                                color={
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[500]
+                                                }
+                                            />
+                                        </Block>
+                                    </DrawerClose>
+                                )}
                             </Block>
                         </DrawerHeader>
 
@@ -472,11 +446,36 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                 ))}
                             </Block>
 
-                            <SelectedItemsSection
-                                selectedValues={selectedValues}
-                                valueLabelMap={valueLabelMap}
-                                onChange={onChange}
-                            />
+                            {showActionButtons && (
+                                <Block
+                                    borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                                    padding={FOUNDATION_THEME.unit[16]}
+                                    display="flex"
+                                    gap={FOUNDATION_THEME.unit[12]}
+                                    justifyContent="flex-end"
+                                    margin={`${FOUNDATION_THEME.unit[16]} 0 0 0`}
+                                >
+                                    <Button
+                                        buttonType={ButtonType.SECONDARY}
+                                        size={ButtonSize.MEDIUM}
+                                        text={clearAllButtonText}
+                                        onClick={() => {
+                                            onClearAll?.()
+                                        }}
+                                        fullWidth
+                                    />
+                                    <Button
+                                        buttonType={ButtonType.PRIMARY}
+                                        size={ButtonSize.MEDIUM}
+                                        text={applyButtonText}
+                                        onClick={() => {
+                                            onApply?.()
+                                            setDrawerOpen(false)
+                                        }}
+                                        fullWidth
+                                    />
+                                </Block>
+                            )}
                         </DrawerBody>
                     </DrawerContent>
                 </DrawerPortal>
