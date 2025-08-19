@@ -3,16 +3,17 @@ import React from 'react'
 export const GradientHeadingBox = ({
     text,
     classes,
+    border,
 }: {
     text: string
     classes?: string
+    border?: string
 }) => {
     return (
         <div
-            className={`text-[var(--design-system-heading-background)] ${classes || ''} py-3 flex justify-center relative`}
+            className={`text-[var(--design-system-heading-background)] ${classes || ''} py-3 flex justify-center relative bg-white/20`}
             style={{
                 borderRadius: '83px',
-                background: 'var(--design-system-heading-border)',
                 padding: '1px',
             }}
         >

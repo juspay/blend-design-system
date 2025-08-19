@@ -15,7 +15,7 @@ export const DocumentationCard = ({
                 {card.content}
             </p>
             <div className="mt-10">
-                <InfoBtn text="Learn more" />
+                <InfoBtn text="Learn more" href={card.link} />
             </div>
         </div>
     )

@@ -4,12 +4,10 @@ import { FooterLogoText } from '../../icons/FooterLogoText'
 import { FooterLinksData } from '../../data/footer-links-data'
 import { Separator } from '../Separator'
 import { IsoIcon } from '../../icons/IsoIcon'
-import { GdprIcon } from '../../icons/GdprIcon'
-import { PciIcon } from '../../icons/PciIcon'
 
 export const Footer = () => {
     return (
-        <footer className="px-[160px] pt-[80px] pb-[20px] border-t-[1px] border-white/20 rounded-[100px] w-full items-center justify-center flex flex-col gap-[48px]">
+        <footer className="px-[160px] pt-[80px] pb-[20px] border-t-[1px] border-white/20 rounded-[100px] w-full items-center justify-center flex flex-col gap-[48px] bg-[#0C0C0C]">
             <div className="flex gap-32">
                 <div className="flex flex-col gap-[68px] pr-8">
                     <div className="flex items-center gap-1">
@@ -24,7 +22,7 @@ export const Footer = () => {
                 <div className="grid grid-cols-3 gap-x-[80px]">
                     {FooterLinksData.map((data, key) => (
                         <div key={key} className="flex flex-col gap-8">
-                            <p className="text-[18px] font-[700] text-white">
+                            <p className="text-[18px] font-[700] text-white capitalize">
                                 {data.title}
                             </p>
                             <div className="flex flex-col gap-4 text-[14px] text-[#777E90]">

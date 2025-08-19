@@ -28,7 +28,7 @@ export const TabButtons = ({
         >
             <div className="w-full h-full rounded-[83px] bg-black opacity-[0.9] ">
                 <div
-                    className={`py-2.5 px-3 rounded-[50px] ${selected == label ? 'bg-[#FFFFFF2E] text-[#E3E3E3] ' : 'bg-transparent text-[#B3B3B3]'}`}
+                    className={`py-2.5 px-3 rounded-[50px] text-[18px] ${selected == label ? 'bg-[#FFFFFF2E] text-[#E3E3E3] ' : 'bg-transparent text-[#B3B3B3]'}`}
                 >
                     <p>{text}</p>
                 </div>
@@ -54,7 +54,7 @@ export const Tabs = ({
                 padding: '1px',
             }}
         >
-            <div className="w-full h-full rounded-[83px] bg-black flex items-center  py-3 px-4 justify-between">
+            <div className="w-full h-full rounded-[83px] bg-black flex items-center  py-6 px-6 justify-between">
                 <TabButtons
                     label="tokenizer"
                     selected={selectedTab}

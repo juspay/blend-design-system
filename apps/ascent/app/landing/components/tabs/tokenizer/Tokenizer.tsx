@@ -18,7 +18,10 @@ export const TokenizerComp = () => {
                 <Tokenizer />
             </div>
             <div className="-mt-40 flex flex-col items-center justify-center">
-                <InfoBtn text="Learn more" />
+                <InfoBtn
+                    text="Learn more"
+                    href="http://localhost:6006/?path=/docs"
+                />
             </div>
         </div>
     )
