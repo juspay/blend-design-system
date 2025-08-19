@@ -21,7 +21,9 @@ export type SingleSelectItemStates =
 
 export type MultiSelectTokensType = {
     trigger: {
-        height: CSSObject['height']
+        height: {
+            [key in MultiSelectMenuSize]: CSSObject['height']
+        }
         paddingX: {
             [key in MultiSelectMenuSize]: CSSObject['padding']
         }
@@ -36,6 +38,9 @@ export type MultiSelectTokensType = {
         }
         backgroundColor: {
             container: {
+                [key in TriggerStates]: CSSObject['backgroundColor']
+            }
+            'no-container': {
                 [key in TriggerStates]: CSSObject['backgroundColor']
             }
         }
@@ -103,16 +108,20 @@ export const getMultiSelectTokens = (
     return {
         sm: {
             trigger: {
-                height: FOUNDATION_THEME.unit[52],
+                height: {
+                    sm: FOUNDATION_THEME.unit[32],
+                    md: FOUNDATION_THEME.unit[36],
+                    lg: FOUNDATION_THEME.unit[52],
+                },
                 paddingX: {
                     sm: FOUNDATION_THEME.unit[14],
                     md: FOUNDATION_THEME.unit[14],
                     lg: FOUNDATION_THEME.unit[12],
                 },
                 paddingY: {
-                    sm: FOUNDATION_THEME.unit[6],
+                    sm: FOUNDATION_THEME.unit[7],
                     md: FOUNDATION_THEME.unit[8],
-                    lg: FOUNDATION_THEME.unit[12],
+                    lg: FOUNDATION_THEME.unit[10],
                 },
                 borderRadius: {
                     sm: foundationToken.unit[10],
@@ -130,6 +139,13 @@ export const getMultiSelectTokens = (
                         hover: foundationToken.colors.gray[50],
                         focus: foundationToken.colors.gray[50],
                         error: foundationToken.colors.gray[0],
+                    },
+                    'no-container': {
+                        open: 'transparent',
+                        closed: 'transparent',
+                        hover: foundationToken.colors.gray[50],
+                        focus: foundationToken.colors.gray[50],
+                        error: 'transparent',
                     },
                 },
                 outline: {
@@ -222,14 +238,18 @@ export const getMultiSelectTokens = (
         },
         lg: {
             trigger: {
-                height: FOUNDATION_THEME.unit[52],
+                height: {
+                    sm: FOUNDATION_THEME.unit[32],
+                    md: FOUNDATION_THEME.unit[36],
+                    lg: FOUNDATION_THEME.unit[52],
+                },
                 paddingX: {
                     sm: FOUNDATION_THEME.unit[14],
                     md: FOUNDATION_THEME.unit[14],
-                    lg: FOUNDATION_THEME.unit[14],
+                    lg: FOUNDATION_THEME.unit[12],
                 },
                 paddingY: {
-                    sm: FOUNDATION_THEME.unit[6],
+                    sm: FOUNDATION_THEME.unit[7],
                     md: FOUNDATION_THEME.unit[8],
                     lg: FOUNDATION_THEME.unit[10],
                 },
@@ -249,6 +269,13 @@ export const getMultiSelectTokens = (
                         hover: foundationToken.colors.gray[50],
                         focus: foundationToken.colors.gray[50],
                         error: foundationToken.colors.gray[0],
+                    },
+                    'no-container': {
+                        open: 'transparent',
+                        closed: 'transparent',
+                        hover: foundationToken.colors.gray[50],
+                        focus: foundationToken.colors.gray[50],
+                        error: 'transparent',
                     },
                 },
                 outline: {

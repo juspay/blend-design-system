@@ -17,6 +17,8 @@ import { SearchInput } from '../Inputs'
 import { filterMenuGroups, getAllAvailableValues } from './utils'
 import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import Button from '../Button/Button'
+import { ButtonType, ButtonSize } from '../Button/types'
 
 const Content = styled(RadixMenu.Content)(() => ({
     position: 'relative',
@@ -51,6 +53,9 @@ const MultiSelectMenu = ({
     alignOffset = 0,
     open,
     onOpenChange,
+    showActionButtons = false,
+    primaryAction,
+    secondaryAction,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -84,11 +89,12 @@ const MultiSelectMenu = ({
                 alignOffset={alignOffset}
                 side={side}
                 style={{
-                    minWidth,
-                    width: 'var(--radix-dropdown-menu-trigger-width)',
-                    maxWidth: maxWidth
-                        ? maxWidth
-                        : 'var(--radix-dropdown-menu-trigger-width)',
+                    minWidth: minWidth || 250,
+                    width:
+                        minWidth || maxWidth
+                            ? 'auto'
+                            : 'max(var(--radix-dropdown-menu-trigger-width), 250px)',
+                    maxWidth: maxWidth || 400,
                     maxHeight,
                 }}
             >
@@ -181,6 +187,41 @@ const MultiSelectMenu = ({
                                 )}
                         </React.Fragment>
                     )
+                )}
+
+                {showActionButtons && (primaryAction || secondaryAction) && (
+                    <Block
+                        borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                        padding={`${FOUNDATION_THEME.unit[16]}`}
+                        display="flex"
+                        gap={8}
+                        justifyContent="flex-end"
+                        margin="0"
+                    >
+                        {secondaryAction && (
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                text={secondaryAction.text}
+                                onClick={secondaryAction.onClick}
+                                disabled={secondaryAction.disabled}
+                                loading={secondaryAction.loading}
+                            />
+                        )}
+                        {primaryAction && (
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
+                                text={primaryAction.text}
+                                onClick={() => {
+                                    primaryAction.onClick()
+                                    onOpenChange(false)
+                                }}
+                                disabled={primaryAction.disabled}
+                                loading={primaryAction.loading}
+                            />
+                        )}
+                    </Block>
                 )}
             </Content>
         </RadixMenu.Root>
