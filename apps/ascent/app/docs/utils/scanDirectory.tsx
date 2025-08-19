@@ -20,8 +20,8 @@ const readConfig = (dirPath: string): DirectoryConfig | null => {
             const configContent = fs.readFileSync(configPath, 'utf-8')
             return JSON.parse(configContent)
         }
-    } catch (error) {
-        console.error('Error reading config.json:', error)
+    } catch {
+        // Error reading config.json - using default sorting
     }
     return null
 }
@@ -113,8 +113,8 @@ const scanDirectory = (dirPath: string, basePath: string = ''): DocItem[] => {
                 })
             }
         }
-    } catch (error) {
-        console.error('Error scanning directory:', error)
+    } catch {
+        // Error scanning directory - returning empty array
     }
 
     return sortItemsByConfig(items, config)

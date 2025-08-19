@@ -1,4 +1,3 @@
-import React from 'react'
 import DocsTypeTable from '@/components/features/Documentation/DocsTypeTable'
 import Preview from '@/components/features/Documentation/Preview'
 import {

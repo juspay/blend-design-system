@@ -117,13 +117,13 @@ export const buildSearchIndex = (contentDir: string): SearchIndex => {
                         }
 
                         index[slug] = searchResult
-                    } catch (error) {
-                        console.error(`Error reading file ${fullPath}:`, error)
+                    } catch {
+                        // Error reading file - skipping
                     }
                 }
             }
-        } catch (error) {
-            console.error(`Error scanning directory ${dirPath}:`, error)
+        } catch {
+            // Error scanning directory - returning partial index
         }
     }
 

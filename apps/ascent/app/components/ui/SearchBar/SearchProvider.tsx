@@ -24,7 +24,7 @@ const SearchProvider: React.FC = () => {
                 const data = await response.json()
                 setSearchIndex(data)
             } catch (err) {
-                console.error('Error fetching search index:', err)
+                // Error fetching search index - handled by error state
                 setError(err instanceof Error ? err.message : 'Unknown error')
             } finally {
                 setIsLoading(false)
