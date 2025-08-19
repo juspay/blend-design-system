@@ -213,6 +213,7 @@ const StatCardDemo = () => {
                         }}
                         title={playgroundTitle}
                         value={playgroundValue}
+                        valueTooltip={<code>This is a value tooltip</code>}
                         subtitle={playgroundSubtitle}
                         variant={playgroundVariant}
                         change={
@@ -220,6 +221,9 @@ const StatCardDemo = () => {
                                 ? {
                                       value: changeValue,
                                       valueType: changeType,
+                                      tooltip: (
+                                          <code>This is a delta tooltip</code>
+                                      ),
                                   }
                                 : undefined
                         }

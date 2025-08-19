@@ -22,11 +22,13 @@ export type ChartDataPoint = {
 export type StatCardChange = {
     value: number
     valueType: ChangeType
+    tooltip?: ReactNode
 }
 
 export type StatCardProps = {
     title: string
     value: string | number
+    valueTooltip?: ReactNode
     change?: StatCardChange
     subtitle?: string
     variant: StatCardVariant
