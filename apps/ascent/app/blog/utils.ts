@@ -109,6 +109,31 @@ export function generateSlug(title: string): string {
 }
 
 /**
+ * Sanitizes a slug to ensure it's safe for URL usage
+ * @param slug - Raw slug string
+ * @returns Sanitized URL-safe slug
+ */
+export function sanitizeSlug(slug: string): string {
+    if (!slug || typeof slug !== 'string') {
+        return ''
+    }
+
+    return (
+        slug
+            .trim()
+            .toLowerCase()
+            // Remove any characters that aren't alphanumeric, hyphens, or underscores
+            .replace(/[^a-z0-9\-_]/g, '')
+            // Replace multiple consecutive hyphens/underscores with single hyphen
+            .replace(/[-_]+/g, '-')
+            // Remove leading/trailing hyphens
+            .replace(/^-+|-+$/g, '')
+            // Limit length to prevent extremely long URLs
+            .substring(0, 100)
+    )
+}
+
+/**
  * Extracts excerpt from content
  * @param content - Full blog post content
  * @param maxLength - Maximum excerpt length (default: 160)
@@ -119,14 +144,20 @@ export function extractExcerpt(
     maxLength: number = 160
 ): string {
     // Remove markdown syntax and HTML tags
-    const cleanContent = content
+    let cleanContent = content
         .replace(/#{1,6}\s/g, '') // Remove markdown headers
         .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
         .replace(/\*(.*?)\*/g, '$1') // Remove italic markdown
         .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove markdown links
-        .replace(/<[^>]*>/g, '') // Remove HTML tags
         .replace(/\n+/g, ' ') // Replace newlines with spaces
         .trim()
+
+    // Remove HTML tags repeatedly to handle nested/incomplete tags
+    let previousContent
+    do {
+        previousContent = cleanContent
+        cleanContent = cleanContent.replace(/<[^>]*>/g, '')
+    } while (cleanContent !== previousContent)
 
     if (cleanContent.length <= maxLength) {
         return cleanContent

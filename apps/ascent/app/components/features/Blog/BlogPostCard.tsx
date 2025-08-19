@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { BlogPost } from '@/blog/utils/getBlogPosts'
+import { sanitizeSlug } from '@/blog/utils'
 
 interface BlogPostCardProps {
     post: BlogPost
@@ -36,7 +37,7 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
                 </div>
 
                 <Link
-                    href={`/blog/${post.slug}`}
+                    href={`/blog/${sanitizeSlug(post.slug)}`}
                     className="group-hover:text-[var(--accent)] transition-colors"
                 >
                     <h3 className="text-xl font-semibold text-[var(--foreground)] mb-3 line-clamp-2">
