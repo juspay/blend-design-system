@@ -9,7 +9,6 @@ import {
     TagColumnProps,
     DropdownColumnProps,
     DateColumnProps,
-    RowActionsConfig,
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
 import { Avatar } from '../../../../packages/blend/lib/components/Avatar'
@@ -722,7 +721,7 @@ const SimpleDataTableExample = () => {
                         buttonType: ButtonType.SECONDARY,
                         size: ButtonSize.SMALL,
                         leadingIcon: <Package size={16} />,
-                        onClick: (row, index) => {
+                        onClick: (row, _index) => {
                             const product = row as ProductRow
                             alert(
                                 `Viewing details for: ${product.name} (Price: ${product.price})`
@@ -742,7 +741,7 @@ const SimpleDataTableExample = () => {
                             ).text
                             return statusText === 'Discontinued'
                         },
-                        onClick: (row, index) => {
+                        onClick: (row, _index) => {
                             const product = row as ProductRow
                             alert(`Added ${product.name} to favorites!`)
                         },
