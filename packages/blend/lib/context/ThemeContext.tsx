@@ -38,7 +38,7 @@ import {
 } from '../components/Inputs/OTPInput/otpInput.tokens'
 import {
     getTooltipTokens,
-    type TooltipTokensType,
+    type ResponsiveTooltipTokens,
 } from '../components/Tooltip/tooltip.tokens'
 import {
     getUnitInputTokens,
@@ -131,7 +131,7 @@ export type ComponentTokenType = {
     NUMBER_INPUT?: ResponsiveNumberInputTokens
     ALERT?: ResponsiveAlertTokens
     OTP_INPUT?: OTPInputTokensType
-    TOOLTIP?: TooltipTokensType
+    TOOLTIP?: ResponsiveTooltipTokens
     UNIT_INPUT?: ResponsiveUnitInputTokens
     MULTI_VALUE_INPUT?: MultiValueInputTokensType
     DROPDOWN_INPUT?: ResponsiveDropdownInputTokens
