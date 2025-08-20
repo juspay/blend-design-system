@@ -65,6 +65,7 @@ import MultiSelectDemo from './MultiSelectDemo'
 import DropdownInputDemo from './DropdownInputDemo'
 import DrawerDemo from './DrawerDemo'
 import DateRangePickerDemo from './DateRangePickerDemo'
+import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
 import PopoverDemo from './PopoverDemo'
 import MultiValueInputDemo from './MultiValueInputDemo'
@@ -121,7 +122,7 @@ const SidebarDemo = () => {
         | 'dropdownInput'
         | 'dataRangePicker'
         | 'multiValueInput'
-    >('multiValueInput')
+    >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -220,6 +221,8 @@ const SidebarDemo = () => {
                 return <DropdownInputDemo />
             case 'dataRangePicker':
                 return <DateRangePickerDemo />
+            case 'dataTable':
+                return <DataTableDemo />
             case 'charts':
                 return <ChartsDemo />
             case 'popover':

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { ArrowUp, ArrowDown, Search } from 'lucide-react'
+import { ArrowUp, ArrowDown, Search, ChevronRight } from 'lucide-react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { SearchInput } from '../../Inputs/SearchInput'
@@ -23,6 +23,10 @@ import {
 } from './utils'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { foundationToken } from '../../../foundationToken'
+import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
+import { Popover } from '../../Popover'
+import MobileFilterDrawer from './MobileFilterDrawer'
 
 type FilterComponentsProps = {
     column: ColumnDefinition<Record<string, unknown>>
@@ -646,12 +650,28 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     onColumnFilter,
     onPopoverClose,
 }) => {
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isMobile = breakPointLabel === 'sm'
     const columnConfig = getColumnTypeConfig(column.type || ColumnType.TEXT)
     const fieldKey = String(column.field)
+    const [nestedFilterOpen, setNestedFilterOpen] = useState(false)
+    const hasFiltering = columnConfig.supportsFiltering
 
-    const hasDropdownFilter =
-        columnConfig.filterComponent === 'multiselect' ||
-        columnConfig.filterComponent === 'select'
+    // Use mobile component for small screens
+    if (isMobile) {
+        return (
+            <MobileFilterDrawer
+                column={column}
+                data={data}
+                tableToken={tableToken}
+                sortHandlers={sortHandlers}
+                filterHandlers={filterHandlers}
+                filterState={filterState}
+                onColumnFilter={onColumnFilter}
+                onPopoverClose={onPopoverClose}
+            />
+        )
+    }
 
     return (
         <Block
@@ -663,63 +683,151 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
             _focusVisible={{ outline: 'none' }}
         >
             {columnConfig.supportsSorting && (
-                <>
-                    <SortOptions
-                        fieldKey={fieldKey}
-                        tableToken={tableToken}
-                        sortHandlers={sortHandlers}
-                    />
-                    {hasDropdownFilter && <Separator tableToken={tableToken} />}
-                </>
-            )}
-
-            {hasDropdownFilter && (
-                <>
-                    <DropdownSearchSection
-                        column={column}
-                        fieldKey={fieldKey}
-                        tableToken={tableToken}
-                        filterHandlers={filterHandlers}
-                        filterState={filterState}
-                    />
-                </>
-            )}
-
-            {columnConfig.filterComponent === 'select' && (
-                <SingleSelectItems
-                    column={column}
+                <SortOptions
                     fieldKey={fieldKey}
                     tableToken={tableToken}
-                    filterHandlers={filterHandlers}
-                    filterState={filterState}
-                    data={data}
-                    onColumnFilter={onColumnFilter}
-                    onPopoverClose={onPopoverClose}
+                    sortHandlers={sortHandlers}
                 />
             )}
 
-            {columnConfig.filterComponent === 'multiselect' && (
-                <MultiSelectItems
-                    column={column}
-                    fieldKey={fieldKey}
-                    tableToken={tableToken}
-                    filterHandlers={filterHandlers}
-                    filterState={filterState}
-                    data={data}
-                    onColumnFilter={onColumnFilter}
-                />
+            {columnConfig.supportsSorting && hasFiltering && (
+                <Separator tableToken={tableToken} />
             )}
 
-            {columnConfig.filterComponent === 'slider' && (
-                <SliderFilter
-                    column={column}
-                    fieldKey={fieldKey}
-                    tableToken={tableToken}
-                    filterHandlers={filterHandlers}
-                    filterState={filterState}
-                    data={data}
-                    onColumnFilter={onColumnFilter}
-                />
+            {hasFiltering && (
+                <Popover
+                    trigger={
+                        <Block
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            gap={
+                                tableToken.dataTable.table.header.filter.itemGap
+                            }
+                            padding={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.padding
+                            }
+                            borderRadius={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.borderRadius
+                            }
+                            cursor="pointer"
+                            backgroundColor="transparent"
+                            _hover={{
+                                backgroundColor:
+                                    tableToken.dataTable.table.header.filter
+                                        .sortOption.hoverBackground,
+                            }}
+                        >
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                gap={
+                                    tableToken.dataTable.table.header.filter
+                                        .itemGap
+                                }
+                            >
+                                <Search
+                                    size={FOUNDATION_THEME.unit[16]}
+                                    color={
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.iconColor
+                                    }
+                                />
+                                <PrimitiveText
+                                    style={{
+                                        fontSize:
+                                            tableToken.dataTable.table.header
+                                                .filter.sortOption.fontSize,
+                                        color: tableToken.dataTable.table.header
+                                            .filter.sortOption.textColor,
+                                        fontWeight:
+                                            tableToken.dataTable.table.header
+                                                .filter.sortOption.fontWeight,
+                                    }}
+                                >
+                                    Filter
+                                </PrimitiveText>
+                            </Block>
+                            <ChevronRight
+                                size={FOUNDATION_THEME.unit[16]}
+                                color={
+                                    tableToken.dataTable.table.header.filter
+                                        .sortOption.iconColor
+                                }
+                            />
+                        </Block>
+                    }
+                    maxWidth={220}
+                    minWidth={220}
+                    zIndex={1001}
+                    side="right"
+                    align="start"
+                    sideOffset={10}
+                    open={nestedFilterOpen}
+                    onOpenChange={setNestedFilterOpen}
+                >
+                    <Block
+                        display="flex"
+                        flexDirection="column"
+                        gap={FOUNDATION_THEME.unit[4]}
+                        padding={`${FOUNDATION_THEME.unit[8]} ${FOUNDATION_THEME.unit[0]}`}
+                        maxHeight="300px"
+                        overflow="auto"
+                    >
+                        {(columnConfig.filterComponent === 'multiselect' ||
+                            columnConfig.filterComponent === 'select') && (
+                            <DropdownSearchSection
+                                column={column}
+                                fieldKey={fieldKey}
+                                tableToken={tableToken}
+                                filterHandlers={filterHandlers}
+                                filterState={filterState}
+                            />
+                        )}
+
+                        {columnConfig.filterComponent === 'select' && (
+                            <SingleSelectItems
+                                column={column}
+                                fieldKey={fieldKey}
+                                tableToken={tableToken}
+                                filterHandlers={filterHandlers}
+                                filterState={filterState}
+                                data={data}
+                                onColumnFilter={onColumnFilter}
+                                onPopoverClose={() => {
+                                    setNestedFilterOpen(false)
+                                    onPopoverClose?.()
+                                }}
+                            />
+                        )}
+
+                        {columnConfig.filterComponent === 'multiselect' && (
+                            <MultiSelectItems
+                                column={column}
+                                fieldKey={fieldKey}
+                                tableToken={tableToken}
+                                filterHandlers={filterHandlers}
+                                filterState={filterState}
+                                data={data}
+                                onColumnFilter={onColumnFilter}
+                            />
+                        )}
+
+                        {columnConfig.filterComponent === 'slider' && (
+                            <SliderFilter
+                                column={column}
+                                fieldKey={fieldKey}
+                                tableToken={tableToken}
+                                filterHandlers={filterHandlers}
+                                filterState={filterState}
+                                data={data}
+                                onColumnFilter={onColumnFilter}
+                            />
+                        )}
+                    </Block>
+                </Popover>
             )}
         </Block>
     )

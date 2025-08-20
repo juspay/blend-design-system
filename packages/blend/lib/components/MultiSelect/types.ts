@@ -112,6 +112,8 @@ export type MultiSelectProps = {
         disabled?: boolean
         loading?: boolean
     }
+    showItemDividers?: boolean
+    showHeaderBorder?: boolean
 }
 
 // Multi Select Menu Dropdpown

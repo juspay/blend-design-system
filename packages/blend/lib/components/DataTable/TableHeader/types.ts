@@ -1,15 +1,21 @@
-import { ColumnDefinition, FilterType } from '../types'
+import { ColumnDefinition, FilterType, RowActionsConfig } from '../types'
+import { MobileDataTableConfig } from '../hooks/useMobileDataTable'
 
 export type TableHeaderProps<T extends Record<string, unknown>> = {
     visibleColumns: ColumnDefinition<T>[]
+    allVisibleColumns?: ColumnDefinition<T>[]
     initialColumns: ColumnDefinition<T>[]
     selectAll: boolean | 'indeterminate'
     enableInlineEdit?: boolean
     enableColumnManager?: boolean
     enableRowExpansion?: boolean
     enableRowSelection?: boolean
+    rowActions?: RowActionsConfig<T>
     data?: T[]
     columnFreeze?: number
+    mobileConfig?: MobileDataTableConfig
+    mobileOverflowColumns?: ColumnDefinition<T>[]
+    onMobileOverflowClick?: (row: T) => void
     onSort: (field: keyof T) => void
     onSelectAll: (checked: boolean | 'indeterminate') => void
     onColumnChange: (columns: ColumnDefinition<T>[]) => void

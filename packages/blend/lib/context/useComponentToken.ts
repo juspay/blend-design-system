@@ -20,7 +20,7 @@ import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadc
 import type { PopoverTokenType } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
-import type { TableTokenType } from '../components/DataTable/dataTable.tokens'
+import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
 import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
 import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
@@ -55,7 +55,7 @@ export const useComponentToken = (
     | ResponsiveMenuTokensType
     | ResponsiveMultiSelectTokens
     | ResponsiveSingleSelectTokens
-    | TableTokenType
+    | ResponsiveTableTokens
     | ResponsiveCalendarTokens
     | ResponsiveAccordionTokens
     | ResponsiveStatCardTokens

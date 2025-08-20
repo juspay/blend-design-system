@@ -100,6 +100,31 @@ const MultiSelectDemo = () => {
         string[]
     >([])
 
+    // Search Examples state
+    const [searchDesktopSelected, setSearchDesktopSelected] = useState<
+        string[]
+    >([])
+    const [searchMobileSelected, setSearchMobileSelected] = useState<string[]>(
+        []
+    )
+    const [searchWithSelectAllSelected, setSearchWithSelectAllSelected] =
+        useState<string[]>([])
+    const [searchLargeDatasetSelected, setSearchLargeDatasetSelected] =
+        useState<string[]>([])
+
+    // Item Dividers Examples state
+    const [dividersEnabledSelected, setDividersEnabledSelected] = useState<
+        string[]
+    >([])
+    const [dividersDisabledSelected, setDividersDisabledSelected] = useState<
+        string[]
+    >([])
+    const [dividersMobileSelected, setDividersMobileSelected] = useState<
+        string[]
+    >([])
+    const [dividersComparisonSelected, setDividersComparisonSelected] =
+        useState<string[]>([])
+
     // Position & Alignment state
     const [topSideSelected, setTopSideSelected] = useState<string[]>([])
     const [bottomSideSelected, setBottomSideSelected] = useState<string[]>([])
@@ -124,6 +149,17 @@ const MultiSelectDemo = () => {
     const [filterColumnsSelected, setFilterColumnsSelected] = useState<
         string[]
     >(['name', 'email', 'role'])
+
+    // New feature demo state
+    const [headerBorderSelected, setHeaderBorderSelected] = useState<string[]>(
+        []
+    )
+    const [itemDividersSelected, setItemDividersSelected] = useState<string[]>(
+        []
+    )
+    const [combinedFeaturesSelected, setCombinedFeaturesSelected] = useState<
+        string[]
+    >([])
 
     // Sample data
     const simpleItems: MultiSelectMenuGroupType[] = [
@@ -479,6 +515,14 @@ const MultiSelectDemo = () => {
         setFormPermissionsSelected([])
         setFilterStatusSelected([])
         setFilterColumnsSelected([])
+        setSearchDesktopSelected([])
+        setSearchMobileSelected([])
+        setSearchWithSelectAllSelected([])
+        setSearchLargeDatasetSelected([])
+        setDividersEnabledSelected([])
+        setDividersDisabledSelected([])
+        setDividersMobileSelected([])
+        setDividersComparisonSelected([])
         addSnackbar({
             header: 'All Selections Cleared',
             description: 'All multi-select values have been reset',
@@ -726,6 +770,141 @@ const MultiSelectDemo = () => {
                                 onChange={setPlaygroundShowSlot}
                             />
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* New Defaults Showcase */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">✨ New Defaults Showcase</h2>
+                <p className="text-gray-600">
+                    <strong>
+                        Search and Action Buttons are now enabled by default!
+                    </strong>
+                    All MultiSelect components now include search functionality
+                    and action buttons out of the box, providing a better user
+                    experience without additional configuration.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Default Desktop Experience
+                        </h3>
+                        <MultiSelect
+                            label="Technologies (Default Settings)"
+                            sublabel="Search and action buttons enabled by default"
+                            items={skillItems}
+                            selectedValues={basicSimpleSelected}
+                            onChange={handleMultiSelectChange(
+                                basicSimpleSelected,
+                                setBasicSimpleSelected
+                            )}
+                            placeholder="Start typing to search..."
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {basicSimpleSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        Selected ({basicSimpleSelected.length}):
+                                    </strong>{' '}
+                                    {basicSimpleSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    ✓ Search enabled by default • ✓ Action
+                                    buttons included
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Default Mobile Experience
+                        </h3>
+                        <MultiSelect
+                            label="Permissions (Default Settings)"
+                            sublabel="Mobile drawer with search and actions"
+                            items={permissionItems}
+                            selectedValues={basicCountSelected}
+                            onChange={handleMultiSelectChange(
+                                basicCountSelected,
+                                setBasicCountSelected
+                            )}
+                            placeholder="Search permissions..."
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={true}
+                        />
+                        {basicCountSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        Selected ({basicCountSelected.length}):
+                                    </strong>{' '}
+                                    {basicCountSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    ✓ Mobile search included • ✓ Apply/Clear
+                                    buttons ready
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+                    <h4 className="font-semibold text-green-900 mb-2">
+                        🎉 What's New in MultiSelect Defaults:
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul className="text-sm text-green-800 space-y-1">
+                            <li>
+                                • <strong>enableSearch = true</strong> (was
+                                false)
+                            </li>
+                            <li>
+                                • <strong>showActionButtons = true</strong> (was
+                                false)
+                            </li>
+                            <li>
+                                • <strong>Default Apply button</strong> with
+                                "Apply" text
+                            </li>
+                            <li>
+                                • <strong>Default Clear All button</strong> with
+                                "Clear All" text
+                            </li>
+                        </ul>
+                        <ul className="text-sm text-green-800 space-y-1">
+                            <li>
+                                •{' '}
+                                <strong>Consistent across all variants</strong>{' '}
+                                (Desktop, Mobile, Menu)
+                            </li>
+                            <li>
+                                • <strong>Backward compatible</strong> - can
+                                still be disabled
+                            </li>
+                            <li>
+                                • <strong>Better UX out of the box</strong> - no
+                                configuration needed
+                            </li>
+                            <li>
+                                • <strong>Mobile drawer improvements</strong> -
+                                centered title when actions present
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="mt-3 p-2 bg-white rounded border-l-4 border-green-400">
+                        <p className="text-sm text-green-700">
+                            <strong>Migration Note:</strong> Existing
+                            implementations will automatically get these new
+                            defaults. To disable, explicitly set{' '}
+                            <code>enableSearch={false}</code>
+                            and <code>showActionButtons={false}</code>.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -1125,6 +1304,474 @@ const MultiSelectDemo = () => {
                         <li>
                             • <strong>Perfect for Filters:</strong> Ideal for
                             filter scenarios where confirmation is needed
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            {/* Search Functionality Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Search Functionality Examples
+                </h2>
+                <p className="text-gray-600">
+                    Enable search functionality to help users quickly find
+                    options in large datasets. Works seamlessly on both desktop
+                    dropdown and mobile drawer.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Desktop Search</h3>
+                        <MultiSelect
+                            label="Search Technologies"
+                            sublabel="Type to filter options"
+                            items={skillItems}
+                            selectedValues={searchDesktopSelected}
+                            onChange={handleMultiSelectChange(
+                                searchDesktopSelected,
+                                setSearchDesktopSelected
+                            )}
+                            placeholder="Search and select technologies"
+                            enableSearch={true}
+                            searchPlaceholder="Type to search technologies..."
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {searchDesktopSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        Found & Selected (
+                                        {searchDesktopSelected.length}):
+                                    </strong>{' '}
+                                    {searchDesktopSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    Search filters options in real-time as you
+                                    type
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Mobile Search (Drawer)
+                        </h3>
+                        <MultiSelect
+                            label="Mobile Search"
+                            sublabel="Search works in mobile drawer too"
+                            items={permissionItems}
+                            selectedValues={searchMobileSelected}
+                            onChange={handleMultiSelectChange(
+                                searchMobileSelected,
+                                setSearchMobileSelected
+                            )}
+                            placeholder="Search permissions"
+                            enableSearch={true}
+                            searchPlaceholder="Search permissions..."
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={true}
+                            showActionButtons={true}
+                            primaryAction={{
+                                text: 'Apply',
+                                onClick: () => {
+                                    console.log(
+                                        'Applied mobile search:',
+                                        searchMobileSelected
+                                    )
+                                },
+                            }}
+                            secondaryAction={{
+                                text: 'Clear All',
+                                onClick: () => {
+                                    setSearchMobileSelected([])
+                                },
+                            }}
+                        />
+                        {searchMobileSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        Mobile Search Results (
+                                        {searchMobileSelected.length}):
+                                    </strong>{' '}
+                                    {searchMobileSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    Mobile drawer includes TextInput for search
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Search with Select All
+                        </h3>
+                        <MultiSelect
+                            label="Search + Select All"
+                            sublabel="Combine search with select all functionality"
+                            items={skillItems}
+                            selectedValues={searchWithSelectAllSelected}
+                            onChange={handleMultiSelectChange(
+                                searchWithSelectAllSelected,
+                                setSearchWithSelectAllSelected
+                            )}
+                            placeholder="Search and select all"
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            searchPlaceholder="Search to filter, then select all..."
+                            selectAllText="Select All Filtered"
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                        />
+                        {searchWithSelectAllSelected.length > 0 && (
+                            <div className="p-3 bg-purple-50 rounded-lg">
+                                <p className="text-sm text-purple-700">
+                                    <strong>
+                                        Search + Select All (
+                                        {searchWithSelectAllSelected.length}):
+                                    </strong>{' '}
+                                    {searchWithSelectAllSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-purple-600 mt-1">
+                                    Select All works on filtered results only
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Large Dataset Search</h3>
+                        <MultiSelect
+                            label="Large Dataset"
+                            sublabel="Search is essential for large option lists"
+                            items={[
+                                ...skillItems,
+                                ...permissionItems,
+                                ...interestItems,
+                                {
+                                    groupLabel: 'Additional Options',
+                                    items: [
+                                        {
+                                            label: 'Machine Learning',
+                                            value: 'ml',
+                                            slot1: <Database size={16} />,
+                                        },
+                                        {
+                                            label: 'Artificial Intelligence',
+                                            value: 'ai',
+                                            slot1: <Database size={16} />,
+                                        },
+                                        {
+                                            label: 'Blockchain',
+                                            value: 'blockchain',
+                                            slot1: <Shield size={16} />,
+                                        },
+                                        {
+                                            label: 'Cloud Computing',
+                                            value: 'cloud',
+                                            slot1: <Server size={16} />,
+                                        },
+                                        {
+                                            label: 'Cybersecurity',
+                                            value: 'cybersecurity',
+                                            slot1: <Shield size={16} />,
+                                        },
+                                        {
+                                            label: 'Data Analytics',
+                                            value: 'analytics',
+                                            slot1: <Database size={16} />,
+                                        },
+                                        {
+                                            label: 'Mobile Development',
+                                            value: 'mobile',
+                                            slot1: <Code size={16} />,
+                                        },
+                                        {
+                                            label: 'Game Development',
+                                            value: 'gamedev',
+                                            slot1: <Code size={16} />,
+                                        },
+                                        {
+                                            label: 'UI/UX Design',
+                                            value: 'design',
+                                            slot1: <Star size={16} />,
+                                        },
+                                        {
+                                            label: 'Product Management',
+                                            value: 'product',
+                                            slot1: <Target size={16} />,
+                                        },
+                                    ],
+                                },
+                            ]}
+                            selectedValues={searchLargeDatasetSelected}
+                            onChange={handleMultiSelectChange(
+                                searchLargeDatasetSelected,
+                                setSearchLargeDatasetSelected
+                            )}
+                            placeholder="Search through many options"
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            searchPlaceholder="Search through 30+ options..."
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            maxHeight={300}
+                        />
+                        {searchLargeDatasetSelected.length > 0 && (
+                            <div className="p-3 bg-orange-50 rounded-lg">
+                                <p className="text-sm text-orange-700">
+                                    <strong>
+                                        Large Dataset Selection (
+                                        {searchLargeDatasetSelected.length}):
+                                    </strong>{' '}
+                                    {searchLargeDatasetSelected
+                                        .slice(0, 5)
+                                        .join(', ')}
+                                    {searchLargeDatasetSelected.length > 5 &&
+                                        ` +${searchLargeDatasetSelected.length - 5} more`}
+                                </p>
+                                <p className="text-xs text-orange-600 mt-1">
+                                    Search makes large datasets manageable
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-cyan-50 rounded-lg">
+                    <h4 className="font-semibold text-cyan-900 mb-2">
+                        Search Features:
+                    </h4>
+                    <ul className="text-sm text-cyan-800 space-y-1">
+                        <li>
+                            • <strong>Real-time Filtering:</strong> Options are
+                            filtered as you type
+                        </li>
+                        <li>
+                            • <strong>Label & SubLabel Search:</strong> Searches
+                            both main label and sub-label text
+                        </li>
+                        <li>
+                            • <strong>Group Preservation:</strong> Maintains
+                            group structure in filtered results
+                        </li>
+                        <li>
+                            • <strong>Mobile Support:</strong> Uses TextInput
+                            component in mobile drawer
+                        </li>
+                        <li>
+                            • <strong>Select All Integration:</strong> Select
+                            All works on filtered results only
+                        </li>
+                        <li>
+                            • <strong>Custom Placeholder:</strong> Customize
+                            search input placeholder text
+                        </li>
+                        <li>
+                            • <strong>Performance:</strong> Efficient filtering
+                            for large datasets
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            {/* Item Dividers Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Item Dividers Examples</h2>
+                <p className="text-gray-600">
+                    Control the display of dividers between items using the{' '}
+                    <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                        showItemDividers
+                    </code>{' '}
+                    prop. This feature works in both desktop dropdown and mobile
+                    drawer.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">With Item Dividers</h3>
+                        <MultiSelect
+                            label="Dividers Enabled"
+                            sublabel="Shows dividers between items"
+                            items={skillItems}
+                            selectedValues={dividersEnabledSelected}
+                            onChange={handleMultiSelectChange(
+                                dividersEnabledSelected,
+                                setDividersEnabledSelected
+                            )}
+                            placeholder="Select with dividers"
+                            showItemDividers={true}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {dividersEnabledSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        With Dividers (
+                                        {dividersEnabledSelected.length}):
+                                    </strong>{' '}
+                                    {dividersEnabledSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    Notice the subtle dividers between items
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Without Item Dividers</h3>
+                        <MultiSelect
+                            label="Dividers Disabled"
+                            sublabel="Clean list without dividers"
+                            items={skillItems}
+                            selectedValues={dividersDisabledSelected}
+                            onChange={handleMultiSelectChange(
+                                dividersDisabledSelected,
+                                setDividersDisabledSelected
+                            )}
+                            placeholder="Select without dividers"
+                            showItemDividers={false}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {dividersDisabledSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        Without Dividers (
+                                        {dividersDisabledSelected.length}):
+                                    </strong>{' '}
+                                    {dividersDisabledSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    Clean appearance without visual separators
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Mobile Drawer with Dividers
+                        </h3>
+                        <MultiSelect
+                            label="Mobile Dividers"
+                            sublabel="Dividers work in mobile drawer too"
+                            items={permissionItems}
+                            selectedValues={dividersMobileSelected}
+                            onChange={handleMultiSelectChange(
+                                dividersMobileSelected,
+                                setDividersMobileSelected
+                            )}
+                            placeholder="Mobile with dividers"
+                            showItemDividers={true}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={true}
+                        />
+                        {dividersMobileSelected.length > 0 && (
+                            <div className="p-3 bg-purple-50 rounded-lg">
+                                <p className="text-sm text-purple-700">
+                                    <strong>
+                                        Mobile with Dividers (
+                                        {dividersMobileSelected.length}):
+                                    </strong>{' '}
+                                    {dividersMobileSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-purple-600 mt-1">
+                                    Dividers enhance readability in mobile
+                                    drawer
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Comparison View</h3>
+                        <MultiSelect
+                            label="Large Dataset with Dividers"
+                            sublabel="Dividers help with long lists"
+                            items={[
+                                ...skillItems,
+                                ...permissionItems,
+                                {
+                                    groupLabel: 'Additional Items',
+                                    items: [
+                                        { label: 'Item A', value: 'item-a' },
+                                        { label: 'Item B', value: 'item-b' },
+                                        { label: 'Item C', value: 'item-c' },
+                                        { label: 'Item D', value: 'item-d' },
+                                        { label: 'Item E', value: 'item-e' },
+                                    ],
+                                },
+                            ]}
+                            selectedValues={dividersComparisonSelected}
+                            onChange={handleMultiSelectChange(
+                                dividersComparisonSelected,
+                                setDividersComparisonSelected
+                            )}
+                            placeholder="Large list with dividers"
+                            showItemDividers={true}
+                            enableSearch={true}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            maxHeight={300}
+                        />
+                        {dividersComparisonSelected.length > 0 && (
+                            <div className="p-3 bg-orange-50 rounded-lg">
+                                <p className="text-sm text-orange-700">
+                                    <strong>
+                                        Large List Selection (
+                                        {dividersComparisonSelected.length}):
+                                    </strong>{' '}
+                                    {dividersComparisonSelected
+                                        .slice(0, 3)
+                                        .join(', ')}
+                                    {dividersComparisonSelected.length > 3 &&
+                                        ` +${dividersComparisonSelected.length - 3} more`}
+                                </p>
+                                <p className="text-xs text-orange-600 mt-1">
+                                    Dividers improve scanning in long lists
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-indigo-50 rounded-lg">
+                    <h4 className="font-semibold text-indigo-900 mb-2">
+                        Item Dividers Features:
+                    </h4>
+                    <ul className="text-sm text-indigo-800 space-y-1">
+                        <li>
+                            • <strong>Controllable:</strong> Use
+                            showItemDividers prop to enable/disable
+                        </li>
+                        <li>
+                            • <strong>Responsive:</strong> Works in both desktop
+                            dropdown and mobile drawer
+                        </li>
+                        <li>
+                            • <strong>Smart Positioning:</strong> Dividers
+                            appear between items, not at edges
+                        </li>
+                        <li>
+                            • <strong>Group Aware:</strong> Respects group
+                            boundaries and separators
+                        </li>
+                        <li>
+                            • <strong>Performance:</strong> Minimal impact on
+                            rendering performance
+                        </li>
+                        <li>
+                            • <strong>Accessibility:</strong> Maintains proper
+                            focus and navigation
+                        </li>
+                        <li>
+                            • <strong>Design Consistency:</strong> Uses design
+                            system tokens for styling
                         </li>
                     </ul>
                 </div>
@@ -1545,6 +2192,184 @@ const MultiSelectDemo = () => {
                             </p>
                         )}
                     </div>
+                </div>
+            </div>
+
+            {/* New Features Demo */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">New Features Demo</h2>
+                <p className="text-gray-600">
+                    Showcase the latest features: controllable header border and
+                    improved item dividers.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Header Border Control</h3>
+                        <MultiSelect
+                            label="With Header Border"
+                            sublabel="Mobile drawer shows header border"
+                            items={skillItems}
+                            selectedValues={headerBorderSelected}
+                            onChange={handleMultiSelectChange(
+                                headerBorderSelected,
+                                setHeaderBorderSelected
+                            )}
+                            placeholder="Select with header border"
+                            showHeaderBorder={true}
+                            enableSearch={true}
+                            showActionButtons={true}
+                            primaryAction={{
+                                text: 'Apply',
+                                onClick: () => {
+                                    console.log(
+                                        'Applied with header border:',
+                                        headerBorderSelected
+                                    )
+                                },
+                            }}
+                            secondaryAction={{
+                                text: 'Clear',
+                                onClick: () => {
+                                    setHeaderBorderSelected([])
+                                },
+                            }}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={true}
+                        />
+                        {headerBorderSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        With Header Border (
+                                        {headerBorderSelected.length}):
+                                    </strong>{' '}
+                                    {headerBorderSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    Mobile drawer shows border below header
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Enhanced Item Dividers
+                        </h3>
+                        <MultiSelect
+                            label="All Item Dividers"
+                            sublabel="Dividers between every item"
+                            items={permissionItems}
+                            selectedValues={itemDividersSelected}
+                            onChange={handleMultiSelectChange(
+                                itemDividersSelected,
+                                setItemDividersSelected
+                            )}
+                            placeholder="Select with item dividers"
+                            showItemDividers={true}
+                            enableSearch={true}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={true}
+                        />
+                        {itemDividersSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        With Item Dividers (
+                                        {itemDividersSelected.length}):
+                                    </strong>{' '}
+                                    {itemDividersSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    Dividers appear between all items, not just
+                                    sections
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Combined Features</h3>
+                        <MultiSelect
+                            label="All New Features"
+                            sublabel="Header border + item dividers + actions"
+                            items={skillItems}
+                            selectedValues={combinedFeaturesSelected}
+                            onChange={handleMultiSelectChange(
+                                combinedFeaturesSelected,
+                                setCombinedFeaturesSelected
+                            )}
+                            placeholder="All features combined"
+                            showHeaderBorder={true}
+                            showItemDividers={true}
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            showActionButtons={true}
+                            primaryAction={{
+                                text: 'Apply All',
+                                onClick: () => {
+                                    console.log(
+                                        'Applied combined features:',
+                                        combinedFeaturesSelected
+                                    )
+                                },
+                            }}
+                            secondaryAction={{
+                                text: 'Clear All',
+                                onClick: () => {
+                                    setCombinedFeaturesSelected([])
+                                },
+                            }}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={true}
+                        />
+                        {combinedFeaturesSelected.length > 0 && (
+                            <div className="p-3 bg-purple-50 rounded-lg">
+                                <p className="text-sm text-purple-700">
+                                    <strong>
+                                        Combined Features (
+                                        {combinedFeaturesSelected.length}):
+                                    </strong>{' '}
+                                    {combinedFeaturesSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-purple-600 mt-1">
+                                    All new features working together
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-emerald-50 rounded-lg">
+                    <h4 className="font-semibold text-emerald-900 mb-2">
+                        New Features Summary:
+                    </h4>
+                    <ul className="text-sm text-emerald-800 space-y-1">
+                        <li>
+                            • <strong>Header Border Control:</strong> Use
+                            showHeaderBorder prop to control border in mobile
+                            drawer header
+                        </li>
+                        <li>
+                            • <strong>Enhanced Item Dividers:</strong>{' '}
+                            showItemDividers now shows dividers between ALL
+                            items, not just sections
+                        </li>
+                        <li>
+                            • <strong>Better Mobile UX:</strong> When action
+                            buttons are present, X icon is hidden and title is
+                            centered
+                        </li>
+                        <li>
+                            • <strong>Improved Search:</strong> Mobile drawer
+                            includes proper search functionality with TextInput
+                        </li>
+                        <li>
+                            • <strong>Flexible Styling:</strong> Both features
+                            work with all existing props and variants
+                        </li>
+                    </ul>
                 </div>
             </div>
 

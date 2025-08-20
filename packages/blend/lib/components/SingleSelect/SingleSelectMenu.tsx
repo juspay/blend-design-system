@@ -11,7 +11,7 @@ import styled from 'styled-components'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { Check, ChevronRight } from 'lucide-react'
-import { SearchInput } from '../Inputs'
+import { TextInput } from '../Inputs/TextInput'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 
@@ -373,7 +373,7 @@ const SingleSelectMenu = ({
                         zIndex={1000}
                         marginBottom={10}
                     >
-                        <SearchInput
+                        <TextInput
                             value={searchText}
                             onChange={(e) => {
                                 e.preventDefault()

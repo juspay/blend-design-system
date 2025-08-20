@@ -42,7 +42,7 @@ const MultiSelectMenu = ({
     maxWidth,
     maxHeight,
     disabled = false,
-    enableSearch = false,
+    enableSearch = true,
     searchPlaceholder = 'Search options...',
     enableSelectAll = false,
     selectAllText = 'Select All',
@@ -53,9 +53,19 @@ const MultiSelectMenu = ({
     alignOffset = 0,
     open,
     onOpenChange,
-    showActionButtons = false,
-    primaryAction,
-    secondaryAction,
+    showActionButtons = true,
+    primaryAction = {
+        text: 'Apply',
+        onClick: () => {},
+        disabled: false,
+        loading: false,
+    },
+    secondaryAction = {
+        text: 'Clear All',
+        onClick: () => {},
+        disabled: false,
+        loading: false,
+    },
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
