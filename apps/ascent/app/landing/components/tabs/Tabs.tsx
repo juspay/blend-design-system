@@ -46,7 +46,7 @@ export const Tabs = ({
 }) => {
     return (
         <div
-            className="text-[var(--design-system-heading-background)] opacity-[0.5] w-[636.975px] py-3 flex justify-center relative"
+            className="text-[var(--design-system-heading-background)] opacity-[0.8] w-[636.975px] py-3 flex justify-center relative backdrop-blur-md"
             style={{
                 borderRadius: '83px',
                 background:

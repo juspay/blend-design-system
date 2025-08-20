@@ -6,8 +6,10 @@ import { DocumentationCard } from './DocumentationCard'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 export const DocumentationCarousel = () => {
-    const [activeIndex, setActiveIndex] = useState(1)
     const totalCards = DocumentationCardData.length
+    const [activeIndex, setActiveIndex] = useState(
+        totalCards % 2 == 0 ? totalCards / 2 : Math.floor(totalCards / 2) - 1
+    )
     const carouselRef = useRef<HTMLDivElement>(null)
 
     const handleNext = () => {
@@ -18,27 +20,30 @@ export const DocumentationCarousel = () => {
         setActiveIndex((prevIndex) => (prevIndex - 1 + totalCards) % totalCards)
     }
 
-    // This effect ensures the carousel always centers the active card
     useEffect(() => {
         if (carouselRef.current) {
             const cardWidth = 500 // Assuming a fixed width for the card
             const gap = 50 // Assuming a fixed gap
-            // Correctly get the parent's width for centering
-            const parentWidth =
-                carouselRef.current.parentElement?.offsetWidth || 0
-            const cardOffset = cardWidth / 2 // Offset to center the card itself
-            const centerPosition = parentWidth / 2 // Center of the viewport
-            const translateX = activeIndex * (cardWidth + gap) // Translation for all preceding cards
-            const newOffset = centerPosition - translateX - cardOffset // Final translation to center the active card
 
-            // This is the key change: apply transform to move the whole container
+            // The carousel container's own width is needed, not the parent's
+            const carouselWidth = carouselRef.current.offsetWidth
+            const cardAndGap = cardWidth + gap
+
+            // Calculate the position of the active card
+            const activeCardPosition = activeIndex * cardAndGap
+
+            // Calculate the total translation needed to bring the active card to the center.
+            // This centers the card within the carousel's visible area, not the parent's.
+            const newOffset =
+                carouselWidth / 2 - activeCardPosition - cardWidth / 2
+
             carouselRef.current.style.transform = `translateX(${newOffset}px)`
         }
     }, [activeIndex])
 
     return (
         // New container to provide the necessary "breathing room"
-        <div className="relative w-full overflow-hidden ">
+        <div className="relative overflow-hidden max-w-[100vw]">
             {/* This is the visual centering container. It has overflow-visible by default. */}
             <div className="flex justify-center items-center mt-50">
                 <div

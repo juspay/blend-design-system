@@ -22,7 +22,7 @@ export const ConnectWithUs = () => {
     }, [isModalOpen])
 
     return (
-        <div className="py-50 flex flex-col items-center gap-10 relative overflow-hidden w-full">
+        <div className="py-50 flex flex-col items-center gap-10 relative overflow-hidden w-full max-w-[100vw]">
             <div className="flex items-end">
                 <ConnectWithUsBox />
                 <p className="text-[48px] text-[#9E9E9E] font-[300] -ml-10">
