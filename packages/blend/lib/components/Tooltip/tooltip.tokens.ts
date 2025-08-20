@@ -1,7 +1,7 @@
-import { FOUNDATION_THEME } from '../../tokens'
 import { type CSSObject } from 'styled-components'
 import { TooltipSize } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
+import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type TooltipTokensType = {
     background: CSSObject['backgroundColor']
@@ -29,140 +29,77 @@ export type TooltipTokensType = {
     }
 }
 
-const tooltipTokens: TooltipTokensType = {
-    fontWeight: {
-        sm: FOUNDATION_THEME.font.weight[500],
-        lg: FOUNDATION_THEME.font.weight[500],
-    },
-    background: FOUNDATION_THEME.colors.gray[900],
-    color: FOUNDATION_THEME.colors.gray[0],
-    borderRadius: {
-        sm: FOUNDATION_THEME.border.radius[6],
-        lg: FOUNDATION_THEME.border.radius[8],
-    },
-    maxWidth: {
-        sm: '320px',
-        lg: '384px',
-    },
-    padding: {
-        sm: `${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[6]}`,
-        lg: `${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`,
-    },
-    fontSize: {
-        sm: `${FOUNDATION_THEME.font.size.body.xs.fontSize}px`,
-        lg: `${FOUNDATION_THEME.font.size.body.sm.fontSize}px`,
-    },
-    lineHeight: {
-        sm: `${FOUNDATION_THEME.font.size.body.xs.lineHeight}px`,
-        lg: `${FOUNDATION_THEME.font.size.body.sm.lineHeight}px`,
-    },
-    gap: {
-        sm: FOUNDATION_THEME.unit[4],
-        lg: FOUNDATION_THEME.unit[6],
-    },
+export type ResponsiveTooltipTokens = {
+    [key in keyof BreakpointType]: TooltipTokensType
 }
 
 export const getTooltipTokens = (
     foundationToken: FoundationTokenType
-): TooltipTokensType => {
+): ResponsiveTooltipTokens => {
     return {
-        fontWeight: {
-            sm: foundationToken.font.weight[500],
-            lg: foundationToken.font.weight[500],
+        sm: {
+            fontWeight: {
+                sm: foundationToken.font.weight[500],
+                lg: foundationToken.font.weight[500],
+            },
+            background: foundationToken.colors.gray[900],
+            color: foundationToken.colors.gray[0],
+            borderRadius: {
+                sm: foundationToken.border.radius[6],
+                lg: foundationToken.border.radius[8],
+            },
+            maxWidth: {
+                sm: '320px',
+                lg: '384px',
+            },
+            padding: {
+                sm: `${foundationToken.unit[4]} ${foundationToken.unit[6]}`,
+                lg: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
+            },
+            fontSize: {
+                sm: `${foundationToken.font.size.body.xs.fontSize}px`,
+                lg: `${foundationToken.font.size.body.sm.fontSize}px`,
+            },
+            lineHeight: {
+                sm: `${foundationToken.font.size.body.xs.lineHeight}px`,
+                lg: `${foundationToken.font.size.body.sm.lineHeight}px`,
+            },
+            gap: {
+                sm: foundationToken.unit[4],
+                lg: foundationToken.unit[6],
+            },
         },
-        background: foundationToken.colors.gray[900],
-        color: foundationToken.colors.gray[0],
-        borderRadius: {
-            sm: foundationToken.border.radius[6],
-            lg: foundationToken.border.radius[8],
-        },
-        maxWidth: {
-            sm: '320px',
-            lg: '384px',
-        },
-        padding: {
-            sm: `${foundationToken.unit[4]} ${foundationToken.unit[6]}`,
-            lg: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
-        },
-        fontSize: {
-            sm: `${foundationToken.font.size.body.xs.fontSize}px`,
-            lg: `${foundationToken.font.size.body.sm.fontSize}px`,
-        },
-        lineHeight: {
-            sm: `${foundationToken.font.size.body.xs.lineHeight}px`,
-            lg: `${foundationToken.font.size.body.sm.lineHeight}px`,
-        },
-        gap: {
-            sm: foundationToken.unit[4],
-            lg: foundationToken.unit[6],
+        lg: {
+            fontWeight: {
+                sm: foundationToken.font.weight[500],
+                lg: foundationToken.font.weight[500],
+            },
+            background: foundationToken.colors.gray[900],
+            color: foundationToken.colors.gray[0],
+            borderRadius: {
+                sm: foundationToken.border.radius[6],
+                lg: foundationToken.border.radius[8],
+            },
+            maxWidth: {
+                sm: '320px',
+                lg: '384px',
+            },
+            padding: {
+                sm: `${foundationToken.unit[4]} ${foundationToken.unit[6]}`,
+                lg: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
+            },
+            fontSize: {
+                sm: `${foundationToken.font.size.body.xs.fontSize}px`,
+                lg: `${foundationToken.font.size.body.sm.fontSize}px`,
+            },
+            lineHeight: {
+                sm: `${foundationToken.font.size.body.xs.lineHeight}px`,
+                lg: `${foundationToken.font.size.body.sm.lineHeight}px`,
+            },
+            gap: {
+                sm: foundationToken.unit[4],
+                lg: foundationToken.unit[6],
+            },
         },
     }
 }
-
-// type TooltipToken = {
-//   background: {
-//     color: CSSObject["backgroundColor"];
-//   };
-//   color: {
-//     text: CSSObject["color"];
-//   };
-//   border: {
-//     radius: {
-//       sm: CSSObject["borderRadius"];
-//       lg: CSSObject["borderRadius"];
-//     };
-//   };
-//   maxWidth: {
-//     sm: CSSObject["maxWidth"];
-//     lg: CSSObject["maxWidth"];
-//   };
-//   padding: {
-//     sm: CSSObject["padding"];
-//     lg: CSSObject["padding"];
-//   };
-//   font: {
-//     size: {
-//       sm: VariantType;
-//       lg: VariantType;
-//     };
-//   };
-//   size: {
-//     sm: CSSObject["width"] | CSSObject["height"];
-//     lg: CSSObject["width"] | CSSObject["height"];
-//   };
-// };
-
-// const tooltipTokens: TooltipToken = {
-//   background: {
-//     color: FOUNDATION_THEME.colors.gray[900],
-//   },
-//   color: {
-//     text: FOUNDATION_THEME.colors.gray[0],
-//   },
-//   border: {
-//     radius: {
-//       sm: FOUNDATION_THEME.border.radius[6],
-//       lg: FOUNDATION_THEME.border.radius[8],
-//     },
-//   },
-//   maxWidth: {
-//     sm: "320px",
-//     lg: "384px",
-//   },
-//   padding: {
-//     sm: `${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[6]}`,
-//     lg: `${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`,
-//   },
-//   font: {
-//     size: {
-//       sm: "body.xs",
-//       lg: "body.sm",
-//     },
-//   },
-//   size: {
-//     sm: FOUNDATION_THEME.unit[14],
-//     lg: FOUNDATION_THEME.unit[18],
-//   },
-// };
-
-export default tooltipTokens

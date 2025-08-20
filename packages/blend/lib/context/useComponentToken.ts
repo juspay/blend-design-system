@@ -10,7 +10,7 @@ import type { ResponsiveTextInputTokens } from '../components/Inputs/TextInput/t
 import type { ResponsiveNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
 import type { ResponsiveAlertTokens } from '../components/Alert/alert.tokens'
 import type { OTPInputTokensType } from '../components/Inputs/OTPInput/otpInput.tokens'
-import type { TooltipTokensType } from '../components/Tooltip/tooltip.tokens'
+import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import type { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
@@ -46,7 +46,7 @@ export const useComponentToken = (
     | ResponsiveSwitchTokens
     | ResponsiveCheckboxTokens
     | ResponsiveTabsTokens
-    | TooltipTokensType
+    | ResponsiveTooltipTokens
     | ResponsiveDropdownInputTokens
     | ResponsiveButtonTokens
     | ModalTokensType

@@ -10,7 +10,7 @@ import {
 import type { TooltipTokensType } from './tooltip.tokens'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { useComponentToken } from '../../context/useComponentToken'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const Arrow = styled(RadixTooltip.Arrow)<{
     $color: CSSObject['backgroundColor']
@@ -31,7 +31,7 @@ export const Tooltip = ({
     offset = 5,
     open,
 }: TooltipProps) => {
-    const tooltipTokens = useComponentToken('TOOLTIP') as TooltipTokensType
+    const tooltipTokens = useResponsiveTokens<TooltipTokensType>('TOOLTIP')
     return (
         <RadixTooltip.Provider delayDuration={delayDuration}>
             <RadixTooltip.Root open={open}>
