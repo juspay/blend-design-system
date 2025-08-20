@@ -5,9 +5,10 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { TableTokenType } from './dataTable.tokens'
-import { useComponentToken } from '../../context/useComponentToken'
 import { SelectMenuSize, SelectMenuVariant } from '../Select/types'
 import SingleSelect from '../SingleSelect/SingleSelect'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 type DataTablePaginationProps = {
     currentPage: number
@@ -28,7 +29,9 @@ export function DataTablePagination({
     onPageChange,
     onPageSizeChange,
 }: DataTablePaginationProps) {
-    const tableToken = useComponentToken('TABLE') as TableTokenType
+    const tableToken = useResponsiveTokens('TABLE') as TableTokenType
+    const { breakPointLabel } = useBreakpoints()
+    const isMobile = breakPointLabel === 'sm'
 
     const totalPages = Math.ceil(totalRows / pageSize)
 
@@ -114,7 +117,7 @@ export function DataTablePagination({
                         minWidth: '94px',
                     }}
                 >
-                    Rows per page
+                    {isMobile ? 'Rows' : 'Rows per page'}
                 </PrimitiveText>
 
                 <SingleSelect
@@ -166,9 +169,19 @@ export function DataTablePagination({
             >
                 <PrimitiveButton
                     contentCentered
-                    size={32}
+                    width={FOUNDATION_THEME.unit[32]}
+                    height={FOUNDATION_THEME.unit[32]}
                     backgroundColor="transparent"
-                    borderRadius={FOUNDATION_THEME.border.radius[2]}
+                    border={
+                        isMobile
+                            ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
+                            : 'none'
+                    }
+                    borderRadius={
+                        isMobile
+                            ? FOUNDATION_THEME.border.radius[10]
+                            : FOUNDATION_THEME.border.radius[2]
+                    }
                     color={
                         currentPage === 1
                             ? FOUNDATION_THEME.colors.gray[300]
@@ -187,66 +200,83 @@ export function DataTablePagination({
                     <ArrowLeft size={FOUNDATION_THEME.unit[16]} />
                 </PrimitiveButton>
 
-                <Block
-                    display="flex"
-                    alignItems="center"
-                    gap={FOUNDATION_THEME.unit[4]}
-                >
-                    {pageNumbers.map((page, index) =>
-                        typeof page === 'number' ? (
-                            <PrimitiveButton
-                                key={index}
-                                contentCentered
-                                minWidth={32}
-                                height={32}
-                                backgroundColor={
-                                    currentPage === page
-                                        ? FOUNDATION_THEME.colors.gray[100]
-                                        : 'transparent'
-                                }
-                                color={
-                                    currentPage === page
-                                        ? FOUNDATION_THEME.colors.gray[700]
-                                        : FOUNDATION_THEME.colors.gray[600]
-                                }
-                                borderRadius={FOUNDATION_THEME.border.radius[8]}
-                                disabled={isLoading}
-                                onClick={() => onPageChange(page)}
-                                _hover={{
-                                    backgroundColor:
+                {!isMobile && (
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        gap={FOUNDATION_THEME.unit[4]}
+                    >
+                        {pageNumbers.map((page, index) =>
+                            typeof page === 'number' ? (
+                                <PrimitiveButton
+                                    key={index}
+                                    contentCentered
+                                    minWidth={FOUNDATION_THEME.unit[32]}
+                                    height={FOUNDATION_THEME.unit[32]}
+                                    backgroundColor={
                                         currentPage === page
                                             ? FOUNDATION_THEME.colors.gray[100]
-                                            : FOUNDATION_THEME.colors.gray[50],
-                                }}
-                                style={{
-                                    fontSize:
+                                            : 'transparent'
+                                    }
+                                    color={
+                                        currentPage === page
+                                            ? FOUNDATION_THEME.colors.gray[700]
+                                            : FOUNDATION_THEME.colors.gray[600]
+                                    }
+                                    borderRadius={
+                                        FOUNDATION_THEME.border.radius[8]
+                                    }
+                                    disabled={isLoading}
+                                    onClick={() => onPageChange(page)}
+                                    _hover={{
+                                        backgroundColor:
+                                            currentPage === page
+                                                ? FOUNDATION_THEME.colors
+                                                      .gray[100]
+                                                : FOUNDATION_THEME.colors
+                                                      .gray[50],
+                                    }}
+                                    style={{
+                                        fontSize:
+                                            FOUNDATION_THEME.font.size.body.sm
+                                                .fontSize,
+                                    }}
+                                >
+                                    {page}
+                                </PrimitiveButton>
+                            ) : (
+                                <PrimitiveText
+                                    as="span"
+                                    key={index}
+                                    fontSize={
                                         FOUNDATION_THEME.font.size.body.sm
-                                            .fontSize,
-                                }}
-                            >
-                                {page}
-                            </PrimitiveButton>
-                        ) : (
-                            <PrimitiveText
-                                as="span"
-                                key={index}
-                                fontSize={
-                                    FOUNDATION_THEME.font.size.body.sm.fontSize
-                                }
-                                color={FOUNDATION_THEME.colors.gray[400]}
-                                padding={FOUNDATION_THEME.unit[4]}
-                            >
-                                {page}
-                            </PrimitiveText>
-                        )
-                    )}
-                </Block>
+                                            .fontSize
+                                    }
+                                    color={FOUNDATION_THEME.colors.gray[400]}
+                                    padding={FOUNDATION_THEME.unit[4]}
+                                >
+                                    {page}
+                                </PrimitiveText>
+                            )
+                        )}
+                    </Block>
+                )}
 
                 <PrimitiveButton
                     contentCentered
-                    size={32}
+                    width={FOUNDATION_THEME.unit[32]}
+                    height={FOUNDATION_THEME.unit[32]}
                     backgroundColor="transparent"
-                    borderRadius={FOUNDATION_THEME.border.radius[2]}
+                    border={
+                        isMobile
+                            ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
+                            : 'none'
+                    }
+                    borderRadius={
+                        isMobile
+                            ? FOUNDATION_THEME.border.radius[10]
+                            : FOUNDATION_THEME.border.radius[2]
+                    }
                     color={
                         currentPage === totalPages
                             ? FOUNDATION_THEME.colors.gray[300]

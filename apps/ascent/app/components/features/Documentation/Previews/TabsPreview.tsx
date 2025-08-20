@@ -8,7 +8,7 @@ import {
     TabsSize,
 } from '@juspay/blend-design-system'
 import React from 'react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const TabsPreview = () => {
     const tsCode = `import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant, TabsSize } from "@juspay/blend-design-system";

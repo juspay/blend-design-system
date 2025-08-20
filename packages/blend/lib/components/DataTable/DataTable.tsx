@@ -8,6 +8,7 @@ import {
     ColumnFilter,
     FilterType,
     ColumnType,
+    RowActionsConfig,
 } from './types'
 import { TableTokenType } from './dataTable.tokens'
 import {
@@ -33,8 +34,10 @@ import { Settings, Check } from 'lucide-react'
 import Menu from '../Menu/Menu'
 import { MenuV2GroupType, MenuAlignment } from '../Menu/types'
 
-import { useComponentToken } from '../../context/useComponentToken'
 import { foundationToken } from '../../foundationToken'
+import { useMobileDataTable } from './hooks/useMobileDataTable'
+import MobileColumnDrawer from './MobileColumnDrawer'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const DataTable = forwardRef(
     <T extends Record<string, unknown>>(
@@ -83,11 +86,15 @@ const DataTable = forwardRef(
             headerSlot1,
             headerSlot2,
             bulkActions,
+            rowActions,
             getRowStyle,
+            mobileColumnsToShow,
         }: DataTableProps<T>,
         ref: React.Ref<HTMLDivElement>
     ) => {
-        const tableToken = useComponentToken('TABLE') as TableTokenType
+        const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
+        const mobileConfig = useMobileDataTable(mobileColumnsToShow)
+
         const [sortConfig, setSortConfig] = useState<SortConfig | null>(
             defaultSort || null
         )
@@ -127,6 +134,52 @@ const DataTable = forwardRef(
 
         // Formatting state
         const [isFormatEnabled, setIsFormatEnabled] = useState<boolean>(true)
+
+        // Mobile column overflow state
+        const [mobileDrawerOpen, setMobileDrawerOpen] = useState<boolean>(false)
+        const [selectedRowForDrawer, setSelectedRowForDrawer] =
+            useState<T | null>(null)
+        const [selectedRowIndexForDrawer, setSelectedRowIndexForDrawer] =
+            useState<number>(-1)
+
+        // Apply mobile configurations
+        const effectiveColumnFreeze = mobileConfig.disableColumnFreeze
+            ? 0
+            : columnFreeze
+        const effectiveEnableColumnManager = mobileConfig.hideColumnManager
+            ? false
+            : enableColumnManager
+
+        // Calculate visible and overflow columns for mobile
+        const { mobileVisibleColumns, mobileOverflowColumns } = useMemo(() => {
+            if (!mobileConfig.enableColumnOverflow) {
+                return {
+                    mobileVisibleColumns: visibleColumns,
+                    mobileOverflowColumns: [],
+                }
+            }
+
+            const visible = visibleColumns.slice(
+                0,
+                mobileConfig.maxVisibleColumns
+            )
+            const overflow = visibleColumns.slice(
+                mobileConfig.maxVisibleColumns
+            )
+
+            return {
+                mobileVisibleColumns: visible,
+                mobileOverflowColumns: overflow,
+            }
+        }, [
+            visibleColumns,
+            mobileConfig.enableColumnOverflow,
+            mobileConfig.maxVisibleColumns,
+        ])
+
+        const effectiveVisibleColumns = mobileConfig.enableColumnOverflow
+            ? mobileVisibleColumns
+            : visibleColumns
 
         const totalRows = pagination?.totalRows || data.length
 
@@ -552,6 +605,15 @@ const DataTable = forwardRef(
             }
         }
 
+        const handleMobileOverflowClick = (row: T) => {
+            const rowIndex = currentData.findIndex(
+                (r) => r[idField] === row[idField]
+            )
+            setSelectedRowForDrawer(row)
+            setSelectedRowIndexForDrawer(rowIndex)
+            setMobileDrawerOpen(true)
+        }
+
         return (
             <Block
                 ref={ref}
@@ -665,6 +727,11 @@ const DataTable = forwardRef(
                             >
                                 <TableHeader
                                     visibleColumns={
+                                        effectiveVisibleColumns as ColumnDefinition<
+                                            Record<string, unknown>
+                                        >[]
+                                    }
+                                    allVisibleColumns={
                                         visibleColumns as ColumnDefinition<
                                             Record<string, unknown>
                                         >[]
@@ -676,10 +743,28 @@ const DataTable = forwardRef(
                                     }
                                     selectAll={selectAll}
                                     enableInlineEdit={enableInlineEdit}
-                                    enableColumnManager={enableColumnManager}
+                                    enableColumnManager={
+                                        effectiveEnableColumnManager
+                                    }
                                     enableRowExpansion={enableRowExpansion}
                                     enableRowSelection={enableRowSelection}
+                                    rowActions={
+                                        rowActions as
+                                            | RowActionsConfig<
+                                                  Record<string, unknown>
+                                              >
+                                            | undefined
+                                    }
                                     data={data}
+                                    mobileConfig={mobileConfig}
+                                    mobileOverflowColumns={
+                                        mobileOverflowColumns as ColumnDefinition<
+                                            Record<string, unknown>
+                                        >[]
+                                    }
+                                    onMobileOverflowClick={(row) =>
+                                        handleMobileOverflowClick(row as T)
+                                    }
                                     onSort={handleSort}
                                     onSelectAll={handleSelectAll}
                                     onColumnChange={(columns) =>
@@ -696,15 +781,24 @@ const DataTable = forwardRef(
                                             index: number
                                         ) => React.CSSProperties
                                     }
-                                    columnFreeze={columnFreeze}
+                                    columnFreeze={effectiveColumnFreeze}
                                 />
                                 {currentData.length > 0 ? (
                                     <TableBodyComponent
                                         currentData={currentData}
                                         visibleColumns={
-                                            visibleColumns as ColumnDefinition<
+                                            effectiveVisibleColumns as ColumnDefinition<
                                                 Record<string, unknown>
                                             >[]
+                                        }
+                                        mobileConfig={mobileConfig}
+                                        mobileOverflowColumns={
+                                            mobileOverflowColumns as ColumnDefinition<
+                                                Record<string, unknown>
+                                            >[]
+                                        }
+                                        onMobileOverflowClick={(row) =>
+                                            handleMobileOverflowClick(row as T)
                                         }
                                         idField={String(idField)}
                                         selectedRows={selectedRows}
@@ -713,11 +807,11 @@ const DataTable = forwardRef(
                                         expandedRows={expandedRows}
                                         enableInlineEdit={enableInlineEdit}
                                         enableColumnManager={
-                                            enableColumnManager
+                                            effectiveEnableColumnManager
                                         }
                                         enableRowExpansion={enableRowExpansion}
                                         enableRowSelection={enableRowSelection}
-                                        columnFreeze={columnFreeze}
+                                        columnFreeze={effectiveColumnFreeze}
                                         renderExpandedRow={
                                             renderExpandedRow as
                                                 | ((expandedData: {
@@ -789,6 +883,13 @@ const DataTable = forwardRef(
                                                 column as ColumnDefinition<T>
                                             )
                                         }
+                                        rowActions={
+                                            rowActions as
+                                                | RowActionsConfig<
+                                                      Record<string, unknown>
+                                                  >
+                                                | undefined
+                                        }
                                     />
                                 ) : (
                                     <tbody>
@@ -840,6 +941,44 @@ const DataTable = forwardRef(
                         onPageSizeChange={handlePageSizeChange}
                     />
                 </Block>
+
+                {mobileConfig.enableColumnOverflow && selectedRowForDrawer && (
+                    <MobileColumnDrawer
+                        isOpen={mobileDrawerOpen}
+                        onClose={() => {
+                            setMobileDrawerOpen(false)
+                            setSelectedRowForDrawer(null)
+                            setSelectedRowIndexForDrawer(-1)
+                        }}
+                        row={selectedRowForDrawer as Record<string, unknown>}
+                        rowIndex={selectedRowIndexForDrawer}
+                        overflowColumns={
+                            mobileOverflowColumns as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        getDisplayValue={(value, column) =>
+                            getDisplayValue(
+                                value,
+                                column as ColumnDefinition<T>
+                            )
+                        }
+                        onFieldChange={(field, value) => {
+                            setSelectedRowForDrawer((prev) =>
+                                prev ? { ...prev, [field]: value } : null
+                            )
+                            if (onFieldChange && selectedRowForDrawer) {
+                                const rowId = selectedRowForDrawer[idField]
+                                onFieldChange(rowId, field as keyof T, value)
+                            }
+                        }}
+                        rowActions={
+                            rowActions as
+                                | RowActionsConfig<Record<string, unknown>>
+                                | undefined
+                        }
+                    />
+                )}
             </Block>
         )
     }

@@ -314,7 +314,7 @@ export const DrawerContent = forwardRef<
                             borderRadius={tokens.handle.borderRadius}
                             margin={
                                 direction === 'bottom'
-                                    ? '16px auto 0 auto'
+                                    ? '14px auto 14px auto'
                                     : '0 auto 16px auto'
                             }
                             flexShrink={0}
@@ -340,8 +340,8 @@ export const DrawerHeader = forwardRef<HTMLDivElement, DrawerHeaderProps>(
             <Block
                 ref={ref}
                 className={className}
-                padding={tokens.header.padding}
-                borderBottom={tokens.header.borderBottom}
+                // padding={tokens.header.padding}
+                // borderBottom={tokens.header.borderBottom}
                 backgroundColor={tokens.header.backgroundColor}
                 flexShrink={0}
                 {...props}

@@ -17,7 +17,9 @@ export type SingleSelectItemStates =
 
 export type SingleSelectTokensType = {
     trigger: {
-        height: CSSObject['height']
+        height: {
+            [key in SelectMenuSize]: CSSObject['height']
+        }
         paddingX: {
             [key in SelectMenuSize]: CSSObject['padding']
         }
@@ -81,6 +83,13 @@ export type SingleSelectTokensType = {
             margin: CSSObject['margin']
         }
     }
+    drawer: {
+        header: {
+            paddingX: CSSObject['padding']
+            paddingBottom: CSSObject['padding']
+            borderBottom: CSSObject['borderBottom']
+        }
+    }
 }
 
 export type ResponsiveSingleSelectTokens = {
@@ -93,16 +102,20 @@ export const getSingleSelectTokens = (
     return {
         sm: {
             trigger: {
-                height: FOUNDATION_THEME.unit[52],
+                height: {
+                    sm: FOUNDATION_THEME.unit[32],
+                    md: FOUNDATION_THEME.unit[36],
+                    lg: FOUNDATION_THEME.unit[52],
+                },
                 paddingX: {
                     sm: FOUNDATION_THEME.unit[14],
                     md: FOUNDATION_THEME.unit[14],
                     lg: FOUNDATION_THEME.unit[12],
                 },
                 paddingY: {
-                    sm: FOUNDATION_THEME.unit[6],
+                    sm: FOUNDATION_THEME.unit[7],
                     md: FOUNDATION_THEME.unit[8],
-                    lg: FOUNDATION_THEME.unit[12],
+                    lg: FOUNDATION_THEME.unit[10],
                 },
                 borderRadius: {
                     sm: foundationToken.unit[10],
@@ -122,11 +135,11 @@ export const getSingleSelectTokens = (
                         error: foundationToken.colors.gray[0],
                     },
                     'no-container': {
-                        open: undefined,
-                        closed: undefined,
-                        hover: undefined,
-                        focus: undefined,
-                        error: undefined,
+                        open: 'transparent',
+                        closed: 'transparent',
+                        hover: foundationToken.colors.gray[50],
+                        focus: foundationToken.colors.gray[50],
+                        error: 'transparent',
                     },
                 },
                 outline: {
@@ -201,17 +214,28 @@ export const getSingleSelectTokens = (
                     margin: `${foundationToken.unit[6]} 0`,
                 },
             },
+            drawer: {
+                header: {
+                    paddingX: foundationToken.unit[8],
+                    paddingBottom: foundationToken.unit[8],
+                    borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                },
+            },
         },
         lg: {
             trigger: {
-                height: FOUNDATION_THEME.unit[52],
+                height: {
+                    sm: FOUNDATION_THEME.unit[32],
+                    md: FOUNDATION_THEME.unit[36],
+                    lg: FOUNDATION_THEME.unit[40],
+                },
                 paddingX: {
                     sm: FOUNDATION_THEME.unit[14],
                     md: FOUNDATION_THEME.unit[14],
-                    lg: FOUNDATION_THEME.unit[14],
+                    lg: FOUNDATION_THEME.unit[12],
                 },
                 paddingY: {
-                    sm: FOUNDATION_THEME.unit[6],
+                    sm: FOUNDATION_THEME.unit[7],
                     md: FOUNDATION_THEME.unit[8],
                     lg: FOUNDATION_THEME.unit[10],
                 },
@@ -233,11 +257,11 @@ export const getSingleSelectTokens = (
                         error: foundationToken.colors.gray[0],
                     },
                     'no-container': {
-                        open: undefined,
-                        closed: undefined,
-                        hover: undefined,
-                        focus: undefined,
-                        error: undefined,
+                        open: 'transparent',
+                        closed: 'transparent',
+                        hover: foundationToken.colors.gray[50],
+                        focus: foundationToken.colors.gray[50],
+                        error: 'transparent',
                     },
                 },
                 outline: {
@@ -310,6 +334,13 @@ export const getSingleSelectTokens = (
                     color: foundationToken.colors.gray[200],
                     height: 1,
                     margin: `${foundationToken.unit[6]} 0`,
+                },
+            },
+            drawer: {
+                header: {
+                    paddingX: foundationToken.unit[8],
+                    paddingBottom: foundationToken.unit[8],
+                    borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 },
             },
         },

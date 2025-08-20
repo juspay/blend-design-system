@@ -72,6 +72,9 @@ export type MultiSelectProps = {
     enableSelectAll?: boolean
     selectAllText?: string
 
+    // custom trigger
+    customTrigger?: React.ReactNode
+
     // responsive behavior
     useDrawerOnMobile?: boolean
 
@@ -94,6 +97,23 @@ export type MultiSelectProps = {
     // error
     error?: boolean
     errorMessage?: string
+
+    // action buttons
+    showActionButtons?: boolean
+    primaryAction?: {
+        text: string
+        onClick: () => void
+        disabled?: boolean
+        loading?: boolean
+    }
+    secondaryAction?: {
+        text: string
+        onClick: () => void
+        disabled?: boolean
+        loading?: boolean
+    }
+    showItemDividers?: boolean
+    showHeaderBorder?: boolean
 }
 
 // Multi Select Menu Dropdpown
@@ -121,4 +141,19 @@ export type MultiSelectMenuProps = {
     // open
     open: boolean
     onOpenChange: (open: boolean) => void
+
+    // action buttons
+    showActionButtons?: boolean
+    primaryAction?: {
+        text: string
+        onClick: () => void
+        disabled?: boolean
+        loading?: boolean
+    }
+    secondaryAction?: {
+        text: string
+        onClick: () => void
+        disabled?: boolean
+        loading?: boolean
+    }
 }

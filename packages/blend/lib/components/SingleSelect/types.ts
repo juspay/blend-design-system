@@ -72,9 +72,14 @@ export type SingleSelectProps = {
     selected: string
     onSelect: (value: string) => void
     enableSearch?: boolean
+    searchPlaceholder?: string
     slot?: React.ReactNode
     disabled?: boolean
     name?: string
+
+    // custom trigger
+    customTrigger?: React.ReactNode
+
     // responsive behavior
     useDrawerOnMobile?: boolean
     // alignment

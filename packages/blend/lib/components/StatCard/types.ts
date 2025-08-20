@@ -15,18 +15,19 @@ export enum ChangeType {
 
 export type ChartDataPoint = {
     value: number
-    label: string
-    date?: string
+    name: string
 }
 
 export type StatCardChange = {
     value: number
     valueType: ChangeType
+    tooltip?: ReactNode
 }
 
 export type StatCardProps = {
     title: string
     value: string | number
+    valueTooltip?: ReactNode
     change?: StatCardChange
     subtitle?: string
     variant: StatCardVariant
@@ -36,4 +37,5 @@ export type StatCardProps = {
     actionIcon?: ReactNode
     helpIconText?: string
     dropdownProps?: SingleSelectProps
+    maxWidth?: string
 }

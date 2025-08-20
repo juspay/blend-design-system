@@ -7,7 +7,7 @@ import {
     TagVariant,
 } from '@juspay/blend-design-system'
 import React from 'react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const SplitTagPreview = () => {
     const tsCode = `import { SplitTag, TagColor, TagSize, TagShape, TagVariant } from "@juspay/blend-design-system";

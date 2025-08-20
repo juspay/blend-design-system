@@ -10,7 +10,7 @@ import type { ResponsiveTextInputTokens } from '../components/Inputs/TextInput/t
 import type { ResponsiveNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
 import type { ResponsiveAlertTokens } from '../components/Alert/alert.tokens'
 import type { OTPInputTokensType } from '../components/Inputs/OTPInput/otpInput.tokens'
-import type { TooltipTokensType } from '../components/Tooltip/tooltip.tokens'
+import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import type { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
@@ -20,7 +20,7 @@ import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadc
 import type { PopoverTokenType } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
-import type { TableTokenType } from '../components/DataTable/dataTable.tokens'
+import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
 import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
 import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
@@ -46,7 +46,7 @@ export const useComponentToken = (
     | ResponsiveSwitchTokens
     | ResponsiveCheckboxTokens
     | ResponsiveTabsTokens
-    | TooltipTokensType
+    | ResponsiveTooltipTokens
     | ResponsiveDropdownInputTokens
     | ResponsiveButtonTokens
     | ModalTokensType
@@ -55,7 +55,7 @@ export const useComponentToken = (
     | ResponsiveMenuTokensType
     | ResponsiveMultiSelectTokens
     | ResponsiveSingleSelectTokens
-    | TableTokenType
+    | ResponsiveTableTokens
     | ResponsiveCalendarTokens
     | ResponsiveAccordionTokens
     | ResponsiveStatCardTokens

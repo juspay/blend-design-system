@@ -38,7 +38,7 @@ import {
 } from '../components/Inputs/OTPInput/otpInput.tokens'
 import {
     getTooltipTokens,
-    type TooltipTokensType,
+    type ResponsiveTooltipTokens,
 } from '../components/Tooltip/tooltip.tokens'
 import {
     getUnitInputTokens,
@@ -86,7 +86,7 @@ import {
 } from '../components/MultiSelect/multiSelect.tokens'
 import {
     getTableToken,
-    type TableTokenType,
+    type ResponsiveTableTokens,
 } from '../components/DataTable/dataTable.tokens'
 import {
     type ResponsiveCalendarTokens,
@@ -131,7 +131,7 @@ export type ComponentTokenType = {
     NUMBER_INPUT?: ResponsiveNumberInputTokens
     ALERT?: ResponsiveAlertTokens
     OTP_INPUT?: OTPInputTokensType
-    TOOLTIP?: TooltipTokensType
+    TOOLTIP?: ResponsiveTooltipTokens
     UNIT_INPUT?: ResponsiveUnitInputTokens
     MULTI_VALUE_INPUT?: MultiValueInputTokensType
     DROPDOWN_INPUT?: ResponsiveDropdownInputTokens
@@ -144,7 +144,7 @@ export type ComponentTokenType = {
     MENU?: ResponsiveMenuTokensType
     MULTI_SELECT?: ResponsiveMultiSelectTokens
     SINGLE_SELECT?: ResponsiveSingleSelectTokens
-    TABLE?: TableTokenType
+    TABLE?: ResponsiveTableTokens
     CALENDAR?: ResponsiveCalendarTokens
     ACCORDION?: ResponsiveAccordionTokens
     STAT_CARD?: ResponsiveStatCardTokens

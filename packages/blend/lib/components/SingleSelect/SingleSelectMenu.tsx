@@ -10,9 +10,8 @@ import { FOUNDATION_THEME } from '../../tokens'
 import styled from 'styled-components'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
-import { ChevronRight } from 'lucide-react'
-import { Checkbox } from '../Checkbox'
-import { SearchInput } from '../Inputs'
+import { Check, ChevronRight } from 'lucide-react'
+import { TextInput } from '../Inputs/TextInput'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 
@@ -240,10 +239,7 @@ const Item = ({
                 </Text>
                 {isSelected && (
                     <Block as="span" display="flex" alignItems="center">
-                        <Checkbox
-                            checked={isSelected}
-                            disabled={item.disabled}
-                        />
+                        <Check size={16} color={'#000000'} />
                     </Block>
                 )}
             </Block>
@@ -359,11 +355,12 @@ const SingleSelectMenu = ({
                 alignOffset={alignOffset}
                 side={side}
                 style={{
-                    minWidth,
-                    width: 'var(--radix-dropdown-menu-trigger-width)',
-                    maxWidth: maxWidth
-                        ? maxWidth
-                        : 'var(--radix-dropdown-menu-trigger-width)',
+                    minWidth: minWidth || 250,
+                    width:
+                        minWidth || maxWidth
+                            ? 'auto'
+                            : 'max(var(--radix-dropdown-menu-trigger-width), 250px)',
+                    maxWidth: maxWidth || 400,
                     maxHeight,
                 }}
             >
@@ -376,7 +373,7 @@ const SingleSelectMenu = ({
                         zIndex={1000}
                         marginBottom={10}
                     >
-                        <SearchInput
+                        <TextInput
                             value={searchText}
                             onChange={(e) => {
                                 e.preventDefault()

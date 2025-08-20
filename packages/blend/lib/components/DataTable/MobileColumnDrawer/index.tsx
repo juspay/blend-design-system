@@ -1,0 +1,408 @@
+import React, { useState } from 'react'
+import {
+    ColumnDefinition,
+    ColumnType,
+    DropdownColumnProps,
+    RowActionsConfig,
+} from '../types'
+import Block from '../../Primitives/Block/Block'
+import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
+import { FOUNDATION_THEME } from '../../../tokens'
+import {
+    Drawer,
+    DrawerPortal,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerBody,
+    DrawerTitle,
+    NestedSingleSelectDrawer,
+} from '../../Drawer'
+import { ChevronRight } from 'lucide-react'
+import { Button } from '../../Button'
+import { ButtonType, ButtonSize, ButtonSubType } from '../../Button/types'
+
+export interface MobileColumnDrawerProps<T extends Record<string, unknown>> {
+    isOpen: boolean
+    onClose: () => void
+    row: T
+    rowIndex: number
+    overflowColumns: ColumnDefinition<T>[]
+    getDisplayValue?: (value: unknown, column: ColumnDefinition<T>) => unknown
+    onFieldChange?: (field: keyof T, value: unknown) => void
+    rowActions?: RowActionsConfig<T>
+}
+
+const MobileColumnDrawer: React.FC<
+    MobileColumnDrawerProps<Record<string, unknown>>
+> = ({
+    isOpen,
+    onClose,
+    row,
+    rowIndex,
+    overflowColumns,
+    getDisplayValue,
+    onFieldChange,
+    rowActions,
+}) => {
+    const [nestedDrawerOpen, setNestedDrawerOpen] = useState(false)
+    const [selectedDropdownColumn, setSelectedDropdownColumn] = useState<{
+        column: ColumnDefinition<Record<string, unknown>>
+        value: DropdownColumnProps
+    } | null>(null)
+    /**
+     * Renders cell value using the exact same logic as table cells
+     * This ensures consistency between desktop table and mobile drawer
+     */
+    const renderCellValue = (
+        column: ColumnDefinition<Record<string, unknown>>,
+        value: unknown
+    ): React.ReactNode => {
+        if (column.renderCell) {
+            try {
+                // @ts-expect-error error may occur if renderCell is not defined for the column
+                return column.renderCell(value, row, 0)
+            } catch (error) {
+                console.warn('Error in column renderCell function:', error)
+                return value != null ? String(value) : '-'
+            }
+        }
+
+        if (getDisplayValue) {
+            try {
+                const displayValue = getDisplayValue(value, column)
+                return displayValue != null ? String(displayValue) : '-'
+            } catch (error) {
+                console.warn('Error in getDisplayValue function:', error)
+                return value != null ? String(value) : '-'
+            }
+        }
+        return value != null ? String(value) : '-'
+    }
+
+    const handleDropdownClick = (
+        column: ColumnDefinition<Record<string, unknown>>,
+        value: DropdownColumnProps
+    ) => {
+        setSelectedDropdownColumn({ column, value })
+        setNestedDrawerOpen(true)
+    }
+
+    const handleDropdownValueChange = (newValue: string) => {
+        if (selectedDropdownColumn && onFieldChange) {
+            const updatedDropdownValue = {
+                ...selectedDropdownColumn.value,
+                selectedValue: newValue,
+            }
+            onFieldChange(
+                selectedDropdownColumn.column.field,
+                updatedDropdownValue
+            )
+        }
+    }
+
+    const renderDrawerRow = (
+        column: ColumnDefinition<Record<string, unknown>>
+    ) => {
+        const value = row[column.field]
+        const isDropdown = column.type === ColumnType.DROPDOWN
+        const dropdownValue = isDropdown ? (value as DropdownColumnProps) : null
+        const renderedValue = renderCellValue(column, value)
+
+        return (
+            <Block
+                key={String(column.field)}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                style={{
+                    minHeight: FOUNDATION_THEME.unit[32],
+                    cursor: isDropdown ? 'pointer' : 'default',
+                }}
+                onClick={
+                    isDropdown && dropdownValue
+                        ? () => handleDropdownClick(column, dropdownValue)
+                        : undefined
+                }
+            >
+                {/* Column Label */}
+                <PrimitiveText
+                    fontSize={FOUNDATION_THEME.font.size.body.md.fontSize}
+                    fontWeight={FOUNDATION_THEME.font.weight[400]}
+                    color={FOUNDATION_THEME.colors.gray[500]}
+                >
+                    {column.header}
+                </PrimitiveText>
+
+                <Block
+                    style={{
+                        flex: '1 1 auto',
+                        marginLeft: FOUNDATION_THEME.unit[16],
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        alignItems: 'center',
+                        gap: FOUNDATION_THEME.unit[8],
+                    }}
+                >
+                    {typeof renderedValue === 'string' ||
+                    typeof renderedValue === 'number' ? (
+                        <PrimitiveText
+                            fontSize={
+                                FOUNDATION_THEME.font.size.body.md.fontSize
+                            }
+                            fontWeight={FOUNDATION_THEME.font.weight[500]}
+                            color={FOUNDATION_THEME.colors.gray[700]}
+                            style={{
+                                wordBreak: 'break-word',
+                                textAlign: 'right',
+                            }}
+                        >
+                            {renderedValue}
+                        </PrimitiveText>
+                    ) : (
+                        renderedValue
+                    )}
+
+                    {isDropdown && (
+                        <ChevronRight
+                            size={16}
+                            color={FOUNDATION_THEME.colors.gray[400]}
+                        />
+                    )}
+                </Block>
+            </Block>
+        )
+    }
+
+    return (
+        <>
+            <Drawer
+                open={isOpen}
+                onOpenChange={onClose}
+                direction="bottom"
+                modal={true}
+                dismissible={true}
+                showHandle={true}
+            >
+                <DrawerPortal>
+                    <DrawerOverlay />
+                    <DrawerContent contentDriven={true}>
+                        <DrawerTitle>
+                            <Block
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
+                                padding={`${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[20]}`}
+                            >
+                                <PrimitiveText
+                                    fontSize={
+                                        FOUNDATION_THEME.font.size.heading.md
+                                            .fontSize
+                                    }
+                                    fontWeight={
+                                        FOUNDATION_THEME.font.weight[600]
+                                    }
+                                    color={FOUNDATION_THEME.colors.gray[900]}
+                                >
+                                    Insights
+                                </PrimitiveText>
+                            </Block>
+                        </DrawerTitle>
+
+                        <DrawerBody noPadding>
+                            <Block
+                                display="flex"
+                                flexDirection="column"
+                                gap={FOUNDATION_THEME.unit[16]}
+                                padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[20]} ${FOUNDATION_THEME.unit[16]} ${FOUNDATION_THEME.unit[20]}`}
+                            >
+                                {overflowColumns.map(renderDrawerRow)}
+
+                                {/* Row Actions Footer - Mobile only shows slot1 and slot2 (no edit actions) */}
+                                {rowActions &&
+                                    (rowActions.slot1 || rowActions.slot2) && (
+                                        <Block
+                                            display="flex"
+                                            gap={FOUNDATION_THEME.unit[12]}
+                                            justifyContent="center"
+                                            paddingTop={
+                                                FOUNDATION_THEME.unit[20]
+                                            }
+                                            marginTop={
+                                                FOUNDATION_THEME.unit[16]
+                                            }
+                                            borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                                        >
+                                            {rowActions.slot1 &&
+                                                !(
+                                                    (typeof rowActions.slot1
+                                                        .hidden === 'function'
+                                                        ? rowActions.slot1.hidden(
+                                                              row,
+                                                              rowIndex
+                                                          )
+                                                        : rowActions.slot1
+                                                              .hidden) ?? false
+                                                ) && (
+                                                    <Button
+                                                        buttonType={
+                                                            rowActions.slot1
+                                                                .buttonType ??
+                                                            ButtonType.SECONDARY
+                                                        }
+                                                        size={
+                                                            rowActions.slot1
+                                                                .size ??
+                                                            ButtonSize.MEDIUM
+                                                        }
+                                                        subType={
+                                                            rowActions.slot1
+                                                                .subType ??
+                                                            ButtonSubType.DEFAULT
+                                                        }
+                                                        text={
+                                                            rowActions.slot1
+                                                                .text
+                                                        }
+                                                        leadingIcon={
+                                                            rowActions.slot1
+                                                                .leadingIcon
+                                                        }
+                                                        trailingIcon={
+                                                            rowActions.slot1
+                                                                .trailingIcon
+                                                        }
+                                                        disabled={
+                                                            typeof rowActions
+                                                                .slot1
+                                                                .disabled ===
+                                                            'function'
+                                                                ? rowActions.slot1.disabled(
+                                                                      row,
+                                                                      rowIndex
+                                                                  )
+                                                                : (rowActions
+                                                                      .slot1
+                                                                      .disabled ??
+                                                                  false)
+                                                        }
+                                                        onClick={() => {
+                                                            rowActions.slot1?.onClick(
+                                                                row,
+                                                                rowIndex
+                                                            )
+                                                            onClose() // Close drawer after action
+                                                        }}
+                                                        fullWidth
+                                                    />
+                                                )}
+
+                                            {rowActions.slot2 &&
+                                                !(
+                                                    (typeof rowActions.slot2
+                                                        .hidden === 'function'
+                                                        ? rowActions.slot2.hidden(
+                                                              row,
+                                                              rowIndex
+                                                          )
+                                                        : rowActions.slot2
+                                                              .hidden) ?? false
+                                                ) && (
+                                                    <Button
+                                                        buttonType={
+                                                            rowActions.slot2
+                                                                .buttonType ??
+                                                            ButtonType.SECONDARY
+                                                        }
+                                                        size={
+                                                            rowActions.slot2
+                                                                .size ??
+                                                            ButtonSize.MEDIUM
+                                                        }
+                                                        subType={
+                                                            rowActions.slot2
+                                                                .subType ??
+                                                            ButtonSubType.DEFAULT
+                                                        }
+                                                        text={
+                                                            rowActions.slot2
+                                                                .text
+                                                        }
+                                                        leadingIcon={
+                                                            rowActions.slot2
+                                                                .leadingIcon
+                                                        }
+                                                        trailingIcon={
+                                                            rowActions.slot2
+                                                                .trailingIcon
+                                                        }
+                                                        disabled={
+                                                            typeof rowActions
+                                                                .slot2
+                                                                .disabled ===
+                                                            'function'
+                                                                ? rowActions.slot2.disabled(
+                                                                      row,
+                                                                      rowIndex
+                                                                  )
+                                                                : (rowActions
+                                                                      .slot2
+                                                                      .disabled ??
+                                                                  false)
+                                                        }
+                                                        onClick={() => {
+                                                            rowActions.slot2?.onClick(
+                                                                row,
+                                                                rowIndex
+                                                            )
+                                                            onClose() // Close drawer after action
+                                                        }}
+                                                        fullWidth
+                                                    />
+                                                )}
+                                        </Block>
+                                    )}
+                            </Block>
+                        </DrawerBody>
+                    </DrawerContent>
+                </DrawerPortal>
+            </Drawer>
+
+            {selectedDropdownColumn && (
+                <NestedSingleSelectDrawer
+                    open={nestedDrawerOpen}
+                    onOpenChange={setNestedDrawerOpen}
+                    heading={selectedDropdownColumn.column.header}
+                    description={`Select a ${selectedDropdownColumn.column.header.toLowerCase()}`}
+                    items={[
+                        {
+                            items: selectedDropdownColumn.value.options.map(
+                                (option) => ({
+                                    value: String(option.value),
+                                    label: option.label,
+                                    slot1: option.icon,
+                                    disabled: false,
+                                })
+                            ),
+                        },
+                    ]}
+                    selectedValue={String(
+                        selectedDropdownColumn.value.selectedValue
+                    )}
+                    onValueChange={handleDropdownValueChange}
+                    onConfirm={() => {
+                        setNestedDrawerOpen(false)
+                        setSelectedDropdownColumn(null)
+                    }}
+                    onCancel={() => {
+                        setNestedDrawerOpen(false)
+                        setSelectedDropdownColumn(null)
+                    }}
+                    enableSearch={true}
+                    searchPlaceholder="Search options..."
+                />
+            )}
+        </>
+    )
+}
+
+export default MobileColumnDrawer
