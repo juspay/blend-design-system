@@ -68,6 +68,7 @@ import DateRangePickerDemo from './DateRangePickerDemo'
 import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
 import PopoverDemo from './PopoverDemo'
+import MultiValueInputDemo from './MultiValueInputDemo'
 import {
     Avatar,
     AvatarShape,
@@ -120,6 +121,7 @@ const SidebarDemo = () => {
         | 'multiSelect'
         | 'dropdownInput'
         | 'dataRangePicker'
+        | 'multiValueInput'
     >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -225,6 +227,8 @@ const SidebarDemo = () => {
                 return <ChartsDemo />
             case 'popover':
                 return <PopoverDemo />
+            case 'multiValueInput':
+                return <MultiValueInputDemo />
             default:
                 return <div>No component selected</div>
         }
@@ -321,6 +325,13 @@ const SidebarDemo = () => {
                         <FileText style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('textArea'),
+                },
+                {
+                    label: 'Multi Value Input',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('multiValueInput'),
                 },
             ],
         },
