@@ -17,10 +17,6 @@ export const ConnectWithUs = () => {
         setIsModalOpen(false)
     }
 
-    useEffect(() => {
-        console.log('Is modal open state: ', isModalOpen)
-    }, [isModalOpen])
-
     return (
         <div className="py-50 flex flex-col items-center gap-10 relative overflow-hidden w-full max-w-[100vw]">
             <div className="flex items-end">
@@ -29,7 +25,7 @@ export const ConnectWithUs = () => {
                     We're listening--tell us what you think.
                 </p>
             </div>
-            <div>
+            <div className="w-full flex items-center justify-center">
                 <InfoBtn
                     text="Connect with us"
                     onClick={handleOpenModal}

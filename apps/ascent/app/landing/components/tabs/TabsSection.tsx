@@ -92,7 +92,7 @@ export const TabsSection = () => {
         }
     }
     return (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center w-full">
             <div className="sticky top-0 z-10  rounded-[83px] pt-5">
                 <Tabs
                     selectedTab={selectedTab}
@@ -103,11 +103,11 @@ export const TabsSection = () => {
             <div ref={tokenizerRef}>
                 <TokenizerComp />
             </div>
-            <div ref={componentsRef}>
+            <div ref={componentsRef} className="w-full">
                 <Components />
             </div>
 
-            <Separator className="my-50" />
+            <Separator className="mb-50" />
 
             <div ref={documentationRef}>
                 <Documentation />

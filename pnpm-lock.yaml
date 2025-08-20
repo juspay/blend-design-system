@@ -6,6 +6,13 @@ settings:
 
 importers:
     .:
+        dependencies:
+            react-hook-form:
+                specifier: ^7.62.0
+                version: 7.62.0(react@19.1.0)
+            react-phone-input-2:
+                specifier: ^2.15.1
+                version: 2.15.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
         devDependencies:
             '@changesets/cli':
                 specifier: ^2.27.1
@@ -5629,6 +5636,12 @@ packages:
             }
         engines: { node: '>=8' }
 
+    classnames@2.5.1:
+        resolution:
+            {
+                integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==,
+            }
+
     cli-boxes@2.2.1:
         resolution:
             {
@@ -8329,6 +8342,12 @@ packages:
                 integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==,
             }
 
+    lodash.debounce@4.0.8:
+        resolution:
+            {
+                integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==,
+            }
+
     lodash.includes@4.3.0:
         resolution:
             {
@@ -8371,6 +8390,12 @@ packages:
                 integrity: sha512-N8XRTIMMqqDgSy4VLKPnJ/+hpGZN+PHQiJnSenYqPaVV/NCqEogTnAdZLQiGKhxX+JCs8waWq2t1XHWKOmlY8g==,
             }
 
+    lodash.memoize@4.1.2:
+        resolution:
+            {
+                integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==,
+            }
+
     lodash.merge@4.6.2:
         resolution:
             {
@@ -8389,6 +8414,12 @@ packages:
                 integrity: sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg==,
             }
 
+    lodash.reduce@4.6.0:
+        resolution:
+            {
+                integrity: sha512-6raRe2vxCYBhpBu+B+TtNGUzah+hQjVdu3E17wfusjyrXBka2nBS8OH/gjVZ5PvHOhWmIZTYri09Z6n/QfnNMw==,
+            }
+
     lodash.snakecase@4.1.1:
         resolution:
             {
@@ -8399,6 +8430,12 @@ packages:
         resolution:
             {
                 integrity: sha512-+WKqsK294HMSc2jEbNgpHpd0JfIBhp7rEV4aqXWqFr6AlXov+SlcgB1Fv01y2kGe3Gc8nMW7VA0SrGuSkRfIEg==,
+            }
+
+    lodash.startswith@4.2.1:
+        resolution:
+            {
+                integrity: sha512-XClYR1h4/fJ7H+mmCKppbiBmljN/nGs73iq2SjCT9SF4CBPoUHzLvWmH1GtZMhMBZSiRkHXfeA2RY1eIlJ75ww==,
             }
 
     lodash.uniq@4.5.0:
@@ -9871,6 +9908,15 @@ packages:
         peerDependencies:
             react: '>=16.13.1'
 
+    react-hook-form@7.62.0:
+        resolution:
+            {
+                integrity: sha512-7KWFejc98xqG/F4bAxpL41NB3o1nnvQO1RWZT3TqRZYL8RryQETGfEdVnJN2fy1crCiBLLjkRBVK05j24FxJGA==,
+            }
+        engines: { node: '>=18.0.0' }
+        peerDependencies:
+            react: ^16.8.0 || ^17 || ^18 || ^19
+
     react-is@16.13.1:
         resolution:
             {
@@ -9888,6 +9934,15 @@ packages:
             {
                 integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==,
             }
+
+    react-phone-input-2@2.15.1:
+        resolution:
+            {
+                integrity: sha512-W03abwhXcwUoq+vUFvC6ch2+LJYMN8qSOiO889UH6S7SyMCQvox/LF3QWt+cZagZrRdi5z2ON3omnjoCUmlaYw==,
+            }
+        peerDependencies:
+            react: ^16.12.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
+            react-dom: ^16.12.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
 
     react-refresh@0.17.0:
         resolution:
@@ -15517,6 +15572,8 @@ snapshots:
 
     ci-info@4.3.0: {}
 
+    classnames@2.5.1: {}
+
     cli-boxes@2.2.1: {}
 
     cli-cursor@3.1.0:
@@ -17463,6 +17520,8 @@ snapshots:
 
     lodash.clonedeep@4.5.0: {}
 
+    lodash.debounce@4.0.8: {}
+
     lodash.includes@4.3.0: {}
 
     lodash.isboolean@3.0.3: {}
@@ -17477,15 +17536,21 @@ snapshots:
 
     lodash.kebabcase@4.1.1: {}
 
+    lodash.memoize@4.1.2: {}
+
     lodash.merge@4.6.2: {}
 
     lodash.mergewith@4.6.2: {}
 
     lodash.once@4.1.1: {}
 
+    lodash.reduce@4.6.0: {}
+
     lodash.snakecase@4.1.1: {}
 
     lodash.startcase@4.4.0: {}
+
+    lodash.startswith@4.2.1: {}
 
     lodash.uniq@4.5.0: {}
 
@@ -18604,11 +18669,26 @@ snapshots:
             '@babel/runtime': 7.27.6
             react: 19.1.0
 
+    react-hook-form@7.62.0(react@19.1.0):
+        dependencies:
+            react: 19.1.0
+
     react-is@16.13.1: {}
 
     react-is@17.0.2: {}
 
     react-is@18.3.1: {}
+
+    react-phone-input-2@2.15.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+        dependencies:
+            classnames: 2.5.1
+            lodash.debounce: 4.0.8
+            lodash.memoize: 4.1.2
+            lodash.reduce: 4.6.0
+            lodash.startswith: 4.2.1
+            prop-types: 15.8.1
+            react: 19.1.0
+            react-dom: 19.1.0(react@19.1.0)
 
     react-refresh@0.17.0: {}
 
