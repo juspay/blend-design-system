@@ -6,7 +6,7 @@ import {
     ButtonSize,
 } from '@juspay/blend-design-system'
 import React, { useState } from 'react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const PopoverPreview = () => {
     const [, setOpen] = useState(false)

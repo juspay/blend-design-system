@@ -4,16 +4,8 @@ import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import { TextInputSize } from '../TextInput/types'
-import { FOUNDATION_THEME } from '../../../tokens'
-import { ChevronDown } from 'lucide-react'
-import SelectMenu from '../../Select/SelectMenu'
-import type {
-    SelectMenuGroupType,
-    SelectMenuItemType,
-} from '../../Select/types'
+
 import { SelectMenuAlignment } from '../../Select/types'
-import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
-import Text from '../../Text/Text'
 import type { DropdownInputProps } from './types'
 import type { DropdownInputTokensType } from './dropdownInput.tokens'
 import { toPixels } from '../../../global-utils/GlobalUtils'
@@ -21,27 +13,11 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
-
-const map = function getValueLabelMap(
-    groups: SelectMenuGroupType[]
-): Record<string, string> {
-    const map: Record<string, string> = {}
-
-    function traverse(items: SelectMenuItemType[]) {
-        for (const item of items) {
-            map[item.value] = item.label
-            if (item.subMenu) {
-                traverse(item.subMenu)
-            }
-        }
-    }
-
-    for (const group of groups) {
-        traverse(group.items)
-    }
-
-    return map
-}
+import {
+    SelectMenuSize,
+    SelectMenuVariant,
+    SingleSelect,
+} from '../../SingleSelect'
 
 const DropdownInput = ({
     label,
@@ -86,7 +62,6 @@ const DropdownInput = ({
 
     const slotRef = useRef<HTMLDivElement>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
-    const valueLabelMap = map(dropDownItems)
 
     const paddingX = toPixels(dropdownInputTokens.input.paddingX[size])
     const paddingY =
@@ -237,14 +212,19 @@ const DropdownInput = ({
                     width={'fit-content'}
                     contentCentered
                 >
-                    <SelectMenu
+                    <SingleSelect
+                        inline={true}
+                        disabled={disabled}
+                        variant={SelectMenuVariant.NO_CONTAINER}
+                        size={SelectMenuSize.SMALL}
+                        placeholder={placeholder || ''}
                         maxHeight={maxDropdownHeight}
                         items={dropDownItems}
                         enableSearch={false}
                         alignment={SelectMenuAlignment.END}
                         alignOffset={-(paddingX + 2)}
                         sideOffset={paddingX}
-                        selected={dropDownValue}
+                        selected={dropDownValue || ''}
                         onSelect={(value) => {
                             const selectedValue = Array.isArray(value)
                                 ? value[0]
@@ -253,51 +233,14 @@ const DropdownInput = ({
                                 onDropDownChange?.(selectedValue)
                             }
                         }}
-                        onOpenChange={(open) => {
-                            if (open) {
-                                onDropdownOpen?.()
-                            } else {
-                                onDropdownClose?.()
-                            }
+                        name={dropdownName}
+                        onBlur={() => {
+                            onDropdownClose?.()
                         }}
-                        trigger={
-                            <PrimitiveButton
-                                disabled={disabled}
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
-                                gap={4}
-                                backgroundColor={'transparent'}
-                                name={dropdownName}
-                            >
-                                {dropDownValue ? (
-                                    <Text
-                                        variant="body.md"
-                                        fontWeight={500}
-                                        color={
-                                            FOUNDATION_THEME.colors.gray[700]
-                                        }
-                                    >
-                                        {valueLabelMap[dropDownValue as string]}
-                                    </Text>
-                                ) : (
-                                    <Text
-                                        variant="body.md"
-                                        fontWeight={500}
-                                        color={
-                                            FOUNDATION_THEME.colors.gray[600]
-                                        }
-                                    >
-                                        {placeholder}
-                                    </Text>
-                                )}
-                                <ChevronDown
-                                    size={12}
-                                    color={FOUNDATION_THEME.colors.gray[500]}
-                                />
-                            </PrimitiveButton>
-                        }
-                    ></SelectMenu>
+                        onFocus={() => {
+                            onDropdownOpen?.()
+                        }}
+                    />
                 </Block>
             </Block>
             <InputFooter

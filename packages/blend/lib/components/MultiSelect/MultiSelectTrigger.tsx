@@ -69,8 +69,8 @@ const MultiSelectTrigger = ({
         <Block
             display="flex"
             {...((!inline || variant === MultiSelectVariant.CONTAINER) && {
-                height: toPixels(multiSelectTokens.trigger.height),
-                maxHeight: toPixels(multiSelectTokens.trigger.height),
+                height: toPixels(multiSelectTokens.trigger.height[size]),
+                maxHeight: toPixels(multiSelectTokens.trigger.height[size]),
             })}
         >
             <Block
@@ -103,15 +103,15 @@ const MultiSelectTrigger = ({
                     }
                     {...((!inline ||
                         variant === MultiSelectVariant.CONTAINER) && {
-                        height: multiSelectTokens.trigger.height,
+                        height: multiSelectTokens.trigger.height[size],
 
-                        maxHeight: multiSelectTokens.trigger.height,
+                        maxHeight: multiSelectTokens.trigger.height[size],
 
                         paddingX: multiSelectTokens.trigger.paddingX[size],
 
                         paddingY: paddingY,
                         backgroundColor:
-                            multiSelectTokens.trigger.backgroundColor.container[
+                            multiSelectTokens.trigger.backgroundColor[variant][
                                 error ? 'error' : open ? 'open' : 'closed'
                             ],
 
@@ -121,8 +121,9 @@ const MultiSelectTrigger = ({
                                     error ? 'error' : 'hover'
                                 ],
                             backgroundColor:
-                                multiSelectTokens.trigger.backgroundColor
-                                    .container[error ? 'error' : 'hover'],
+                                multiSelectTokens.trigger.backgroundColor[
+                                    variant
+                                ][error ? 'error' : 'hover'],
                         },
                         _focus: {
                             outline:
@@ -130,8 +131,9 @@ const MultiSelectTrigger = ({
                                     error ? 'error' : 'focus'
                                 ],
                             backgroundColor:
-                                multiSelectTokens.trigger.backgroundColor
-                                    .container[error ? 'error' : 'focus'],
+                                multiSelectTokens.trigger.backgroundColor[
+                                    variant
+                                ][error ? 'error' : 'focus'],
                         },
                     })}
                 >

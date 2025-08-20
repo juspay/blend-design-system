@@ -1,5 +1,5 @@
 import path from 'path'
-import scanDirectory from './scanDirectory'
+import { scanDirectory } from '@/docs/utils'
 
 const getDirItems = (dirPath: string) => {
     const items = scanDirectory(path.join(process.cwd(), dirPath))

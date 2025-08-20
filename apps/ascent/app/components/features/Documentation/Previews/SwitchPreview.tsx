@@ -1,7 +1,7 @@
 'use client'
 import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system'
 import React, { useState } from 'react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const SwitchPreview = () => {
     const [notifications, setNotifications] = useState(false)

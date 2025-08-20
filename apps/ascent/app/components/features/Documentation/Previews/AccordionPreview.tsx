@@ -6,7 +6,7 @@ import {
     AccordionChevronPosition,
 } from '@juspay/blend-design-system'
 import React from 'react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const AccordionPreview = () => {
     const tsCode = `import { Accordion, AccordionItem, AccordionType, AccordionChevronPosition } from "@juspay/blend-design-system";
