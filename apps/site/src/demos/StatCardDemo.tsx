@@ -43,23 +43,23 @@ const StatCardDemo = () => {
 
     // Sample chart data
     const sampleLineData = [
-        { value: 100, label: 'Jan', date: '2024-01' },
-        { value: 120, label: 'Feb', date: '2024-02' },
-        { value: 110, label: 'Mar', date: '2024-03' },
-        { value: 140, label: 'Apr', date: '2024-04' },
-        { value: 130, label: 'May', date: '2024-05' },
-        { value: 160, label: 'Jun', date: '2024-06' },
-        { value: 150, label: 'Jul', date: '2024-07' },
+        { value: 100, name: 'JAN' },
+        { value: 120, name: 'FEB' },
+        { value: 110, name: 'MAR' },
+        { value: 140, name: 'APR' },
+        { value: 130, name: 'MAY' },
+        { value: 160, name: 'JUN' },
+        { value: 150, name: 'JUL' },
     ]
 
     const sampleBarData = [
-        { value: 80, label: 'Mon', date: '2024-01-01' },
-        { value: 95, label: 'Tue', date: '2024-01-02' },
-        { value: 70, label: 'Wed', date: '2024-01-03' },
-        { value: 110, label: 'Thu', date: '2024-01-04' },
-        { value: 85, label: 'Fri', date: '2024-01-05' },
-        { value: 120, label: 'Sat', date: '2024-01-06' },
-        { value: 90, label: 'Sun', date: '2024-01-07' },
+        { value: 80, name: 'MON' },
+        { value: 95, name: 'TUE' },
+        { value: 70, name: 'WED' },
+        { value: 110, name: 'THU' },
+        { value: 85, name: 'FRI' },
+        { value: 120, name: 'SAT' },
+        { value: 90, name: 'SUN' },
     ]
 
     // Options for selects
@@ -193,66 +193,70 @@ const StatCardDemo = () => {
                             onChange={() => setShowHelpIcon(!showHelpIcon)}
                         />
                     </div>
-
-                    <StatCard
-                        dropdownProps={{
-                            label: 'Currency',
-                            placeholder: 'Currency',
-                            items: [
-                                {
-                                    items: [
-                                        { label: 'USD', value: 'USD' },
-                                        { label: 'EUR', value: 'EUR' },
-                                        { label: 'GBP', value: 'GBP' },
-                                        { label: 'INR', value: 'INR' },
-                                    ],
-                                },
-                            ],
-                            selected: dropdownValue,
-                            onSelect: handleDropdownSelect,
-                        }}
-                        title={playgroundTitle}
-                        value={playgroundValue}
-                        valueTooltip={<code>This is a value tooltip</code>}
-                        subtitle={playgroundSubtitle}
-                        variant={playgroundVariant}
-                        change={
-                            showChange
-                                ? {
-                                      value: changeValue,
-                                      valueType: changeType,
-                                      tooltip: (
-                                          <code>This is a delta tooltip</code>
-                                      ),
-                                  }
-                                : undefined
-                        }
-                        titleIcon={
-                            showTitleIcon
-                                ? getIconForVariant(playgroundVariant)
-                                : undefined
-                        }
-                        actionIcon={
-                            showActionIcon ? getActionIcon() : undefined
-                        }
-                        helpIconText={
-                            showHelpIcon
-                                ? 'This metric shows the total revenue generated over the selected period.'
-                                : undefined
-                        }
-                        chartData={
-                            playgroundVariant === StatCardVariant.LINE
-                                ? sampleLineData
-                                : playgroundVariant === StatCardVariant.BAR
-                                  ? sampleBarData
-                                  : undefined
-                        }
-                        progressValue={
-                            playgroundVariant === StatCardVariant.PROGRESS_BAR
-                                ? progressValue
-                                : undefined
-                        }
-                    />
+                    <div className="w-[350px]">
+                        <StatCard
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
+                            title={playgroundTitle}
+                            value={playgroundValue}
+                            valueTooltip={<code>This is a value tooltip</code>}
+                            subtitle={playgroundSubtitle}
+                            variant={playgroundVariant}
+                            change={
+                                showChange
+                                    ? {
+                                          value: changeValue,
+                                          valueType: changeType,
+                                          tooltip: (
+                                              <code>
+                                                  This is a delta tooltip
+                                              </code>
+                                          ),
+                                      }
+                                    : undefined
+                            }
+                            titleIcon={
+                                showTitleIcon
+                                    ? getIconForVariant(playgroundVariant)
+                                    : undefined
+                            }
+                            actionIcon={
+                                showActionIcon ? getActionIcon() : undefined
+                            }
+                            helpIconText={
+                                showHelpIcon
+                                    ? 'This metric shows the total revenue generated over the selected period.'
+                                    : undefined
+                            }
+                            chartData={
+                                playgroundVariant === StatCardVariant.LINE
+                                    ? sampleLineData
+                                    : playgroundVariant === StatCardVariant.BAR
+                                      ? sampleBarData
+                                      : undefined
+                            }
+                            progressValue={
+                                playgroundVariant ===
+                                StatCardVariant.PROGRESS_BAR
+                                    ? progressValue
+                                    : undefined
+                            }
+                        />
+                    </div>
                 </div>
             </div>
 
