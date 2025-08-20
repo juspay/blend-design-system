@@ -59,6 +59,8 @@ const MultiSelect = ({
     showActionButtons = false,
     primaryAction,
     secondaryAction,
+    showItemDividers = false,
+    showHeaderBorder = false,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -105,6 +107,8 @@ const MultiSelect = ({
                 hintText={hintText}
                 placeholder={placeholder}
                 size={size}
+                enableSearch={enableSearch}
+                searchPlaceholder={searchPlaceholder}
                 enableSelectAll={enableSelectAll}
                 selectAllText={selectAllText}
                 customTrigger={customTrigger}
@@ -115,6 +119,8 @@ const MultiSelect = ({
                 showActionButtons={showActionButtons}
                 primaryAction={primaryAction}
                 secondaryAction={secondaryAction}
+                showItemDividers={showItemDividers}
+                showHeaderBorder={showHeaderBorder}
             />
         )
     }

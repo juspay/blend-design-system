@@ -19,7 +19,7 @@ import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
-import { map } from './utils'
+import { map, filterMenuGroups } from './utils'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { MultiSelectTokensType } from './multiSelect.tokens'
 import type {
@@ -36,6 +36,8 @@ import Button from '../Button/Button'
 import { ButtonType, ButtonSize } from '../Button/types'
 import { Checkbox } from '../Checkbox'
 import { CheckboxSize } from '../Checkbox/types'
+import { TextInput } from '../Inputs/TextInput'
+import { TextInputSize } from '../Inputs/TextInput/types'
 
 type MobileMultiSelectProps = MultiSelectProps
 
@@ -231,6 +233,8 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     hintText,
     placeholder,
     size = MultiSelectMenuSize.MEDIUM,
+    enableSearch = false,
+    searchPlaceholder = 'Search options...',
     enableSelectAll = false,
     selectAllText = 'Select All',
     customTrigger,
@@ -241,13 +245,18 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     showActionButtons = false,
     primaryAction,
     secondaryAction,
+    showItemDividers = false,
+    showHeaderBorder = false,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
     const [drawerOpen, setDrawerOpen] = useState(false)
+    const [searchText, setSearchText] = useState('')
     const valueLabelMap = map(items)
+
+    const filteredItems = filterMenuGroups(items, searchText)
 
     return (
         <Block width="100%" display="flex" flexDirection="column" gap={8}>
@@ -309,6 +318,18 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                         : 'space-between'
                                 }
                                 alignItems="center"
+                                paddingX={
+                                    multiSelectTokens.drawer.header.paddingX
+                                }
+                                paddingBottom={
+                                    multiSelectTokens.drawer.header
+                                        .paddingBottom
+                                }
+                                {...(showHeaderBorder && {
+                                    borderBottom:
+                                        multiSelectTokens.drawer.header
+                                            .borderBottom,
+                                })}
                             >
                                 <DrawerTitle>
                                     {label || 'Select Options'}
@@ -321,20 +342,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                             justifyContent="center"
                                             width={FOUNDATION_THEME.unit[32]}
                                             height={FOUNDATION_THEME.unit[32]}
-                                            borderRadius={
-                                                FOUNDATION_THEME.unit[6]
-                                            }
-                                            backgroundColor={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[100]
-                                            }
-                                            border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
                                             cursor="pointer"
-                                            _hover={{
-                                                backgroundColor:
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[200],
-                                            }}
                                         >
                                             <X
                                                 size={16}
@@ -363,16 +371,48 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                     overflow="auto"
                                     flexGrow={1}
                                 >
+                                    {enableSearch && (
+                                        <Block
+                                            paddingX={
+                                                multiSelectTokens.drawer.search
+                                                    .paddingX
+                                            }
+                                            marginTop={
+                                                multiSelectTokens.drawer.search
+                                                    .marginTop
+                                            }
+                                            marginBottom={
+                                                multiSelectTokens.drawer.search
+                                                    .marginBottom
+                                            }
+                                            backgroundColor={
+                                                FOUNDATION_THEME.colors.gray[0]
+                                            }
+                                            zIndex={1000}
+                                        >
+                                            <TextInput
+                                                size={TextInputSize.MEDIUM}
+                                                placeholder={searchPlaceholder}
+                                                value={searchText}
+                                                onChange={(e) =>
+                                                    setSearchText(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </Block>
+                                    )}
+
                                     {enableSelectAll && (
                                         <SelectAllItem
-                                            items={items}
+                                            items={filteredItems}
                                             selectedValues={selectedValues}
                                             onChange={onChange}
                                             selectAllText={selectAllText}
                                         />
                                     )}
 
-                                    {items.map((group, groupId) => (
+                                    {filteredItems.map((group, groupId) => (
                                         <React.Fragment key={groupId}>
                                             {group.groupLabel && (
                                                 <Block
@@ -399,19 +439,62 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                         selectedValues.includes(
                                                             item.value
                                                         )
+
+                                                    const isLastItemOverall =
+                                                        (() => {
+                                                            const isLastGroup =
+                                                                groupId ===
+                                                                filteredItems.length -
+                                                                    1
+                                                            const isLastItemInGroup =
+                                                                itemIndex ===
+                                                                group.items
+                                                                    .length -
+                                                                    1
+                                                            return (
+                                                                isLastGroup &&
+                                                                isLastItemInGroup
+                                                            )
+                                                        })()
+
+                                                    const shouldShowDivider =
+                                                        showItemDividers &&
+                                                        !isLastItemOverall
+
                                                     return (
-                                                        <MultiSelectItem
+                                                        <React.Fragment
                                                             key={`${groupId}-${itemIndex}`}
-                                                            item={item}
-                                                            isSelected={
-                                                                isSelected
-                                                            }
-                                                            onChange={onChange}
-                                                        />
+                                                        >
+                                                            <MultiSelectItem
+                                                                item={item}
+                                                                isSelected={
+                                                                    isSelected
+                                                                }
+                                                                onChange={
+                                                                    onChange
+                                                                }
+                                                            />
+                                                            {shouldShowDivider && (
+                                                                <Block
+                                                                    height={1}
+                                                                    flexShrink={
+                                                                        0
+                                                                    }
+                                                                    width="auto"
+                                                                    display="block"
+                                                                    style={{
+                                                                        borderTop: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                                                                        minHeight:
+                                                                            '1px',
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        </React.Fragment>
                                                     )
                                                 }
                                             )}
-                                            {groupId !== items.length - 1 &&
+                                            {groupId !==
+                                                filteredItems.length - 1 &&
                                                 group.showSeparator && (
                                                     <Block
                                                         height={1}

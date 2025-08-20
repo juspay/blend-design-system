@@ -96,6 +96,21 @@ export type MultiSelectTokensType = {
             margin: CSSObject['margin']
         }
     }
+    drawer: {
+        header: {
+            paddingX: CSSObject['padding']
+            paddingBottom: CSSObject['padding']
+            borderBottom: CSSObject['borderBottom']
+        }
+        search: {
+            paddingX: CSSObject['padding']
+            marginTop: CSSObject['margin']
+            marginBottom: CSSObject['margin']
+        }
+        content: {
+            gap: CSSObject['gap']
+        }
+    }
 }
 
 export type ResponsiveMultiSelectTokens = {
@@ -235,6 +250,21 @@ export const getMultiSelectTokens = (
                     margin: `${foundationToken.unit[6]} 0`,
                 },
             },
+            drawer: {
+                header: {
+                    paddingX: foundationToken.unit[20],
+                    paddingBottom: foundationToken.unit[12],
+                    borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                },
+                search: {
+                    paddingX: foundationToken.unit[20],
+                    marginTop: foundationToken.unit[8],
+                    marginBottom: foundationToken.unit[4],
+                },
+                content: {
+                    gap: foundationToken.unit[4],
+                },
+            },
         },
         lg: {
             trigger: {
@@ -363,6 +393,21 @@ export const getMultiSelectTokens = (
                     color: foundationToken.colors.gray[200],
                     height: 1,
                     margin: `${foundationToken.unit[6]} 0`,
+                },
+            },
+            drawer: {
+                header: {
+                    paddingX: foundationToken.unit[20],
+                    paddingBottom: foundationToken.unit[12],
+                    borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                },
+                search: {
+                    paddingX: foundationToken.unit[20],
+                    marginTop: foundationToken.unit[8],
+                    marginBottom: foundationToken.unit[4],
+                },
+                content: {
+                    gap: foundationToken.unit[4],
                 },
             },
         },
