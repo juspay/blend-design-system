@@ -23,6 +23,16 @@ import { getPopoverAlignment, getFrozenColumnStyles } from './utils'
 import { ColumnFilter } from './FilterComponents'
 import { ColumnType } from '../types'
 import { getColumnTypeConfig } from '../columnTypes'
+import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
+import {
+    Drawer,
+    DrawerTrigger,
+    DrawerPortal,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerBody,
+} from '../../Drawer'
 
 const FilterIcon = styled(ChevronsUpDown)`
     cursor: pointer;
@@ -90,6 +100,8 @@ const TableHeader = forwardRef<
         >({})
 
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
+        const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+        const isMobile = breakPointLabel === 'sm'
 
         const sortHandlers = createSortHandlers(sortState, setSortState, onSort)
         const filterHandlers = createFilterHandlers(setFilterState)
@@ -164,7 +176,6 @@ const TableHeader = forwardRef<
             >
                 <tr
                     style={{
-                        height: tableToken.dataTable.table.header.height,
                         ...tableToken.dataTable.table.header.row,
                     }}
                 >
@@ -443,56 +454,138 @@ const TableHeader = forwardRef<
                                             _focus={{ outline: 'none' }}
                                             _focusVisible={{ outline: 'none' }}
                                         >
-                                            <Popover
-                                                trigger={
-                                                    <FilterIcon size={16} />
-                                                }
-                                                maxWidth={220}
-                                                minWidth={220}
-                                                zIndex={1000}
-                                                side="bottom"
-                                                align={getPopoverAlignment(
-                                                    index,
-                                                    localColumns.length
-                                                )}
-                                                sideOffset={20}
-                                                open={
-                                                    openPopovers[
-                                                        String(column.field)
-                                                    ] || false
-                                                }
-                                                onOpenChange={(open) => {
-                                                    setOpenPopovers((prev) => ({
-                                                        ...prev,
-                                                        [String(column.field)]:
-                                                            open,
-                                                    }))
-                                                }}
-                                            >
-                                                <ColumnFilter
-                                                    column={column}
-                                                    data={data}
-                                                    tableToken={tableToken}
-                                                    sortHandlers={sortHandlers}
-                                                    filterHandlers={
-                                                        filterHandlers
+                                            {isMobile ? (
+                                                // Mobile: Use Drawer wrapper
+                                                <Drawer
+                                                    open={
+                                                        openPopovers[
+                                                            String(column.field)
+                                                        ] || false
                                                     }
-                                                    filterState={filterState}
-                                                    onColumnFilter={
-                                                        onColumnFilter
-                                                    }
-                                                    onPopoverClose={() => {
+                                                    onOpenChange={(open) => {
                                                         setOpenPopovers(
                                                             (prev) => ({
                                                                 ...prev,
                                                                 [String(
                                                                     column.field
-                                                                )]: false,
+                                                                )]: open,
                                                             })
                                                         )
                                                     }}
-                                                />
-                                            </Popover>
+                                                    direction="bottom"
+                                                    modal={true}
+                                                    dismissible={true}
+                                                    showHandle={true}
+                                                >
+                                                    <DrawerTrigger>
+                                                        <FilterIcon size={16} />
+                                                    </DrawerTrigger>
+                                                    <DrawerPortal>
+                                                        <DrawerOverlay />
+                                                        <DrawerContent
+                                                            contentDriven={true}
+                                                        >
+                                                            <DrawerBody
+                                                                noPadding
+                                                            >
+                                                                <ColumnFilter
+                                                                    column={
+                                                                        column
+                                                                    }
+                                                                    data={data}
+                                                                    tableToken={
+                                                                        tableToken
+                                                                    }
+                                                                    sortHandlers={
+                                                                        sortHandlers
+                                                                    }
+                                                                    filterHandlers={
+                                                                        filterHandlers
+                                                                    }
+                                                                    filterState={
+                                                                        filterState
+                                                                    }
+                                                                    onColumnFilter={
+                                                                        onColumnFilter
+                                                                    }
+                                                                    onPopoverClose={() => {
+                                                                        setOpenPopovers(
+                                                                            (
+                                                                                prev
+                                                                            ) => ({
+                                                                                ...prev,
+                                                                                [String(
+                                                                                    column.field
+                                                                                )]:
+                                                                                    false,
+                                                                            })
+                                                                        )
+                                                                    }}
+                                                                />
+                                                            </DrawerBody>
+                                                        </DrawerContent>
+                                                    </DrawerPortal>
+                                                </Drawer>
+                                            ) : (
+                                                // Desktop: Use Popover wrapper
+                                                <Popover
+                                                    trigger={
+                                                        <FilterIcon size={16} />
+                                                    }
+                                                    maxWidth={220}
+                                                    minWidth={220}
+                                                    zIndex={1000}
+                                                    side="bottom"
+                                                    align={getPopoverAlignment(
+                                                        index,
+                                                        localColumns.length
+                                                    )}
+                                                    sideOffset={20}
+                                                    open={
+                                                        openPopovers[
+                                                            String(column.field)
+                                                        ] || false
+                                                    }
+                                                    onOpenChange={(open) => {
+                                                        setOpenPopovers(
+                                                            (prev) => ({
+                                                                ...prev,
+                                                                [String(
+                                                                    column.field
+                                                                )]: open,
+                                                            })
+                                                        )
+                                                    }}
+                                                >
+                                                    <ColumnFilter
+                                                        column={column}
+                                                        data={data}
+                                                        tableToken={tableToken}
+                                                        sortHandlers={
+                                                            sortHandlers
+                                                        }
+                                                        filterHandlers={
+                                                            filterHandlers
+                                                        }
+                                                        filterState={
+                                                            filterState
+                                                        }
+                                                        onColumnFilter={
+                                                            onColumnFilter
+                                                        }
+                                                        onPopoverClose={() => {
+                                                            setOpenPopovers(
+                                                                (prev) => ({
+                                                                    ...prev,
+                                                                    [String(
+                                                                        column.field
+                                                                    )]: false,
+                                                                })
+                                                            )
+                                                        }}
+                                                    />
+                                                </Popover>
+                                            )}
                                         </Block>
                                     )}
                                 </Block>

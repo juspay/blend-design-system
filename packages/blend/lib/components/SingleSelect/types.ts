@@ -72,6 +72,7 @@ export type SingleSelectProps = {
     selected: string
     onSelect: (value: string) => void
     enableSearch?: boolean
+    searchPlaceholder?: string
     slot?: React.ReactNode
     disabled?: boolean
     name?: string

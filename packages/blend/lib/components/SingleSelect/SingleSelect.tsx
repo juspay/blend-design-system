@@ -60,6 +60,7 @@ const SingleSelect = ({
     selected,
     onSelect,
     enableSearch,
+    searchPlaceholder,
     slot,
     customTrigger,
     useDrawerOnMobile = true,
@@ -114,6 +115,8 @@ const SingleSelect = ({
                 disabled={disabled}
                 selected={selected}
                 onSelect={onSelect}
+                enableSearch={enableSearch}
+                searchPlaceholder={searchPlaceholder}
                 slot={slot}
                 customTrigger={customTrigger}
                 onBlur={onBlur}

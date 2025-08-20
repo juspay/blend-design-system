@@ -22,26 +22,6 @@ export const ColumnManager = <T extends Record<string, unknown>>({
     const mobileConfig = useMobileDataTable()
     const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
 
-    const toggleColumnVisibility = (field: keyof T) => {
-        const isCurrentlyVisible = visibleColumns.some(
-            (col) => col.field === field
-        )
-
-        if (isCurrentlyVisible) {
-            if (visibleColumns.length <= 1) return
-
-            const newVisibleColumns = visibleColumns.filter(
-                (col) => col.field !== field
-            )
-            onColumnChange(newVisibleColumns)
-        } else {
-            const columnToAdd = columns.find((col) => col.field === field)
-            if (columnToAdd) {
-                onColumnChange([...visibleColumns, columnToAdd])
-            }
-        }
-    }
-
     const managableColumns = columns.filter((col) => col.canHide !== false)
 
     const multiSelectItems: MultiSelectMenuGroupType[] = [
@@ -63,7 +43,24 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                 onColumnChange([visibleColumns[0]])
             }
         } else {
-            toggleColumnVisibility(value as keyof T)
+            const field = value as keyof T
+            const isCurrentlyVisible = visibleColumns.some(
+                (col) => col.field === field
+            )
+
+            if (isCurrentlyVisible) {
+                if (visibleColumns.length > 1) {
+                    const newVisibleColumns = visibleColumns.filter(
+                        (col) => col.field !== field
+                    )
+                    onColumnChange(newVisibleColumns)
+                }
+            } else {
+                const columnToAdd = columns.find((col) => col.field === field)
+                if (columnToAdd) {
+                    onColumnChange([...visibleColumns, columnToAdd])
+                }
+            }
         }
     }
 
@@ -84,9 +81,11 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     items={multiSelectItems}
                     selectedValues={selectedColumnValues}
                     onChange={handleMultiSelectChange}
-                    enableSearch={false}
+                    enableSearch={true}
                     enableSelectAll={true}
                     showActionButtons={true}
+                    showItemDividers={true}
+                    showHeaderBorder={false}
                     primaryAction={{
                         text: 'Apply',
                         onClick: () => {},
