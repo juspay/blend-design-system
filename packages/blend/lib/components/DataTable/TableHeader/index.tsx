@@ -60,6 +60,7 @@ const TableHeader = forwardRef<
     (
         {
             visibleColumns,
+            allVisibleColumns,
             initialColumns,
             selectAll,
             enableInlineEdit = false,
@@ -656,7 +657,9 @@ const TableHeader = forwardRef<
                             <Block position="relative">
                                 <ColumnManager
                                     columns={initialColumns}
-                                    visibleColumns={localColumns}
+                                    visibleColumns={
+                                        allVisibleColumns || localColumns
+                                    }
                                     onColumnChange={onColumnChange}
                                 />
                             </Block>

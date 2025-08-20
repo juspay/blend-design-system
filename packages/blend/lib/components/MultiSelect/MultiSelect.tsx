@@ -38,7 +38,7 @@ const MultiSelect = ({
     hintText,
     placeholder,
     size = MultiSelectMenuSize.MEDIUM,
-    enableSearch = false,
+    enableSearch = true,
     searchPlaceholder = 'Search options...',
     enableSelectAll = false,
     selectAllText = 'Select All',
@@ -56,9 +56,21 @@ const MultiSelect = ({
     onFocus,
     error,
     errorMessage,
-    showActionButtons = false,
-    primaryAction,
-    secondaryAction,
+    showActionButtons = true,
+    primaryAction = {
+        text: 'Apply',
+        onClick: () => {},
+        disabled: false,
+        loading: false,
+    },
+    secondaryAction = {
+        text: 'Clear All',
+        onClick: () => {
+            selectedValues.forEach((value) => onChange(value))
+        },
+        disabled: false,
+        loading: false,
+    },
     showItemDividers = false,
     showHeaderBorder = false,
 }: MultiSelectProps) => {

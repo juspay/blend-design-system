@@ -3,6 +3,7 @@ import { MobileDataTableConfig } from '../hooks/useMobileDataTable'
 
 export type TableHeaderProps<T extends Record<string, unknown>> = {
     visibleColumns: ColumnDefinition<T>[]
+    allVisibleColumns?: ColumnDefinition<T>[]
     initialColumns: ColumnDefinition<T>[]
     selectAll: boolean | 'indeterminate'
     enableInlineEdit?: boolean

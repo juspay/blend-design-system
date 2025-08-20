@@ -774,6 +774,141 @@ const MultiSelectDemo = () => {
                 </div>
             </div>
 
+            {/* New Defaults Showcase */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">✨ New Defaults Showcase</h2>
+                <p className="text-gray-600">
+                    <strong>
+                        Search and Action Buttons are now enabled by default!
+                    </strong>
+                    All MultiSelect components now include search functionality
+                    and action buttons out of the box, providing a better user
+                    experience without additional configuration.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Default Desktop Experience
+                        </h3>
+                        <MultiSelect
+                            label="Technologies (Default Settings)"
+                            sublabel="Search and action buttons enabled by default"
+                            items={skillItems}
+                            selectedValues={basicSimpleSelected}
+                            onChange={handleMultiSelectChange(
+                                basicSimpleSelected,
+                                setBasicSimpleSelected
+                            )}
+                            placeholder="Start typing to search..."
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {basicSimpleSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        Selected ({basicSimpleSelected.length}):
+                                    </strong>{' '}
+                                    {basicSimpleSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    ✓ Search enabled by default • ✓ Action
+                                    buttons included
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Default Mobile Experience
+                        </h3>
+                        <MultiSelect
+                            label="Permissions (Default Settings)"
+                            sublabel="Mobile drawer with search and actions"
+                            items={permissionItems}
+                            selectedValues={basicCountSelected}
+                            onChange={handleMultiSelectChange(
+                                basicCountSelected,
+                                setBasicCountSelected
+                            )}
+                            placeholder="Search permissions..."
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={true}
+                        />
+                        {basicCountSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        Selected ({basicCountSelected.length}):
+                                    </strong>{' '}
+                                    {basicCountSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    ✓ Mobile search included • ✓ Apply/Clear
+                                    buttons ready
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+                    <h4 className="font-semibold text-green-900 mb-2">
+                        🎉 What's New in MultiSelect Defaults:
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul className="text-sm text-green-800 space-y-1">
+                            <li>
+                                • <strong>enableSearch = true</strong> (was
+                                false)
+                            </li>
+                            <li>
+                                • <strong>showActionButtons = true</strong> (was
+                                false)
+                            </li>
+                            <li>
+                                • <strong>Default Apply button</strong> with
+                                "Apply" text
+                            </li>
+                            <li>
+                                • <strong>Default Clear All button</strong> with
+                                "Clear All" text
+                            </li>
+                        </ul>
+                        <ul className="text-sm text-green-800 space-y-1">
+                            <li>
+                                •{' '}
+                                <strong>Consistent across all variants</strong>{' '}
+                                (Desktop, Mobile, Menu)
+                            </li>
+                            <li>
+                                • <strong>Backward compatible</strong> - can
+                                still be disabled
+                            </li>
+                            <li>
+                                • <strong>Better UX out of the box</strong> - no
+                                configuration needed
+                            </li>
+                            <li>
+                                • <strong>Mobile drawer improvements</strong> -
+                                centered title when actions present
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="mt-3 p-2 bg-white rounded border-l-4 border-green-400">
+                        <p className="text-sm text-green-700">
+                            <strong>Migration Note:</strong> Existing
+                            implementations will automatically get these new
+                            defaults. To disable, explicitly set{' '}
+                            <code>enableSearch={false}</code>
+                            and <code>showActionButtons={false}</code>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             {/* Basic Examples */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Basic Examples</h2>

@@ -723,6 +723,11 @@ const DataTable = forwardRef(
                                             Record<string, unknown>
                                         >[]
                                     }
+                                    allVisibleColumns={
+                                        visibleColumns as ColumnDefinition<
+                                            Record<string, unknown>
+                                        >[]
+                                    }
                                     initialColumns={
                                         initialColumns as ColumnDefinition<
                                             Record<string, unknown>
