@@ -344,21 +344,6 @@ const ChartDemo = () => {
         }
     }
 
-    const getMetrics = () => {
-        if (!showLimitedMetrics) return undefined
-
-        switch (selectedDataset) {
-            case 'financial':
-                return ['revenue', 'profit']
-            case 'performance':
-                return ['sales', 'leads']
-            case 'analytics':
-                return ['users']
-            default:
-                return undefined
-        }
-    }
-
     const getColors = () => {
         switch (selectedChartType) {
             case ChartType.LINE:
@@ -394,7 +379,6 @@ const ChartDemo = () => {
                     chartType={selectedChartType}
                     legendPosition={selectedLegendPosition}
                     colors={getColors()}
-                    metrics={getMetrics()}
                     xAxisLabel={
                         selectedDataset === 'analytics'
                             ? 'Device Type'
@@ -670,7 +654,6 @@ const ChartDemo = () => {
                     <Charts
                         data={financialData}
                         chartType={ChartType.LINE}
-                        metrics={['revenue', 'profit']}
                         xAxisLabel="Month"
                         yAxisLabel="Amount ($)"
                         chartHeaderSlot={
