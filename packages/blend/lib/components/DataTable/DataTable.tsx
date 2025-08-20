@@ -8,6 +8,7 @@ import {
     ColumnFilter,
     FilterType,
     ColumnType,
+    RowActionsConfig,
 } from './types'
 import { TableTokenType } from './dataTable.tokens'
 import {
@@ -85,6 +86,7 @@ const DataTable = forwardRef(
             headerSlot1,
             headerSlot2,
             bulkActions,
+            rowActions,
             getRowStyle,
             mobileColumnsToShow,
         }: DataTableProps<T>,
@@ -137,6 +139,8 @@ const DataTable = forwardRef(
         const [mobileDrawerOpen, setMobileDrawerOpen] = useState<boolean>(false)
         const [selectedRowForDrawer, setSelectedRowForDrawer] =
             useState<T | null>(null)
+        const [selectedRowIndexForDrawer, setSelectedRowIndexForDrawer] =
+            useState<number>(-1)
 
         // Apply mobile configurations
         const effectiveColumnFreeze = mobileConfig.disableColumnFreeze
@@ -602,7 +606,11 @@ const DataTable = forwardRef(
         }
 
         const handleMobileOverflowClick = (row: T) => {
+            const rowIndex = currentData.findIndex(
+                (r) => r[idField] === row[idField]
+            )
             setSelectedRowForDrawer(row)
+            setSelectedRowIndexForDrawer(rowIndex)
             setMobileDrawerOpen(true)
         }
 
@@ -740,6 +748,13 @@ const DataTable = forwardRef(
                                     }
                                     enableRowExpansion={enableRowExpansion}
                                     enableRowSelection={enableRowSelection}
+                                    rowActions={
+                                        rowActions as
+                                            | RowActionsConfig<
+                                                  Record<string, unknown>
+                                              >
+                                            | undefined
+                                    }
                                     data={data}
                                     mobileConfig={mobileConfig}
                                     mobileOverflowColumns={
@@ -868,6 +883,13 @@ const DataTable = forwardRef(
                                                 column as ColumnDefinition<T>
                                             )
                                         }
+                                        rowActions={
+                                            rowActions as
+                                                | RowActionsConfig<
+                                                      Record<string, unknown>
+                                                  >
+                                                | undefined
+                                        }
                                     />
                                 ) : (
                                     <tbody>
@@ -926,8 +948,10 @@ const DataTable = forwardRef(
                         onClose={() => {
                             setMobileDrawerOpen(false)
                             setSelectedRowForDrawer(null)
+                            setSelectedRowIndexForDrawer(-1)
                         }}
                         row={selectedRowForDrawer as Record<string, unknown>}
+                        rowIndex={selectedRowIndexForDrawer}
                         overflowColumns={
                             mobileOverflowColumns as ColumnDefinition<
                                 Record<string, unknown>
@@ -948,6 +972,11 @@ const DataTable = forwardRef(
                                 onFieldChange(rowId, field as keyof T, value)
                             }
                         }}
+                        rowActions={
+                            rowActions as
+                                | RowActionsConfig<Record<string, unknown>>
+                                | undefined
+                        }
                     />
                 )}
             </Block>

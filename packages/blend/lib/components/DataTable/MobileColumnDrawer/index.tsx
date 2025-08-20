@@ -1,5 +1,10 @@
 import React, { useState } from 'react'
-import { ColumnDefinition, ColumnType, DropdownColumnProps } from '../types'
+import {
+    ColumnDefinition,
+    ColumnType,
+    DropdownColumnProps,
+    RowActionsConfig,
+} from '../types'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { FOUNDATION_THEME } from '../../../tokens'
@@ -13,14 +18,18 @@ import {
     NestedSingleSelectDrawer,
 } from '../../Drawer'
 import { ChevronRight } from 'lucide-react'
+import { Button } from '../../Button'
+import { ButtonType, ButtonSize, ButtonSubType } from '../../Button/types'
 
 export interface MobileColumnDrawerProps<T extends Record<string, unknown>> {
     isOpen: boolean
     onClose: () => void
     row: T
+    rowIndex: number
     overflowColumns: ColumnDefinition<T>[]
     getDisplayValue?: (value: unknown, column: ColumnDefinition<T>) => unknown
     onFieldChange?: (field: keyof T, value: unknown) => void
+    rowActions?: RowActionsConfig<T>
 }
 
 const MobileColumnDrawer: React.FC<
@@ -29,9 +38,11 @@ const MobileColumnDrawer: React.FC<
     isOpen,
     onClose,
     row,
+    rowIndex,
     overflowColumns,
     getDisplayValue,
     onFieldChange,
+    rowActions,
 }) => {
     const [nestedDrawerOpen, setNestedDrawerOpen] = useState(false)
     const [selectedDropdownColumn, setSelectedDropdownColumn] = useState<{
@@ -205,6 +216,151 @@ const MobileColumnDrawer: React.FC<
                                 padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[20]} ${FOUNDATION_THEME.unit[16]} ${FOUNDATION_THEME.unit[20]}`}
                             >
                                 {overflowColumns.map(renderDrawerRow)}
+
+                                {/* Row Actions Footer - Mobile only shows slot1 and slot2 (no edit actions) */}
+                                {rowActions &&
+                                    (rowActions.slot1 || rowActions.slot2) && (
+                                        <Block
+                                            display="flex"
+                                            gap={FOUNDATION_THEME.unit[12]}
+                                            justifyContent="center"
+                                            paddingTop={
+                                                FOUNDATION_THEME.unit[20]
+                                            }
+                                            marginTop={
+                                                FOUNDATION_THEME.unit[16]
+                                            }
+                                            borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                                        >
+                                            {rowActions.slot1 &&
+                                                !(
+                                                    (typeof rowActions.slot1
+                                                        .hidden === 'function'
+                                                        ? rowActions.slot1.hidden(
+                                                              row,
+                                                              rowIndex
+                                                          )
+                                                        : rowActions.slot1
+                                                              .hidden) ?? false
+                                                ) && (
+                                                    <Button
+                                                        buttonType={
+                                                            rowActions.slot1
+                                                                .buttonType ??
+                                                            ButtonType.SECONDARY
+                                                        }
+                                                        size={
+                                                            rowActions.slot1
+                                                                .size ??
+                                                            ButtonSize.MEDIUM
+                                                        }
+                                                        subType={
+                                                            rowActions.slot1
+                                                                .subType ??
+                                                            ButtonSubType.DEFAULT
+                                                        }
+                                                        text={
+                                                            rowActions.slot1
+                                                                .text
+                                                        }
+                                                        leadingIcon={
+                                                            rowActions.slot1
+                                                                .leadingIcon
+                                                        }
+                                                        trailingIcon={
+                                                            rowActions.slot1
+                                                                .trailingIcon
+                                                        }
+                                                        disabled={
+                                                            typeof rowActions
+                                                                .slot1
+                                                                .disabled ===
+                                                            'function'
+                                                                ? rowActions.slot1.disabled(
+                                                                      row,
+                                                                      rowIndex
+                                                                  )
+                                                                : (rowActions
+                                                                      .slot1
+                                                                      .disabled ??
+                                                                  false)
+                                                        }
+                                                        onClick={() => {
+                                                            rowActions.slot1?.onClick(
+                                                                row,
+                                                                rowIndex
+                                                            )
+                                                            onClose() // Close drawer after action
+                                                        }}
+                                                        fullWidth
+                                                    />
+                                                )}
+
+                                            {rowActions.slot2 &&
+                                                !(
+                                                    (typeof rowActions.slot2
+                                                        .hidden === 'function'
+                                                        ? rowActions.slot2.hidden(
+                                                              row,
+                                                              rowIndex
+                                                          )
+                                                        : rowActions.slot2
+                                                              .hidden) ?? false
+                                                ) && (
+                                                    <Button
+                                                        buttonType={
+                                                            rowActions.slot2
+                                                                .buttonType ??
+                                                            ButtonType.SECONDARY
+                                                        }
+                                                        size={
+                                                            rowActions.slot2
+                                                                .size ??
+                                                            ButtonSize.MEDIUM
+                                                        }
+                                                        subType={
+                                                            rowActions.slot2
+                                                                .subType ??
+                                                            ButtonSubType.DEFAULT
+                                                        }
+                                                        text={
+                                                            rowActions.slot2
+                                                                .text
+                                                        }
+                                                        leadingIcon={
+                                                            rowActions.slot2
+                                                                .leadingIcon
+                                                        }
+                                                        trailingIcon={
+                                                            rowActions.slot2
+                                                                .trailingIcon
+                                                        }
+                                                        disabled={
+                                                            typeof rowActions
+                                                                .slot2
+                                                                .disabled ===
+                                                            'function'
+                                                                ? rowActions.slot2.disabled(
+                                                                      row,
+                                                                      rowIndex
+                                                                  )
+                                                                : (rowActions
+                                                                      .slot2
+                                                                      .disabled ??
+                                                                  false)
+                                                        }
+                                                        onClick={() => {
+                                                            rowActions.slot2?.onClick(
+                                                                row,
+                                                                rowIndex
+                                                            )
+                                                            onClose() // Close drawer after action
+                                                        }}
+                                                        fullWidth
+                                                    />
+                                                )}
+                                        </Block>
+                                    )}
                             </Block>
                         </DrawerBody>
                     </DrawerContent>

@@ -654,6 +654,8 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     const isMobile = breakPointLabel === 'sm'
     const columnConfig = getColumnTypeConfig(column.type || ColumnType.TEXT)
     const fieldKey = String(column.field)
+    const [nestedFilterOpen, setNestedFilterOpen] = useState(false)
+    const hasFiltering = columnConfig.supportsFiltering
 
     // Use mobile component for small screens
     if (isMobile) {
@@ -671,10 +673,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
         )
     }
 
-    // Desktop version with nested popover for filters
-    const [nestedFilterOpen, setNestedFilterOpen] = useState(false)
-    const hasFiltering = columnConfig.supportsFiltering
-
     return (
         <Block
             display="flex"
@@ -684,7 +682,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
             _focus={{ outline: 'none' }}
             _focusVisible={{ outline: 'none' }}
         >
-            {/* Sort Options - Show directly */}
             {columnConfig.supportsSorting && (
                 <SortOptions
                     fieldKey={fieldKey}
@@ -693,12 +690,10 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                 />
             )}
 
-            {/* Separator between sort and filter */}
             {columnConfig.supportsSorting && hasFiltering && (
                 <Separator tableToken={tableToken} />
             )}
 
-            {/* Filter Option - Opens nested popover */}
             {hasFiltering && (
                 <Popover
                     trigger={
@@ -781,7 +776,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                         maxHeight="300px"
                         overflow="auto"
                     >
-                        {/* Search Section */}
                         {(columnConfig.filterComponent === 'multiselect' ||
                             columnConfig.filterComponent === 'select') && (
                             <DropdownSearchSection
@@ -793,7 +787,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                             />
                         )}
 
-                        {/* Filter Components */}
                         {columnConfig.filterComponent === 'select' && (
                             <SingleSelectItems
                                 column={column}

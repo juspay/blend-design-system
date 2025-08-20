@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
-import { SearchInput } from '../../Inputs/SearchInput'
+import { TextInput } from '../../Inputs/TextInput'
 import { Checkbox } from '../../Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
 import Slider from '../../Slider/Slider'
@@ -140,7 +140,8 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
         </Block>
     )
 
-    const renderSliderFilter = () => {
+    // SliderFilter component to handle hooks properly
+    const SliderFilter: React.FC = () => {
         const sliderColumn = column as ColumnDefinition<
             Record<string, unknown>
         > & {
@@ -155,21 +156,6 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
             }
         }
         const sliderConfig = sliderColumn.sliderConfig
-
-        if (!sliderConfig) {
-            return (
-                <Block padding="14px 20px">
-                    <PrimitiveText
-                        style={{
-                            fontSize: 14,
-                            color: FOUNDATION_THEME.colors.gray[500],
-                        }}
-                    >
-                        Slider configuration missing
-                    </PrimitiveText>
-                </Block>
-            )
-        }
 
         const dataValues =
             data
@@ -223,6 +209,21 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                 }
             }
         }, [])
+
+        if (!sliderConfig) {
+            return (
+                <Block padding="14px 20px">
+                    <PrimitiveText
+                        style={{
+                            fontSize: 14,
+                            color: FOUNDATION_THEME.colors.gray[500],
+                        }}
+                    >
+                        Slider configuration missing
+                    </PrimitiveText>
+                </Block>
+            )
+        }
 
         const handleSliderChange = (values: number[]) => {
             const [newMin, newMax] = values
@@ -348,11 +349,9 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
         )
     }
 
-    // Return the content directly - will be wrapped by Drawer in TableHeader
     return (
         <>
             <Block display="flex" flexDirection="column" paddingBottom="20px">
-                {/* Sort Options */}
                 {columnConfig.supportsSorting && (
                     <>
                         {renderSortItem(
@@ -380,7 +379,6 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                     </>
                 )}
 
-                {/* Separator between sort and filter */}
                 {columnConfig.supportsSorting &&
                     columnConfig.supportsFiltering && (
                         <Block
@@ -389,7 +387,6 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         />
                     )}
 
-                {/* Filter Button - Opens nested drawer */}
                 {columnConfig.supportsFiltering && (
                     <Block
                         display="flex"
@@ -430,7 +427,6 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                 )}
             </Block>
 
-            {/* Nested Filter Drawer */}
             <Drawer
                 open={filterDrawerOpen}
                 onOpenChange={setFilterDrawerOpen}
@@ -448,13 +444,12 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                 flexDirection="column"
                                 paddingBottom="20px"
                             >
-                                {/* Search Section */}
                                 {(columnConfig.filterComponent ===
                                     'multiselect' ||
                                     columnConfig.filterComponent ===
                                         'select') && (
                                     <Block padding="14px 20px 8px 20px">
-                                        <SearchInput
+                                        <TextInput
                                             placeholder="Search"
                                             value={
                                                 filterState.columnSearchValues[
@@ -482,7 +477,6 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                     </Block>
                                 )}
 
-                                {/* Single Select Items */}
                                 {columnConfig.filterComponent === 'select' && (
                                     <>
                                         {getSelectMenuItems(column, data).map(
@@ -530,7 +524,6 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                     </>
                                 )}
 
-                                {/* Multi Select Items */}
                                 {columnConfig.filterComponent ===
                                     'multiselect' && (
                                     <>
@@ -580,11 +573,10 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                     </>
                                 )}
 
-                                {/* Slider Filter */}
-                                {columnConfig.filterComponent === 'slider' &&
-                                    renderSliderFilter()}
+                                {columnConfig.filterComponent === 'slider' && (
+                                    <SliderFilter />
+                                )}
 
-                                {/* Fallback message */}
                                 {!columnConfig.filterComponent && (
                                     <Block
                                         padding="14px 20px"

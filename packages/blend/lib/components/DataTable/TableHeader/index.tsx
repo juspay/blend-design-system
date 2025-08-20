@@ -67,6 +67,7 @@ const TableHeader = forwardRef<
             enableColumnManager = true,
             enableRowExpansion = false,
             enableRowSelection = true,
+            rowActions,
             data,
             columnFreeze = 0,
             mobileConfig,
@@ -612,37 +613,41 @@ const TableHeader = forwardRef<
                             ></th>
                         )}
 
-                    {enableInlineEdit && (
-                        <th
-                            style={{
-                                ...tableToken.dataTable.table.header.cell,
-                                width: '120px',
-                                minWidth: '120px',
-                                maxWidth: '120px',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                boxSizing: 'border-box',
-                            }}
-                        >
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
+                    {/* Actions Column Header - Desktop Only (Mobile shows in drawer footer) */}
+                    {(enableInlineEdit || rowActions) &&
+                        !(
+                            mobileConfig?.isMobile &&
+                            mobileConfig?.enableColumnOverflow
+                        ) && (
+                            <th
+                                style={{
+                                    ...tableToken.dataTable.table.header.cell,
+                                    width: '200px',
+                                    maxWidth: '200px',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    boxSizing: 'border-box',
+                                }}
                             >
-                                <PrimitiveText
-                                    as="span"
-                                    style={{
-                                        fontSize:
-                                            FOUNDATION_THEME.font.size.body.sm
-                                                .fontSize,
-                                    }}
+                                <Block
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="center"
                                 >
-                                    Actions
-                                </PrimitiveText>
-                            </Block>
-                        </th>
-                    )}
+                                    <PrimitiveText
+                                        as="span"
+                                        style={{
+                                            fontSize:
+                                                FOUNDATION_THEME.font.size.body
+                                                    .sm.fontSize,
+                                        }}
+                                    >
+                                        Actions
+                                    </PrimitiveText>
+                                </Block>
+                            </th>
+                        )}
 
                     {enableColumnManager && (
                         <th

@@ -9,6 +9,7 @@ import {
     TagColumnProps,
     DropdownColumnProps,
     DateColumnProps,
+    RowActionsConfig,
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
 import { Avatar } from '../../../../packages/blend/lib/components/Avatar'
@@ -694,7 +695,7 @@ const SimpleDataTableExample = () => {
                 }
                 idField="id"
                 title="Product Inventory (Mobile: 2 Columns + Overflow)"
-                description="Simple product management table demonstrating DROPDOWN and DATE column types with inline editing capabilities. Click on category dropdowns to see the SingleSelect component with icons in action! On mobile, only 2 columns are shown with a chevron icon to view more details."
+                description="Simple product management table demonstrating DROPDOWN and DATE column types with smart row actions. On desktop, actions appear in a fixed 200px column with overflow menu when needed. On mobile, actions appear in the overflow drawer footer for better UX."
                 enableSearch={true}
                 enableFiltering={true}
                 enableAdvancedFilter={false}
@@ -713,6 +714,40 @@ const SimpleDataTableExample = () => {
                 onRowSave={handleProductSave}
                 onRowCancel={handleProductCancel}
                 onFieldChange={handleFieldChange}
+                rowActions={{
+                    showEditAction: false,
+                    slot1: {
+                        id: 'view-details',
+                        text: 'View Details',
+                        buttonType: ButtonType.SECONDARY,
+                        size: ButtonSize.SMALL,
+                        leadingIcon: <Package size={16} />,
+                        onClick: (row, index) => {
+                            const product = row as ProductRow
+                            alert(
+                                `Viewing details for: ${product.name} (Price: ${product.price})`
+                            )
+                        },
+                    },
+                    slot2: {
+                        id: 'favorite',
+                        text: 'Add to Favorites',
+                        buttonType: ButtonType.PRIMARY,
+                        size: ButtonSize.SMALL,
+                        leadingIcon: <Calendar size={16} />,
+                        hidden: (row) => {
+                            const product = row as ProductRow
+                            const statusText = (
+                                product.status as TagColumnProps
+                            ).text
+                            return statusText === 'Discontinued'
+                        },
+                        onClick: (row, index) => {
+                            const product = row as ProductRow
+                            alert(`Added ${product.name} to favorites!`)
+                        },
+                    },
+                }}
                 headerSlot1={
                     <Button
                         buttonType={ButtonType.SECONDARY}
@@ -2157,7 +2192,7 @@ const DataTableDemo = () => {
                 }
                 idField="id"
                 title="User Management"
-                description={`Complete overview of system users with ${isServerSideMode ? 'server-side' : 'local'} search, filtering, inline editing, expandable rows, clickable rows, and dynamic row styling.`}
+                description={`Complete overview of system users with ${isServerSideMode ? 'server-side' : 'local'} search, filtering, inline editing, expandable rows, clickable rows, dynamic row styling, and intelligent row actions with overflow menu.`}
                 isHoverable
                 enableSearch
                 searchPlaceholder={`Search users... ${isServerSideMode ? '(server-side)' : '(local)'}`}
@@ -2216,6 +2251,51 @@ const DataTableDemo = () => {
                         Action
                     </Button>
                 }
+                rowActions={{
+                    showEditAction: true, // Show edit actions alongside custom actions
+                    slot1: {
+                        id: 'view-profile',
+                        text: 'View Profile',
+                        buttonType: ButtonType.SECONDARY,
+                        size: ButtonSize.SMALL,
+                        leadingIcon: <Monitor size={16} />,
+                        onClick: (row, index) => {
+                            const userData = row as UserRow
+                            const userName = (
+                                userData.name as AvatarColumnProps
+                            ).label
+                            alert(
+                                `Viewing profile for: ${userName} (Row ${index + 1})`
+                            )
+                        },
+                    },
+                    slot2: {
+                        id: 'delete-user',
+                        text: 'Delete User',
+                        buttonType: ButtonType.DANGER,
+                        size: ButtonSize.SMALL,
+                        leadingIcon: <CircleX size={16} />,
+                        disabled: (row) => {
+                            const userData = row as UserRow
+                            return userData.role === 'Admin' // Don't allow deleting admins
+                        },
+                        onClick: (row, index) => {
+                            const userData = row as UserRow
+                            const userName = (
+                                userData.name as AvatarColumnProps
+                            ).label
+                            if (
+                                confirm(
+                                    `Are you sure you want to delete ${userName}?`
+                                )
+                            ) {
+                                alert(
+                                    `Deleted user: ${userName} (Row ${index + 1})`
+                                )
+                            }
+                        },
+                    },
+                }}
                 getRowStyle={getRowStyle}
             />
 

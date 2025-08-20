@@ -1,4 +1,4 @@
-import { ColumnDefinition } from '../types'
+import { ColumnDefinition, RowActionsConfig } from '../types'
 import { MobileDataTableConfig } from '../hooks/useMobileDataTable'
 
 export type TableBodyProps<T extends Record<string, unknown>> = {
@@ -13,6 +13,7 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     enableColumnManager?: boolean
     enableRowExpansion?: boolean
     enableRowSelection?: boolean
+    rowActions?: RowActionsConfig<T>
     columnFreeze?: number
     mobileConfig?: MobileDataTableConfig
     mobileOverflowColumns?: ColumnDefinition<T>[]

@@ -117,7 +117,7 @@ export function DataTablePagination({
                         minWidth: '94px',
                     }}
                 >
-                    Rows per page
+                    {isMobile ? 'Rows' : 'Rows per page'}
                 </PrimitiveText>
 
                 <SingleSelect

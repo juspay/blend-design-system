@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
 
 export enum SortDirection {
     NONE = 'none',
@@ -236,9 +237,27 @@ export type PaginationConfig = {
 export type BulkAction = {
     id: string
     label: string
-    icon?: ReactNode
-    variant?: 'primary' | 'secondary' | 'danger'
+    variant: 'primary' | 'secondary' | 'danger'
     onClick: (selectedRowIds: string[]) => void
+}
+
+export type RowActionConfig<T extends Record<string, unknown>> = {
+    id: string
+    text?: string
+    buttonType?: ButtonType
+    size?: ButtonSize
+    subType?: ButtonSubType
+    leadingIcon?: React.ReactNode
+    trailingIcon?: React.ReactNode
+    disabled?: boolean | ((row: T, index: number) => boolean)
+    hidden?: boolean | ((row: T, index: number) => boolean)
+    onClick: (row: T, index: number) => void
+}
+
+export type RowActionsConfig<T extends Record<string, unknown>> = {
+    showEditAction?: boolean
+    slot1?: RowActionConfig<T>
+    slot2?: RowActionConfig<T>
 }
 
 export type DataTableProps<T extends Record<string, unknown>> = {
@@ -297,6 +316,8 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     enableRowSelection?: boolean
 
     bulkActions?: BulkAction[]
+
+    rowActions?: RowActionsConfig<T>
 
     getRowStyle?: (row: T, index: number) => React.CSSProperties
 

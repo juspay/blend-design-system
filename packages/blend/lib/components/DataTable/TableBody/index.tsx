@@ -1,15 +1,25 @@
-import React, { forwardRef, useMemo } from 'react'
-import { Edit, Save, X, ChevronRight, ChevronDown } from 'lucide-react'
+import React, { forwardRef, useMemo, useRef, useEffect, useState } from 'react'
+import {
+    Edit,
+    Save,
+    X,
+    ChevronRight,
+    ChevronDown,
+    MoreHorizontal,
+} from 'lucide-react'
 import { styled, css } from 'styled-components'
 import { TableBodyProps } from './types'
 import TableCell from '../TableCell'
 import Block from '../../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../../tokens'
+import Menu from '../../Menu/Menu'
+import { MenuAlignment, MenuSide } from '../../Menu/types'
 
 import {
     Button,
     ButtonType,
     ButtonSize,
+    ButtonSubType,
     Checkbox,
     CheckboxSize,
     TableTokenType,
@@ -102,6 +112,366 @@ const ExpandButton = styled.button`
     }
 `
 
+// Actions Cell Component with Responsive Overflow
+interface ActionsCellProps {
+    row: Record<string, unknown>
+    index: number
+    isEditing: boolean
+    enableInlineEdit?: boolean
+    rowActions?: {
+        showEditAction?: boolean
+        slot1?: {
+            id: string
+            text?: string
+            buttonType?: ButtonType
+            size?: ButtonSize
+            subType?: ButtonSubType
+            leadingIcon?: React.ReactNode
+            trailingIcon?: React.ReactNode
+            disabled?:
+                | boolean
+                | ((row: Record<string, unknown>, index: number) => boolean)
+            hidden?:
+                | boolean
+                | ((row: Record<string, unknown>, index: number) => boolean)
+            onClick: (row: Record<string, unknown>, index: number) => void
+        }
+        slot2?: {
+            id: string
+            text?: string
+            buttonType?: ButtonType
+            size?: ButtonSize
+            subType?: ButtonSubType
+            leadingIcon?: React.ReactNode
+            trailingIcon?: React.ReactNode
+            disabled?:
+                | boolean
+                | ((row: Record<string, unknown>, index: number) => boolean)
+            hidden?:
+                | boolean
+                | ((row: Record<string, unknown>, index: number) => boolean)
+            onClick: (row: Record<string, unknown>, index: number) => void
+        }
+    }
+    onEditRow: (rowId: unknown) => void
+    onSaveRow: (rowId: unknown) => void
+    onCancelEdit: (rowId: unknown) => void
+    idField: string
+}
+
+const ActionsCell: React.FC<ActionsCellProps> = ({
+    row,
+    index,
+    isEditing,
+    enableInlineEdit,
+    rowActions,
+    onEditRow,
+    onSaveRow,
+    onCancelEdit,
+    idField,
+}) => {
+    const containerRef = useRef<HTMLDivElement>(null)
+    const [visibleButtons, setVisibleButtons] = useState<number>(0)
+    const [shouldShowMenu, setShouldShowMenu] = useState(false)
+
+    // Build all available buttons
+    const allButtons = useMemo(() => {
+        const buttons: Array<{
+            id: string
+            type: 'edit' | 'save' | 'cancel' | 'slot1' | 'slot2'
+            element: React.ReactNode
+            menuItem?: {
+                label: string
+                onClick: () => void
+                disabled?: boolean
+                leadingSlot?: React.ReactNode
+            }
+        }> = []
+
+        // Edit actions
+        if (enableInlineEdit && rowActions?.showEditAction !== false) {
+            if (isEditing) {
+                buttons.push({
+                    id: 'save',
+                    type: 'save',
+                    element: (
+                        <Button
+                            key="save"
+                            onClick={() => onSaveRow(row[idField])}
+                            title="Save"
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Save size={16} />}
+                            size={ButtonSize.SMALL}
+                        />
+                    ),
+                    menuItem: {
+                        label: 'Save',
+                        onClick: () => onSaveRow(row[idField]),
+                        leadingSlot: <Save size={16} />,
+                    },
+                })
+                buttons.push({
+                    id: 'cancel',
+                    type: 'cancel',
+                    element: (
+                        <Button
+                            key="cancel"
+                            onClick={() => onCancelEdit(row[idField])}
+                            title="Cancel"
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<X size={16} />}
+                            size={ButtonSize.SMALL}
+                        />
+                    ),
+                    menuItem: {
+                        label: 'Cancel',
+                        onClick: () => onCancelEdit(row[idField]),
+                        leadingSlot: <X size={16} />,
+                    },
+                })
+            } else {
+                buttons.push({
+                    id: 'edit',
+                    type: 'edit',
+                    element: (
+                        <Button
+                            key="edit"
+                            onClick={() => onEditRow(row[idField])}
+                            title="Edit"
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Edit size={16} />}
+                            size={ButtonSize.SMALL}
+                        />
+                    ),
+                    menuItem: {
+                        label: 'Edit',
+                        onClick: () => onEditRow(row[idField]),
+                        leadingSlot: <Edit size={16} />,
+                    },
+                })
+            }
+        }
+
+        // Custom slot 1
+        if (
+            rowActions?.slot1 &&
+            !(
+                (typeof rowActions.slot1.hidden === 'function'
+                    ? rowActions.slot1.hidden(row, index)
+                    : rowActions.slot1.hidden) ?? false
+            )
+        ) {
+            const slot1 = rowActions.slot1
+            const isDisabled =
+                typeof slot1.disabled === 'function'
+                    ? slot1.disabled(row, index)
+                    : (slot1.disabled ?? false)
+
+            buttons.push({
+                id: slot1.id,
+                type: 'slot1',
+                element: (
+                    <Button
+                        key="slot1"
+                        buttonType={slot1.buttonType ?? ButtonType.SECONDARY}
+                        size={slot1.size ?? ButtonSize.SMALL}
+                        subType={slot1.subType ?? ButtonSubType.DEFAULT}
+                        text={slot1.text}
+                        leadingIcon={slot1.leadingIcon}
+                        trailingIcon={slot1.trailingIcon}
+                        disabled={isDisabled}
+                        onClick={() => slot1.onClick(row, index)}
+                    />
+                ),
+                menuItem: {
+                    label: slot1.text || 'Action',
+                    onClick: () => slot1.onClick(row, index),
+                    disabled: isDisabled,
+                    leadingSlot: slot1.leadingIcon,
+                },
+            })
+        }
+
+        // Custom slot 2
+        if (
+            rowActions?.slot2 &&
+            !(
+                (typeof rowActions.slot2.hidden === 'function'
+                    ? rowActions.slot2.hidden(row, index)
+                    : rowActions.slot2.hidden) ?? false
+            )
+        ) {
+            const slot2 = rowActions.slot2
+            const isDisabled =
+                typeof slot2.disabled === 'function'
+                    ? slot2.disabled(row, index)
+                    : (slot2.disabled ?? false)
+
+            buttons.push({
+                id: slot2.id,
+                type: 'slot2',
+                element: (
+                    <Button
+                        key="slot2"
+                        buttonType={slot2.buttonType ?? ButtonType.SECONDARY}
+                        size={slot2.size ?? ButtonSize.SMALL}
+                        subType={slot2.subType ?? ButtonSubType.DEFAULT}
+                        text={slot2.text}
+                        leadingIcon={slot2.leadingIcon}
+                        trailingIcon={slot2.trailingIcon}
+                        disabled={isDisabled}
+                        onClick={() => slot2.onClick(row, index)}
+                    />
+                ),
+                menuItem: {
+                    label: slot2.text || 'Action',
+                    onClick: () => slot2.onClick(row, index),
+                    disabled: isDisabled,
+                    leadingSlot: slot2.leadingIcon,
+                },
+            })
+        }
+
+        return buttons
+    }, [
+        row,
+        index,
+        isEditing,
+        enableInlineEdit,
+        rowActions,
+        onEditRow,
+        onSaveRow,
+        onCancelEdit,
+        idField,
+    ])
+
+    // Calculate how many buttons can fit
+    useEffect(() => {
+        if (!containerRef.current || allButtons.length === 0) {
+            setVisibleButtons(allButtons.length)
+            setShouldShowMenu(false)
+            return
+        }
+
+        const container = containerRef.current
+        const containerWidth = container.offsetWidth
+        const gap = 4 // gap between buttons
+        const menuButtonWidth = 32 // approximate width of three dots button
+
+        // Approximate button widths (can be more precise by measuring)
+        const estimateButtonWidth = (button: (typeof allButtons)[0]) => {
+            if (
+                button.type === 'save' ||
+                button.type === 'cancel' ||
+                button.type === 'edit'
+            ) {
+                return 70 // Edit buttons are icon + text
+            }
+            // For custom buttons, estimate based on text length
+            const textLength = button.menuItem?.label?.length || 0
+            return Math.max(60, textLength * 8 + 40) // rough estimation
+        }
+
+        let totalWidth = 0
+        let fitsCount = 0
+
+        // First, try to fit all buttons without menu
+        for (let i = 0; i < allButtons.length; i++) {
+            const buttonWidth = estimateButtonWidth(allButtons[i])
+            const widthWithGap = totalWidth + (i > 0 ? gap : 0) + buttonWidth
+
+            if (widthWithGap <= containerWidth) {
+                totalWidth = widthWithGap
+                fitsCount = i + 1
+            } else {
+                break
+            }
+        }
+
+        // If all buttons fit, no need for menu
+        if (fitsCount === allButtons.length) {
+            setVisibleButtons(allButtons.length)
+            setShouldShowMenu(false)
+            return
+        }
+
+        // If not all buttons fit, recalculate with menu button space
+        totalWidth = 0
+        fitsCount = 0
+
+        for (let i = 0; i < allButtons.length; i++) {
+            const buttonWidth = estimateButtonWidth(allButtons[i])
+            const widthWithGap = totalWidth + (i > 0 ? gap : 0) + buttonWidth
+            const totalWithMenu = widthWithGap + gap + menuButtonWidth
+
+            if (totalWithMenu <= containerWidth) {
+                totalWidth = widthWithGap
+                fitsCount = i + 1
+            } else {
+                break
+            }
+        }
+
+        // Ensure we have at least 1 button visible if possible, rest go to menu
+        if (fitsCount === 0 && allButtons.length > 0) {
+            const firstButtonWidth = estimateButtonWidth(allButtons[0])
+            if (firstButtonWidth + gap + menuButtonWidth <= containerWidth) {
+                fitsCount = 1
+            }
+        }
+
+        setVisibleButtons(Math.max(0, fitsCount))
+        setShouldShowMenu(
+            fitsCount < allButtons.length && allButtons.length > 0
+        )
+    }, [allButtons])
+
+    const visibleButtonElements = allButtons
+        .slice(0, visibleButtons)
+        .map((b) => b.element)
+    const menuItems = allButtons.slice(visibleButtons).map((button) => ({
+        label: button.menuItem?.label || '',
+        onClick: button.menuItem?.onClick || (() => {}),
+        disabled: button.menuItem?.disabled || false,
+        slot1: button.menuItem?.leadingSlot,
+    }))
+
+    return (
+        <Block
+            ref={containerRef}
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-start"
+            gap={FOUNDATION_THEME.unit[4]}
+            width="100%"
+            onClick={(e) => e.stopPropagation()}
+        >
+            {visibleButtonElements}
+
+            {shouldShowMenu && menuItems.length > 0 && (
+                <Menu
+                    trigger={
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
+                            subType={ButtonSubType.ICON_ONLY}
+                            leadingIcon={<MoreHorizontal size={16} />}
+                            title="More actions"
+                        />
+                    }
+                    items={[
+                        {
+                            items: menuItems,
+                        },
+                    ]}
+                    alignment={MenuAlignment.END}
+                    side={MenuSide.BOTTOM}
+                />
+            )}
+        </Block>
+    )
+}
+
 const TableBody = forwardRef<
     HTMLTableSectionElement,
     TableBodyProps<Record<string, unknown>>
@@ -119,6 +489,7 @@ const TableBody = forwardRef<
             enableColumnManager = true,
             enableRowExpansion = false,
             enableRowSelection = true,
+            rowActions,
             columnFreeze = 0,
             mobileConfig,
             mobileOverflowColumns = [],
@@ -142,7 +513,13 @@ const TableBody = forwardRef<
             let span = visibleColumns.length
             if (enableRowSelection) span += 1
             if (enableRowExpansion) span += 1
-            if (enableInlineEdit) span += 1
+            // Actions column - only on desktop or when not using mobile column overflow
+            if (
+                (enableInlineEdit || rowActions) &&
+                !(mobileConfig?.isMobile && mobileConfig?.enableColumnOverflow)
+            ) {
+                span += 1
+            }
             if (enableColumnManager) span += 1
             return span
         }, [
@@ -151,6 +528,8 @@ const TableBody = forwardRef<
             enableRowExpansion,
             enableInlineEdit,
             enableColumnManager,
+            rowActions,
+            mobileConfig,
         ])
 
         const tableToken = useResponsiveTokens('TABLE') as TableTokenType
@@ -512,102 +891,48 @@ const TableBody = forwardRef<
                                               </StyledTableCell>
                                           )}
 
-                                      {enableInlineEdit && (
-                                          <StyledTableCell
-                                              $customBackgroundColor={
-                                                  rowStyling.backgroundColor
-                                              }
-                                              $hasCustomBackground={
-                                                  hasCustomBackground
-                                              }
-                                              $width="120px"
-                                              style={{
-                                                  minWidth: '120px',
-                                                  maxWidth: '120px',
-                                                  overflow: 'hidden',
-                                                  textOverflow: 'ellipsis',
-                                                  whiteSpace: 'nowrap',
-                                                  fontSize:
-                                                      tableToken.dataTable.table
-                                                          .body.cell.fontSize,
-                                              }}
-                                          >
-                                              <Block
-                                                  display="flex"
-                                                  alignItems="center"
-                                                  justifyContent="center"
-                                                  gap={FOUNDATION_THEME.unit[4]}
-                                                  onClick={(e) =>
-                                                      e.stopPropagation()
+                                      {/* Row Actions Column - Desktop Only (Mobile shows in drawer footer) */}
+                                      {(enableInlineEdit || rowActions) &&
+                                          !(
+                                              mobileConfig?.isMobile &&
+                                              mobileConfig?.enableColumnOverflow
+                                          ) && (
+                                              <StyledTableCell
+                                                  $customBackgroundColor={
+                                                      rowStyling.backgroundColor
                                                   }
+                                                  $hasCustomBackground={
+                                                      hasCustomBackground
+                                                  }
+                                                  $width="200px"
+                                                  style={{
+                                                      maxWidth: '200px',
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                      whiteSpace: 'nowrap',
+                                                      fontSize:
+                                                          tableToken.dataTable
+                                                              .table.body.cell
+                                                              .fontSize,
+                                                  }}
                                               >
-                                                  {isEditing ? (
-                                                      <>
-                                                          <Button
-                                                              onClick={() =>
-                                                                  onSaveRow(
-                                                                      row[
-                                                                          idField
-                                                                      ]
-                                                                  )
-                                                              }
-                                                              title="Save"
-                                                              buttonType={
-                                                                  ButtonType.SECONDARY
-                                                              }
-                                                              leadingIcon={
-                                                                  <Save
-                                                                      size={16}
-                                                                  />
-                                                              }
-                                                              size={
-                                                                  ButtonSize.SMALL
-                                                              }
-                                                          />
-                                                          <Button
-                                                              onClick={() =>
-                                                                  onCancelEdit(
-                                                                      row[
-                                                                          idField
-                                                                      ]
-                                                                  )
-                                                              }
-                                                              title="Cancel"
-                                                              buttonType={
-                                                                  ButtonType.SECONDARY
-                                                              }
-                                                              leadingIcon={
-                                                                  <X
-                                                                      size={16}
-                                                                  />
-                                                              }
-                                                              size={
-                                                                  ButtonSize.SMALL
-                                                              }
-                                                          />
-                                                      </>
-                                                  ) : (
-                                                      <Button
-                                                          onClick={() =>
-                                                              onEditRow(
-                                                                  row[idField]
-                                                              )
-                                                          }
-                                                          title="Edit"
-                                                          buttonType={
-                                                              ButtonType.SECONDARY
-                                                          }
-                                                          leadingIcon={
-                                                              <Edit size={16} />
-                                                          }
-                                                          size={
-                                                              ButtonSize.SMALL
-                                                          }
-                                                      />
-                                                  )}
-                                              </Block>
-                                          </StyledTableCell>
-                                      )}
+                                                  <ActionsCell
+                                                      row={row}
+                                                      index={index}
+                                                      isEditing={isEditing}
+                                                      enableInlineEdit={
+                                                          enableInlineEdit
+                                                      }
+                                                      rowActions={rowActions}
+                                                      onEditRow={onEditRow}
+                                                      onSaveRow={onSaveRow}
+                                                      onCancelEdit={
+                                                          onCancelEdit
+                                                      }
+                                                      idField={idField}
+                                                  />
+                                              </StyledTableCell>
+                                          )}
 
                                       {enableColumnManager && (
                                           <StyledTableCell

@@ -83,6 +83,13 @@ export type SingleSelectTokensType = {
             margin: CSSObject['margin']
         }
     }
+    drawer: {
+        header: {
+            paddingX: CSSObject['padding']
+            paddingBottom: CSSObject['padding']
+            borderBottom: CSSObject['borderBottom']
+        }
+    }
 }
 
 export type ResponsiveSingleSelectTokens = {
@@ -207,6 +214,13 @@ export const getSingleSelectTokens = (
                     margin: `${foundationToken.unit[6]} 0`,
                 },
             },
+            drawer: {
+                header: {
+                    paddingX: foundationToken.unit[8],
+                    paddingBottom: foundationToken.unit[8],
+                    borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                },
+            },
         },
         lg: {
             trigger: {
@@ -320,6 +334,13 @@ export const getSingleSelectTokens = (
                     color: foundationToken.colors.gray[200],
                     height: 1,
                     margin: `${foundationToken.unit[6]} 0`,
+                },
+            },
+            drawer: {
+                header: {
+                    paddingX: foundationToken.unit[8],
+                    paddingBottom: foundationToken.unit[8],
+                    borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 },
             },
         },

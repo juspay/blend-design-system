@@ -8,9 +8,7 @@ import {
     DrawerHeader,
     DrawerTitle,
     DrawerBody,
-    DrawerClose,
 } from '../Drawer'
-import { X } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -74,9 +72,6 @@ const SingleSelectItem = ({
             margin={`0 ${FOUNDATION_THEME.unit[8]}`}
             borderRadius={4}
             cursor={item.disabled ? 'not-allowed' : 'pointer'}
-            backgroundColor={
-                isSelected ? FOUNDATION_THEME.colors.gray[50] : 'transparent'
-            }
             _hover={{
                 backgroundColor: FOUNDATION_THEME.colors.gray[50],
             }}
@@ -273,47 +268,23 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
 
                 <DrawerPortal>
                     <DrawerOverlay />
-                    <DrawerContent>
+                    <DrawerContent contentDriven={true}>
                         <DrawerHeader>
                             <Block
                                 display="flex"
-                                justifyContent="space-between"
+                                justifyContent="center"
                                 alignItems="center"
+                                paddingX={
+                                    singleSelectTokens.drawer.header.paddingX
+                                }
+                                paddingBottom={
+                                    singleSelectTokens.drawer.header
+                                        .paddingBottom
+                                }
                             >
                                 <DrawerTitle>
                                     {label || 'Select Option'}
                                 </DrawerTitle>
-                                <DrawerClose>
-                                    <Block
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        width={FOUNDATION_THEME.unit[32]}
-                                        height={FOUNDATION_THEME.unit[32]}
-                                        borderRadius={FOUNDATION_THEME.unit[6]}
-                                        backgroundColor={
-                                            FOUNDATION_THEME.colors.gray[100]
-                                        }
-                                        border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                                        cursor="pointer"
-                                        _hover={{
-                                            backgroundColor:
-                                                FOUNDATION_THEME.colors
-                                                    .gray[200],
-                                        }}
-                                        onClick={() => {
-                                            setDrawerOpen(false)
-                                        }}
-                                    >
-                                        <X
-                                            size={16}
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[500]
-                                            }
-                                        />
-                                    </Block>
-                                </DrawerClose>
                             </Block>
                         </DrawerHeader>
 
@@ -353,7 +324,6 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                     )}
 
                                     <Block
-                                        padding="0px 16px 16px 16px"
                                         display="flex"
                                         flexDirection="column"
                                         gap={4}

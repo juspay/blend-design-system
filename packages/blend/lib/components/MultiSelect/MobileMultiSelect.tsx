@@ -8,9 +8,7 @@ import {
     DrawerHeader,
     DrawerTitle,
     DrawerBody,
-    DrawerClose,
 } from '../Drawer'
-import { X } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { MultiSelectTrigger } from '../../main'
@@ -147,9 +145,6 @@ const MultiSelectItem = ({
             margin="0px 8px"
             borderRadius={4}
             cursor={item.disabled ? 'not-allowed' : 'pointer'}
-            backgroundColor={
-                isSelected ? FOUNDATION_THEME.colors.gray[50] : 'transparent'
-            }
             _hover={{
                 backgroundColor: FOUNDATION_THEME.colors.gray[50],
             }}
@@ -324,11 +319,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                         <DrawerHeader>
                             <Block
                                 display="flex"
-                                justifyContent={
-                                    showActionButtons
-                                        ? 'center'
-                                        : 'space-between'
-                                }
+                                justifyContent="center"
                                 alignItems="center"
                                 paddingX={
                                     multiSelectTokens.drawer.header.paddingX
@@ -346,26 +337,6 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                 <DrawerTitle>
                                     {label || 'Select Options'}
                                 </DrawerTitle>
-                                {!showActionButtons && (
-                                    <DrawerClose>
-                                        <Block
-                                            display="flex"
-                                            alignItems="center"
-                                            justifyContent="center"
-                                            width={FOUNDATION_THEME.unit[32]}
-                                            height={FOUNDATION_THEME.unit[32]}
-                                            cursor="pointer"
-                                        >
-                                            <X
-                                                size={16}
-                                                color={
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[500]
-                                                }
-                                            />
-                                        </Block>
-                                    </DrawerClose>
-                                )}
                             </Block>
                         </DrawerHeader>
 
