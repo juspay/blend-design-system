@@ -702,7 +702,7 @@ const MultiSelectDemo = () => {
                                 onFocus={() => {
                                     console.log('MultiSelect focus')
                                 }}
-                                // useDrawerOnMobile={false}
+                                useDrawerOnMobile={false}
                                 height={62}
                                 enableSelectAll={true}
                                 enableSearch={true}

@@ -6,7 +6,7 @@ import {
     TooltipSlotDirection,
 } from '@juspay/blend-design-system'
 import React from 'react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const TooltipPreview = () => {
     const tsCode = `import { Tooltip, TooltipSide, TooltipAlign, TooltipSize, TooltipSlotDirection } from "@juspay/blend-design-system";

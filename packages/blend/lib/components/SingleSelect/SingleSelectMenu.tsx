@@ -10,8 +10,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import styled from 'styled-components'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
-import { ChevronRight } from 'lucide-react'
-import { Checkbox } from '../Checkbox'
+import { Check, ChevronRight } from 'lucide-react'
 import { TextInput } from '../Inputs/TextInput'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SingleSelectTokensType } from './singleSelect.tokens'
@@ -240,10 +239,7 @@ const Item = ({
                 </Text>
                 {isSelected && (
                     <Block as="span" display="flex" alignItems="center">
-                        <Checkbox
-                            checked={isSelected}
-                            disabled={item.disabled}
-                        />
+                        <Check size={16} color={'#000000'} />
                     </Block>
                 )}
             </Block>

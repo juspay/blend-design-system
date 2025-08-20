@@ -20,4 +20,5 @@ export type SidebarProps = {
     topbar: ReactNode
     footer?: ReactNode
     sidebarTopSlot?: ReactNode
+    sidebarCollapseKey?: string
 }

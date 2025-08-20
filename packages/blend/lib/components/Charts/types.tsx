@@ -62,10 +62,9 @@ export type RenderChartProps = {
 export type ChartsProps = {
     chartType?: ChartType
     data: NewNestedDataPoint[]
+    colors?: string[]
     xAxisLabel?: string
     yAxisLabel?: string
-    colors?: string[]
-    metrics?: string[]
     slot1?: ReactNode
     slot2?: ReactNode
     slot3?: ReactNode

@@ -32,57 +32,6 @@ export type TextInputTokensType = {
     }
 }
 
-const textInputTokens: Readonly<TextInputTokensType> = {
-    input: {
-        gap: FOUNDATION_THEME.unit[8],
-        borderRadius: FOUNDATION_THEME.unit[10],
-        boxShadow: {
-            default: FOUNDATION_THEME.shadows.sm,
-            hover: FOUNDATION_THEME.shadows.sm,
-            focus: FOUNDATION_THEME.shadows.focusPrimary,
-            error: FOUNDATION_THEME.shadows.focusError,
-            disabled: FOUNDATION_THEME.shadows.sm,
-        },
-        paddingX: {
-            md: FOUNDATION_THEME.unit[12],
-            lg: FOUNDATION_THEME.unit[14],
-            sm: FOUNDATION_THEME.unit[10],
-        },
-        paddingY: {
-            md: FOUNDATION_THEME.unit[8],
-            lg: FOUNDATION_THEME.unit[10],
-            sm: FOUNDATION_THEME.unit[6],
-        },
-        border: {
-            default: 'none',
-            hover: 'none',
-            focus: 'none',
-            error: 'none',
-            disabled: 'none',
-        },
-        outline: {
-            default: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-            hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
-            focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-            error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-            disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-        },
-        color: {
-            default: FOUNDATION_THEME.colors.gray[800],
-            hover: FOUNDATION_THEME.colors.gray[800],
-            focus: FOUNDATION_THEME.colors.gray[800],
-            error: FOUNDATION_THEME.colors.red[800],
-            disabled: FOUNDATION_THEME.colors.gray[300],
-        },
-        backgroundColor: {
-            default: FOUNDATION_THEME.colors.gray[0],
-            disabled: FOUNDATION_THEME.colors.gray[50],
-            hover: FOUNDATION_THEME.colors.gray[0],
-            focus: FOUNDATION_THEME.colors.gray[0],
-            error: FOUNDATION_THEME.colors.gray[0],
-        },
-    },
-}
 export type ResponsiveTextInputTokens = {
     [key in keyof BreakpointType]: TextInputTokensType
 }
@@ -195,5 +144,3 @@ export const getTextInputTokens = (
         },
     }
 }
-
-export default textInputTokens

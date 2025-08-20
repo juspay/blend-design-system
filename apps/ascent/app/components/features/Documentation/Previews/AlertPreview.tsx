@@ -1,7 +1,7 @@
 'use client'
 import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system'
 import React from 'react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const AlertPreview = () => {
     const tsCode = `import { Alert, AlertVariant, AlertStyle } from "@juspay/blend-design-system";

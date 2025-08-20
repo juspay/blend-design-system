@@ -1,6 +1,6 @@
 'use client'
 import { Drawer } from 'vaul'
-import { DocItem } from '../../../docs/utils/scanDirectory'
+import { DocItem } from '@/docs/utils'
 import Sidebar from './Sidebar'
 
 interface SidebarDrawerProps {

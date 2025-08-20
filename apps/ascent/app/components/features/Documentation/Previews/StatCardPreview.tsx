@@ -6,7 +6,7 @@ import {
     SingleSelect,
 } from '@juspay/blend-design-system'
 import React, { useState } from 'react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 import { DollarSign } from 'lucide-react'
 
 const StatCardPreview = () => {
@@ -20,12 +20,12 @@ function MyComponent() {
   const [selectedVariant, setSelectedVariant] = useState<string>("line");
 
   const chartData = [
-    { value: 100, label: "Jan", date: "2024-01" },
-    { value: 120, label: "Feb", date: "2024-02" },
-    { value: 110, label: "Mar", date: "2024-03" },
-    { value: 140, label: "Apr", date: "2024-04" },
-    { value: 130, label: "May", date: "2024-05" },
-    { value: 160, label: "Jun", date: "2024-06" },
+    { value: 100, name: "Jan" },
+    { value: 120, name: "Feb" },
+    { value: 110, name: "Mar" },
+    { value: 140, name: "Apr" },
+    { value: 130, name: "May" },
+    { value: 160, name: "Jun" },
   ];
 
   const variantItems = [
@@ -169,12 +169,12 @@ external make: (
 ) => React.element = "StatCard"`
 
     const chartData = [
-        { value: 100, label: 'Jan', date: '2024-01' },
-        { value: 120, label: 'Feb', date: '2024-02' },
-        { value: 110, label: 'Mar', date: '2024-03' },
-        { value: 140, label: 'Apr', date: '2024-04' },
-        { value: 130, label: 'May', date: '2024-05' },
-        { value: 160, label: 'Jun', date: '2024-06' },
+        { value: 100, name: 'Jan' },
+        { value: 120, name: 'Feb' },
+        { value: 110, name: 'Mar' },
+        { value: 140, name: 'Apr' },
+        { value: 130, name: 'May' },
+        { value: 160, name: 'Jun' },
     ]
 
     const variantItems = [

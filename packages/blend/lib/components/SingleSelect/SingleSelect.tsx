@@ -178,7 +178,10 @@ const SingleSelect = ({
                         }}
                         items={items}
                         selected={selected}
-                        onSelect={onSelect}
+                        onSelect={(value) => {
+                            onSelect(value)
+                            setOpen(false)
+                        }}
                         disabled={disabled}
                         minWidth={minWidth}
                         maxWidth={maxWidth}
@@ -191,6 +194,7 @@ const SingleSelect = ({
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
+                                    name={name}
                                     position="relative"
                                     width={'100%'}
                                     display="flex"

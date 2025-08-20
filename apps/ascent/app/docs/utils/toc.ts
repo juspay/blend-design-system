@@ -6,6 +6,7 @@ function generateSlug(text: string): string {
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)/g, '')
+        .replace(/^-+|-+$/g, '')
 }
 
 // Function to normalize heading levels based on actual hierarchy
@@ -27,6 +28,7 @@ function normalizeHeadingLevels(
 export function extractHeadings(content: string): TOCItem[] {
     const headingRegex = /^(#{1,6})\s+(.+)$/gm
     const headings: Array<{ level: number; text: string; id: string }> = []
+    const usedIds = new Set<string>()
     let match
 
     while ((match = headingRegex.exec(content)) !== null) {
@@ -34,10 +36,19 @@ export function extractHeadings(content: string): TOCItem[] {
         const text = match[2].trim()
         const id = generateSlug(text)
 
+        // Ensure unique IDs by appending a number if duplicate
+        let counter = 1
+        let uniqueId = id
+        while (usedIds.has(uniqueId)) {
+            uniqueId = `${id}-${counter}`
+            counter++
+        }
+        usedIds.add(uniqueId)
+
         // Include h1 through h6 headings
         if (level >= 1 && level <= 6) {
             headings.push({
-                id,
+                id: uniqueId,
                 text,
                 level,
             })
