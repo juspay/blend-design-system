@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef, useState, useEffect } from 'react'
 import { PanelsTopLeft, UserIcon } from 'lucide-react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
@@ -52,8 +52,48 @@ const ToggleButton = styled.button`
 `
 
 const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
-    ({ children, data, topbar, leftPanel, sidebarTopSlot, footer }, ref) => {
+    (
+        {
+            children,
+            data,
+            topbar,
+            leftPanel,
+            sidebarTopSlot,
+            footer,
+            sidebarCollapseKey = '/',
+        },
+        ref
+    ) => {
         const [isExpanded, setIsExpanded] = useState<boolean>(true)
+        const [showToggleButton, setShowToggleButton] = useState<boolean>(false)
+        const [isHovering, setIsHovering] = useState<boolean>(false)
+
+        useEffect(() => {
+            const handleKeyPress = (event: KeyboardEvent) => {
+                if (event.key === sidebarCollapseKey) {
+                    event.preventDefault()
+                    setIsExpanded(!isExpanded)
+                }
+            }
+
+            document.addEventListener('keydown', handleKeyPress)
+
+            return () => {
+                document.removeEventListener('keydown', handleKeyPress)
+            }
+        }, [isExpanded])
+
+        useEffect(() => {
+            if (!isExpanded) {
+                const timer = setTimeout(() => {
+                    setShowToggleButton(true)
+                }, 50)
+
+                return () => clearTimeout(timer)
+            } else {
+                setShowToggleButton(false)
+            }
+        }, [isExpanded])
 
         return (
             <Block
@@ -62,25 +102,50 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 height="100%"
                 display="flex"
                 backgroundColor={FOUNDATION_THEME.colors.gray[25]}
+                position="relative"
             >
+                {!isExpanded && (
+                    <Block
+                        position="absolute"
+                        left="0"
+                        top="0"
+                        width="20px"
+                        height="100%"
+                        zIndex="30"
+                        onMouseEnter={() => setIsHovering(true)}
+                        style={{
+                            backgroundColor: 'transparent',
+                        }}
+                    />
+                )}
+
                 <Block
+                    backgroundColor={FOUNDATION_THEME.colors.gray[25]}
                     maxWidth={
-                        isExpanded ? (leftPanel ? '300px' : '250px') : '0'
+                        isExpanded || isHovering
+                            ? leftPanel
+                                ? '300px'
+                                : '250px'
+                            : '0'
                     }
                     width="100%"
                     borderRight={
-                        isExpanded
+                        isExpanded || isHovering
                             ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
                             : 'none'
                     }
                     display="flex"
+                    position={!isExpanded ? 'absolute' : 'relative'}
+                    zIndex={!isExpanded ? '20' : 'auto'}
+                    height="100%"
                     style={{
                         willChange: 'transform',
                         transitionDuration: '150ms',
                         animation: 'slide-in-from-left 0.3s ease-out',
                     }}
+                    onMouseLeave={() => setIsHovering(false)}
                 >
-                    {isExpanded && (
+                    {(isExpanded || isHovering) && (
                         <>
                             {/* TENANTS SIDE BAR _ SECONDARY SIDE BAR */}
                             {leftPanel &&
@@ -200,9 +265,10 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                         />
                                     )}
                                     <ToggleButton
-                                        onClick={() =>
+                                        onClick={() => {
                                             setIsExpanded(!isExpanded)
-                                        }
+                                            setIsHovering(false)
+                                        }}
                                     >
                                         <PanelsTopLeft
                                             color={
@@ -255,16 +321,21 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                 width="fit-content"
                                 flexShrink={0}
                             >
-                                <ToggleButton
-                                    onClick={() => setIsExpanded(!isExpanded)}
-                                >
-                                    <PanelsTopLeft
-                                        color={
-                                            FOUNDATION_THEME.colors.gray[600]
+                                {showToggleButton && (
+                                    <ToggleButton
+                                        onClick={() =>
+                                            setIsExpanded(!isExpanded)
                                         }
-                                        size={14}
-                                    />
-                                </ToggleButton>
+                                    >
+                                        <PanelsTopLeft
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[600]
+                                            }
+                                            size={14}
+                                        />
+                                    </ToggleButton>
+                                )}
                                 {sidebarTopSlot ? (
                                     sidebarTopSlot
                                 ) : (
