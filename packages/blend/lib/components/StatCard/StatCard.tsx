@@ -44,6 +44,7 @@ const StatCard = ({
     actionIcon,
     helpIconText,
     dropdownProps,
+    maxWidth = 'auto',
 }: StatCardProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -154,13 +155,7 @@ const StatCard = ({
         if (!payloadItem) return null
 
         const currentValue = payloadItem.value as number
-        const currentIndex = payloadItem.payload?.index as number
-        const previousIndex = Math.max(0, currentIndex - 1)
-        const previousValue = chartData?.[previousIndex]?.value || currentValue
-
-        const diff = currentValue - previousValue
-        const percentage = previousValue ? (diff / previousValue) * 100 : 0
-        const isUp = diff >= 0
+        const name = payloadItem.payload?.name
 
         return (
             <Block
@@ -172,15 +167,24 @@ const StatCard = ({
                     statCardToken.chart.tooltip.container.borderRadius
                 }
             >
-                <Text
-                    as="span"
-                    color={statCardToken.chart.tooltip.text.color}
-                    variant="body.sm"
-                >
-                    {`${percentage >= 0 ? '+' : ''}${percentage.toFixed(0)}% ${
-                        isUp ? 'Up' : 'Down'
-                    }`}
-                </Text>
+                <Block display="flex" gap={4}>
+                    <Text
+                        as="span"
+                        color={statCardToken.chart.tooltip.text.color}
+                        variant="body.sm"
+                        fontWeight="medium"
+                    >
+                        {`${name},`}
+                    </Text>
+
+                    <Text
+                        as="span"
+                        color={statCardToken.chart.tooltip.text.color}
+                        variant="body.sm"
+                    >
+                        {currentValue}
+                    </Text>
+                </Block>
             </Block>
         )
     }
@@ -206,7 +210,7 @@ const StatCard = ({
             // gap={statCardToken.gap}
             justifyContent="space-between"
             data-statcard-variant={normalizedVariant}
-            maxWidth={isSmallScreen ? '200px' : '350px'}
+            maxWidth={maxWidth}
         >
             {effectiveVariant !== StatCardVariant.NUMBER && (
                 <Block display="flex" gap={statCardToken.header.gap}>
@@ -587,7 +591,7 @@ const StatCard = ({
                                         bottom: 5,
                                     }}
                                 >
-                                    <XAxis dataKey="date" hide />
+                                    <XAxis dataKey="name" hide />
                                     <YAxis hide />
                                     <RechartsTooltip
                                         content={<CustomTooltip />}

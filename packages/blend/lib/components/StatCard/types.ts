@@ -15,8 +15,7 @@ export enum ChangeType {
 
 export type ChartDataPoint = {
     value: number
-    label: string
-    date?: string
+    name: string
 }
 
 export type StatCardChange = {
@@ -38,4 +37,5 @@ export type StatCardProps = {
     actionIcon?: ReactNode
     helpIconText?: string
     dropdownProps?: SingleSelectProps
+    maxWidth?: string
 }
