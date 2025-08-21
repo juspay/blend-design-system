@@ -9,7 +9,8 @@ import { Separator } from '../Separator'
 import { IsoIcon } from '../../icons/IsoIcon'
 import Link from 'next/link'
 import { Modal } from '../connect-with-us/Modal'
-// import { PciIcon } from '../../icons/PciIcon'
+import { GdprIcon } from '../../icons/GdprIcon'
+import { PciIcon } from '../../icons/PciIcon'
 import { MoveToTopArrow } from '../../icons/MoveToTopArrow'
 
 export const Footer = () => {
@@ -104,8 +105,8 @@ export const Footer = () => {
                 </div>
                 <div className="flex items-center gap-[14px] text-white">
                     <IsoIcon />
-                    {/* <GdprIcon /> */}
-                    {/* <PciIcon /> */}
+                    <GdprIcon />
+                    <PciIcon />
                 </div>
             </div>
         </footer>

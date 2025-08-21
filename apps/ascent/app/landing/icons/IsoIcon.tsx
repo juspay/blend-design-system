@@ -3,15 +3,15 @@ export const IsoIcon = () => {
         <svg
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink"
-            width="31"
-            height="30"
-            viewBox="0 0 31 30"
+            width="100"
+            height="100"
+            viewBox="0 0 100 100"
             fill="none"
         >
             <rect
                 x="0.265381"
-                width="30.3589"
-                height="29.0939"
+                width="100.3589"
+                height="109.0939"
                 fill="url(#pattern0_3101_6151)"
             />
             <defs>
