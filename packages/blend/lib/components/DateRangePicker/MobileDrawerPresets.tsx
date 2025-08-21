@@ -288,7 +288,6 @@ const ScrollablePicker = React.memo<{
                     </PrimitiveText>
                 </Block>
 
-                {/* Middle row (selected) */}
                 <Block
                     height={`${ITEM_HEIGHT}px`}
                     display="flex"
@@ -421,7 +420,6 @@ const ScrollablePicker = React.memo<{
                     )}
                 </Block>
 
-                {/* Bottom row */}
                 <Block
                     height={`${ITEM_HEIGHT}px`}
                     display="flex"
@@ -544,10 +542,10 @@ const DatePickerComponent: React.FC<{
         )
 
         return (
-            <Block marginTop={tokens.mobileDrawer.datePicker.marginTop}>
+            <Block>
                 <Block
                     display="flex"
-                    padding={tokens.mobileDrawer.datePicker.container.padding}
+                    paddingX={tokens.mobileDrawer.datePicker.container.padding}
                     width="100%"
                     gap={tokens.mobileDrawer.datePicker.container.gap}
                 >
@@ -582,7 +580,6 @@ const DatePickerComponent: React.FC<{
                                 Year
                             </PrimitiveText>
                         </Block>
-                        {/* Scrollable Picker */}
                         <ScrollablePicker
                             items={data.years.items}
                             selectedIndex={data.years.selectedIndex}
@@ -742,7 +739,7 @@ const DatePickerComponent: React.FC<{
     }
 
     return (
-        <Block marginTop={16}>
+        <Block marginTop={16} paddingX={20} paddingBottom={24}>
             <Tabs
                 defaultValue="start"
                 variant={TabsVariant.BOXED}
@@ -782,7 +779,6 @@ const DatePickerComponent: React.FC<{
     )
 }
 
-// Main Component
 const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
     drawerOpen,
     setDrawerOpen,
@@ -904,8 +900,6 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
             display="flex"
             gap={FOUNDATION_THEME.unit[12]}
             padding={FOUNDATION_THEME.unit[16]}
-            marginBottom={FOUNDATION_THEME.unit[8]}
-            marginTop={FOUNDATION_THEME.unit[24]}
         >
             <Block flexGrow={1}>
                 <Button
@@ -940,20 +934,17 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
             <DrawerPortal>
                 <DrawerOverlay />
                 <DrawerContent
-                    contentDriven={showPresets && !showCustomDropdownOnly}
+                    contentDriven={true}
                     mobileOffset={
                         showCustomDropdownOnly || !showPresets
-                            ? { top: '50%' }
+                            ? undefined
                             : undefined
                     }
                 >
                     <DrawerBody noPadding>
                         <Block display="flex" flexDirection="column" gap={0}>
                             {showCustomDropdownOnly || !showPresets ? (
-                                <Block
-                                    width="100%"
-                                    padding={FOUNDATION_THEME.unit[16]}
-                                >
+                                <Block width="100%">
                                     {renderCustomDateInputs()}
                                 </Block>
                             ) : (
@@ -974,7 +965,7 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                                                     'max-height 0.4s ease-in-out, opacity 0.3s ease-in-out',
                                             }}
                                         >
-                                            <Block padding="0 16px">
+                                            <Block>
                                                 {renderCustomDateInputs()}
                                                 {renderActionButtons()}
                                             </Block>
