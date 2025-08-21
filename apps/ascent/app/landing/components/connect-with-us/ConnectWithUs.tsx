@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { ConnectWithUsBox } from '../../icons/ConnectWithUsBox'
 import { InfoBtn } from '../InfoBtn'
 import { FooterGradientAndSparkles } from '../../icons/FooterGradientAndSparkles'

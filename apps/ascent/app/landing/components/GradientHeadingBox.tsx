@@ -3,11 +3,9 @@ import React from 'react'
 export const GradientHeadingBox = ({
     text,
     classes,
-    border,
 }: {
     text: string
     classes?: string
-    border?: string
 }) => {
     return (
         <div

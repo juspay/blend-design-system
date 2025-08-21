@@ -2,19 +2,16 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Tabs } from './Tabs'
-import { BlendBorderHeading } from '../BlendBorderHeading'
 import { Separator } from '../Separator'
 import { TokenizerComp } from './tokenizer/Tokenizer'
 import { Components } from './components/Components'
 import { Documentation } from './documentation/Documentation'
 import { PlaygroundComp } from './playground/Playground'
-import { Blogs } from '../blogs/Blogs'
 import { ConnectWithUs } from '../connect-with-us/ConnectWithUs'
 import { Footer } from '../footer/Footer'
 
 export const TabsSection = () => {
     const [selectedTab, setSelectedTab] = useState('tokenizer')
-    const tabsContainerRef = useRef<HTMLDivElement>(null)
 
     // Refs for each section
     const tokenizerRef = useRef<HTMLDivElement>(null)

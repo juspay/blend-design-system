@@ -9,7 +9,6 @@ export const PlaygroundComp = () => {
             <GradientHeadingBox
                 text="playground"
                 classes="w-[600px] tracking-[40px] text-center"
-                border="linear-gradient(90deg, #B3B3B3, #999999)"
             />
             <div className="mt-40 flex">
                 <div className="w-full flex flex-col gap-25">
