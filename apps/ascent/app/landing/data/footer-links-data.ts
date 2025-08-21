@@ -5,23 +5,15 @@ export const FooterLinksData: FooterLinksDataType[] = [
         title: 'company',
         links: [
             {
-                link: '',
+                link: 'https://juspay.io/about',
                 name: 'About Us',
             },
             {
-                link: '',
-                name: 'Blogs',
-            },
-            {
-                link: '',
-                name: 'Case Studies',
-            },
-            {
-                link: '',
+                link: 'https://juspay.io/newsroom',
                 name: 'Newsroom',
             },
             {
-                link: '',
+                link: 'https://juspay.io/careers',
                 name: 'Careers',
             },
             {
@@ -34,23 +26,23 @@ export const FooterLinksData: FooterLinksDataType[] = [
         title: 'compliances',
         links: [
             {
-                link: '',
+                link: 'https://juspay.io/vulnerability-disclosure-policy/',
                 name: 'Vulnerability Disclosure',
             },
             {
-                link: '',
+                link: 'https://hyperpg.in/',
                 name: 'Payment Aggregation',
             },
             {
-                link: '',
+                link: 'https://seal.panaceainfosec.com/index.php?certid=CERT18D880C124',
                 name: 'PCI DSS 4.0',
             },
             {
-                link: '',
+                link: 'https://juspay.io/iso-27001-2022',
                 name: 'ISO 27001:2022',
             },
             {
-                link: '',
+                link: 'https://juspay.io/about',
                 name: 'SOC 2 Type 2',
             },
         ],
@@ -59,16 +51,20 @@ export const FooterLinksData: FooterLinksDataType[] = [
         title: 'resources',
         links: [
             {
-                link: '',
-                name: 'Merchant Home',
+                link: 'https://juspay.design/docs/',
+                name: 'Component Documentation',
             },
             {
-                link: '',
-                name: 'API Documentation',
+                link: 'https://github.com/juspay/blend-design-system/wiki/Theme-Provider-&-Token-Architecture',
+                name: 'Design System Tokeniser',
             },
             {
-                link: '',
-                name: 'Blog',
+                link: 'https://github.com/juspay/blend-design-system/wiki/Blend-MCP-Server-Documentation',
+                name: 'Blend MCP Server',
+            },
+            {
+                link: ' https://juspay.design/blog/',
+                name: 'Blogs',
             },
         ],
     },

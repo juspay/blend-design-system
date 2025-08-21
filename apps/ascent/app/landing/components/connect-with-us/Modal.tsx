@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 
 // Define the shape of your form data
@@ -16,13 +16,22 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
-    } = useForm<FormInputs>()
+        formState: { errors, isValid },
+    } = useForm<FormInputs>({
+        mode: 'onChange', // track validation on change
+    })
+
+    // Prevent background scroll when modal is open
+    useEffect(() => {
+        document.body.style.overflow = 'hidden'
+        return () => {
+            document.body.style.overflow = 'auto'
+        }
+    }, [])
 
     // This function will be called on successful form submission
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
         console.log(data)
-        // You can add your API call or other logic here
         onClose() // Close the modal after submission
     }
 
@@ -73,7 +82,7 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                             <input
                                 type="text"
                                 id="fullName"
-                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#C9C9C9] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#706E6E] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 {...register('fullName', { required: true })}
                             />
                             {errors.fullName && (
@@ -95,7 +104,7 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                             <input
                                 type="email"
                                 id="email"
-                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#C9C9C9] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#706E6E] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 {...register('email', {
                                     required: true,
                                     pattern: /^\S+@\S+$/i,
@@ -122,7 +131,7 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                                 <input
                                     type="tel"
                                     id="contactNumber"
-                                    className="flex-1 py-4 bg-transparent text-[#C9C9C9] placeholder-gray-500 focus:outline-none"
+                                    className="flex-1 py-4 bg-transparent text-[#706E6E] placeholder-gray-500 focus:outline-none"
                                     {...register('contactNumber', {
                                         required: true,
                                     })}
@@ -146,10 +155,11 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                             </label>
                             <select
                                 id="industry"
-                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#C9C9C9] appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                defaultValue=""
+                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#706E6E] appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 {...register('industry', { required: true })}
                             >
-                                <option value="" disabled selected>
+                                <option value="" disabled>
                                     Your Industry
                                 </option>
                                 <option value="ePharma">E-pharma</option>
@@ -201,7 +211,7 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                                 id="message"
                                 placeholder="Type your message"
                                 rows={5}
-                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#C9C9C9] placeholder-[#C9C9C9] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#706E6E] placeholder-[#C9C9C9] focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 {...register('message')}
                             ></textarea>
                         </div>
@@ -217,7 +227,12 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                             </button>
                             <button
                                 type="submit"
-                                className="py-3 px-8 rounded-full text-white bg-gray-800 hover:bg-gray-700 transition-colors flex items-center gap-2"
+                                disabled={!isValid}
+                                className={`py-3 px-8 rounded-full flex items-center gap-2 transition-colors ${
+                                    isValid
+                                        ? 'text-white bg-gray-800 hover:bg-gray-700'
+                                        : 'text-gray-400 bg-gray-200 cursor-not-allowed'
+                                }`}
                             >
                                 Let's Connect
                                 <svg

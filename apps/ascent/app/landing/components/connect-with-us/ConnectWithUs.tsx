@@ -25,7 +25,7 @@ export const ConnectWithUs = () => {
                     We're listening--tell us what you think.
                 </p>
             </div>
-            <div className="w-full flex items-center justify-center">
+            <div className="w-full flex items-center justify-center mt-5">
                 <InfoBtn
                     text="Connect with us"
                     onClick={handleOpenModal}

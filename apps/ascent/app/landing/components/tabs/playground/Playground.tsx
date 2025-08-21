@@ -19,7 +19,7 @@ export const PlaygroundComp = () => {
                     </p>
                     <InfoBtn
                         text="Learn more"
-                        href="http://localhost:6006/?path=/storybook"
+                        href="https://juspay.design/storybook/"
                     />
                 </div>
                 <div className="w-full">

@@ -12,7 +12,7 @@ export const Components = () => {
                     <p>Accelerating design-to-dev handoff with robust, </p>
                     <p>token-driven components.</p>
                 </div>
-                <InfoBtn text="Explore" />
+                <InfoBtn text="Explore" href="https://juspay.design/docs/" />
                 <ComponentCards />
             </div>
         </div>
