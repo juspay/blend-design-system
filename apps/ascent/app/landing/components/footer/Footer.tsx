@@ -10,7 +10,7 @@ import { IsoIcon } from '../../icons/IsoIcon'
 import Link from 'next/link'
 import { Modal } from '../connect-with-us/Modal'
 // import { PciIcon } from '../../icons/PciIcon'
-import { MoveToTopArrow } from '../../icons/moveToTopArrow'
+import { MoveToTopArrow } from '../../icons/MoveToTopArrow'
 
 export const Footer = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
