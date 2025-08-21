@@ -288,7 +288,6 @@ const ScrollablePicker = React.memo<{
                     </PrimitiveText>
                 </Block>
 
-                {/* Middle row (selected) */}
                 <Block
                     height={`${ITEM_HEIGHT}px`}
                     display="flex"
@@ -421,7 +420,6 @@ const ScrollablePicker = React.memo<{
                     )}
                 </Block>
 
-                {/* Bottom row */}
                 <Block
                     height={`${ITEM_HEIGHT}px`}
                     display="flex"
@@ -544,10 +542,10 @@ const DatePickerComponent: React.FC<{
         )
 
         return (
-            <Block marginTop={tokens.mobileDrawer.datePicker.marginTop}>
+            <Block>
                 <Block
                     display="flex"
-                    padding={tokens.mobileDrawer.datePicker.container.padding}
+                    paddingX={tokens.mobileDrawer.datePicker.container.padding}
                     width="100%"
                     gap={tokens.mobileDrawer.datePicker.container.gap}
                 >
@@ -582,7 +580,6 @@ const DatePickerComponent: React.FC<{
                                 Year
                             </PrimitiveText>
                         </Block>
-                        {/* Scrollable Picker */}
                         <ScrollablePicker
                             items={data.years.items}
                             selectedIndex={data.years.selectedIndex}
@@ -742,7 +739,7 @@ const DatePickerComponent: React.FC<{
     }
 
     return (
-        <Block marginTop={16}>
+        <Block marginTop={16} paddingX={20} paddingBottom={24}>
             <Tabs
                 defaultValue="start"
                 variant={TabsVariant.BOXED}
@@ -782,7 +779,6 @@ const DatePickerComponent: React.FC<{
     )
 }
 
-// Main Component
 const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
     drawerOpen,
     setDrawerOpen,
@@ -904,10 +900,14 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
             display="flex"
             gap={FOUNDATION_THEME.unit[12]}
             padding={FOUNDATION_THEME.unit[16]}
-            marginBottom={FOUNDATION_THEME.unit[8]}
-            marginTop={FOUNDATION_THEME.unit[24]}
+            backgroundColor="white"
         >
-            <Block flexGrow={1}>
+            <Block
+                flexGrow={1}
+                flexShrink={1}
+                flexBasis={0}
+                style={{ minWidth: 0 }}
+            >
                 <Button
                     buttonType={ButtonType.SECONDARY}
                     size={ButtonSize.LARGE}
@@ -919,7 +919,12 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                     text="Cancel"
                 />
             </Block>
-            <Block flexGrow={1}>
+            <Block
+                flexGrow={1}
+                flexShrink={1}
+                flexBasis={0}
+                style={{ minWidth: 0 }}
+            >
                 <Button
                     buttonType={ButtonType.PRIMARY}
                     size={ButtonSize.LARGE}
@@ -940,51 +945,67 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
             <DrawerPortal>
                 <DrawerOverlay />
                 <DrawerContent
-                    contentDriven={showPresets && !showCustomDropdownOnly}
+                    contentDriven={true}
                     mobileOffset={
                         showCustomDropdownOnly || !showPresets
-                            ? { top: '50%' }
+                            ? undefined
                             : undefined
                     }
                 >
                     <DrawerBody noPadding>
-                        <Block display="flex" flexDirection="column" gap={0}>
+                        <Block
+                            display="flex"
+                            flexDirection="column"
+                            height="100%"
+                            maxHeight="80vh"
+                        >
                             {showCustomDropdownOnly || !showPresets ? (
-                                <Block
-                                    width="100%"
-                                    padding={FOUNDATION_THEME.unit[16]}
-                                >
-                                    {renderCustomDateInputs()}
-                                </Block>
+                                <>
+                                    <Block
+                                        width="100%"
+                                        flexGrow={1}
+                                        style={{ overflowY: 'auto' }}
+                                    >
+                                        {renderCustomDateInputs()}
+                                    </Block>
+                                    {renderActionButtons()}
+                                </>
                             ) : (
                                 showPresets && (
-                                    <Block>
-                                        {availablePresets.map(renderPresetItem)}
-
+                                    <>
                                         <Block
+                                            flexGrow={1}
                                             style={{
-                                                maxHeight: isCustomExpanded
-                                                    ? '800px'
-                                                    : '0px',
-                                                opacity: isCustomExpanded
-                                                    ? 1
-                                                    : 0,
-                                                overflow: 'hidden',
-                                                transition:
-                                                    'max-height 0.4s ease-in-out, opacity 0.3s ease-in-out',
+                                                overflowY: 'auto',
+                                                minHeight: 0,
                                             }}
                                         >
-                                            <Block padding="0 16px">
+                                            {availablePresets.map(
+                                                renderPresetItem
+                                            )}
+
+                                            <Block
+                                                style={{
+                                                    maxHeight: isCustomExpanded
+                                                        ? '800px'
+                                                        : '0px',
+                                                    opacity: isCustomExpanded
+                                                        ? 1
+                                                        : 0,
+                                                    overflow: 'hidden',
+                                                    transition:
+                                                        'max-height 0.4s ease-in-out, opacity 0.3s ease-in-out',
+                                                }}
+                                            >
                                                 {renderCustomDateInputs()}
-                                                {renderActionButtons()}
                                             </Block>
                                         </Block>
-                                    </Block>
+
+                                        {isCustomExpanded &&
+                                            renderActionButtons()}
+                                    </>
                                 )
                             )}
-
-                            {(showCustomDropdownOnly || !showPresets) &&
-                                renderActionButtons()}
                         </Block>
                     </DrawerBody>
                 </DrawerContent>
