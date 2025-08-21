@@ -1,7 +1,12 @@
 'use client'
 
 import React from 'react'
-import { Sidebar, Button, ButtonType, ButtonSize } from 'blend-v1'
+import {
+    Sidebar,
+    Button,
+    ButtonType,
+    ButtonSize,
+} from '@juspay/blend-design-system'
 import { useRouter, usePathname } from 'next/navigation'
 import { tenants, merchants, getNavigationData } from './SidebarConfig'
 import { useAuth } from '../../contexts/AuthContext'

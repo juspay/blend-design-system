@@ -18,9 +18,11 @@ const dbConfig = {
     ssl:
         process.env.NODE_ENV === 'production'
             ? false // Cloud SQL uses Unix socket, no SSL needed
-            : process.env.DATABASE_HOST
-              ? { rejectUnauthorized: false }
-              : false,
+            : process.env.DATABASE_HOST === 'localhost'
+              ? false // Local development, no SSL
+              : process.env.DATABASE_HOST
+                ? { rejectUnauthorized: false }
+                : false,
     max: 20, // Increased back to 20 for better concurrency
     idleTimeoutMillis: 30000, // Increased to 30 seconds
     connectionTimeoutMillis: 20000, // Increased to 20 seconds

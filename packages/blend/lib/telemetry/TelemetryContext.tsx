@@ -9,6 +9,8 @@ import {
     useCallback,
     useState,
     ReactNode,
+    useEffect,
+    useRef,
 } from 'react'
 import {
     TelemetryConfig,
@@ -27,6 +29,7 @@ import {
     createPropsSignature,
     getStoredUsageData,
 } from './utils'
+import { TelemetryApiClient } from './apiClient'
 
 // Default configuration (opt-out system - enabled by default for component adoption tracking)
 const DEFAULT_CONFIG: TelemetryConfig = {
@@ -57,6 +60,47 @@ export function TelemetryProvider({
 
     // Generate session ID once per provider instance
     const [sessionId] = useState(() => generateSessionId())
+
+    // Initialize API client with configuration
+    const apiClientRef = useRef<TelemetryApiClient | null>(null)
+
+    useEffect(() => {
+        if (config.enabled) {
+            // Initialize API client with telemetry configuration
+            apiClientRef.current = new TelemetryApiClient({
+                apiEndpoint: userConfig.apiEndpoint,
+                batchSize: userConfig.batchSize || 10,
+                batchTimeout: userConfig.batchTimeout || 5000,
+                retryAttempts: userConfig.retryAttempts || 3,
+                retryDelay: userConfig.retryDelay || 1000,
+                offlineStorage: userConfig.offlineStorage !== false,
+                debug: config.debug,
+            })
+
+            if (config.debug) {
+                console.log('🚀 Blend Telemetry: API client initialized', {
+                    endpoint: apiClientRef.current.getQueueStatus(),
+                })
+            }
+        }
+
+        // Cleanup function
+        return () => {
+            if (apiClientRef.current) {
+                apiClientRef.current.destroy()
+                apiClientRef.current = null
+            }
+        }
+    }, [
+        config.enabled,
+        config.debug,
+        userConfig.apiEndpoint,
+        userConfig.batchSize,
+        userConfig.batchTimeout,
+        userConfig.retryAttempts,
+        userConfig.retryDelay,
+        userConfig.offlineStorage,
+    ])
 
     const track = useCallback(
         (
@@ -126,8 +170,21 @@ export function TelemetryProvider({
                     logTelemetryEvent(fullEvent, true)
                 }
 
-                // TODO: Send to analytics endpoint
-                // sendToAnalyticsEndpoint(fullEvent);
+                // Send to analytics endpoint via API client
+                if (apiClientRef.current) {
+                    apiClientRef.current.sendEvent(fullEvent).catch((error) => {
+                        if (config.debug) {
+                            console.warn(
+                                'Blend telemetry: Failed to send event to API',
+                                error
+                            )
+                        }
+                    })
+                } else if (config.debug) {
+                    console.warn(
+                        'Blend telemetry: API client not initialized, event not sent'
+                    )
+                }
             } catch (error) {
                 console.warn(
                     'Blend telemetry: Error tracking component usage',

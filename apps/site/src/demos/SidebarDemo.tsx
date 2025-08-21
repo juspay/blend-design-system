@@ -583,11 +583,28 @@ const SidebarDemo = () => {
 
     const themeProps =
         theme === 'EULER'
-            ? {}
+            ? {
+                  telemetryConfig: {
+                      enabled: true,
+                      debug: true,
+                      apiEndpoint: 'http://localhost:3001/api/telemetry', // Blend Monitor API
+                      batchSize: 5,
+                      batchTimeout: 3000,
+                      environment: 'development',
+                  },
+              }
             : {
                   foundationTokens: ALT_FOUNDATION_TOKENS,
                   componentTokens: HDFC_COMPONENT_TOKENS,
                   breakpoints: breakpoints,
+                  telemetryConfig: {
+                      enabled: true,
+                      debug: true,
+                      apiEndpoint: 'http://localhost:3001/api/telemetry', // Blend Monitor API
+                      batchSize: 5,
+                      batchTimeout: 3000,
+                      environment: 'development',
+                  },
               }
 
     return (

@@ -57,48 +57,99 @@ apps/blend-monitor/
 - Firebase project (for authentication)
 - Environment variables configured
 
-### Setup
+### Local Development Setup
 
-1. Install dependencies:
+1. **Install PostgreSQL locally** (if not already installed):
 
     ```bash
-    npm install
+    brew install postgresql
+    brew services start postgresql
     ```
 
-2. Set up environment variables:
+2. **Create local database**:
+
+    ```bash
+    createdb blend_monitor_test
+    ```
+
+3. **Install dependencies**:
+
+    ```bash
+    pnpm install
+    ```
+
+4. **Set up environment variables**:
 
     ```bash
     cp .env.example .env.local
     ```
 
-3. Initialize the database:
+    The `.env.local` file is pre-configured for local PostgreSQL development.
+
+5. **Apply database migrations**:
 
     ```bash
-    npm run db:init
+    pnpm run db:init
     ```
 
-4. Run development server:
+6. **Start development server**:
     ```bash
-    npm run dev
+    pnpm dev
     ```
+
+### Production Deployment
+
+For production deployment with GCP PostgreSQL:
+
+1. **Copy production environment file**:
+
+    ```bash
+    cp .env.production .env.local
+    ```
+
+2. **Start Cloud SQL Proxy** (if using GCP):
+
+    ```bash
+    cloud_sql_proxy -instances=your-project:region:instance-name=tcp:5433
+    ```
+
+3. **Deploy application** with production configuration.
+
+### Environment Files
+
+- `.env.local` - Local development configuration (PostgreSQL on port 5432)
+- `.env.production` - Production GCP configuration (PostgreSQL via Cloud SQL Proxy on port 5433)
+- `.env.example` - Template file with example configurations
+
+### Database Configuration
+
+**Local Development:**
+
+- Host: localhost:5432
+- Database: blend_monitor_test
+- User: postgres
+
+**Production (GCP):**
+
+- Host: localhost:5433 (via Cloud SQL Proxy)
+- Database: blend_monitor
+- User: admin
 
 ### Environment Variables
 
-Required environment variables:
+Key environment variables:
 
 ```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/blend_monitor
+# Local Development Database
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/blend_monitor_test
 
-# Firebase
-NEXT_PUBLIC_FIREBASE_API_KEY=
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-FIREBASE_SERVICE_ACCOUNT_KEY=
+# Production Database (GCP via Cloud SQL Proxy)
+DATABASE_URL=postgresql://admin:password@localhost:5433/blend_monitor
 
-# External APIs
-NPM_API_BASE_URL=https://registry.npmjs.org
-FIGMA_API_TOKEN=
+# Firebase Configuration
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
 ```
 
 ## Project Structure Details

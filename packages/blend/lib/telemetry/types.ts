@@ -11,6 +11,20 @@ export interface TelemetryConfig {
     samplingRate?: number
     /** Whether to log telemetry events to console (development only) */
     debug?: boolean
+
+    // API Client Configuration
+    /** Telemetry API endpoint URL (auto-detected if not provided) */
+    apiEndpoint?: string
+    /** Number of events to batch before sending (default: 10) */
+    batchSize?: number
+    /** Maximum time to wait before sending a batch in milliseconds (default: 5000) */
+    batchTimeout?: number
+    /** Number of retry attempts for failed requests (default: 3) */
+    retryAttempts?: number
+    /** Delay between retry attempts in milliseconds (default: 1000) */
+    retryDelay?: number
+    /** Whether to store events offline when network is unavailable (default: true) */
+    offlineStorage?: boolean
 }
 
 export interface ProjectContext {

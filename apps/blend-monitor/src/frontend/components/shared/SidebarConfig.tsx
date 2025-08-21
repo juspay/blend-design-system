@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Home, Link, Package, Zap, Users } from 'lucide-react'
+import { Home, Link, Package, Zap, Users, BarChart3 } from 'lucide-react'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 
 export const tenants = [
@@ -48,6 +48,12 @@ export const getNavigationData = (
                 leftSlot: <Package className="w-4 h-4" />,
                 onClick: () => router.push('/npm'),
                 isActive: pathname === '/npm',
+            },
+            {
+                label: 'Telemetry',
+                leftSlot: <BarChart3 className="w-4 h-4" />,
+                onClick: () => router.push('/telemetry'),
+                isActive: pathname === '/telemetry',
             },
         ],
     },
