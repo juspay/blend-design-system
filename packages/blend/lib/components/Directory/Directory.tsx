@@ -8,6 +8,7 @@ import Block from '../Primitives/Block/Block'
 import styled from 'styled-components'
 import { handleSectionNavigation } from './utils'
 import { ActiveItemProvider } from './NavItem'
+import { useDirectoryTelemetry } from '../../telemetry/componentHooks'
 
 const StyledNav = styled(Block)`
     &::-webkit-scrollbar {
@@ -17,7 +18,11 @@ const StyledNav = styled(Block)`
     scrollbar-width: none;
 `
 
-const Directory = ({ directoryData, className }: DirectoryProps) => {
+const Directory = (props: DirectoryProps) => {
+    const { directoryData, className } = props
+
+    useDirectoryTelemetry(props)
+
     const sectionRefs = useRef<Array<React.RefObject<HTMLDivElement | null>>>(
         []
     )

@@ -8,35 +8,40 @@ import { PopoverTokenType } from './popover.tokens'
 import { useComponentToken } from '../../context/useComponentToken'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobilePopover from './MobilePopover'
+import { usePopoverTelemetry } from '../../telemetry/componentHooks'
 
-const Popover = ({
-    heading,
-    description,
-    trigger,
-    children,
-    showCloseButton = true,
-    onOpenChange,
-    open,
-    asModal = false,
-    primaryAction,
-    secondaryAction,
-    sideOffset = 8,
-    side = 'bottom',
-    align = 'center',
-    alignOffset = 0,
-    width,
-    minWidth = 300,
-    maxWidth = 400,
-    height,
-    minHeight,
-    maxHeight,
-    zIndex = 1000,
-    size = PopoverSize.MEDIUM,
-    onClose,
-    shadow = 'lg',
-    useDrawerOnMobile = true,
-}: PopoverProps) => {
+const Popover = (props: PopoverProps) => {
+    const {
+        heading,
+        description,
+        trigger,
+        children,
+        showCloseButton = true,
+        onOpenChange,
+        open,
+        asModal = false,
+        primaryAction,
+        secondaryAction,
+        sideOffset = 8,
+        side = 'bottom',
+        align = 'center',
+        alignOffset = 0,
+        width,
+        minWidth = 300,
+        maxWidth = 400,
+        height,
+        minHeight,
+        maxHeight,
+        zIndex = 1000,
+        size = PopoverSize.MEDIUM,
+        onClose,
+        shadow = 'lg',
+        useDrawerOnMobile = true,
+    } = props
+
     const [isOpen, setIsOpen] = useState(open || false)
+
+    usePopoverTelemetry(props)
     const popoverTokens = useComponentToken('POPOVER') as PopoverTokenType
     const { innerWidth } = useBreakpoints()
     const isMobile = innerWidth < 1024

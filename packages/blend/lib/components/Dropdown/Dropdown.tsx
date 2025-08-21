@@ -5,20 +5,24 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import Text from '../Text/Text'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { Menu, MenuAlignment, MenuV2GroupType } from '../Menu'
+import { useDropdownTelemetry } from '../../telemetry/componentHooks'
 
-const Dropdown = ({
-    label = 'Your Label',
-    optionalLabel = '(optional)',
-    hintText = 'This is a hint text',
-    slot,
-    items,
-}: {
+const Dropdown = (props: {
     label?: string
     optionalLabel?: string
     hintText?: string
     slot?: React.ReactNode
     items: MenuV2GroupType[]
 }) => {
+    const {
+        label = 'Your Label',
+        optionalLabel = '(optional)',
+        hintText = 'This is a hint text',
+        slot,
+        items,
+    } = props
+
+    useDropdownTelemetry(props)
     return (
         <Block display="flex" flexDirection="column" gap={10}>
             <Block display="flex" gap={8}>

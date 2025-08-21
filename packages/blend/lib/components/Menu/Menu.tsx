@@ -11,6 +11,7 @@ import { Search } from 'lucide-react'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { type MenuTokensType } from './menu.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useMenuTelemetry } from '../../telemetry/componentHooks'
 
 export const contentBaseStyle: CSSObject = {
     backgroundColor: 'white',
@@ -28,26 +29,30 @@ const Content = styled(RadixMenu.Content)(() => ({
     ...contentBaseStyle,
 }))
 
-const Menu = ({
-    trigger,
-    items = [],
-    asModal = false,
-    alignment = MenuAlignment.CENTER,
-    side = MenuSide.BOTTOM,
-    sideOffset = 8,
-    alignOffset = 0,
-    collisonBoundaryRef,
-    maxHeight,
-    enableSearch = false,
-    searchPlaceholder = 'Search',
-    minWidth,
-    maxWidth,
-    open,
-    onOpenChange,
-}: MenuV2Props) => {
+const Menu = (props: MenuV2Props) => {
+    const {
+        trigger,
+        items = [],
+        asModal = false,
+        alignment = MenuAlignment.CENTER,
+        side = MenuSide.BOTTOM,
+        sideOffset = 8,
+        alignOffset = 0,
+        collisonBoundaryRef,
+        maxHeight,
+        enableSearch = false,
+        searchPlaceholder = 'Search',
+        minWidth,
+        maxWidth,
+        open,
+        onOpenChange,
+    } = props
+
     const [searchText, setSearchText] = useState<string>('')
     const filteredItems = filterMenuGroups(items, searchText)
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
+
+    useMenuTelemetry(props)
 
     const handleOpenChange = (newOpen: boolean) => {
         if (!newOpen && enableSearch) {

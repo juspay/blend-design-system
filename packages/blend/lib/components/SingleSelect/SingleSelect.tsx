@@ -18,6 +18,7 @@ import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useSingleSelectTelemetry } from '../../telemetry/componentHooks'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../global-utils/GlobalUtils'
 import MobileSingleSelect from './MobileSingleSelect'
@@ -43,38 +44,42 @@ const map = function getValueLabelMap(
     return map
 }
 
-const SingleSelect = ({
-    label,
-    subLabel,
-    hintText,
-    required,
-    helpIconText,
-    placeholder,
-    error = false,
-    errorMessage,
-    size = SelectMenuSize.MEDIUM,
-    items = [],
-    name,
-    variant = SelectMenuVariant.CONTAINER,
-    disabled,
-    selected,
-    onSelect,
-    enableSearch,
-    searchPlaceholder,
-    slot,
-    customTrigger,
-    useDrawerOnMobile = true,
-    alignment,
-    side,
-    sideOffset,
-    alignOffset,
-    minWidth,
-    maxWidth,
-    maxHeight,
-    onBlur,
-    onFocus,
-    inline = false,
-}: SingleSelectProps) => {
+const SingleSelect = (props: SingleSelectProps) => {
+    const {
+        label,
+        subLabel,
+        hintText,
+        required,
+        helpIconText,
+        placeholder,
+        error = false,
+        errorMessage,
+        size = SelectMenuSize.MEDIUM,
+        items = [],
+        name,
+        variant = SelectMenuVariant.CONTAINER,
+        disabled,
+        selected,
+        onSelect,
+        enableSearch,
+        searchPlaceholder,
+        slot,
+        customTrigger,
+        useDrawerOnMobile = true,
+        alignment,
+        side,
+        sideOffset,
+        alignOffset,
+        minWidth,
+        maxWidth,
+        maxHeight,
+        onBlur,
+        onFocus,
+        inline = false,
+    } = props
+
+    useSingleSelectTelemetry(props)
+
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const slotRef = useRef<HTMLDivElement>(null)

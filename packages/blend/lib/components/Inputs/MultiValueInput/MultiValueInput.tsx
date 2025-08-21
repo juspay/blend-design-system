@@ -8,21 +8,25 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import type { MultiValueInputProps } from './types'
 import { useComponentToken } from '../../../context/useComponentToken'
 import type { MultiValueInputTokensType } from './multiValueInput.tokens'
+import { useMultiValueInputTelemetry } from '../../../telemetry/componentHooks'
 
-const MultiValueInput = ({
-    label,
-    sublabel,
-    disabled,
-    required,
-    error,
-    errorMessage,
-    hintText,
-    tags = [],
-    onTagAdd,
-    onTagRemove,
-    size = TextInputSize.MEDIUM,
-    ...rest
-}: MultiValueInputProps) => {
+const MultiValueInput = (props: MultiValueInputProps) => {
+    const {
+        label,
+        sublabel,
+        disabled,
+        required,
+        error,
+        errorMessage,
+        hintText,
+        tags = [],
+        onTagAdd,
+        onTagRemove,
+        size = TextInputSize.MEDIUM,
+        ...rest
+    } = props
+
+    useMultiValueInputTelemetry(props)
     const multiValueInputTokens = useComponentToken(
         'MULTI_VALUE_INPUT'
     ) as MultiValueInputTokensType

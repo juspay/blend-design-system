@@ -23,6 +23,7 @@ import { TextInput, TextInputSize } from '../Inputs/TextInput'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { ButtonType, ButtonSize, Button } from '../../main'
+import { useDateRangePickerTelemetry } from '../../telemetry/componentHooks'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 type DateInputsSectionProps = {
@@ -237,8 +238,8 @@ const FooterControls: React.FC<FooterControlsProps> = ({
 )
 
 const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
-    (
-        {
+    (props, ref) => {
+        const {
             value,
             onChange,
             showDateTimePicker = true,
@@ -251,10 +252,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             triggerElement = null,
             useDrawerOnMobile = true,
             skipQuickFiltersOnMobile = false,
-        },
-        ref
-    ) => {
+        } = props
+
         const [isOpen, setIsOpen] = useState(false)
+
+        useDateRangePickerTelemetry(props)
         const [popoverKey, setPopoverKey] = useState(0)
         const [isQuickRangeOpen, setIsQuickRangeOpen] = useState(false)
         const [drawerOpen, setDrawerOpen] = useState(false)

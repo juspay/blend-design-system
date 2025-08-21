@@ -11,29 +11,34 @@ import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { useTextInputTelemetry } from '../../../telemetry/componentHooks'
 
-const TextInput = ({
-    size = TextInputSize.MEDIUM,
-    leftSlot,
-    rightSlot,
-    error = false,
-    errorMessage,
-    hintText,
-    helpIconHintText,
-    disabled = false,
-    label,
-    placeholder = 'Enter',
-    sublabel,
-    value,
-    onChange,
-    name,
-    required = false,
-    onBlur,
-    onFocus,
-    ...rest
-}: TextInputProps) => {
+const TextInput = (props: TextInputProps) => {
+    const {
+        size = TextInputSize.MEDIUM,
+        leftSlot,
+        rightSlot,
+        error = false,
+        errorMessage,
+        hintText,
+        helpIconHintText,
+        disabled = false,
+        label,
+        placeholder = 'Enter',
+        sublabel,
+        value,
+        onChange,
+        name,
+        required = false,
+        onBlur,
+        onFocus,
+        ...rest
+    } = props
+
     const textInputTokens =
         useResponsiveTokens<TextInputTokensType>('TEXT_INPUT')
+
+    useTextInputTelemetry(props)
 
     const [isFocused, setIsFocused] = useState(false)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)

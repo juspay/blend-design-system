@@ -22,59 +22,63 @@ import { toPixels } from '../../global-utils/GlobalUtils'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { Tooltip } from '../Tooltip'
+import { useMultiSelectTelemetry } from '../../telemetry/componentHooks'
 
-const MultiSelect = ({
-    selectedValues,
-    onChange,
-    items = [],
-    label,
-    sublabel,
-    disabled,
-    helpIconHintText,
-    name,
-    required,
-    variant = MultiSelectVariant.CONTAINER,
-    selectionTagType = MultiSelectSelectionTagType.COUNT,
-    slot,
-    hintText,
-    placeholder,
-    size = MultiSelectMenuSize.MEDIUM,
-    enableSearch = true,
-    searchPlaceholder = 'Search options...',
-    enableSelectAll = false,
-    selectAllText = 'Select All',
-    customTrigger,
-    useDrawerOnMobile = true,
-    minWidth,
-    maxWidth,
-    maxHeight,
-    alignment,
-    side,
-    sideOffset,
-    alignOffset,
-    inline = false,
-    onBlur,
-    onFocus,
-    error,
-    errorMessage,
-    showActionButtons = true,
-    primaryAction = {
-        text: 'Apply',
-        onClick: () => {},
-        disabled: false,
-        loading: false,
-    },
-    secondaryAction = {
-        text: 'Clear All',
-        onClick: () => {
-            selectedValues.forEach((value) => onChange(value))
+const MultiSelect = (props: MultiSelectProps) => {
+    const {
+        selectedValues,
+        onChange,
+        items = [],
+        label,
+        sublabel,
+        disabled,
+        helpIconHintText,
+        name,
+        required,
+        variant = MultiSelectVariant.CONTAINER,
+        selectionTagType = MultiSelectSelectionTagType.COUNT,
+        slot,
+        hintText,
+        placeholder,
+        size = MultiSelectMenuSize.MEDIUM,
+        enableSearch = true,
+        searchPlaceholder = 'Search options...',
+        enableSelectAll = false,
+        selectAllText = 'Select All',
+        customTrigger,
+        useDrawerOnMobile = true,
+        minWidth,
+        maxWidth,
+        maxHeight,
+        alignment,
+        side,
+        sideOffset,
+        alignOffset,
+        inline = false,
+        onBlur,
+        onFocus,
+        error,
+        errorMessage,
+        showActionButtons = true,
+        primaryAction = {
+            text: 'Apply',
+            onClick: () => {},
+            disabled: false,
+            loading: false,
         },
-        disabled: false,
-        loading: false,
-    },
-    showItemDividers = false,
-    showHeaderBorder = false,
-}: MultiSelectProps) => {
+        secondaryAction = {
+            text: 'Clear All',
+            onClick: () => {
+                selectedValues.forEach((value) => onChange(value))
+            },
+            disabled: false,
+            loading: false,
+        },
+        showItemDividers = false,
+        showHeaderBorder = false,
+    } = props
+
+    useMultiSelectTelemetry(props)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const slotRef = useRef<HTMLDivElement>(null)

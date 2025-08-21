@@ -10,28 +10,32 @@ import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../../global-utils/GlobalUtils'
+import { useTextAreaTelemetry } from '../../../telemetry/componentHooks'
 
-const TextArea = ({
-    value,
-    placeholder,
-    disabled,
-    autoFocus,
-    onChange,
-    onFocus,
-    onBlur,
-    rows = 3,
-    cols,
-    label,
-    sublabel,
-    hintText,
-    helpIconHintText,
-    required,
-    error,
-    errorMessage,
-    wrap,
-    resize = 'none',
-    ...rest
-}: TextAreaProps) => {
+const TextArea = (textAreaProps: TextAreaProps) => {
+    const {
+        value,
+        placeholder,
+        disabled,
+        autoFocus,
+        onChange,
+        onFocus,
+        onBlur,
+        rows = 3,
+        cols,
+        label,
+        sublabel,
+        hintText,
+        helpIconHintText,
+        required,
+        error,
+        errorMessage,
+        wrap,
+        resize = 'none',
+        ...rest
+    } = textAreaProps
+
+    useTextAreaTelemetry(textAreaProps)
     const textAreaTokens = useResponsiveTokens<TextAreaTokensType>('TEXT_AREA')
     const [isFocused, setIsFocused] = useState(false)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)

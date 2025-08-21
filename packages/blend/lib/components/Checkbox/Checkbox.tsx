@@ -17,10 +17,11 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import type { CheckboxTokensType } from './checkbox.token'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useCheckboxTelemetry } from '../../telemetry/componentHooks'
 
 export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
-    (
-        {
+    (props, ref) => {
+        const {
             id,
             value,
             checked,
@@ -34,10 +35,11 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
             subtext,
             slot,
             ...rest
-        },
-        ref
-    ) => {
+        } = props
+
         const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
+
+        useCheckboxTelemetry(props)
 
         const generatedId = useId()
         const uniqueId = id || generatedId

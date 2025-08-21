@@ -14,24 +14,29 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import type { SwitchTokensType } from './switch.token'
 
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useSwitchTelemetry } from '../../telemetry/componentHooks'
 
-export const Switch = ({
-    id,
-    checked,
-    defaultChecked = false,
-    onChange,
-    disabled = false,
-    required = false,
-    error = false,
-    size = SwitchSize.MEDIUM,
-    label,
-    subtext,
-    slot,
-    name,
-    value,
-    ...rest
-}: SwitchProps) => {
+export const Switch = (props: SwitchProps) => {
+    const {
+        id,
+        checked,
+        defaultChecked = false,
+        onChange,
+        disabled = false,
+        required = false,
+        error = false,
+        size = SwitchSize.MEDIUM,
+        label,
+        subtext,
+        slot,
+        name,
+        value,
+        ...rest
+    } = props
+
     const tokens = useResponsiveTokens<SwitchTokensType>('SWITCH')
+
+    useSwitchTelemetry(props)
 
     const generatedId = React.useId()
     const uniqueId = id || generatedId

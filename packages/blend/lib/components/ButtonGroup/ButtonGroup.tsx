@@ -2,11 +2,12 @@ import React from 'react'
 import { Children } from 'react'
 import Block from '../Primitives/Block/Block'
 import type { ButtonGroupProps } from './types'
+import { useButtonGroupTelemetry } from '../../telemetry/componentHooks'
 
-const ButtonGroupV2: React.FC<ButtonGroupProps> = ({
-    stacked = false,
-    children,
-}) => {
+const ButtonGroupV2: React.FC<ButtonGroupProps> = (props) => {
+    const { stacked = false, children } = props
+
+    useButtonGroupTelemetry(props)
     if (!stacked) {
         return (
             <Block display="flex" gap={10}>

@@ -15,21 +15,25 @@ import { Button, ButtonSize, ButtonSubType, ButtonType } from '../Button'
 import { ChevronDown } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import useScrollLock from '../../hooks/useScrollLock'
+import { useChartsTelemetry } from '../../telemetry/componentHooks'
 
-const Charts: React.FC<ChartsProps> = ({
-    chartType = ChartType.LINE,
-    data,
-    colors,
-    xAxisLabel,
-    yAxisLabel,
-    slot1,
-    slot2,
-    slot3,
-    legendPosition = ChartLegendPosition.TOP,
-    chartHeaderSlot,
-    stackedLegends = false,
-    stackedLegendsData,
-}) => {
+const Charts: React.FC<ChartsProps> = (props) => {
+    const {
+        chartType = ChartType.LINE,
+        data,
+        colors,
+        xAxisLabel,
+        yAxisLabel,
+        slot1,
+        slot2,
+        slot3,
+        legendPosition = ChartLegendPosition.TOP,
+        chartHeaderSlot,
+        stackedLegends = false,
+        stackedLegendsData,
+    } = props
+
+    useChartsTelemetry(props)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')

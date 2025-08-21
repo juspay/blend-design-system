@@ -21,6 +21,7 @@ import {
     createMenuItems,
     filterAvatars,
 } from './avatarGroupUtils'
+import { useAvatarGroupTelemetry } from '../../telemetry/componentHooks'
 
 // Temporarily stubbed Menu component until implemented fully
 type MenuProps = {
@@ -110,8 +111,8 @@ const Menu = ({
 )
 
 const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
-    (
-        {
+    (avatarGroupProps, ref) => {
+        const {
             avatars,
             maxCount = 5,
             size = AvatarSize.MD,
@@ -119,9 +120,10 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
             selectedAvatarIds,
             onSelectionChange,
             ...props
-        },
-        ref
-    ) => {
+        } = avatarGroupProps
+
+        useAvatarGroupTelemetry(avatarGroupProps)
+
         // Ensure maxCount is at least 1
         const safeMaxCount = Math.max(1, maxCount)
 

@@ -18,35 +18,40 @@ import {
     SelectMenuVariant,
     SingleSelect,
 } from '../../SingleSelect'
+import { useDropdownInputTelemetry } from '../../../telemetry/componentHooks'
 
-const DropdownInput = ({
-    label,
-    sublabel,
-    disabled,
-    helpIconHintText,
-    name,
-    required,
-    error,
-    errorMessage,
-    hintText,
-    value,
-    onChange,
-    slot,
-    size = TextInputSize.MEDIUM,
-    placeholder,
-    dropDownValue,
-    onDropDownChange,
-    dropDownItems,
-    dropdownName,
-    onDropdownOpen,
-    onDropdownClose,
-    onBlur,
-    onFocus,
-    maxDropdownHeight,
-    ...rest
-}: DropdownInputProps) => {
+const DropdownInput = (props: DropdownInputProps) => {
+    const {
+        label,
+        sublabel,
+        disabled,
+        helpIconHintText,
+        name,
+        required,
+        error,
+        errorMessage,
+        hintText,
+        value,
+        onChange,
+        slot,
+        size = TextInputSize.MEDIUM,
+        placeholder,
+        dropDownValue,
+        onDropDownChange,
+        dropDownItems,
+        dropdownName,
+        onDropdownOpen,
+        onDropdownClose,
+        onBlur,
+        onFocus,
+        maxDropdownHeight,
+        ...rest
+    } = props
+
     const dropdownInputTokens =
         useResponsiveTokens<DropdownInputTokensType>('DROPDOWN_INPUT')
+
+    useDropdownInputTelemetry(props)
 
     const [isFocused, setIsFocused] = useState(false)
     const [slotWidth, setSlotWidth] = useState<number>(0)
