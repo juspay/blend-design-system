@@ -1,4 +1,4 @@
-'use client'
+import { TabsList } from '../../data/tabs-list'
 
 export const TabButtons = ({
     text,
@@ -55,36 +55,15 @@ export const Tabs = ({
             }}
         >
             <div className="w-full h-full rounded-[83px] bg-black flex items-center  py-6 px-6 justify-between">
-                <TabButtons
-                    label="tokenizer"
-                    selected={selectedTab}
-                    text="Tokenizer"
-                    handleTabSelection={handleTabSelection}
-                />
-                <TabButtons
-                    label="components"
-                    selected={selectedTab}
-                    text="Components"
-                    handleTabSelection={handleTabSelection}
-                />
-                <TabButtons
-                    label="documentation"
-                    selected={selectedTab}
-                    text="Documentation"
-                    handleTabSelection={handleTabSelection}
-                />
-                <TabButtons
-                    label="playground"
-                    selected={selectedTab}
-                    text="Playground"
-                    handleTabSelection={handleTabSelection}
-                />
-                {/* <TabButtons
-                    label="blogs"
-                    selected={selectedTab}
-                    text="Blogs"
-                    handleTabSelection={handleTabSelection}
-                /> */}
+                {TabsList.map((tab, key) => (
+                    <TabButtons
+                        key={key}
+                        label={tab.label}
+                        text={tab.text}
+                        selected={selectedTab}
+                        handleTabSelection={handleTabSelection}
+                    />
+                ))}
             </div>
         </div>
     )

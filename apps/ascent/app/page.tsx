@@ -1,9 +1,13 @@
-'use client'
+import Intro from './landing/components/Intro'
+import { TabsSection } from './landing/components/tabs/TabsSection'
 
-export default function Home() {
+const page = () => {
     return (
-        <div className="min-h-screen [background:var(--landing-background)]">
-            <p className="text-white">Hello</p>
+        <div className=" [background:var(--landing-background)] flex flex-col items-center justify-center">
+            <Intro />
+            <TabsSection />
         </div>
     )
 }
+
+export default page

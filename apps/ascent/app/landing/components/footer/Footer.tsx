@@ -45,6 +45,7 @@ export const Footer = () => {
                                         <p
                                             className="cursor-pointer"
                                             onClick={handleOpenModal}
+                                            key={ind}
                                         >
                                             {link.name}
                                         </p>
