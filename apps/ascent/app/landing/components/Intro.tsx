@@ -5,7 +5,7 @@ import { GradientHeadingBox } from './GradientHeadingBox'
 
 export default function Intro() {
     return (
-        <div className="flex flex-col relative w-full min-h-screen ">
+        <div className="flex flex-col relative w-full mb-50">
             <div className=" w-full flex flex-col justify-center items-center relative overflow-hidden">
                 <div className="flex flex-col justify-center w-full items-center gap-2 overflow-hidden">
                     <HeaderGradientAndSparkles />

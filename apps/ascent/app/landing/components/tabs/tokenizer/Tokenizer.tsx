@@ -14,7 +14,7 @@ export const TokenizerComp = () => {
                 </p>
                 <p>across our app effortlessly.</p>
             </div>
-            <div className="mt-40">
+            <div className="">
                 <Tokenizer />
             </div>
             <div className="-mt-40 flex flex-col items-center justify-center">

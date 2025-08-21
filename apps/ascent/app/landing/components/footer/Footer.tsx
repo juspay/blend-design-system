@@ -9,6 +9,8 @@ import { Separator } from '../Separator'
 import { IsoIcon } from '../../icons/IsoIcon'
 import Link from 'next/link'
 import { Modal } from '../connect-with-us/Modal'
+// import { PciIcon } from '../../icons/PciIcon'
+import { MoveToTopArrow } from '../../icons/moveToTopArrow'
 
 export const Footer = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -33,7 +35,7 @@ export const Footer = () => {
                         <p>Dublin 2, Ireland</p>
                     </div>
                 </div>
-                <div className="grid grid-cols-3 gap-x-[80px]">
+                <div className="grid grid-cols-4 gap-x-[80px]">
                     {FooterLinksData.map((data, key) => (
                         <div key={key} className="flex flex-col gap-8">
                             <p className="text-[18px] font-[700] text-white capitalize">
@@ -65,6 +67,16 @@ export const Footer = () => {
                             </div>
                         </div>
                     ))}
+                    {/* <MoveToTop /> */}
+                    <div
+                        onClick={() =>
+                            window.scrollTo({ top: 0, behavior: 'smooth' })
+                        }
+                        className="rounded-full cursor-pointer w-[52px] h-[52px] flex items-center justify-center opacity-80 border-[1px] border-[#777E90]"
+                    >
+                        <MoveToTopArrow />
+                    </div>
+
                     {isModalOpen && <Modal onClose={handleCloseModal} />}
                 </div>
             </div>
@@ -92,8 +104,8 @@ export const Footer = () => {
                 </div>
                 <div className="flex items-center gap-[14px] text-white">
                     <IsoIcon />
-                    {/* <GdprIcon />
-                <PciIcon /> */}
+                    {/* <GdprIcon /> */}
+                    {/* <PciIcon /> */}
                 </div>
             </div>
         </footer>
