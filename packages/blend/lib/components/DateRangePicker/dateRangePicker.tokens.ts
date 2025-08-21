@@ -138,7 +138,6 @@ export type CalendarTokenType = {
             }
         }
         datePicker: {
-            marginTop: CSSObject['marginTop']
             container: {
                 padding: CSSObject['padding']
                 gap: CSSObject['gap']
@@ -389,7 +388,7 @@ export const getCalendarToken = (
             actionButtons: {
                 container: {
                     gap: foundationToken.unit[16],
-                    padding: foundationToken.unit[16],
+                    padding: foundationToken.unit[8],
                     marginTop: foundationToken.unit[24],
                     borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
                 },
@@ -401,7 +400,6 @@ export const getCalendarToken = (
                 },
             },
             datePicker: {
-                marginTop: foundationToken.unit[24],
                 container: {
                     padding: `0 ${foundationToken.unit[16]}`,
                     gap: foundationToken.unit[12],
