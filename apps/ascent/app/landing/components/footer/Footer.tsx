@@ -31,7 +31,7 @@ export const Footer = () => {
                         <ColoredLogo />
                         <FooterLogoText />
                     </div>
-                    <div className="text-[#777E90] text-[14px]">
+                    <div className="text-[var(--footer-text-color)] text-[14px]">
                         <p>29/30 Fitzwilliam Square S,</p>
                         <p>Dublin 2, Ireland</p>
                     </div>
@@ -39,10 +39,10 @@ export const Footer = () => {
                 <div className="grid grid-cols-4 gap-x-[80px]">
                     {FooterLinksData.map((data, key) => (
                         <div key={key} className="flex flex-col gap-8">
-                            <p className="text-[18px] font-[700] text-white capitalize">
+                            <p className="text-[18px] font-bold text-white capitalize">
                                 {data.title}
                             </p>
-                            <div className="flex flex-col gap-4 text-[14px] text-[#777E90]">
+                            <div className="flex flex-col gap-4 text-[14px] text-[var(--footer-text-color)]">
                                 {data.links.map((link, ind) =>
                                     link.name == 'Contact' ? (
                                         <p
@@ -68,12 +68,11 @@ export const Footer = () => {
                             </div>
                         </div>
                     ))}
-                    {/* <MoveToTop /> */}
                     <div
                         onClick={() =>
                             window.scrollTo({ top: 0, behavior: 'smooth' })
                         }
-                        className="rounded-full cursor-pointer w-[52px] h-[52px] flex items-center justify-center opacity-80 border-[1px] border-[#777E90]"
+                        className="rounded-full cursor-pointer w-[50px] h-[50px] flex items-center justify-center opacity-80 border-[length:var(--padding-1-pixel)] border-[var(--footer-text-color)]"
                     >
                         <MoveToTopArrow />
                     </div>
@@ -82,7 +81,7 @@ export const Footer = () => {
                 </div>
             </div>
             <Separator />
-            <div className="mb-[48px] py-[24px] flex items-center gap-10 text-[#777E90] w-full">
+            <div className="mb-[48px] py-[24px] flex items-center gap-10 text-[var(--footer-text-color)] w-full">
                 <p className="font-[12px]">
                     Copyright © 2024. Juspay Technologies . All rights reserved
                 </p>
@@ -94,7 +93,7 @@ export const Footer = () => {
                     >
                         <p className="cursor-pointer">Privacy Policy</p>
                     </Link>
-                    <div className="w-1 h-1 bg-[#777E90] rounded-full"></div>
+                    <div className="w-1 h-1 bg-[var(--footer-circle-separator-color)] rounded-full"></div>
                     <Link
                         href="https://juspay.io/terms"
                         target="_blank"

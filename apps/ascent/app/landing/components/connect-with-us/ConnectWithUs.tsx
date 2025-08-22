@@ -18,10 +18,10 @@ export const ConnectWithUs = () => {
     }
 
     return (
-        <div className="py-50 flex flex-col items-center gap-10 relative overflow-hidden w-full max-w-[100vw]">
+        <div className="py-50 flex flex-col items-center gap-10 relative overflow-hidden w-full max-w-screen">
             <div className="flex items-end">
                 <ConnectWithUsBox />
-                <p className="text-[48px] text-[#9E9E9E] font-[300] -ml-10">
+                <p className="text-[48px] text-[var(--gray-text)] font-light -ml-10">
                     We're listening--tell us what you think.
                 </p>
             </div>
@@ -29,7 +29,7 @@ export const ConnectWithUs = () => {
                 <InfoBtn
                     text="Connect with us"
                     onClick={handleOpenModal}
-                    style="absolute z-[20]"
+                    style="absolute z-20"
                 />
             </div>
             <FooterGradientAndSparkles />

@@ -9,14 +9,10 @@ export const GradientHeadingBox = ({
 }) => {
     return (
         <div
-            className={`text-[var(--design-system-heading-background)] ${classes || ''} py-3 flex justify-center relative bg-white/20`}
-            style={{
-                borderRadius: '83px',
-                padding: '1px',
-            }}
+            className={` ${classes || ''} text-[var(--design-system-heading-background)] flex justify-center items-center relative bg-white/20 rounded-[var(--tab-bar-border-radius)] p-[var(--padding-1-pixel)]`}
         >
-            <div className="w-full h-full uppercase rounded-[83px] bg-black flex items-center justify-center opacity-80 p-2">
-                <p className="text-center">{text}</p>
+            <div className="w-full h-full uppercase rounded-[var(--tab-bar-border-radius)] bg-black flex items-center justify-center opacity-80 p-2">
+                <span className="w-full text-center pl-5">{text}</span>
             </div>
         </div>
     )

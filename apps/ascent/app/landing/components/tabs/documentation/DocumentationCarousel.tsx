@@ -43,7 +43,7 @@ export const DocumentationCarousel = () => {
 
     return (
         // New container to provide the necessary "breathing room"
-        <div className="relative overflow-hidden max-w-[100vw]">
+        <div className="relative overflow-hidden max-w-screen">
             {/* This is the visual centering container. It has overflow-visible by default. */}
             <div className="flex justify-center items-center mt-50">
                 <div
@@ -60,7 +60,7 @@ export const DocumentationCarousel = () => {
                                 card={data}
                                 style={
                                     index === activeIndex
-                                        ? 'scale-110 opacity-100 rounded-[120px] bg-gradient-to-b from-[#FFFFFF1A] to-[#0000001A]'
+                                        ? 'scale-110 opacity-100 rounded-[var(--documentation-card-border-radius)] bg-gradient-to-b from-[var(--documentation-card-gradient-from)] to-[var(--documentation-card-gradient-to)]'
                                         : 'scale-90 opacity-50'
                                 }
                             />

@@ -9,14 +9,7 @@ export const GradientHeading = ({
 }) => {
     return (
         <div className={`mt-50 flex items-center ${classes}`}>
-            <div
-                className="text-8 tracking-[80px] uppercase"
-                style={{
-                    background:
-                        'linear-gradient(90deg, #68686880 0%, #D0D0D0 53%, #68686880 100%)',
-                    backgroundClip: 'text',
-                }}
-            >
+            <div className="text-[length:var(--subheading-font-size)] tracking-[80px] uppercase bg-[image:var(--components-heading-gradient)]  bg-clip-text">
                 <p className="text-transparent">{text}</p>
             </div>
         </div>

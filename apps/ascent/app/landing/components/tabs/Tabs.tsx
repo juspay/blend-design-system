@@ -13,22 +13,14 @@ export const TabButtons = ({
 }) => {
     return (
         <div
-            className={`cursor-pointer`}
-            style={{
-                borderRadius: '83px',
-                background:
-                    selected === label
-                        ? 'linear-gradient(180deg, #FEFEFE, #37373B, rgba(153, 153, 153, 0.5))'
-                        : 'transparent',
-                padding: '1px',
-            }}
+            className={`cursor-pointer rounded-[var(--tab-bar-border-radius)] ${selected === label ? 'bg-[image:var(--tab-buttons-gradient)]' : 'bg-transparent'} p-[var(--padding-1-pixel)]`}
             onClick={() => {
                 handleTabSelection(label)
             }}
         >
-            <div className="w-full h-full rounded-[83px] bg-black opacity-[0.9] ">
+            <div className="w-full h-full rounded-[var(--tab-bar-border-radius)] bg-black opacity-90 ">
                 <div
-                    className={`py-2.5 px-3 rounded-[50px] text-[18px] ${selected == label ? 'bg-[#FFFFFF2E] text-[#E3E3E3] ' : 'bg-transparent text-[#B3B3B3]'}`}
+                    className={`py-2.5 px-3 rounded-[var(--tabs-border-radius)] text-[18px] ${selected == label ? 'bg-[var(--tab-bg-color-selected)] text-[var(--tab-btn-text-color-selected)] ' : 'bg-transparent text-[var(--tab-btn-text-color)]'}`}
                 >
                     <p>{text}</p>
                 </div>
@@ -45,16 +37,8 @@ export const Tabs = ({
     handleTabSelection: (label: string) => void
 }) => {
     return (
-        <div
-            className="text-[var(--design-system-heading-background)] opacity-[0.8] w-[636.975px] py-3 flex justify-center relative backdrop-blur-md"
-            style={{
-                borderRadius: '83px',
-                background:
-                    'linear-gradient(90deg, rgba(153, 153, 153, 0.5), rgba(255, 255, 255, 0.5), rgba(153, 153, 153, 0.5))',
-                padding: '1px',
-            }}
-        >
-            <div className="w-full h-full rounded-[83px] bg-black flex items-center  py-6 px-6 justify-between">
+        <div className="text-[var(--design-system-heading-background)] opacity-80 w-[var(--tabs-section-width)] flex justify-center relative backdrop-blur-md rounded-[var(--tab-bar-border-radius)] bg-[image:var(--landing-tabs-bar-gradient)] p-[var(--padding-1-pixel)]">
+            <div className="w-full h-full rounded-[var(--tab-bar-border-radius)] bg-black flex items-center  py-6 px-6 justify-between">
                 {TabsList.map((tab, key) => (
                     <TabButtons
                         key={key}
