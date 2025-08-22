@@ -1,6 +1,7 @@
 import { TextInputSize } from '../TextInput/types'
 
 import type { SelectMenuGroupType } from '../../Select/types'
+import { ReactNode } from 'react'
 
 export enum DropdownInputSize {
     SM = 'sm',
@@ -16,6 +17,11 @@ export enum DropdownInputState {
     DISABLED = 'disabled',
 }
 
+export enum DropdownPosition {
+    LEFT = 'left',
+    RIGHT = 'right',
+}
+
 export type DropdownInputProps = {
     label?: string
     sublabel?: string
@@ -25,7 +31,7 @@ export type DropdownInputProps = {
     hintText?: string
     value?: string
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-    slot?: React.ReactNode
+    slot?: ReactNode
     size?: TextInputSize
     dropDownValue?: string
     onDropDownChange?: (value: string) => void
@@ -36,7 +42,8 @@ export type DropdownInputProps = {
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
     maxDropdownHeight?: number
+    dropdownPosition?: DropdownPosition
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'style' | 'className' | 'onBlur' | 'onFocus'
+    'size' | 'style' | 'className' | 'onBlur' | 'onFocus' | 'slot'
 >
