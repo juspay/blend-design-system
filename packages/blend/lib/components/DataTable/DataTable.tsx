@@ -38,10 +38,14 @@ import { foundationToken } from '../../foundationToken'
 import { useMobileDataTable } from './hooks/useMobileDataTable'
 import MobileColumnDrawer from './MobileColumnDrawer'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useDataTableTelemetry } from '../../telemetry/componentHooks'
 
 const DataTable = forwardRef(
     <T extends Record<string, unknown>>(
-        {
+        props: DataTableProps<T>,
+        ref: React.Ref<HTMLDivElement>
+    ) => {
+        const {
             data,
             columns: initialColumns,
             idField,
@@ -89,10 +93,11 @@ const DataTable = forwardRef(
             rowActions,
             getRowStyle,
             mobileColumnsToShow,
-        }: DataTableProps<T>,
-        ref: React.Ref<HTMLDivElement>
-    ) => {
+        } = props
+
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
+
+        useDataTableTelemetry(props)
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
 
         const [sortConfig, setSortConfig] = useState<SortConfig | null>(

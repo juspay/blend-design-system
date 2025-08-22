@@ -16,168 +16,158 @@ import Text from '../Text/Text'
 import { forwardRef } from 'react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useAlertTelemetry } from '../../telemetry/componentHooks'
 
-const Alert = forwardRef<HTMLDivElement, AlertProps>(
-    (
-        {
-            heading,
-            description,
-            variant = AlertVariant.PRIMARY,
-            style = AlertStyle.SUBTLE,
-            primaryAction,
-            secondaryAction,
-            onClose,
-            icon,
-            actionPlacement = AlertActionPlacement.RIGHT,
-        },
-        ref
-    ) => {
-        const alertTokens = useResponsiveTokens<AlertTokenType>('ALERT')
+const Alert = forwardRef<HTMLDivElement, AlertProps>((alertProps, ref) => {
+    const {
+        heading,
+        description,
+        variant = AlertVariant.PRIMARY,
+        style = AlertStyle.SUBTLE,
+        primaryAction,
+        secondaryAction,
+        onClose,
+        icon,
+        actionPlacement = AlertActionPlacement.RIGHT,
+    } = alertProps
 
-        // this is to make sure that the close button is always visible if there is an onClose prop
-        // but no primary or secondary actions are provided
-        if (
-            onClose &&
-            primaryAction === undefined &&
-            secondaryAction === undefined
-        ) {
-            actionPlacement = AlertActionPlacement.BOTTOM
-        }
-        return (
+    useAlertTelemetry(alertProps)
+    const alertTokens = useResponsiveTokens<AlertTokenType>('ALERT')
+
+    // this is to make sure that the close button is always visible if there is an onClose prop
+    // but no primary or secondary actions are provided
+    if (
+        onClose &&
+        primaryAction === undefined &&
+        secondaryAction === undefined
+    ) {
+        actionPlacement = AlertActionPlacement.BOTTOM
+    }
+    return (
+        <Block
+            ref={ref}
+            maxWidth={900}
+            backgroundColor={alertTokens.background[variant][style]}
+            padding={alertTokens.padding}
+            borderRadius={alertTokens.borderRadius}
+            display="flex"
+            flexDirection="column"
+            gap={FOUNDATION_THEME.unit[8]}
+            border={alertTokens.border[variant]}
+        >
             <Block
-                ref={ref}
-                maxWidth={900}
-                backgroundColor={alertTokens.background[variant][style]}
-                padding={alertTokens.padding}
-                borderRadius={alertTokens.borderRadius}
                 display="flex"
-                flexDirection="column"
+                justifyContent="space-between"
+                alignItems="center"
                 gap={FOUNDATION_THEME.unit[8]}
-                border={alertTokens.border[variant]}
             >
                 <Block
                     display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
+                    contentCentered
                     gap={FOUNDATION_THEME.unit[8]}
                 >
-                    <Block
-                        display="flex"
-                        contentCentered
-                        gap={FOUNDATION_THEME.unit[8]}
-                    >
-                        {icon && (
-                            <Block
-                                size={FOUNDATION_THEME.unit[16]}
-                                contentCentered
-                            >
-                                {icon}
-                            </Block>
-                        )}
-                        <Text
-                            variant="body.md"
-                            color={foundationToken.colors.gray[700]}
-                            fontWeight={600}
-                        >
-                            {heading}
-                        </Text>
-                    </Block>
-                    {onClose &&
-                        actionPlacement === AlertActionPlacement.BOTTOM && (
-                            // <AlertCloseButton onClick={onClose} variant={variant}>
-                            //   <X size={16} color={foundationToken.colors.gray[800]} />
-                            // </AlertCloseButton>
-                            <AlertCloseButton
-                                onClick={onClose}
-                                $color={alertTokens.button[variant]}
-                            >
-                                <X
-                                    size={16}
-                                    color={foundationToken.colors.gray[800]}
-                                />
-                            </AlertCloseButton>
-                        )}
-                </Block>
-                <Block
-                    paddingLeft={icon ? FOUNDATION_THEME.unit[24] : 0}
-                    display="flex"
-                    flexDirection={
-                        actionPlacement === AlertActionPlacement.BOTTOM
-                            ? 'column'
-                            : 'row'
-                    }
-                    alignItems="flex-start"
-                    justifyContent="space-between"
-                    gap={FOUNDATION_THEME.unit[18]}
-                >
-                    <Text
-                        variant="body.md"
-                        color={foundationToken.colors.gray[600]}
-                    >
-                        {description}
-                    </Text>
-                    {(primaryAction || secondaryAction) && (
-                        <Block display="flex" gap={FOUNDATION_THEME.unit[16]}>
-                            {(primaryAction || secondaryAction) && (
-                                <Block
-                                    as="span"
-                                    display="flex"
-                                    gap={FOUNDATION_THEME.unit[20]}
-                                >
-                                    {primaryAction && (
-                                        <AlertActionButton
-                                            onClick={primaryAction.onClick}
-                                            $variant={variant}
-                                            $alertTokens={alertTokens}
-                                        >
-                                            {primaryAction.label}
-                                        </AlertActionButton>
-                                    )}
-                                    {secondaryAction && (
-                                        <AlertActionButton
-                                            onClick={secondaryAction.onClick}
-                                            $variant={variant}
-                                            $alertTokens={alertTokens}
-                                        >
-                                            {secondaryAction.label}
-                                        </AlertActionButton>
-                                    )}
-                                </Block>
-                            )}
-                            {onClose &&
-                                actionPlacement ===
-                                    AlertActionPlacement.RIGHT && (
-                                    <>
-                                        <Block
-                                            as="span"
-                                            aria-hidden="true"
-                                            width={'1px'}
-                                            height={FOUNDATION_THEME.unit[20]}
-                                            backgroundColor={
-                                                foundationToken.colors.gray[300]
-                                            }
-                                        />
-                                        <AlertCloseButton
-                                            onClick={onClose}
-                                            $color={alertTokens.button[variant]}
-                                        >
-                                            <X
-                                                size={16}
-                                                color={
-                                                    foundationToken.colors
-                                                        .gray[800]
-                                                }
-                                            />
-                                        </AlertCloseButton>
-                                    </>
-                                )}
+                    {icon && (
+                        <Block size={FOUNDATION_THEME.unit[16]} contentCentered>
+                            {icon}
                         </Block>
                     )}
+                    <Text
+                        variant="body.md"
+                        color={foundationToken.colors.gray[700]}
+                        fontWeight={600}
+                    >
+                        {heading}
+                    </Text>
                 </Block>
+                {onClose && actionPlacement === AlertActionPlacement.BOTTOM && (
+                    // <AlertCloseButton onClick={onClose} variant={variant}>
+                    //   <X size={16} color={foundationToken.colors.gray[800]} />
+                    // </AlertCloseButton>
+                    <AlertCloseButton
+                        onClick={onClose}
+                        $color={alertTokens.button[variant]}
+                    >
+                        <X size={16} color={foundationToken.colors.gray[800]} />
+                    </AlertCloseButton>
+                )}
             </Block>
-        )
-    }
-)
+            <Block
+                paddingLeft={icon ? FOUNDATION_THEME.unit[24] : 0}
+                display="flex"
+                flexDirection={
+                    actionPlacement === AlertActionPlacement.BOTTOM
+                        ? 'column'
+                        : 'row'
+                }
+                alignItems="flex-start"
+                justifyContent="space-between"
+                gap={FOUNDATION_THEME.unit[18]}
+            >
+                <Text
+                    variant="body.md"
+                    color={foundationToken.colors.gray[600]}
+                >
+                    {description}
+                </Text>
+                {(primaryAction || secondaryAction) && (
+                    <Block display="flex" gap={FOUNDATION_THEME.unit[16]}>
+                        {(primaryAction || secondaryAction) && (
+                            <Block
+                                as="span"
+                                display="flex"
+                                gap={FOUNDATION_THEME.unit[20]}
+                            >
+                                {primaryAction && (
+                                    <AlertActionButton
+                                        onClick={primaryAction.onClick}
+                                        $variant={variant}
+                                        $alertTokens={alertTokens}
+                                    >
+                                        {primaryAction.label}
+                                    </AlertActionButton>
+                                )}
+                                {secondaryAction && (
+                                    <AlertActionButton
+                                        onClick={secondaryAction.onClick}
+                                        $variant={variant}
+                                        $alertTokens={alertTokens}
+                                    >
+                                        {secondaryAction.label}
+                                    </AlertActionButton>
+                                )}
+                            </Block>
+                        )}
+                        {onClose &&
+                            actionPlacement === AlertActionPlacement.RIGHT && (
+                                <>
+                                    <Block
+                                        as="span"
+                                        aria-hidden="true"
+                                        width={'1px'}
+                                        height={FOUNDATION_THEME.unit[20]}
+                                        backgroundColor={
+                                            foundationToken.colors.gray[300]
+                                        }
+                                    />
+                                    <AlertCloseButton
+                                        onClick={onClose}
+                                        $color={alertTokens.button[variant]}
+                                    >
+                                        <X
+                                            size={16}
+                                            color={
+                                                foundationToken.colors.gray[800]
+                                            }
+                                        />
+                                    </AlertCloseButton>
+                                </>
+                            )}
+                    </Block>
+                )}
+            </Block>
+        </Block>
+    )
+})
 
 const AlertCloseButton = ({
     $color,

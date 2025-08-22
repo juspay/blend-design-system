@@ -6,7 +6,7 @@ import { auth } from '@/frontend/lib/firebase'
 import { usePermissions } from '@/frontend/components/auth/PermissionGuard'
 import ProtectedRoute from '@/frontend/components/auth/ProtectedRoute'
 import Loader from '@/frontend/components/shared/Loader'
-import { Button, ButtonType, ButtonSize } from 'blend-v1'
+import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system'
 import { ArrowLeft, Activity, Clock, User as LucideUser } from 'lucide-react'
 
 // Mock interfaces and services to replace the deleted ones

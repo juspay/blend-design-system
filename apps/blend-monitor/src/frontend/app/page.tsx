@@ -28,7 +28,7 @@ import {
     StatCard,
     StatCardVariant,
     ChangeType,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import { useRouter, usePathname } from 'next/navigation'
 import { getNavigationData } from '@/frontend/components/shared/SidebarConfig'
 
@@ -50,8 +50,8 @@ export default function DashboardHome() {
         setRefreshing(true)
         try {
             await Promise.all([
-                fetch('/api/components').then((res) => res.json()),
-                fetch('/api/npm').then((res) => res.json()),
+                fetch('/api/components/coverage').then((res) => res.json()),
+                fetch('/api/npm/stats').then((res) => res.json()),
             ])
         } catch (error) {
             console.error('Error fetching data:', error)
@@ -127,24 +127,20 @@ export default function DashboardHome() {
                         <>
                             <StatCard
                                 title="Total Components"
-                                value={String(coverage?.total || 0)}
+                                value={coverage?.total || 0}
+                                variant={StatCardVariant.NUMBER}
                                 titleIcon={
                                     <Package className="w-5 h-5 text-blue-600" />
                                 }
-                                variant={StatCardVariant.NUMBER}
                             />
                             <StatCard
                                 title="Code Connect Coverage"
                                 value={`${coverage?.percentage || 0}%`}
                                 subtitle={`${coverage?.integrated || 0} of ${coverage?.total || 0} integrated`}
-                                change={{
-                                    value: 3,
-                                    type: ChangeType.INCREASE,
-                                }}
+                                variant={StatCardVariant.NUMBER}
                                 titleIcon={
                                     <Link className="w-5 h-5 text-green-600" />
                                 }
-                                variant={StatCardVariant.NUMBER}
                             />
                             <StatCard
                                 title="Weekly Downloads"
@@ -152,14 +148,10 @@ export default function DashboardHome() {
                                     packageStats?.downloads.weekly.toLocaleString() ||
                                     '0'
                                 }
-                                change={{
-                                    value: 12,
-                                    type: ChangeType.INCREASE,
-                                }}
+                                variant={StatCardVariant.NUMBER}
                                 titleIcon={
                                     <Download className="w-5 h-5 text-purple-600" />
                                 }
-                                variant={StatCardVariant.NUMBER}
                             />
                             <StatCard
                                 title="Current Version"
@@ -169,10 +161,10 @@ export default function DashboardHome() {
                                         ? `Published ${new Date(packageStats.lastPublish).toLocaleDateString()}`
                                         : ''
                                 }
+                                variant={StatCardVariant.NUMBER}
                                 titleIcon={
                                     <Tag className="w-5 h-5 text-amber-600" />
                                 }
-                                variant={StatCardVariant.NUMBER}
                             />
                         </>
                     )}

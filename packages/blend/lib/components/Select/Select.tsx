@@ -13,6 +13,7 @@ import Text, { type VariantType } from '../Text/Text'
 import selectTokens from './select.token'
 import { Tooltip, TooltipSize } from '../Tooltip'
 import React from 'react'
+import { useSelectTelemetry } from '../../telemetry/componentHooks'
 
 export enum SelectionTagType {
     COUNT = 'count',
@@ -58,23 +59,27 @@ const map = function getValueLabelMap(
     return map
 }
 
-const Select = ({
-    items,
-    variant = SelectMenuVariant.CONTAINER,
-    label = 'Your favorite color',
-    subLabel = 'Select an option',
-    hintText = 'Hint text',
-    required = true,
-    helpIconText = 'Help icon text',
-    placeholder = 'Select an option',
-    size = SelectMenuSize.MEDIUM,
-    selected,
-    onSelectChange,
-    allowMultiSelect = false,
-    enableSearch = false,
-    selectionTagType = SelectionTagType.COUNT,
-    slot,
-}: SelectProps) => {
+const Select = (props: SelectProps) => {
+    const {
+        items,
+        variant = SelectMenuVariant.CONTAINER,
+        label = 'Your favorite color',
+        subLabel = 'Select an option',
+        hintText = 'Hint text',
+        required = true,
+        helpIconText = 'Help icon text',
+        placeholder = 'Select an option',
+        size = SelectMenuSize.MEDIUM,
+        selected,
+        onSelectChange,
+        allowMultiSelect = false,
+        enableSearch = false,
+        selectionTagType = SelectionTagType.COUNT,
+        slot,
+    } = props
+
+    useSelectTelemetry(props)
+
     const valueLabelMap = map(items)
 
     const getLabelsForSelectedValues = (values: string[]) => {

@@ -22,6 +22,7 @@ import Text from '../Text/Text'
 import { ChangeType, StatCardVariant, type StatCardProps } from './types'
 import type { StatCardTokenType } from './statcard.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useStatCardTelemetry } from '../../telemetry/componentHooks'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import {
@@ -31,21 +32,24 @@ import {
 } from '../SingleSelect'
 import { toPixels } from '../../global-utils/GlobalUtils'
 
-const StatCard = ({
-    title,
-    value,
-    valueTooltip,
-    change,
-    subtitle,
-    variant,
-    chartData,
-    progressValue,
-    titleIcon,
-    actionIcon,
-    helpIconText,
-    dropdownProps,
-    maxWidth = 'auto',
-}: StatCardProps) => {
+const StatCard = (props: StatCardProps) => {
+    const {
+        title,
+        value,
+        valueTooltip,
+        change,
+        subtitle,
+        variant,
+        chartData,
+        progressValue,
+        titleIcon,
+        actionIcon,
+        helpIconText,
+        dropdownProps,
+        maxWidth = 'auto',
+    } = props
+
+    useStatCardTelemetry(props)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 

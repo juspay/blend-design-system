@@ -13,32 +13,38 @@ import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../../global-utils/GlobalUtils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useUnitInputTelemetry } from '../../../telemetry/componentHooks'
 
-const UnitInput = ({
-    value,
-    onChange,
-    min,
-    max,
-    step,
-    error = false,
-    errorMessage,
-    required,
-    disabled,
-    size = UnitInputSize.MEDIUM,
-    placeholder,
-    sublabel,
-    helpIconHintText,
-    label = 'Number Input',
-    hintText,
-    leftSlot,
-    rightSlot = <Weight size={16} color={FOUNDATION_THEME.colors.gray[400]} />,
-    unit,
-    unitPosition = UnitPosition.RIGHT,
-    name,
-    onFocus,
-    onBlur,
-    ...rest
-}: UnitInputProps) => {
+const UnitInput = (unitInputProps: UnitInputProps) => {
+    const {
+        value,
+        onChange,
+        min,
+        max,
+        step,
+        error = false,
+        errorMessage,
+        required,
+        disabled,
+        size = UnitInputSize.MEDIUM,
+        placeholder,
+        sublabel,
+        helpIconHintText,
+        label = 'Number Input',
+        hintText,
+        leftSlot,
+        rightSlot = (
+            <Weight size={16} color={FOUNDATION_THEME.colors.gray[400]} />
+        ),
+        unit,
+        unitPosition = UnitPosition.RIGHT,
+        name,
+        onFocus,
+        onBlur,
+        ...rest
+    } = unitInputProps
+
+    useUnitInputTelemetry(unitInputProps)
     const unitInputTokens =
         useResponsiveTokens<UnitInputTokensType>('UNIT_INPUT')
 

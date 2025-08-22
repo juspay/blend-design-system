@@ -14,24 +14,29 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import type { RadioTokensType } from './radio.token'
 
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useRadioTelemetry } from '../../telemetry/componentHooks'
 
-export const Radio = ({
-    id,
-    value,
-    checked,
-    defaultChecked = false,
-    onChange,
-    disabled = false,
-    required = false,
-    error = false,
-    size = RadioSize.MEDIUM,
-    children,
-    subtext,
-    slot,
-    name,
-    ...rest
-}: RadioProps) => {
+export const Radio = (props: RadioProps) => {
+    const {
+        id,
+        value,
+        checked,
+        defaultChecked = false,
+        onChange,
+        disabled = false,
+        required = false,
+        error = false,
+        size = RadioSize.MEDIUM,
+        children,
+        subtext,
+        slot,
+        name,
+        ...rest
+    } = props
+
     const radioTokens = useResponsiveTokens<RadioTokensType>('RADIO')
+
+    useRadioTelemetry(props)
 
     const generatedId = React.useId()
     const uniqueId = id || generatedId

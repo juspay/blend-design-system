@@ -1,0 +1,43 @@
+/**
+ * Telemetry Dashboard Page
+ * View all collected component usage telemetry data
+ */
+import { Suspense } from 'react'
+import TelemetryDashboard from '@/src/frontend/components/telemetry/TelemetryDashboard'
+
+export const metadata = {
+    title: 'Telemetry Dashboard - Blend Monitor',
+    description: 'Real-time analytics of Blend Design System component usage',
+}
+
+export default function TelemetryPage() {
+    return (
+        <div className="min-h-screen bg-gray-50 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        Realtime Analytics
+                    </h1>
+                </div>
+
+                <Suspense
+                    fallback={
+                        <div className="flex items-center justify-center h-64">
+                            <div className="text-center">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                                <div className="text-lg text-gray-600">
+                                    Loading telemetry analytics...
+                                </div>
+                                <div className="text-sm text-gray-500 mt-2">
+                                    Analyzing component usage data...
+                                </div>
+                            </div>
+                        </div>
+                    }
+                >
+                    <TelemetryDashboard />
+                </Suspense>
+            </div>
+        </div>
+    )
+}

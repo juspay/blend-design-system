@@ -12,8 +12,8 @@
         "populate-data": "node scripts/populate-all-deployment-data.js"
     },
     "dependencies": {
+        "@juspay/blend-design-system": "^0.0.13",
         "@types/pg": "^8.15.4",
-        "blend-v1": "^0.2.44",
         "dotenv": "^17.2.1",
         "firebase": "^11.10.0",
         "firebase-admin": "^12.7.0",

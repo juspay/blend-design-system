@@ -15,23 +15,28 @@ import type { OTPProps } from './types'
 // import otpInputTokens from "./otpInput.tokens";
 import { useComponentToken } from '../../../context/useComponentToken'
 import type { OTPInputTokensType } from './otpInput.tokens'
+import { useOTPInputTelemetry } from '../../../telemetry/componentHooks'
 
-const OTPInput = ({
-    label,
-    sublabel,
-    disabled,
-    helpIconHintText,
-    name,
-    required,
-    error,
-    errorMessage,
-    hintText,
-    value = '',
-    onChange,
-    form,
-    ...rest
-}: OTPProps) => {
+const OTPInput = (props: OTPProps) => {
+    const {
+        label,
+        sublabel,
+        disabled,
+        helpIconHintText,
+        name,
+        required,
+        error,
+        errorMessage,
+        hintText,
+        value = '',
+        onChange,
+        form,
+        ...rest
+    } = props
+
     const otpInputTokens = useComponentToken('OTP_INPUT') as OTPInputTokensType
+
+    useOTPInputTelemetry(props)
     const length = 6
     const [otp, setOtp] = useState<string[]>(new Array(6).fill(''))
     const [, setActiveIndex] = useState<number>(-1)

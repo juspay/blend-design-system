@@ -5,6 +5,7 @@ import { ProgressBarSize, ProgressBarVariant, ProgressBarType } from './types'
 import type { ProgressBarProps } from './types'
 import { useComponentToken } from '../../context/useComponentToken'
 import type { ProgressBarTokenType } from './progressbar.tokens'
+import { useProgressBarTelemetry } from '../../telemetry/componentHooks'
 
 const CircularProgressBar: React.FC<{
     value: number
@@ -178,17 +179,21 @@ const LinearProgressBar: React.FC<{
     )
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({
-    value,
-    size = ProgressBarSize.MEDIUM,
-    variant = ProgressBarVariant.SOLID,
-    type = ProgressBarType.SOLID,
-    showLabel = false,
-    className,
-}) => {
+const ProgressBar: React.FC<ProgressBarProps> = (props) => {
+    const {
+        value,
+        size = ProgressBarSize.MEDIUM,
+        variant = ProgressBarVariant.SOLID,
+        type = ProgressBarType.SOLID,
+        showLabel = false,
+        className,
+    } = props
+
     const progressBarToken = useComponentToken(
         'PROGRESS_BAR'
     ) as ProgressBarTokenType
+
+    useProgressBarTelemetry(props)
 
     if (variant === ProgressBarVariant.CIRCULAR) {
         return (

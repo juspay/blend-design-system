@@ -11,6 +11,7 @@ import type { TooltipTokensType } from './tooltip.tokens'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useTooltipTelemetry } from '../../telemetry/componentHooks'
 
 const Arrow = styled(RadixTooltip.Arrow)<{
     $color: CSSObject['backgroundColor']
@@ -18,19 +19,22 @@ const Arrow = styled(RadixTooltip.Arrow)<{
     fill: ${({ $color }) => $color};
 `
 
-export const Tooltip = ({
-    children: trigger,
-    content,
-    side = TooltipSide.TOP,
-    align = TooltipAlign.CENTER,
-    showArrow = true,
-    size = TooltipSize.SMALL,
-    slot,
-    slotDirection = TooltipSlotDirection.LEFT,
-    delayDuration = 300,
-    offset = 5,
-    open,
-}: TooltipProps) => {
+export const Tooltip = (tooltipProps: TooltipProps) => {
+    const {
+        children: trigger,
+        content,
+        side = TooltipSide.TOP,
+        align = TooltipAlign.CENTER,
+        showArrow = true,
+        size = TooltipSize.SMALL,
+        slot,
+        slotDirection = TooltipSlotDirection.LEFT,
+        delayDuration = 300,
+        offset = 5,
+        open,
+    } = tooltipProps
+
+    useTooltipTelemetry(tooltipProps)
     const tooltipTokens = useResponsiveTokens<TooltipTokensType>('TOOLTIP')
     return (
         <RadixTooltip.Provider delayDuration={delayDuration}>

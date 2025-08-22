@@ -10,6 +10,7 @@ import { ButtonSubType, ButtonType, Button } from '../Button'
 import { useComponentToken } from '../../context/useComponentToken'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobileModal from './MobileModal'
+import { useModalTelemetry } from '../../telemetry/componentHooks'
 
 const ModalHeader = ({
     title,
@@ -147,128 +148,127 @@ const ModalFooter = ({
     )
 }
 
-const Modal = forwardRef<HTMLDivElement, ModalProps>(
-    (
-        {
-            isOpen,
-            onClose,
-            title,
-            subtitle,
-            children,
-            primaryAction,
-            secondaryAction,
-            className,
-            showCloseButton = true,
-            closeOnBackdropClick = true,
-            headerRightSlot,
-            showDivider = true,
-            minWidth = '500px',
-            useDrawerOnMobile = true,
-        },
-        ref
-    ) => {
-        const modalTokens = useComponentToken('MODAL') as ModalTokensType
-        const { innerWidth } = useBreakpoints()
-        const isMobile = innerWidth < 1024
+const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
+    const {
+        isOpen,
+        onClose,
+        title,
+        subtitle,
+        children,
+        primaryAction,
+        secondaryAction,
+        className,
+        showCloseButton = true,
+        closeOnBackdropClick = true,
+        headerRightSlot,
+        showDivider = true,
+        minWidth = '500px',
+        useDrawerOnMobile = true,
+    } = props
 
-        useScrollLock(isOpen)
+    const modalTokens = useComponentToken('MODAL') as ModalTokensType
 
-        const handleBackdropClick = useCallback(() => {
-            if (closeOnBackdropClick) {
-                onClose()
-            }
-        }, [closeOnBackdropClick, onClose])
+    useModalTelemetry(props)
+    const { innerWidth } = useBreakpoints()
+    const isMobile = innerWidth < 1024
 
-        if (!isOpen) return null
+    useScrollLock(isOpen)
 
-        if (isMobile && useDrawerOnMobile) {
-            return (
-                <MobileModal
-                    isOpen={isOpen}
-                    onClose={onClose}
-                    title={title}
-                    subtitle={subtitle}
-                    primaryAction={primaryAction}
-                    secondaryAction={secondaryAction}
-                    className={className}
-                    showCloseButton={showCloseButton}
-                    closeOnBackdropClick={closeOnBackdropClick}
-                    headerRightSlot={headerRightSlot}
-                    showDivider={showDivider}
-                >
-                    {children}
-                </MobileModal>
-            )
+    const handleBackdropClick = useCallback(() => {
+        if (closeOnBackdropClick) {
+            onClose()
         }
+    }, [closeOnBackdropClick, onClose])
 
+    if (!isOpen) return null
+
+    if (isMobile && useDrawerOnMobile) {
         return (
+            <MobileModal
+                isOpen={isOpen}
+                onClose={onClose}
+                title={title}
+                subtitle={subtitle}
+                primaryAction={primaryAction}
+                secondaryAction={secondaryAction}
+                className={className}
+                showCloseButton={showCloseButton}
+                closeOnBackdropClick={closeOnBackdropClick}
+                headerRightSlot={headerRightSlot}
+                showDivider={showDivider}
+            >
+                {children}
+            </MobileModal>
+        )
+    }
+
+    return (
+        <Block
+            position="fixed"
+            inset={0}
+            zIndex={modalTokens.zIndex}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            overflow="auto"
+            padding={FOUNDATION_THEME.unit[16]}
+        >
             <Block
-                position="fixed"
-                inset={0}
-                zIndex={modalTokens.zIndex}
+                onClick={handleBackdropClick}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                overflow="auto"
-                padding={FOUNDATION_THEME.unit[16]}
+                position="fixed"
+                inset={0}
+                backgroundColor={FOUNDATION_THEME.colors.gray[700]}
+                opacity={0.5}
+                pointerEvents="auto"
+                role="presentation"
+                aria-hidden="true"
+            />
+
+            <Block
+                ref={ref}
+                className={className}
+                display="flex"
+                flexDirection="column"
+                position="relative"
+                backgroundColor={FOUNDATION_THEME.colors.gray[0]}
+                minWidth={minWidth}
+                maxWidth={'calc(100vw - 156px)'}
+                maxHeight={'calc(100vh - 156px)'}
+                borderRadius={FOUNDATION_THEME.border.radius[12]}
+                boxShadow={FOUNDATION_THEME.shadows.xs}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
             >
-                <Block
-                    onClick={handleBackdropClick}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    position="fixed"
-                    inset={0}
-                    backgroundColor={FOUNDATION_THEME.colors.gray[700]}
-                    opacity={0.5}
-                    pointerEvents="auto"
-                    role="presentation"
-                    aria-hidden="true"
+                <ModalHeader
+                    title={title}
+                    subtitle={subtitle}
+                    onClose={onClose}
+                    showCloseButton={showCloseButton}
+                    headerRightSlot={headerRightSlot}
+                    showDivider={showDivider}
                 />
 
                 <Block
-                    ref={ref}
-                    className={className}
-                    display="flex"
-                    flexDirection="column"
-                    position="relative"
-                    backgroundColor={FOUNDATION_THEME.colors.gray[0]}
-                    minWidth={minWidth}
-                    maxWidth={'calc(100vw - 156px)'}
-                    maxHeight={'calc(100vh - 156px)'}
-                    borderRadius={FOUNDATION_THEME.border.radius[12]}
-                    boxShadow={FOUNDATION_THEME.shadows.xs}
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="modal-title"
+                    padding={modalTokens.bodyContainer.padding}
+                    overflow="auto"
+                    flexGrow={1}
                 >
-                    <ModalHeader
-                        title={title}
-                        subtitle={subtitle}
-                        onClose={onClose}
-                        showCloseButton={showCloseButton}
-                        headerRightSlot={headerRightSlot}
-                        showDivider={showDivider}
-                    />
-
-                    <Block
-                        padding={modalTokens.bodyContainer.padding}
-                        overflow="auto"
-                        flexGrow={1}
-                    >
-                        {children}
-                    </Block>
-
-                    <ModalFooter
-                        primaryAction={primaryAction}
-                        secondaryAction={secondaryAction}
-                        showDivider={showDivider}
-                    />
+                    {children}
                 </Block>
+
+                <ModalFooter
+                    primaryAction={primaryAction}
+                    secondaryAction={secondaryAction}
+                    showDivider={showDivider}
+                />
             </Block>
-        )
-    }
-)
+        </Block>
+    )
+})
 
 Modal.displayName = 'Modal'
 

@@ -12,6 +12,7 @@ import {
     SnackbarVariant,
 } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useSnackbarTelemetry } from '../../telemetry/componentHooks'
 import { SnackbarTokens } from './snackbar.tokens'
 
 export const StyledToast: React.FC<CustomToastProps> = ({
@@ -139,13 +140,17 @@ export const StyledToast: React.FC<CustomToastProps> = ({
     )
 }
 
-export const addSnackbar = ({
-    header,
-    description,
-    variant = SnackbarVariant.INFO,
-    onClose,
-    actionButton,
-}: AddToastOptions) => {
+export const addSnackbar = (props: AddToastOptions) => {
+    const {
+        header,
+        description,
+        variant = SnackbarVariant.INFO,
+        onClose,
+        actionButton,
+    } = props
+
+    useSnackbarTelemetry(props)
+
     return sonnerToast.custom((t) => (
         <StyledToast
             header={header}

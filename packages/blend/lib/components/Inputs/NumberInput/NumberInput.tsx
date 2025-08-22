@@ -13,30 +13,35 @@ import { useState } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
+import { useNumberInputTelemetry } from '../../../telemetry/componentHooks'
 
-const NumberInput = ({
-    value,
-    onChange,
-    min,
-    max,
-    step,
-    error = false,
-    errorMessage,
-    required,
-    disabled,
-    size = NumberInputSize.MEDIUM,
-    placeholder,
-    sublabel,
-    helpIconHintText,
-    label = 'Number Input',
-    hintText,
-    name,
-    onBlur,
-    onFocus,
-    ...rest
-}: NumberInputProps) => {
+const NumberInput = (props: NumberInputProps) => {
+    const {
+        value,
+        onChange,
+        min,
+        max,
+        step,
+        error = false,
+        errorMessage,
+        required,
+        disabled,
+        size = NumberInputSize.MEDIUM,
+        placeholder,
+        sublabel,
+        helpIconHintText,
+        label = 'Number Input',
+        hintText,
+        name,
+        onBlur,
+        onFocus,
+        ...rest
+    } = props
+
     const numberInputTokens =
         useResponsiveTokens<NumberInputTokensType>('NUMBER_INPUT')
+
+    useNumberInputTelemetry(props)
 
     const [isFocused, setIsFocused] = useState(false)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)

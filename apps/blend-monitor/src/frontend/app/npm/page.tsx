@@ -21,7 +21,7 @@ import {
     StatCardVariant,
     ChangeType,
     SingleSelect,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import {
     Package,
     Download,

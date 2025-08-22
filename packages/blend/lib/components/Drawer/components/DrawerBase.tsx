@@ -17,6 +17,7 @@ import type {
     DrawerFooterProps,
     DrawerCloseProps,
 } from '../types'
+import { useDrawerTelemetry } from '../../../telemetry/componentHooks'
 
 const StyledOverlay = styled(VaulDrawer.Overlay)<{ tokens: DrawerTokensType }>`
     position: fixed;
@@ -186,20 +187,23 @@ const StyledDescription = styled(VaulDrawer.Description)<{
     margin: 4px 0 0 0;
 `
 
-export const Drawer = ({
-    open,
-    onOpenChange,
-    direction = 'bottom',
-    modal = true,
-    dismissible = true,
-    nested = false,
-    snapPoints,
-    activeSnapPoint,
-    onSnapPointChange,
-    fadeFromIndex,
-    snapToSequentialPoint = false,
-    children,
-}: DrawerProps) => {
+export const Drawer = (props: DrawerProps) => {
+    const {
+        open,
+        onOpenChange,
+        direction = 'bottom',
+        modal = true,
+        dismissible = true,
+        nested = false,
+        snapPoints,
+        activeSnapPoint,
+        onSnapPointChange,
+        fadeFromIndex,
+        snapToSequentialPoint = false,
+        children,
+    } = props
+
+    useDrawerTelemetry(props)
     const RootComponent = nested ? VaulDrawer.NestedRoot : VaulDrawer.Root
 
     const vaulProps: Record<string, unknown> = {

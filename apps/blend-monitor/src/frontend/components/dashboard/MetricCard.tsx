@@ -1,7 +1,11 @@
 'use client'
 
 import React from 'react'
-import { StatCard, StatCardVariant, ChangeType } from 'blend-v1'
+import {
+    StatCard,
+    StatCardVariant,
+    ChangeType,
+} from '@juspay/blend-design-system'
 
 interface MetricCardProps {
     title: string

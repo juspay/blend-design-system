@@ -6,6 +6,7 @@ import {
     formatSliderValue,
     getSliderLabelStyles,
 } from './utils'
+import { useSliderTelemetry } from '../../telemetry/componentHooks'
 import {
     SliderProps as BaseSliderProps,
     SliderSize,
@@ -187,54 +188,53 @@ const StyledValueLabel = styled.div<{
 const Slider = forwardRef<
     React.ComponentRef<typeof SliderPrimitive.Root>,
     SliderProps
->(
-    (
-        {
-            variant = SliderVariant.PRIMARY,
-            size = SliderSize.MEDIUM,
-            value,
-            defaultValue,
-            valueFormat,
-            showValueLabels = false,
-            labelPosition = 'top',
-            ...props
-        },
-        ref
-    ) => {
-        const currentValues = value || defaultValue || [0]
-        const thumbCount = currentValues.length
+>((sliderProps, ref) => {
+    const {
+        variant = SliderVariant.PRIMARY,
+        size = SliderSize.MEDIUM,
+        value,
+        defaultValue,
+        valueFormat,
+        showValueLabels = false,
+        labelPosition = 'top',
+        ...props
+    } = sliderProps
 
-        return (
-            <StyledRoot
-                ref={ref}
-                $variant={variant}
-                $size={size}
-                value={value}
-                defaultValue={defaultValue}
-                {...props}
-            >
-                <StyledTrack $variant={variant} $size={size}>
-                    <StyledRange $variant={variant} $size={size} />
-                </StyledTrack>
-                {Array.from({ length: thumbCount }, (_, index) => (
-                    <StyledThumb key={index} $variant={variant} $size={size}>
-                        {showValueLabels && (
-                            <StyledValueLabel
-                                $size={size}
-                                $position={labelPosition}
-                            >
-                                {formatSliderValue(
-                                    currentValues[index],
-                                    valueFormat
-                                )}
-                            </StyledValueLabel>
-                        )}
-                    </StyledThumb>
-                ))}
-            </StyledRoot>
-        )
-    }
-)
+    useSliderTelemetry(sliderProps)
+
+    const currentValues = value || defaultValue || [0]
+    const thumbCount = currentValues.length
+
+    return (
+        <StyledRoot
+            ref={ref}
+            $variant={variant}
+            $size={size}
+            value={value}
+            defaultValue={defaultValue}
+            {...props}
+        >
+            <StyledTrack $variant={variant} $size={size}>
+                <StyledRange $variant={variant} $size={size} />
+            </StyledTrack>
+            {Array.from({ length: thumbCount }, (_, index) => (
+                <StyledThumb key={index} $variant={variant} $size={size}>
+                    {showValueLabels && (
+                        <StyledValueLabel
+                            $size={size}
+                            $position={labelPosition}
+                        >
+                            {formatSliderValue(
+                                currentValues[index],
+                                valueFormat
+                            )}
+                        </StyledValueLabel>
+                    )}
+                </StyledThumb>
+            ))}
+        </StyledRoot>
+    )
+})
 
 Slider.displayName = 'Slider'
 

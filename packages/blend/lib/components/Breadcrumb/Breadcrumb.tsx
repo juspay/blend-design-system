@@ -7,6 +7,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import type { BreadcrumbTokenType } from './breadcrumb.tokens'
 import type { BreadcrumbItemType } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useBreadcrumbTelemetry } from '../../telemetry/componentHooks'
 
 const MAX_ITEMS = 4
 
@@ -63,9 +64,13 @@ const BreadcrumbItem = ({
     )
 }
 
-const Breadcrumb = ({ items }: { items: BreadcrumbItemType[] }) => {
+const Breadcrumb = (props: { items: BreadcrumbItemType[] }) => {
+    const { items } = props
+
     const breadcrumbTokens =
         useResponsiveTokens<BreadcrumbTokenType>('BREADCRUMB')
+
+    useBreadcrumbTelemetry(props)
     if (items.length === 0) return null
 
     const baseItem = items[0]

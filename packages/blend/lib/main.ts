@@ -35,3 +35,4 @@ export * from './components/Button'
 
 export * from './context'
 export * from './tokens'
+export * from './telemetry'
