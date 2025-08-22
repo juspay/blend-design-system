@@ -61,9 +61,10 @@ const DataTable = forwardRef(
             isLoading = false,
             enableColumnManager = true,
             showToolbar = true,
+            showSettings = false,
             enableInlineEdit = false,
             enableRowExpansion = false,
-            enableRowSelection = true,
+            enableRowSelection = false,
             renderExpandedRow,
             isRowExpandable,
             pagination = {
@@ -646,23 +647,25 @@ const DataTable = forwardRef(
                     onAdvancedFiltersChange={onAdvancedFiltersChange}
                     onClearAllFilters={clearAllFilters}
                     headerSlot1={
-                        <>
-                            <Menu
-                                items={formatOptions}
-                                alignment={MenuAlignment.END}
-                                sideOffset={8}
-                                alignOffset={-20}
-                                trigger={
-                                    <Button
-                                        buttonType={ButtonType.SECONDARY}
-                                        leadingIcon={<Settings />}
-                                        size={ButtonSize.SMALL}
-                                    >
-                                        Settings
-                                    </Button>
-                                }
-                            />
-                        </>
+                        showSettings ? (
+                            <>
+                                <Menu
+                                    items={formatOptions}
+                                    alignment={MenuAlignment.END}
+                                    sideOffset={8}
+                                    alignOffset={-20}
+                                    trigger={
+                                        <Button
+                                            buttonType={ButtonType.SECONDARY}
+                                            leadingIcon={<Settings />}
+                                            size={ButtonSize.SMALL}
+                                        >
+                                            Settings
+                                        </Button>
+                                    }
+                                />
+                            </>
+                        ) : null
                     }
                     headerSlot2={headerSlot1}
                     headerSlot3={headerSlot2}

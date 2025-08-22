@@ -114,7 +114,9 @@ export function DataTablePagination({
                             .color
                     }
                     style={{
-                        minWidth: '94px',
+                        // minWidth: isMobile ? '40px' : '108px',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
                     }}
                 >
                     {isMobile ? 'Rows' : 'Rows per page'}

@@ -282,7 +282,7 @@ const SimpleDataTableExample = () => {
         },
         {
             id: 5,
-            name: 'Apple Watch Series 9',
+            name: 'Apple Watch Series 9 test test test random text',
             category: {
                 options: [
                     {
@@ -351,8 +351,8 @@ const SimpleDataTableExample = () => {
             type: ColumnType.TEXT,
             isSortable: true,
             isEditable: true,
-            minWidth: '200px',
-            maxWidth: '300px',
+            minWidth: '120px',
+            maxWidth: '150px',
         },
         {
             field: 'price',
@@ -483,8 +483,8 @@ const SimpleDataTableExample = () => {
                     </div>
                 </div>
             ),
-            minWidth: '200px',
-            maxWidth: '280px',
+            minWidth: '140px',
+            maxWidth: '180px',
         },
         {
             field: 'rating',
@@ -702,6 +702,7 @@ const SimpleDataTableExample = () => {
                 enableRowExpansion={false}
                 enableRowSelection={true}
                 enableColumnManager={true}
+                showSettings={true}
                 columnFreeze={0}
                 mobileColumnsToShow={2}
                 pagination={{
@@ -822,6 +823,7 @@ const SimpleDataTableExample = () => {
                     enableRowExpansion={false}
                     enableRowSelection={true}
                     enableColumnManager={false}
+                    showSettings={false}
                     columnFreeze={0}
                     // mobileColumnsToShow is not set, so all columns are shown on mobile
                     pagination={{
@@ -869,8 +871,9 @@ const DataTableDemo = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [autoSwitchToApi, setAutoSwitchToApi] = useState(true)
     const [columnFreeze, setColumnFreeze] = useState(2)
-    const [enableRowSelection, setEnableRowSelection] = useState(true)
+    const [enableRowSelection, setEnableRowSelection] = useState(false)
     const [enableColumnManager, setEnableColumnManager] = useState(true)
+    const [showSettings, setShowSettings] = useState(true)
 
     // Define strict user row type matching column requirements
     type UserRow = {
@@ -2099,6 +2102,25 @@ const DataTableDemo = () => {
                                     Column Manager
                                 </label>
                             </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                }}
+                            >
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={showSettings}
+                                        onChange={(e) =>
+                                            setShowSettings(e.target.checked)
+                                        }
+                                        style={{ marginRight: '4px' }}
+                                    />
+                                    Show Settings
+                                </label>
+                            </div>
                         </div>
                         <Button
                             buttonType={
@@ -2204,6 +2226,7 @@ const DataTableDemo = () => {
                 enableRowExpansion
                 enableRowSelection={enableRowSelection}
                 enableColumnManager={enableColumnManager}
+                showSettings={showSettings}
                 renderExpandedRow={renderExpandedRow}
                 isRowExpandable={isRowExpandable}
                 serverSideSearch={isServerSideMode}
