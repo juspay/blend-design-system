@@ -9,7 +9,20 @@ import styled from 'styled-components'
 import { handleSectionNavigation } from './utils'
 import { ActiveItemProvider } from './NavItem'
 
-const StyledNav = styled(Block)`
+const StyledNav = styled(Block).withConfig({
+    shouldForwardProp: (prop) =>
+        ![
+            'flexGrow',
+            'flexDirection',
+            'gap',
+            'alignItems',
+            'paddingY',
+            'width',
+            'height',
+            'display',
+            'overflow',
+        ].includes(prop),
+})`
     &::-webkit-scrollbar {
         display: none;
     }

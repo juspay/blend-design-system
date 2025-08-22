@@ -69,6 +69,7 @@ import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
 import PopoverDemo from './PopoverDemo'
 import MultiValueInputDemo from './MultiValueInputDemo'
+import TopbarDemo from './TopbarDemo'
 import {
     Avatar,
     AvatarShape,
@@ -122,6 +123,7 @@ const SidebarDemo = () => {
         | 'dropdownInput'
         | 'dataRangePicker'
         | 'multiValueInput'
+        | 'topbar'
     >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -229,6 +231,8 @@ const SidebarDemo = () => {
                 return <PopoverDemo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
+            case 'topbar':
+                return <TopbarDemo />
             default:
                 return <div>No component selected</div>
         }
@@ -338,6 +342,13 @@ const SidebarDemo = () => {
         {
             label: 'Navigation',
             items: [
+                {
+                    label: 'Topbar',
+                    leftSlot: (
+                        <Layout style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('topbar'),
+                },
                 {
                     label: 'Menu',
                     leftSlot: (
