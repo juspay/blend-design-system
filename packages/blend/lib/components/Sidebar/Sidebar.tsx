@@ -9,6 +9,7 @@ import { SelectMenuVariant } from '../Select/types'
 import { SelectMenuSize, SingleSelect } from '../SingleSelect'
 import { Avatar, AvatarShape, AvatarSize } from '../Avatar'
 import Text from '../Text/Text'
+import { Topbar } from '../Topbar'
 
 const DirectoryContainer = styled(Block)`
     flex: 1;
@@ -295,81 +296,13 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 </Block>
 
                 <MainContentContainer>
-                    {/* TOPBAR  */}
-                    <Block
-                        width="100%"
-                        height="68px"
-                        position="sticky"
-                        top="0"
-                        zIndex="10"
-                        borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                        // backgroundColor={FOUNDATION_THEME.colors.gray[0]}
-                        display="flex"
-                        alignItems="center"
-                        gap="16px"
-                        padding="16px 32px"
-                        backgroundColor="hsla(0, 0%, 100%, 0.8)"
-                        style={{
-                            backdropFilter: 'blur(10px)',
-                        }}
-                    >
-                        {isExpanded === false && (
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                gap="16px"
-                                width="fit-content"
-                                flexShrink={0}
-                            >
-                                {showToggleButton && (
-                                    <ToggleButton
-                                        onClick={() =>
-                                            setIsExpanded(!isExpanded)
-                                        }
-                                    >
-                                        <PanelsTopLeft
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[600]
-                                            }
-                                            size={14}
-                                        />
-                                    </ToggleButton>
-                                )}
-                                {sidebarTopSlot ? (
-                                    sidebarTopSlot
-                                ) : (
-                                    <SingleSelect
-                                        placeholder="Select Merchant"
-                                        variant={SelectMenuVariant.NO_CONTAINER}
-                                        items={[
-                                            {
-                                                items: [
-                                                    {
-                                                        label: 'zeptomarketplace',
-                                                        value: 'zeptomarketplace',
-                                                        slot1: (
-                                                            <UserIcon
-                                                                style={{
-                                                                    width: '16px',
-                                                                    height: '16px',
-                                                                }}
-                                                            />
-                                                        ),
-                                                    },
-                                                ],
-                                            },
-                                        ]}
-                                        selected={'zeptomarketplace'}
-                                        onSelect={(value) => {
-                                            console.log(value)
-                                        }}
-                                    />
-                                )}
-                            </Block>
-                        )}
-                        <Block flexGrow={1}>{topbar}</Block>
-                    </Block>
+                    <Topbar
+                        isExpanded={isExpanded}
+                        onToggleExpansion={() => setIsExpanded(!isExpanded)}
+                        showToggleButton={showToggleButton}
+                        sidebarTopSlot={sidebarTopSlot}
+                        topbar={topbar}
+                    />
 
                     <Block>{children}</Block>
                 </MainContentContainer>
