@@ -38,6 +38,23 @@ import { foundationToken } from '../../foundationToken'
 import { useMobileDataTable } from './hooks/useMobileDataTable'
 import MobileColumnDrawer from './MobileColumnDrawer'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import styled from 'styled-components'
+
+const ScrollableContainer = styled(Block)`
+    overflow-x: auto;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+`
 
 const DataTable = forwardRef(
     <T extends Record<string, unknown>>(
@@ -699,12 +716,8 @@ const DataTable = forwardRef(
                             overflow: 'hidden',
                         }}
                     >
-                        <Block
+                        <ScrollableContainer
                             style={{
-                                overflowX: 'auto',
-                                overflowY: 'auto',
-                                scrollBehavior: 'smooth',
-                                WebkitOverflowScrolling: 'touch',
                                 height: '100%',
                                 maxHeight: '100%',
                                 position: 'relative',
@@ -931,7 +944,7 @@ const DataTable = forwardRef(
                                     </tbody>
                                 )}
                             </table>
-                        </Block>
+                        </ScrollableContainer>
                     </Block>
 
                     <TableFooter
