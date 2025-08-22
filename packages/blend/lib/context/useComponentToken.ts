@@ -9,7 +9,7 @@ import { type ComponentTokenType, useTheme } from './ThemeContext'
 import type { ResponsiveTextInputTokens } from '../components/Inputs/TextInput/textInput.tokens'
 import type { ResponsiveNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
 import type { ResponsiveAlertTokens } from '../components/Alert/alert.tokens'
-import type { OTPInputTokensType } from '../components/Inputs/OTPInput/otpInput.tokens'
+import type { ResponsiveOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
 import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import type { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
@@ -40,7 +40,7 @@ export const useComponentToken = (
     | ResponsiveNumberInputTokens
     | ResponsiveAlertTokens
     | ResponsiveRadioTokens
-    | OTPInputTokensType
+    | ResponsiveOTPInputTokens
     | ResponsiveUnitInputTokens
     | MultiValueInputTokensType
     | ResponsiveSwitchTokens
