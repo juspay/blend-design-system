@@ -595,25 +595,6 @@ const TableHeader = forwardRef<
                         )
                     })}
 
-                    {/* Mobile overflow column header - empty cell for alignment */}
-                    {mobileConfig?.enableColumnOverflow &&
-                        mobileOverflowColumns.length > 0 &&
-                        onMobileOverflowClick && (
-                            <th
-                                style={{
-                                    ...tableToken.dataTable.table.header.cell,
-                                    width: '40px',
-                                    minWidth: '40px',
-                                    maxWidth: '40px',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                    boxSizing: 'border-box',
-                                }}
-                            ></th>
-                        )}
-
-                    {/* Actions Column Header - Desktop Only (Mobile shows in drawer footer) */}
                     {(enableInlineEdit || rowActions) &&
                         !(
                             mobileConfig?.isMobile &&
@@ -633,7 +614,7 @@ const TableHeader = forwardRef<
                                 <Block
                                     display="flex"
                                     alignItems="center"
-                                    justifyContent="center"
+                                    justifyContent="flex-start"
                                 >
                                     <PrimitiveText
                                         as="span"
@@ -647,6 +628,23 @@ const TableHeader = forwardRef<
                                     </PrimitiveText>
                                 </Block>
                             </th>
+                        )}
+
+                    {mobileConfig?.enableColumnOverflow &&
+                        mobileOverflowColumns.length > 0 &&
+                        onMobileOverflowClick && (
+                            <th
+                                style={{
+                                    ...tableToken.dataTable.table.header.cell,
+                                    width: '40px',
+                                    minWidth: '40px',
+                                    maxWidth: '40px',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    boxSizing: 'border-box',
+                                }}
+                            ></th>
                         )}
 
                     {enableColumnManager && (

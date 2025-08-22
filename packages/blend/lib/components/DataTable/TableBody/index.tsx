@@ -836,6 +836,48 @@ const TableBody = forwardRef<
                                           }
                                       )}
 
+                                      {(enableInlineEdit || rowActions) &&
+                                          !(
+                                              mobileConfig?.isMobile &&
+                                              mobileConfig?.enableColumnOverflow
+                                          ) && (
+                                              <StyledTableCell
+                                                  $customBackgroundColor={
+                                                      rowStyling.backgroundColor
+                                                  }
+                                                  $hasCustomBackground={
+                                                      hasCustomBackground
+                                                  }
+                                                  $width="200px"
+                                                  style={{
+                                                      maxWidth: '200px',
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                      whiteSpace: 'nowrap',
+                                                      fontSize:
+                                                          tableToken.dataTable
+                                                              .table.body.cell
+                                                              .fontSize,
+                                                  }}
+                                              >
+                                                  <ActionsCell
+                                                      row={row}
+                                                      index={index}
+                                                      isEditing={isEditing}
+                                                      enableInlineEdit={
+                                                          enableInlineEdit
+                                                      }
+                                                      rowActions={rowActions}
+                                                      onEditRow={onEditRow}
+                                                      onSaveRow={onSaveRow}
+                                                      onCancelEdit={
+                                                          onCancelEdit
+                                                      }
+                                                      idField={idField}
+                                                  />
+                                              </StyledTableCell>
+                                          )}
+
                                       {mobileConfig?.enableColumnOverflow &&
                                           mobileOverflowColumns.length > 0 &&
                                           onMobileOverflowClick && (
@@ -891,49 +933,7 @@ const TableBody = forwardRef<
                                               </StyledTableCell>
                                           )}
 
-                                      {/* Row Actions Column - Desktop Only (Mobile shows in drawer footer) */}
-                                      {(enableInlineEdit || rowActions) &&
-                                          !(
-                                              mobileConfig?.isMobile &&
-                                              mobileConfig?.enableColumnOverflow
-                                          ) && (
-                                              <StyledTableCell
-                                                  $customBackgroundColor={
-                                                      rowStyling.backgroundColor
-                                                  }
-                                                  $hasCustomBackground={
-                                                      hasCustomBackground
-                                                  }
-                                                  $width="200px"
-                                                  style={{
-                                                      maxWidth: '200px',
-                                                      overflow: 'hidden',
-                                                      textOverflow: 'ellipsis',
-                                                      whiteSpace: 'nowrap',
-                                                      fontSize:
-                                                          tableToken.dataTable
-                                                              .table.body.cell
-                                                              .fontSize,
-                                                  }}
-                                              >
-                                                  <ActionsCell
-                                                      row={row}
-                                                      index={index}
-                                                      isEditing={isEditing}
-                                                      enableInlineEdit={
-                                                          enableInlineEdit
-                                                      }
-                                                      rowActions={rowActions}
-                                                      onEditRow={onEditRow}
-                                                      onSaveRow={onSaveRow}
-                                                      onCancelEdit={
-                                                          onCancelEdit
-                                                      }
-                                                      idField={idField}
-                                                  />
-                                              </StyledTableCell>
-                                          )}
-
+                                      {/* Column Manager - Always rightmost (empty cell in body, actual manager in header) */}
                                       {enableColumnManager && (
                                           <StyledTableCell
                                               $width="50px"
