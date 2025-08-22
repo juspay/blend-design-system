@@ -6,6 +6,7 @@ import { TextInput } from '../../../../packages/blend/lib/components/Inputs/Text
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { useState } from 'react'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
+import { DropdownPosition } from '../../../../packages/blend/lib/main'
 
 const DropdownInputDemo = () => {
     // Individual playground state
@@ -62,7 +63,10 @@ const DropdownInputDemo = () => {
         {
             groupLabel: 'Popular Countries',
             items: [
-                { label: 'United States', value: 'US' },
+                {
+                    label: 'tansaction success rate ',
+                    value: 'US',
+                },
                 { label: 'United Kingdom', value: 'UK' },
                 { label: 'Canada', value: 'CA' },
                 { label: 'Germany', value: 'DE' },
@@ -285,6 +289,8 @@ const DropdownInputDemo = () => {
                     <div className="min-h-32 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-gray-50 p-8">
                         <div className="w-full max-w-md">
                             <DropdownInput
+                                dropdownPosition={DropdownPosition.LEFT}
+                                // slot={<User size={12} />}
                                 onBlur={() => {
                                     console.log('blur')
                                 }}
