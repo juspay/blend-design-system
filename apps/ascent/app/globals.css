@@ -64,7 +64,6 @@
     --intro-text-color: #a3a3a3;
     --button-border: #64677c;
     --button-text-color: #b3b3b3;
-    --text-lg: 8.25rem;
     --heading-gradient: linear-gradient(
         90deg,
         #4b4b4b 0%,
@@ -113,10 +112,15 @@
 }
 
 @theme {
-    --tracking-half: 0.5em;
-    --tracking-double: 2em;
+    --breakpoint-xs: 400px;
+
+    /* 2xl */
+    --main-heading-text: 8.25rem;
     --subheading-font-size: 32px;
+    --tracking-half: 0.5rem;
+    --tracking-double: 2rem;
     --tab-bar-border-radius: 83px;
+    --tab-btn-font-size: 18px;
     --padding-1-pixel: 1px;
     --tabs-section-width: 636px;
     --tabs-border-radius: 50px;
@@ -125,6 +129,42 @@
     --playground-min-height: 90vh;
     --playground-border-radius: 200px;
     --move-to-top-btn-size: 52px --footer-border-radius: 100px;
+    --tab-heading-font-size: 16px;
+
+    /* xl */
+    --main-heading-text-xl: 6rem;
+    --subheading-font-size-xl: 28px;
+
+    /* lg */
+    --main-heading-text-lg: 5.5rem;
+    --subheading-font-size-lg: 24px;
+
+    /* md */
+    --main-heading-text-md: 4rem;
+    --subheading-font-size-md: 20px;
+    --tabs-section-width-md: 550px;
+    --tab-btn-font-size-md: 14px;
+    --tab-heading-font-size-md: 12px;
+    --tokenizer-heading-letter-spacing-md: 30px;
+
+    /* sm */
+    --main-heading-text-sm: 3.5rem;
+    --gradient-heading-box-font-size-sm: 10px;
+    --subheading-font-size-sm: 18px;
+    --tabs-section-width-sm: 500px;
+    --tab-btn-font-size-sm: 12px;
+    --tab-heading-font-size-sm: 10px;
+    --tokenizer-heading-letter-spacing-sm: 25px;
+
+    /* xs */
+    --main-heading-text-xs: 2rem;
+    --gradient-heading-box-font-size-xs: 8px --subheading-font-size-xs: 14px;
+    --tabs-section-width-xs: 320px;
+    --tab-btn-font-size-xs: 10px;
+    --tab-heading-font-size-xs: 8px;
+    --tokenizer-heading-letter-spacing-xs: 20px;
+
+    --text-xxs: 10px;
 }
 
 @media (prefers-color-scheme: dark) {

@@ -5,9 +5,9 @@ import { InfoBtn } from '../../InfoBtn'
 
 export const TokenizerComp = () => {
     return (
-        <div className="mt-50 flex flex-col items-center">
+        <div className="lg:mt-50 mt-25 flex flex-col items-center">
             <BlendBorderHeading text="Tokenizer" />
-            <div className="mt-25 text-[var(--intro-text-color)] text-4xl font-light text-center opacity-80">
+            <div className="mt-25 text-[var(--intro-text-color)] 2xl:text-4xl xl:text-3xl lg:text-2xl md:text-lg sm:text-xs text-[length:var(--text-xxs)]  font-light text-center opacity-80">
                 <p>
                     The Tokeniser lets you apply your brand’s styles—like
                     colors, fonts, and spacing—
@@ -15,7 +15,7 @@ export const TokenizerComp = () => {
                 <p>across our app effortlessly.</p>
             </div>
             <div>
-                <Tokenizer />
+                <Tokenizer width={`1380`} height={`1301`} />
             </div>
             <div className="-mt-40 flex flex-col items-center justify-center">
                 <InfoBtn

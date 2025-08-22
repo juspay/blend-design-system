@@ -1,10 +1,16 @@
-export const Tokenizer = () => {
+export const Tokenizer = ({
+    width,
+    height,
+}: {
+    width: string
+    height: string
+}) => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="1380"
-            height="1301"
-            viewBox="0 0 1380 1301"
+            width={width}
+            height={height}
+            viewBox={`0 0 ${width} ${height}`}
             fill="none"
         >
             <path
