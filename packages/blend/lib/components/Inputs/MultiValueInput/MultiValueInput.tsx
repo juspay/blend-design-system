@@ -8,6 +8,7 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import type { MultiValueInputProps } from './types'
 import { useComponentToken } from '../../../context/useComponentToken'
 import type { MultiValueInputTokensType } from './multiValueInput.tokens'
+import { X } from 'lucide-react'
 
 const MultiValueInput = ({
     label,
@@ -116,6 +117,13 @@ const MultiValueInput = ({
                         text={tag}
                         size={TagSize.XS}
                         shape={TagShape.ROUNDED}
+                        rightSlot={
+                            <X
+                                size={12}
+                                onClick={() => removeTag(tag)}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        }
                     />
                 ))}
                 <PrimitiveInput

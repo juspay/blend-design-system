@@ -314,7 +314,6 @@ const StatCard = ({
                                 alignItems="center"
                                 gap={statCardToken.stats.gap}
                             >
-                                (
                                 <Tooltip content={valueTooltip || ''}>
                                     <Text
                                         as="span"
@@ -336,7 +335,7 @@ const StatCard = ({
                                         {value}
                                     </Text>
                                 </Tooltip>
-                                )
+
                                 {formattedChange && (
                                     <Tooltip content={change?.tooltip || ''}>
                                         <Block

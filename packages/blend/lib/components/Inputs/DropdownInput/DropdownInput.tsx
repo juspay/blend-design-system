@@ -6,7 +6,7 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import { TextInputSize } from '../TextInput/types'
 
 import { SelectMenuAlignment } from '../../Select/types'
-import type { DropdownInputProps } from './types'
+import { DropdownPosition, type DropdownInputProps } from './types'
 import type { DropdownInputTokensType } from './dropdownInput.tokens'
 import { toPixels } from '../../../global-utils/GlobalUtils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
@@ -33,6 +33,7 @@ const DropdownInput = ({
     onChange,
     slot,
     size = TextInputSize.MEDIUM,
+    dropdownPosition = DropdownPosition.RIGHT,
     placeholder,
     dropDownValue,
     onDropDownChange,
@@ -69,9 +70,14 @@ const DropdownInput = ({
         (isSmallScreenWithLargeSize ? 0.5 : 0)
     const GAP = toPixels(dropdownInputTokens.input.gap)
 
-    const paddingInlineStart = paddingX + (slotWidth ? slotWidth + GAP : 0)
+    const paddingInlineStart =
+        dropdownPosition === DropdownPosition.LEFT
+            ? paddingX + (slotWidth ? slotWidth : 0) + dropdownWidth + GAP
+            : paddingX + (slotWidth ? slotWidth + GAP : 0)
     const paddingInlineEnd =
-        paddingX + (dropdownWidth ? dropdownWidth + 2 * GAP : 0)
+        dropdownPosition === DropdownPosition.RIGHT
+            ? paddingX + (dropdownWidth ? dropdownWidth + 2 * GAP : 0)
+            : paddingX
 
     useEffect(() => {
         if (slotRef.current) {
@@ -132,6 +138,48 @@ const DropdownInput = ({
                             required={required || false}
                             name={name || ''}
                             isFocused={inputFocusedOrWithValue}
+                        />
+                    </Block>
+                )}
+
+                {!slot && dropdownPosition === DropdownPosition.LEFT && (
+                    <Block
+                        ref={dropdownRef}
+                        position="absolute"
+                        left={14}
+                        top={paddingX}
+                        bottom={paddingX}
+                        width={'fit-content'}
+                        contentCentered
+                    >
+                        <SingleSelect
+                            inline={true}
+                            disabled={disabled}
+                            variant={SelectMenuVariant.NO_CONTAINER}
+                            size={SelectMenuSize.SMALL}
+                            placeholder={placeholder || ''}
+                            maxHeight={maxDropdownHeight}
+                            items={dropDownItems}
+                            enableSearch={false}
+                            alignment={SelectMenuAlignment.END}
+                            alignOffset={-(paddingX + 2)}
+                            sideOffset={paddingX}
+                            selected={dropDownValue || ''}
+                            onSelect={(value) => {
+                                const selectedValue = Array.isArray(value)
+                                    ? value[0]
+                                    : value
+                                if (selectedValue !== undefined) {
+                                    onDropDownChange?.(selectedValue)
+                                }
+                            }}
+                            name={dropdownName}
+                            onBlur={() => {
+                                onDropdownClose?.()
+                            }}
+                            onFocus={() => {
+                                onDropdownOpen?.()
+                            }}
                         />
                     </Block>
                 )}
@@ -203,45 +251,48 @@ const DropdownInput = ({
                     }}
                     {...rest}
                 />
-                <Block
-                    ref={dropdownRef}
-                    position="absolute"
-                    right={14}
-                    top={paddingX}
-                    bottom={paddingX}
-                    width={'fit-content'}
-                    contentCentered
-                >
-                    <SingleSelect
-                        inline={true}
-                        disabled={disabled}
-                        variant={SelectMenuVariant.NO_CONTAINER}
-                        size={SelectMenuSize.SMALL}
-                        placeholder={placeholder || ''}
-                        maxHeight={maxDropdownHeight}
-                        items={dropDownItems}
-                        enableSearch={false}
-                        alignment={SelectMenuAlignment.END}
-                        alignOffset={-(paddingX + 2)}
-                        sideOffset={paddingX}
-                        selected={dropDownValue || ''}
-                        onSelect={(value) => {
-                            const selectedValue = Array.isArray(value)
-                                ? value[0]
-                                : value
-                            if (selectedValue !== undefined) {
-                                onDropDownChange?.(selectedValue)
-                            }
-                        }}
-                        name={dropdownName}
-                        onBlur={() => {
-                            onDropdownClose?.()
-                        }}
-                        onFocus={() => {
-                            onDropdownOpen?.()
-                        }}
-                    />
-                </Block>
+
+                {dropdownPosition === DropdownPosition.RIGHT && (
+                    <Block
+                        ref={dropdownRef}
+                        position="absolute"
+                        right={14}
+                        top={paddingX}
+                        bottom={paddingX}
+                        width={'fit-content'}
+                        contentCentered
+                    >
+                        <SingleSelect
+                            inline={true}
+                            disabled={disabled}
+                            variant={SelectMenuVariant.NO_CONTAINER}
+                            size={SelectMenuSize.SMALL}
+                            placeholder={placeholder || ''}
+                            maxHeight={maxDropdownHeight}
+                            items={dropDownItems}
+                            enableSearch={false}
+                            alignment={SelectMenuAlignment.END}
+                            alignOffset={-(paddingX + 2)}
+                            sideOffset={paddingX}
+                            selected={dropDownValue || ''}
+                            onSelect={(value) => {
+                                const selectedValue = Array.isArray(value)
+                                    ? value[0]
+                                    : value
+                                if (selectedValue !== undefined) {
+                                    onDropDownChange?.(selectedValue)
+                                }
+                            }}
+                            name={dropdownName}
+                            onBlur={() => {
+                                onDropdownClose?.()
+                            }}
+                            onFocus={() => {
+                                onDropdownOpen?.()
+                            }}
+                        />
+                    </Block>
+                )}
             </Block>
             <InputFooter
                 error={error}
