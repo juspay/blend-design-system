@@ -132,6 +132,8 @@
     --tab-heading-font-size: 16px;
     --chevron-right-size: 24px;
     --subheading-letter-spacing: 2.5em;
+    --documentation-card-size: 500px;
+    --documentation-card-rounded: 120px;
 
     /* xl */
     --main-heading-text-xl: 6rem;
@@ -151,6 +153,8 @@
     --info-btn-width-md: 160px;
     --chevron-right-size-md: 22px;
     --subheading-letter-spacing-md: 2.2em;
+    --documentation-card-size-md: 450px;
+    --documentation-card-rounded-md: 90px;
 
     /* sm */
     --main-heading-text-sm: 3.5rem;
@@ -163,6 +167,8 @@
     --info-btn-width-sm: 120px;
     --chevron-right-size-sm: 20px;
     --subheading-letter-spacing-sm: 2.1em;
+    --documentation-card-size-sm: 400px;
+    --documentation-card-rounded-sm: 70px;
 
     /* xs */
     --main-heading-text-xs: 2rem;
@@ -175,6 +181,8 @@
     --chevron-right-size-xs: 18px;
     --subheading-letter-spacing-xs: 2em;
     --subheading-font-size-xs: 14px;
+    --documentation-card-size-xs: 350px;
+    --documentation-card-rounded-xs: 50px;
 
     --text-xxs: 10px;
     --subheading-font-size-xxs: 12px;
