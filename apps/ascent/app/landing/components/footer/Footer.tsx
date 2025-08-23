@@ -36,7 +36,7 @@ export const Footer = () => {
                         <p>Dublin 2, Ireland</p>
                     </div>
                 </div>
-                <div className="grid grid-cols-4 gap-x-[80px]">
+                <div className="grid lg:grid-cols-4 grid-cols-2 gap-x-[80px]">
                     {FooterLinksData.map((data, key) => (
                         <div key={key} className="flex flex-col gap-8">
                             <p className="text-[18px] font-bold text-white capitalize">

@@ -18,10 +18,10 @@ export const ConnectWithUs = () => {
     }
 
     return (
-        <div className="py-50 flex flex-col items-center gap-10 relative overflow-hidden w-full max-w-screen">
+        <div className="lg:py-50 md:py-40 sm:py-32 py-20 flex flex-col items-center gap-10 relative overflow-hidden w-full max-w-screen">
             <div className="flex items-end">
                 <ConnectWithUsBox />
-                <p className="text-[48px] text-[var(--gray-text)] font-light -ml-10">
+                <p className="lg:text-5xl md:text-3xl sm:text-xl xs:text-md text-sm text-[var(--gray-text)] font-light -ml-10">
                     We're listening--tell us what you think.
                 </p>
             </div>
