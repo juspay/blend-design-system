@@ -48,8 +48,7 @@ export const DocumentationCarousel = () => {
             <div className="flex justify-center items-center mt-50">
                 <div
                     ref={carouselRef}
-                    className="flex transition-transform duration-500 ease-in-out"
-                    style={{ gap: '50px' }}
+                    className="flex transition-transform duration-500 ease-in-out gap-[50px]"
                 >
                     {DocumentationCardData.map((data, index) => (
                         <div

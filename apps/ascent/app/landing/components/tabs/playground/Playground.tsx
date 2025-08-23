@@ -5,14 +5,15 @@ import Playground from '@/app/landing/icons/Playground'
 
 export const PlaygroundComp = () => {
     return (
-        <section className="w-screen py-20 mt-50 min-h-[var(--playground-min-height)] rounded-[var(--playground-border-radius)] overflow-hidden border-t border-white/20 bg-white/3 px-50">
+        <section className="w-screen lg:py-20 md:py-18 sm:py-16 py-14 lg:mt-50 md:mt-40 sm:mt-36 mt-32 min-h-[var(--playground-min-height)] rounded-[var(--playground-border-radius-xxs)] lg:rounded-[var(--playground-border-radius)] md:rounded-[var(--playground-border-radius-md)] sm:rounded-[var(--playground-border-radius-sm)] xs:rounded-[var(--playground-border-radius-xs)] overflow-hidden border-t border-white/20 bg-white/3 lg:px-50 md:px-30 sm:px-15 px-8">
             <GradientHeadingBox
                 text="playground"
-                classes="w-fit text-center tracking-[var(--tracking-double)]"
+                classes="w-fit text-center"
+                tracking="tracking-[var(--tracking-double)]"
             />
-            <div className="mt-40 flex">
-                <div className="w-full flex flex-col gap-25">
-                    <p className="text-wrap text-[36px] font-light text-[var(--gray-text)]">
+            <div className="lg:mt-40 md:mt-36 sm:mt-30 xs:mt-16 mt-12 flex lg:flex-row flex-col items-center">
+                <div className="w-full flex flex-col lg:gap-25 md:gap-20 sm:gap-16 gap-12">
+                    <p className="text-wrap lg:text-4xl md:text-3xl sm:text-2xl xs:text-xl text-lg font-light text-[var(--gray-text)]">
                         Interactive space to test and tweak component props in
                         real-time.
                     </p>

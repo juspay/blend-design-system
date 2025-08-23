@@ -118,7 +118,7 @@
     --main-heading-text: 8.25rem;
     --subheading-font-size: 32px;
     --tracking-half: 0.5rem;
-    --tracking-double: 2rem;
+    --tracking-double: 2em;
     --tab-bar-border-radius: 83px;
     --tab-btn-font-size: 18px;
     --padding-1-pixel: 1px;
@@ -155,6 +155,7 @@
     --subheading-letter-spacing-md: 2.2em;
     --documentation-card-size-md: 450px;
     --documentation-card-rounded-md: 90px;
+    --playground-border-radius-md: 160px;
 
     /* sm */
     --main-heading-text-sm: 3.5rem;
@@ -169,6 +170,7 @@
     --subheading-letter-spacing-sm: 2.1em;
     --documentation-card-size-sm: 400px;
     --documentation-card-rounded-sm: 70px;
+    --playground-border-radius-sm: 120px;
 
     /* xs */
     --main-heading-text-xs: 2rem;
@@ -183,9 +185,11 @@
     --subheading-font-size-xs: 14px;
     --documentation-card-size-xs: 350px;
     --documentation-card-rounded-xs: 50px;
+    --playground-border-radius-xs: 80px;
 
     --text-xxs: 10px;
     --subheading-font-size-xxs: 12px;
+    --playground-border-radius-xxs: 40px;
 }
 
 @media (prefers-color-scheme: dark) {
