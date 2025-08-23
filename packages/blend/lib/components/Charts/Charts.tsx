@@ -21,7 +21,7 @@ const Charts: React.FC<ChartsProps> = (props) => {
     const {
         chartType = ChartType.LINE,
         data,
-        colors,
+        colors: originalColors,
         xAxisLabel,
         yAxisLabel,
         slot1,
@@ -47,7 +47,10 @@ const Charts: React.FC<ChartsProps> = (props) => {
 
     useScrollLock(isFullscreen)
 
-    if (!colors || colors.length === 0) colors = DEFAULT_COLORS
+    const colors =
+        !originalColors || originalColors.length === 0
+            ? DEFAULT_COLORS
+            : originalColors
     const flattenedData = transformNestedData(data, selectedKeys)
 
     const lineKeys = data.length > 0 ? Object.keys(data[0].data) : []

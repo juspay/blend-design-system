@@ -18,13 +18,11 @@ export default function ClientLayout({
     const pathname = usePathname()
     const isLoginPage = pathname === '/login'
 
-    if (isLoginPage) {
-        return <>{children}</>
-    }
-
-    // Provide basic component tokens structure to prevent undefined errors
-    const componentTokens: ComponentTokenType = {
-        STAT_CARD: {} as any, // Provide empty StatCard tokens to prevent fontSize errors
+    // Provide explicit component tokens to ensure proper initialization
+    // This ensures all components have their tokens available
+    const componentTokens: Partial<ComponentTokenType> = {
+        STAT_CARD: undefined, // This will trigger default token generation
+        CHARTS: undefined, // This will trigger default token generation
     }
 
     return (
@@ -32,9 +30,13 @@ export default function ClientLayout({
             foundationTokens={FOUNDATION_THEME}
             componentTokens={componentTokens}
         >
-            <ProtectedRoute>
-                <AppShell>{children}</AppShell>
-            </ProtectedRoute>
+            {isLoginPage ? (
+                <>{children}</>
+            ) : (
+                <ProtectedRoute>
+                    <AppShell>{children}</AppShell>
+                </ProtectedRoute>
+            )}
         </ThemeProvider>
     )
 }

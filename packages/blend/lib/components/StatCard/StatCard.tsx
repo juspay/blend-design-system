@@ -106,11 +106,14 @@ const StatCard = (props: StatCardProps) => {
             <Text
                 as="span"
                 fontSize={
-                    statCardToken.stats.change.text[change?.valueType].fontSize
+                    statCardToken.stats.change.text[
+                        change?.valueType ?? ChangeType.INCREASE
+                    ].fontSize
                 }
                 fontWeight={
-                    statCardToken.stats.change.text[change?.valueType]
-                        .fontWeight
+                    statCardToken.stats.change.text[
+                        change?.valueType ?? ChangeType.INCREASE
+                    ].fontWeight
                 }
             >
                 {change.value >= 0 ? '+' : ''}

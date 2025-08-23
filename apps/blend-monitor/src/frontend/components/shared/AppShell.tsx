@@ -8,7 +8,7 @@ import {
     ButtonSize,
 } from '@juspay/blend-design-system'
 import { useRouter, usePathname } from 'next/navigation'
-import { tenants, merchants, getNavigationData } from './SidebarConfig'
+import { getNavigationData } from './SidebarConfig'
 import { useAuth } from '../../contexts/AuthContext'
 import { LogOut, User } from 'lucide-react'
 
@@ -47,30 +47,22 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return (
         <div className="h-screen w-screen overflow-hidden flex">
             <Sidebar
-                tenants={tenants}
-                merchants={merchants}
                 data={navigationData}
                 topbar={
-                    <div className="sticky top-0 z-50 bg-white">
-                        <div className="flex items-center justify-between px-6 py-3">
-                            <h2 className="text-lg font-semibold text-gray-900">
-                                Blend Monitoring
-                            </h2>
-                            <Button
-                                buttonType={ButtonType.SECONDARY}
-                                size={ButtonSize.SMALL}
-                                text="Logout"
-                                leadingIcon={<LogOut className="w-4 h-4" />}
-                                onClick={logout}
-                            />
-                        </div>
+                    <div className="flex items-center justify-between w-full">
+                        <h2 className="text-lg font-semibold text-gray-900">
+                            Blend Monitor
+                        </h2>
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
+                            text="Logout"
+                            leadingIcon={<LogOut className="w-4 h-4" />}
+                            onClick={logout}
+                        />
                     </div>
                 }
                 footer={userFooter}
-                activeTenant="blend-monitor"
-                setActiveTenant={() => {}}
-                activeMerchant=""
-                setActiveMerchant={() => {}}
             >
                 <div className="h-full overflow-hidden flex-1">{children}</div>
             </Sidebar>

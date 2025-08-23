@@ -28,7 +28,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>((alertProps, ref) => {
         secondaryAction,
         onClose,
         icon,
-        actionPlacement = AlertActionPlacement.RIGHT,
+        actionPlacement: originalActionPlacement = AlertActionPlacement.RIGHT,
     } = alertProps
 
     useAlertTelemetry(alertProps)
@@ -36,13 +36,10 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>((alertProps, ref) => {
 
     // this is to make sure that the close button is always visible if there is an onClose prop
     // but no primary or secondary actions are provided
-    if (
-        onClose &&
-        primaryAction === undefined &&
-        secondaryAction === undefined
-    ) {
-        actionPlacement = AlertActionPlacement.BOTTOM
-    }
+    const actionPlacement =
+        onClose && primaryAction === undefined && secondaryAction === undefined
+            ? AlertActionPlacement.BOTTOM
+            : originalActionPlacement
     return (
         <Block
             ref={ref}

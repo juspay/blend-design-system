@@ -129,7 +129,7 @@ export function getProjectContext(): ProjectContext {
     }
 
     const { href, hostname, pathname, search, port } = window.location
-    const { title, applicationName, faviconUrl } = extractDocumentMetadata()
+    const { applicationName, faviconUrl } = extractDocumentMetadata()
 
     // Check for build-time injected package info
     let repositoryName = 'unknown'

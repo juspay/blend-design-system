@@ -12,7 +12,7 @@
         "populate-data": "node scripts/populate-all-deployment-data.js"
     },
     "dependencies": {
-        "@juspay/blend-design-system": "^0.0.13",
+        "@juspay/blend-design-system": "workspace:*",
         "@types/pg": "^8.15.4",
         "dotenv": "^17.2.1",
         "firebase": "^11.10.0",
@@ -23,7 +23,8 @@
         "pg": "^8.16.3",
         "react": "19.1.0",
         "react-dom": "19.1.0",
-        "react-spinners": "^0.17.0"
+        "react-spinners": "^0.17.0",
+        "recharts": "^2.15.4"
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3",

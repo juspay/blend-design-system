@@ -5,7 +5,7 @@
  * @package @juspay/blend-design-system
  */
 
-import { ComponentUsageEvent, ProjectContext } from './types'
+import { ComponentUsageEvent } from './types'
 import {
     PACKAGE_VERSION,
     SESSION_ID_PREFIX,
@@ -54,7 +54,7 @@ export function detectEnvironment(): string {
         return 'development'
     }
 
-    if (port && DEVELOPMENT_PORTS.includes(port)) {
+    if (port && DEVELOPMENT_PORTS.includes(port as any)) {
         return 'development'
     }
 
