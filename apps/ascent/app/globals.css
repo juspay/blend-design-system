@@ -130,6 +130,8 @@
     --playground-border-radius: 200px;
     --move-to-top-btn-size: 52px --footer-border-radius: 100px;
     --tab-heading-font-size: 16px;
+    --chevron-right-size: 24px;
+    --subheading-letter-spacing: 2.5em;
 
     /* xl */
     --main-heading-text-xl: 6rem;
@@ -141,11 +143,14 @@
 
     /* md */
     --main-heading-text-md: 4rem;
-    --subheading-font-size-md: 20px;
+    --subheading-font-size-md: 24px;
     --tabs-section-width-md: 550px;
     --tab-btn-font-size-md: 14px;
     --tab-heading-font-size-md: 12px;
     --tokenizer-heading-letter-spacing-md: 30px;
+    --info-btn-width-md: 160px;
+    --chevron-right-size-md: 22px;
+    --subheading-letter-spacing-md: 2.2em;
 
     /* sm */
     --main-heading-text-sm: 3.5rem;
@@ -155,6 +160,9 @@
     --tab-btn-font-size-sm: 12px;
     --tab-heading-font-size-sm: 10px;
     --tokenizer-heading-letter-spacing-sm: 25px;
+    --info-btn-width-sm: 120px;
+    --chevron-right-size-sm: 20px;
+    --subheading-letter-spacing-sm: 2.1em;
 
     /* xs */
     --main-heading-text-xs: 2rem;
@@ -163,8 +171,13 @@
     --tab-btn-font-size-xs: 10px;
     --tab-heading-font-size-xs: 8px;
     --tokenizer-heading-letter-spacing-xs: 20px;
+    --info-btn-width-xs: 100px;
+    --chevron-right-size-xs: 18px;
+    --subheading-letter-spacing-xs: 2em;
+    --subheading-font-size-xs: 14px;
 
     --text-xxs: 10px;
+    --subheading-font-size-xxs: 12px;
 }
 
 @media (prefers-color-scheme: dark) {
