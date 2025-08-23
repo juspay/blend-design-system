@@ -477,6 +477,9 @@ const StatCard = ({
                             display="flex"
                             alignItems="center"
                             gap={statCardToken.stats.gap}
+                            justifyContent={
+                                formattedChange ? 'flex-start' : 'center'
+                            }
                         >
                             {
                                 <Tooltip content={valueTooltip || ''}>

@@ -1,6 +1,6 @@
 import type { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME } from '../../../tokens'
 import type { FoundationTokenType } from '../../../tokens/theme.token'
+import { BreakpointType } from '../../../breakpoints/breakPoints'
 
 enum OTPInputState {
     DEFAULT = 'default',
@@ -33,94 +33,97 @@ export type OTPInputTokensType = {
     }
 }
 
-const otpInputTokens: OTPInputTokensType = {
-    input: {
-        gap: FOUNDATION_THEME.unit[8],
-        borderRadius: FOUNDATION_THEME.border.radius[12],
-        boxShadow: {
-            default: FOUNDATION_THEME.shadows.sm,
-            hover: FOUNDATION_THEME.shadows.sm,
-            focus: FOUNDATION_THEME.shadows.focusPrimary,
-            error: FOUNDATION_THEME.shadows.focusError,
-            disabled: FOUNDATION_THEME.shadows.sm,
-        },
-        padding: 8,
-        border: {
-            default: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-            hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
-            focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-            error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-            disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-        },
-        outline: {
-            default: 'none',
-            hover: 'none',
-            focus: 'none',
-            error: 'none',
-            disabled: 'none',
-        },
-        backgroundColor: {
-            default: FOUNDATION_THEME.colors.gray[0],
-            disabled: FOUNDATION_THEME.colors.gray[50],
-            hover: FOUNDATION_THEME.colors.gray[0],
-            focus: FOUNDATION_THEME.colors.gray[0],
-            error: FOUNDATION_THEME.colors.gray[0],
-        },
-        color: {
-            default: FOUNDATION_THEME.colors.gray[800],
-            hover: FOUNDATION_THEME.colors.gray[800],
-            focus: FOUNDATION_THEME.colors.gray[800],
-            error: FOUNDATION_THEME.colors.red[800],
-            disabled: FOUNDATION_THEME.colors.gray[300],
-        },
-    },
+export type ResponsiveOTPInputTokens = {
+    [key in keyof BreakpointType]: OTPInputTokensType
 }
 
 export const getOTPInputTokens = (
     foundationToken: FoundationTokenType
-): OTPInputTokensType => {
+): ResponsiveOTPInputTokens => {
     return {
-        input: {
-            gap: foundationToken.unit[8],
-            borderRadius: foundationToken.border.radius[12],
-            boxShadow: {
-                default: foundationToken.shadows.sm,
-                hover: foundationToken.shadows.sm,
-                focus: foundationToken.shadows.focusPrimary,
-                error: foundationToken.shadows.focusError,
-                disabled: foundationToken.shadows.sm,
+        sm: {
+            input: {
+                gap: foundationToken.unit[8],
+                borderRadius: foundationToken.border.radius[12],
+                boxShadow: {
+                    default: foundationToken.shadows.sm,
+                    hover: foundationToken.shadows.sm,
+                    focus: foundationToken.shadows.focusPrimary,
+                    error: foundationToken.shadows.focusError,
+                    disabled: foundationToken.shadows.sm,
+                },
+                padding: 8,
+                border: {
+                    default: `1px solid ${foundationToken.colors.gray[200]}`,
+                    hover: `1px solid ${foundationToken.colors.gray[400]}`,
+                    focus: `1px solid ${foundationToken.colors.primary[500]}`,
+                    error: `1px solid ${foundationToken.colors.red[500]}`,
+                    disabled: `1px solid ${foundationToken.colors.gray[200]}`,
+                },
+                outline: {
+                    default: 'none',
+                    hover: 'none',
+                    focus: 'none',
+                    error: 'none',
+                    disabled: 'none',
+                },
+                backgroundColor: {
+                    default: foundationToken.colors.gray[0],
+                    disabled: foundationToken.colors.gray[50],
+                    hover: foundationToken.colors.gray[0],
+                    focus: foundationToken.colors.gray[0],
+                    error: foundationToken.colors.gray[0],
+                },
+                color: {
+                    default: foundationToken.colors.gray[800],
+                    hover: foundationToken.colors.gray[800],
+                    focus: foundationToken.colors.gray[800],
+                    error: foundationToken.colors.red[800],
+                    disabled: foundationToken.colors.gray[300],
+                },
             },
-            padding: 8,
-            border: {
-                default: `1px solid ${foundationToken.colors.gray[200]}`,
-                hover: `1px solid ${foundationToken.colors.gray[400]}`,
-                focus: `1px solid ${foundationToken.colors.primary[500]}`,
-                error: `1px solid ${foundationToken.colors.red[500]}`,
-                disabled: `1px solid ${foundationToken.colors.gray[200]}`,
-            },
-            outline: {
-                default: 'none',
-                hover: 'none',
-                focus: 'none',
-                error: 'none',
-                disabled: 'none',
-            },
-            backgroundColor: {
-                default: foundationToken.colors.gray[0],
-                disabled: foundationToken.colors.gray[50],
-                hover: foundationToken.colors.gray[0],
-                focus: foundationToken.colors.gray[0],
-                error: foundationToken.colors.gray[0],
-            },
-            color: {
-                default: foundationToken.colors.gray[800],
-                hover: foundationToken.colors.gray[800],
-                focus: foundationToken.colors.gray[800],
-                error: foundationToken.colors.red[800],
-                disabled: foundationToken.colors.gray[300],
+        },
+        lg: {
+            input: {
+                gap: foundationToken.unit[8],
+                borderRadius: foundationToken.border.radius[12],
+                boxShadow: {
+                    default: foundationToken.shadows.sm,
+                    hover: foundationToken.shadows.sm,
+                    focus: foundationToken.shadows.focusPrimary,
+                    error: foundationToken.shadows.focusError,
+                    disabled: foundationToken.shadows.sm,
+                },
+                padding: 8,
+                border: {
+                    default: `1px solid ${foundationToken.colors.gray[200]}`,
+                    hover: `1px solid ${foundationToken.colors.gray[400]}`,
+                    focus: `1px solid ${foundationToken.colors.primary[500]}`,
+                    error: `1px solid ${foundationToken.colors.red[500]}`,
+                    disabled: `1px solid ${foundationToken.colors.gray[200]}`,
+                },
+                outline: {
+                    default: 'none',
+                    hover: 'none',
+                    focus: 'none',
+                    error: 'none',
+                    disabled: 'none',
+                },
+                backgroundColor: {
+                    default: foundationToken.colors.gray[0],
+                    disabled: foundationToken.colors.gray[50],
+                    hover: foundationToken.colors.gray[0],
+                    focus: foundationToken.colors.gray[0],
+                    error: foundationToken.colors.gray[0],
+                },
+                color: {
+                    default: foundationToken.colors.gray[800],
+                    hover: foundationToken.colors.gray[800],
+                    focus: foundationToken.colors.gray[800],
+                    error: foundationToken.colors.red[800],
+                    disabled: foundationToken.colors.gray[300],
+                },
             },
         },
     }
 }
-
-export default otpInputTokens

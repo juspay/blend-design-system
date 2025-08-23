@@ -13,8 +13,8 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import { FOUNDATION_THEME } from '../../../tokens'
 import type { OTPProps } from './types'
 // import otpInputTokens from "./otpInput.tokens";
-import { useComponentToken } from '../../../context/useComponentToken'
 import type { OTPInputTokensType } from './otpInput.tokens'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const OTPInput = ({
     label,
@@ -27,13 +27,14 @@ const OTPInput = ({
     errorMessage,
     hintText,
     value = '',
+    length = 6,
+    autoFocus = false,
     onChange,
     form,
     ...rest
 }: OTPProps) => {
-    const otpInputTokens = useComponentToken('OTP_INPUT') as OTPInputTokensType
-    const length = 6
-    const [otp, setOtp] = useState<string[]>(new Array(6).fill(''))
+    const otpInputTokens = useResponsiveTokens<OTPInputTokensType>('OTP_INPUT')
+    const [otp, setOtp] = useState<string[]>(new Array(length).fill(''))
     const [, setActiveIndex] = useState<number>(-1)
     const inputRefs = useRef<HTMLInputElement[]>([])
 
@@ -45,8 +46,16 @@ const OTPInput = ({
                 ...new Array(length - otpArray.length).fill(''),
             ]
             setOtp(paddedOtp)
+        } else {
+            setOtp(new Array(length).fill(''))
         }
     }, [value, length])
+
+    useEffect(() => {
+        if (autoFocus && inputRefs.current[0] && !disabled) {
+            inputRefs.current[0].focus()
+        }
+    }, [autoFocus, disabled])
 
     const handleChange = (index: number, val: string) => {
         if (disabled) return

@@ -5,7 +5,7 @@ import type {
     StyledAvatarWrapperProps,
     StyledOverflowCounterProps,
 } from './types'
-import avatarGroupTokens from './token'
+import avatarGroupTokens from './avatarGroup.tokens'
 
 export const StyledAvatarGroupContainer = styled.div<StyledAvatarGroupContainerProps>`
     display: flex;

@@ -1,5 +1,5 @@
 import { foundationToken } from '../../foundationToken'
-import avatarTokens from '../Avatar/token'
+import avatarTokens from '../Avatar/avatar.tokens'
 import { AvatarSize } from '../Avatar/types'
 
 const avatarGroupTokens = {
