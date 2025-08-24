@@ -12,23 +12,25 @@ import {
  *
  * PROP MAPPING DOCUMENTATION
  *
- * Figma vs Code Property Differences:
+ * Figma vs Code Property Mappings:
  *
  * 1. DIRECT MAPPINGS (same in both):
  *    - shape → shape
  *    - size → size
  *
- * 2. FIGMA-ONLY PROPERTIES:
- *    - color: Exists in Figma but not in code
- *      Note: Color is handled at the individual tag level (primaryTag.color, secondaryTag.color)
+ * 2. RENAMED MAPPINGS:
+ *    - color (Figma) → style (Code)
  *
- * 3. CODE-ONLY PROPERTIES:
+ * 3. CODE-ONLY PROPERTIES (not in Figma):
  *    - primaryTag: Complex object prop containing tag configuration
  *    - secondaryTag: Complex object prop containing tag configuration
  *    - leadingSlot: React node for leading content
  *    - trailingSlot: React node for trailing content
  *
- * 4. IMPLEMENTATION NOTES:
+ * 4. FIGMA-ONLY PROPERTIES (not in code):
+ *    - None identified
+ *
+ * 5. IMPLEMENTATION NOTES:
  *    - In Figma, the SplitTag is a single component with all props
  *    - In code, SplitTag is a wrapper that combines two Tag components
  *    - The primaryTag always uses TagVariant.NO_FILL
@@ -39,17 +41,15 @@ import {
 
 figma.connect(
     SplitTag,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=5864-8098&t=HPQqtn0EtUTcjC70-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-745529&t=EWj7fDD0TbtPTknX-4',
     {
-        variant: { color: 'primary' },
         props: {
-            // Shape mapping - direct correlation
+            // Direct mappings - same in both Figma and code
             shape: figma.enum('shape', {
                 rounded: TagShape.ROUNDED,
                 squarical: TagShape.SQUARICAL,
             }),
 
-            // Size mapping - direct correlation
             size: figma.enum('size', {
                 xs: TagSize.XS,
                 sm: TagSize.SM,
@@ -57,226 +57,75 @@ figma.connect(
                 lg: TagSize.LG,
             }),
 
-            // Fixed primaryTag configuration
-            primaryTag: {
-                text: 'Label',
-                color: TagColor.NEUTRAL,
-            },
-
-            // Fixed secondaryTag configuration with primary color
-            secondaryTag: {
-                text: 'Value',
-                color: TagColor.PRIMARY,
-            },
+            // Renamed mapping - color (Figma) → style (Code)
+            style: figma.enum('color', {
+                primary: TagColor.PRIMARY,
+                success: TagColor.SUCCESS,
+                error: TagColor.ERROR,
+                warning: TagColor.WARNING,
+                purple: TagColor.PURPLE,
+                neutral: TagColor.NEUTRAL,
+            }),
         },
 
-        example: ({ shape, size, primaryTag, secondaryTag }) => (
-            <SplitTag
-                shape={shape}
-                size={size}
-                primaryTag={primaryTag}
-                secondaryTag={secondaryTag}
-            />
-        ),
+        example: ({ shape, size, style }) => {
+            // Code-only props that are not controlled by Figma
+            const primaryTag = {
+                text: 'Label',
+                color: TagColor.NEUTRAL, // Primary tag is always neutral
+            }
+
+            const secondaryTag = {
+                text: 'Value',
+                color: style, // Secondary tag uses the mapped color/style
+            }
+
+            return (
+                <SplitTag
+                    shape={shape}
+                    size={size}
+                    primaryTag={primaryTag}
+                    secondaryTag={secondaryTag}
+                    // leadingSlot and trailingSlot are not in Figma
+                />
+            )
+        },
 
         imports: [
             "import { SplitTag, TagColor } from '@juspay/blend-design-system'",
         ],
-    }
-)
 
-// Additional variants for different colors
-figma.connect(
-    SplitTag,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=5864-8098&t=HPQqtn0EtUTcjC70-11',
-    {
-        variant: { color: 'success' },
-        props: {
-            shape: figma.enum('shape', {
-                rounded: TagShape.ROUNDED,
-                squarical: TagShape.SQUARICAL,
-            }),
-            size: figma.enum('size', {
-                xs: TagSize.XS,
-                sm: TagSize.SM,
-                md: TagSize.MD,
-                lg: TagSize.LG,
-            }),
-            primaryTag: {
-                text: 'Label',
-                color: TagColor.NEUTRAL,
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/Tags',
             },
-            secondaryTag: {
-                text: 'Value',
-                color: TagColor.SUCCESS,
+            {
+                name: 'Storybook',
+                url: 'https://juspay.design/storybook/?path=/docs/components-tags--docs',
             },
-        },
-        example: ({ shape, size, primaryTag, secondaryTag }) => (
-            <SplitTag
-                shape={shape}
-                size={size}
-                primaryTag={primaryTag}
-                secondaryTag={secondaryTag}
-            />
-        ),
-        imports: [
-            "import { SplitTag, TagColor } from '@juspay/blend-design-system'",
         ],
     }
 )
 
-figma.connect(
-    SplitTag,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=5864-8098&t=HPQqtn0EtUTcjC70-11',
-    {
-        variant: { color: 'error' },
-        props: {
-            shape: figma.enum('shape', {
-                rounded: TagShape.ROUNDED,
-                squarical: TagShape.SQUARICAL,
-            }),
-            size: figma.enum('size', {
-                xs: TagSize.XS,
-                sm: TagSize.SM,
-                md: TagSize.MD,
-                lg: TagSize.LG,
-            }),
-            primaryTag: {
-                text: 'Label',
-                color: TagColor.NEUTRAL,
-            },
-            secondaryTag: {
-                text: 'Value',
-                color: TagColor.ERROR,
-            },
-        },
-        example: ({ shape, size, primaryTag, secondaryTag }) => (
-            <SplitTag
-                shape={shape}
-                size={size}
-                primaryTag={primaryTag}
-                secondaryTag={secondaryTag}
-            />
-        ),
-        imports: [
-            "import { SplitTag, TagColor } from '@juspay/blend-design-system'",
-        ],
-    }
-)
-
-figma.connect(
-    SplitTag,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=5864-8098&t=HPQqtn0EtUTcjC70-11',
-    {
-        variant: { color: 'warning' },
-        props: {
-            shape: figma.enum('shape', {
-                rounded: TagShape.ROUNDED,
-                squarical: TagShape.SQUARICAL,
-            }),
-            size: figma.enum('size', {
-                xs: TagSize.XS,
-                sm: TagSize.SM,
-                md: TagSize.MD,
-                lg: TagSize.LG,
-            }),
-            primaryTag: {
-                text: 'Label',
-                color: TagColor.NEUTRAL,
-            },
-            secondaryTag: {
-                text: 'Value',
-                color: TagColor.WARNING,
-            },
-        },
-        example: ({ shape, size, primaryTag, secondaryTag }) => (
-            <SplitTag
-                shape={shape}
-                size={size}
-                primaryTag={primaryTag}
-                secondaryTag={secondaryTag}
-            />
-        ),
-        imports: [
-            "import { SplitTag, TagColor } from '@juspay/blend-design-system'",
-        ],
-    }
-)
-
-figma.connect(
-    SplitTag,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=5864-8098&t=HPQqtn0EtUTcjC70-11',
-    {
-        variant: { color: 'purple' },
-        props: {
-            shape: figma.enum('shape', {
-                rounded: TagShape.ROUNDED,
-                squarical: TagShape.SQUARICAL,
-            }),
-            size: figma.enum('size', {
-                xs: TagSize.XS,
-                sm: TagSize.SM,
-                md: TagSize.MD,
-                lg: TagSize.LG,
-            }),
-            primaryTag: {
-                text: 'Label',
-                color: TagColor.NEUTRAL,
-            },
-            secondaryTag: {
-                text: 'Value',
-                color: TagColor.PURPLE,
-            },
-        },
-        example: ({ shape, size, primaryTag, secondaryTag }) => (
-            <SplitTag
-                shape={shape}
-                size={size}
-                primaryTag={primaryTag}
-                secondaryTag={secondaryTag}
-            />
-        ),
-        imports: [
-            "import { SplitTag, TagColor } from '@juspay/blend-design-system'",
-        ],
-    }
-)
-
-figma.connect(
-    SplitTag,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=5864-8098&t=HPQqtn0EtUTcjC70-11',
-    {
-        variant: { color: 'neutral' },
-        props: {
-            shape: figma.enum('shape', {
-                rounded: TagShape.ROUNDED,
-                squarical: TagShape.SQUARICAL,
-            }),
-            size: figma.enum('size', {
-                xs: TagSize.XS,
-                sm: TagSize.SM,
-                md: TagSize.MD,
-                lg: TagSize.LG,
-            }),
-            primaryTag: {
-                text: 'Label',
-                color: TagColor.NEUTRAL,
-            },
-            secondaryTag: {
-                text: 'Value',
-                color: TagColor.NEUTRAL,
-            },
-        },
-        example: ({ shape, size, primaryTag, secondaryTag }) => (
-            <SplitTag
-                shape={shape}
-                size={size}
-                primaryTag={primaryTag}
-                secondaryTag={secondaryTag}
-            />
-        ),
-        imports: [
-            "import { SplitTag, TagColor } from '@juspay/blend-design-system'",
-        ],
-    }
-)
+/**
+ * Example of SplitTag with additional features not in Figma:
+ *
+ * // With leading and trailing slots
+ * <SplitTag
+ *   shape={TagShape.ROUNDED}
+ *   size={TagSize.MD}
+ *   primaryTag={{ text: 'Status', color: TagColor.NEUTRAL }}
+ *   secondaryTag={{ text: 'Active', color: TagColor.SUCCESS }}
+ *   leadingSlot={<Icon name="status" />}
+ *   trailingSlot={<Icon name="chevron-down" />}
+ * />
+ *
+ * DEVELOPER NOTES:
+ *
+ * When using this component:
+ * 1. The primaryTag is always neutral colored (left side)
+ * 2. The secondaryTag uses the color/style from Figma (right side)
+ * 3. leadingSlot and trailingSlot are not controlled by Figma
+ * 4. Text content should be customized based on your use case
+ */

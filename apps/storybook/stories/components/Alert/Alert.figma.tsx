@@ -20,30 +20,39 @@ import {
  *    - actionPlacement → actionPlacement
  *    - heading → heading
  *    - description → description
- *    - icon → icon
  *
- * 2. SPECIAL MAPPINGS:
+ * 2. COMPLEX MAPPINGS:
  *    - actionButtons (Figma) → primaryAction/secondaryAction (Code)
  *      - actionButtons=0 → no actions
  *      - actionButtons=1 → primaryAction only
  *      - actionButtons=2 → both primaryAction and secondaryAction
- *    - hasAction (Figma) → handled by actionButtons mapping
- *    - hasCloseIcon (Figma) → onClose (Code) - if true, onClose callback is provided
  *
- * 3. FIGMA-ONLY PROPERTIES (not needed in code):
- *    - hasIcon: Automatically determined by presence of icon prop
- *    - hasHeading: Automatically determined by presence of heading prop
- *    - hasAction: Handled by actionButtons mapping
+ *    - hasMainIcon (Figma) + mainIcon (Figma) → icon (Code)
+ *      - hasMainIcon=true → icon prop gets mainIcon instance
+ *      - hasMainIcon=false → icon prop is undefined
+ *
+ *    - hasAction (Figma) → derived from primaryAction/secondaryAction presence
+ *      - hasAction=true when either primaryAction or secondaryAction exists
+ *      - hasAction=false when no actions are provided
+ *
+ *    - hasHeading (Figma) → derived from heading prop value
+ *      - hasHeading=true when heading has a value
+ *      - hasHeading=false when heading is empty/undefined
+ *
+ * 3. FIGMA-ONLY PROPERTIES (handled automatically):
+ *    - hasMainIcon: Controlled by icon prop presence
+ *    - hasHeading: Controlled by heading prop presence
+ *    - hasAction: Controlled by action props presence
  *
  * 4. CODE-ONLY PROPERTIES (not in Figma):
- *    - primaryAction: Derived from actionButtons count
- *    - secondaryAction: Derived from actionButtons count
+ *    - primaryAction: Exists in code but not directly in Figma
+ *    - secondaryAction: Exists in code but not directly in Figma
  *    - onClose: Derived from hasCloseIcon
  */
 
 figma.connect(
     Alert,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3168-5087&t=jEHPJiKmUT0XJ9QL-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18797-179268&t=EWj7fDD0TbtPTknX-4',
     {
         props: {
             // Direct enum mappings
@@ -72,20 +81,32 @@ figma.connect(
             heading: figma.string('heading'),
             description: figma.string('description'),
 
-            // Icon mapping
-            icon: figma.instance('icon'),
+            // Icon mapping - based on hasMainIcon boolean and mainIcon instance
+            icon: figma.boolean('hasMainIcon', {
+                true: figma.instance('mainIcon'),
+                false: undefined,
+            }),
 
-            // Action buttons mapping - complex mapping from count to actions
+            // Action buttons mapping - complex mapping from count to AlertAction objects
             primaryAction: figma.enum('actionButtons', {
                 '0': undefined,
-                '1': { label: 'Action', onClick: () => {} },
-                '2': { label: 'Primary', onClick: () => {} },
+                '1': {
+                    label: figma.string('primaryActionLabel'),
+                    onClick: () => {},
+                },
+                '2': {
+                    label: figma.string('primaryActionLabel'),
+                    onClick: () => {},
+                },
             }),
 
             secondaryAction: figma.enum('actionButtons', {
                 '0': undefined,
                 '1': undefined,
-                '2': { label: 'Secondary', onClick: () => {} },
+                '2': {
+                    label: figma.string('secondaryActionLabel'),
+                    onClick: () => {},
+                },
             }),
 
             // Close icon mapping
