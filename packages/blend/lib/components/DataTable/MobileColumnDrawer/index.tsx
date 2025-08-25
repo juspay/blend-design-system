@@ -217,7 +217,6 @@ const MobileColumnDrawer: React.FC<
                             >
                                 {overflowColumns.map(renderDrawerRow)}
 
-                                {/* Row Actions Footer - Mobile only shows slot1 and slot2 (no edit actions) */}
                                 {rowActions &&
                                     (rowActions.slot1 || rowActions.slot2) && (
                                         <Block
