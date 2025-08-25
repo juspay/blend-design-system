@@ -290,6 +290,7 @@ export type DataTableProps<T extends Record<string, unknown>> = {
 
     isLoading?: boolean
     showToolbar?: boolean
+    showSettings?: boolean
     headerSlot1?: ReactNode
     headerSlot2?: ReactNode
 
