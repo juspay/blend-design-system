@@ -258,10 +258,8 @@ export const getTableToken = (
     return {
         sm: {
             width: '100%',
-            height: 'calc(100vh - 280px)',
             display: 'flex',
             flexDirection: 'column',
-            padding: foundationToken.unit[2],
             position: 'relative',
             header: {
                 display: 'flex',
