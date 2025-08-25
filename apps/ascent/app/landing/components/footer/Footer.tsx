@@ -24,50 +24,55 @@ export const Footer = () => {
         setIsModalOpen(false)
     }
     return (
-        <footer className="px-[160px] pt-[80px] pb-[20px] border-t-[1px] border-white/20 rounded-[100px] w-full items-center justify-center flex flex-col gap-[48px] bg-[#0C0C0C] z-30">
-            <div className="flex gap-32">
-                <div className="flex flex-col gap-[68px] pr-8">
-                    <div className="flex items-center gap-1">
-                        <ColoredLogo />
-                        <FooterLogoText />
+        <footer className="lg:px-40 md:px-15 sm:px-10 px-8 pt-20 pb-5 border-t-[1px] border-white/20 rounded-[100px] w-full items-center justify-center flex flex-col gap-[48px] bg-[#0C0C0C] z-30">
+            <div className="flex justify-between w-full">
+                <div className="grid md:grid-cols-4 grid-cols-1 gap-y-10 w-full justify-center">
+                    <div className="flex flex-col lg:gap-8 gap-4  pr-8 w-fit">
+                        <div className="flex items-center gap-1">
+                            <ColoredLogo />
+                            <FooterLogoText />
+                        </div>
+                        <div className="text-[var(--footer-text-color)] sm:text-[14px] text-[12px]">
+                            <p>Bengaluru, India</p>
+                        </div>
                     </div>
-                    <div className="text-[var(--footer-text-color)] text-[14px]">
-                        <p>29/30 Fitzwilliam Square S,</p>
-                        <p>Dublin 2, Ireland</p>
-                    </div>
-                </div>
-                <div className="grid lg:grid-cols-4 grid-cols-2 gap-x-[80px]">
-                    {FooterLinksData.map((data, key) => (
-                        <div key={key} className="flex flex-col gap-8">
-                            <p className="text-[18px] font-bold text-white capitalize">
-                                {data.title}
-                            </p>
-                            <div className="flex flex-col gap-4 text-[14px] text-[var(--footer-text-color)]">
-                                {data.links.map((link, ind) =>
-                                    link.name == 'Contact' ? (
-                                        <p
-                                            className="cursor-pointer"
-                                            onClick={handleOpenModal}
-                                            key={ind}
-                                        >
-                                            {link.name}
-                                        </p>
-                                    ) : (
-                                        <Link
-                                            href={link.link}
-                                            key={ind}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            <p className="cursor-pointer">
+                    <div className="grid grid-cols-3 justify-between gap-y-10 lg:gap-x-20 gap-x-12 w-full col-span-2">
+                        {FooterLinksData.map((data, key) => (
+                            <div key={key} className="flex flex-col gap-8">
+                                <p className="sm:text-[18px] text-[14px] font-bold text-white capitalize">
+                                    {data.title}
+                                </p>
+                                <div className="flex flex-col gap-4 sm:text-[14px] text-[12px] text-[var(--footer-text-color)]">
+                                    {data.links.map((link, ind) =>
+                                        link.name == 'Contact' ? (
+                                            <p
+                                                className="cursor-pointer"
+                                                onClick={handleOpenModal}
+                                                key={ind}
+                                            >
                                                 {link.name}
                                             </p>
-                                        </Link>
-                                    )
-                                )}
+                                        ) : (
+                                            <Link
+                                                href={link.link}
+                                                key={ind}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                <p className="cursor-pointer">
+                                                    {link.name}
+                                                </p>
+                                            </Link>
+                                        )
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+
+                        {isModalOpen && <Modal onClose={handleCloseModal} />}
+                    </div>
+                </div>
+                <div className="flex sm:justify-center">
                     <div
                         onClick={() =>
                             window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -76,12 +81,10 @@ export const Footer = () => {
                     >
                         <MoveToTopArrow />
                     </div>
-
-                    {isModalOpen && <Modal onClose={handleCloseModal} />}
                 </div>
             </div>
             <Separator />
-            <div className="mb-[48px] py-[24px] flex items-center gap-10 text-[var(--footer-text-color)] w-full">
+            <div className="sm:mb-12 py-6 flex sm:flex-row flex-col items-center sm:gap-10 gap-5 text-[var(--footer-text-color)] w-full sm:text-[14px] text-[12px]">
                 <p className="font-[12px]">
                     Copyright © 2024. Juspay Technologies . All rights reserved
                 </p>
