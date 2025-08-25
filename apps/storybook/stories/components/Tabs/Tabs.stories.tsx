@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
+import React, { useState } from 'react'
 import {
     Tabs,
     TabsList,
@@ -7,7 +7,9 @@ import {
     TabsContent,
     TabsVariant,
     TabsSize,
+    TabItem,
 } from '@juspay/blend-design-system'
+import { MultiSelect } from '@juspay/blend-design-system'
 import {
     Settings,
     User,
@@ -29,14 +31,20 @@ const meta: Meta<typeof Tabs> = {
 A flexible tabs component for organizing content into multiple panels with various visual styles and sizes.
 
 ## Features
-- Multiple variants (Boxed, Floating, Underline)
+- Multiple variants (Boxed, Floating, Underline, Pills)
 - Two sizes (Medium, Large)
 - Support for icons in tab triggers
 - Expandable tab lists
 - Fit content option for tab lists
+- **New: Dynamic tab management with closable tabs**
+- **New: Default tabs that cannot be closed**
+- **New: Tab concatenation for shared content (TabA+TabB+TabC)**
+- **New: MultiSelect integration for adding tabs**
+- **New: Dropdown navigation for all tabs (including scrolled-out)**
+- **New: Horizontal scrolling with sticky controls**
 - Built on Radix UI primitives for accessibility
 
-## Usage
+## Basic Usage
 
 \`\`\`tsx
 import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant } from '@juspay/blend-design-system';
@@ -53,6 +61,36 @@ import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant } from '@juspay/b
     Content for Tab 2
   </TabsContent>
 </Tabs>
+\`\`\`
+
+## Dynamic Tab Management
+
+\`\`\`tsx
+const [tabs, setTabs] = useState<TabItem[]>([
+  {
+    value: 'home',
+    label: 'Home',
+    content: <div>Home content</div>,
+    isDefault: true, // Cannot be closed
+  },
+  {
+    value: 'projects',
+    label: 'Projects', 
+    content: <div>Projects content</div>,
+    closable: true, // Can be closed
+  }
+]);
+
+<Tabs
+  items={tabs}
+  onTabClose={(value) => setTabs(tabs.filter(t => t.value !== value))}
+  onTabAdd={() => setShowAddModal(true)}
+  showDropdown={true}
+  showAddButton={true}
+  dropdownTooltip="Navigate to any tab"
+  addButtonTooltip="Add new tabs"
+  maxDisplayTabs={4}
+/>
 \`\`\`
         `,
             },
@@ -81,6 +119,30 @@ import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant } from '@juspay/b
             action: 'valueChanged',
             description: 'Callback when the active tab changes',
         },
+        items: {
+            control: 'object',
+            description: 'Array of tab items for dynamic management',
+        },
+        onTabClose: {
+            action: 'tabClosed',
+            description: 'Callback when a tab is closed',
+        },
+        onTabAdd: {
+            action: 'tabAdd',
+            description: 'Callback when add button is clicked',
+        },
+        showDropdown: {
+            control: 'boolean',
+            description: 'Show dropdown navigation for all tabs',
+        },
+        showAddButton: {
+            control: 'boolean',
+            description: 'Show add button for adding new tabs',
+        },
+        maxDisplayTabs: {
+            control: 'number',
+            description: 'Maximum tabs to display before scrolling',
+        },
     },
     tags: ['autodocs'],
 }
@@ -88,7 +150,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant } from '@juspay/b
 export default meta
 type Story = StoryObj<typeof Tabs>
 
-// Default story
+// Default story (traditional usage)
 export const Default: Story = {
     args: {
         defaultValue: 'account',
@@ -200,6 +262,497 @@ export const Default: Story = {
             </Tabs>
         </div>
     ),
+}
+
+export const DynamicTabManagement: Story = {
+    render: () => {
+        // Shared content for concatenation demo
+        const sharedContent = (
+            <div
+                style={{
+                    padding: '16px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 12px 0',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Shared Content
+                </h3>
+                <p style={{ margin: 0, color: '#64748b' }}>
+                    This content is shared between multiple tabs. When multiple
+                    tabs have the same content, their labels are concatenated
+                    (e.g., "TabA+TabB+TabC"). Max 3 items can be concatenated.
+                </p>
+            </div>
+        )
+
+        // Available items that can be added as tabs
+        const availableTabOptions = [
+            { value: 'analytics', label: 'Analytics' },
+            { value: 'reports', label: 'Reports' },
+            { value: 'users', label: 'Users' },
+            { value: 'permissions', label: 'Permissions' },
+            { value: 'settings', label: 'Settings' },
+            { value: 'notifications', label: 'Notifications' },
+            { value: 'billing', label: 'Billing' },
+            { value: 'integrations', label: 'Integrations' },
+        ]
+
+        const [tabs, setTabs] = useState<TabItem[]>([
+            // Default tabs - always visible at front, no X icon
+            {
+                value: 'dashboard',
+                label: 'Dashboard',
+                content: (
+                    <div
+                        style={{
+                            padding: '16px',
+                            backgroundColor: '#eff6ff',
+                            borderRadius: '8px',
+                        }}
+                    >
+                        <h3
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '16px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Dashboard Content
+                        </h3>
+                        <p style={{ margin: 0, color: '#1e40af' }}>
+                            This is a default tab that cannot be closed. Default
+                            tabs are always visible at the front.
+                        </p>
+                    </div>
+                ),
+                isDefault: true,
+            },
+            {
+                value: 'overview',
+                label: 'Overview',
+                content: (
+                    <div
+                        style={{
+                            padding: '16px',
+                            backgroundColor: '#f0fdf4',
+                            borderRadius: '8px',
+                        }}
+                    >
+                        <h3
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '16px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Overview Content
+                        </h3>
+                        <p style={{ margin: 0, color: '#166534' }}>
+                            Another default tab. Notice it doesn't have an X
+                            button and stays at the front.
+                        </p>
+                    </div>
+                ),
+                isDefault: true,
+            },
+        ])
+
+        const [activeTab, setActiveTab] = useState('dashboard')
+        const [selectedTabsToAdd, setSelectedTabsToAdd] = useState<string[]>([])
+        const [showMultiSelect, setShowMultiSelect] = useState(false)
+
+        // Get available items that haven't been added yet
+        const getAvailableItems = () => {
+            const existingValues = tabs.map((tab) => tab.value)
+            return availableTabOptions.filter(
+                (item) => !existingValues.includes(item.value)
+            )
+        }
+
+        const handleTabClose = (value: string) => {
+            const filteredTabs = tabs.filter((tab) => tab.value !== value)
+            setTabs(filteredTabs)
+
+            // If closing active tab, switch to first remaining tab
+            if (value === activeTab && filteredTabs.length > 0) {
+                setActiveTab(filteredTabs[0].value)
+            }
+        }
+
+        const handleTabAdd = () => {
+            setShowMultiSelect(true)
+        }
+
+        const handleMultiSelectChange = (value: string) => {
+            if (selectedTabsToAdd.includes(value)) {
+                setSelectedTabsToAdd((prev) => prev.filter((v) => v !== value))
+            } else if (selectedTabsToAdd.length < 3) {
+                setSelectedTabsToAdd((prev) => [...prev, value])
+            }
+        }
+
+        const handleAddSelectedTabs = () => {
+            if (selectedTabsToAdd.length === 0) return
+
+            const newTabs: TabItem[] = selectedTabsToAdd.map((value) => {
+                const item = availableTabOptions.find(
+                    (opt) => opt.value === value
+                )!
+
+                // For demo: if user selects multiple items, they share content for concatenation
+                const content =
+                    selectedTabsToAdd.length > 1 ? (
+                        sharedContent
+                    ) : (
+                        <div
+                            style={{
+                                padding: '16px',
+                                backgroundColor: '#faf5ff',
+                                borderRadius: '8px',
+                            }}
+                        >
+                            <h3
+                                style={{
+                                    margin: '0 0 12px 0',
+                                    fontSize: '16px',
+                                    fontWeight: '600',
+                                }}
+                            >
+                                {item.label} Content
+                            </h3>
+                            <p style={{ margin: 0, color: '#7c3aed' }}>
+                                This is unique content for {item.label} tab.
+                            </p>
+                        </div>
+                    )
+
+                return {
+                    value: item.value,
+                    label: item.label,
+                    content,
+                    closable: true,
+                    isDefault: false,
+                }
+            })
+
+            setTabs([...tabs, ...newTabs])
+            setActiveTab(newTabs[0].value)
+            setSelectedTabsToAdd([])
+            setShowMultiSelect(false)
+        }
+
+        const handleCancelAdd = () => {
+            setSelectedTabsToAdd([])
+            setShowMultiSelect(false)
+        }
+
+        const multiSelectItems = [
+            {
+                items: getAvailableItems(),
+            },
+        ]
+
+        return (
+            <div style={{ width: '800px', maxWidth: '90vw' }}>
+                <div
+                    style={{
+                        marginBottom: '20px',
+                        padding: '16px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '8px',
+                    }}
+                >
+                    <h3
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Enhanced Tab Features
+                    </h3>
+                    <ul
+                        style={{
+                            margin: 0,
+                            paddingLeft: '20px',
+                            color: '#64748b',
+                            fontSize: '14px',
+                        }}
+                    >
+                        <li>
+                            Default tabs (Dashboard, Overview) cannot be closed
+                        </li>
+                        <li>Click + to add new tabs via MultiSelect</li>
+                        <li>
+                            Select multiple items to create concatenated tabs
+                            (e.g., "Analytics+Reports+Users")
+                        </li>
+                        <li>
+                            Use dropdown to navigate to any tab (including
+                            scrolled-out ones)
+                        </li>
+                        <li>
+                            Tabs scroll horizontally when they exceed container
+                            width
+                        </li>
+                    </ul>
+                </div>
+
+                <Tabs
+                    items={tabs}
+                    value={activeTab}
+                    onValueChange={setActiveTab}
+                    onTabClose={handleTabClose}
+                    onTabAdd={handleTabAdd}
+                    showDropdown={true}
+                    showAddButton={true}
+                    dropdownTooltip="Navigate to any tab (includes scrolled-out tabs)"
+                    addButtonTooltip="Add new tabs via MultiSelect"
+                    maxDisplayTabs={4}
+                />
+
+                {/* MultiSelect Modal */}
+                {showMultiSelect && (
+                    <div
+                        style={{
+                            position: 'fixed',
+                            inset: 0,
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 1000,
+                        }}
+                    >
+                        <div
+                            style={{
+                                backgroundColor: 'white',
+                                padding: '24px',
+                                borderRadius: '8px',
+                                maxWidth: '500px',
+                                width: '90%',
+                                margin: '16px',
+                            }}
+                        >
+                            <h3
+                                style={{
+                                    margin: '0 0 16px 0',
+                                    fontSize: '18px',
+                                    fontWeight: '600',
+                                }}
+                            >
+                                Add New Tabs
+                            </h3>
+                            <p
+                                style={{
+                                    margin: '0 0 16px 0',
+                                    color: '#64748b',
+                                }}
+                            >
+                                Select up to 3 tabs to add. If you select
+                                multiple tabs, they will share content and be
+                                concatenated as "TabA+TabB+TabC".
+                            </p>
+
+                            <MultiSelect
+                                selectedValues={selectedTabsToAdd}
+                                onChange={handleMultiSelectChange}
+                                items={multiSelectItems}
+                                placeholder={`Select up to 3 items (${selectedTabsToAdd.length}/3 selected)`}
+                                label="Available Tabs"
+                                enableSearch={true}
+                                searchPlaceholder="Search available tabs..."
+                                showActionButtons={true}
+                                primaryAction={{
+                                    text: 'Add Selected Tabs',
+                                    onClick: handleAddSelectedTabs,
+                                    disabled: selectedTabsToAdd.length === 0,
+                                }}
+                                secondaryAction={{
+                                    text: 'Cancel',
+                                    onClick: handleCancelAdd,
+                                }}
+                                useDrawerOnMobile={false}
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Complete dynamic tab management with default tabs, closable tabs, MultiSelect integration, concatenation, and navigation dropdown.',
+            },
+        },
+    },
+}
+
+// Tab Concatenation Demo
+export const TabConcatenation: Story = {
+    render: () => {
+        const sharedContent = (
+            <div
+                style={{
+                    padding: '16px',
+                    backgroundColor: '#fef3c7',
+                    borderRadius: '8px',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 12px 0',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Concatenated Tab Content
+                </h3>
+                <p style={{ margin: 0, color: '#92400e' }}>
+                    This content is shared between multiple tabs. When tabs
+                    share the same content, their labels are automatically
+                    concatenated for better organization.
+                </p>
+            </div>
+        )
+
+        const [tabs] = useState<TabItem[]>([
+            {
+                value: 'home',
+                label: 'Home',
+                content: (
+                    <div
+                        style={{
+                            padding: '16px',
+                            backgroundColor: '#eff6ff',
+                            borderRadius: '8px',
+                        }}
+                    >
+                        <h3
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '16px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Home Content
+                        </h3>
+                        <p style={{ margin: 0, color: '#1e40af' }}>
+                            This is unique content for the Home tab.
+                        </p>
+                    </div>
+                ),
+                isDefault: true,
+            },
+            {
+                value: 'analytics',
+                label: 'Analytics',
+                content: sharedContent,
+                closable: true,
+            },
+            {
+                value: 'reports',
+                label: 'Reports',
+                content: sharedContent,
+                closable: true,
+            },
+            {
+                value: 'dashboards',
+                label: 'Dashboards',
+                content: sharedContent,
+                closable: true,
+            },
+            {
+                value: 'settings',
+                label: 'Settings',
+                content: (
+                    <div
+                        style={{
+                            padding: '16px',
+                            backgroundColor: '#f0fdf4',
+                            borderRadius: '8px',
+                        }}
+                    >
+                        <h3
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '16px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Settings Content
+                        </h3>
+                        <p style={{ margin: 0, color: '#166534' }}>
+                            This is unique content for the Settings tab.
+                        </p>
+                    </div>
+                ),
+                closable: true,
+            },
+        ])
+
+        const [activeTab, setActiveTab] = useState('home')
+
+        return (
+            <div style={{ width: '700px', maxWidth: '90vw' }}>
+                <div
+                    style={{
+                        marginBottom: '20px',
+                        padding: '16px',
+                        backgroundColor: '#fef3c7',
+                        borderRadius: '8px',
+                    }}
+                >
+                    <h3
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Tab Concatenation Example
+                    </h3>
+                    <p
+                        style={{
+                            margin: 0,
+                            color: '#92400e',
+                            fontSize: '14px',
+                        }}
+                    >
+                        Notice how "Analytics", "Reports", and "Dashboards" are
+                        displayed as "Analytics+Reports+Dashboards" because they
+                        share the same content. Home and Settings remain
+                        separate as they have unique content.
+                    </p>
+                </div>
+
+                <Tabs
+                    items={tabs}
+                    value={activeTab}
+                    onValueChange={setActiveTab}
+                    showDropdown={true}
+                    showAddButton={false}
+                    dropdownTooltip="All tabs (including concatenated ones)"
+                    maxDisplayTabs={3}
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates automatic tab concatenation when multiple tabs share the same content.',
+            },
+        },
+    },
 }
 
 // Tab variants
@@ -460,12 +1013,93 @@ export const TabVariants: Story = {
                     </TabsContent>
                 </Tabs>
             </div>
+
+            <div>
+                <h4
+                    style={{
+                        margin: '0 0 16px 0',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        color: '#374151',
+                    }}
+                >
+                    Pills Variant
+                </h4>
+                <Tabs
+                    defaultValue={args.defaultValue}
+                    value={args.value}
+                    onValueChange={args.onValueChange}
+                >
+                    <TabsList variant={TabsVariant.PILLS} size={args.size}>
+                        <TabsTrigger
+                            value="tab1"
+                            variant={TabsVariant.PILLS}
+                            size={args.size}
+                        >
+                            Overview
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="tab2"
+                            variant={TabsVariant.PILLS}
+                            size={args.size}
+                        >
+                            Analytics
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="tab3"
+                            variant={TabsVariant.PILLS}
+                            size={args.size}
+                        >
+                            Reports
+                        </TabsTrigger>
+                    </TabsList>
+                    <TabsContent
+                        value="tab1"
+                        style={{
+                            padding: '16px',
+                            border: '1px solid #e2e8f0',
+                            borderRadius: '8px',
+                            marginTop: '8px',
+                        }}
+                    >
+                        <p style={{ margin: 0, color: '#64748b' }}>
+                            Overview content with pills tab styling.
+                        </p>
+                    </TabsContent>
+                    <TabsContent
+                        value="tab2"
+                        style={{
+                            padding: '16px',
+                            border: '1px solid #e2e8f0',
+                            borderRadius: '8px',
+                            marginTop: '8px',
+                        }}
+                    >
+                        <p style={{ margin: 0, color: '#64748b' }}>
+                            Analytics content with detailed metrics.
+                        </p>
+                    </TabsContent>
+                    <TabsContent
+                        value="tab3"
+                        style={{
+                            padding: '16px',
+                            border: '1px solid #e2e8f0',
+                            borderRadius: '8px',
+                            marginTop: '8px',
+                        }}
+                    >
+                        <p style={{ margin: 0, color: '#64748b' }}>
+                            Reports content with data visualization.
+                        </p>
+                    </TabsContent>
+                </Tabs>
+            </div>
         </div>
     ),
     parameters: {
         docs: {
             description: {
-                story: 'Different visual variants: boxed, floating, and underline styles.',
+                story: 'Different visual variants: boxed, floating, underline, and pills styles.',
             },
         },
     },

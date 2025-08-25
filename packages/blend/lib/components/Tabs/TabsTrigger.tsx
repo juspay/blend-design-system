@@ -1,8 +1,10 @@
-import { forwardRef } from 'react'
+import { forwardRef, useCallback } from 'react'
 import { type TabsTriggerProps, TabsVariant, TabsSize } from './types'
 import { StyledTabsTrigger, IconContainer } from './StyledTabs'
 import type { TabsTokensType } from './tabs.token'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { X } from 'lucide-react'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 
 const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
     (
@@ -14,11 +16,42 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
             children,
             leftSlot,
             rightSlot,
+            closable = false,
+            onClose,
             ...props
         },
         ref
     ) => {
         const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
+
+        const handleCloseClick = useCallback(
+            (e: React.MouseEvent) => {
+                e.stopPropagation()
+                e.preventDefault()
+                onClose?.()
+            },
+            [onClose]
+        )
+
+        const effectiveRightSlot = closable ? (
+            <PrimitiveButton
+                onClick={handleCloseClick}
+                size={16}
+                borderRadius="50%"
+                backgroundColor="transparent"
+                _hover={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                }}
+                contentCentered
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+            >
+                <X size={12} />
+            </PrimitiveButton>
+        ) : (
+            rightSlot
+        )
 
         return (
             <StyledTabsTrigger
@@ -38,13 +71,15 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                         {leftSlot}
                     </IconContainer>
                 )}
-                {children}
-                {rightSlot && (
+
+                <span style={{ flexGrow: 1 }}>{children}</span>
+
+                {effectiveRightSlot && (
                     <IconContainer
                         $tabsToken={tabsToken}
                         style={{ marginLeft: tabsToken.trigger.iconGap }}
                     >
-                        {rightSlot}
+                        {effectiveRightSlot}
                     </IconContainer>
                 )}
             </StyledTabsTrigger>
