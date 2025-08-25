@@ -41,7 +41,7 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
             onClick={onClose}
         >
             <div
-                className="w-[95vw] max-w-[1200px] lg:w-[80vw] md:w-[85vw] sm:w-[90vw] flex flex-col xl:flex-row lg:rounded-[50px] md:rounded-[40px] sm:rounded-[30px] rounded-[20px] lg:p-12 md:p-8 sm:p-6 p-4 xl:gap-24 md:gap-14 sm:gap-6 gap-3 max-h-[95vh] overflow-hidden"
+                className="w-[95vw] max-w-[1200px] lg:w-[80vw] md:w-[85vw] sm:w-[90vw] flex flex-col xl:flex-row lg:rounded-[50px] md:rounded-[40px] sm:rounded-[30px] rounded-[20px] lg:p-12 md:p-8 sm:p-6 p-4 xl:gap-24 md:gap-14 sm:gap-6 gap-3 max-h-[90vh] overflow-hidden"
                 style={{
                     background:
                         'linear-gradient(0deg, #0E0E0E 0%, #0E0E0E 100%), linear-gradient(180deg, #101010 0%, #FFF 100%), #FFF',
@@ -64,11 +64,11 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                     </div>
                 </div>
 
-                <div className="w-full bg-white lg:py-4 md:py-2 py-1 max-h-[80vh] lg:rounded-[50px] md:rounded-[40px] sm:rounded-[30px] rounded-[20px] overflow-y-auto">
-                    <form
-                        onSubmit={handleSubmit(onSubmit)}
-                        className="lg:p-10 md:p-8 sm:p-6 p-4 flex flex-col lg:gap-6 md:gap-5 sm:gap-4 gap-3"
-                    >
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className=" w-full overflow-y-auto relative bg-white lg:py-4 md:py-2 py-1 xl:max-h-[80vh] max-h-[40vh] lg:rounded-[50px] md:rounded-[40px] sm:rounded-[30px] rounded-[20px] "
+                >
+                    <div className="lg:p-10 md:p-8 sm:p-6 p-4 flex flex-col lg:gap-6 md:gap-5 sm:gap-4 gap-3 overflow-y-auto">
                         {/* Full Name Input */}
                         <div className="flex flex-col gap-2">
                             <label
@@ -214,12 +214,14 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                                 {...register('message')}
                             ></textarea>
                         </div>
+                    </div>
 
-                        {/* Buttons */}
-                        <div className="flex flex-col sm:flex-row sm:justify-end gap-3 sm:gap-4 mt-4">
+                    {/* Buttons */}
+                    <div className=" sticky -bottom-[1vh]  bg-white py-2">
+                        <div className="flex flex-row justify-end px-10 gap-3 sm:gap-4 py-2 ">
                             <button
                                 type="button"
-                                className="w-full sm:w-auto py-3 px-8 rounded-full border border-gray-400 text-gray-600 hover:bg-gray-100 transition-colors order-2 sm:order-1"
+                                className="w-fit py-2 sm:px-4 px-3 rounded-full border border-gray-400 text-gray-600 hover:bg-gray-100 transition-colors bg-white sm:text-lg xs:text-sm text-xs"
                                 onClick={onClose}
                             >
                                 Cancel
@@ -227,7 +229,7 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                             <button
                                 type="submit"
                                 disabled={!isValid}
-                                className={`w-full sm:w-auto py-3 px-8 rounded-full flex items-center justify-center gap-2 transition-colors order-1 sm:order-2 ${
+                                className={`w-fit py-2 sm:px-4 px-3 rounded-full flex items-center justify-center gap-2 transition-colors sm:text-lg xs:text-sm text-xs ${
                                     isValid
                                         ? 'text-white bg-gray-800 hover:bg-gray-700'
                                         : 'text-gray-400 bg-gray-200 cursor-not-allowed'
@@ -250,8 +252,8 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                                 </svg>
                             </button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     )
