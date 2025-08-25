@@ -75,15 +75,10 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     selectedValues={selectedColumnValues}
                     onChange={handleMultiSelectChange}
                     enableSearch={true}
-                    enableSelectAll={false}
-                    showActionButtons={true}
+                    enableSelectAll={true}
                     showItemDividers={true}
                     showHeaderBorder={false}
-                    primaryAction={{
-                        text: 'Apply',
-                        onClick: () => {},
-                        disabled: false,
-                    }}
+                    showActionButtons={false}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"
@@ -114,16 +109,12 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     items={multiSelectItems}
                     selectedValues={selectedColumnValues}
                     onChange={handleMultiSelectChange}
-                    enableSearch={false}
+                    enableSearch={true}
                     enableSelectAll={true}
                     selectAllText="Select All Columns"
-                    showActionButtons={true}
-                    primaryAction={{
-                        text: 'Apply',
-                        onClick: () => {},
-                        disabled: false,
-                    }}
+                    showActionButtons={false}
                     maxHeight={400}
+                    showHeaderBorder={false}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"

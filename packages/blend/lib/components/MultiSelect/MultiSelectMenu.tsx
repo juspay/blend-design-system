@@ -32,12 +32,21 @@ const Content = styled(RadixMenu.Content)(() => ({
     overflow: 'hidden',
 }))
 
+const StickyHeader = styled(Block)(() => ({
+    position: 'sticky',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    backgroundColor: FOUNDATION_THEME.colors.gray[0],
+    padding: `${FOUNDATION_THEME.unit[6]} 0`,
+}))
+
 const ScrollableContent = styled(Block)(() => ({
     overflowY: 'auto',
     scrollbarWidth: 'none',
     msOverflowStyle: 'none',
     flexGrow: 1,
-    padding: `${FOUNDATION_THEME.unit[6]} 0`,
     '&::-webkit-scrollbar': {
         display: 'none',
     },
@@ -124,19 +133,9 @@ const MultiSelectMenu = ({
                     maxHeight: maxHeight || 400,
                 }}
             >
-                <ScrollableContent
-                    style={{
-                        maxHeight: maxHeight ? `${maxHeight - 80}px` : '320px', // Reserve space for action buttons
-                    }}
-                >
+                <StickyHeader>
                     {enableSearch && (
-                        <Block
-                            position="sticky"
-                            top={0}
-                            left={0}
-                            right={0}
-                            zIndex={1000}
-                        >
+                        <Block>
                             <SearchInput
                                 placeholder={searchPlaceholder}
                                 value={searchText}
@@ -148,12 +147,12 @@ const MultiSelectMenu = ({
                             />
                         </Block>
                     )}
-
                     {enableSelectAll &&
                         onSelectAll &&
                         availableValues.length > 0 && (
                             <Block
                                 borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                                marginBottom={FOUNDATION_THEME.unit[6]}
                             >
                                 <SelectAllItem
                                     selected={selected}
@@ -164,7 +163,13 @@ const MultiSelectMenu = ({
                                 />
                             </Block>
                         )}
-
+                </StickyHeader>
+                <ScrollableContent
+                    style={{
+                        maxHeight: maxHeight ? `${maxHeight - 80}px` : '320px',
+                        padding: `${FOUNDATION_THEME.unit[6]} 0`,
+                    }}
+                >
                     {filteredItems.map(
                         (group: MultiSelectMenuGroupType, groupId: number) => (
                             <React.Fragment key={groupId}>
