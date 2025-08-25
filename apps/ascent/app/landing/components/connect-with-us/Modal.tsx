@@ -30,8 +30,7 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
     }, [])
 
     // This function will be called on successful form submission
-    const onSubmit: SubmitHandler<FormInputs> = (data) => {
-        console.log(data)
+    const onSubmit: SubmitHandler<FormInputs> = () => {
         onClose() // Close the modal after submission
     }
 

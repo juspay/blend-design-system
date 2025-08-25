@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Tabs } from './Tabs'
-import { Separator } from '../Separator'
 import { TokenizerComp } from './tokenizer/Tokenizer'
 import { Components } from './components/Components'
 import { Documentation } from './documentation/Documentation'
