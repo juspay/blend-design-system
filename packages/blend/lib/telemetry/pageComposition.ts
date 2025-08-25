@@ -333,16 +333,19 @@ export class PageCompositionManager {
     }
 
     /**
-     * Generate unique page fingerprint
+     * Generate unique page fingerprint for route-level deduplication
+     * Note: Composition hash is NOT included to ensure same route = same fingerprint
      */
     private generatePageFingerprint(
         projectContext: ProjectContext,
-        compositionHash: string
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        _compositionHash: string
     ): string {
         const repository = projectContext.repositoryName || 'unknown'
         const route = projectContext.pageRoute || '/'
 
-        return `${repository}::${route}::${compositionHash}`
+        // Route-level deduplication: same route across users = same fingerprint
+        return `${repository}::${route}`
     }
 
     /**

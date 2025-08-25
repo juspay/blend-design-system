@@ -4,6 +4,7 @@ import React from 'react'
 import { usePathname } from 'next/navigation'
 import {
     ThemeProvider,
+    TelemetryProvider,
     FOUNDATION_THEME,
     ComponentTokenType,
 } from '@juspay/blend-design-system'
@@ -26,17 +27,19 @@ export default function ClientLayout({
     }
 
     return (
-        <ThemeProvider
-            foundationTokens={FOUNDATION_THEME}
-            componentTokens={componentTokens}
-        >
-            {isLoginPage ? (
-                <>{children}</>
-            ) : (
-                <ProtectedRoute>
-                    <AppShell>{children}</AppShell>
-                </ProtectedRoute>
-            )}
-        </ThemeProvider>
+        <TelemetryProvider config={{ debug: false }}>
+            <ThemeProvider
+                foundationTokens={FOUNDATION_THEME}
+                componentTokens={componentTokens}
+            >
+                {isLoginPage ? (
+                    <>{children}</>
+                ) : (
+                    <ProtectedRoute>
+                        <AppShell>{children}</AppShell>
+                    </ProtectedRoute>
+                )}
+            </ThemeProvider>
+        </TelemetryProvider>
     )
 }

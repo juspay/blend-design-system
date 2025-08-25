@@ -9,7 +9,7 @@ import {
     Alert,
     AlertVariant,
 } from '@juspay/blend-design-system'
-import { RefreshCw, Database, Activity } from 'lucide-react'
+import { RefreshCw, Database } from 'lucide-react'
 
 interface ComponentAnalytics {
     componentName: string
