@@ -235,7 +235,7 @@ export class PageCompositionManager {
         // Wait for all components to register before sending composition
         this.debounceTimer = setTimeout(() => {
             this.processCompositionUpdate()
-        }, 1000) // 1 second debounce
+        }, 2000) // 2 second debounce to reduce excessive firing
     }
 
     /**

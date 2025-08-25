@@ -146,12 +146,11 @@ class PageCompositionService {
         const queryText = `
             INSERT INTO page_compositions (
                 page_fingerprint,
-                repository_name,
                 repository_url,
+                repository_name,
                 page_route,
                 domain,
                 composition_hash,
-                components,
                 component_summary,
                 package_version,
                 environment,
@@ -159,19 +158,18 @@ class PageCompositionService {
                 first_seen,
                 last_updated,
                 change_count
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
             RETURNING *
         `
 
         const values = [
             data.pageFingerprint,
-            data.repositoryName,
             repositoryUrl,
+            data.repositoryName,
             data.pageRoute,
             data.domain,
             data.compositionHash,
-            JSON.stringify(data.components), // for backward compatibility
-            JSON.stringify(data.components), // new component_summary field
+            JSON.stringify(data.components),
             data.packageVersion,
             data.environment,
             JSON.stringify(data.projectContext),
@@ -239,15 +237,14 @@ class PageCompositionService {
             INSERT INTO composition_changes (
                 page_fingerprint,
                 change_type,
-                previous_composition_hash,
-                new_composition_hash,
-                previous_components,
-                new_components,
+                previous_hash,
+                new_hash,
+                changed_components,
                 package_version,
                 environment,
                 session_id,
                 timestamp
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         `
 
         const values = [
@@ -255,7 +252,6 @@ class PageCompositionService {
             data.changeType,
             previousHash,
             data.compositionHash,
-            previousHash ? JSON.stringify([]) : null, // We don't have previous components data
             JSON.stringify(data.components),
             data.packageVersion,
             data.environment,

@@ -6,19 +6,23 @@ import { Suspense } from 'react'
 import TelemetryDashboard from '@/src/frontend/components/telemetry/TelemetryDashboard'
 
 export const metadata = {
-    title: 'Telemetry Dashboard - Blend Monitor',
-    description: 'Real-time analytics of Blend Design System component usage',
+    title: 'Component Analytics - Blend Monitor',
+    description:
+        'Track component adoption and usage across applications with route-level deduplication',
 }
 
 export default function TelemetryPage() {
     return (
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="mb-8">
+                {/* <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">
-                        Realtime Analytics
+                        Component Adoption Analyticsssss
                     </h1>
-                </div>
+                    <p className="text-lg text-gray-600 mt-2">
+                        Real-time component usage tracking with route-level deduplication
+                    </p>
+                </div> */}
 
                 <Suspense
                     fallback={
@@ -26,10 +30,11 @@ export default function TelemetryPage() {
                             <div className="text-center">
                                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
                                 <div className="text-lg text-gray-600">
-                                    Loading telemetry analytics...
+                                    Loading component analytics...
                                 </div>
                                 <div className="text-sm text-gray-500 mt-2">
-                                    Analyzing component usage data...
+                                    Fetching adoption metrics with route-level
+                                    deduplication...
                                 </div>
                             </div>
                         </div>

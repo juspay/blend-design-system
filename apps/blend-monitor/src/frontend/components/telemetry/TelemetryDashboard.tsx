@@ -3,16 +3,13 @@
 import { useState, useEffect } from 'react'
 import { OverviewCards } from './OverviewCards'
 import { ComponentAnalyticsTable } from './ComponentAnalyticsTable'
-import { RepositoryAnalyticsTable } from './RepositoryAnalyticsTable'
-// import { TrendsChart } from './TrendsChart'
-import { TopVariantsTable } from './TopVariantsTable'
 import {
-    Charts,
-    ChartType,
     Button,
     ButtonType,
+    Alert,
+    AlertVariant,
 } from '@juspay/blend-design-system'
-import { RefreshCw } from 'lucide-react'
+import { RefreshCw, Database, Activity } from 'lucide-react'
 
 interface ComponentAnalytics {
     componentName: string
@@ -22,21 +19,6 @@ interface ComponentAnalytics {
     firstSeen: string
     lastSeen: string
     avgInstancesPerPage: number
-}
-
-interface RepositoryAnalytics {
-    repositoryName: string
-    totalPages: number
-    totalComponents: number
-    uniqueComponents: number
-    lastActivity: string
-}
-
-interface TrendData {
-    date: string
-    pageCount: number
-    componentCount: number
-    repositoryCount: number
 }
 
 interface AnalyticsData {
@@ -49,15 +31,6 @@ interface AnalyticsData {
         mostActiveRepository: string
     }
     componentAnalytics: ComponentAnalytics[]
-    repositoryAnalytics: RepositoryAnalytics[]
-    trends: TrendData[]
-    topVariants: Array<{
-        componentName: string
-        propsSignature: string
-        componentProps: Record<string, unknown>
-        usageCount: number
-        pageCount: number
-    }>
 }
 
 export default function TelemetryDashboard() {
@@ -67,14 +40,72 @@ export default function TelemetryDashboard() {
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
     const fetchAnalytics = async () => {
+        setLoading(true)
         try {
-            setLoading(true)
-            const response = await fetch('/api/telemetry/analytics')
-            if (!response.ok) {
+            const [dashboardResponse, componentResponse] = await Promise.all([
+                fetch('/api/telemetry/page-analytics'),
+                fetch('/api/telemetry/component-adoption'),
+            ])
+
+            if (!dashboardResponse.ok || !componentResponse.ok) {
                 throw new Error('Failed to fetch analytics data')
             }
-            const analyticsData = await response.json()
-            setData(analyticsData)
+
+            const dashboardData = await dashboardResponse.json()
+            const componentData = await componentResponse.json()
+
+            if (!dashboardData.success || !componentData.success) {
+                throw new Error('API returned error response')
+            }
+
+            // Transform data to match interface
+            const transformedData: AnalyticsData = {
+                overview: {
+                    totalComponents:
+                        dashboardData.data.overview.totalComponents || 0,
+                    totalPages:
+                        dashboardData.data.overview.totalUniquePages || 0,
+                    totalRepositories:
+                        dashboardData.data.overview.totalRepositories || 0,
+                    totalUniqueCompositions:
+                        dashboardData.data.overview.totalUniquePages || 0,
+                    mostUsedComponent:
+                        dashboardData.data.topComponents[0]?.componentName ||
+                        'No data',
+                    mostActiveRepository:
+                        dashboardData.data.topRepositories[0]?.repositoryName ||
+                        'No data',
+                },
+                componentAnalytics: componentData.data.components.map(
+                    (comp: unknown) => {
+                        const component = comp as {
+                            componentName: string
+                            totalInstances: number
+                            uniquePages: number
+                            repositories: unknown[]
+                            firstUsed: string
+                            lastUsed: string
+                        }
+                        return {
+                            componentName: component.componentName,
+                            totalUsage: component.totalInstances,
+                            uniquePages: component.uniquePages,
+                            uniqueVariants: component.repositories.length,
+                            firstSeen: component.firstUsed,
+                            lastSeen: component.lastUsed,
+                            avgInstancesPerPage:
+                                component.uniquePages > 0
+                                    ? Math.round(
+                                          component.totalInstances /
+                                              component.uniquePages
+                                      )
+                                    : 0,
+                        }
+                    }
+                ),
+            }
+
+            setData(transformedData)
             setLastUpdated(new Date())
             setError(null)
         } catch (err) {
@@ -87,6 +118,53 @@ export default function TelemetryDashboard() {
     useEffect(() => {
         fetchAnalytics()
     }, [])
+
+    // Empty state when no data exists yet
+    if (!loading && data && data.overview.totalComponents === 0) {
+        return (
+            <div className="space-y-6">
+                {/* Header */}
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h2 className="text-2xl font-bold text-gray-900">
+                            Component Adoption Analytics
+                        </h2>
+                        <p className="text-gray-600 mt-1">
+                            Track component usage across your applications
+                        </p>
+                    </div>
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Refresh"
+                        leadingIcon={<RefreshCw className="w-4 h-4" />}
+                        onClick={fetchAnalytics}
+                        loading={loading}
+                    />
+                </div>
+
+                {/* Empty State */}
+                <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-12">
+                    <div className="text-center">
+                        <Database className="mx-auto h-12 w-12 text-gray-400" />
+                        <h3 className="mt-4 text-lg font-medium text-gray-900">
+                            No Telemetry Data Yet
+                        </h3>
+                        <p className="mt-2 text-gray-500 max-w-sm mx-auto">
+                            Start using Blend Design System components in your
+                            applications to see adoption analytics here.
+                        </p>
+                        <div className="mt-6">
+                            <Alert
+                                variant={AlertVariant.PRIMARY}
+                                heading="How it works"
+                                description="Components automatically track usage when rendered. Data appears here in real-time with route-level deduplication to prevent duplicates."
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     if (loading && !data) {
         return (
@@ -135,109 +213,39 @@ export default function TelemetryDashboard() {
         )
     }
 
-    if (!data) {
-        return (
-            <div className="text-center py-12">
-                <div className="text-gray-500 text-lg">
-                    No telemetry data available
-                </div>
-            </div>
-        )
-    }
-
     return (
         <div className="space-y-8">
-            {/* Header with refresh info */}
+            {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    {lastUpdated && (
-                        <p className="text-sm text-gray-500 mt-1">
-                            Last updated: {lastUpdated.toLocaleTimeString()}
-                            {loading && (
-                                <span className="ml-2 text-blue-600">
-                                    (Refreshing...)
-                                </span>
-                            )}
-                        </p>
-                    )}
+                    <h2 className="text-2xl font-bold text-gray-900">
+                        Component Adoption Analytics
+                    </h2>
+                    <p className="text-gray-600 mt-1">
+                        Real-time tracking of component usage across
+                        applications
+                        {lastUpdated && (
+                            <span className="text-sm text-gray-500 ml-2">
+                                • Last updated{' '}
+                                {lastUpdated.toLocaleTimeString()}
+                            </span>
+                        )}
+                    </p>
                 </div>
                 <Button
-                    text={loading ? 'Refreshing...' : 'Refresh Data'}
-                    buttonType={ButtonType.PRIMARY}
-                    leadingIcon={
-                        <RefreshCw
-                            className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
-                        />
-                    }
+                    buttonType={ButtonType.SECONDARY}
+                    text="Refresh"
+                    leadingIcon={<RefreshCw className="w-4 h-4" />}
                     onClick={fetchAnalytics}
-                    disabled={loading}
+                    loading={loading}
                 />
             </div>
 
             {/* Overview Cards */}
-            <OverviewCards overview={data.overview} />
+            <OverviewCards overview={data!.overview} />
 
-            {/* Component Analytics - Full Width */}
-            <ComponentAnalyticsTable components={data.componentAnalytics} />
-
-            {/* Repository Analytics */}
-            <RepositoryAnalyticsTable repositories={data.repositoryAnalytics} />
-
-            {/* Most Used Component Variants - Full Width */}
-            <TopVariantsTable variants={data.topVariants} />
-
-            {/* Component Distribution Pie Chart */}
-            <Charts
-                chartType={ChartType.PIE}
-                data={[
-                    {
-                        name: 'Component Distribution',
-                        data: Object.entries(
-                            data.topVariants.reduce(
-                                (acc, variant) => {
-                                    acc[variant.componentName] =
-                                        (acc[variant.componentName] || 0) +
-                                        variant.usageCount
-                                    return acc
-                                },
-                                {} as Record<string, number>
-                            )
-                        )
-                            .sort(([, a], [, b]) => b - a)
-                            .slice(0, 8)
-                            .reduce(
-                                (acc, [componentName, totalUsage]) => {
-                                    acc[componentName] = {
-                                        primary: {
-                                            label: 'Usage',
-                                            val: totalUsage,
-                                        },
-                                    }
-                                    return acc
-                                },
-                                {} as Record<
-                                    string,
-                                    {
-                                        primary: {
-                                            label: string
-                                            val: number
-                                        }
-                                    }
-                                >
-                            ),
-                    },
-                ]}
-                chartHeaderSlot={
-                    <div className="mb-4">
-                        <h3 className="text-base font-semibold text-gray-900">
-                            Component Distribution
-                        </h3>
-                        <p className="text-xs text-gray-600">
-                            Usage by component type
-                        </p>
-                    </div>
-                }
-            />
+            {/* Component Analytics */}
+            <ComponentAnalyticsTable components={data!.componentAnalytics} />
         </div>
     )
 }

@@ -4,7 +4,14 @@
  * Supports both Redis and in-memory fallback
  */
 
-import { TelemetryEvent } from './telemetry-service'
+// import { TelemetryEvent } from './telemetry-service'
+
+// Temporary type definition for TelemetryEvent
+interface TelemetryEvent {
+    sessionId: string
+    componentName: string
+    propsSignature: string
+}
 
 // =====================================================
 // TYPES AND INTERFACES

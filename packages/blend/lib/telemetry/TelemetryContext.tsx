@@ -31,7 +31,7 @@ const DEFAULT_CONFIG: TelemetryConfig = {
         | 'production'
         | 'staging',
     samplingRate: 1.0, // Track 100% of events by default
-    debug: detectEnvironment() === 'development', // Enable debug in development
+    debug: false, // Disable debug by default to reduce console noise
 }
 
 const TelemetryContext = createContext<TelemetryContextValue | null>(null)
@@ -78,9 +78,9 @@ export function TelemetryProvider({
                     environment: config.environment || detectEnvironment(),
                 }
 
-                // Debug logging
+                // Debug logging (more concise)
                 if (config.debug) {
-                    console.group(
+                    console.log(
                         `📊 Blend Telemetry: Page Composition Change (${event.changeType})`
                     )
                     console.log(
@@ -109,7 +109,6 @@ export function TelemetryProvider({
                         '🆕 Current Hash:',
                         event.pageComposition.compositionHash
                     )
-                    console.groupEnd()
                 }
 
                 // Send to analytics endpoint using fetch
@@ -185,34 +184,11 @@ export function TelemetryProvider({
     }, [config.enabled, config.debug, handlePageCompositionChange])
 
     /**
-     * Legacy track function for backward compatibility
-     * This is now deprecated in favor of page composition tracking
+     * No-op track function - deprecated, use page composition tracking automatically
      */
     const track = useCallback(() => {
-        try {
-            // Early return if telemetry is disabled
-            if (!config.enabled) {
-                return
-            }
-
-            // Log deprecation warning in debug mode
-            if (config.debug) {
-                console.warn(
-                    '⚠️ Blend Telemetry: Individual component tracking is deprecated. ' +
-                        'Components now use page composition tracking automatically. ' +
-                        'This track() call will be ignored.'
-                )
-            }
-
-            // The new system handles tracking automatically through page composition
-            // Individual track() calls are no longer needed
-        } catch (error: unknown) {
-            console.warn(
-                'Blend telemetry: Error in legacy track function',
-                error
-            )
-        }
-    }, [config])
+        // No-op - page composition tracking is automatic
+    }, [])
 
     const updateConfig = useCallback((newConfig: Partial<TelemetryConfig>) => {
         setConfig((prevConfig) => ({

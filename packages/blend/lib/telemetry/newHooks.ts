@@ -5,7 +5,7 @@
  * @package @juspay/blend-design-system
  */
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { getPageCompositionManager } from './pageComposition'
 
 /**
@@ -50,48 +50,43 @@ export function usePageCompositionTelemetry(
     const { trackUnmount = false } = options
     const mountedRef = useRef(false)
     const lastPropsRef = useRef<string>('')
+    const registeredRef = useRef(false)
+
+    // Memoize the props key to prevent unnecessary recalculations
+    const propsKey = useMemo(() => safeStringify(props), [props])
 
     // Track component mount and prop changes
     useEffect(() => {
         const manager = getPageCompositionManager()
-        const propsKey = safeStringify(props)
 
-        // Register component with page composition manager
-        manager.registerComponent(componentName, props)
-        mountedRef.current = true
-        lastPropsRef.current = propsKey
+        // Only register if props have actually changed or component is mounting for first time
+        if (!registeredRef.current || lastPropsRef.current !== propsKey) {
+            // Unregister old props if this is a prop change (not initial mount)
+            if (registeredRef.current && lastPropsRef.current) {
+                try {
+                    const oldProps = JSON.parse(lastPropsRef.current)
+                    manager.unregisterComponent(componentName, oldProps)
+                } catch {
+                    // Ignore parsing errors for old props
+                }
+            }
+
+            // Register component with new props
+            manager.registerComponent(componentName, props)
+            mountedRef.current = true
+            registeredRef.current = true
+            lastPropsRef.current = propsKey
+        }
 
         // Cleanup function for unmount
         return () => {
-            if (trackUnmount && mountedRef.current) {
+            if (trackUnmount && mountedRef.current && registeredRef.current) {
                 manager.unregisterComponent(componentName, props)
+                registeredRef.current = false
             }
             mountedRef.current = false
         }
-    }, [componentName, safeStringify(props), trackUnmount])
-
-    // Track prop changes
-    useEffect(() => {
-        if (!mountedRef.current) return
-
-        const propsKey = safeStringify(props)
-        if (lastPropsRef.current === propsKey) return
-
-        const manager = getPageCompositionManager()
-
-        // Unregister old props and register new props
-        if (lastPropsRef.current) {
-            try {
-                const oldProps = JSON.parse(lastPropsRef.current)
-                manager.unregisterComponent(componentName, oldProps)
-            } catch {
-                // Ignore parsing errors for old props
-            }
-        }
-
-        manager.registerComponent(componentName, props)
-        lastPropsRef.current = propsKey
-    }, [componentName, safeStringify(props)])
+    }, [componentName, propsKey, trackUnmount])
 }
 
 /**
@@ -123,27 +118,4 @@ export function createPageCompositionHook(componentName: string) {
     ) {
         return useComponentPageTelemetry(componentName, props)
     }
-}
-
-// =====================================================
-// MIGRATION HELPERS
-// =====================================================
-
-/**
- * Temporary hook that supports both old and new tracking systems
- * This allows for gradual migration from session-based to page-based tracking
- *
- * @param componentName - Name of the component being tracked
- * @param props - Component props to be sanitized and tracked
- * @param useNewSystem - Whether to use the new page composition system
- *
- * @deprecated This hook violates React rules and should be replaced with direct usage of useComponentPageTelemetry
- */
-export function useMigrationTelemetry(
-    componentName: string,
-    props: Record<string, unknown>
-) {
-    // Always use the new system to avoid conditional hook calls
-    // The old system is deprecated and should not be used
-    return useComponentPageTelemetry(componentName, props)
 }
