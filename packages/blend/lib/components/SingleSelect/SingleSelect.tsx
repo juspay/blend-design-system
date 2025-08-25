@@ -233,8 +233,6 @@ const SingleSelect = ({
                                                       ? 'open'
                                                       : 'closed'
                                             ],
-                                        height: singleSelectTokens.trigger
-                                            .height[size],
                                         maxHeight:
                                             singleSelectTokens.trigger.height[
                                                 size

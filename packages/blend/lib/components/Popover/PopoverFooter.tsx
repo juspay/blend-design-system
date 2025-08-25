@@ -9,7 +9,8 @@ const PopoverFooter = ({
     secondaryAction,
 }: Pick<PopoverProps, 'primaryAction' | 'secondaryAction'>) => {
     const popoverTokens = useComponentToken('POPOVER') as PopoverTokenType
-    if (!primaryAction || !secondaryAction) return null
+
+    if (!primaryAction && !secondaryAction) return null
 
     return (
         <Block

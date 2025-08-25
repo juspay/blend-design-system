@@ -387,7 +387,7 @@ export const getTableToken = (
                             overflowY: 'auto',
                             gap: foundationToken.unit[4],
                             sortOption: {
-                                padding: foundationToken.unit[8],
+                                padding: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
                                 borderRadius: foundationToken.border.radius[4],
                                 hoverBackground:
                                     foundationToken.colors.gray[50],
@@ -639,7 +639,7 @@ export const getTableToken = (
                             overflowY: 'auto',
                             gap: foundationToken.unit[4],
                             sortOption: {
-                                padding: foundationToken.unit[8],
+                                padding: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
                                 borderRadius: foundationToken.border.radius[4],
                                 hoverBackground:
                                     foundationToken.colors.gray[50],
