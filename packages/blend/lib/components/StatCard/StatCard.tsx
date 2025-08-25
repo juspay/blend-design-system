@@ -314,7 +314,6 @@ const StatCard = ({
                                 alignItems="center"
                                 gap={statCardToken.stats.gap}
                             >
-                                (
                                 <Tooltip content={valueTooltip || ''}>
                                     <Text
                                         as="span"
@@ -336,7 +335,7 @@ const StatCard = ({
                                         {value}
                                     </Text>
                                 </Tooltip>
-                                )
+
                                 {formattedChange && (
                                     <Tooltip content={change?.tooltip || ''}>
                                         <Block
@@ -478,6 +477,9 @@ const StatCard = ({
                             display="flex"
                             alignItems="center"
                             gap={statCardToken.stats.gap}
+                            justifyContent={
+                                formattedChange ? 'flex-start' : 'center'
+                            }
                         >
                             {
                                 <Tooltip content={valueTooltip || ''}>

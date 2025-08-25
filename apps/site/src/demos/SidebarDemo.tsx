@@ -27,6 +27,7 @@ import {
     Weight,
     DecimalsArrowRightIcon,
     Search,
+    Shield,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -69,6 +70,7 @@ import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
 import PopoverDemo from './PopoverDemo'
 import MultiValueInputDemo from './MultiValueInputDemo'
+import OTPInputDemo from './OTPInputDemo'
 import {
     Avatar,
     AvatarShape,
@@ -122,6 +124,7 @@ const SidebarDemo = () => {
         | 'dropdownInput'
         | 'dataRangePicker'
         | 'multiValueInput'
+        | 'otpInput'
     >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -185,6 +188,8 @@ const SidebarDemo = () => {
                 return <NumberInputDemo />
             case 'textArea':
                 return <TextAreaDemo />
+            case 'otpInput':
+                return <OTPInputDemo />
             case 'alerts':
                 return <AlertDemo />
             case 'tabs':
@@ -293,6 +298,13 @@ const SidebarDemo = () => {
                         <FormInput style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('input'),
+                },
+                {
+                    label: 'OTP Input',
+                    leftSlot: (
+                        <Shield style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('otpInput'),
                 },
                 {
                     label: 'Unit Input',
