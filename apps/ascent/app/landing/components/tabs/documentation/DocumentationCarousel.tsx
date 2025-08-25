@@ -20,10 +20,54 @@ export const DocumentationCarousel = () => {
         setActiveIndex((prevIndex) => (prevIndex - 1 + totalCards) % totalCards)
     }
 
+    // Function to get current card width based on screen size
+    const getCurrentCardWidth = () => {
+        if (typeof window === 'undefined') return 500 // SSR fallback
+
+        const width = window.innerWidth
+
+        // Match the breakpoints used in DocumentationCard
+        if (width >= 1024) {
+            // lg
+            return 500 // --documentation-card-size
+        } else if (width >= 768) {
+            // md
+            return 450 // --documentation-card-size-md
+        } else if (width >= 640) {
+            // sm
+            return 400 // --documentation-card-size-sm
+        } else {
+            // xs
+            return 350 // --documentation-card-size-xs
+        }
+    }
+
+    // Function to get current gap based on screen size
+    const getCurrentGap = () => {
+        if (typeof window === 'undefined') return 50 // SSR fallback
+
+        const width = window.innerWidth
+
+        // You can make gap responsive too if needed
+        if (width >= 1024) {
+            // lg
+            return 50
+        } else if (width >= 768) {
+            // md
+            return 40
+        } else if (width >= 640) {
+            // sm
+            return 30
+        } else {
+            // xs
+            return 20
+        }
+    }
+
     useEffect(() => {
         if (carouselRef.current) {
-            const cardWidth = 500 // Assuming a fixed width for the card
-            const gap = 50 // Assuming a fixed gap
+            const cardWidth = getCurrentCardWidth()
+            const gap = getCurrentGap()
 
             // The carousel container's own width is needed, not the parent's
             const carouselWidth = carouselRef.current.offsetWidth
@@ -41,6 +85,26 @@ export const DocumentationCarousel = () => {
         }
     }, [activeIndex])
 
+    // Add resize event listener to recalculate on window resize
+    useEffect(() => {
+        const handleResize = () => {
+            if (carouselRef.current) {
+                const cardWidth = getCurrentCardWidth()
+                const gap = getCurrentGap()
+                const carouselWidth = carouselRef.current.offsetWidth
+                const cardAndGap = cardWidth + gap
+                const activeCardPosition = activeIndex * cardAndGap
+                const newOffset =
+                    carouselWidth / 2 - activeCardPosition - cardWidth / 2
+
+                carouselRef.current.style.transform = `translateX(${newOffset}px)`
+            }
+        }
+
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [activeIndex])
+
     return (
         // New container to provide the necessary "breathing room"
         <div className="relative overflow-hidden max-w-screen">
@@ -48,7 +112,7 @@ export const DocumentationCarousel = () => {
             <div className="flex justify-center items-center mt-50">
                 <div
                     ref={carouselRef}
-                    className="flex transition-transform duration-500 ease-in-out gap-[50px]"
+                    className="flex transition-transform duration-500 ease-in-out gap-5 md:gap-10 lg:gap-[50px]"
                 >
                     {DocumentationCardData.map((data, index) => (
                         <div

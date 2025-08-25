@@ -37,7 +37,7 @@ export const Tabs = ({
     handleTabSelection: (label: string) => void
 }) => {
     return (
-        <div className="text-[var(--design-system-heading-background)] opacity-80 lg:w-[var(--tabs-section-width)] md:w-[var(--tabs-section-width-md)] sm:w-[var(--tabs-section-width-sm)] w-[var(--tabs-section-width-xs)] flex justify-center relative backdrop-blur-md rounded-[var(--tab-bar-border-radius)] bg-[image:var(--landing-tabs-bar-gradient)] p-[var(--padding-1-pixel)]">
+        <div className="text-[var(--design-system-heading-background)] opacity-80 lg:w-[var(--tabs-section-width)] md:w-[var(--tabs-section-width-md)] sm:w-[var(--tabs-section-width-sm)] w-[var(--tabs-section-width-xs)] flex justify-center relative backdrop-blur-md rounded-[var(--tab-bar-border-radius)] bg-[image:var(--landing-tabs-bar-gradient)] p-[var(--padding-1-pixel)] z-30">
             <div className="w-full h-full rounded-[var(--tab-bar-border-radius)] bg-black flex items-center  md:p-6 p-3 justify-between">
                 {TabsList.map((tab, key) => (
                     <TabButtons

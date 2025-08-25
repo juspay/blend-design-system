@@ -90,7 +90,7 @@ export const TabsSection = () => {
     }
     return (
         <div className="flex flex-col items-center justify-center w-full">
-            <div className="sticky top-0 z-10 rounded-[var(--tab-bar-border-radius)] md:pt-5 pt-3 bg-transparent">
+            <div className="sticky top-0 z-30 rounded-[var(--tab-bar-border-radius)] md:pt-5 pt-3 bg-transparent">
                 <Tabs
                     selectedTab={selectedTab}
                     handleTabSelection={handleTabSelection}

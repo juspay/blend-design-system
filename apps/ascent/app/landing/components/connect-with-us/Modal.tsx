@@ -42,14 +42,14 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
             onClick={onClose}
         >
             <div
-                className="w-[95vw] max-w-[1200px] lg:w-[80vw] md:w-[85vw] sm:w-[90vw] flex flex-col lg:flex-row lg:rounded-[50px] md:rounded-[40px] sm:rounded-[30px] rounded-[20px] lg:p-12 md:p-8 sm:p-6 p-4 lg:gap-34 md:gap-24 sm:gap-12 gap-6 max-h-[95vh] overflow-hidden"
+                className="w-[95vw] max-w-[1200px] lg:w-[80vw] md:w-[85vw] sm:w-[90vw] flex flex-col xl:flex-row lg:rounded-[50px] md:rounded-[40px] sm:rounded-[30px] rounded-[20px] lg:p-12 md:p-8 sm:p-6 p-4 xl:gap-24 md:gap-14 sm:gap-6 gap-3 max-h-[95vh] overflow-hidden"
                 style={{
                     background:
                         'linear-gradient(0deg, #0E0E0E 0%, #0E0E0E 100%), linear-gradient(180deg, #101010 0%, #FFF 100%), #FFF',
                 }}
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="lg:py-[30px] md:py-5 py-2 flex flex-col justify-between w-full">
+                <div className="lg:py-[30px] md:py-5 py-2 gap-5 flex flex-col justify-between w-full">
                     <div className="flex flex-col lg:gap-[50px] md:gap-[40px] sm:gap-[30px] gap-[20px]">
                         <p className="text-[#9E9E9E] lg:text-[45px] md:text-4xl sm:text-3xl xs:text-2xl text-xl font-normal">
                             We're always listening.
