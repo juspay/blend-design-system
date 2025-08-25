@@ -104,7 +104,7 @@ export const TabsSection = () => {
                 <Components />
             </div>
 
-            <Separator className="mb-50" />
+            {/* <Separator className="mb-50" /> */}
 
             <div ref={documentationRef}>
                 <Documentation />

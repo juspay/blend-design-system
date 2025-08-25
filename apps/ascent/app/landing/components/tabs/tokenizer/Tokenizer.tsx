@@ -14,8 +14,8 @@ export const TokenizerComp = () => {
                 </p>
                 <p>across our app effortlessly.</p>
             </div>
-            <div>
-                <Tokenizer width={`1380`} height={`1301`} />
+            <div className="w-full max-w-6xl mx-auto">
+                <Tokenizer />
             </div>
             <div className="-mt-40 flex flex-col items-center justify-center">
                 <InfoBtn

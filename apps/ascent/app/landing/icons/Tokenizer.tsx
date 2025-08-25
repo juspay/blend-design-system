@@ -2,16 +2,17 @@ export const Tokenizer = ({
     width,
     height,
 }: {
-    width: string
-    height: string
-}) => {
+    width?: string
+    height?: string
+} = {}) => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            width={width}
-            height={height}
-            viewBox={`0 0 ${width} ${height}`}
+            width={width || '100%'}
+            height={height || 'auto'}
+            viewBox="0 0 1380 1301"
             fill="none"
+            className="w-full h-auto max-w-full"
         >
             <path
                 d="M442.98 698.261C443.561 698.261 444.031 697.807 444.031 697.247C444.031 696.687 443.561 696.233 442.98 696.233C442.399 696.233 441.929 696.687 441.929 697.247C441.929 697.807 442.399 698.261 442.98 698.261Z"

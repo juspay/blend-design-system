@@ -1,11 +1,18 @@
-export const CompC4R1 = () => {
+interface CompC4R1Props {
+    width?: string
+    height?: string
+}
+
+export const CompC4R1 = ({ width, height }: CompC4R1Props) => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="342"
-            height="171"
+            width={width || '100%'}
+            height={height || 'auto'}
             viewBox="0 0 342 171"
             fill="none"
+            className="w-full h-auto max-w-[342px]"
+            style={{ maxWidth: '342px' }}
         >
             <g filter="url(#filter0_d_3101_6389)">
                 <rect

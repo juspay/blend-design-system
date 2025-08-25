@@ -22,7 +22,7 @@ export const PlaygroundComp = () => {
                         href="https://juspay.design/storybook/"
                     />
                 </div>
-                <div className="w-full">
+                <div className="w-full max-w-6xl mx-auto">
                     <Playground />
                 </div>
             </div>

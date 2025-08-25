@@ -1,11 +1,17 @@
-const Playground = () => {
+interface PlaygroundProps {
+    width?: string
+    height?: string
+}
+
+const Playground = ({ width, height }: PlaygroundProps) => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="561"
-            height="656"
+            width={width || '100%'}
+            height={height || 'auto'}
             viewBox="0 0 561 656"
             fill="none"
+            className="w-full h-auto max-w-full"
         >
             <g filter="url(#filter0_f_3518_5417)">
                 <ellipse

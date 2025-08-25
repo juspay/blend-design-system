@@ -1,11 +1,18 @@
-export const CompC3R2 = () => {
+interface CompC3R2Props {
+    width?: string
+    height?: string
+}
+
+export const CompC3R2 = ({ width, height }: CompC3R2Props) => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="342"
-            height="171"
+            width={width || '100%'}
+            height={height || 'auto'}
             viewBox="0 0 342 171"
             fill="none"
+            className="w-full h-auto max-w-[342px]"
+            style={{ maxWidth: '342px' }}
         >
             <g filter="url(#filter0_d_3101_6361)">
                 <rect

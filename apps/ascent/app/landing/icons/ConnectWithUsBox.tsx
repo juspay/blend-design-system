@@ -1,11 +1,18 @@
-export const ConnectWithUsBox = () => {
+interface ConnectWithUsBoxProps {
+    width?: string
+    height?: string
+}
+
+export const ConnectWithUsBox = ({ width, height }: ConnectWithUsBoxProps) => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="157"
-            height="155"
+            width={width || '100%'}
+            height={height || 'auto'}
             viewBox="0 0 157 155"
             fill="none"
+            className="w-full h-auto max-w-[157px]"
+            style={{ maxWidth: '157px' }}
         >
             <g opacity="0.4">
                 <path

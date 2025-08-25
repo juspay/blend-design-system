@@ -42,33 +42,33 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
             onClick={onClose}
         >
             <div
-                className="w-[80vw] rounded-[50px] p-[50px] flex gap-[136px]"
+                className="w-[95vw] max-w-[1200px] lg:w-[80vw] md:w-[85vw] sm:w-[90vw] flex flex-col lg:flex-row lg:rounded-[50px] md:rounded-[40px] sm:rounded-[30px] rounded-[20px] lg:p-12 md:p-8 sm:p-6 p-4 lg:gap-34 md:gap-24 sm:gap-12 gap-6 max-h-[95vh] overflow-hidden"
                 style={{
                     background:
                         'linear-gradient(0deg, #0E0E0E 0%, #0E0E0E 100%), linear-gradient(180deg, #101010 0%, #FFF 100%), #FFF',
                 }}
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="py-[30px] flex flex-col justify-between w-full">
-                    <div className="flex flex-col gap-[50px]">
-                        <p className="text-[#9E9E9E] text-[45px] font-[400]">
+                <div className="lg:py-[30px] md:py-5 py-2 flex flex-col justify-between w-full">
+                    <div className="flex flex-col lg:gap-[50px] md:gap-[40px] sm:gap-[30px] gap-[20px]">
+                        <p className="text-[#9E9E9E] lg:text-[45px] md:text-4xl sm:text-3xl xs:text-2xl text-xl font-normal">
                             We're always listening.
                         </p>
-                        <p className="text-[#4F4F4F] font-[300] text-[30px]">
+                        <p className="text-[#4F4F4F] font-light lg:text-3xl md:text-2xl sm:text-xl xs:text-lg text-base">
                             Whether it’s feedback, a bug, or a bright idea —
                             let’s make this system better together.
                         </p>
                     </div>
-                    <div className="flex flex-col text-[#9F9F9F] font-[300] text-[30px]">
+                    <div className="flex flex-col text-[#9F9F9F] lg:text-3xl md:text-2xl sm:text-xl xs:text-lg text-base">
                         <p>Email Us</p>
                         <p>designsystem@company.com</p>
                     </div>
                 </div>
 
-                <div className="w-full bg-white py-[15px] max-h-[80vh] rounded-[45px]">
+                <div className="w-full bg-white lg:py-4 md:py-2 py-1 max-h-[80vh] lg:rounded-[50px] md:rounded-[40px] sm:rounded-[30px] rounded-[20px] overflow-y-auto">
                     <form
                         onSubmit={handleSubmit(onSubmit)}
-                        className="p-10 flex flex-col gap-6"
+                        className="lg:p-10 md:p-8 sm:p-6 p-4 flex flex-col lg:gap-6 md:gap-5 sm:gap-4 gap-3"
                     >
                         {/* Full Name Input */}
                         <div className="flex flex-col gap-2">
@@ -210,17 +210,17 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                             <textarea
                                 id="message"
                                 placeholder="Type your message"
-                                rows={5}
-                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#706E6E] placeholder-[#C9C9C9] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                rows={3}
+                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#706E6E] placeholder-[#C9C9C9] focus:outline-none focus:ring-2 focus:ring-blue-500 sm:rows-4 md:rows-5"
                                 {...register('message')}
                             ></textarea>
                         </div>
 
                         {/* Buttons */}
-                        <div className="flex justify-end gap-4 mt-4">
+                        <div className="flex flex-col sm:flex-row sm:justify-end gap-3 sm:gap-4 mt-4">
                             <button
                                 type="button"
-                                className="py-3 px-8 rounded-full border border-gray-400 text-gray-600 hover:bg-gray-100 transition-colors"
+                                className="w-full sm:w-auto py-3 px-8 rounded-full border border-gray-400 text-gray-600 hover:bg-gray-100 transition-colors order-2 sm:order-1"
                                 onClick={onClose}
                             >
                                 Cancel
@@ -228,7 +228,7 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                             <button
                                 type="submit"
                                 disabled={!isValid}
-                                className={`py-3 px-8 rounded-full flex items-center gap-2 transition-colors ${
+                                className={`w-full sm:w-auto py-3 px-8 rounded-full flex items-center justify-center gap-2 transition-colors order-1 sm:order-2 ${
                                     isValid
                                         ? 'text-white bg-gray-800 hover:bg-gray-700'
                                         : 'text-gray-400 bg-gray-200 cursor-not-allowed'
