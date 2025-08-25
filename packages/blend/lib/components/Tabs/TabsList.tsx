@@ -37,7 +37,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             onTabAdd,
             showDropdown = false,
             showAddButton = false,
-            dropdownTooltip = 'Navigate to tab',
+            // dropdownTooltip = 'Navigate to tab',
             addButtonTooltip = 'Add new tab',
             onTabChange,
             activeTab = '',
@@ -115,9 +115,11 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                             flex: 1,
                             overflowX: 'auto',
                             overflowY: 'hidden',
-                            scrollbarWidth: 'thin',
                             WebkitOverflowScrolling: 'touch',
+                            scrollbarWidth: 'none',
+                            msOverflowStyle: 'none',
                         }}
+                        className="hide-scrollbar"
                     >
                         <StyledTabsList
                             ref={ref}
@@ -168,38 +170,34 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                             }}
                         >
                             {showDropdown && (
-                                <Tooltip content={dropdownTooltip}>
-                                    <SingleSelect
-                                        items={dropdownItems}
-                                        selected={activeTab}
-                                        onSelect={handleDropdownSelect}
-                                        placeholder="Navigate"
-                                        customTrigger={
-                                            <PrimitiveButton
-                                                height={
-                                                    FOUNDATION_THEME.unit[20]
-                                                }
-                                                width={
-                                                    FOUNDATION_THEME.unit[20]
-                                                }
-                                                backgroundColor="transparent"
-                                                contentCentered
-                                                _hover={{
-                                                    backgroundColor:
-                                                        FOUNDATION_THEME.colors
-                                                            .gray[100],
-                                                }}
-                                                borderRadius={
-                                                    FOUNDATION_THEME.unit[4]
-                                                }
-                                            >
-                                                <ChevronDown size={16} />
-                                            </PrimitiveButton>
-                                        }
-                                        useDrawerOnMobile={false}
-                                        variant={SelectMenuVariant.NO_CONTAINER}
-                                    />
-                                </Tooltip>
+                                // <Tooltip content={dropdownTooltip}>
+                                <SingleSelect
+                                    items={dropdownItems}
+                                    selected={activeTab}
+                                    onSelect={handleDropdownSelect}
+                                    placeholder="Navigate"
+                                    customTrigger={
+                                        <PrimitiveButton
+                                            height={FOUNDATION_THEME.unit[20]}
+                                            width={FOUNDATION_THEME.unit[20]}
+                                            backgroundColor="transparent"
+                                            contentCentered
+                                            _hover={{
+                                                backgroundColor:
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[100],
+                                            }}
+                                            borderRadius={
+                                                FOUNDATION_THEME.unit[4]
+                                            }
+                                        >
+                                            <ChevronDown size={16} />
+                                        </PrimitiveButton>
+                                    }
+                                    useDrawerOnMobile={false}
+                                    variant={SelectMenuVariant.NO_CONTAINER}
+                                />
+                                // {</Tooltip> */}
                             )}
 
                             {showAddButton && (

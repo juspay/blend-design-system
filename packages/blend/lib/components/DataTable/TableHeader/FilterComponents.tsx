@@ -678,7 +678,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
             display="flex"
             flexDirection="column"
             gap={FOUNDATION_THEME.unit[0]}
-            padding={`${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[0]}`}
+            padding={FOUNDATION_THEME.unit[4]}
             _focus={{ outline: 'none' }}
             _focusVisible={{ outline: 'none' }}
         >

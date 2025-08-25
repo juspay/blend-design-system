@@ -56,15 +56,15 @@ export const getPopoverTokens = (
         zIndex: 1000,
         borderRadius: foundationTokens.border.radius[8],
         padding: {
-            horizontal: foundationTokens.unit[16], // 16px left/right
-            top: foundationTokens.unit[12], // 12px top
-            bottom: foundationTokens.unit[16], // 16px bottom
+            horizontal: foundationTokens.unit[16],
+            top: foundationTokens.unit[12],
+            bottom: foundationTokens.unit[16],
         },
         headerContainer: {
             heading: {
                 fontSize: {
-                    small: '14px',
-                    medium: '16px',
+                    small: FOUNDATION_THEME.font.size.body.md.fontSize,
+                    medium: FOUNDATION_THEME.font.size.body.lg.fontSize,
                 },
                 fontWeight: {
                     small: FOUNDATION_THEME.font.weight[600],
@@ -77,8 +77,8 @@ export const getPopoverTokens = (
             },
             description: {
                 fontSize: {
-                    small: '12px',
-                    medium: '14px',
+                    small: FOUNDATION_THEME.font.size.body.sm.fontSize,
+                    medium: FOUNDATION_THEME.font.size.body.md.fontSize,
                 },
                 fontWeight: {
                     small: FOUNDATION_THEME.font.weight[500],

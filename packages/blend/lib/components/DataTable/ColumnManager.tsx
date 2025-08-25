@@ -63,13 +63,6 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             }
         }
     }
-
-    const handleClearAll = () => {
-        if (visibleColumns.length > 1) {
-            onColumnChange([visibleColumns[0]])
-        }
-    }
-
     return (
         <Block>
             {mobileConfig.isMobile ? (
@@ -90,11 +83,6 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                         text: 'Apply',
                         onClick: () => {},
                         disabled: false,
-                    }}
-                    secondaryAction={{
-                        text: 'Clear All',
-                        onClick: handleClearAll,
-                        disabled: visibleColumns.length <= 1,
                     }}
                     customTrigger={
                         <PrimitiveButton
@@ -127,17 +115,15 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     selectedValues={selectedColumnValues}
                     onChange={handleMultiSelectChange}
                     enableSearch={false}
+                    enableSelectAll={true}
+                    selectAllText="Select All Columns"
                     showActionButtons={true}
                     primaryAction={{
                         text: 'Apply',
                         onClick: () => {},
                         disabled: false,
                     }}
-                    secondaryAction={{
-                        text: 'Clear All',
-                        onClick: handleClearAll,
-                        disabled: visibleColumns.length <= 1,
-                    }}
+                    maxHeight={400}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"
