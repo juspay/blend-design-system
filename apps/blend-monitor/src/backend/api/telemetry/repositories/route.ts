@@ -131,8 +131,15 @@ function calculateAdoptionScore(
 }
 
 function generateRepositoryRecommendations(
-    overview: any,
-    componentBreakdown: any[],
+    overview: {
+        uniqueComponents: number
+        totalEvents: number
+        activeDays: number
+    },
+    componentBreakdown: Array<{
+        componentName: string
+        percentage: number
+    }>,
     adoptionScore: number
 ): string[] {
     const recommendations: string[] = []
@@ -174,7 +181,42 @@ function generateRepositoryRecommendations(
     return recommendations
 }
 
-async function generateAllRepositoriesAnalytics(days: number): Promise<any> {
+async function generateAllRepositoriesAnalytics(days: number): Promise<{
+    repositories: Array<{
+        repositoryName: string
+        overview: {
+            totalEvents: number
+            uniqueComponents: number
+            uniqueSessions: number
+            totalInstances: number
+            firstUsage: string
+            lastUsage: string
+            activeDays: number
+            mostCommonVersion: string
+        }
+        componentBreakdown: Array<{
+            componentName: string
+            eventCount: number
+            sessionCount: number
+            lastUsed: string
+            percentage: number
+        }>
+        adoptionTrend: Array<{
+            date: string
+            events: number
+            uniqueComponents: number
+        }>
+        adoptionScore: number
+        recommendations: string[]
+    }>
+    summary: {
+        totalRepositories: number
+        averageComponentsPerRepo: number
+        mostActiveRepository: string
+        leastActiveRepository: string
+        totalAdoptionScore: number
+    }
+}> {
     try {
         // This would require a method to get all repositories
         // For now, we'll return a placeholder implementation
@@ -275,7 +317,41 @@ async function generateAllRepositoriesAnalytics(days: number): Promise<any> {
 async function generateSingleRepositoryAnalytics(
     repositoryName: string,
     days: number
-): Promise<any> {
+): Promise<{
+    repositoryName: string
+    timeRange: {
+        days: number
+        startDate: string
+        endDate: string
+    }
+    overview: {
+        totalEvents: number
+        uniqueComponents: number
+        uniqueSessions: number
+        totalInstances: number
+        firstUsage: string
+        lastUsage: string
+        activeDays: number
+        mostCommonVersion: string
+    }
+    componentBreakdown: Array<{
+        componentName: string
+        eventCount: number
+        sessionCount: number
+        lastUsed: string
+        percentage: number
+    }>
+    adoptionTrend: Array<{
+        date: string
+        events: number
+        uniqueComponents: number
+    }>
+    insights: {
+        adoptionScore: number
+        usagePattern: string
+        recommendations: string[]
+    }
+}> {
     try {
         const analytics = await telemetryService.getRepositoryAnalytics(
             repositoryName,
@@ -378,10 +454,20 @@ export async function GET(
         if (!forceRefresh) {
             const cachedData =
                 await cacheService.getCachedRepositoryAnalytics(cacheKey)
-            if (cachedData) {
-                analyticsData = cachedData.data
-                cached = true
-                generatedAt = new Date(cachedData.generatedAt)
+            if (
+                cachedData &&
+                typeof cachedData === 'object' &&
+                cachedData !== null
+            ) {
+                const typedCachedData = cachedData as {
+                    data: unknown
+                    generatedAt: string
+                }
+                if (typedCachedData.data && typedCachedData.generatedAt) {
+                    analyticsData = typedCachedData.data
+                    cached = true
+                    generatedAt = new Date(typedCachedData.generatedAt)
+                }
             }
         }
 
@@ -415,7 +501,7 @@ export async function GET(
         const response = {
             success: true,
             data: {
-                ...analyticsData,
+                ...(analyticsData as Record<string, unknown>),
                 cacheInfo: {
                     cached,
                     generatedAt: generatedAt.toISOString(),
@@ -424,12 +510,15 @@ export async function GET(
             },
         }
 
-        return NextResponse.json(response, {
-            headers: {
-                'Cache-Control': 'public, max-age=600', // 10 minutes
-                'Content-Type': 'application/json',
-            },
-        })
+        return NextResponse.json(
+            response as RepositoryAnalyticsResponse | SingleRepositoryResponse,
+            {
+                headers: {
+                    'Cache-Control': 'public, max-age=600', // 10 minutes
+                    'Content-Type': 'application/json',
+                },
+            }
+        )
     } catch (error) {
         console.error('Repository analytics API error:', error)
 
@@ -449,7 +538,7 @@ export async function GET(
  * OPTIONS /api/telemetry/repositories
  * CORS preflight handling
  */
-export async function OPTIONS(request: NextRequest): Promise<NextResponse> {
+export async function OPTIONS(): Promise<NextResponse> {
     return new NextResponse(null, {
         status: 200,
         headers: {

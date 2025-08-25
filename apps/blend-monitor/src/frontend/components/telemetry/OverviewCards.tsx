@@ -1,12 +1,12 @@
 import { StatCard, StatCardVariant } from '@juspay/blend-design-system'
-import { Package, Users, Activity, Folder, Star, Zap } from 'lucide-react'
+import { Package, Globe, Layers, Folder, Star, Zap } from 'lucide-react'
 
 interface OverviewProps {
     overview: {
         totalComponents: number
-        totalSessions: number
-        totalEvents: number
+        totalPages: number
         totalRepositories: number
+        totalUniqueCompositions: number
         mostUsedComponent: string
         mostActiveRepository: string
     }
@@ -28,25 +28,25 @@ export function OverviewCards({ overview }: OverviewProps) {
             />
 
             <StatCard
-                title="Sessions"
-                value={overview.totalSessions.toLocaleString()}
-                subtitle="Unique user sessions"
+                title="Pages"
+                value={overview.totalPages.toLocaleString()}
+                subtitle="Unique pages with components"
                 variant={StatCardVariant.NUMBER}
                 titleIcon={
                     <div className="p-2 bg-green-100 rounded-lg">
-                        <Users className="w-5 h-5 text-green-600" />
+                        <Globe className="w-5 h-5 text-green-600" />
                     </div>
                 }
             />
 
             <StatCard
-                title="Events"
-                value={overview.totalEvents.toLocaleString()}
-                subtitle="Component usage events"
+                title="Compositions"
+                value={overview.totalUniqueCompositions.toLocaleString()}
+                subtitle="Unique component compositions"
                 variant={StatCardVariant.NUMBER}
                 titleIcon={
                     <div className="p-2 bg-purple-100 rounded-lg">
-                        <Activity className="w-5 h-5 text-purple-600" />
+                        <Layers className="w-5 h-5 text-purple-600" />
                     </div>
                 }
             />
@@ -78,7 +78,7 @@ export function OverviewCards({ overview }: OverviewProps) {
             <StatCard
                 title="Most Active Repository"
                 value={overview.mostActiveRepository}
-                subtitle="Top repo by activity"
+                subtitle="Top repo by page count"
                 variant={StatCardVariant.LINE}
                 titleIcon={
                     <div className="p-2 bg-red-100 rounded-lg">

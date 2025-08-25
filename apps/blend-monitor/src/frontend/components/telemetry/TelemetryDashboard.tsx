@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { OverviewCards } from './OverviewCards'
 import { ComponentAnalyticsTable } from './ComponentAnalyticsTable'
 import { RepositoryAnalyticsTable } from './RepositoryAnalyticsTable'
-import { TrendsChart } from './TrendsChart'
+// import { TrendsChart } from './TrendsChart'
 import { TopVariantsTable } from './TopVariantsTable'
 import {
     Charts,
@@ -17,34 +17,34 @@ import { RefreshCw } from 'lucide-react'
 interface ComponentAnalytics {
     componentName: string
     totalUsage: number
-    uniqueSessions: number
+    uniquePages: number
     uniqueVariants: number
     firstSeen: string
     lastSeen: string
-    avgInstancesPerSession: number
+    avgInstancesPerPage: number
 }
 
 interface RepositoryAnalytics {
     repositoryName: string
+    totalPages: number
     totalComponents: number
-    totalUsage: number
     uniqueComponents: number
     lastActivity: string
 }
 
 interface TrendData {
     date: string
+    pageCount: number
     componentCount: number
-    sessionCount: number
-    eventCount: number
+    repositoryCount: number
 }
 
 interface AnalyticsData {
     overview: {
         totalComponents: number
-        totalSessions: number
-        totalEvents: number
+        totalPages: number
         totalRepositories: number
+        totalUniqueCompositions: number
         mostUsedComponent: string
         mostActiveRepository: string
     }
@@ -56,6 +56,7 @@ interface AnalyticsData {
         propsSignature: string
         componentProps: Record<string, unknown>
         usageCount: number
+        pageCount: number
     }>
 }
 
@@ -85,11 +86,6 @@ export default function TelemetryDashboard() {
 
     useEffect(() => {
         fetchAnalytics()
-
-        // Auto-refresh every 30 seconds
-        const interval = setInterval(fetchAnalytics, 30000)
-
-        return () => clearInterval(interval)
     }, [])
 
     if (loading && !data) {

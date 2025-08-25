@@ -590,7 +590,7 @@ const SidebarDemo = () => {
                       apiEndpoint: 'http://localhost:3001/api/telemetry', // Blend Monitor API
                       batchSize: 5,
                       batchTimeout: 3000,
-                      environment: 'development',
+                      environment: 'development' as const,
                   },
               }
             : {
@@ -603,7 +603,7 @@ const SidebarDemo = () => {
                       apiEndpoint: 'http://localhost:3001/api/telemetry', // Blend Monitor API
                       batchSize: 5,
                       batchTimeout: 3000,
-                      environment: 'development',
+                      environment: 'development' as const,
                   },
               }
 

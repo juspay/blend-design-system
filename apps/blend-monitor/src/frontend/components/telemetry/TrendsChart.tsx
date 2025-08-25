@@ -26,7 +26,6 @@ export function TrendsChart({ trends }: TrendsChartProps) {
     // Calculate max values for scaling
     const maxEvents = Math.max(...sortedTrends.map((t) => t.eventCount))
     const maxSessions = Math.max(...sortedTrends.map((t) => t.sessionCount))
-    const maxComponents = Math.max(...sortedTrends.map((t) => t.componentCount))
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -79,7 +78,7 @@ export function TrendsChart({ trends }: TrendsChartProps) {
 
                 {/* Chart bars */}
                 <div className="space-y-3">
-                    {sortedTrends.slice(0, 10).map((trend, index) => {
+                    {sortedTrends.slice(0, 10).map((trend) => {
                         const eventHeight =
                             maxEvents > 0
                                 ? (trend.eventCount / maxEvents) * 100

@@ -70,7 +70,40 @@ function calculateGrowthRate(current: number, previous: number): number {
     return Math.round(((current - previous) / previous) * 100)
 }
 
-async function generateDashboardData(): Promise<any> {
+async function generateDashboardData(): Promise<{
+    overview: {
+        totalEvents: number
+        totalSessions: number
+        totalRepositories: number
+        totalComponents: number
+        todayEvents: number
+        last7DaysEvents: number
+        last30DaysEvents: number
+    }
+    mostUsedComponents: Array<{
+        componentName: string
+        eventCount: number
+        sessionCount: number
+        repositoryCount: number
+    }>
+    topRepositories: Array<{
+        repositoryName: string
+        eventCount: number
+        componentCount: number
+        lastActive: string
+    }>
+    recentActivity: Array<{
+        timestamp: string
+        componentName: string
+        repositoryName: string
+        eventType: string
+    }>
+    trends: {
+        dailyGrowth: number
+        weeklyGrowth: number
+        monthlyGrowth: number
+    }
+}> {
     try {
         // Get main dashboard overview
         const overview = await telemetryService.getDashboardOverview()
@@ -143,10 +176,20 @@ export async function GET(
         // Try to get cached data first (unless force refresh)
         if (!forceRefresh) {
             const cachedData = await cacheService.getCachedDashboardData()
-            if (cachedData) {
-                dashboardData = cachedData.data
-                cached = true
-                generatedAt = new Date(cachedData.generatedAt)
+            if (
+                cachedData &&
+                typeof cachedData === 'object' &&
+                cachedData !== null
+            ) {
+                const typedCachedData = cachedData as {
+                    data: unknown
+                    generatedAt: string
+                }
+                if (typedCachedData.data && typedCachedData.generatedAt) {
+                    dashboardData = typedCachedData.data
+                    cached = true
+                    generatedAt = new Date(typedCachedData.generatedAt)
+                }
             }
         }
 
@@ -171,7 +214,40 @@ export async function GET(
         const response: DashboardResponse = {
             success: true,
             data: {
-                ...dashboardData,
+                ...(dashboardData as {
+                    overview: {
+                        totalEvents: number
+                        totalSessions: number
+                        totalRepositories: number
+                        totalComponents: number
+                        todayEvents: number
+                        last7DaysEvents: number
+                        last30DaysEvents: number
+                    }
+                    mostUsedComponents: Array<{
+                        componentName: string
+                        eventCount: number
+                        sessionCount: number
+                        repositoryCount: number
+                    }>
+                    topRepositories: Array<{
+                        repositoryName: string
+                        eventCount: number
+                        componentCount: number
+                        lastActive: string
+                    }>
+                    recentActivity: Array<{
+                        timestamp: string
+                        componentName: string
+                        repositoryName: string
+                        eventType: string
+                    }>
+                    trends: {
+                        dailyGrowth: number
+                        weeklyGrowth: number
+                        monthlyGrowth: number
+                    }
+                }),
                 cacheInfo: {
                     cached,
                     generatedAt: generatedAt.toISOString(),
@@ -211,6 +287,8 @@ export async function POST(
     try {
         // TODO: Add authentication check for admin users
         // This endpoint should be restricted to admin users only
+        // For now, we'll just acknowledge the request
+        console.log('Dashboard refresh requested:', request.url)
 
         // Generate fresh dashboard data
         const dashboardData = await generateDashboardData()
@@ -261,7 +339,7 @@ export async function POST(
  * OPTIONS /api/telemetry/dashboard
  * CORS preflight handling
  */
-export async function OPTIONS(request: NextRequest): Promise<NextResponse> {
+export async function OPTIONS(): Promise<NextResponse> {
     return new NextResponse(null, {
         status: 200,
         headers: {

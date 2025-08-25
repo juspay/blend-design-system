@@ -6,8 +6,8 @@ import {
 
 interface RepositoryAnalytics {
     repositoryName: string
+    totalPages: number
     totalComponents: number
-    totalUsage: number
     uniqueComponents: number
     lastActivity: string
 }
@@ -52,6 +52,13 @@ export function RepositoryAnalyticsTable({
             minWidth: '200px',
         },
         {
+            field: 'totalPages',
+            header: 'Pages',
+            type: ColumnType.NUMBER,
+            format: 'integer',
+            minWidth: '100px',
+        },
+        {
             field: 'uniqueComponents',
             header: 'Components',
             type: ColumnType.NUMBER,
@@ -59,7 +66,7 @@ export function RepositoryAnalyticsTable({
             minWidth: '120px',
         },
         {
-            field: 'totalUsage',
+            field: 'totalComponents',
             header: 'Total Usage',
             type: ColumnType.NUMBER,
             format: 'integer',
@@ -76,8 +83,12 @@ export function RepositoryAnalyticsTable({
 
     return (
         <DataTable
-            data={repositories}
-            columns={columns}
+            data={repositories as unknown as Record<string, unknown>[]}
+            columns={
+                columns as unknown as ColumnDefinition<
+                    Record<string, unknown>
+                >[]
+            }
             idField="repositoryName"
             isHoverable={true}
             title="Repository Analytics"

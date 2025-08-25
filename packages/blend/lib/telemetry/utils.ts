@@ -31,8 +31,12 @@ export function generateSessionId(): string {
  */
 export function getPackageVersion(): string {
     // Try to get from build-time injection first
-    if (typeof window !== 'undefined' && (window as any).__BLEND_VERSION__) {
-        return (window as any).__BLEND_VERSION__
+    if (
+        typeof window !== 'undefined' &&
+        (window as unknown as { __BLEND_VERSION__?: string }).__BLEND_VERSION__
+    ) {
+        return (window as unknown as { __BLEND_VERSION__: string })
+            .__BLEND_VERSION__
     }
 
     return PACKAGE_VERSION
@@ -54,7 +58,10 @@ export function detectEnvironment(): string {
         return 'development'
     }
 
-    if (port && DEVELOPMENT_PORTS.includes(port as any)) {
+    if (
+        port &&
+        DEVELOPMENT_PORTS.includes(port as (typeof DEVELOPMENT_PORTS)[number])
+    ) {
         return 'development'
     }
 
@@ -278,13 +285,6 @@ function sanitizePropValue(value: unknown): string {
 
 // Re-export functions from specialized modules
 export { getProjectContext } from './projectContext'
-export {
-    shouldTrackUsage,
-    createPropsSignature,
-    generateUsageKey,
-    getStoredUsageData,
-    type UsageTrackingResult,
-} from './deduplication'
 
 /**
  * Check if event should be sampled based on sampling rate

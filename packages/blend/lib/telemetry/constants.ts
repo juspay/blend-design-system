@@ -11,8 +11,6 @@ export const PACKAGE_NAME = '@juspay/blend-design-system' as const
 
 // Session and storage
 export const SESSION_ID_PREFIX = 'blend' as const
-export const STORAGE_KEY_PREFIX = 'blend_usage' as const
-export const HASH_BASE = 36 as const
 
 // Environment detection
 export const DEVELOPMENT_PORTS = [

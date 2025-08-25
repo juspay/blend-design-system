@@ -107,7 +107,7 @@ export class CacheService {
     /**
      * Cache dashboard data for performance
      */
-    async cacheDashboardData(data: any, ttlSeconds = 300): Promise<void> {
+    async cacheDashboardData(data: unknown, ttlSeconds = 300): Promise<void> {
         const key = 'telemetry:dashboard:overview'
         await this.set(key, JSON.stringify(data), ttlSeconds)
     }
@@ -115,7 +115,7 @@ export class CacheService {
     /**
      * Get cached dashboard data
      */
-    async getCachedDashboardData(): Promise<any | null> {
+    async getCachedDashboardData(): Promise<unknown | null> {
         const key = 'telemetry:dashboard:overview'
         const cached = await this.get(key)
 
@@ -137,7 +137,7 @@ export class CacheService {
      */
     async cacheComponentAnalytics(
         componentName: string,
-        data: any,
+        data: unknown,
         ttlSeconds = 600
     ): Promise<void> {
         const key = `telemetry:component:${componentName}`
@@ -149,7 +149,7 @@ export class CacheService {
      */
     async getCachedComponentAnalytics(
         componentName: string
-    ): Promise<any | null> {
+    ): Promise<unknown | null> {
         const key = `telemetry:component:${componentName}`
         const cached = await this.get(key)
 
@@ -174,7 +174,7 @@ export class CacheService {
      */
     async cacheRepositoryAnalytics(
         repositoryName: string,
-        data: any,
+        data: unknown,
         ttlSeconds = 600
     ): Promise<void> {
         const key = `telemetry:repository:${repositoryName}`
@@ -186,7 +186,7 @@ export class CacheService {
      */
     async getCachedRepositoryAnalytics(
         repositoryName: string
-    ): Promise<any | null> {
+    ): Promise<unknown | null> {
         const key = `telemetry:repository:${repositoryName}`
         const cached = await this.get(key)
 

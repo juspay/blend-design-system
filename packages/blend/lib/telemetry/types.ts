@@ -49,6 +49,7 @@ export interface ComponentUsageEvent {
         | 'component_mount'
         | 'component_unmount'
         | 'component_interaction'
+        | 'page_composition'
     /** Name of the component being tracked */
     componentName: string
     /** Sanitized props used with the component */
@@ -59,6 +60,43 @@ export interface ComponentUsageEvent {
     propsSignature: string
     /** Project and page context where component is used */
     projectContext: ProjectContext
+    /** Version of the Blend package */
+    packageVersion: string
+    /** Anonymous session identifier */
+    sessionId: string
+    /** Timestamp when event occurred */
+    timestamp: number
+    /** Environment information */
+    environment: string
+}
+
+export interface PageCompositionEvent {
+    /** Type of telemetry event */
+    eventType: 'page_composition'
+    /** Complete page composition data */
+    pageComposition: {
+        pageFingerprint: string
+        repositoryName: string
+        pageRoute: string
+        domain: string
+        components: Array<{
+            name: string
+            propsSignature: string
+            instanceCount: number
+            sanitizedProps: Record<string, unknown>
+        }>
+        compositionHash: string
+        timestamp: number
+        projectContext: ProjectContext
+    }
+    /** Type of change detected */
+    changeType:
+        | 'new'
+        | 'component_added'
+        | 'component_removed'
+        | 'props_changed'
+    /** Previous composition hash for change tracking */
+    previousHash?: string
     /** Version of the Blend package */
     packageVersion: string
     /** Anonymous session identifier */

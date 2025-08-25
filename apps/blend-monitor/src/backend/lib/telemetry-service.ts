@@ -153,7 +153,7 @@ export class TelemetryService {
      * Uses UPSERT pattern to handle duplicates gracefully
      */
     async upsertTelemetryEvent(event: TelemetryEvent): Promise<UpsertResult> {
-        const queryStr = `
+        const queryText = `
             INSERT INTO component_usage_events (
                 session_id, component_name, props_signature, repository_name, page_route,
                 event_type, package_version, environment, instance_count, component_props,
@@ -187,7 +187,7 @@ export class TelemetryService {
         ]
 
         try {
-            const result = await query(queryStr, values)
+            const result = await query(queryText, values)
             const row = result.rows[0]
 
             // Check if this is the first usage of this component in this repository
@@ -198,7 +198,7 @@ export class TelemetryService {
 
             // Update session and repository analytics asynchronously
             this.updateSessionAnalytics(event).catch(console.error)
-            this.updateRepositoryAnalytics(event).catch(console.error)
+            this.updateRepositoryAnalytics().catch(console.error)
             this.updatePropsAnalytics(event).catch(console.error)
 
             return {
@@ -640,15 +640,13 @@ export class TelemetryService {
             event.viewportHeight,
         ]
 
-        await query(query, values)
+        await query(queryStr, values)
     }
 
     /**
      * Update repository analytics asynchronously
      */
-    private async updateRepositoryAnalytics(
-        event: TelemetryEvent
-    ): Promise<void> {
+    private async updateRepositoryAnalytics(): Promise<void> {
         // This would be a complex query to update repository analytics
         // For now, we'll rely on periodic batch updates
         // TODO: Implement real-time repository analytics updates
@@ -676,7 +674,7 @@ export class TelemetryService {
             JSON.stringify(event.componentProps),
         ]
 
-        await query(query, values)
+        await query(queryStr, values)
     }
 
     /**

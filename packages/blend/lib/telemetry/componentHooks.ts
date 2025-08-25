@@ -5,24 +5,25 @@
  * @package @juspay/blend-design-system
  */
 
-import { useComponentRenderTelemetry } from './hooks'
+import { useComponentPageTelemetry } from './newHooks'
 
 /**
  * Telemetry hook specifically for Button component
- * Automatically handles all Button props and derived analytics
+ * Now uses page composition tracking for accurate adoption metrics
  *
  * @param props - All Button component props
  */
 export function useButtonTelemetry(props: Record<string, unknown>) {
-    return useComponentRenderTelemetry('Button', props)
+    return useComponentPageTelemetry('Button', props)
 }
 
 export function useButtonGroupTelemetry(props: Record<string, unknown>) {
-    return useComponentRenderTelemetry('ButtonGroup', props)
+    return useComponentPageTelemetry('ButtonGroup', props)
 }
 
 /**
  * Generic hook factory for creating component-specific telemetry hooks
+ * Now uses page composition tracking instead of session-based tracking
  *
  * @param componentName - Name of the component
  * @returns Hook function for that component
@@ -31,7 +32,7 @@ export function createComponentTelemetryHook(componentName: string) {
     return function useComponentSpecificTelemetry(
         props: Record<string, unknown>
     ) {
-        return useComponentRenderTelemetry(componentName, props)
+        return useComponentPageTelemetry(componentName, props)
     }
 }
 

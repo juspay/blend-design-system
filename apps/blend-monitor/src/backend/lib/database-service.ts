@@ -248,7 +248,7 @@ export class DatabaseService {
 
             const row = result.rows[0]
             return {
-                name: row.package_name || 'blend-v1',
+                name: row.package_name || '@juspay/blend-design-system',
                 version: row.version || '0.0.0',
                 downloads: {
                     daily: row.downloads_daily || 0,
@@ -322,7 +322,7 @@ export class DatabaseService {
     async saveDownloadTrend(
         date: string,
         downloads: number,
-        packageName: string = 'blend-v1'
+        packageName: string = '@juspay/blend-design-system'
     ): Promise<void> {
         await query(
             `INSERT INTO download_trends (date, downloads, package_name) 
@@ -471,7 +471,7 @@ export class DatabaseService {
         try {
             // Import NPMClient here to avoid circular dependencies
             const { NPMClient } = await import('@/backend/external/npm-client')
-            const npmClient = new NPMClient('blend-v1')
+            const npmClient = new NPMClient('@juspay/blend-design-system')
 
             // Sync version history
             try {
@@ -545,6 +545,45 @@ export class DatabaseService {
         }
 
         return result
+    }
+
+    // Clear NPM cache data for package change
+    async clearNPMCache(): Promise<void> {
+        try {
+            await withTransaction(async (client) => {
+                // Clear old package stats
+                await client.query(
+                    "DELETE FROM npm_package_stats WHERE package_name = 'blend-v1' OR package_name IS NULL"
+                )
+
+                // Clear old download trends
+                await client.query(
+                    "DELETE FROM download_trends WHERE package_name = 'blend-v1' OR package_name IS NULL"
+                )
+
+                // Clear old version history
+                await client.query('DELETE FROM npm_versions')
+
+                // Log the cache clear activity
+                await client.query(
+                    `INSERT INTO activity_logs (action, details, timestamp) 
+                     VALUES ($1, $2, $3)`,
+                    [
+                        'npm_cache_cleared',
+                        JSON.stringify({
+                            reason: 'Package changed from blend-v1 to @juspay/blend-design-system',
+                            timestamp: new Date().toISOString(),
+                        }),
+                        new Date(),
+                    ]
+                )
+            })
+
+            console.log('NPM cache cleared successfully')
+        } catch (error) {
+            console.error('Error clearing NPM cache:', error)
+            throw error
+        }
     }
 
     // ==================== ACTIVITY LOGS ====================

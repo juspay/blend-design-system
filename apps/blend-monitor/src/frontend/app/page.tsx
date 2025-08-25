@@ -27,7 +27,6 @@ import {
     TabsVariant,
     StatCard,
     StatCardVariant,
-    ChangeType,
 } from '@juspay/blend-design-system'
 import { useRouter, usePathname } from 'next/navigation'
 import { getNavigationData } from '@/frontend/components/shared/SidebarConfig'

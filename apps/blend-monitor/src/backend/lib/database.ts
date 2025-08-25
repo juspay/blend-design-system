@@ -249,6 +249,69 @@ async function createTablesIfNotExists(): Promise<void> {
             )
         `)
 
+        // Create page_compositions table for new telemetry system
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS page_compositions (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                page_fingerprint VARCHAR(255) UNIQUE NOT NULL,
+                repository_name VARCHAR(500) NOT NULL,
+                page_route VARCHAR(500) NOT NULL,
+                domain VARCHAR(500) NOT NULL,
+                composition_hash VARCHAR(64) NOT NULL,
+                component_summary JSONB NOT NULL,
+                package_version VARCHAR(50) NOT NULL,
+                environment VARCHAR(50) NOT NULL DEFAULT 'production',
+                project_context JSONB,
+                first_seen TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+                last_updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+                change_count INTEGER NOT NULL DEFAULT 1,
+                created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+                updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+            )
+        `)
+
+        // Create composition_changes table for tracking changes
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS composition_changes (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                page_fingerprint VARCHAR(255) NOT NULL,
+                change_type VARCHAR(50) NOT NULL DEFAULT 'update',
+                previous_hash VARCHAR(64),
+                new_hash VARCHAR(64) NOT NULL,
+                changed_components JSONB NOT NULL,
+                package_version VARCHAR(50) NOT NULL,
+                environment VARCHAR(50) NOT NULL,
+                session_id VARCHAR(255) NOT NULL,
+                timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+            )
+        `)
+
+        // Create indexes for performance
+        await client.query(`
+            CREATE INDEX IF NOT EXISTS idx_page_compositions_repository 
+            ON page_compositions(repository_name)
+        `)
+
+        await client.query(`
+            CREATE INDEX IF NOT EXISTS idx_page_compositions_route 
+            ON page_compositions(page_route)
+        `)
+
+        await client.query(`
+            CREATE INDEX IF NOT EXISTS idx_page_compositions_last_updated 
+            ON page_compositions(last_updated)
+        `)
+
+        await client.query(`
+            CREATE INDEX IF NOT EXISTS idx_composition_changes_page_fingerprint 
+            ON composition_changes(page_fingerprint)
+        `)
+
+        await client.query(`
+            CREATE INDEX IF NOT EXISTS idx_composition_changes_timestamp 
+            ON composition_changes(timestamp)
+        `)
+
         console.log('Database tables created/verified successfully')
     } catch (error) {
         console.error('Error creating database tables:', error)

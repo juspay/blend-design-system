@@ -6,6 +6,7 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import type { SearchInputProps } from './types'
 import type { SearchInputTokensType } from './searchInput.tokens'
 import { useComponentToken } from '../../../context/useComponentToken'
+import { useSearchInputTelemetry } from '../../../telemetry/componentHooks'
 
 const toPixels = (value: string | number | undefined): number => {
     if (typeof value === 'number') {
@@ -31,6 +32,16 @@ const SearchInput = ({
     name,
     ...rest
 }: SearchInputProps) => {
+    // Telemetry tracking for page composition analytics
+    useSearchInputTelemetry({
+        leftSlot: !!leftSlot,
+        rightSlot: !!rightSlot,
+        error,
+        placeholder,
+        name,
+        ...rest,
+    })
+
     const searchInputTokens = useComponentToken(
         'SEARCH_INPUT'
     ) as SearchInputTokensType

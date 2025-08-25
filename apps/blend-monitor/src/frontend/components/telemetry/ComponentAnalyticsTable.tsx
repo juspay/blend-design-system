@@ -7,11 +7,11 @@ import {
 interface ComponentAnalytics {
     componentName: string
     totalUsage: number
-    uniqueSessions: number
+    uniquePages: number
     uniqueVariants: number
     firstSeen: string
     lastSeen: string
-    avgInstancesPerSession: number
+    avgInstancesPerPage: number
 }
 
 interface ComponentAnalyticsTableProps {
@@ -53,8 +53,8 @@ export function ComponentAnalyticsTable({
             minWidth: '100px',
         },
         {
-            field: 'uniqueSessions',
-            header: 'Sessions',
+            field: 'uniquePages',
+            header: 'Pages',
             type: ColumnType.NUMBER,
             format: 'integer',
             minWidth: '100px',
@@ -67,8 +67,8 @@ export function ComponentAnalyticsTable({
             minWidth: '100px',
         },
         {
-            field: 'avgInstancesPerSession',
-            header: 'Avg/Session',
+            field: 'avgInstancesPerPage',
+            header: 'Avg/Page',
             type: ColumnType.NUMBER,
             format: 'decimal',
             precision: 2,
@@ -77,16 +77,21 @@ export function ComponentAnalyticsTable({
         {
             field: 'lastSeen',
             header: 'Last Seen',
-            type: ColumnType.TEXT,
-            renderCell: (value: string) => formatDate(value),
+            type: ColumnType.REACT_ELEMENT,
+            renderCell: (value: unknown) => formatDate(String(value)),
+            isSortable: false,
             minWidth: '150px',
         },
     ]
 
     return (
         <DataTable
-            data={components}
-            columns={columns}
+            data={components as unknown as Record<string, unknown>[]}
+            columns={
+                columns as unknown as ColumnDefinition<
+                    Record<string, unknown>
+                >[]
+            }
             idField="componentName"
             isHoverable={true}
             title="Component Usage Analytics"

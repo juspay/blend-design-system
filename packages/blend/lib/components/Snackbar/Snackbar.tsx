@@ -12,7 +12,6 @@ import {
     SnackbarVariant,
 } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { useSnackbarTelemetry } from '../../telemetry/componentHooks'
 import { SnackbarTokens } from './snackbar.tokens'
 
 export const StyledToast: React.FC<CustomToastProps> = ({
@@ -149,7 +148,8 @@ export const addSnackbar = (props: AddToastOptions) => {
         actionButton,
     } = props
 
-    useSnackbarTelemetry(props)
+    // Note: Telemetry tracking is handled automatically by the page composition system
+    // when StyledToast component is rendered
 
     return sonnerToast.custom((t) => (
         <StyledToast

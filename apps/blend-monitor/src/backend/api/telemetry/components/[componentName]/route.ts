@@ -85,7 +85,14 @@ function calculateTrend(
     return 'stable'
 }
 
-function generateInsights(analytics: any): {
+function generateInsights(analytics: {
+    uniqueRepositories: number
+    totalEvents: number
+    activeDays: number
+    avgInstancesPerEvent: number
+    commonProps: Array<{ percentage: number }>
+    timeRange?: { days: number }
+}): {
     adoptionRate: string
     usagePattern: string
     recommendations: string[]
@@ -122,7 +129,10 @@ function generateInsights(analytics: any): {
         )
     }
 
-    if (analytics.activeDays < analytics.timeRange?.days * 0.3) {
+    if (
+        analytics.timeRange?.days &&
+        analytics.activeDays < analytics.timeRange.days * 0.3
+    ) {
         recommendations.push(
             'Inconsistent usage pattern - investigate potential issues'
         )
@@ -134,7 +144,43 @@ function generateInsights(analytics: any): {
 async function generateComponentAnalytics(
     componentName: string,
     days: number
-): Promise<any> {
+): Promise<{
+    componentName: string
+    timeRange: { days: number; startDate: string; endDate: string }
+    overview: {
+        totalEvents: number
+        uniqueSessions: number
+        uniqueRepositories: number
+        totalInstances: number
+        avgInstancesPerEvent: number
+        firstUsage: string
+        lastUsage: string
+        activeDays: number
+    }
+    topRepositories: Array<{
+        repositoryName: string
+        eventCount: number
+        sessionCount: number
+        percentage: number
+    }>
+    commonProps: Array<{
+        propsSignature: string
+        usageCount: number
+        percentage: number
+        propsJson: Record<string, unknown>
+    }>
+    dailyTrends: Array<{
+        date: string
+        events: number
+        sessions: number
+        trend: 'up' | 'down' | 'stable'
+    }>
+    insights: {
+        adoptionRate: string
+        usagePattern: string
+        recommendations: string[]
+    }
+}> {
     try {
         // Get component analytics from service
         const analytics = await telemetryService.getComponentAnalytics(
@@ -249,10 +295,20 @@ export async function GET(
             const cacheKey = `${componentName}:${days}`
             const cachedData =
                 await cacheService.getCachedComponentAnalytics(cacheKey)
-            if (cachedData) {
-                analyticsData = cachedData.data
-                cached = true
-                generatedAt = new Date(cachedData.generatedAt)
+            if (
+                cachedData &&
+                typeof cachedData === 'object' &&
+                cachedData !== null
+            ) {
+                const typedCachedData = cachedData as {
+                    data: unknown
+                    generatedAt: string
+                }
+                if (typedCachedData.data && typedCachedData.generatedAt) {
+                    analyticsData = typedCachedData.data
+                    cached = true
+                    generatedAt = new Date(typedCachedData.generatedAt)
+                }
             }
         }
 
@@ -282,7 +338,47 @@ export async function GET(
         const response: ComponentAnalyticsResponse = {
             success: true,
             data: {
-                ...analyticsData,
+                ...(analyticsData as {
+                    componentName: string
+                    timeRange: {
+                        days: number
+                        startDate: string
+                        endDate: string
+                    }
+                    overview: {
+                        totalEvents: number
+                        uniqueSessions: number
+                        uniqueRepositories: number
+                        totalInstances: number
+                        avgInstancesPerEvent: number
+                        firstUsage: string
+                        lastUsage: string
+                        activeDays: number
+                    }
+                    topRepositories: Array<{
+                        repositoryName: string
+                        eventCount: number
+                        sessionCount: number
+                        percentage: number
+                    }>
+                    commonProps: Array<{
+                        propsSignature: string
+                        usageCount: number
+                        percentage: number
+                        propsJson: Record<string, unknown>
+                    }>
+                    dailyTrends: Array<{
+                        date: string
+                        events: number
+                        sessions: number
+                        trend: 'up' | 'down' | 'stable'
+                    }>
+                    insights: {
+                        adoptionRate: string
+                        usagePattern: string
+                        recommendations: string[]
+                    }
+                }),
                 cacheInfo: {
                     cached,
                     generatedAt: generatedAt.toISOString(),
@@ -337,7 +433,7 @@ export async function POST(
             // Convert to CSV format
             const csvData = [
                 ['Date', 'Events', 'Sessions', 'Trend'],
-                ...analyticsData.dailyTrends.map((day: any) => [
+                ...analyticsData.dailyTrends.map((day) => [
                     day.date,
                     day.events,
                     day.sessions,
@@ -379,7 +475,7 @@ export async function POST(
  * OPTIONS /api/telemetry/components/[componentName]
  * CORS preflight handling
  */
-export async function OPTIONS(request: NextRequest): Promise<NextResponse> {
+export async function OPTIONS(): Promise<NextResponse> {
     return new NextResponse(null, {
         status: 200,
         headers: {

@@ -469,7 +469,7 @@ export default function NPMPage() {
                                     calculateTrend() !== 0
                                         ? {
                                               value: Math.abs(calculateTrend()),
-                                              type:
+                                              valueType:
                                                   calculateTrend() > 0
                                                       ? ChangeType.INCREASE
                                                       : ChangeType.DECREASE,

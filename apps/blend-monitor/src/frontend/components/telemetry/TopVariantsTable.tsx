@@ -3,6 +3,7 @@ import {
     ColumnDefinition,
     ColumnType,
     ProgressBar,
+    ProgressBarSize,
 } from '@juspay/blend-design-system'
 
 interface TopVariant {
@@ -10,6 +11,7 @@ interface TopVariant {
     propsSignature: string
     componentProps: Record<string, unknown>
     usageCount: number
+    pageCount: number
 }
 
 interface TopVariantsTableProps {
@@ -19,7 +21,7 @@ interface TopVariantsTableProps {
 export function TopVariantsTable({ variants }: TopVariantsTableProps) {
     const formatProps = (props: Record<string, unknown>) => {
         const entries = Object.entries(props)
-            .filter(([key, value]) => value !== undefined && value !== null)
+            .filter(([, value]) => value !== undefined && value !== null)
             .slice(0, 4)
 
         if (entries.length === 0) {
@@ -28,7 +30,7 @@ export function TopVariantsTable({ variants }: TopVariantsTableProps) {
 
         return (
             <div className="space-y-1">
-                {entries.map(([key, value], index) => (
+                {entries.map(([key, value]) => (
                     <div key={key} className="text-xs">
                         <span className="font-medium text-gray-700">
                             {key}:
@@ -70,10 +72,10 @@ export function TopVariantsTable({ variants }: TopVariantsTableProps) {
             field: 'componentName',
             header: 'Component',
             type: ColumnType.REACT_ELEMENT,
-            renderCell: (value: string, row) => (
+            renderCell: (value: unknown, row) => (
                 <div>
                     <div className="text-sm font-medium text-gray-900">
-                        {value}
+                        {String(value)}
                     </div>
                     <div className="text-xs text-gray-500">
                         {row.propsSignature}
@@ -87,8 +89,10 @@ export function TopVariantsTable({ variants }: TopVariantsTableProps) {
             field: 'componentProps',
             header: 'Props Configuration',
             type: ColumnType.REACT_ELEMENT,
-            renderCell: (value: Record<string, unknown>) => (
-                <div className="max-w-xs">{formatProps(value)}</div>
+            renderCell: (value: unknown) => (
+                <div className="max-w-xs">
+                    {formatProps(value as Record<string, unknown>)}
+                </div>
             ),
             isSortable: false,
             minWidth: '250px',
@@ -104,13 +108,12 @@ export function TopVariantsTable({ variants }: TopVariantsTableProps) {
             field: 'popularityPercentage',
             header: 'Popularity',
             type: ColumnType.REACT_ELEMENT,
-            renderCell: (value: number) => (
+            renderCell: (value: unknown) => (
                 <div className="w-24">
                     <ProgressBar
-                        value={value}
-                        maxValue={100}
+                        value={Number(value)}
                         showLabel={true}
-                        size="sm"
+                        size={ProgressBarSize.SMALL}
                     />
                 </div>
             ),
@@ -121,12 +124,20 @@ export function TopVariantsTable({ variants }: TopVariantsTableProps) {
 
     return (
         <DataTable
-            data={variantsWithPopularity}
-            columns={columns}
-            idField="propsSignature"
+            data={
+                variantsWithPopularity.map((variant, index) => ({
+                    ...variant,
+                    uniqueId: `${variant.componentName}-${variant.propsSignature}-${index}`,
+                })) as unknown as Record<string, unknown>[]
+            }
+            columns={
+                columns as unknown as ColumnDefinition<
+                    Record<string, unknown>
+                >[]
+            }
+            idField="uniqueId"
             isHoverable={true}
             title="Most Used Component Variants"
-            subtitle="Top prop combinations across all components"
         />
     )
 }

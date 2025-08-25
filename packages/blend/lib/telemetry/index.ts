@@ -11,10 +11,11 @@ export { TelemetryProvider, useTelemetry } from './TelemetryContext'
 // Types
 export type {
     TelemetryConfig,
-    ComponentUsageEvent,
-    ProjectContext,
     TelemetryContextValue,
+    PageCompositionEvent,
 } from './types'
+
+export type { PageComposition, ComponentSummary } from './pageComposition'
 
 // Utilities (selective export)
 export {
@@ -31,5 +32,19 @@ export {
     DEFAULT_SAMPLING_RATE,
 } from './constants'
 
-// Hooks (if needed by consumers)
-export { useComponentTelemetry, useComponentRenderTelemetry } from './hooks'
+// Page composition system
+export {
+    getPageCompositionManager,
+    registerPageComponent,
+    unregisterPageComponent,
+} from './pageComposition'
+
+// Page composition hooks
+export {
+    usePageCompositionTelemetry,
+    useComponentPageTelemetry,
+    createPageCompositionHook,
+} from './newHooks'
+
+// Component-specific hooks (pre-configured for all design system components)
+export * from './componentHooks'

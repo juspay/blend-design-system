@@ -27,7 +27,8 @@ export function MetricCard({
         trend !== undefined
             ? {
                   value: Math.abs(trend),
-                  type: trend > 0 ? ChangeType.INCREASE : ChangeType.DECREASE,
+                  valueType:
+                      trend > 0 ? ChangeType.INCREASE : ChangeType.DECREASE,
               }
             : undefined
 

@@ -136,8 +136,26 @@ export function getProjectContext(): ProjectContext {
     let projectVersion = 'unknown'
     let projectDescription: string | undefined
 
-    if ((window as any).__PACKAGE_INFO__) {
-        const packageInfo = (window as any).__PACKAGE_INFO__
+    if (
+        (
+            window as unknown as {
+                __PACKAGE_INFO__?: {
+                    name?: string
+                    version?: string
+                    description?: string
+                }
+            }
+        ).__PACKAGE_INFO__
+    ) {
+        const packageInfo = (
+            window as unknown as {
+                __PACKAGE_INFO__: {
+                    name?: string
+                    version?: string
+                    description?: string
+                }
+            }
+        ).__PACKAGE_INFO__
         repositoryName = packageInfo.name || repositoryName
         projectVersion = packageInfo.version || projectVersion
         projectDescription = packageInfo.description

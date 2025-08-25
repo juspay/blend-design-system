@@ -1,6 +1,6 @@
 /**
  * Telemetry Context for Blend Design System
- * Provides opt-out telemetry configuration and tracking functionality
+ * Provides opt-out telemetry configuration and page composition tracking
  */
 
 import {
@@ -10,26 +10,18 @@ import {
     useState,
     ReactNode,
     useEffect,
-    useRef,
 } from 'react'
-import {
-    TelemetryConfig,
-    TelemetryContextValue,
-    ComponentUsageEvent,
-    ProjectContext,
-} from './types'
+import { TelemetryConfig, TelemetryContextValue } from './types'
 import {
     generateSessionId,
     getPackageVersion,
     detectEnvironment,
     shouldSample,
-    logTelemetryEvent,
-    getProjectContext,
-    shouldTrackUsage,
-    createPropsSignature,
-    getStoredUsageData,
 } from './utils'
-import { TelemetryApiClient } from './apiClient'
+import {
+    getPageCompositionManager,
+    PageCompositionEvent,
+} from './pageComposition'
 
 // Default configuration (opt-out system - enabled by default for component adoption tracking)
 const DEFAULT_CONFIG: TelemetryConfig = {
@@ -61,60 +53,11 @@ export function TelemetryProvider({
     // Generate session ID once per provider instance
     const [sessionId] = useState(() => generateSessionId())
 
-    // Initialize API client with configuration
-    const apiClientRef = useRef<TelemetryApiClient | null>(null)
-
-    useEffect(() => {
-        if (config.enabled) {
-            // Initialize API client with telemetry configuration
-            apiClientRef.current = new TelemetryApiClient({
-                apiEndpoint: userConfig.apiEndpoint,
-                batchSize: userConfig.batchSize || 10,
-                batchTimeout: userConfig.batchTimeout || 5000,
-                retryAttempts: userConfig.retryAttempts || 3,
-                retryDelay: userConfig.retryDelay || 1000,
-                offlineStorage: userConfig.offlineStorage !== false,
-                debug: config.debug,
-            })
-
-            if (config.debug) {
-                console.log('🚀 Blend Telemetry: API client initialized', {
-                    endpoint: apiClientRef.current.getQueueStatus(),
-                })
-            }
-        }
-
-        // Cleanup function
-        return () => {
-            if (apiClientRef.current) {
-                apiClientRef.current.destroy()
-                apiClientRef.current = null
-            }
-        }
-    }, [
-        config.enabled,
-        config.debug,
-        userConfig.apiEndpoint,
-        userConfig.batchSize,
-        userConfig.batchTimeout,
-        userConfig.retryAttempts,
-        userConfig.retryDelay,
-        userConfig.offlineStorage,
-    ])
-
-    const track = useCallback(
-        (
-            event: Omit<
-                ComponentUsageEvent,
-                | 'sessionId'
-                | 'timestamp'
-                | 'packageVersion'
-                | 'environment'
-                | 'projectContext'
-                | 'instanceCount'
-                | 'propsSignature'
-            >
-        ) => {
+    /**
+     * Handle page composition changes and send to API
+     */
+    const handlePageCompositionChange = useCallback(
+        async (event: PageCompositionEvent) => {
             try {
                 // Early return if telemetry is disabled
                 if (!config.enabled) {
@@ -126,39 +69,9 @@ export function TelemetryProvider({
                     return
                 }
 
-                const projectContext = getProjectContext()
-                const propsSignature = createPropsSignature(
-                    event.componentProps
-                )
-
-                // Check session-based deduplication
-                const { shouldTrack, usageKey, instanceCount } =
-                    shouldTrackUsage(
-                        event.componentName,
-                        event.componentProps,
-                        projectContext
-                    )
-
-                // Handle duplicate tracking with detailed logging
-                if (!shouldTrack) {
-                    if (config.debug) {
-                        logDuplicateUsage(
-                            event.componentName,
-                            usageKey,
-                            instanceCount,
-                            propsSignature,
-                            projectContext
-                        )
-                    }
-                    return
-                }
-
-                // Create complete telemetry event
-                const fullEvent: ComponentUsageEvent = {
+                // Create complete page composition event
+                const fullEvent = {
                     ...event,
-                    instanceCount,
-                    propsSignature,
-                    projectContext,
                     sessionId,
                     timestamp: Date.now(),
                     packageVersion: getPackageVersion(),
@@ -167,69 +80,139 @@ export function TelemetryProvider({
 
                 // Debug logging
                 if (config.debug) {
-                    logTelemetryEvent(fullEvent, true)
+                    console.group(
+                        `📊 Blend Telemetry: Page Composition Change (${event.changeType})`
+                    )
+                    console.log(
+                        '🎯 Page Fingerprint:',
+                        event.pageComposition.pageFingerprint
+                    )
+                    console.log(
+                        '📍 Repository:',
+                        event.pageComposition.repositoryName
+                    )
+                    console.log(
+                        '📄 Page Route:',
+                        event.pageComposition.pageRoute
+                    )
+                    console.log(
+                        '🔧 Components:',
+                        event.pageComposition.components
+                            .map((c) => `${c.name} (${c.instanceCount}x)`)
+                            .join(', ')
+                    )
+                    console.log('🔄 Change Type:', event.changeType)
+                    if (event.previousHash) {
+                        console.log('⏮️ Previous Hash:', event.previousHash)
+                    }
+                    console.log(
+                        '🆕 Current Hash:',
+                        event.pageComposition.compositionHash
+                    )
+                    console.groupEnd()
                 }
 
-                // Send to analytics endpoint via API client
-                if (apiClientRef.current) {
-                    apiClientRef.current.sendEvent(fullEvent).catch((error) => {
-                        if (config.debug) {
-                            console.warn(
-                                'Blend telemetry: Failed to send event to API',
-                                error
-                            )
-                        }
+                // Send to analytics endpoint using fetch
+                try {
+                    const apiEndpoint =
+                        userConfig.apiEndpoint ||
+                        '/api/telemetry/page-composition'
+                    const response = await fetch(apiEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            ...fullEvent,
+                            eventType: 'page_composition',
+                        }),
                     })
-                } else if (config.debug) {
-                    console.warn(
-                        'Blend telemetry: API client not initialized, event not sent'
-                    )
+
+                    if (!response.ok) {
+                        throw new Error(
+                            `HTTP ${response.status}: ${response.statusText}`
+                        )
+                    }
+
+                    if (config.debug) {
+                        const result = await response.json()
+                        console.log(
+                            '✅ Blend Telemetry: Page composition event sent successfully',
+                            result
+                        )
+                    }
+                } catch (error: unknown) {
+                    if (config.debug) {
+                        console.warn(
+                            'Blend telemetry: Failed to send page composition event to API',
+                            error
+                        )
+                    }
                 }
-            } catch (error) {
+            } catch (error: unknown) {
                 console.warn(
-                    'Blend telemetry: Error tracking component usage',
+                    'Blend telemetry: Error handling page composition change',
                     error
                 )
             }
         },
-        [config, sessionId]
+        [config, sessionId, userConfig.apiEndpoint]
     )
+
+    useEffect(() => {
+        if (config.enabled) {
+            // Set up page composition change handler
+            const pageManager = getPageCompositionManager()
+            pageManager.setCompositionChangeHandler(
+                (event: PageCompositionEvent) => {
+                    handlePageCompositionChange(event)
+                }
+            )
+
+            if (config.debug) {
+                console.log(
+                    '🚀 Blend Telemetry: Page composition tracking initialized'
+                )
+            }
+        }
+
+        // Cleanup function
+        return () => {
+            // Clean up page composition manager
+            const pageManager = getPageCompositionManager()
+            pageManager.setCompositionChangeHandler(() => {})
+        }
+    }, [config.enabled, config.debug, handlePageCompositionChange])
 
     /**
-     * Log duplicate usage with detailed stored data
+     * Legacy track function for backward compatibility
+     * This is now deprecated in favor of page composition tracking
      */
-    const logDuplicateUsage = useCallback(
-        (
-            componentName: string,
-            usageKey: string,
-            instanceCount: number,
-            propsSignature: string,
-            projectContext: ProjectContext
-        ) => {
-            const usage = getStoredUsageData(usageKey)
+    const track = useCallback(() => {
+        try {
+            // Early return if telemetry is disabled
+            if (!config.enabled) {
+                return
+            }
 
-            console.group(
-                `🔄 Blend Telemetry: ${componentName} already tracked this session`
+            // Log deprecation warning in debug mode
+            if (config.debug) {
+                console.warn(
+                    '⚠️ Blend Telemetry: Individual component tracking is deprecated. ' +
+                        'Components now use page composition tracking automatically. ' +
+                        'This track() call will be ignored.'
+                )
+            }
+
+            // The new system handles tracking automatically through page composition
+            // Individual track() calls are no longer needed
+        } catch (error: unknown) {
+            console.warn(
+                'Blend telemetry: Error in legacy track function',
+                error
             )
-            console.log('📊 Current stored instance data:')
-            console.log('  Component:', componentName)
-            console.log('  Instance Count:', instanceCount)
-            console.log('  Props Signature:', propsSignature)
-            console.log(
-                '  First Seen:',
-                usage ? new Date(usage.firstSeen).toISOString() : 'unknown'
-            )
-            console.log(
-                '  Last Seen:',
-                usage ? new Date(usage.lastSeen).toISOString() : 'unknown'
-            )
-            console.log('  Repository:', projectContext.repositoryName)
-            console.log('  Page Route:', projectContext.pageRoute)
-            console.log('🔑 Session Storage Key:', usageKey)
-            console.groupEnd()
-        },
-        []
-    )
+        }
+    }, [config])
 
     const updateConfig = useCallback((newConfig: Partial<TelemetryConfig>) => {
         setConfig((prevConfig) => ({
