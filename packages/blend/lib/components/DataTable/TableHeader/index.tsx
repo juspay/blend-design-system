@@ -529,7 +529,6 @@ const TableHeader = forwardRef<
                                                     </DrawerPortal>
                                                 </Drawer>
                                             ) : (
-                                                // Desktop: Use Popover wrapper
                                                 <Popover
                                                     trigger={
                                                         <FilterIcon size={16} />
