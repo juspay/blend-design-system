@@ -114,6 +114,10 @@ const Popover = ({
                     display="flex"
                     flexDirection="column"
                     gap={popoverTokens.gap}
+                    paddingLeft={popoverTokens.padding.horizontal}
+                    paddingRight={popoverTokens.padding.horizontal}
+                    paddingTop={popoverTokens.padding.top}
+                    paddingBottom={popoverTokens.padding.bottom}
                 >
                     <PopoverHeader
                         heading={heading}

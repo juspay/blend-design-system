@@ -10,6 +10,11 @@ export type PopoverTokenType = {
     gap: CSSObject['gap']
     zIndex: CSSObject['zIndex']
     borderRadius: CSSObject['borderRadius']
+    padding: {
+        horizontal: CSSObject['paddingLeft']
+        top: CSSObject['paddingTop']
+        bottom: CSSObject['paddingBottom']
+    }
     headerContainer: {
         heading: {
             fontSize: {
@@ -50,6 +55,11 @@ export const getPopoverTokens = (
         gap: foundationTokens.unit[12],
         zIndex: 1000,
         borderRadius: foundationTokens.border.radius[8],
+        padding: {
+            horizontal: foundationTokens.unit[16], // 16px left/right
+            top: foundationTokens.unit[12], // 12px top
+            bottom: foundationTokens.unit[16], // 16px bottom
+        },
         headerContainer: {
             heading: {
                 fontSize: {

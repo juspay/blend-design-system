@@ -22,6 +22,7 @@ import {
     getDisplayTabs,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
+import Block from '../Primitives/Block/Block'
 
 const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
     (
@@ -38,7 +39,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             showAddButton = false,
             dropdownTooltip = 'Navigate to tab',
             addButtonTooltip = 'Add new tab',
-            maxDisplayTabs = 6,
             onTabChange,
             activeTab = '',
             children,
@@ -50,7 +50,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         const scrollContainerRef = useRef<HTMLDivElement>(null)
         const [, setShowScrolling] = useState(false)
 
-        // Check if scrolling is needed
         useEffect(() => {
             const checkScrolling = () => {
                 if (scrollContainerRef.current) {
@@ -65,12 +64,10 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             return () => window.removeEventListener('resize', checkScrolling)
         }, [items])
 
-        // Process tabs with concatenation logic
         const processedItems = useMemo(() => {
             return processTabsWithConcatenation(items)
         }, [items])
 
-        // Prepare dropdown items
         const dropdownItems = useMemo(() => {
             return prepareDropdownItems(processedItems)
         }, [processedItems])
@@ -104,7 +101,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
         if (items.length > 0) {
             return (
-                <div
+                <Block
                     style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -112,8 +109,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         overflow: 'hidden',
                     }}
                 >
-                    {/* Scrollable tabs container */}
-                    <div
+                    <Block
                         ref={scrollContainerRef}
                         style={{
                             flex: 1,
@@ -159,10 +155,10 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                 </TabsTrigger>
                             ))}
                         </StyledTabsList>
-                    </div>
+                    </Block>
 
                     {(showDropdown || showAddButton) && (
-                        <div
+                        <Block
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -225,9 +221,9 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                     </PrimitiveButton>
                                 </Tooltip>
                             )}
-                        </div>
+                        </Block>
                     )}
-                </div>
+                </Block>
             )
         }
 

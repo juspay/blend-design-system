@@ -20,6 +20,7 @@ const PopoverHeader = ({
     const popoverTokens = useComponentToken('POPOVER') as PopoverTokenType
 
     if (!heading && !description) return null
+
     const Header = () => {
         return (
             <PrimitiveText
