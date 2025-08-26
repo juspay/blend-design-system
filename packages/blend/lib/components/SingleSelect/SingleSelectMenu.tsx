@@ -10,10 +10,11 @@ import { FOUNDATION_THEME } from '../../tokens'
 import styled from 'styled-components'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
-import { Check, ChevronRight } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { TextInput } from '../Inputs/TextInput'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SingleSelectTokensType } from './singleSelect.tokens'
+import SelectItem, { SelectItemType } from '../Select/SelectItem'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -178,83 +179,16 @@ const Item = ({
     if (item.subMenu) {
         return <SubMenu item={item} onSelect={onSelect} selected={selected} />
     }
-    const handleClick = (e: React.MouseEvent) => {
-        if (item.disabled) return
 
-        e.preventDefault()
-        e.stopPropagation()
-        onSelect(item.value)
-    }
-
-    const isSelected = selected === item.value
     return (
-        <Block
-            onClick={handleClick}
-            data-disabled={item.disabled}
-            data-multi-select-item="true"
-            display="flex"
-            flexDirection="column"
-            gap={singleSelectTokens.dropdown.item.gap}
-            padding={singleSelectTokens.dropdown.item.padding}
-            margin={singleSelectTokens.dropdown.item.margin}
-            alignItems="center"
-            borderRadius={singleSelectTokens.dropdown.item.borderRadius}
-            cursor="pointer"
-            style={{ userSelect: 'none' }}
-            backgroundColor={
-                isSelected ? FOUNDATION_THEME.colors.gray[50] : 'transparent'
-            }
-            // hover effects
-            _hover={{
-                backgroundColor: FOUNDATION_THEME.colors.gray[50],
-            }}
-            _disabled={{
-                opacity: 0.5,
-                cursor: 'not-allowed',
-            }}
-            _focus={{
-                border: 'none',
-                outline: 'none',
-                backgroundColor: FOUNDATION_THEME.colors.gray[50],
-            }}
-        >
-            <Block
-                width="100%"
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                gap={8}
-            >
-                <Text
-                    variant="body.md"
-                    color={
-                        isSelected
-                            ? FOUNDATION_THEME.colors.gray[700]
-                            : FOUNDATION_THEME.colors.gray[600]
-                    }
-                    fontWeight={500}
-                    truncate
-                >
-                    {item.label}
-                </Text>
-                {isSelected && (
-                    <Block as="span" display="flex" alignItems="center">
-                        <Check size={16} color={'#000000'} />
-                    </Block>
-                )}
-            </Block>
-            {item.subLabel && (
-                <Block display="flex" alignItems="center" width="100%">
-                    <Text
-                        variant="body.sm"
-                        color={FOUNDATION_THEME.colors.gray[400]}
-                        fontWeight={400}
-                    >
-                        {item.subLabel}
-                    </Text>
-                </Block>
-            )}
-        </Block>
+        <SelectItem
+            item={item}
+            onSelect={onSelect}
+            selected={selected}
+            type={SelectItemType.SINGLE}
+            tokens={singleSelectTokens}
+            showCheckmark={true}
+        />
     )
 }
 

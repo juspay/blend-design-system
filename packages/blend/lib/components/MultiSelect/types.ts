@@ -39,6 +39,13 @@ export type MultiSelectMenuItemType = {
     disabled?: boolean
     onClick?: () => void
     subMenu?: MultiSelectMenuItemType[]
+
+    // Tooltip support
+    tooltip?: string | React.ReactNode
+    tooltipProps?: Partial<any> // Will be properly typed when imported
+
+    // Disable truncation for specific items if needed
+    disableTruncation?: boolean
 }
 
 export type MultiSelectMenuGroupType = {

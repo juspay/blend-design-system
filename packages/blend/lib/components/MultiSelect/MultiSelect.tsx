@@ -242,6 +242,7 @@ const MultiSelect = ({
                                     }
                                 >
                                     <PrimitiveButton
+                                        type="button"
                                         position="relative"
                                         width={'100%'}
                                         display="flex"
@@ -474,6 +475,10 @@ const MultiSelect = ({
                                                             MultiSelectSelectionTagType.COUNT
                                                                 ? '0px 6px'
                                                                 : '0px 0px',
+                                                        overflow: 'hidden',
+                                                        textOverflow:
+                                                            'ellipsis',
+                                                        whiteSpace: 'nowrap',
                                                     }}
                                                 >
                                                     {selectionTagType ===
@@ -507,6 +512,7 @@ const MultiSelect = ({
                                 {variant === MultiSelectVariant.CONTAINER &&
                                     selectedValues.length > 0 && (
                                         <PrimitiveButton
+                                            type="button"
                                             borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
                                             backgroundColor={
                                                 FOUNDATION_THEME.colors.gray[0]
