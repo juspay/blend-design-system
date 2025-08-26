@@ -3,33 +3,59 @@ title: 'Home'
 description: 'Blend Design System changelog - track all updates and improvements'
 ---
 
-# Changelog
+<section className="p-30 rounded-[var(--rounded-100)] border-[length:var(--pixel)] border-[var(--changelog-border-color)] bg-[linear-gradient(180deg,#060606_37.13%,rgba(0,0,0,0.5)_140.17%)]">
+  <header className="items-end flex justify-between">
+    <div>
+      <div className="text-[var(--grey-500)] text-xl">
+        Last Updated: August 14, 2025
+      </div>
+      <h1 id="changelog-heading" className="text-[var(--grey-200)] text-[length:var(--text-64)]">
+        ChangeLogs
+      </h1>
+    </div>
 
-Track all updates, improvements, and changes to the Blend Design System.
+    <form role="search">
+      <GradientBorderComponent
+        thickness="p-[var(--pixel)]"
+        borderColor="bg-[#191919]"
+        width="w-96"
+        height="h-15"
+        rounded="rounded-full"
+        bgColor="bg-black"
+        className="relative"
+      >
+        <Search className="absolute top-5 left-4 text-[var(--grey-500)] size-5" />
+        <input
+          type="search"
+          placeholder="Search"
+          className="w-full h-full pl-12 pr-6 py-3 placeholder:text-[var(--grey-500)]"
+        />
+      </GradientBorderComponent>
+    </form>
 
-## Latest Release
+  </header>
 
-<ChangelogCard summary="v0.0.12 - Stable" defaultExpanded={true}>
+  <div className="grid grid-cols-1 gap-18 w-full mt-39">
 
-<ChangelogEntry type="feat">
-    **Mobile-friendly components** - Enhanced popover, drawer, modal, and
-    multi-select with responsive design patterns
-</ChangelogEntry>
+    <ChangeLogCard href="/changelog/v0.0.12">
+      <DateBadge>August 14, 2025</DateBadge>
+      <h2 className="text-[var(--grey-100)] text-[length:var(--text-40)]">
+        v0.0.12 - Stable
+      </h2>
+      <div className="text-2xl text-[var(--grey-500)]">
+        Mobile-friendly components — enhanced popover, drawer, modal, and multi-select with responsive design patterns.
+      </div>
+    </ChangeLogCard>
 
-<ChangelogEntry type="fix">
-    **Component reliability** - Improved focus management, accessibility, and
-    performance optimizations
-</ChangelogEntry>
+    <ChangeLogCard href="/changelog/v0.0.11">
+      <DateBadge>July 28, 2025</DateBadge>
+      <h2 className="text-[var(--grey-100)] text-[length:var(--text-40)]">
+        v0.0.11 - Enhancements
+      </h2>
+      <div className="text-2xl text-[var(--grey-500)]">
+        Component reliability — improved focus management, accessibility, and performance optimizations.
+      </div>
+    </ChangeLogCard>
 
-</ChangelogCard>
-
-## Quick Links
-
-- **[v0.0.12](/changelog/v0.0.12)** - Latest stable release with mobile improvements
-- **[v0.0.11](/changelog/v0.0.11)** - Component reliability and performance enhancements
-- **[Documentation](/docs)** - Complete component API and usage examples
-- **[NPM Package](https://www.npmjs.com/package/@juspay/blend-design-system)** - Install and get started
-
----
-
-**Browse versions** using the sidebar to see detailed release notes and migration guides.
+  </div>
+</section>

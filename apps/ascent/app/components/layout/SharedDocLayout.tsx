@@ -50,10 +50,10 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
     return (
         <GlobalKeyboardNavigationProvider>
             <main
-                className={`min-h-screen w-screen bg-[var(--background)] ${className}`}
+                className={`min-h-screen w-screen bg-[linear-gradient(0deg,#050505_0%,#050505_100%),linear-gradient(180deg,#121316_10.86%,#0505E2_99.98%)] ${className}`}
             >
                 {/* Navigation Bar */}
-                <nav className="h-[var(--navbar-height)] flex items-center justify-between p-20  sticky top-0 z-50">
+                <nav className="h-[200px]  flex items-center justify-between px-20  sticky top-0 z-50">
                     {/* Left side - Title and drawer */}
                     <div className="flex items-center gap-4">
                         <div className="sidebar-drawer-trigger">

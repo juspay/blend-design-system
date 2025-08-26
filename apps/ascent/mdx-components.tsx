@@ -10,6 +10,10 @@ import {
     PreviewComponents,
     TableComponents,
 } from '@/components/mdx'
+import GradientBorderComponent from './app/changelog/components/ui/GradientBorderWrapper'
+import DateBadge from './app/changelog/components/ui/DateBadge'
+import { Search } from 'lucide-react'
+import ChangeLogCard from './app/changelog/components/ui/ChangeLogCard'
 
 // Combine all modular MDX components
 const components = {
@@ -30,6 +34,10 @@ const components = {
     VersionHeader,
     ChangelogCard,
     ChangelogEntry,
+    GradientBorderComponent,
+    DateBadge,
+    Search,
+    ChangeLogCard,
 }
 
 declare global {
