@@ -49,6 +49,22 @@
     --sh-background: #f6f8fa;
     --code-background: #fefefe;
     --code-border: #e0e0e0;
+
+    /* changelog */
+    --rounded-100: 100px;
+    --changelog-border-color: rgba(255, 255, 255, 0.05);
+    /* --changelog-bg-color:linear-gradient(180deg, #060606 37.13%, rgba(0, 0, 0, 0.50) 140.17%); */
+    --pixel: 1px;
+    --grey-100: #9f9f9f;
+    --grey-200: #9e9e9e;
+    --grey-300: #b3b3b3;
+    --grey-400: #64677c;
+    --grey-500: #4f4f4f;
+    --text-64: 64px;
+    --text-40: 40px;
+    --rounded-50: 50px;
+    --rounded-46: 46px;
+    --date-card-badge-color: rgba(255, 255, 255, 0.02);
 }
 
 @theme inline {
@@ -56,6 +72,13 @@
     --color-foreground: var(--foreground);
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
+}
+
+@theme {
+    --changelog-bg-color: 180deg, #060606_37.13%, rgba(0, 0, 0, 0.5) _140.17%;
+    --border-color:
+        90deg, rgba(0, 0, 0, 0.25) _0%, rgba(0, 0, 0, 0.1) _48.08%,
+        rgba(0, 0, 0, 0.25) _100%;
 }
 
 @media (prefers-color-scheme: dark) {

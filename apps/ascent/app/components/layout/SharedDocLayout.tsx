@@ -21,6 +21,8 @@ import {
     StorybookIcon,
 } from '@/components/ui/Icons'
 import { getDirItems } from '@/docs/utils'
+import { Logo } from '@/app/changelog/icons/Logo'
+import { JuspayLogoTitle } from '@/app/changelog/icons/JuspayLogoTitle'
 
 export interface SharedDocLayoutProps {
     /** Title displayed in the navigation bar */
@@ -51,7 +53,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                 className={`min-h-screen w-screen bg-[var(--background)] ${className}`}
             >
                 {/* Navigation Bar */}
-                <nav className="h-[var(--navbar-height)] flex items-center justify-between px-6 border-b border-[var(--border)] bg-[var(--sidebar-background)] backdrop-blur-sm sticky top-0 z-50">
+                <nav className="h-[var(--navbar-height)] flex items-center justify-between p-20  sticky top-0 z-50">
                     {/* Left side - Title and drawer */}
                     <div className="flex items-center gap-4">
                         <div className="sidebar-drawer-trigger">
@@ -60,12 +62,13 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                                 baseRoute={baseRoute}
                             />
                         </div>
+
                         <Link
                             href="/"
                             className="flex items-center font-semibold text-lg text-[var(--foreground)] hover:text-[var(--muted-foreground)] transition-colors"
                             data-nav-topbar
                         >
-                            <span>{title}</span>
+                            <Logo /> <JuspayLogoTitle />
                         </Link>
                     </div>
 
@@ -145,9 +148,9 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                 {/* Main content area */}
                 <div className="w-screen h-[calc(100vh-var(--navbar-height))] flex">
                     {/* Sidebar */}
-                    <aside className="doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden">
+                    {/* <aside className="doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden">
                         <Sidebar items={sidebarItems} baseRoute={baseRoute} />
-                    </aside>
+                    </aside> */}
 
                     {/* Main content */}
                     <div className="main-content-area flex-1 h-[calc(100vh-var(--navbar-height))] overflow-y-auto">
