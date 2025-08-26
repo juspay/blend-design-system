@@ -10,7 +10,7 @@ import { CompC4R2 } from '../../../icons/CompC4R2'
 
 export const ComponentCards = () => {
     return (
-        <div className="flex flex-wrap gap-6 justify-center">
+        <div className="grid xl:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-6 justify-center">
             <div className=" grid grid-cols-1 grid-rows-3 gap-y-6">
                 <div className="row-span-1">
                     <CompC1R1 />
