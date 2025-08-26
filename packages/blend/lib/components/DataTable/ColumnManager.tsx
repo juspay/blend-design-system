@@ -63,13 +63,6 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             }
         }
     }
-
-    const handleClearAll = () => {
-        if (visibleColumns.length > 1) {
-            onColumnChange([visibleColumns[0]])
-        }
-    }
-
     return (
         <Block>
             {mobileConfig.isMobile ? (
@@ -82,20 +75,10 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     selectedValues={selectedColumnValues}
                     onChange={handleMultiSelectChange}
                     enableSearch={true}
-                    enableSelectAll={false}
-                    showActionButtons={true}
+                    enableSelectAll={true}
                     showItemDividers={true}
                     showHeaderBorder={false}
-                    primaryAction={{
-                        text: 'Apply',
-                        onClick: () => {},
-                        disabled: false,
-                    }}
-                    secondaryAction={{
-                        text: 'Clear All',
-                        onClick: handleClearAll,
-                        disabled: visibleColumns.length <= 1,
-                    }}
+                    showActionButtons={false}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"
@@ -126,18 +109,12 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     items={multiSelectItems}
                     selectedValues={selectedColumnValues}
                     onChange={handleMultiSelectChange}
-                    enableSearch={false}
-                    showActionButtons={true}
-                    primaryAction={{
-                        text: 'Apply',
-                        onClick: () => {},
-                        disabled: false,
-                    }}
-                    secondaryAction={{
-                        text: 'Clear All',
-                        onClick: handleClearAll,
-                        disabled: visibleColumns.length <= 1,
-                    }}
+                    enableSearch={true}
+                    enableSelectAll={true}
+                    selectAllText="Select All Columns"
+                    showActionButtons={false}
+                    maxHeight={400}
+                    showHeaderBorder={false}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"
