@@ -7,7 +7,7 @@ import Link from 'next/link'
 import React from 'react'
 import { Github } from 'lucide-react'
 import {
-    Sidebar,
+    // Sidebar,
     SidebarDrawer,
     SearchProvider,
     ThemeToggle,
@@ -38,7 +38,7 @@ export interface SharedDocLayoutProps {
 }
 
 const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
-    title,
+    // title,
     baseRoute,
     contentPath,
     children,

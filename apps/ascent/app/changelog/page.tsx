@@ -33,7 +33,7 @@ const ChangelogPage = async () => {
         )
     }
 
-    const { content } = homeData
+    // const { content } = homeData
 
     return (
         // <div
