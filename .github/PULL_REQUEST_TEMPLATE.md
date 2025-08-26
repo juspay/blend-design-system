@@ -2,6 +2,6 @@
 
 <!-- Write a brief summary of your changes -->
 
-### Issue
+### Issue Ticket
 
 Closes #[issue_number] or Related to #[issue_number]
