@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
+import { FormField } from './FormField'
 
 // Define the shape of your form data
 interface FormInputs {
@@ -20,6 +21,26 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
     } = useForm<FormInputs>({
         mode: 'onChange', // track validation on change
     })
+
+    const industryOptions = [
+        { value: 'ePharma', label: 'E-pharma' },
+        { value: 'investments', label: 'Investments' },
+        { value: 'gaming', label: 'Gaming' },
+        { value: 'travel', label: 'Travel' },
+        { value: 'eCommerce', label: 'eCommerce' },
+        { value: 'insurance', label: 'Insurance' },
+        { value: 'telecom_d2h', label: 'Telecom / D2H' },
+        { value: 'education', label: 'Education' },
+        { value: 'subscription', label: 'Subscription' },
+        { value: 'classified', label: 'Classified' },
+        { value: 'fintech', label: 'Fintech' },
+        { value: 'grocery_delivery', label: 'Grocery Delivery' },
+        { value: 'lending_repayment', label: 'Lending/Repayment' },
+        { value: 'billpay', label: 'Billpay' },
+        { value: 'ticket_booking', label: 'Ticket Booking' },
+        { value: 'food_delivery', label: 'Food Delivery' },
+        { value: 'others', label: 'Others' },
+    ]
 
     // Prevent background scroll when modal is open
     useEffect(() => {
@@ -41,24 +62,24 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
             onClick={onClose}
         >
             <div
-                className="w-[95vw] max-w-[1200px] lg:w-[80vw] md:w-[85vw] sm:w-[90vw] flex flex-col xl:flex-row lg:rounded-[50px] md:rounded-[40px] sm:rounded-[30px] rounded-[20px] lg:p-12 md:p-8 sm:p-6 p-4 xl:gap-24 md:gap-14 sm:gap-6 gap-3 max-h-[90vh] overflow-hidden"
+                className="w-[95vw] max-w-[1200px] lg:w-[80vw] md:w-[85vw] sm:w-[90vw] flex md:flex-row flex-col lg:rounded-[50px] md:rounded-[40px] sm:rounded-[30px] rounded-[20px] lg:p-8 md:p-6 sm:p-4 p-2 xl:gap-24 md:gap-14 sm:gap-6 gap-3 max-h-[90vh] overflow-hidden"
                 style={{
                     background:
                         'linear-gradient(0deg, #0E0E0E 0%, #0E0E0E 100%), linear-gradient(180deg, #101010 0%, #FFF 100%), #FFF',
                 }}
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="lg:py-[30px] md:py-5 py-2 gap-5 flex flex-col justify-between w-full">
-                    <div className="flex flex-col lg:gap-[50px] md:gap-[40px] sm:gap-[30px] gap-[20px]">
-                        <p className="text-[#9E9E9E] lg:text-[45px] md:text-4xl sm:text-3xl xs:text-2xl text-xl font-normal">
+                <div className="lg:py-6 md:py-4 py-2 xl:gap-7 lg:gap-6 md:gap-5 gap-4 flex flex-col justify-between w-full">
+                    <div className="flex flex-col xl:gap-4 lg:gap-3 md:gap-2 gap-1">
+                        <p className="text-[#9E9E9E] 2xl:text-5xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-xl text-lg font-normal">
                             We're always listening.
                         </p>
-                        <p className="text-[#4F4F4F] font-light lg:text-3xl md:text-2xl sm:text-xl xs:text-lg text-base">
+                        <p className="text-[#4F4F4F] font-light 2xl:text-3xl xl:text-2xl lg:text-xl md:text-lg sm:text-sm text-xs ">
                             Whether it’s feedback, a bug, or a bright idea —
                             let’s make this system better together.
                         </p>
                     </div>
-                    <div className="flex flex-col text-[#9F9F9F] lg:text-3xl md:text-2xl sm:text-xl xs:text-lg text-base">
+                    <div className="flex flex-col text-[#9F9F9F] 2xl:text-3xl xl:text-2xl lg:text-xl md:text-lg sm:text-sm text-xs ">
                         <p>Email Us</p>
                         <p>designsystem@company.com</p>
                     </div>
@@ -68,152 +89,66 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                     onSubmit={handleSubmit(onSubmit)}
                     className=" w-full overflow-y-auto relative bg-white lg:py-4 md:py-2 py-1 xl:max-h-[80vh] max-h-[40vh] lg:rounded-[50px] md:rounded-[40px] sm:rounded-[30px] rounded-[20px] "
                 >
-                    <div className="lg:p-10 md:p-8 sm:p-6 p-4 flex flex-col lg:gap-6 md:gap-5 sm:gap-4 gap-3 overflow-y-auto">
+                    <div className="lg:p-10 md:p-8 sm:p-6 p-4 flex flex-col 2xl:gap-6 xl:gap-5 lg:gap-4 md:gap-3 sm:gap-2 gap-1 overflow-y-auto">
                         {/* Full Name Input */}
-                        <div className="flex flex-col gap-2">
-                            <label
-                                htmlFor="fullName"
-                                className="text-[14px] font-[400] text-[#706E6E]"
-                            >
-                                Your Full Name
-                                <span className="text-[#FF4747]">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="fullName"
-                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#706E6E] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                {...register('fullName', { required: true })}
-                            />
-                            {errors.fullName && (
-                                <span className="text-[#FF4747] text-sm">
-                                    This field is required
-                                </span>
-                            )}
-                        </div>
+                        <FormField
+                            label="Your Full Name"
+                            id="fullName"
+                            type="text"
+                            required={true}
+                            error={errors.fullName}
+                            register={register('fullName', { required: true })}
+                            className="xl:py-4 xl:px-6"
+                        />
 
                         {/* Email Input */}
-                        <div className="flex flex-col gap-2">
-                            <label
-                                htmlFor="email"
-                                className="text-[14px] font-[400] text-[#706E6E]"
-                            >
-                                Your Email ID
-                                <span className="text-[#FF4747]">*</span>
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#706E6E] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                {...register('email', {
-                                    required: true,
-                                    pattern: /^\S+@\S+$/i,
-                                })}
-                            />
-                            {errors.email && (
-                                <span className="text-[#FF4747] text-sm">
-                                    Valid email is required
-                                </span>
-                            )}
-                        </div>
+                        <FormField
+                            label="Your Email ID"
+                            id="email"
+                            type="email"
+                            required={true}
+                            error={errors.email}
+                            register={register('email', {
+                                required: true,
+                                pattern: /^\S+@\S+$/i,
+                            })}
+                        />
 
                         {/* Contact Number Input */}
-                        <div className="flex flex-col gap-2">
-                            <label
-                                htmlFor="contactNumber"
-                                className="text-[14px] font-[400] text-[#706E6E]"
-                            >
-                                Your Contact Number
-                                <span className="text-[#FF4747]">*</span>
-                            </label>
-                            <div className="flex items-center gap-2 w-full bg-[#EFEFEF] rounded-[20px] px-6">
-                                <span className="text-[#706E6E]">+91</span>
-                                <input
-                                    type="tel"
-                                    id="contactNumber"
-                                    className="flex-1 py-4 bg-transparent text-[#706E6E] placeholder-gray-500 focus:outline-none"
-                                    {...register('contactNumber', {
-                                        required: true,
-                                    })}
-                                />
-                            </div>
-                            {errors.contactNumber && (
-                                <span className="text-[#FF4747] text-sm">
-                                    This field is required
-                                </span>
-                            )}
-                        </div>
+                        <FormField
+                            label="Your Contact Number"
+                            id="contactNumber"
+                            type="tel"
+                            required={true}
+                            error={errors.contactNumber}
+                            register={register('contactNumber', {
+                                required: true,
+                            })}
+                            prefix="+91"
+                        />
 
                         {/* Industry Dropdown */}
-                        <div className="flex flex-col gap-2">
-                            <label
-                                htmlFor="industry"
-                                className="text-[14px] font-[400] text-[#706E6E]"
-                            >
-                                Your Industry
-                                <span className="text-[#FF4747]">*</span>
-                            </label>
-                            <select
-                                id="industry"
-                                defaultValue=""
-                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#706E6E] appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                {...register('industry', { required: true })}
-                            >
-                                <option value="" disabled>
-                                    Your Industry
-                                </option>
-                                <option value="ePharma">E-pharma</option>
-                                <option value="investments">Investments</option>
-                                <option value="gaming">Gaming</option>
-                                <option value="travel">Travel</option>
-                                <option value="eCommerce">eCommerce</option>
-                                <option value="insurance">Insurance</option>
-                                <option value="telecom_d2h">
-                                    Telecom / D2H
-                                </option>
-                                <option value="education">Education</option>
-                                <option value="subscription">
-                                    Subscription
-                                </option>
-                                <option value="classified">Classified</option>
-                                <option value="fintech">Fintech</option>
-                                <option value="grocery_delivery">
-                                    Grocery Delivery
-                                </option>
-                                <option value="lending_repayment">
-                                    Lending/Repayment
-                                </option>
-                                <option value="billpay">Billpay</option>
-                                <option value="ticket_booking">
-                                    Ticket Booking
-                                </option>
-                                <option value="food_delivery">
-                                    Food Delivery
-                                </option>
-                                <option value="others">Others</option>
-                            </select>
-                            {errors.industry && (
-                                <span className="text-[#FF4747] text-sm">
-                                    This field is required
-                                </span>
-                            )}
-                        </div>
+                        <FormField
+                            label="Your Industry"
+                            id="industry"
+                            type="select"
+                            required={true}
+                            error={errors.industry}
+                            register={register('industry', { required: true })}
+                            options={industryOptions}
+                            placeholder="Your Industry"
+                        />
 
                         {/* Message Textarea */}
-                        <div className="flex flex-col gap-2">
-                            <label
-                                htmlFor="message"
-                                className="text-[14px] font-[400] text-[#706E6E]"
-                            >
-                                Your Message
-                            </label>
-                            <textarea
-                                id="message"
-                                placeholder="Type your message"
-                                rows={3}
-                                className="w-full py-4 px-6 rounded-[20px] bg-[#EFEFEF] text-[#706E6E] placeholder-[#C9C9C9] focus:outline-none focus:ring-2 focus:ring-blue-500 sm:rows-4 md:rows-5"
-                                {...register('message')}
-                            ></textarea>
-                        </div>
+                        <FormField
+                            label="Your Message"
+                            id="message"
+                            type="textarea"
+                            placeholder="Type your message"
+                            rows={3}
+                            error={errors.message}
+                            register={register('message')}
+                        />
                     </div>
 
                     {/* Buttons */}
@@ -221,7 +156,7 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                         <div className="flex flex-row justify-end px-10 gap-3 sm:gap-4 py-2 ">
                             <button
                                 type="button"
-                                className="w-fit py-2 sm:px-4 px-3 rounded-full border border-gray-400 text-gray-600 hover:bg-gray-100 transition-colors bg-white sm:text-lg xs:text-sm text-xs"
+                                className="w-fit py-1 sm:px-4 px-2 rounded-full border border-gray-400 text-gray-600 hover:bg-gray-100 transition-colors bg-white text-xs lg:text-sm"
                                 onClick={onClose}
                             >
                                 Cancel
@@ -229,7 +164,7 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
                             <button
                                 type="submit"
                                 disabled={!isValid}
-                                className={`w-fit py-2 sm:px-4 px-3 rounded-full flex items-center justify-center gap-2 transition-colors sm:text-lg xs:text-sm text-xs ${
+                                className={`w-fit py-1 sm:px-4 px-2 whitespace-nowrap rounded-full flex items-center justify-center lg:gap-2  transition-colors  text-xs lg:text-sm ${
                                     isValid
                                         ? 'text-white bg-gray-800 hover:bg-gray-700'
                                         : 'text-gray-400 bg-gray-200 cursor-not-allowed'
