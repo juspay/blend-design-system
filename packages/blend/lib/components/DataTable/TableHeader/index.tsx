@@ -10,6 +10,7 @@ import { CheckboxSize } from '../../Checkbox/types'
 import { ColumnManager } from '../ColumnManager'
 import { TableTokenType } from '../dataTable.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { Tooltip, TooltipSide, TooltipAlign, TooltipSize } from '../../Tooltip'
 
 import { TableHeaderProps } from './types'
 import { SortDirection } from '../types'
@@ -342,40 +343,16 @@ const TableHeader = forwardRef<
                                                     minWidth={0}
                                                     flexGrow={1}
                                                 >
-                                                    <PrimitiveText
-                                                        title={column.header}
-                                                        style={{
-                                                            overflow: 'hidden',
-                                                            textOverflow:
-                                                                'ellipsis',
-                                                            whiteSpace:
-                                                                'nowrap',
-                                                            minWidth: 0,
-                                                            width: '100%',
-                                                            display: 'block',
-                                                            cursor: 'default',
-                                                            fontSize:
-                                                                tableToken
-                                                                    .dataTable
-                                                                    .table
-                                                                    .header.cell
-                                                                    .fontSize,
-                                                            fontWeight:
-                                                                tableToken
-                                                                    .dataTable
-                                                                    .table
-                                                                    .header.cell
-                                                                    .fontWeight,
-                                                            lineHeight: 1.2,
-                                                        }}
+                                                    <Tooltip
+                                                        content={column.header}
+                                                        side={TooltipSide.TOP}
+                                                        align={
+                                                            TooltipAlign.START
+                                                        }
+                                                        size={TooltipSize.SMALL}
+                                                        delayDuration={500}
                                                     >
-                                                        {column.header}
-                                                    </PrimitiveText>
-                                                    {column.headerSubtext && (
                                                         <PrimitiveText
-                                                            title={
-                                                                column.headerSubtext
-                                                            }
                                                             style={{
                                                                 overflow:
                                                                     'hidden',
@@ -393,23 +370,73 @@ const TableHeader = forwardRef<
                                                                         .dataTable
                                                                         .table
                                                                         .header
-                                                                        .filter
-                                                                        .groupLabelFontSize,
-                                                                color: tableToken
-                                                                    .dataTable
-                                                                    .table
-                                                                    .header
-                                                                    .filter
-                                                                    .groupLabelColor,
+                                                                        .cell
+                                                                        .fontSize,
+                                                                fontWeight:
+                                                                    tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .header
+                                                                        .cell
+                                                                        .fontWeight,
                                                                 lineHeight: 1.2,
-                                                                marginTop:
-                                                                    '2px',
                                                             }}
                                                         >
-                                                            {
+                                                            {column.header}
+                                                        </PrimitiveText>
+                                                    </Tooltip>
+                                                    {column.headerSubtext && (
+                                                        <Tooltip
+                                                            content={
                                                                 column.headerSubtext
                                                             }
-                                                        </PrimitiveText>
+                                                            side={
+                                                                TooltipSide.TOP
+                                                            }
+                                                            align={
+                                                                TooltipAlign.START
+                                                            }
+                                                            size={
+                                                                TooltipSize.SMALL
+                                                            }
+                                                            delayDuration={500}
+                                                        >
+                                                            <PrimitiveText
+                                                                style={{
+                                                                    overflow:
+                                                                        'hidden',
+                                                                    textOverflow:
+                                                                        'ellipsis',
+                                                                    whiteSpace:
+                                                                        'nowrap',
+                                                                    minWidth: 0,
+                                                                    width: '100%',
+                                                                    display:
+                                                                        'block',
+                                                                    cursor: 'default',
+                                                                    fontSize:
+                                                                        tableToken
+                                                                            .dataTable
+                                                                            .table
+                                                                            .header
+                                                                            .filter
+                                                                            .groupLabelFontSize,
+                                                                    color: tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .header
+                                                                        .filter
+                                                                        .groupLabelColor,
+                                                                    lineHeight: 1.2,
+                                                                    marginTop:
+                                                                        '2px',
+                                                                }}
+                                                            >
+                                                                {
+                                                                    column.headerSubtext
+                                                                }
+                                                            </PrimitiveText>
+                                                        </Tooltip>
                                                     )}
                                                 </Block>
                                                 {enableInlineEdit && (
