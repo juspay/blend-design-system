@@ -71,6 +71,7 @@ import ChartsDemo from './ChartsDemo'
 import PopoverDemo from './PopoverDemo'
 import MultiValueInputDemo from './MultiValueInputDemo'
 import OTPInputDemo from './OTPInputDemo'
+import CardDemo from './CardDemo'
 import {
     Avatar,
     AvatarShape,
@@ -125,6 +126,7 @@ const SidebarDemo = () => {
         | 'dataRangePicker'
         | 'multiValueInput'
         | 'otpInput'
+        | 'card'
     >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -234,6 +236,8 @@ const SidebarDemo = () => {
                 return <PopoverDemo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
+            case 'card':
+                return <CardDemo />
             default:
                 return <div>No component selected</div>
         }
@@ -499,6 +503,13 @@ const SidebarDemo = () => {
                         <FileText style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('statCard'),
+                },
+                {
+                    label: 'Card',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('card'),
                 },
                 {
                     label: 'Progress Bar',
