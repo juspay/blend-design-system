@@ -141,7 +141,7 @@ const SidebarDemo = () => {
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
-            id: 'juspay',
+            value: 'juspay',
         },
         {
             label: 'Razorpay',
@@ -151,7 +151,67 @@ const SidebarDemo = () => {
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
-            id: 'razorpay',
+            value: 'razorpay',
+        },
+        {
+            label: 'Stripe',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'stripe',
+        },
+        {
+            label: 'PayPal',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'paypal',
+        },
+        {
+            label: 'Square',
+            icon: (
+                <Square
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'square',
+        },
+        {
+            label: 'Adyen',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'adyen',
+        },
+        {
+            label: 'Braintree',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'braintree',
+        },
+        {
+            label: 'Worldpay',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'worldpay',
         },
     ]
 
