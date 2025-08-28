@@ -1017,16 +1017,12 @@ const MultiSelectDemo = () => {
                                 false)
                             </li>
                             <li>
-                                • <strong>showActionButtons = true</strong> (was
-                                false)
+                                • <strong>Action buttons auto-show</strong> when
+                                primaryAction or secondaryAction is provided
                             </li>
                             <li>
-                                • <strong>Default Apply button</strong> with
-                                "Apply" text
-                            </li>
-                            <li>
-                                • <strong>Default Clear All button</strong> with
-                                "Clear All" text
+                                • <strong>No default action buttons</strong> -
+                                only show when explicitly provided
                             </li>
                         </ul>
                         <ul className="text-sm text-green-800 space-y-1">
@@ -1051,12 +1047,133 @@ const MultiSelectDemo = () => {
                     </div>
                     <div className="mt-3 p-2 bg-white rounded border-l-4 border-green-400">
                         <p className="text-sm text-green-700">
-                            <strong>Migration Note:</strong> Existing
-                            implementations will automatically get these new
-                            defaults. To disable, explicitly set{' '}
-                            <code>enableSearch={false}</code>
-                            and <code>showActionButtons={false}</code>.
+                            <strong>Migration Note:</strong> Action buttons are
+                            now hidden by default and only show when
+                            primaryAction or secondaryAction props are provided.
+                            This is a breaking change from previous versions.
                         </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Action Button Behavior</h2>
+                <p className="text-gray-600">
+                    Action buttons are now hidden by default and only appear
+                    when primaryAction or secondaryAction props are provided.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            No Action Buttons (Default)
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Without primaryAction or secondaryAction, no action
+                            buttons are shown.
+                        </p>
+                        <MultiSelect
+                            label="Select Skills"
+                            items={skillItems}
+                            selectedValues={basicSimpleSelected}
+                            onChange={handleMultiSelectChange(
+                                basicSimpleSelected,
+                                setBasicSimpleSelected
+                            )}
+                            placeholder="Choose skills"
+                            enableSearch={true}
+                            enableSelectAll={true}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">With Primary Action</h3>
+                        <p className="text-sm text-gray-600">
+                            Action buttons automatically appear when
+                            primaryAction is provided.
+                        </p>
+                        <MultiSelect
+                            label="Select Skills"
+                            items={skillItems}
+                            selectedValues={actionButtonsSelected}
+                            onChange={handleMultiSelectChange(
+                                actionButtonsSelected,
+                                setActionButtonsSelected
+                            )}
+                            placeholder="Choose skills"
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            primaryAction={{
+                                text: 'Apply Selection',
+                                onClick: () => {
+                                    console.log(
+                                        'Applied skills:',
+                                        actionButtonsSelected
+                                    )
+                                },
+                            }}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">With Both Actions</h3>
+                        <p className="text-sm text-gray-600">
+                            Both primary and secondary action buttons are shown
+                            when provided.
+                        </p>
+                        <MultiSelect
+                            label="Select Skills"
+                            items={skillItems}
+                            selectedValues={searchMobileSelected}
+                            onChange={handleMultiSelectChange(
+                                searchMobileSelected,
+                                setSearchMobileSelected
+                            )}
+                            placeholder="Choose skills"
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            primaryAction={{
+                                text: 'Apply',
+                                onClick: () => {
+                                    console.log(
+                                        'Applied skills:',
+                                        searchMobileSelected
+                                    )
+                                },
+                            }}
+                            secondaryAction={{
+                                text: 'Reset',
+                                onClick: () => {
+                                    setSearchMobileSelected([])
+                                },
+                            }}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Explicit Control</h3>
+                        <p className="text-sm text-gray-600">
+                            You can still explicitly control with
+                            showActionButtons={false} even when actions are
+                            provided.
+                        </p>
+                        <MultiSelect
+                            label="Select Skills"
+                            items={skillItems}
+                            selectedValues={basicTextSelected}
+                            onChange={handleMultiSelectChange(
+                                basicTextSelected,
+                                setBasicTextSelected
+                            )}
+                            placeholder="Choose skills"
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            showActionButtons={false}
+                            primaryAction={{
+                                text: "This Won't Show",
+                                onClick: () => {},
+                            }}
+                        />
                     </div>
                 </div>
             </div>
@@ -1297,7 +1414,6 @@ const MultiSelectDemo = () => {
                             placeholder="Choose technologies"
                             enableSearch={true}
                             enableSelectAll={true}
-                            showActionButtons={true}
                             primaryAction={{
                                 text: 'Apply Filters',
                                 onClick: () => {
@@ -2457,7 +2573,6 @@ const MultiSelectDemo = () => {
                             showItemDividers={true}
                             enableSearch={true}
                             enableSelectAll={true}
-                            showActionButtons={true}
                             primaryAction={{
                                 text: 'Apply All',
                                 onClick: () => {

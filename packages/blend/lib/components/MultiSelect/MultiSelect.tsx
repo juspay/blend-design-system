@@ -57,13 +57,8 @@ const MultiSelect = ({
     onFocus,
     error,
     errorMessage,
-    showActionButtons = true,
-    primaryAction = {
-        text: 'Apply',
-        onClick: () => {},
-        disabled: false,
-        loading: false,
-    },
+    showActionButtons,
+    primaryAction,
     secondaryAction,
     showItemDividers = false,
     showHeaderBorder = false,
@@ -81,11 +76,14 @@ const MultiSelect = ({
     const showCancelButton =
         variant === MultiSelectVariant.CONTAINER && selectedValues.length > 0
 
-    // Add state for truncation detection
+    const shouldShowActionButtons =
+        showActionButtons !== undefined
+            ? showActionButtons
+            : !!(primaryAction || secondaryAction)
+
     const [showTooltip, setShowTooltip] = useState(false)
     const textContainerRef = useRef<HTMLDivElement>(null)
 
-    // Function to check if text is truncated
     const checkTruncation = () => {
         if (textContainerRef.current) {
             const isOverflowing =
@@ -136,7 +134,7 @@ const MultiSelect = ({
                 onFocus={onFocus}
                 error={error}
                 errorMessage={errorMessage}
-                showActionButtons={showActionButtons}
+                showActionButtons={shouldShowActionButtons}
                 primaryAction={primaryAction}
                 secondaryAction={secondaryAction}
                 showItemDividers={showItemDividers}
@@ -201,7 +199,7 @@ const MultiSelect = ({
                         onBlur?.()
                     }
                 }}
-                showActionButtons={showActionButtons}
+                showActionButtons={shouldShowActionButtons}
                 primaryAction={primaryAction}
                 secondaryAction={secondaryAction}
                 trigger={
