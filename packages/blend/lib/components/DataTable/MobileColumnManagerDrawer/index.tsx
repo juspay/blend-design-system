@@ -57,11 +57,6 @@ const MobileColumnManagerDrawer: React.FC<
         })
     }
 
-    // Handle clear all
-    const handleClearAll = () => {
-        setSelectedValues([])
-    }
-
     // Handle apply changes
     const handleApply = () => {
         const newVisibleColumns = columns.filter((col) =>
@@ -149,14 +144,6 @@ const MobileColumnManagerDrawer: React.FC<
                                     borderTop: `1px solid ${FOUNDATION_THEME.colors.gray[100]}`,
                                 }}
                             >
-                                <Block style={{ flex: 1 }}>
-                                    <Button
-                                        buttonType={ButtonType.SECONDARY}
-                                        size={ButtonSize.MEDIUM}
-                                        onClick={handleClearAll}
-                                        text="Clear All"
-                                    />
-                                </Block>
                                 <Block style={{ flex: 2 }}>
                                     <Button
                                         buttonType={ButtonType.PRIMARY}

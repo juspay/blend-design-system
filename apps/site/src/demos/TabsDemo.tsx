@@ -6,8 +6,10 @@ import {
     TabsContent,
     TabsVariant,
     TabsSize,
+    TabItem,
 } from '../../../../packages/blend/lib/components/Tabs'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { MultiSelect } from '../../../../packages/blend/lib/components/MultiSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import {
     Home,
@@ -24,6 +26,29 @@ import {
     Trash2,
 } from 'lucide-react'
 
+const sharedContent = (
+    <div className="p-4 bg-gray-50 rounded-lg">
+        <h3 className="text-lg font-semibold mb-2">Shared Content</h3>
+        <p className="text-gray-600">
+            This content is shared between multiple tabs. When multiple tabs
+            have the same content, their labels are concatenated (e.g.,
+            "TabA+TabB+TabC"). Max 3 items can be concatenated.
+        </p>
+    </div>
+)
+
+const availableTabOptions = [
+    { value: 'analytics', label: 'Analytics' },
+    { value: 'reports', label: 'Reports' },
+    { value: 'settings', label: 'Settings' },
+    { value: 'documents', label: 'Documents' },
+    { value: 'uploads', label: 'Uploads' },
+    { value: 'downloads', label: 'Downloads' },
+    { value: 'notifications', label: 'Notifications' },
+    { value: 'users', label: 'Users' },
+    { value: 'permissions', label: 'Permissions' },
+]
+
 const TabsDemo = () => {
     // Playground state
     const [playgroundVariant, setPlaygroundVariant] = useState<TabsVariant>(
@@ -35,6 +60,49 @@ const TabsDemo = () => {
     const [showIcons, setShowIcons] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)
     const [activeTab, setActiveTab] = useState('tab1')
+
+    // Enhanced tabs state - default tabs always at front
+    const [enhancedTabs, setEnhancedTabs] = useState<TabItem[]>([
+        // Default tabs - always visible at front, no X icon
+        {
+            value: 'home',
+            label: 'Home',
+            content: (
+                <div className="p-4 bg-blue-50 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-2">Home Content</h3>
+                    <p className="text-blue-600">
+                        This is a default tab that cannot be closed. Default
+                        tabs are always visible at the front.
+                    </p>
+                </div>
+            ),
+            isDefault: true,
+        },
+        {
+            value: 'dashboard',
+            label: 'Dashboard',
+            content: (
+                <div className="p-4 bg-green-50 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-2">
+                        Dashboard Content
+                    </h3>
+                    <p className="text-green-600">
+                        Another default tab. Notice it doesn't have an X button
+                        and stays at the front.
+                    </p>
+                </div>
+            ),
+            isDefault: true,
+        },
+    ])
+
+    const [enhancedActiveTab, setEnhancedActiveTab] = useState('home')
+    const [showEnhancedDropdown, setShowEnhancedDropdown] = useState(true)
+    const [showEnhancedAddButton, setShowEnhancedAddButton] = useState(true)
+
+    // MultiSelect state
+    const [selectedTabsToAdd, setSelectedTabsToAdd] = useState<string[]>([])
+    const [showMultiSelect, setShowMultiSelect] = useState(false)
 
     // Options for selects
     const variantOptions = [
@@ -79,8 +147,241 @@ const TabsDemo = () => {
         }
     }
 
+    const getAvailableItems = () => {
+        const existingValues = enhancedTabs.map((tab) => tab.value)
+        return availableTabOptions.filter(
+            (item) => !existingValues.includes(item.value)
+        )
+    }
+
+    // Enhanced tabs handlers
+    const handleTabClose = (value: string) => {
+        const tabToClose = enhancedTabs.find((tab) => tab.value === value)
+
+        if (!tabToClose) return
+
+        const filteredTabs = enhancedTabs.filter((tab) => {
+            if (tab.value === value) return false
+            if (tab.content === tabToClose.content && !tab.isDefault)
+                return false
+
+            return true
+        })
+
+        setEnhancedTabs(filteredTabs)
+
+        // If closing active tab, switch to first remaining tab
+        if (value === enhancedActiveTab && filteredTabs.length > 0) {
+            setEnhancedActiveTab(filteredTabs[0].value)
+        }
+    }
+
+    const handleTabAdd = () => {
+        setShowMultiSelect(true)
+    }
+
+    const handleMultiSelectChange = (value: string) => {
+        if (selectedTabsToAdd.includes(value)) {
+            // Remove the item if it's already selected
+            setSelectedTabsToAdd((prev) => prev.filter((v) => v !== value))
+        } else {
+            // Only add if we haven't reached the limit of 3
+            if (selectedTabsToAdd.length < 3) {
+                setSelectedTabsToAdd((prev) => [...prev, value])
+            }
+            // If already at limit, don't add more (MultiSelect should handle this visually)
+        }
+    }
+
+    const handleAddSelectedTabs = () => {
+        if (selectedTabsToAdd.length === 0) return
+
+        const newTabs: TabItem[] = selectedTabsToAdd.map((value) => {
+            const item = availableTabOptions.find((opt) => opt.value === value)!
+            const content =
+                selectedTabsToAdd.length > 1 ? (
+                    sharedContent
+                ) : (
+                    <div className="p-4 bg-purple-50 rounded-lg">
+                        <h3 className="text-lg font-semibold mb-2">
+                            {item.label} Content
+                        </h3>
+                        <p className="text-purple-600">
+                            This is unique content for {item.label} tab.
+                        </p>
+                    </div>
+                )
+
+            return {
+                value: item.value,
+                label: item.label,
+                content,
+                closable: true,
+                isDefault: false,
+            }
+        })
+
+        setEnhancedTabs([...enhancedTabs, ...newTabs])
+        setEnhancedActiveTab(newTabs[0].value)
+        setSelectedTabsToAdd([])
+        setShowMultiSelect(false)
+    }
+
+    const handleCancelAdd = () => {
+        setSelectedTabsToAdd([])
+        setShowMultiSelect(false)
+    }
+
+    const multiSelectItems = [
+        {
+            items: getAvailableItems().map((item) => ({
+                ...item,
+                disabled:
+                    selectedTabsToAdd.length >= 3 &&
+                    !selectedTabsToAdd.includes(item.value),
+            })),
+        },
+    ]
+
     return (
         <div className="p-8 space-y-12">
+            {/* Enhanced Tabs Section */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Enhanced Tabs with Dynamic Management
+                </h2>
+                <div className="space-y-6">
+                    <div className="flex items-center gap-6 flex-wrap">
+                        <Switch
+                            label="Show Dropdown"
+                            checked={showEnhancedDropdown}
+                            onChange={() =>
+                                setShowEnhancedDropdown(!showEnhancedDropdown)
+                            }
+                        />
+                        <Switch
+                            label="Show Add Button"
+                            checked={showEnhancedAddButton}
+                            onChange={() =>
+                                setShowEnhancedAddButton(!showEnhancedAddButton)
+                            }
+                        />
+                    </div>
+
+                    <div className="p-6 bg-white border rounded-lg">
+                        <h3 className="text-lg font-semibold mb-4">
+                            Features: Default Tabs • Closable Tabs • Dropdown
+                            (All Tabs) • MultiSelect Add • Auto Concatenation
+                        </h3>
+                        <Tabs
+                            items={enhancedTabs}
+                            value={enhancedActiveTab}
+                            onValueChange={setEnhancedActiveTab}
+                            onTabClose={handleTabClose}
+                            onTabAdd={handleTabAdd}
+                            showDropdown={showEnhancedDropdown}
+                            showAddButton={showEnhancedAddButton}
+                            dropdownTooltip="Navigate to any tab (includes scrolled-out tabs)"
+                            addButtonTooltip="Add new tabs via MultiSelect"
+                            maxDisplayTabs={4}
+                        />
+                    </div>
+
+                    {showMultiSelect && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                            <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                                <h3 className="text-lg font-semibold mb-4">
+                                    Add New Tabs
+                                </h3>
+                                <p className="text-gray-600 mb-4">
+                                    Select up to 3 tabs to add. If you select
+                                    multiple tabs, they will share content and
+                                    be concatenated as "TabA+TabB+TabC".
+                                </p>
+
+                                <MultiSelect
+                                    selectedValues={selectedTabsToAdd}
+                                    onChange={handleMultiSelectChange}
+                                    items={multiSelectItems}
+                                    placeholder={`Select up to 3 items (${selectedTabsToAdd.length}/3 selected)`}
+                                    label="Available Tabs"
+                                    enableSearch={true}
+                                    searchPlaceholder="Search available tabs..."
+                                    showActionButtons={true}
+                                    primaryAction={{
+                                        text: 'Add Selected Tabs',
+                                        onClick: handleAddSelectedTabs,
+                                        disabled:
+                                            selectedTabsToAdd.length === 0,
+                                    }}
+                                    secondaryAction={{
+                                        text: 'Cancel',
+                                        onClick: handleCancelAdd,
+                                    }}
+                                    useDrawerOnMobile={false}
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 bg-blue-50 rounded-lg">
+                            <h4 className="font-semibold text-blue-800 mb-2">
+                                Default Tabs:
+                            </h4>
+                            <ul className="text-blue-700 space-y-1 text-sm">
+                                <li>• Home and Dashboard are default tabs</li>
+                                <li>• Always visible at the front</li>
+                                <li>• Cannot be closed (no X button)</li>
+                                <li>
+                                    • User can define any number of default tabs
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div className="p-4 bg-green-50 rounded-lg">
+                            <h4 className="font-semibold text-green-800 mb-2">
+                                Dynamic Features:
+                            </h4>
+                            <ul className="text-green-700 space-y-1 text-sm">
+                                <li>• + button opens MultiSelect</li>
+                                <li>
+                                    • Select multiple items to create
+                                    concatenated tab
+                                </li>
+                                <li>
+                                    • Same content = auto concatenation (max 3)
+                                </li>
+                                <li>
+                                    • Dropdown shows ALL tabs (even
+                                    scrolled-out)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="p-4 bg-purple-50 rounded-lg">
+                        <h4 className="font-semibold text-purple-800 mb-2">
+                            Concatenation Examples:
+                        </h4>
+                        <div className="text-purple-700 text-sm space-y-1">
+                            <p>
+                                <strong>Select 3 items:</strong> Creates one tab
+                                "Analytics+Reports+Settings"
+                            </p>
+                            <p>
+                                <strong>Select 1 item:</strong> Creates
+                                individual tab with unique content
+                            </p>
+                            <p>
+                                <strong>Max limit:</strong> Only first 3 items
+                                are concatenated
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Playground Section */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Playground</h2>

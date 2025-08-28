@@ -244,14 +244,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
         disabled: false,
         loading: false,
     },
-    secondaryAction = {
-        text: 'Clear All',
-        onClick: () => {
-            selectedValues.forEach((value) => onChange(value))
-        },
-        disabled: false,
-        loading: false,
-    },
+    secondaryAction,
     showItemDividers = false,
     showHeaderBorder = false,
 }) => {
