@@ -1,4 +1,5 @@
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { FOUNDATION_THEME } from '../../tokens'
 import { Checkbox } from '../Checkbox'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
@@ -43,8 +44,7 @@ const SelectAllItem = ({
     return (
         <RadixMenu.Item asChild data-disabled={disabled}>
             <Block
-                margin="0px 6px"
-                padding="12px 6px"
+                padding={FOUNDATION_THEME.unit[8]}
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"

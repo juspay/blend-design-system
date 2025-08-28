@@ -36,7 +36,7 @@ import {
 
 figma.connect(
     Tag,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2021-8332&t=sYsSZjUUTRwdGryv-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-744952&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Direct text mapping

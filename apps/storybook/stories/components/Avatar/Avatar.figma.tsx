@@ -32,7 +32,7 @@ import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system'
 
 figma.connect(
     Avatar,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18797-212273&t=EWj7fDD0TbtPTknX-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18797-212273&t=Igz9fmVsO5gD0NMR-4',
     {
         props: {
             // Renamed mappings - Figma prop name → Code prop name

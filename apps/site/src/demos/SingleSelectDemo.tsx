@@ -26,6 +26,10 @@ import {
     SelectMenuAlignment,
     SelectMenuSide,
 } from '../../../../packages/blend/lib/components/Select'
+import {
+    TooltipSide,
+    TooltipSize,
+} from '../../../../packages/blend/lib/components/Tooltip'
 
 const SingleSelectDemo = () => {
     // Playground state
@@ -90,6 +94,11 @@ const SingleSelectDemo = () => {
     const [formAccountSelected, setFormAccountSelected] = useState('')
     const [filterSortSelected, setFilterSortSelected] = useState('')
     const [filterTypeSelected, setFilterTypeSelected] = useState('')
+
+    // Truncation demo state
+    const [truncationBasicSelected, setTruncationBasicSelected] = useState('')
+    const [truncationCustomSelected, setTruncationCustomSelected] = useState('')
+    const [truncationMixedSelected, setTruncationMixedSelected] = useState('')
 
     // Sample data
     const simpleItems: SelectMenuGroupType[] = [
@@ -202,6 +211,136 @@ const SingleSelectDemo = () => {
         },
     ]
 
+    // Truncation test data
+    const truncationItems: SelectMenuGroupType[] = [
+        {
+            groupLabel: 'Long Text Examples with Automatic Tooltips',
+            showSeparator: true,
+            items: [
+                {
+                    label: 'This is an extremely long label that will definitely be truncated in most dropdown configurations and should automatically show a tooltip',
+                    value: 'long-auto-1',
+                    subLabel:
+                        'This is also a very long sublabel that might get truncated and should show tooltip content automatically when hovered',
+                },
+                {
+                    label: 'Another exceptionally long option name that exceeds typical dropdown width limits and demonstrates automatic truncation detection',
+                    value: 'long-auto-2',
+                    subLabel: 'Short sublabel',
+                },
+                {
+                    label: 'Medium length option that might truncate on smaller screens or narrow containers',
+                    value: 'medium-auto-1',
+                    subLabel:
+                        'This sublabel is quite long and will likely be truncated on smaller containers or narrow dropdowns',
+                },
+            ],
+        },
+        {
+            groupLabel: 'Custom Tooltip Examples',
+            showSeparator: true,
+            items: [
+                {
+                    label: 'Database Configuration Manager',
+                    value: 'custom-tooltip-1',
+                    subLabel: 'Advanced database settings',
+                    slot1: <Database size={16} />,
+                    tooltip:
+                        'This option configures database connections, connection pooling, transaction handling, backup settings, and performance optimization for your application',
+                    tooltipProps: {
+                        side: TooltipSide.RIGHT,
+                        size: TooltipSize.LARGE,
+                    },
+                },
+                {
+                    label: 'Cloud Storage Integration Service',
+                    value: 'custom-tooltip-2',
+                    subLabel: 'File management system',
+                    slot1: <MapPin size={16} />,
+                    tooltip: (
+                        <div>
+                            <strong>Cloud Storage Service</strong>
+                            <br />
+                            <br />
+                            <strong>Supported Providers:</strong>
+                            <br />
+                            • AWS S3 - Scalable object storage
+                            <br />
+                            • Google Cloud Storage - Enterprise-grade
+                            <br />
+                            • Azure Blob Storage - Microsoft cloud
+                            <br />
+                            <br />
+                            <strong>Key Features:</strong>
+                            <br />
+                            • Automatic file upload and download
+                            <br />
+                            • Real-time synchronization
+                            <br />
+                            • Advanced security and encryption
+                            <br />• Detailed analytics and reporting
+                        </div>
+                    ),
+                },
+                {
+                    label: 'API Gateway and Rate Limiting System',
+                    value: 'custom-tooltip-3',
+                    subLabel: 'Security & performance control',
+                    slot1: <Shield size={16} />,
+                    tooltip:
+                        'Manages API requests, implements intelligent rate limiting, handles authentication and authorization, provides detailed analytics, and ensures optimal performance for all API endpoints',
+                },
+            ],
+        },
+        {
+            groupLabel: 'Mixed Content Examples',
+            items: [
+                {
+                    label: 'Short Option',
+                    value: 'short-1',
+                    subLabel: 'Brief description',
+                },
+                {
+                    label: 'This is a longer option name that demonstrates mixed content lengths within the same group',
+                    value: 'mixed-1',
+                    subLabel: 'Short sublabel',
+                    slot1: <Star size={16} />,
+                },
+                {
+                    label: 'No Truncation Example Item',
+                    value: 'no-truncate-1',
+                    subLabel:
+                        "This item has truncation disabled so it won't show automatic tooltips even if the text is very long and exceeds container width",
+                    disableTruncation: true,
+                    tooltip:
+                        'This item has truncation disabled but still shows this custom tooltip when you hover over it, demonstrating the flexibility of the tooltip system',
+                },
+                {
+                    label: 'Enterprise Solution with Advanced Configuration Management and Custom Integration Capabilities',
+                    value: 'complex-1',
+                    subLabel:
+                        'This is a complex enterprise-level option with extensive configuration capabilities and custom integration features',
+                    slot1: <Settings size={16} />,
+                    slot2: (
+                        <span
+                            style={{
+                                backgroundColor: '#e8f5e8',
+                                color: '#2e7d2e',
+                                padding: '2px 6px',
+                                borderRadius: '4px',
+                                fontSize: '10px',
+                            }}
+                        >
+                            PRO
+                        </span>
+                    ),
+                    tooltip:
+                        'This enterprise solution provides comprehensive configuration management, advanced integration capabilities, premium support, and extensive customization options for large-scale deployments',
+                },
+            ],
+        },
+    ]
+
     // Option arrays for controls
     const sizeOptions: SelectMenuGroupType[] = [
         {
@@ -271,6 +410,9 @@ const SingleSelectDemo = () => {
         setFormAccountSelected('')
         setFilterSortSelected('')
         setFilterTypeSelected('')
+        setTruncationBasicSelected('')
+        setTruncationCustomSelected('')
+        setTruncationMixedSelected('')
         addSnackbar({
             header: 'Selections Cleared',
             description: 'All selections have been reset',
@@ -932,6 +1074,175 @@ const SingleSelectDemo = () => {
                         <li>• Supports both desktop and mobile versions</li>
                         <li>• Perfect for integrating with design systems</li>
                     </ul>
+                </div>
+            </div>
+
+            {/* Truncation & Tooltip Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    ✨ Truncation & Tooltip Examples
+                </h2>
+                <p className="text-gray-600">
+                    <strong>
+                        NEW: Automatic truncation detection with tooltips!
+                    </strong>
+                    SingleSelect now automatically detects when text is
+                    truncated and shows helpful tooltips. You can also add
+                    custom tooltips for enhanced user experience.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Automatic Truncation Tooltips
+                        </h3>
+                        <SingleSelect
+                            label="Long Text Options"
+                            subLabel="Hover over truncated items to see full text"
+                            items={truncationItems.slice(0, 1)} // First group only
+                            selected={truncationBasicSelected}
+                            onSelect={(value) => {
+                                setTruncationBasicSelected(value)
+                                addSnackbar({
+                                    header: `Auto-Tooltip Selected: ${value}`,
+                                })
+                            }}
+                            placeholder="Select item with long text..."
+                            maxWidth={300} // Constrain width to force truncation
+                            useDrawerOnMobile={false}
+                        />
+                        {truncationBasicSelected && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>Auto-Tooltip Item:</strong>{' '}
+                                    {truncationBasicSelected}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    🔍 Tooltip appeared automatically when text
+                                    was truncated
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Custom Tooltip Content
+                        </h3>
+                        <SingleSelect
+                            label="Enhanced Options"
+                            subLabel="Custom tooltips with rich content"
+                            items={truncationItems.slice(1, 2)} // Second group only
+                            selected={truncationCustomSelected}
+                            onSelect={(value) => {
+                                setTruncationCustomSelected(value)
+                                addSnackbar({
+                                    header: `Custom Tooltip Selected: ${value}`,
+                                })
+                            }}
+                            placeholder="Select enhanced option..."
+                            maxWidth={320}
+                            useDrawerOnMobile={false}
+                        />
+                        {truncationCustomSelected && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>Custom Tooltip Item:</strong>{' '}
+                                    {truncationCustomSelected}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    💡 Rich tooltip content with formatting and
+                                    details
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Mixed Content & Options
+                        </h3>
+                        <SingleSelect
+                            label="Advanced Examples"
+                            subLabel="Mix of auto, custom, and disabled tooltips"
+                            items={truncationItems.slice(2)} // Third group only
+                            selected={truncationMixedSelected}
+                            onSelect={(value) => {
+                                setTruncationMixedSelected(value)
+                                addSnackbar({
+                                    header: `Mixed Content Selected: ${value}`,
+                                })
+                            }}
+                            placeholder="Select mixed content..."
+                            maxWidth={300}
+                            useDrawerOnMobile={false}
+                        />
+                        {truncationMixedSelected && (
+                            <div className="p-3 bg-purple-50 rounded-lg">
+                                <p className="text-sm text-purple-700">
+                                    <strong>Mixed Content Item:</strong>{' '}
+                                    {truncationMixedSelected}
+                                </p>
+                                <p className="text-xs text-purple-600 mt-1">
+                                    ⚙️ Demonstrates various tooltip
+                                    configurations
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+                    <h4 className="font-semibold text-blue-900 mb-2">
+                        🎉 Truncation & Tooltip Features:
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul className="text-sm text-blue-800 space-y-1">
+                            <li>
+                                • <strong>Automatic Detection:</strong> Uses
+                                ResizeObserver to detect truncation
+                            </li>
+                            <li>
+                                • <strong>Smart Tooltips:</strong> Only shows
+                                tooltips when text is actually cut off
+                            </li>
+                            <li>
+                                • <strong>Custom Content:</strong> Support for
+                                rich tooltip content with formatting
+                            </li>
+                            <li>
+                                • <strong>Responsive:</strong> Updates
+                                automatically when container size changes
+                            </li>
+                        </ul>
+                        <ul className="text-sm text-blue-800 space-y-1">
+                            <li>
+                                • <strong>Both Labels:</strong> Works for main
+                                labels and sublabels independently
+                            </li>
+                            <li>
+                                • <strong>Configurable:</strong> Disable
+                                truncation detection per item if needed
+                            </li>
+                            <li>
+                                • <strong>Performance:</strong> Efficient
+                                detection with proper cleanup
+                            </li>
+                            <li>
+                                • <strong>Accessible:</strong> Maintains proper
+                                focus and navigation
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="mt-3 p-2 bg-white rounded border-l-4 border-blue-400">
+                        <p className="text-sm text-blue-700">
+                            <strong>API Usage:</strong> Add <code>tooltip</code>{' '}
+                            property for custom content,
+                            <code>tooltipProps</code> for configuration, or{' '}
+                            <code>disableTruncation: true</code> to disable
+                            auto-tooltips.
+                        </p>
+                    </div>
                 </div>
             </div>
 
