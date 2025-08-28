@@ -1,11 +1,15 @@
 import React, { forwardRef, useState, useEffect } from 'react'
-import { PanelsTopLeft, UserIcon } from 'lucide-react'
+import { PanelsTopLeft, UserIcon, MoreHorizontal } from 'lucide-react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
 import type { SidebarProps } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
-import { SelectMenuVariant } from '../Select/types'
+import {
+    SelectMenuVariant,
+    SelectMenuAlignment,
+    SelectMenuSide,
+} from '../Select/types'
 import { SelectMenuSize, SingleSelect } from '../SingleSelect'
 import { Avatar, AvatarShape, AvatarSize } from '../Avatar'
 import Text from '../Text/Text'
@@ -160,51 +164,179 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                         }
                                         display="flex"
                                         flexDirection="column"
-                                        gap="16px"
+                                        gap={FOUNDATION_THEME.unit[16]}
                                         alignItems="center"
                                         padding="10px"
                                     >
-                                        {leftPanel.items.map(
-                                            (tenant, index) => (
-                                                // TODO: Add theme config
-                                                <Block
-                                                    border="none"
-                                                    backgroundColor="transparent"
-                                                    width="32px"
-                                                    height="32px"
-                                                    borderRadius={
-                                                        FOUNDATION_THEME.border
-                                                            .radius[4]
-                                                    }
-                                                    display="flex"
-                                                    alignItems="center"
-                                                    justifyContent="center"
-                                                    cursor="pointer"
-                                                    style={{
-                                                        outline: `1px solid ${
-                                                            leftPanel.selected ===
-                                                            tenant.label
-                                                                ? FOUNDATION_THEME
-                                                                      .colors
-                                                                      .primary[500]
-                                                                : FOUNDATION_THEME
-                                                                      .colors
-                                                                      .gray[150]
-                                                        }`,
-                                                        transitionDuration:
-                                                            '75ms',
-                                                    }}
-                                                    onClick={() =>
-                                                        leftPanel.onSelect(
-                                                            tenant.label
+                                        {(() => {
+                                            const maxVisible =
+                                                leftPanel.maxVisibleItems || 5
+                                            const visibleTenants =
+                                                leftPanel.items.slice(
+                                                    0,
+                                                    maxVisible
+                                                )
+                                            const hiddenTenants =
+                                                leftPanel.items.slice(
+                                                    maxVisible
+                                                )
+                                            const hasMoreTenants =
+                                                hiddenTenants.length > 0
+
+                                            return (
+                                                <>
+                                                    {visibleTenants.map(
+                                                        (tenant, index) => (
+                                                            <Block
+                                                                border="none"
+                                                                backgroundColor="transparent"
+                                                                width={
+                                                                    FOUNDATION_THEME
+                                                                        .unit[32]
+                                                                }
+                                                                height={
+                                                                    FOUNDATION_THEME
+                                                                        .unit[32]
+                                                                }
+                                                                borderRadius={
+                                                                    FOUNDATION_THEME
+                                                                        .border
+                                                                        .radius[4]
+                                                                }
+                                                                display="flex"
+                                                                alignItems="center"
+                                                                justifyContent="center"
+                                                                cursor="pointer"
+                                                                style={{
+                                                                    outline: `1px solid ${
+                                                                        leftPanel.selected ===
+                                                                        tenant.label
+                                                                            ? FOUNDATION_THEME
+                                                                                  .colors
+                                                                                  .primary[500]
+                                                                            : FOUNDATION_THEME
+                                                                                  .colors
+                                                                                  .gray[150]
+                                                                    }`,
+                                                                    transitionDuration:
+                                                                        '75ms',
+                                                                }}
+                                                                onClick={() =>
+                                                                    leftPanel.onSelect(
+                                                                        tenant.label
+                                                                    )
+                                                                }
+                                                                key={index}
+                                                            >
+                                                                {tenant.icon}
+                                                            </Block>
                                                         )
-                                                    }
-                                                    key={index}
-                                                >
-                                                    {tenant.icon}
-                                                </Block>
+                                                    )}
+
+                                                    {hasMoreTenants && (
+                                                        <Block position="relative">
+                                                            <SingleSelect
+                                                                placeholder=""
+                                                                variant={
+                                                                    SelectMenuVariant.NO_CONTAINER
+                                                                }
+                                                                side={
+                                                                    SelectMenuSide.RIGHT
+                                                                }
+                                                                alignment={
+                                                                    SelectMenuAlignment.START
+                                                                }
+                                                                sideOffset={4}
+                                                                items={[
+                                                                    {
+                                                                        items: hiddenTenants.map(
+                                                                            (
+                                                                                tenant
+                                                                            ) => ({
+                                                                                label: tenant.label,
+                                                                                value:
+                                                                                    tenant.value ||
+                                                                                    tenant.label,
+                                                                                slot1: tenant.icon,
+                                                                            })
+                                                                        ),
+                                                                    },
+                                                                ]}
+                                                                selected=""
+                                                                onSelect={(
+                                                                    value
+                                                                ) => {
+                                                                    const selectedTenant =
+                                                                        hiddenTenants.find(
+                                                                            (
+                                                                                t
+                                                                            ) =>
+                                                                                (t.value ||
+                                                                                    t.label) ===
+                                                                                value
+                                                                        )
+                                                                    if (
+                                                                        selectedTenant
+                                                                    ) {
+                                                                        leftPanel.onSelect(
+                                                                            selectedTenant.label
+                                                                        )
+                                                                    }
+                                                                }}
+                                                                customTrigger={
+                                                                    <Block
+                                                                        border="none"
+                                                                        backgroundColor="transparent"
+                                                                        width={
+                                                                            FOUNDATION_THEME
+                                                                                .unit[32]
+                                                                        }
+                                                                        height={
+                                                                            FOUNDATION_THEME
+                                                                                .unit[32]
+                                                                        }
+                                                                        borderRadius={
+                                                                            FOUNDATION_THEME
+                                                                                .border
+                                                                                .radius[4]
+                                                                        }
+                                                                        display="flex"
+                                                                        alignItems="center"
+                                                                        justifyContent="center"
+                                                                        cursor="pointer"
+                                                                        style={{
+                                                                            outline: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
+                                                                            transitionDuration:
+                                                                                '75ms',
+                                                                        }}
+                                                                        _hover={{
+                                                                            backgroundColor:
+                                                                                FOUNDATION_THEME
+                                                                                    .colors
+                                                                                    .gray[50],
+                                                                        }}
+                                                                    >
+                                                                        <MoreHorizontal
+                                                                            style={{
+                                                                                width: FOUNDATION_THEME
+                                                                                    .unit[16],
+                                                                                height: FOUNDATION_THEME
+                                                                                    .unit[16],
+                                                                            }}
+                                                                            color={
+                                                                                FOUNDATION_THEME
+                                                                                    .colors
+                                                                                    .gray[600]
+                                                                            }
+                                                                        />
+                                                                    </Block>
+                                                                }
+                                                            />
+                                                        </Block>
+                                                    )}
+                                                </>
                                             )
-                                        )}
+                                        })()}
                                     </Block>
                                 )}
 
