@@ -106,7 +106,7 @@ const getTooltipPosition = (arrow: string) => {
 
 figma.connect(
     Tooltip,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3650-871&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-751580&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Size mapping
@@ -166,7 +166,7 @@ figma.connect(
 // Small size variant
 figma.connect(
     Tooltip,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3650-871&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-751580&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'sm' },
         props: {
@@ -200,7 +200,7 @@ figma.connect(
 // Medium size variant
 figma.connect(
     Tooltip,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3650-871&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-751580&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'md' },
         props: {
@@ -234,7 +234,7 @@ figma.connect(
 // Variant with slot on the left
 figma.connect(
     Tooltip,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3650-871&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-751580&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { slotDirection: 'left' },
         props: {
@@ -268,7 +268,7 @@ figma.connect(
 // Variant with slot on the right
 figma.connect(
     Tooltip,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3650-871&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-751580&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { slotDirection: 'right' },
         props: {
@@ -302,7 +302,7 @@ figma.connect(
 // Top position variants
 figma.connect(
     Tooltip,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3650-871&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-751580&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { arrow: 'topCenter' },
         props: {
@@ -335,7 +335,7 @@ figma.connect(
 // Bottom position variants
 figma.connect(
     Tooltip,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3650-871&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-751580&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { arrow: 'bottomCenter' },
         props: {
@@ -368,7 +368,7 @@ figma.connect(
 // No arrow variant
 figma.connect(
     Tooltip,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3650-871&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-751580&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { arrow: 'none' },
         props: {

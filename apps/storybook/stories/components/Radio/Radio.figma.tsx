@@ -37,7 +37,7 @@ import { Radio, RadioSize } from '@juspay/blend-design-system'
 
 figma.connect(
     Radio,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=10045-7672&t=gedfNFz548Qsi2Fl-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-677515&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Size mapping - trying different possible mappings to avoid size issues
@@ -52,12 +52,12 @@ figma.connect(
                 MD: RadioSize.MEDIUM,
             }),
 
-            // Direct boolean mappings
-            checked: figma.boolean('checked'),
+            // Mappings based on actual Figma properties
+            checked: figma.boolean('enable'), // enable prop in Figma maps to checked in code
             disabled: figma.boolean('disabled'),
 
-            // Direct string mappings
-            value: figma.string('value'),
+            // Note: value prop doesn't exist in Figma, removing this mapping
+            // value: figma.string('value'),
             subtext: figma.string('subtext'),
 
             // Slot mapping - Figma uses hasSlot boolean, code uses actual slot content
@@ -76,12 +76,11 @@ figma.connect(
             // - onChange (event handler)
         },
 
-        example: ({ size, checked, disabled, value, subtext, slot }) => (
+        example: ({ size, checked, disabled, subtext, slot }) => (
             <Radio
                 size={size}
                 checked={checked}
                 disabled={disabled}
-                value={value}
                 subtext={subtext}
                 slot={slot}
             />

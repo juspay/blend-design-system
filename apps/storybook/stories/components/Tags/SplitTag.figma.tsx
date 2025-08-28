@@ -41,7 +41,7 @@ import {
 
 figma.connect(
     SplitTag,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-745529&t=EWj7fDD0TbtPTknX-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-745529&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Direct mappings - same in both Figma and code

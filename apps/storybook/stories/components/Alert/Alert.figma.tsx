@@ -52,7 +52,7 @@ import {
 
 figma.connect(
     Alert,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18797-179268&t=EWj7fDD0TbtPTknX-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18797-179268&t=Igz9fmVsO5gD0NMR-4',
     {
         props: {
             // Direct enum mappings
