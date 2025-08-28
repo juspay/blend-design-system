@@ -41,8 +41,6 @@ export type MultiSelectMenuItemType = {
     disabled?: boolean
     onClick?: () => void
     subMenu?: MultiSelectMenuItemType[]
-
-    // Tooltip support
     tooltip?: string | React.ReactNode
     tooltipProps?: {
         side?: TooltipSide
@@ -52,8 +50,6 @@ export type MultiSelectMenuItemType = {
         delayDuration?: number
         offset?: number
     }
-
-    // Disable truncation for specific items if needed
     disableTruncation?: boolean
 }
 
@@ -63,7 +59,6 @@ export type MultiSelectMenuGroupType = {
     showSeparator?: boolean
 }
 
-// Multi Select Component Props
 export type MultiSelectProps = {
     height?: number
     selectedValues: string[]

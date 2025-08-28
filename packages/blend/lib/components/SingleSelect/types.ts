@@ -59,8 +59,6 @@ export type SelectMenuItemType = {
     disabled?: boolean
     onClick?: () => void
     subMenu?: SelectMenuItemType[]
-
-    // Tooltip support
     tooltip?: string | React.ReactNode
     tooltipProps?: {
         side?: TooltipSide
@@ -70,8 +68,6 @@ export type SelectMenuItemType = {
         delayDuration?: number
         offset?: number
     }
-
-    // Disable truncation for specific items if needed
     disableTruncation?: boolean
 }
 

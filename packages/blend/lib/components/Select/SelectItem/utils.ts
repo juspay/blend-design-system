@@ -16,7 +16,6 @@ export const checkIfTruncated = (element: HTMLElement | null): boolean => {
     return isOverflowing
 }
 
-// Detect truncation in a ref
 export const useTruncationDetection = (ref: RefObject<HTMLElement>) => {
     const checkTruncation = (): boolean => {
         if (!ref.current) return false

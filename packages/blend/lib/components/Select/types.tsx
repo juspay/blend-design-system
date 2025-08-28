@@ -69,8 +69,6 @@ export type SelectMenuItemType = {
         delayDuration?: number
         offset?: number
     }
-
-    // Disable truncation for specific items if needed
     disableTruncation?: boolean
 }
 
