@@ -50,11 +50,11 @@ const sampleChartData = [
 
 figma.connect(
     StatCard,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4356-3366&t=jEHPJiKmUT0XJ9QL-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-705102&t=2L1Yl830ZKZjFcrt-11',
     {
         props: {
-            // Direct enum mapping
-            variant: figma.enum('variant', {
+            // Type maps to variant in code
+            variant: figma.enum('type', {
                 line: StatCardVariant.LINE,
                 progress: StatCardVariant.PROGRESS_BAR,
                 bar: StatCardVariant.BAR,
@@ -64,7 +64,9 @@ figma.connect(
             // Direct string/number mappings
             title: figma.string('title'),
             value: figma.string('value'),
-            subtitle: figma.string('subtitle'),
+
+            // Date prop in Figma maps to subtitle in code
+            subtitle: figma.string('date'),
 
             // Change mapping - hasDelta controls visibility
             change: figma.boolean('hasDelta', {
@@ -79,7 +81,7 @@ figma.connect(
             }),
 
             // Chart data based on variant and hasVisualisation
-            chartData: figma.enum('variant', {
+            chartData: figma.enum('type', {
                 line: figma.boolean('hasVisualisation', {
                     true: sampleChartData,
                     false: undefined,
@@ -90,7 +92,7 @@ figma.connect(
             }),
 
             // Progress value for progress variant
-            progressValue: figma.enum('variant', {
+            progressValue: figma.enum('type', {
                 line: undefined,
                 progress: 75, // Default progress value
                 bar: undefined,

@@ -1,3 +1,5 @@
+import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
+
 export enum MultiSelectVariant {
     CONTAINER = 'container',
     NO_CONTAINER = 'no-container',
@@ -39,6 +41,16 @@ export type MultiSelectMenuItemType = {
     disabled?: boolean
     onClick?: () => void
     subMenu?: MultiSelectMenuItemType[]
+    tooltip?: string | React.ReactNode
+    tooltipProps?: {
+        side?: TooltipSide
+        align?: TooltipAlign
+        size?: TooltipSize
+        showArrow?: boolean
+        delayDuration?: number
+        offset?: number
+    }
+    disableTruncation?: boolean
 }
 
 export type MultiSelectMenuGroupType = {
@@ -47,7 +59,6 @@ export type MultiSelectMenuGroupType = {
     showSeparator?: boolean
 }
 
-// Multi Select Component Props
 export type MultiSelectProps = {
     height?: number
     selectedValues: string[]

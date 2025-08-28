@@ -41,7 +41,7 @@ import { Modal } from '@juspay/blend-design-system'
 
 figma.connect(
     Modal,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-635480&t=EWj7fDD0TbtPTknX-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-635480&t=2L1Yl830ZKZjFcrt-11',
     {
         props: {
             // Direct string mappings

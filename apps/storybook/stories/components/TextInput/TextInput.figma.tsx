@@ -43,7 +43,7 @@ import { TextInput, TextInputSize } from '@juspay/blend-design-system'
 // Base connection
 figma.connect(
     TextInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3150-5112&t=n62fssG7t2NIbGYp-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513588&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Size mapping
@@ -137,7 +137,7 @@ figma.connect(
 // Variant: With label
 figma.connect(
     TextInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3150-5112&t=n62fssG7t2NIbGYp-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513588&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: true },
         props: {
@@ -196,7 +196,7 @@ figma.connect(
 // Variant: Without label
 figma.connect(
     TextInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3150-5112&t=n62fssG7t2NIbGYp-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513588&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: false },
         props: {
@@ -249,7 +249,7 @@ figma.connect(
 // Variant: With slots
 figma.connect(
     TextInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3150-5112&t=n62fssG7t2NIbGYp-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513588&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLeftSlot: true },
         props: {
@@ -305,7 +305,7 @@ figma.connect(
 // Variant: With right slot
 figma.connect(
     TextInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3150-5112&t=n62fssG7t2NIbGYp-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513588&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showRightSlot: true },
         props: {
@@ -361,7 +361,7 @@ figma.connect(
 // Variant: Medium size
 figma.connect(
     TextInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3150-5112&t=n62fssG7t2NIbGYp-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513588&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'md' },
         props: {
@@ -415,7 +415,7 @@ figma.connect(
 // Variant: Large size
 figma.connect(
     TextInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3150-5112&t=n62fssG7t2NIbGYp-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513588&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'lg' },
         props: {

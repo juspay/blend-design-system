@@ -39,7 +39,6 @@ const StickyHeader = styled(Block)(() => ({
     right: 0,
     zIndex: 1000,
     backgroundColor: FOUNDATION_THEME.colors.gray[0],
-    padding: `${FOUNDATION_THEME.unit[6]} 0`,
 }))
 
 const ScrollableContent = styled(Block)(() => ({
@@ -152,7 +151,6 @@ const MultiSelectMenu = ({
                         availableValues.length > 0 && (
                             <Block
                                 borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                                marginBottom={FOUNDATION_THEME.unit[6]}
                             >
                                 <SelectAllItem
                                     selected={selected}

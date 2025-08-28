@@ -10,10 +10,11 @@ import { FOUNDATION_THEME } from '../../tokens'
 import styled from 'styled-components'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
-import { Check, ChevronRight } from 'lucide-react'
-import { TextInput } from '../Inputs/TextInput'
+import { ChevronRight } from 'lucide-react'
+import { SearchInput } from '../Inputs'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SingleSelectTokensType } from './singleSelect.tokens'
+import SelectItem, { SelectItemType } from '../Select/SelectItem'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -24,6 +25,7 @@ type SingleSelectMenuProps = {
     maxWidth?: number
     maxHeight?: number
     enableSearch?: boolean
+    searchPlaceholder?: string
     disabled?: boolean
 
     // alignment
@@ -41,12 +43,12 @@ const Content = styled(RadixMenu.Content)(() => ({
     position: 'relative',
     backgroundColor: 'white',
     borderRadius: 8,
-    padding: '8px 0px',
     // width: "var(--radix-dropdown-menu-trigger-width)",
     // maxWidth: "var(--radix-dropdown-menu-trigger-width)",
     boxShadow: FOUNDATION_THEME.shadows.lg,
     zIndex: 9999,
     overflowY: 'auto',
+    overflowX: 'hidden',
     scrollbarWidth: 'none',
     scrollbarColor: 'transparent transparent',
 }))
@@ -172,89 +174,18 @@ const Item = ({
     onSelect: (value: string) => void
     selected: string
 }) => {
-    const singleSelectTokens =
-        useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
-
     if (item.subMenu) {
         return <SubMenu item={item} onSelect={onSelect} selected={selected} />
     }
-    const handleClick = (e: React.MouseEvent) => {
-        if (item.disabled) return
 
-        e.preventDefault()
-        e.stopPropagation()
-        onSelect(item.value)
-    }
-
-    const isSelected = selected === item.value
     return (
-        <Block
-            onClick={handleClick}
-            data-disabled={item.disabled}
-            data-multi-select-item="true"
-            display="flex"
-            flexDirection="column"
-            gap={singleSelectTokens.dropdown.item.gap}
-            padding={singleSelectTokens.dropdown.item.padding}
-            margin={singleSelectTokens.dropdown.item.margin}
-            alignItems="center"
-            borderRadius={singleSelectTokens.dropdown.item.borderRadius}
-            cursor="pointer"
-            style={{ userSelect: 'none' }}
-            backgroundColor={
-                isSelected ? FOUNDATION_THEME.colors.gray[50] : 'transparent'
-            }
-            // hover effects
-            _hover={{
-                backgroundColor: FOUNDATION_THEME.colors.gray[50],
-            }}
-            _disabled={{
-                opacity: 0.5,
-                cursor: 'not-allowed',
-            }}
-            _focus={{
-                border: 'none',
-                outline: 'none',
-                backgroundColor: FOUNDATION_THEME.colors.gray[50],
-            }}
-        >
-            <Block
-                width="100%"
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                gap={8}
-            >
-                <Text
-                    variant="body.md"
-                    color={
-                        isSelected
-                            ? FOUNDATION_THEME.colors.gray[700]
-                            : FOUNDATION_THEME.colors.gray[600]
-                    }
-                    fontWeight={500}
-                    truncate
-                >
-                    {item.label}
-                </Text>
-                {isSelected && (
-                    <Block as="span" display="flex" alignItems="center">
-                        <Check size={16} color={'#000000'} />
-                    </Block>
-                )}
-            </Block>
-            {item.subLabel && (
-                <Block display="flex" alignItems="center" width="100%">
-                    <Text
-                        variant="body.sm"
-                        color={FOUNDATION_THEME.colors.gray[400]}
-                        fontWeight={400}
-                    >
-                        {item.subLabel}
-                    </Text>
-                </Block>
-            )}
-        </Block>
+        <SelectItem
+            item={item}
+            onSelect={onSelect}
+            selected={selected}
+            type={SelectItemType.SINGLE}
+            showCheckmark={true}
+        />
     )
 }
 
@@ -318,6 +249,7 @@ const SingleSelectMenu = ({
     maxWidth,
     maxHeight,
     enableSearch,
+    searchPlaceholder = 'Search options...',
     disabled,
     // alignment
     alignment = SelectMenuAlignment.CENTER,
@@ -371,16 +303,21 @@ const SingleSelectMenu = ({
                         left={0}
                         right={0}
                         zIndex={1000}
-                        marginBottom={10}
+                        backgroundColor={FOUNDATION_THEME.colors.gray[0]}
                     >
-                        <TextInput
-                            value={searchText}
-                            onChange={(e) => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                setSearchText(e.target.value)
-                            }}
-                        />
+                        <Block marginBottom={FOUNDATION_THEME.unit[6]}>
+                            <SearchInput
+                                placeholder={searchPlaceholder}
+                                value={searchText}
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    setSearchText(e.target.value)
+                                }}
+                            />
+                        </Block>
                     </Block>
                 )}
                 {filteredItems &&
