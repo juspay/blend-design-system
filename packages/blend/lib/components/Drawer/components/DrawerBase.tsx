@@ -30,6 +30,8 @@ const StyledContent = styled(VaulDrawer.Content)<{
     direction: 'top' | 'bottom' | 'left' | 'right'
     hasSnapPoints?: boolean
     contentDriven?: boolean
+    customWidth?: string | number
+    customMaxWidth?: string | number
     mobileOffset?: {
         top?: string
         bottom?: string
@@ -45,7 +47,15 @@ const StyledContent = styled(VaulDrawer.Content)<{
     display: flex;
     flex-direction: column;
 
-    ${({ direction, tokens, hasSnapPoints, contentDriven, mobileOffset }) => {
+    ${({
+        direction,
+        tokens,
+        hasSnapPoints,
+        contentDriven,
+        customWidth,
+        customMaxWidth,
+        mobileOffset,
+    }) => {
         const offset = {
             top: mobileOffset?.top ?? tokens.mobileOffset.top,
             bottom: mobileOffset?.bottom ?? tokens.mobileOffset.bottom,
@@ -131,6 +141,15 @@ const StyledContent = styled(VaulDrawer.Content)<{
             `
         }
         if (direction === 'left') {
+            const widthValue =
+                typeof customWidth === 'number'
+                    ? `${customWidth}px`
+                    : customWidth || '400px'
+            const maxWidthValue =
+                typeof customMaxWidth === 'number'
+                    ? `${customMaxWidth}px`
+                    : customMaxWidth || '400px'
+
             return `
                 position: fixed;
                 top: ${offset.top};
@@ -138,17 +157,27 @@ const StyledContent = styled(VaulDrawer.Content)<{
                 left: ${offset.left};
                 border-radius: ${tokens.content.borderRadius};
                 width: calc(100% - calc(${offset.left} + ${offset.right}));
-                max-width: 400px;
+                overflow: hidden;
+                max-width: ${maxWidthValue};
                 
                 @media (min-width: 1024px) {
                     top: 0;
                     bottom: 0;
                     left: 0;
-                    width: 400px;
+                    width: ${widthValue};
                 }
             `
         }
         if (direction === 'right') {
+            const widthValue =
+                typeof customWidth === 'number'
+                    ? `${customWidth}px`
+                    : customWidth || '400px'
+            const maxWidthValue =
+                typeof customMaxWidth === 'number'
+                    ? `${customMaxWidth}px`
+                    : customMaxWidth || '400px'
+
             return `
                 position: fixed;
                 top: ${offset.top};
@@ -156,13 +185,14 @@ const StyledContent = styled(VaulDrawer.Content)<{
                 right: ${offset.right};
                 border-radius: ${tokens.content.borderRadius};
                 width: calc(100% - calc(${offset.left} + ${offset.right}));
-                max-width: 400px;
+                overflow: hidden;
+                max-width: ${maxWidthValue};
                 
                 @media (min-width: 1024px) {
                     top: 0;
                     bottom: 0;
                     right: 0;
-                    width: 400px;
+                    width: ${widthValue};
                 }
             `
         }
@@ -267,6 +297,8 @@ export const DrawerContent = forwardRef<
         handle?: React.ReactNode
         hasSnapPoints?: boolean
         contentDriven?: boolean
+        width?: string | number
+        maxWidth?: string | number
         mobileOffset?: {
             top?: string
             bottom?: string
@@ -285,6 +317,8 @@ export const DrawerContent = forwardRef<
             handle,
             hasSnapPoints = false,
             contentDriven = false,
+            width,
+            maxWidth,
             mobileOffset,
             ...props
         },
@@ -301,6 +335,8 @@ export const DrawerContent = forwardRef<
                 direction={direction}
                 hasSnapPoints={hasSnapPoints}
                 contentDriven={contentDriven}
+                customWidth={width}
+                customMaxWidth={maxWidth}
                 mobileOffset={mobileOffset}
                 {...props}
             >
@@ -340,9 +376,8 @@ export const DrawerHeader = forwardRef<HTMLDivElement, DrawerHeaderProps>(
             <Block
                 ref={ref}
                 className={className}
-                // padding={tokens.header.padding}
-                // borderBottom={tokens.header.borderBottom}
                 backgroundColor={tokens.header.backgroundColor}
+                padding={tokens.header.padding}
                 flexShrink={0}
                 {...props}
             >
