@@ -4,6 +4,7 @@ import {
     StatCardVariant,
     ChangeType,
 } from '../../../../packages/blend/lib/components/StatCard'
+import { AxisType } from '../../../../packages/blend/lib/components/Charts'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
@@ -852,6 +853,232 @@ const StatCardDemo = () => {
                                 titleIcon={<Target size={16} />}
                                 progressValue={85}
                             />
+                        </div>
+                    </div>
+                </div>
+
+                {/* AxisType Formatting Examples */}
+                <div>
+                    <h3 className="text-xl font-bold mb-6">
+                        🎯 AxisType Formatting Examples
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-6">
+                        StatCard now supports the same AxisType formatting as
+                        Charts! Format main values, tooltip labels, and tooltip
+                        values with currency, percentage, number, and date/time
+                        formatters.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {/* Currency Formatting */}
+                        <StatCard
+                            title="Monthly Revenue"
+                            value={125000}
+                            valueFormatter={AxisType.CURRENCY}
+                            subtitle="Last 30 days"
+                            variant={StatCardVariant.LINE}
+                            titleIcon={<DollarSign size={16} />}
+                            chartData={[
+                                { value: 89000, name: '1693036800' },
+                                { value: 95000, name: '1693123200' },
+                                { value: 102000, name: '1693209600' },
+                                { value: 125000, name: '1693296000' },
+                            ]}
+                            xAxis={{
+                                type: AxisType.DATE_TIME,
+                                dateOnly: true,
+                            }}
+                            yAxis={{
+                                type: AxisType.CURRENCY,
+                            }}
+                            change={{
+                                value: 12.5,
+                                valueType: ChangeType.INCREASE,
+                                tooltip:
+                                    'Revenue increased by 12.5% this month',
+                            }}
+                        />
+
+                        {/* Percentage Formatting */}
+                        <StatCard
+                            title="Conversion Rate"
+                            value={87.5}
+                            valueFormatter={AxisType.PERCENTAGE}
+                            subtitle="Success rate"
+                            variant={StatCardVariant.BAR}
+                            titleIcon={<Target size={16} />}
+                            chartData={[
+                                { value: 82.1, name: 'Week 1' },
+                                { value: 85.3, name: 'Week 2' },
+                                { value: 84.7, name: 'Week 3' },
+                                { value: 87.5, name: 'Week 4' },
+                            ]}
+                            yAxis={{
+                                type: AxisType.PERCENTAGE,
+                            }}
+                            change={{
+                                value: 3.2,
+                                valueType: ChangeType.INCREASE,
+                                tooltip: 'Conversion rate improved by 3.2%',
+                            }}
+                        />
+
+                        {/* Number Formatting */}
+                        <StatCard
+                            title="Active Users"
+                            value={1250000}
+                            valueFormatter={AxisType.NUMBER}
+                            subtitle="Total registered"
+                            variant={StatCardVariant.LINE}
+                            titleIcon={<Users size={16} />}
+                            chartData={[
+                                { value: 890000, name: 'Jan' },
+                                { value: 950000, name: 'Feb' },
+                                { value: 1100000, name: 'Mar' },
+                                { value: 1250000, name: 'Apr' },
+                            ]}
+                            yAxis={{
+                                type: AxisType.NUMBER,
+                            }}
+                            change={{
+                                value: 18.7,
+                                valueType: ChangeType.INCREASE,
+                                tooltip: 'User base grew by 18.7% this quarter',
+                            }}
+                        />
+
+                        {/* Date/Time Formatting */}
+                        <StatCard
+                            title="Last Transaction"
+                            value="Latest Activity"
+                            subtitle="Real-time data"
+                            variant={StatCardVariant.BAR}
+                            titleIcon={<Activity size={16} />}
+                            chartData={[
+                                { value: 450, name: '1693065600' },
+                                { value: 520, name: '1693069200' },
+                                { value: 380, name: '1693072800' },
+                                { value: 610, name: '1693076400' },
+                            ]}
+                            xAxis={{
+                                type: AxisType.DATE_TIME,
+                            }}
+                            yAxis={{
+                                type: AxisType.NUMBER,
+                            }}
+                        />
+
+                        {/* Custom Formatters */}
+                        <StatCard
+                            title="Custom Formatting"
+                            value={42}
+                            subtitle="With custom formatters"
+                            variant={StatCardVariant.LINE}
+                            titleIcon={<Settings size={16} />}
+                            chartData={[
+                                { value: 35, name: 'Q1' },
+                                { value: 38, name: 'Q2' },
+                                { value: 40, name: 'Q3' },
+                                { value: 42, name: 'Q4' },
+                            ]}
+                            xAxis={{
+                                tickFormatter: (value) => `Period ${value}`,
+                            }}
+                            yAxis={{
+                                tickFormatter: (value) => `${value} units`,
+                            }}
+                        />
+
+                        {/* Smart Date/Time */}
+                        <StatCard
+                            title="Hourly Analytics"
+                            value="Smart Dates"
+                            subtitle="Same day = time only"
+                            variant={StatCardVariant.LINE}
+                            titleIcon={<TrendingUp size={16} />}
+                            chartData={[
+                                { value: 3494, name: '1756400400000' },
+                                { value: 197707.27, name: '1756396800000' },
+                                { value: 85205.24, name: '1756393200000' },
+                                { value: 109079.03, name: '1756389600000' },
+                                { value: 2733949.17, name: '1756386000000' },
+                                { value: 1626232.61, name: '1756382400000' },
+                                { value: 2543610.48, name: '1756378800000' },
+                                { value: 1145698.64, name: '1756375200000' },
+                                { value: 14400, name: '1756371600000' },
+                                { value: 21696, name: '1756368000000' },
+                                { value: 7298, name: '1756364400000' },
+                                { value: 0, name: '1756360800000' },
+                                { value: 0, name: '1756357200000' },
+                                { value: 0, name: '1756353600000' },
+                                { value: 0, name: '1756350000000' },
+                                { value: 0, name: '1756346400000' },
+                                { value: 0, name: '1756342800000' },
+                                { value: 0, name: '1756339200000' },
+                            ]}
+                            xAxis={{
+                                type: AxisType.NUMBER,
+                                smart: true,
+                            }}
+                            yAxis={{
+                                type: AxisType.DATE_TIME,
+                            }}
+                        />
+                    </div>
+
+                    <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h4 className="text-blue-800 font-semibold mb-2">
+                            🚀 New StatCard Formatting Features:
+                        </h4>
+                        <div className="text-sm text-blue-700 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <strong>Main Value Formatting:</strong>
+                                <ul className="ml-4 mt-1 space-y-1">
+                                    <li>
+                                        •{' '}
+                                        <code>
+                                            valueFormatter={AxisType.CURRENCY}
+                                        </code>
+                                    </li>
+                                    <li>
+                                        •{' '}
+                                        <code>
+                                            valueFormatter={AxisType.PERCENTAGE}
+                                        </code>
+                                    </li>
+                                    <li>
+                                        •{' '}
+                                        <code>
+                                            valueFormatter={AxisType.NUMBER}
+                                        </code>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <strong>Tooltip Formatting:</strong>
+                                <ul className="ml-4 mt-1 space-y-1">
+                                    <li>
+                                        •{' '}
+                                        <code>
+                                            xAxis={`{type: AxisType.DATE_TIME}`}
+                                        </code>
+                                    </li>
+                                    <li>
+                                        •{' '}
+                                        <code>
+                                            yAxis={`{type: AxisType.CURRENCY}`}
+                                        </code>
+                                    </li>
+                                    <li>
+                                        • <code>dateOnly: true</code>,{' '}
+                                        <code>smart: true</code>
+                                    </li>
+                                    <li>
+                                        • Custom <code>tickFormatter</code>{' '}
+                                        functions
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
