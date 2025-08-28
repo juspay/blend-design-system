@@ -36,7 +36,7 @@ import {
 // Base Charts connection
 figma.connect(
     Charts,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3324-26867&t=O53E5LTqGyp5e0cp-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-371955&t=2L1Yl830ZKZjFcrt-11',
     {
         props: {
             // Map Figma 'type' property to code 'chartType' prop
@@ -110,7 +110,7 @@ figma.connect(
 // Variant: Line Chart
 figma.connect(
     Charts,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3324-26867&t=O53E5LTqGyp5e0cp-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-371955&t=2L1Yl830ZKZjFcrt-11',
     {
         variant: { type: 'line' },
         example: () => (
@@ -152,7 +152,7 @@ figma.connect(
 // Variant: Bar Chart
 figma.connect(
     Charts,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3324-26867&t=O53E5LTqGyp5e0cp-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-371955&t=2L1Yl830ZKZjFcrt-11',
     {
         variant: { type: 'bar' },
         example: () => (
@@ -206,7 +206,7 @@ figma.connect(
 // Variant: Pie Chart
 figma.connect(
     Charts,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3324-26867&t=O53E5LTqGyp5e0cp-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-371955&t=2L1Yl830ZKZjFcrt-11',
     {
         variant: { type: 'pie' },
         example: () => (

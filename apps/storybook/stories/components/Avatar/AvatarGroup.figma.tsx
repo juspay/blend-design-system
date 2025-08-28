@@ -44,7 +44,7 @@ import { AvatarGroup, AvatarSize } from '@juspay/blend-design-system'
 
 figma.connect(
     AvatarGroup,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=19568-45588&t=EWj7fDD0TbtPTknX-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=19568-45588&t=Igz9fmVsO5gD0NMR-4',
     {
         props: {
             // Direct mapping - size is same in both Figma and code
