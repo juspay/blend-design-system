@@ -2,7 +2,7 @@
 
 import type React from 'react'
 import { toast as sonnerToast, Toaster as Snackbar } from 'sonner'
-import { Info, X } from 'lucide-react'
+import { X, Info, CircleCheckBig, TriangleAlert, CircleAlert } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
@@ -13,6 +13,18 @@ import {
 } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SnackbarTokens } from './snackbar.tokens'
+
+const SnackbarIcon = (variant: SnackbarVariant) => {
+    const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
+    const props = {
+        color: snackbarTokens.container.infoIcon[variant].color,
+        size: snackbarTokens.container.infoIcon[variant].size as number
+    }
+    if (variant == SnackbarVariant.SUCCESS) return <CircleCheckBig {...props} />
+    else if (variant == SnackbarVariant.WARNING) return <TriangleAlert {...props} />
+    else if (variant == SnackbarVariant.ERROR) return <CircleAlert {...props} />
+    return <Info {...props} />
+}
 
 export const StyledToast: React.FC<CustomToastProps> = ({
     header,
@@ -37,13 +49,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
         >
             <Block display="flex" gap={snackbarTokens.container.gap}>
                 <Block paddingTop={'4px'}>
-                    <Info
-                        size={
-                            snackbarTokens.container.infoIcon[variant]
-                                .size as number
-                        }
-                        color={snackbarTokens.container.infoIcon[variant].color}
-                    />
+                   <SnackbarIcon variant={variant} />
                 </Block>
                 <Block
                     display="flex"
@@ -159,6 +165,8 @@ export const addSnackbar = ({
         />
     ))
 }
+
+
 
 // Export the Toaster component
 export default Snackbar
