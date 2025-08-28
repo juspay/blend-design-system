@@ -1,3 +1,5 @@
+import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
+
 export enum MultiSelectVariant {
     CONTAINER = 'container',
     NO_CONTAINER = 'no-container',
@@ -42,7 +44,14 @@ export type MultiSelectMenuItemType = {
 
     // Tooltip support
     tooltip?: string | React.ReactNode
-    tooltipProps?: Partial<any> // Will be properly typed when imported
+    tooltipProps?: {
+        side?: TooltipSide
+        align?: TooltipAlign
+        size?: TooltipSize
+        showArrow?: boolean
+        delayDuration?: number
+        offset?: number
+    }
 
     // Disable truncation for specific items if needed
     disableTruncation?: boolean

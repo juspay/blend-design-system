@@ -26,6 +26,10 @@ import {
     SelectMenuAlignment,
     SelectMenuSide,
 } from '../../../../packages/blend/lib/components/Select'
+import {
+    TooltipSide,
+    TooltipSize,
+} from '../../../../packages/blend/lib/components/Tooltip'
 
 const SingleSelectDemo = () => {
     // Playground state
@@ -244,8 +248,8 @@ const SingleSelectDemo = () => {
                     tooltip:
                         'This option configures database connections, connection pooling, transaction handling, backup settings, and performance optimization for your application',
                     tooltipProps: {
-                        side: 'right' as const,
-                        size: 'lg' as const,
+                        side: TooltipSide.RIGHT,
+                        size: TooltipSize.LARGE,
                     },
                 },
                 {

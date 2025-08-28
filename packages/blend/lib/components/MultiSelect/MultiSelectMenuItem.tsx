@@ -1,7 +1,5 @@
 import { type MultiSelectMenuItemType } from './types'
 import MultiSelectSubMenu from './MultiSelectSubMenu'
-import { type MultiSelectTokensType } from './multiSelect.tokens'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
 
 const MultiSelectMenuItem = ({
@@ -13,9 +11,6 @@ const MultiSelectMenuItem = ({
     onSelect: (value: string) => void
     selected: string[]
 }) => {
-    const multiSelectTokens =
-        useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
-
     if (item.subMenu) {
         return (
             <MultiSelectSubMenu
@@ -32,7 +27,6 @@ const MultiSelectMenuItem = ({
             onSelect={onSelect}
             selected={selected}
             type={SelectItemType.MULTI}
-            tokens={multiSelectTokens}
             showCheckmark={true}
         />
     )

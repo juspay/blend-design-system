@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { TooltipProps } from '../../Tooltip/types'
+import { TooltipSide, TooltipAlign, TooltipSize } from '../../Tooltip/types'
 
 export enum SelectItemType {
     SINGLE = 'single',
@@ -19,11 +19,16 @@ export type BaseSelectItemType = {
     onClick?: () => void
     subMenu?: BaseSelectItemType[]
 
-    // Tooltip support
     tooltip?: string | ReactNode
-    tooltipProps?: Partial<Omit<TooltipProps, 'children' | 'content'>>
+    tooltipProps?: {
+        side?: TooltipSide
+        align?: TooltipAlign
+        size?: TooltipSize
+        showArrow?: boolean
+        delayDuration?: number
+        offset?: number
+    }
 
-    // Disable truncation for specific items if needed
     disableTruncation?: boolean
 }
 
@@ -34,5 +39,4 @@ export type SelectItemProps = {
     type: SelectItemType
     showCheckmark?: boolean
     className?: string
-    tokens?: any // Will be typed properly based on usage
 }

@@ -31,6 +31,10 @@ import {
     MultiSelectMenuSide,
     MultiSelectSelectionTagType,
 } from '../../../../packages/blend/lib/components/MultiSelect'
+import {
+    TooltipSide,
+    TooltipSize,
+} from '../../../../packages/blend/lib/components/Tooltip/types'
 
 const MultiSelectDemo = () => {
     // Playground state
@@ -464,8 +468,8 @@ const MultiSelectDemo = () => {
                     tooltip:
                         'This option configures database connections, connection pooling, transaction handling, and backup settings for your application',
                     tooltipProps: {
-                        side: 'right' as const,
-                        size: 'lg' as const,
+                        side: TooltipSide.RIGHT,
+                        size: TooltipSize.LARGE,
                     },
                 },
                 {

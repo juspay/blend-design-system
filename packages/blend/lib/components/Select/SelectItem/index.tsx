@@ -5,8 +5,11 @@ import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { Tooltip } from '../../Tooltip'
 import { Checkbox } from '../../Checkbox'
 import { Check } from 'lucide-react'
-import { type SelectItemProps } from './types'
+import { type SelectItemProps, SelectItemType } from './types'
 import { checkIfTruncated, isItemSelected, getRightSlotConfig } from './utils'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import type { MultiSelectTokensType } from '../../MultiSelect/multiSelect.tokens'
+import type { SingleSelectTokensType } from '../../SingleSelect/singleSelect.tokens'
 
 const MenuItemSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -18,15 +21,7 @@ const MenuItemSlot = ({ slot }: { slot: React.ReactNode }) => {
 
 const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
     (
-        {
-            item,
-            onSelect,
-            selected,
-            type,
-            showCheckmark = true,
-            className,
-            tokens,
-        },
+        { item, onSelect, selected, type, showCheckmark = true, className },
         ref
     ) => {
         const textRef = useRef<HTMLDivElement>(null)
@@ -34,9 +29,18 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         const [showTooltip, setShowTooltip] = useState(false)
         const [showSubLabelTooltip, setShowSubLabelTooltip] = useState(false)
 
+        const multiSelectTokens =
+            useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
+        const singleSelectTokens =
+            useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
+
+        const tokens =
+            type === SelectItemType.MULTI
+                ? multiSelectTokens
+                : singleSelectTokens
+
         const isSelected = isItemSelected(item.value, selected, type)
 
-        // Check for truncation on mount and when content changes
         useEffect(() => {
             if (!item.disableTruncation) {
                 const checkTruncation = () => {
@@ -50,7 +54,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
 
                 checkTruncation()
 
-                // Re-check on resize
                 const resizeObserver = new ResizeObserver(checkTruncation)
                 if (textRef.current) {
                     resizeObserver.observe(textRef.current)
@@ -112,6 +115,8 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     borderRadius={tokens?.dropdown?.item?.borderRadius || 4}
                     outline="none"
                     border="none"
+                    width="100%"
+                    minWidth={0}
                     color={
                         item.disabled
                             ? tokens?.dropdown?.item?.label?.color?.disabled
@@ -158,6 +163,8 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                             display="flex"
                             alignItems="center"
                             gap={8}
+                            width="100%"
+                            minWidth={0}
                         >
                             {item.slot1 && <MenuItemSlot slot={item.slot1} />}
                             <Block
@@ -165,6 +172,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                                 display="flex"
                                 overflow="hidden"
                                 ref={textRef}
+                                style={{ minWidth: 0 }}
                             >
                                 <PrimitiveText
                                     fontSize={
@@ -175,7 +183,11 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                                             ?.fontWeight
                                     }
                                     truncate={!item.disableTruncation}
-                                    style={{ width: '100%' }}
+                                    data-truncate="true"
+                                    style={{
+                                        width: '100%',
+                                        minWidth: 0,
+                                    }}
                                 >
                                     {item.label}
                                 </PrimitiveText>
@@ -203,7 +215,11 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                         </Block>
                     </Block>
                     {item.subLabel && (
-                        <Block ref={subLabelRef} overflow="hidden">
+                        <Block
+                            ref={subLabelRef}
+                            overflow="hidden"
+                            style={{ minWidth: 0 }}
+                        >
                             <PrimitiveText
                                 fontSize={
                                     tokens?.dropdown?.item?.subLabel?.fontSize
@@ -219,7 +235,11 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                                               ?.color?.default
                                 }
                                 truncate={!item.disableTruncation}
-                                style={{ width: '100%' }}
+                                data-truncate="true"
+                                style={{
+                                    width: '100%',
+                                    minWidth: 0,
+                                }}
                             >
                                 {item.subLabel}
                             </PrimitiveText>
@@ -229,7 +249,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             </RadixMenu.Item>
         )
 
-        // Wrap with tooltip if needed
         if (hasTooltip) {
             return (
                 <Tooltip content={tooltipContent} {...item.tooltipProps}>

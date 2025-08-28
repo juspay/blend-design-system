@@ -173,9 +173,6 @@ const Item = ({
     onSelect: (value: string) => void
     selected: string
 }) => {
-    const singleSelectTokens =
-        useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
-
     if (item.subMenu) {
         return <SubMenu item={item} onSelect={onSelect} selected={selected} />
     }
@@ -186,7 +183,6 @@ const Item = ({
             onSelect={onSelect}
             selected={selected}
             type={SelectItemType.SINGLE}
-            tokens={singleSelectTokens}
             showCheckmark={true}
         />
     )

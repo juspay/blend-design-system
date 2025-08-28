@@ -1,10 +1,19 @@
 import { RefObject } from 'react'
 import { SelectItemType } from './types'
 
-// Check if text is truncated in an element
 export const checkIfTruncated = (element: HTMLElement | null): boolean => {
     if (!element) return false
-    return element.scrollWidth > element.clientWidth
+    const isOverflowing = element.scrollWidth > element.clientWidth
+    const textElement =
+        element.querySelector('[data-truncate="true"]') ||
+        element.querySelector('p, span, div')
+    if (textElement) {
+        return (
+            (textElement as HTMLElement).scrollWidth >
+            (textElement as HTMLElement).clientWidth
+        )
+    }
+    return isOverflowing
 }
 
 // Detect truncation in a ref
@@ -17,7 +26,6 @@ export const useTruncationDetection = (ref: RefObject<HTMLElement>) => {
     return checkTruncation
 }
 
-// Check if item is selected based on type
 export const isItemSelected = (
     itemValue: string,
     selected: string | string[],
@@ -30,11 +38,10 @@ export const isItemSelected = (
     }
 }
 
-// Get configuration for right slot content based on selection state and type
 export const getRightSlotConfig = (
     isSelected: boolean,
     type: SelectItemType,
-    item: any
+    item: { disabled?: boolean }
 ) => {
     if (type === SelectItemType.MULTI) {
         return {
