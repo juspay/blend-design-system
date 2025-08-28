@@ -151,7 +151,6 @@ const MultiSelectMenu = ({
                         availableValues.length > 0 && (
                             <Block
                                 borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                                marginBottom={FOUNDATION_THEME.unit[6]}
                             >
                                 <SelectAllItem
                                     selected={selected}
