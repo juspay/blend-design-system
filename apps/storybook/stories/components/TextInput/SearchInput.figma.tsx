@@ -29,7 +29,7 @@ import { SearchInput } from '@juspay/blend-design-system'
 // Base connection
 figma.connect(
     SearchInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-6789&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516575&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Placeholder maps to value in code
@@ -90,7 +90,7 @@ figma.connect(
 // Variant: With left slot
 figma.connect(
     SearchInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-6789&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516575&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLeftSlot: true },
         props: {
@@ -124,7 +124,7 @@ figma.connect(
 // Variant: With right slot
 figma.connect(
     SearchInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-6789&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516575&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showRightSlot: true },
         props: {
@@ -158,7 +158,7 @@ figma.connect(
 // Variant: With both slots
 figma.connect(
     SearchInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-6789&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516575&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLeftSlot: true, showRightSlot: true },
         props: {
@@ -189,7 +189,7 @@ figma.connect(
 // Variant: Error state
 figma.connect(
     SearchInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-6789&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516575&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { state: 'error' },
         props: {

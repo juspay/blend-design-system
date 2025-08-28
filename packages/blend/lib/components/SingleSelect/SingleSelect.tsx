@@ -191,9 +191,11 @@ const SingleSelect = ({
                         sideOffset={sideOffset}
                         alignOffset={alignOffset}
                         enableSearch={enableSearch}
+                        searchPlaceholder={searchPlaceholder}
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
+                                    type="button"
                                     name={name}
                                     position="relative"
                                     width={'100%'}
@@ -233,8 +235,6 @@ const SingleSelect = ({
                                                       ? 'open'
                                                       : 'closed'
                                             ],
-                                        height: singleSelectTokens.trigger
-                                            .height[size],
                                         maxHeight:
                                             singleSelectTokens.trigger.height[
                                                 size
@@ -348,6 +348,13 @@ const SingleSelect = ({
                                                                 .colors
                                                                 .gray[600]
                                                         }
+                                                        style={{
+                                                            overflow: 'hidden',
+                                                            textOverflow:
+                                                                'ellipsis',
+                                                            whiteSpace:
+                                                                'nowrap',
+                                                        }}
                                                     >
                                                         {
                                                             valueLabelMap[
@@ -369,6 +376,8 @@ const SingleSelect = ({
                                                 }
                                                 fontWeight={500}
                                                 style={{
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
                                                     whiteSpace: 'nowrap',
                                                 }}
                                             >

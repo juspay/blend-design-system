@@ -46,7 +46,7 @@ import { DropdownInput, TextInputSize } from '@juspay/blend-design-system'
 // Base connection
 figma.connect(
     DropdownInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4345-6579&t=7jhWrANrtdhn2hOJ-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513927&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Size mapping
@@ -127,7 +127,7 @@ figma.connect(
 // Variant: With label
 figma.connect(
     DropdownInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4345-6579&t=7jhWrANrtdhn2hOJ-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513927&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: true },
         props: {
@@ -173,7 +173,7 @@ figma.connect(
 // Variant: Without label
 figma.connect(
     DropdownInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4345-6579&t=7jhWrANrtdhn2hOJ-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513927&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: false },
         props: {
@@ -215,7 +215,7 @@ figma.connect(
 // Variant: With left slot
 figma.connect(
     DropdownInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4345-6579&t=7jhWrANrtdhn2hOJ-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513927&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLeftSlot: true },
         props: {
@@ -258,7 +258,7 @@ figma.connect(
 // Variant: Medium size
 figma.connect(
     DropdownInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4345-6579&t=7jhWrANrtdhn2hOJ-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513927&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'md' },
         props: {
@@ -300,7 +300,7 @@ figma.connect(
 // Variant: Large size
 figma.connect(
     DropdownInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4345-6579&t=7jhWrANrtdhn2hOJ-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513927&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'lg' },
         props: {

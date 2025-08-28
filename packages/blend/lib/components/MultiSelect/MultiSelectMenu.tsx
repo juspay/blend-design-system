@@ -22,15 +22,44 @@ import { ButtonType, ButtonSize } from '../Button/types'
 
 const Content = styled(RadixMenu.Content)(() => ({
     position: 'relative',
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: '6px 0px',
+    backgroundColor: FOUNDATION_THEME.colors.gray[0],
+    borderRadius: FOUNDATION_THEME.border.radius[8],
     boxShadow: FOUNDATION_THEME.shadows.lg,
     zIndex: 9999,
+    border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+}))
+
+const StickyHeader = styled(Block)(() => ({
+    position: 'sticky',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    backgroundColor: FOUNDATION_THEME.colors.gray[0],
+}))
+
+const ScrollableContent = styled(Block)(() => ({
     overflowY: 'auto',
     scrollbarWidth: 'none',
-    scrollbarColor: 'transparent transparent',
-    border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+    msOverflowStyle: 'none',
+    flexGrow: 1,
+    '&::-webkit-scrollbar': {
+        display: 'none',
+    },
+}))
+
+const FixedActionButtons = styled(Block)(() => ({
+    borderTop: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
+    padding: FOUNDATION_THEME.unit[16],
+    display: 'flex',
+    gap: FOUNDATION_THEME.unit[8],
+    justifyContent: 'flex-end',
+    margin: '0',
+    backgroundColor: FOUNDATION_THEME.colors.gray[0],
+    flexShrink: 0,
 }))
 
 const MultiSelectMenu = ({
@@ -60,12 +89,7 @@ const MultiSelectMenu = ({
         disabled: false,
         loading: false,
     },
-    secondaryAction = {
-        text: 'Clear All',
-        onClick: () => {},
-        disabled: false,
-        loading: false,
-    },
+    secondaryAction,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -105,109 +129,103 @@ const MultiSelectMenu = ({
                             ? 'auto'
                             : 'max(var(--radix-dropdown-menu-trigger-width), 250px)',
                     maxWidth: maxWidth || 400,
-                    maxHeight,
+                    maxHeight: maxHeight || 400,
                 }}
             >
-                {enableSearch && (
-                    <Block
-                        position="sticky"
-                        top={0}
-                        left={0}
-                        right={0}
-                        zIndex={1000}
-                    >
-                        <SearchInput
-                            placeholder={searchPlaceholder}
-                            value={searchText}
-                            onChange={(e) => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                setSearchText(e.target.value)
-                            }}
-                        />
-                    </Block>
-                )}
-
-                {enableSelectAll &&
-                    onSelectAll &&
-                    availableValues.length > 0 && (
-                        <Block
-                            borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                        >
-                            <SelectAllItem
-                                selected={selected}
-                                availableValues={availableValues}
-                                onSelectAll={onSelectAll}
-                                selectAllText={selectAllText}
-                                disabled={disabled}
+                <StickyHeader>
+                    {enableSearch && (
+                        <Block>
+                            <SearchInput
+                                placeholder={searchPlaceholder}
+                                value={searchText}
+                                onChange={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    setSearchText(e.target.value)
+                                }}
                             />
                         </Block>
                     )}
-
-                {filteredItems.map(
-                    (group: MultiSelectMenuGroupType, groupId: number) => (
-                        <React.Fragment key={groupId}>
-                            {group.groupLabel && (
-                                <RadixMenu.Label asChild>
-                                    <PrimitiveText
-                                        fontSize={12}
-                                        padding="6px 8px"
-                                        userSelect="none"
-                                        margin="0px 6px"
-                                        textTransform="uppercase"
-                                        color={
-                                            FOUNDATION_THEME.colors.gray[400]
-                                        }
-                                    >
-                                        {group.groupLabel}
-                                    </PrimitiveText>
-                                </RadixMenu.Label>
-                            )}
-                            {group.items.map(
-                                (
-                                    item: MultiSelectMenuItemType,
-                                    itemIndex: number
-                                ) => (
-                                    <MultiSelectMenuItem
-                                        key={`${groupId}-${itemIndex}`}
-                                        selected={selected}
-                                        item={item}
-                                        onSelect={onSelect}
-                                    />
-                                )
-                            )}
-                            {groupId !== filteredItems.length - 1 &&
-                                group.showSeparator && (
-                                    <RadixMenu.Separator asChild>
-                                        <Block
-                                            height={
-                                                multiSelectTokens.dropdown
-                                                    .seperator.height
+                    {enableSelectAll &&
+                        onSelectAll &&
+                        availableValues.length > 0 && (
+                            <Block
+                                borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                            >
+                                <SelectAllItem
+                                    selected={selected}
+                                    availableValues={availableValues}
+                                    onSelectAll={onSelectAll}
+                                    selectAllText={selectAllText}
+                                    disabled={disabled}
+                                />
+                            </Block>
+                        )}
+                </StickyHeader>
+                <ScrollableContent
+                    style={{
+                        maxHeight: maxHeight ? `${maxHeight - 80}px` : '320px',
+                        padding: `${FOUNDATION_THEME.unit[6]} 0`,
+                    }}
+                >
+                    {filteredItems.map(
+                        (group: MultiSelectMenuGroupType, groupId: number) => (
+                            <React.Fragment key={groupId}>
+                                {group.groupLabel && (
+                                    <RadixMenu.Label asChild>
+                                        <PrimitiveText
+                                            fontSize={12}
+                                            padding="6px 8px"
+                                            userSelect="none"
+                                            margin="0px 6px"
+                                            textTransform="uppercase"
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
                                             }
-                                            backgroundColor={
-                                                multiSelectTokens.dropdown
-                                                    .seperator.color
-                                            }
-                                            margin={
-                                                multiSelectTokens.dropdown
-                                                    .seperator.margin
-                                            }
-                                        ></Block>
-                                    </RadixMenu.Separator>
+                                        >
+                                            {group.groupLabel}
+                                        </PrimitiveText>
+                                    </RadixMenu.Label>
                                 )}
-                        </React.Fragment>
-                    )
-                )}
-
+                                {group.items.map(
+                                    (
+                                        item: MultiSelectMenuItemType,
+                                        itemIndex: number
+                                    ) => (
+                                        <MultiSelectMenuItem
+                                            key={`${groupId}-${itemIndex}`}
+                                            selected={selected}
+                                            item={item}
+                                            onSelect={onSelect}
+                                        />
+                                    )
+                                )}
+                                {groupId !== filteredItems.length - 1 &&
+                                    group.showSeparator && (
+                                        <RadixMenu.Separator asChild>
+                                            <Block
+                                                height={
+                                                    multiSelectTokens.dropdown
+                                                        .seperator.height
+                                                }
+                                                backgroundColor={
+                                                    multiSelectTokens.dropdown
+                                                        .seperator.color
+                                                }
+                                                margin={
+                                                    multiSelectTokens.dropdown
+                                                        .seperator.margin
+                                                }
+                                            ></Block>
+                                        </RadixMenu.Separator>
+                                    )}
+                            </React.Fragment>
+                        )
+                    )}
+                </ScrollableContent>
                 {showActionButtons && (primaryAction || secondaryAction) && (
-                    <Block
-                        borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                        padding={`${FOUNDATION_THEME.unit[16]}`}
-                        display="flex"
-                        gap={8}
-                        justifyContent="flex-end"
-                        margin="0"
-                    >
+                    <FixedActionButtons>
                         {secondaryAction && (
                             <Button
                                 buttonType={ButtonType.SECONDARY}
@@ -231,7 +249,7 @@ const MultiSelectMenu = ({
                                 loading={primaryAction.loading}
                             />
                         )}
-                    </Block>
+                    </FixedActionButtons>
                 )}
             </Content>
         </RadixMenu.Root>

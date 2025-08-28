@@ -30,6 +30,7 @@ import {
     SingleSelect,
 } from '../SingleSelect'
 import { toPixels } from '../../global-utils/GlobalUtils'
+import { getAxisFormatterWithConfig } from '../Charts/ChartUtils'
 
 const StatCard = ({
     title,
@@ -45,11 +46,49 @@ const StatCard = ({
     helpIconText,
     dropdownProps,
     maxWidth = 'auto',
+    xAxis,
+    yAxis,
+    valueFormatter,
 }: StatCardProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
     const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
+
+    const formatTooltipLabel = (label: string | number): string => {
+        if (!xAxis) return String(label)
+        if (xAxis.tickFormatter) return xAxis.tickFormatter(label)
+        if (xAxis.type) {
+            return getAxisFormatterWithConfig(
+                xAxis.type,
+                xAxis.dateOnly,
+                xAxis.smart
+            )(label)
+        }
+        return String(label)
+    }
+
+    const formatTooltipValue = (val: string | number): string => {
+        if (!yAxis) {
+            return typeof val === 'number' ? val.toLocaleString() : String(val)
+        }
+        if (yAxis.tickFormatter) return yAxis.tickFormatter(val)
+        if (yAxis.type) {
+            return getAxisFormatterWithConfig(
+                yAxis.type,
+                yAxis.dateOnly,
+                yAxis.smart
+            )(val)
+        }
+        return typeof val === 'number' ? val.toLocaleString() : String(val)
+    }
+
+    const formatMainValue = (val: string | number): string => {
+        if (valueFormatter) {
+            return getAxisFormatterWithConfig(valueFormatter, false, false)(val)
+        }
+        return String(val)
+    }
 
     const { label, placeholder, items, selected, onSelect } =
         dropdownProps || {}
@@ -174,7 +213,7 @@ const StatCard = ({
                         variant="body.sm"
                         fontWeight="medium"
                     >
-                        {`${name},`}
+                        {`${formatTooltipLabel(name || '')},`}
                     </Text>
 
                     <Text
@@ -182,7 +221,7 @@ const StatCard = ({
                         color={statCardToken.chart.tooltip.text.color}
                         variant="body.sm"
                     >
-                        {currentValue}
+                        {formatTooltipValue(currentValue)}
                     </Text>
                 </Block>
             </Block>
@@ -314,7 +353,6 @@ const StatCard = ({
                                 alignItems="center"
                                 gap={statCardToken.stats.gap}
                             >
-                                (
                                 <Tooltip content={valueTooltip || ''}>
                                     <Text
                                         as="span"
@@ -333,10 +371,10 @@ const StatCard = ({
                                             cursor: 'pointer',
                                         }}
                                     >
-                                        {value}
+                                        {formatMainValue(value)}
                                     </Text>
                                 </Tooltip>
-                                )
+
                                 {formattedChange && (
                                     <Tooltip content={change?.tooltip || ''}>
                                         <Block
@@ -478,6 +516,9 @@ const StatCard = ({
                             display="flex"
                             alignItems="center"
                             gap={statCardToken.stats.gap}
+                            justifyContent={
+                                formattedChange ? 'flex-start' : 'center'
+                            }
                         >
                             {
                                 <Tooltip content={valueTooltip || ''}>
@@ -502,7 +543,7 @@ const StatCard = ({
                                             cursor: 'pointer',
                                         }}
                                     >
-                                        {value}
+                                        {formatMainValue(value)}
                                     </Text>
                                 </Tooltip>
                             }

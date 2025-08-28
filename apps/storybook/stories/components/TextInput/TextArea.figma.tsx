@@ -45,7 +45,7 @@ import { TextArea } from '@juspay/blend-design-system'
 // Base connection
 figma.connect(
     TextArea,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-4101&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516369&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Direct string mappings
@@ -124,7 +124,7 @@ figma.connect(
 // Variant: With label
 figma.connect(
     TextArea,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-4101&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516369&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: true },
         props: {
@@ -177,7 +177,7 @@ figma.connect(
 // Variant: Without label
 figma.connect(
     TextArea,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-4101&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516369&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: false },
         props: {
@@ -218,7 +218,7 @@ figma.connect(
 // Variant: With sublabel
 figma.connect(
     TextArea,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-4101&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516369&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showSublabel: true },
         props: {
@@ -271,7 +271,7 @@ figma.connect(
 // Variant: With hint
 figma.connect(
     TextArea,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-4101&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516369&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showHint: true },
         props: {
@@ -324,7 +324,7 @@ figma.connect(
 // Variant: Disabled state
 figma.connect(
     TextArea,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-4101&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516369&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { state: 'disabled' },
         props: {
@@ -352,7 +352,7 @@ figma.connect(
 // Variant: Required field
 figma.connect(
     TextArea,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-4101&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516369&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { mandatory: true },
         props: {

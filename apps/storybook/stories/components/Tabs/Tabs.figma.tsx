@@ -9,16 +9,18 @@ import { TabsTrigger, TabsVariant, TabsSize } from '@juspay/blend-design-system'
  *
  * Figma vs Code Property Differences:
  *
- * 1. DIRECT MAPPINGS (same in both):
- *    - variant → variant
+ * 1. RENAMED MAPPINGS:
+ *    - type (Figma) → variant (Code)
+ *
+ * 2. DIRECT MAPPINGS (same in both):
  *    - size → size
  *    - value → value (tab identifier)
  *
- * 2. SPECIAL MAPPINGS:
+ * 3. SPECIAL MAPPINGS:
  *    - slot1 (Figma) → leftSlot (Code)
  *    - slot2 (Figma) → rightSlot (Code)
  *
- * 3. FIGMA-ONLY PROPERTIES (not needed in code):
+ * 4. FIGMA-ONLY PROPERTIES (not needed in code):
  *    - state: Interaction state, handled automatically
  *    - hasSlot1: Visibility control, handled by slot1 mapping
  *    - hasSlot2: Visibility control, handled by slot2 mapping
@@ -30,49 +32,32 @@ import { TabsTrigger, TabsVariant, TabsSize } from '@juspay/blend-design-system'
 
 figma.connect(
     TabsTrigger,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2466-2989&t=GtwfY3QEmeFbCAjz-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-733044&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
-            // Direct enum mappings
-            variant: figma.enum('variant', {
+            // Renamed mapping: type (Figma) → variant (Code)
+            variant: figma.enum('type', {
                 boxed: TabsVariant.BOXED,
                 floating: TabsVariant.FLOATING,
                 underline: TabsVariant.UNDERLINE,
             }),
 
+            // Direct mappings
             size: figma.enum('size', {
                 md: TabsSize.MD,
                 lg: TabsSize.LG,
             }),
 
-            // Tab value/identifier
-            value: figma.string('value'),
+            // Fixed props for Code Connect (not available in Figma)
+            value: 'tab-1', // Tab identifier
+            children: 'Tab Label', // Tab text content
 
-            // Slot mappings
-            leftSlot: figma.boolean('hasSlot1', {
-                true: figma.instance('slot1'),
-                false: undefined,
-            }),
-
-            rightSlot: figma.boolean('hasSlot2', {
-                true: figma.instance('slot2'),
-                false: undefined,
-            }),
-
-            // Tab label - using a default text
-            children: 'Tab Label',
-
+            // Note: leftSlot, rightSlot, and other slot props are not available in this Figma component
             // Note: state prop from Figma is not mapped as it's an interaction state
         },
 
-        example: ({ variant, size, value, leftSlot, rightSlot, children }) => (
-            <TabsTrigger
-                variant={variant}
-                size={size}
-                value={value}
-                leftSlot={leftSlot}
-                rightSlot={rightSlot}
-            >
+        example: ({ variant, size, value, children }) => (
+            <TabsTrigger variant={variant} size={size} value={value}>
                 {children}
             </TabsTrigger>
         ),
@@ -129,14 +114,16 @@ import { Tabs, TabsList, TabsContent } from '@juspay/blend-design-system'
 // TabSets - connection for TabsList component
 figma.connect(
     TabsList,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2463-814&t=GtwfY3QEmeFbCAjz-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-733044&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
-            variant: figma.enum('variant', {
+            // Renamed mapping: type (Figma) → variant (Code)
+            variant: figma.enum('type', {
                 boxed: TabsVariant.BOXED,
                 floating: TabsVariant.FLOATING,
                 underline: TabsVariant.UNDERLINE,
             }),
+            // Direct mappings
             size: figma.enum('size', {
                 md: TabsSize.MD,
                 lg: TabsSize.LG,

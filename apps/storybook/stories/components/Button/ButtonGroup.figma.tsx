@@ -1,207 +1,306 @@
 import React from 'react'
-import { ButtonGroup, Button, ButtonType } from '@juspay/blend-design-system'
-import figma from '@figma/code-connect'
+import {
+    ButtonGroup,
+    Button,
+    ButtonType,
+    ButtonSize,
+} from '@juspay/blend-design-system'
+import { figma } from '@figma/code-connect'
 
 /**
- * ButtonGroup Figma Code Connect
+ * FIGMA CODE CONNECT FOR BUTTON GROUP COMPONENT
  *
- * Props mapping:
- * - number (Figma only): Determines number of buttons to render
- * - size (Figma only): Will be added to code in future
- * - stacked (both): Boolean prop for stacked/horizontal layout
+ * PROP MAPPING DOCUMENTATION
+ *
+ * Figma vs Code Property Differences:
+ *
+ * 1. RENAMED MAPPINGS:
+ *    - stack (Figma) → stacked (Code)
+ *
+ * 2. FIGMA-ONLY PROPERTIES (not in code):
+ *    - number: Determines the number of buttons to render (2-5)
+ *    - size: Button size that applies to all buttons in the group
+ *
+ * 3. CODE-ONLY PROPERTIES (not in Figma):
+ *    - children: The actual Button components to render
+ *
+ * Note: The 'size' prop in Figma corresponds to the individual button sizes,
+ * but ButtonGroup itself doesn't have a size prop in code. The size is applied
+ * to each individual Button component within the group.
  */
 
 figma.connect(
     ButtonGroup,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=6692-3066',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18797-274946&t=Igz9fmVsO5gD0NMR-4',
     {
         props: {
-            // stacked prop maps directly
-            stacked: figma.boolean('stacked'),
+            // Renamed mapping: stack (Figma) → stacked (Code)
+            stacked: figma.boolean('stack'),
 
-            // number prop is used to generate children
+            // Generate children based on number and size from Figma
             children: figma.enum('number', {
-                '2': [
-                    <Button key={0} text="Button 1" />,
-                    <Button key={1} text="Button 2" />,
-                ],
-                '3': [
-                    <Button key={0} text="Button 1" />,
-                    <Button key={1} text="Button 2" />,
-                    <Button key={2} text="Button 3" />,
-                ],
-                '4': [
-                    <Button key={0} text="Button 1" />,
-                    <Button key={1} text="Button 2" />,
-                    <Button key={2} text="Button 3" />,
-                    <Button key={3} text="Button 4" />,
-                ],
-                '5': [
-                    <Button key={0} text="Button 1" />,
-                    <Button key={1} text="Button 2" />,
-                    <Button key={2} text="Button 3" />,
-                    <Button key={3} text="Button 4" />,
-                    <Button key={4} text="Button 5" />,
-                ],
+                '2': figma.enum('size', {
+                    small: [
+                        <Button
+                            key={0}
+                            text="Button 1"
+                            size={ButtonSize.SMALL}
+                        />,
+                        <Button
+                            key={1}
+                            text="Button 2"
+                            size={ButtonSize.SMALL}
+                        />,
+                    ],
+                    medium: [
+                        <Button
+                            key={0}
+                            text="Button 1"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                        <Button
+                            key={1}
+                            text="Button 2"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                    ],
+                    large: [
+                        <Button
+                            key={0}
+                            text="Button 1"
+                            size={ButtonSize.LARGE}
+                        />,
+                        <Button
+                            key={1}
+                            text="Button 2"
+                            size={ButtonSize.LARGE}
+                        />,
+                    ],
+                }),
+                '3': figma.enum('size', {
+                    small: [
+                        <Button
+                            key={0}
+                            text="Button 1"
+                            size={ButtonSize.SMALL}
+                        />,
+                        <Button
+                            key={1}
+                            text="Button 2"
+                            size={ButtonSize.SMALL}
+                        />,
+                        <Button
+                            key={2}
+                            text="Button 3"
+                            size={ButtonSize.SMALL}
+                        />,
+                    ],
+                    medium: [
+                        <Button
+                            key={0}
+                            text="Button 1"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                        <Button
+                            key={1}
+                            text="Button 2"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                        <Button
+                            key={2}
+                            text="Button 3"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                    ],
+                    large: [
+                        <Button
+                            key={0}
+                            text="Button 1"
+                            size={ButtonSize.LARGE}
+                        />,
+                        <Button
+                            key={1}
+                            text="Button 2"
+                            size={ButtonSize.LARGE}
+                        />,
+                        <Button
+                            key={2}
+                            text="Button 3"
+                            size={ButtonSize.LARGE}
+                        />,
+                    ],
+                }),
+                '4': figma.enum('size', {
+                    small: [
+                        <Button
+                            key={0}
+                            text="Button 1"
+                            size={ButtonSize.SMALL}
+                        />,
+                        <Button
+                            key={1}
+                            text="Button 2"
+                            size={ButtonSize.SMALL}
+                        />,
+                        <Button
+                            key={2}
+                            text="Button 3"
+                            size={ButtonSize.SMALL}
+                        />,
+                        <Button
+                            key={3}
+                            text="Button 4"
+                            size={ButtonSize.SMALL}
+                        />,
+                    ],
+                    medium: [
+                        <Button
+                            key={0}
+                            text="Button 1"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                        <Button
+                            key={1}
+                            text="Button 2"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                        <Button
+                            key={2}
+                            text="Button 3"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                        <Button
+                            key={3}
+                            text="Button 4"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                    ],
+                    large: [
+                        <Button
+                            key={0}
+                            text="Button 1"
+                            size={ButtonSize.LARGE}
+                        />,
+                        <Button
+                            key={1}
+                            text="Button 2"
+                            size={ButtonSize.LARGE}
+                        />,
+                        <Button
+                            key={2}
+                            text="Button 3"
+                            size={ButtonSize.LARGE}
+                        />,
+                        <Button
+                            key={3}
+                            text="Button 4"
+                            size={ButtonSize.LARGE}
+                        />,
+                    ],
+                }),
+                '5': figma.enum('size', {
+                    small: [
+                        <Button
+                            key={0}
+                            text="Button 1"
+                            size={ButtonSize.SMALL}
+                        />,
+                        <Button
+                            key={1}
+                            text="Button 2"
+                            size={ButtonSize.SMALL}
+                        />,
+                        <Button
+                            key={2}
+                            text="Button 3"
+                            size={ButtonSize.SMALL}
+                        />,
+                        <Button
+                            key={3}
+                            text="Button 4"
+                            size={ButtonSize.SMALL}
+                        />,
+                        <Button
+                            key={4}
+                            text="Button 5"
+                            size={ButtonSize.SMALL}
+                        />,
+                    ],
+                    medium: [
+                        <Button
+                            key={0}
+                            text="Button 1"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                        <Button
+                            key={1}
+                            text="Button 2"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                        <Button
+                            key={2}
+                            text="Button 3"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                        <Button
+                            key={3}
+                            text="Button 4"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                        <Button
+                            key={4}
+                            text="Button 5"
+                            size={ButtonSize.MEDIUM}
+                        />,
+                    ],
+                    large: [
+                        <Button
+                            key={0}
+                            text="Button 1"
+                            size={ButtonSize.LARGE}
+                        />,
+                        <Button
+                            key={1}
+                            text="Button 2"
+                            size={ButtonSize.LARGE}
+                        />,
+                        <Button
+                            key={2}
+                            text="Button 3"
+                            size={ButtonSize.LARGE}
+                        />,
+                        <Button
+                            key={3}
+                            text="Button 4"
+                            size={ButtonSize.LARGE}
+                        />,
+                        <Button
+                            key={4}
+                            text="Button 5"
+                            size={ButtonSize.LARGE}
+                        />,
+                    ],
+                }),
             }),
-
-            // size prop is noted but not used in current implementation
-            // Will be implemented when size prop is added to ButtonGroup
-            // size: figma.enum("size", {
-            //   "small": "small",
-            //   "medium": "medium",
-            //   "large": "large",
-            // }),
         },
 
         example: ({ stacked, children }) => (
             <ButtonGroup stacked={stacked}>{children}</ButtonGroup>
         ),
+
+        imports: [
+            "import { ButtonGroup, Button, ButtonSize } from '@juspay/blend-design-system'",
+        ],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/Button',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://juspay.design/storybook/?path=/docs/components-button--docs',
+            },
+        ],
     }
 )
-
-// Variant for horizontal button group (stacked = false)
-figma.connect(
-    ButtonGroup,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=6692-3066',
-    {
-        variant: { stacked: 'false' },
-        props: {
-            children: figma.enum('number', {
-                '2': [
-                    <Button key={0} text="Button 1" />,
-                    <Button key={1} text="Button 2" />,
-                ],
-                '3': [
-                    <Button key={0} text="Button 1" />,
-                    <Button key={1} text="Button 2" />,
-                    <Button key={2} text="Button 3" />,
-                ],
-                '4': [
-                    <Button key={0} text="Button 1" />,
-                    <Button key={1} text="Button 2" />,
-                    <Button key={2} text="Button 3" />,
-                    <Button key={3} text="Button 4" />,
-                ],
-                '5': [
-                    <Button key={0} text="Button 1" />,
-                    <Button key={1} text="Button 2" />,
-                    <Button key={2} text="Button 3" />,
-                    <Button key={3} text="Button 4" />,
-                    <Button key={4} text="Button 5" />,
-                ],
-            }),
-        },
-        example: ({ children }) => (
-            <ButtonGroup stacked={false}>{children}</ButtonGroup>
-        ),
-    }
-)
-
-// Variant for stacked button group (stacked = true)
-figma.connect(
-    ButtonGroup,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=6692-3066',
-    {
-        variant: { stacked: 'true' },
-        props: {
-            children: figma.enum('number', {
-                '2': [
-                    <Button key={0} text="Button 1" />,
-                    <Button key={1} text="Button 2" />,
-                ],
-                '3': [
-                    <Button key={0} text="Button 1" />,
-                    <Button key={1} text="Button 2" />,
-                    <Button key={2} text="Button 3" />,
-                ],
-                '4': [
-                    <Button key={0} text="Button 1" />,
-                    <Button key={1} text="Button 2" />,
-                    <Button key={2} text="Button 3" />,
-                    <Button key={3} text="Button 4" />,
-                ],
-                '5': [
-                    <Button key={0} text="Button 1" />,
-                    <Button key={1} text="Button 2" />,
-                    <Button key={2} text="Button 3" />,
-                    <Button key={3} text="Button 4" />,
-                    <Button key={4} text="Button 5" />,
-                ],
-            }),
-        },
-        example: ({ children }) => (
-            <ButtonGroup stacked={true}>{children}</ButtonGroup>
-        ),
-    }
-)
-
-// Common patterns with specific number of buttons
-// 2-button group
-figma.connect(
-    ButtonGroup,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=6692-3066',
-    {
-        variant: { number: '2' },
-        props: {
-            stacked: figma.boolean('stacked'),
-        },
-        example: ({ stacked }) => (
-            <ButtonGroup stacked={stacked}>
-                <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
-                <Button text="Save" buttonType={ButtonType.PRIMARY} />
-            </ButtonGroup>
-        ),
-    }
-)
-
-// 3-button group
-figma.connect(
-    ButtonGroup,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=6692-3066',
-    {
-        variant: { number: '3' },
-        props: {
-            stacked: figma.boolean('stacked'),
-        },
-        example: ({ stacked }) => (
-            <ButtonGroup stacked={stacked}>
-                <Button text="Previous" buttonType={ButtonType.SECONDARY} />
-                <Button text="Current" buttonType={ButtonType.PRIMARY} />
-                <Button text="Next" buttonType={ButtonType.SECONDARY} />
-            </ButtonGroup>
-        ),
-    }
-)
-
-// Future implementation when size prop is added to ButtonGroup
-// This is commented out but shows how it would be implemented
-/*
-figma.connect(ButtonGroup, "https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=14667-1234", {
-  variant: { size: figma.enum("size") },
-  props: {
-    stacked: figma.boolean("stacked"),
-    size: figma.enum("size", {
-      "small": "small",
-      "medium": "medium", 
-      "large": "large",
-    }),
-    children: figma.enum("number", {
-      "2": (size) => [
-        <Button key={0} text="Button 1" size={size} />,
-        <Button key={1} text="Button 2" size={size} />
-      ],
-      "3": (size) => [
-        <Button key={0} text="Button 1" size={size} />,
-        <Button key={1} text="Button 2" size={size} />,
-        <Button key={2} text="Button 3" size={size} />
-      ],
-    }),
-  },
-  example: ({ stacked, size, children }) => (
-    <ButtonGroup stacked={stacked}>
-      {children(size)}
-    </ButtonGroup>
-  ),
-});
-*/

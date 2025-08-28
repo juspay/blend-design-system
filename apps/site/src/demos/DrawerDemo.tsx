@@ -221,7 +221,6 @@ export const NestedDrawerExample = () => {
     )
 }
 
-// Side Drawer Example (Right)
 export const SideDrawerExample = () => {
     return (
         <Drawer direction="right">
@@ -244,35 +243,205 @@ export const SideDrawerExample = () => {
                         cursor: 'pointer',
                     }}
                 >
-                    Open Side Drawer
+                    Right Drawer (Structured)
                 </button>
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent direction="right">
+                <DrawerContent direction="right" width="500px">
                     <DrawerHeader>
-                        <DrawerTitle>It supports all directions.</DrawerTitle>
+                        <DrawerTitle>User Profile Settings</DrawerTitle>
                         <DrawerDescription>
-                            This one specifically is not touching the edge of
-                            the screen, but that's not required for a side
-                            drawer.
+                            Manage your account settings and preferences
                         </DrawerDescription>
                     </DrawerHeader>
                     <DrawerBody>
-                        <p>
-                            This one specifically is not touching the edge of
-                            the screen, but that's not required for a side
-                            drawer.
-                        </p>
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '16px',
+                            }}
+                        >
+                            <div>
+                                <h4
+                                    style={{
+                                        margin: '0 0 8px 0',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Personal Information
+                                </h4>
+                                <p
+                                    style={{
+                                        margin: '0 0 16px 0',
+                                        color: '#6b7280',
+                                        fontSize: '14px',
+                                    }}
+                                >
+                                    Update your personal details and contact
+                                    information.
+                                </p>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '12px',
+                                    }}
+                                >
+                                    <div>
+                                        <label
+                                            style={{
+                                                display: 'block',
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            Full Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            defaultValue="John Doe"
+                                            style={{
+                                                width: '100%',
+                                                padding: '8px 12px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '6px',
+                                                fontSize: '14px',
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label
+                                            style={{
+                                                display: 'block',
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            Email
+                                        </label>
+                                        <input
+                                            type="email"
+                                            defaultValue="john@example.com"
+                                            style={{
+                                                width: '100%',
+                                                padding: '8px 12px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '6px',
+                                                fontSize: '14px',
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr
+                                style={{
+                                    border: 'none',
+                                    borderTop: '1px solid #e5e7eb',
+                                    margin: '8px 0',
+                                }}
+                            />
+
+                            <div>
+                                <h4
+                                    style={{
+                                        margin: '0 0 8px 0',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Notification Preferences
+                                </h4>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '12px',
+                                    }}
+                                >
+                                    <label
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '8px',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        <input type="checkbox" defaultChecked />
+                                        <span style={{ fontSize: '14px' }}>
+                                            Email notifications
+                                        </span>
+                                    </label>
+                                    <label
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '8px',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        <input type="checkbox" defaultChecked />
+                                        <span style={{ fontSize: '14px' }}>
+                                            Push notifications
+                                        </span>
+                                    </label>
+                                    <label
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '8px',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        <input type="checkbox" />
+                                        <span style={{ fontSize: '14px' }}>
+                                            SMS notifications
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </DrawerBody>
+                    <DrawerFooter>
+                        <DrawerClose>
+                            <button
+                                style={{
+                                    padding: '8px 16px',
+                                    backgroundColor: '#f3f4f6',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Cancel
+                            </button>
+                        </DrawerClose>
+                        <button
+                            style={{
+                                padding: '8px 16px',
+                                backgroundColor: '#3b82f6',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Save Changes
+                        </button>
+                    </DrawerFooter>
                 </DrawerContent>
             </DrawerPortal>
         </Drawer>
     )
 }
 
-// Left Side Drawer Example
+// Left Side Drawer Example - Custom Content
 export const LeftSideDrawerExample = () => {
+    const [activeSection, setActiveSection] = useState('dashboard')
+
     return (
         <Drawer direction="left">
             <DrawerTrigger>
@@ -294,18 +463,196 @@ export const LeftSideDrawerExample = () => {
                         cursor: 'pointer',
                     }}
                 >
-                    Open Left Drawer
+                    Left Drawer (Custom)
                 </button>
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent direction="left" showHandle={false}>
-                    <DrawerHeader>
-                        <DrawerTitle>Left Side Drawer</DrawerTitle>
-                    </DrawerHeader>
-                    <DrawerBody>
-                        <p>This drawer slides in from the left side.</p>
-                        <p>Perfect for navigation menus or side panels.</p>
+                <DrawerContent
+                    direction="left"
+                    showHandle={false}
+                    width="320px"
+                >
+                    {/* Custom content without using DrawerHeader/DrawerTitle */}
+                    <div
+                        style={{
+                            padding: '20px',
+                            borderBottom: '1px solid #e5e7eb',
+                            backgroundColor: '#f9fafb',
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '12px',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    backgroundColor: '#3b82f6',
+                                    borderRadius: '50%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <span
+                                    style={{
+                                        color: 'white',
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    JD
+                                </span>
+                            </div>
+                            <div>
+                                <div
+                                    style={{
+                                        fontWeight: '600',
+                                        fontSize: '16px',
+                                    }}
+                                >
+                                    John Doe
+                                </div>
+                                <div
+                                    style={{
+                                        fontSize: '14px',
+                                        color: '#6b7280',
+                                    }}
+                                >
+                                    Administrator
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <DrawerBody noPadding>
+                        <nav style={{ padding: '16px 0' }}>
+                            {[
+                                {
+                                    id: 'dashboard',
+                                    label: 'Dashboard',
+                                    icon: '📊',
+                                },
+                                { id: 'users', label: 'Users', icon: '👥' },
+                                {
+                                    id: 'analytics',
+                                    label: 'Analytics',
+                                    icon: '📈',
+                                },
+                                {
+                                    id: 'settings',
+                                    label: 'Settings',
+                                    icon: '⚙️',
+                                },
+                                {
+                                    id: 'help',
+                                    label: 'Help & Support',
+                                    icon: '❓',
+                                },
+                            ].map((item) => (
+                                <button
+                                    key={item.id}
+                                    onClick={() => setActiveSection(item.id)}
+                                    style={{
+                                        width: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '12px',
+                                        padding: '12px 20px',
+                                        border: 'none',
+                                        backgroundColor:
+                                            activeSection === item.id
+                                                ? '#eff6ff'
+                                                : 'transparent',
+                                        color:
+                                            activeSection === item.id
+                                                ? '#2563eb'
+                                                : '#374151',
+                                        fontSize: '14px',
+                                        cursor: 'pointer',
+                                        textAlign: 'left',
+                                        borderLeft:
+                                            activeSection === item.id
+                                                ? '3px solid #2563eb'
+                                                : '3px solid transparent',
+                                        transition: 'all 0.15s ease',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        if (activeSection !== item.id) {
+                                            e.currentTarget.style.backgroundColor =
+                                                '#f3f4f6'
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        if (activeSection !== item.id) {
+                                            e.currentTarget.style.backgroundColor =
+                                                'transparent'
+                                        }
+                                    }}
+                                >
+                                    <span style={{ fontSize: '18px' }}>
+                                        {item.icon}
+                                    </span>
+                                    {item.label}
+                                </button>
+                            ))}
+                        </nav>
+
+                        <div
+                            style={{
+                                padding: '16px 20px',
+                                borderTop: '1px solid #e5e7eb',
+                                marginTop: 'auto',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    backgroundColor: '#fef3c7',
+                                    padding: '12px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #fbbf24',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        fontWeight: '600',
+                                        fontSize: '14px',
+                                        color: '#92400e',
+                                        marginBottom: '4px',
+                                    }}
+                                >
+                                    🎉 Pro Plan Available
+                                </div>
+                                <div
+                                    style={{
+                                        fontSize: '12px',
+                                        color: '#92400e',
+                                        marginBottom: '8px',
+                                    }}
+                                >
+                                    Upgrade to unlock advanced features
+                                </div>
+                                <button
+                                    style={{
+                                        width: '100%',
+                                        padding: '6px 12px',
+                                        backgroundColor: '#f59e0b',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        fontSize: '12px',
+                                        fontWeight: '500',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    Upgrade Now
+                                </button>
+                            </div>
+                        </div>
                     </DrawerBody>
                 </DrawerContent>
             </DrawerPortal>
@@ -2740,6 +3087,480 @@ export const NestedSingleSelectDrawerExample = () => {
 }
 
 // Custom Mobile Offset Example
+// Wide Right Drawer Example
+export const WideRightDrawerExample = () => {
+    return (
+        <Drawer direction="right">
+            <DrawerTrigger>
+                <button
+                    style={{
+                        display: 'flex',
+                        height: '40px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        overflow: 'hidden',
+                        borderRadius: '20px',
+                        backgroundColor: 'white',
+                        padding: '0 16px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                        border: '1px solid #e5e7eb',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Wide Right Drawer
+                </button>
+            </DrawerTrigger>
+            <DrawerPortal>
+                <DrawerOverlay />
+                <DrawerContent direction="right" width="600px" maxWidth="80vw">
+                    {/* Custom content demonstrating wide drawer usage */}
+                    <div
+                        style={{
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}
+                    >
+                        <div
+                            style={{
+                                padding: '20px',
+                                borderBottom: '1px solid #e5e7eb',
+                                backgroundColor: 'white',
+                            }}
+                        >
+                            <h2
+                                style={{
+                                    margin: '0 0 8px 0',
+                                    fontSize: '24px',
+                                    fontWeight: '600',
+                                }}
+                            >
+                                Data Analytics Dashboard
+                            </h2>
+                            <p
+                                style={{
+                                    margin: '0',
+                                    color: '#6b7280',
+                                    fontSize: '14px',
+                                }}
+                            >
+                                Real-time insights and performance metrics
+                            </p>
+                        </div>
+
+                        <div
+                            style={{
+                                flex: 1,
+                                overflow: 'auto',
+                                padding: '20px',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr',
+                                    gap: '16px',
+                                    marginBottom: '24px',
+                                }}
+                            >
+                                {[
+                                    {
+                                        title: 'Total Users',
+                                        value: '12,549',
+                                        change: '+12%',
+                                        color: '#10b981',
+                                    },
+                                    {
+                                        title: 'Revenue',
+                                        value: '$45,231',
+                                        change: '+8%',
+                                        color: '#3b82f6',
+                                    },
+                                    {
+                                        title: 'Conversion Rate',
+                                        value: '3.24%',
+                                        change: '-2%',
+                                        color: '#ef4444',
+                                    },
+                                    {
+                                        title: 'Active Sessions',
+                                        value: '1,234',
+                                        change: '+15%',
+                                        color: '#8b5cf6',
+                                    },
+                                ].map((stat, index) => (
+                                    <div
+                                        key={index}
+                                        style={{
+                                            backgroundColor: '#f9fafb',
+                                            padding: '16px',
+                                            borderRadius: '8px',
+                                            border: '1px solid #e5e7eb',
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                fontSize: '14px',
+                                                color: '#6b7280',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            {stat.title}
+                                        </div>
+                                        <div
+                                            style={{
+                                                fontSize: '24px',
+                                                fontWeight: '700',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            {stat.value}
+                                        </div>
+                                        <div
+                                            style={{
+                                                fontSize: '12px',
+                                                color: stat.color,
+                                                fontWeight: '500',
+                                            }}
+                                        >
+                                            {stat.change} from last month
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div
+                                style={{
+                                    backgroundColor: '#f9fafb',
+                                    padding: '20px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #e5e7eb',
+                                }}
+                            >
+                                <h3
+                                    style={{
+                                        margin: '0 0 16px 0',
+                                        fontSize: '18px',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Recent Activity
+                                </h3>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '12px',
+                                    }}
+                                >
+                                    {[
+                                        {
+                                            user: 'Alice Johnson',
+                                            action: 'completed purchase',
+                                            time: '2 min ago',
+                                        },
+                                        {
+                                            user: 'Bob Smith',
+                                            action: 'signed up',
+                                            time: '5 min ago',
+                                        },
+                                        {
+                                            user: 'Carol Davis',
+                                            action: 'viewed product',
+                                            time: '8 min ago',
+                                        },
+                                        {
+                                            user: 'David Wilson',
+                                            action: 'left review',
+                                            time: '12 min ago',
+                                        },
+                                        {
+                                            user: 'Eva Brown',
+                                            action: 'shared content',
+                                            time: '15 min ago',
+                                        },
+                                    ].map((activity, index) => (
+                                        <div
+                                            key={index}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                padding: '8px 0',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px',
+                                                }}
+                                            >
+                                                <div
+                                                    style={{
+                                                        width: '32px',
+                                                        height: '32px',
+                                                        backgroundColor:
+                                                            '#e5e7eb',
+                                                        borderRadius: '50%',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent:
+                                                            'center',
+                                                        fontSize: '12px',
+                                                        fontWeight: '600',
+                                                    }}
+                                                >
+                                                    {activity.user
+                                                        .split(' ')
+                                                        .map((n) => n[0])
+                                                        .join('')}
+                                                </div>
+                                                <div>
+                                                    <div
+                                                        style={{
+                                                            fontSize: '14px',
+                                                            fontWeight: '500',
+                                                        }}
+                                                    >
+                                                        {activity.user}
+                                                    </div>
+                                                    <div
+                                                        style={{
+                                                            fontSize: '12px',
+                                                            color: '#6b7280',
+                                                        }}
+                                                    >
+                                                        {activity.action}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                style={{
+                                                    fontSize: '12px',
+                                                    color: '#9ca3af',
+                                                }}
+                                            >
+                                                {activity.time}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </DrawerContent>
+            </DrawerPortal>
+        </Drawer>
+    )
+}
+
+// Narrow Left Drawer Example
+export const NarrowLeftDrawerExample = () => {
+    return (
+        <Drawer direction="left">
+            <DrawerTrigger>
+                <button
+                    style={{
+                        display: 'flex',
+                        height: '40px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        overflow: 'hidden',
+                        borderRadius: '20px',
+                        backgroundColor: 'white',
+                        padding: '0 16px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                        border: '1px solid #e5e7eb',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Narrow Left Drawer
+                </button>
+            </DrawerTrigger>
+            <DrawerPortal>
+                <DrawerOverlay />
+                <DrawerContent
+                    direction="left"
+                    width="250px"
+                    showHandle={false}
+                >
+                    {/* Narrow drawer for quick actions */}
+                    <div
+                        style={{
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            backgroundColor: '#1f2937',
+                            color: 'white',
+                        }}
+                    >
+                        <div
+                            style={{
+                                padding: '20px',
+                                borderBottom: '1px solid #374151',
+                            }}
+                        >
+                            <h3
+                                style={{
+                                    margin: '0',
+                                    fontSize: '18px',
+                                    fontWeight: '600',
+                                    color: 'white',
+                                }}
+                            >
+                                Quick Actions
+                            </h3>
+                        </div>
+
+                        <div style={{ flex: 1, padding: '16px' }}>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '8px',
+                                }}
+                            >
+                                {[
+                                    {
+                                        icon: '📧',
+                                        label: 'New Message',
+                                        color: '#3b82f6',
+                                    },
+                                    {
+                                        icon: '📅',
+                                        label: 'Schedule Event',
+                                        color: '#10b981',
+                                    },
+                                    {
+                                        icon: '📊',
+                                        label: 'View Reports',
+                                        color: '#f59e0b',
+                                    },
+                                    {
+                                        icon: '👥',
+                                        label: 'Manage Team',
+                                        color: '#8b5cf6',
+                                    },
+                                    {
+                                        icon: '⚙️',
+                                        label: 'Settings',
+                                        color: '#6b7280',
+                                    },
+                                ].map((action, index) => (
+                                    <button
+                                        key={index}
+                                        style={{
+                                            width: '100%',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '12px',
+                                            padding: '12px',
+                                            border: 'none',
+                                            backgroundColor: 'transparent',
+                                            color: 'white',
+                                            borderRadius: '6px',
+                                            cursor: 'pointer',
+                                            fontSize: '14px',
+                                            transition:
+                                                'background-color 0.15s ease',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor =
+                                                '#374151'
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor =
+                                                'transparent'
+                                        }}
+                                    >
+                                        <span style={{ fontSize: '20px' }}>
+                                            {action.icon}
+                                        </span>
+                                        <span>{action.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div
+                                style={{
+                                    marginTop: '24px',
+                                    padding: '16px',
+                                    backgroundColor: '#374151',
+                                    borderRadius: '8px',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        fontSize: '14px',
+                                        fontWeight: '600',
+                                        marginBottom: '8px',
+                                    }}
+                                >
+                                    Storage Used
+                                </div>
+                                <div
+                                    style={{
+                                        backgroundColor: '#4b5563',
+                                        height: '6px',
+                                        borderRadius: '3px',
+                                        marginBottom: '8px',
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            backgroundColor: '#3b82f6',
+                                            height: '100%',
+                                            width: '65%',
+                                            borderRadius: '3px',
+                                        }}
+                                    />
+                                </div>
+                                <div
+                                    style={{
+                                        fontSize: '12px',
+                                        color: '#d1d5db',
+                                    }}
+                                >
+                                    6.5 GB of 10 GB used
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            style={{
+                                padding: '16px',
+                                borderTop: '1px solid #374151',
+                            }}
+                        >
+                            <button
+                                style={{
+                                    width: '100%',
+                                    padding: '8px',
+                                    backgroundColor: '#ef4444',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '6px',
+                                    fontSize: '14px',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Sign Out
+                            </button>
+                        </div>
+                    </div>
+                </DrawerContent>
+            </DrawerPortal>
+        </Drawer>
+    )
+}
+
 export const CustomMobileOffsetExample = () => {
     return (
         <Drawer
@@ -2986,12 +3807,26 @@ export const DrawerDemo = () => {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                     <BasicDrawerExample />
                     <NestedDrawerExample />
-                    <SideDrawerExample />
-                    <LeftSideDrawerExample />
                     <TopDrawerExample />
                     <ScrollableDrawerExample />
                     <ControlledDrawerExample />
                     <CustomMobileOffsetExample />
+                </div>
+            </div>
+
+            <div>
+                <h2 style={{ marginBottom: '8px' }}>Side Drawer Examples</h2>
+                <p style={{ marginBottom: '16px', color: '#6b7280' }}>
+                    Side drawers can be customized with different widths and
+                    content patterns. They support both structured content
+                    (using DrawerHeader/DrawerBody/DrawerFooter) and completely
+                    custom content for maximum flexibility.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                    <SideDrawerExample />
+                    <LeftSideDrawerExample />
+                    <WideRightDrawerExample />
+                    <NarrowLeftDrawerExample />
                 </div>
             </div>
 

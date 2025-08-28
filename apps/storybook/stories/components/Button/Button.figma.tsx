@@ -45,7 +45,7 @@ import {
 
 figma.connect(
     Button,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=14667-834&t=IFWLvwV2QQMus9fh-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18797-271911&t=Igz9fmVsO5gD0NMR-4',
     {
         props: {
             // Direct text mapping

@@ -36,7 +36,7 @@ import { Switch, SwitchSize } from '@juspay/blend-design-system'
 
 figma.connect(
     Switch,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=10045-7581&t=gedfNFz548Qsi2Fl-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-677334&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Size mapping - trying different possible mappings
@@ -50,8 +50,15 @@ figma.connect(
                 Medium: SwitchSize.MEDIUM,
             }),
 
-            // Direct boolean mappings
-            checked: figma.boolean('checked'),
+            // State to checked mapping - state=checked in Figma maps to checked=true in code
+            checked: figma.enum('state', {
+                checked: true,
+                default: false,
+                hover: false,
+                active: false,
+                focussed: false,
+                disabled: false,
+            }),
             disabled: figma.boolean('disabled'),
 
             // Direct string mappings

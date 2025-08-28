@@ -672,7 +672,6 @@ const TableBody = forwardRef<
                                                   onClick={(e) =>
                                                       e.stopPropagation()
                                                   }
-                                                  padding={`${FOUNDATION_THEME.unit[7]} ${FOUNDATION_THEME.unit[4]}`}
                                               >
                                                   <Checkbox
                                                       checked={
@@ -836,62 +835,6 @@ const TableBody = forwardRef<
                                           }
                                       )}
 
-                                      {mobileConfig?.enableColumnOverflow &&
-                                          mobileOverflowColumns.length > 0 &&
-                                          onMobileOverflowClick && (
-                                              <StyledTableCell
-                                                  $width="40px"
-                                                  $customBackgroundColor={
-                                                      rowStyling.backgroundColor
-                                                  }
-                                                  $hasCustomBackground={
-                                                      hasCustomBackground
-                                                  }
-                                                  style={{
-                                                      minWidth: '40px',
-                                                      maxWidth: '40px',
-                                                      fontSize:
-                                                          tableToken.dataTable
-                                                              .table.body.cell
-                                                              .fontSize,
-                                                      padding:
-                                                          FOUNDATION_THEME
-                                                              .unit[16],
-                                                  }}
-                                              >
-                                                  <Block
-                                                      display="flex"
-                                                      alignItems="center"
-                                                      justifyContent="center"
-                                                      onClick={(e) => {
-                                                          e.stopPropagation()
-                                                          onMobileOverflowClick(
-                                                              row
-                                                          )
-                                                      }}
-                                                  >
-                                                      <ExpandButton
-                                                          onClick={() =>
-                                                              onMobileOverflowClick(
-                                                                  row
-                                                              )
-                                                          }
-                                                          title="View more details"
-                                                          style={{
-                                                              color: FOUNDATION_THEME
-                                                                  .colors
-                                                                  .gray[800],
-                                                          }}
-                                                      >
-                                                          <ChevronRight
-                                                              size={16}
-                                                          />
-                                                      </ExpandButton>
-                                                  </Block>
-                                              </StyledTableCell>
-                                          )}
-
-                                      {/* Row Actions Column - Desktop Only (Mobile shows in drawer footer) */}
                                       {(enableInlineEdit || rowActions) &&
                                           !(
                                               mobileConfig?.isMobile &&
@@ -934,6 +877,59 @@ const TableBody = forwardRef<
                                               </StyledTableCell>
                                           )}
 
+                                      {mobileConfig?.enableColumnOverflow &&
+                                          mobileOverflowColumns.length > 0 &&
+                                          onMobileOverflowClick && (
+                                              <StyledTableCell
+                                                  $width="40px"
+                                                  $customBackgroundColor={
+                                                      rowStyling.backgroundColor
+                                                  }
+                                                  $hasCustomBackground={
+                                                      hasCustomBackground
+                                                  }
+                                                  style={{
+                                                      minWidth: '40px',
+                                                      maxWidth: '40px',
+                                                      fontSize:
+                                                          tableToken.dataTable
+                                                              .table.body.cell
+                                                              .fontSize,
+                                                  }}
+                                              >
+                                                  <Block
+                                                      display="flex"
+                                                      alignItems="center"
+                                                      justifyContent="center"
+                                                      onClick={(e) => {
+                                                          e.stopPropagation()
+                                                          onMobileOverflowClick(
+                                                              row
+                                                          )
+                                                      }}
+                                                  >
+                                                      <ExpandButton
+                                                          onClick={() =>
+                                                              onMobileOverflowClick(
+                                                                  row
+                                                              )
+                                                          }
+                                                          title="View more details"
+                                                          style={{
+                                                              color: FOUNDATION_THEME
+                                                                  .colors
+                                                                  .gray[800],
+                                                          }}
+                                                      >
+                                                          <ChevronRight
+                                                              size={16}
+                                                          />
+                                                      </ExpandButton>
+                                                  </Block>
+                                              </StyledTableCell>
+                                          )}
+
+                                      {/* Column Manager - Always rightmost (empty cell in body, actual manager in header) */}
                                       {enableColumnManager && (
                                           <StyledTableCell
                                               $width="50px"

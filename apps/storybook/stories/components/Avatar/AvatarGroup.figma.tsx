@@ -9,24 +9,24 @@ import { AvatarGroup, AvatarSize } from '@juspay/blend-design-system'
  *
  * Figma vs Code Property Mappings:
  *
- * 1. SPECIAL MAPPINGS:
- *    - type (Figma) → Handled by maxCount logic
- *      - "stacked": Set maxCount to a high number (no counter shown)
- *      - "stacked with counter": Set maxCount based on avatar count
- *    - placeholder (Figma) → Not needed in code (handled by Avatar component)
- *
- * 2. DIRECT MAPPINGS:
+ * 1. DIRECT MAPPINGS (same in both):
  *    - size → size
  *
- * 3. CODE-ONLY PROPERTIES:
+ * 2. RENAMED MAPPINGS:
+ *    - placeholder (Figma) → fallback (Code)
+ *
+ * 3. CODE-ONLY PROPERTIES (not in Figma):
+ *    - shape: Avatar shape (not controlled by Figma, defaults to circular)
  *    - avatars: Array of avatar data (generated based on Figma instances)
- *    - maxCount: Determined by type prop and avatar count
- *    - shape: Not in Figma, will use default (circular)
+ *    - maxCount: Controls overflow behavior (not directly in Figma)
  *    - selectedAvatarIds: Optional selection handling
  *    - onSelectionChange: Optional callback
  *
- * Note: The number of avatar instances in Figma determines the avatars array length.
- * The type prop controls whether overflow counter is shown.
+ * 4. FIGMA-ONLY PROPERTIES (not in code):
+ *    - None identified
+ *
+ * Note: The AvatarGroup component requires an avatars array and maxCount prop
+ * to control how many avatars are visible before showing overflow counter.
  */
 
 /**
@@ -44,10 +44,10 @@ import { AvatarGroup, AvatarSize } from '@juspay/blend-design-system'
 
 figma.connect(
     AvatarGroup,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=15612-43070&t=syQLBedyuJq8TAlu-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=19568-45588&t=Igz9fmVsO5gD0NMR-4',
     {
         props: {
-            // Size mapping
+            // Direct mapping - size is same in both Figma and code
             size: figma.enum('size', {
                 sm: AvatarSize.SM,
                 md: AvatarSize.MD,
@@ -55,20 +55,14 @@ figma.connect(
                 xl: AvatarSize.XL,
             }),
 
-            // Type mapping - controls whether counter is shown
-            type: figma.enum('type', {
-                stacked: 'stacked',
-                'stacked with counter': 'stacked-with-counter',
+            // Renamed mapping - placeholder (Figma) → fallback (Code)
+            fallback: figma.boolean('placeholder', {
+                true: figma.string('placeholderText'),
+                false: undefined,
             }),
-
-            // Placeholder for avatar generation
-            placeholder: figma.boolean('placeholder'),
-
-            // Note: In a real implementation, we would need to count
-            // the actual avatar instances in Figma. For now, using a default.
         },
 
-        example: ({ size, type, placeholder }) => {
+        example: ({ size, fallback }) => {
             // NOTE TO DEVELOPERS:
             // Replace this avatars array with your actual avatar data.
             // The number of avatars should match your Figma design.
@@ -76,34 +70,30 @@ figma.connect(
                 {
                     id: 1,
                     alt: 'User 1',
-                    ...(placeholder ? {} : { src: '/path/to/avatar1.jpg' }),
+                    fallback: fallback,
+                    // src: undefined, // Not controlled by Figma
                 },
                 {
                     id: 2,
                     alt: 'User 2',
-                    ...(placeholder ? {} : { src: '/path/to/avatar2.jpg' }),
+                    fallback: fallback,
+                    // src: undefined, // Not controlled by Figma
                 },
                 {
                     id: 3,
                     alt: 'User 3',
-                    ...(placeholder ? {} : { src: '/path/to/avatar3.jpg' }),
+                    fallback: fallback,
+                    // src: undefined, // Not controlled by Figma
                 },
                 // Add more avatars as needed to match your Figma design
             ]
 
-            // Determine maxCount based on type
-            // For "stacked": show all avatars (no counter)
-            // For "stacked with counter": typically show 3-5 avatars
-            const maxCount =
-                type === 'stacked'
-                    ? avatars.length
-                    : Math.min(5, avatars.length - 1)
-
             return (
                 <AvatarGroup
                     avatars={avatars}
-                    maxCount={maxCount}
+                    maxCount={3} // Adjust based on your design needs
                     size={size}
+                    // shape prop is not in Figma - defaults to circular
                 />
             )
         },
@@ -120,243 +110,6 @@ figma.connect(
                 url: 'https://juspay.design/storybook/?path=/docs/components-avatargroup--docs',
             },
         ],
-    }
-)
-
-// Variant for stacked type (no counter)
-figma.connect(
-    AvatarGroup,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=15612-43070&t=syQLBedyuJq8TAlu-4',
-    {
-        variant: { type: 'stacked' },
-        props: {
-            size: figma.enum('size', {
-                sm: AvatarSize.SM,
-                md: AvatarSize.MD,
-                lg: AvatarSize.LG,
-                xl: AvatarSize.XL,
-            }),
-            placeholder: figma.boolean('placeholder'),
-        },
-        example: ({ size, placeholder }) => (
-            <AvatarGroup
-                avatars={[
-                    {
-                        id: 1,
-                        alt: 'User 1',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar1.jpg' }),
-                    },
-                    {
-                        id: 2,
-                        alt: 'User 2',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar2.jpg' }),
-                    },
-                    {
-                        id: 3,
-                        alt: 'User 3',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar3.jpg' }),
-                    },
-                    {
-                        id: 4,
-                        alt: 'User 4',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar4.jpg' }),
-                    },
-                    {
-                        id: 5,
-                        alt: 'User 5',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar5.jpg' }),
-                    },
-                    {
-                        id: 6,
-                        alt: 'User 6',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar6.jpg' }),
-                    },
-                ]}
-                maxCount={6} // Show all avatars
-                size={size}
-            />
-        ),
-    }
-)
-
-// Variant for stacked with counter type
-figma.connect(
-    AvatarGroup,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=15612-43070&t=syQLBedyuJq8TAlu-4',
-    {
-        variant: { type: 'stacked with counter' },
-        props: {
-            size: figma.enum('size', {
-                sm: AvatarSize.SM,
-                md: AvatarSize.MD,
-                lg: AvatarSize.LG,
-                xl: AvatarSize.XL,
-            }),
-            placeholder: figma.boolean('placeholder'),
-        },
-        example: ({ size, placeholder }) => (
-            <AvatarGroup
-                avatars={[
-                    {
-                        id: 1,
-                        alt: 'User 1',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar1.jpg' }),
-                    },
-                    {
-                        id: 2,
-                        alt: 'User 2',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar2.jpg' }),
-                    },
-                    {
-                        id: 3,
-                        alt: 'User 3',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar3.jpg' }),
-                    },
-                    {
-                        id: 4,
-                        alt: 'User 4',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar4.jpg' }),
-                    },
-                    {
-                        id: 5,
-                        alt: 'User 5',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar5.jpg' }),
-                    },
-                    {
-                        id: 6,
-                        alt: 'User 6',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar6.jpg' }),
-                    },
-                    {
-                        id: 7,
-                        alt: 'User 7',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar7.jpg' }),
-                    },
-                    {
-                        id: 8,
-                        alt: 'User 8',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar8.jpg' }),
-                    },
-                    {
-                        id: 9,
-                        alt: 'User 9',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar9.jpg' }),
-                    },
-                    {
-                        id: 10,
-                        alt: 'User 10',
-                        ...(placeholder
-                            ? {}
-                            : { src: 'https://example.com/avatar10.jpg' }),
-                    },
-                ]}
-                maxCount={5} // Show 5 avatars + "+5" counter
-                size={size}
-            />
-        ),
-    }
-)
-
-// Small size variant with counter
-figma.connect(
-    AvatarGroup,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=15612-43070&t=syQLBedyuJq8TAlu-4',
-    {
-        variant: { size: 'sm', type: 'stacked with counter' },
-        props: {
-            placeholder: figma.boolean('placeholder'),
-        },
-        example: ({ placeholder }) => {
-            const avatars = [
-                {
-                    id: 1,
-                    alt: 'Alice Johnson',
-                    ...(placeholder
-                        ? {}
-                        : { src: 'https://example.com/alice.jpg' }),
-                },
-                {
-                    id: 2,
-                    alt: 'Bob Smith',
-                    ...(placeholder
-                        ? {}
-                        : { src: 'https://example.com/bob.jpg' }),
-                },
-                {
-                    id: 3,
-                    alt: 'Carol White',
-                    ...(placeholder
-                        ? {}
-                        : { src: 'https://example.com/carol.jpg' }),
-                },
-                {
-                    id: 4,
-                    alt: 'David Brown',
-                    ...(placeholder
-                        ? {}
-                        : { src: 'https://example.com/david.jpg' }),
-                },
-                {
-                    id: 5,
-                    alt: 'Eve Davis',
-                    ...(placeholder
-                        ? {}
-                        : { src: 'https://example.com/eve.jpg' }),
-                },
-                {
-                    id: 6,
-                    alt: 'Frank Miller',
-                    ...(placeholder
-                        ? {}
-                        : { src: 'https://example.com/frank.jpg' }),
-                },
-                {
-                    id: 7,
-                    alt: 'Grace Wilson',
-                    ...(placeholder
-                        ? {}
-                        : { src: 'https://example.com/grace.jpg' }),
-                },
-            ]
-
-            return (
-                <AvatarGroup
-                    avatars={avatars}
-                    maxCount={4} // Show 4 avatars + "+3" counter
-                    size={AvatarSize.SM}
-                />
-            )
-        },
     }
 )
 

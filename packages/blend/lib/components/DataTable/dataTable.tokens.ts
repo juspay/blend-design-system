@@ -258,10 +258,8 @@ export const getTableToken = (
     return {
         sm: {
             width: '100%',
-            height: 'calc(100vh - 280px)',
             display: 'flex',
             flexDirection: 'column',
-            padding: foundationToken.unit[2],
             position: 'relative',
             header: {
                 display: 'flex',
@@ -389,7 +387,7 @@ export const getTableToken = (
                             overflowY: 'auto',
                             gap: foundationToken.unit[4],
                             sortOption: {
-                                padding: foundationToken.unit[8],
+                                padding: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
                                 borderRadius: foundationToken.border.radius[4],
                                 hoverBackground:
                                     foundationToken.colors.gray[50],
@@ -641,7 +639,7 @@ export const getTableToken = (
                             overflowY: 'auto',
                             gap: foundationToken.unit[4],
                             sortOption: {
-                                padding: foundationToken.unit[8],
+                                padding: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
                                 borderRadius: foundationToken.border.radius[4],
                                 hoverBackground:
                                     foundationToken.colors.gray[50],

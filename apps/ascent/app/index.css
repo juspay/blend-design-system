@@ -1,0 +1,13 @@
+@import 'tailwindcss';
+
+@font-face {
+    font-family: 'InterDisplay';
+    src: url('/public/fonts/InterDisplay-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    font-family: 'InterDisplay', sans-serif;
+}

@@ -34,7 +34,7 @@ import {
 } from '../components/Alert/alert.tokens'
 import {
     getOTPInputTokens,
-    type OTPInputTokensType,
+    type ResponsiveOTPInputTokens,
 } from '../components/Inputs/OTPInput/otpInput.tokens'
 import {
     getTooltipTokens,
@@ -130,7 +130,7 @@ export type ComponentTokenType = {
     TEXT_INPUT?: ResponsiveTextInputTokens
     NUMBER_INPUT?: ResponsiveNumberInputTokens
     ALERT?: ResponsiveAlertTokens
-    OTP_INPUT?: OTPInputTokensType
+    OTP_INPUT?: ResponsiveOTPInputTokens
     TOOLTIP?: ResponsiveTooltipTokens
     UNIT_INPUT?: ResponsiveUnitInputTokens
     MULTI_VALUE_INPUT?: MultiValueInputTokensType
