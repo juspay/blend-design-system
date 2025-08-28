@@ -58,13 +58,9 @@ export default async function ChangelogPage({ params }: PageProps) {
     const { content } = changelogData
 
     return (
-        <div
-            className={`${CHANGELOG_CONFIG.maxWidth} mx-auto ${CHANGELOG_CONFIG.containerPadding}`}
-        >
-            <article className="prose prose-gray dark:prose-invert max-w-none">
-                {content}
-            </article>
-        </div>
+        <article className="p-30 rounded-[var(--rounded-100)] border-[length:var(--pixel)] border-[var(--changelog-border-color)] bg-gradient-to-b from-[var(--changelog-card-list-bg-from)] to-[var(--changelog-card-list-bg-to)] w-full">
+            {content}
+        </article>
     )
 }
 

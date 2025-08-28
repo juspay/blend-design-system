@@ -118,6 +118,12 @@
     --rounded-50: 50px;
     --rounded-46: 46px;
     --date-card-badge-color: rgba(255, 255, 255, 0.02);
+
+    --changelog-card-list-bg-from: rgba(6, 6, 6, 1);
+    --changelog-card-list-bg-to: rgba(0, 0, 0, 0.5);
+
+    --search-bar-from: #161616;
+    --search-bar-to: #191919;
 }
 
 @theme inline {

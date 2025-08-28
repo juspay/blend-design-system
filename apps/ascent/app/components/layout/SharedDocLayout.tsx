@@ -1,13 +1,8 @@
-/**
- * Shared layout component for docs, changelog, and other documentation sections
- * Eliminates code duplication between layout files
- */
-
 import Link from 'next/link'
 import React from 'react'
 import { Github } from 'lucide-react'
 import {
-    // Sidebar,
+    Sidebar,
     SidebarDrawer,
     SearchProvider,
     ThemeToggle,
@@ -23,6 +18,7 @@ import {
 import { getDirItems } from '@/docs/utils'
 import { Logo } from '@/app/changelog/icons/Logo'
 import { JuspayLogoTitle } from '@/app/changelog/icons/JuspayLogoTitle'
+import Gradient from '@/app/changelog/icons/Gradient'
 
 export interface SharedDocLayoutProps {
     /** Title displayed in the navigation bar */
@@ -38,7 +34,7 @@ export interface SharedDocLayoutProps {
 }
 
 const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
-    // title,
+    title,
     baseRoute,
     contentPath,
     children,
@@ -49,20 +45,18 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
 
     return (
         <GlobalKeyboardNavigationProvider>
-            <main
-                className={`min-h-screen w-screen bg-[linear-gradient(0deg,#050505_0%,#050505_100%),linear-gradient(180deg,#121316_10.86%,#0505E2_99.98%)] ${className}`}
-            >
+            <main className={`min-h-screen w-full ${className}`}>
+                <Gradient className="absolute right-0" />
                 {/* Navigation Bar */}
-                <nav className="h-[100px] flex items-center justify-between px-20 sticky top-0 z-50 bg-[black]">
+                <nav className="xl:h-25 lg:h-20 h-18 flex items-center justify-between px-6 sticky top-0 z-50 backdrop-blur-md">
                     {/* Left side - Title and drawer */}
                     <div className="flex items-center gap-4">
-                        <div className="sidebar-drawer-trigger">
+                        {/* <div className="sidebar-drawer-trigger">
                             <SidebarDrawer
                                 items={sidebarItems}
                                 baseRoute={baseRoute}
                             />
-                        </div>
-
+                        </div> */}
                         <Link
                             href="/"
                             className="flex items-center font-semibold text-lg text-[var(--foreground)] hover:text-[var(--muted-foreground)] transition-colors"
@@ -146,17 +140,17 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                 </nav>
 
                 {/* Main content area */}
-                <div className="w-screen flex">
-                    {/* Sidebar */}
-                    {/* <aside className="doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden">
+                {/* <div className="w-screen flex bg-[var(--sidebar-background)] backdrop-blur-sm"> */}
+                {/* Sidebar */}
+                {/* <aside className="doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden">
                         <Sidebar items={sidebarItems} baseRoute={baseRoute} />
                     </aside> */}
 
-                    {/* Main content */}
-                    <div className="main-content-area flex-1 overflow-y-auto">
-                        {children}
-                    </div>
+                {/* Main content */}
+                <div className="main-content-area mt-20 overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full rounded-[var(--rounded-100)]">
+                    {children}
                 </div>
+                {/* </div> */}
 
                 {/* Floating shortcuts button */}
                 <FloatingShortcutsButton />

@@ -21,8 +21,8 @@ description: 'Blend Design System changelog - track all updates and improvements
         width="w-96"
         height="h-15"
         rounded="rounded-full"
-        bgColor="bg-black"
-        className="relative"
+        bgColor="bg-[linear-gradient(to_right,var(--search-bar-from)_0%,var(--search-bar-to)_50%,var(--search-bar-from)_100%)]"
+        className="relative "
       >
         <Search className="absolute top-5 left-4 text-[var(--grey-500)] size-5" />
         <input
@@ -36,26 +36,6 @@ description: 'Blend Design System changelog - track all updates and improvements
   </header>
 
   <div className="grid grid-cols-1 gap-18 w-full mt-39">
-
-    <ChangeLogCard href="/changelog/v0.0.12">
-      <DateBadge>August 14, 2025</DateBadge>
-      <h2 className="text-[var(--grey-100)] text-[length:var(--text-40)]">
-        v0.0.12 - Stable
-      </h2>
-      <div className="text-2xl text-[var(--grey-500)]">
-        Mobile-friendly components — enhanced popover, drawer, modal, and multi-select with responsive design patterns.
-      </div>
-    </ChangeLogCard>
-
-    <ChangeLogCard href="/changelog/v0.0.11">
-      <DateBadge>July 28, 2025</DateBadge>
-      <h2 className="text-[var(--grey-100)] text-[length:var(--text-40)]">
-        v0.0.11 - Enhancements
-      </h2>
-      <div className="text-2xl text-[var(--grey-500)]">
-        Component reliability — improved focus management, accessibility, and performance optimizations.
-      </div>
-    </ChangeLogCard>
-
+    <HomeDataList />
   </div>
 </section>

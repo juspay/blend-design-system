@@ -1,0 +1,30 @@
+import React from 'react'
+import HomeData from '../../data/home.data'
+import ChangeLogCard from './ChangeLogCard'
+import DateBadge from './DateBadge'
+import { InfoBtn } from '@/app/landing/components/InfoBtn'
+
+const HomeDataList: React.FC = () => {
+    return (
+        <>
+            {HomeData.map((obj, key) => (
+                <ChangeLogCard key={key}>
+                    <DateBadge>{obj.date}</DateBadge>
+                    <h2 className="text-[var(--grey-100)] text-[length:var(--text-40)]">
+                        {obj.heading}
+                    </h2>
+                    <div className="text-2xl text-[var(--grey-500)]">
+                        {obj.paragraph}
+                    </div>
+                    <InfoBtn
+                        text="Read more"
+                        href={obj.link}
+                        openSamePage={true}
+                    />
+                </ChangeLogCard>
+            ))}
+        </>
+    )
+}
+
+export default HomeDataList

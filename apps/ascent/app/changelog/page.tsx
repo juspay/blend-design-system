@@ -33,7 +33,7 @@ const ChangelogPage = async () => {
     const { content } = homeData
 
     return (
-        <article className="bg-[linear-gradient(0deg,#050505_0%,#050505_100%),linear-gradient(180deg,#121316_10.86%,#0505E2_99.98%)] ">
+        <article className="bg-[linear-gradient(0deg,#050505_0%,#050505_100%),linear-gradient(180deg,#121316_10.86%,#0505E2_99.98%)] w-full">
             {content}
         </article>
     )
