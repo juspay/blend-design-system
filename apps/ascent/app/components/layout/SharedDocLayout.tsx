@@ -53,7 +53,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                 className={`min-h-screen w-screen bg-[linear-gradient(0deg,#050505_0%,#050505_100%),linear-gradient(180deg,#121316_10.86%,#0505E2_99.98%)] ${className}`}
             >
                 {/* Navigation Bar */}
-                <nav className="h-[200px]  flex items-center justify-between px-20  sticky top-0 z-50">
+                <nav className="h-[100px] flex items-center justify-between px-20 sticky top-0 z-50 bg-[black]">
                     {/* Left side - Title and drawer */}
                     <div className="flex items-center gap-4">
                         <div className="sidebar-drawer-trigger">
@@ -146,14 +146,14 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                 </nav>
 
                 {/* Main content area */}
-                <div className="w-screen h-[calc(100vh-var(--navbar-height))] flex">
+                <div className="w-screen flex">
                     {/* Sidebar */}
                     {/* <aside className="doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden">
                         <Sidebar items={sidebarItems} baseRoute={baseRoute} />
                     </aside> */}
 
                     {/* Main content */}
-                    <div className="main-content-area flex-1 h-[calc(100vh-var(--navbar-height))] overflow-y-auto">
+                    <div className="main-content-area flex-1 overflow-y-auto">
                         {children}
                     </div>
                 </div>
