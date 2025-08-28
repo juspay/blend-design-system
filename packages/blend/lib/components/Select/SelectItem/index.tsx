@@ -116,6 +116,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     outline="none"
                     border="none"
                     width="100%"
+                    maxWidth="100%"
                     minWidth={0}
                     color={
                         item.disabled
@@ -147,7 +148,10 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                                 ?.focusVisible,
                     }}
                     cursor={item.disabled ? 'not-allowed' : 'pointer'}
-                    style={{ userSelect: 'none' }}
+                    style={{
+                        userSelect: 'none',
+                        overflow: 'hidden',
+                    }}
                     className={className}
                 >
                     <Block
@@ -157,14 +161,16 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                         width="100%"
                         maxWidth="100%"
                         gap={8}
+                        style={{ minWidth: 0 }}
                     >
                         <Block
                             as="div"
                             display="flex"
                             alignItems="center"
                             gap={8}
-                            width="100%"
+                            flexGrow={1}
                             minWidth={0}
+                            style={{ overflow: 'hidden' }}
                         >
                             {item.slot1 && <MenuItemSlot slot={item.slot1} />}
                             <Block
@@ -172,7 +178,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                                 display="flex"
                                 overflow="hidden"
                                 ref={textRef}
-                                style={{ minWidth: 0 }}
+                                style={{ minWidth: 0, maxWidth: '100%' }}
                             >
                                 <PrimitiveText
                                     fontSize={
@@ -187,6 +193,10 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                                     style={{
                                         width: '100%',
                                         minWidth: 0,
+                                        maxWidth: '100%',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
                                     }}
                                 >
                                     {item.label}
@@ -198,6 +208,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                             display="flex"
                             alignItems="center"
                             gap={4}
+                            flexShrink={0}
                         >
                             {item.slot2 && <MenuItemSlot slot={item.slot2} />}
                             {item.slot3 && <MenuItemSlot slot={item.slot3} />}
@@ -218,7 +229,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                         <Block
                             ref={subLabelRef}
                             overflow="hidden"
-                            style={{ minWidth: 0 }}
+                            style={{ minWidth: 0, maxWidth: '100%' }}
                         >
                             <PrimitiveText
                                 fontSize={
@@ -239,6 +250,10 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                                 style={{
                                     width: '100%',
                                     minWidth: 0,
+                                    maxWidth: '100%',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
                                 }}
                             >
                                 {item.subLabel}

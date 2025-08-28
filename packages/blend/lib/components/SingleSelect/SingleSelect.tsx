@@ -191,6 +191,7 @@ const SingleSelect = ({
                         sideOffset={sideOffset}
                         alignOffset={alignOffset}
                         enableSearch={enableSearch}
+                        searchPlaceholder={searchPlaceholder}
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton

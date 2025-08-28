@@ -39,7 +39,6 @@ const StickyHeader = styled(Block)(() => ({
     right: 0,
     zIndex: 1000,
     backgroundColor: FOUNDATION_THEME.colors.gray[0],
-    padding: `${FOUNDATION_THEME.unit[6]} 0`,
 }))
 
 const ScrollableContent = styled(Block)(() => ({

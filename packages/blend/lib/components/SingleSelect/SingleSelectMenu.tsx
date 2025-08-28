@@ -11,7 +11,7 @@ import styled from 'styled-components'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { ChevronRight } from 'lucide-react'
-import { TextInput } from '../Inputs/TextInput'
+import { SearchInput } from '../Inputs'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
@@ -25,6 +25,7 @@ type SingleSelectMenuProps = {
     maxWidth?: number
     maxHeight?: number
     enableSearch?: boolean
+    searchPlaceholder?: string
     disabled?: boolean
 
     // alignment
@@ -42,12 +43,12 @@ const Content = styled(RadixMenu.Content)(() => ({
     position: 'relative',
     backgroundColor: 'white',
     borderRadius: 8,
-    padding: '8px 0px',
     // width: "var(--radix-dropdown-menu-trigger-width)",
     // maxWidth: "var(--radix-dropdown-menu-trigger-width)",
     boxShadow: FOUNDATION_THEME.shadows.lg,
     zIndex: 9999,
     overflowY: 'auto',
+    overflowX: 'hidden',
     scrollbarWidth: 'none',
     scrollbarColor: 'transparent transparent',
 }))
@@ -248,6 +249,7 @@ const SingleSelectMenu = ({
     maxWidth,
     maxHeight,
     enableSearch,
+    searchPlaceholder = 'Search options...',
     disabled,
     // alignment
     alignment = SelectMenuAlignment.CENTER,
@@ -301,16 +303,21 @@ const SingleSelectMenu = ({
                         left={0}
                         right={0}
                         zIndex={1000}
-                        marginBottom={10}
+                        backgroundColor={FOUNDATION_THEME.colors.gray[0]}
                     >
-                        <TextInput
-                            value={searchText}
-                            onChange={(e) => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                setSearchText(e.target.value)
-                            }}
-                        />
+                        <Block marginBottom={FOUNDATION_THEME.unit[6]}>
+                            <SearchInput
+                                placeholder={searchPlaceholder}
+                                value={searchText}
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    setSearchText(e.target.value)
+                                }}
+                            />
+                        </Block>
                     </Block>
                 )}
                 {filteredItems &&
