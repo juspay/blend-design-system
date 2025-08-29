@@ -116,16 +116,13 @@ const MultiSelectMenu = ({
         }
     }, [open, enableSearch])
 
-    // Handle keyboard events to maintain focus on search input
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent) => {
-            // If search is enabled and the event target is not the search input
             if (
                 enableSearch &&
                 searchInputRef.current &&
                 e.target !== searchInputRef.current
             ) {
-                // For printable characters, focus the search input and let it handle the input
                 if (
                     e.key.length === 1 &&
                     !e.ctrlKey &&
@@ -134,10 +131,8 @@ const MultiSelectMenu = ({
                 ) {
                     e.preventDefault()
                     searchInputRef.current.focus()
-                    // Append the character to the search text
                     const newValue = searchText + e.key
                     setSearchText(newValue)
-                    // Set cursor position to end
                     setTimeout(() => {
                         if (searchInputRef.current) {
                             searchInputRef.current.setSelectionRange(
@@ -149,7 +144,6 @@ const MultiSelectMenu = ({
                     return
                 }
 
-                // For backspace, focus search input and handle deletion
                 if (e.key === 'Backspace' && searchText.length > 0) {
                     e.preventDefault()
                     searchInputRef.current.focus()
@@ -180,7 +174,6 @@ const MultiSelectMenu = ({
         onOpenChange(newOpen)
     }
 
-    // Optimized search text change handler
     const handleSearchChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
             setSearchText(e.target.value)
