@@ -1,4 +1,5 @@
-import { forwardRef, useCallback } from 'react'
+import { forwardRef, useCallback, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import useScrollLock from '../../hooks/useScrollLock'
@@ -10,6 +11,30 @@ import { ButtonSubType, ButtonType, Button } from '../Button'
 import { useComponentToken } from '../../context/useComponentToken'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobileModal from './MobileModal'
+
+const getPortalContainer = (): HTMLElement => {
+    const PORTAL_ID = 'blend-modal-portal'
+    let portalContainer = document.getElementById(PORTAL_ID)
+
+    if (!portalContainer) {
+        portalContainer = document.createElement('div')
+        portalContainer.id = PORTAL_ID
+        portalContainer.style.position = 'relative'
+        portalContainer.style.zIndex = '1000'
+        document.body.appendChild(portalContainer)
+    }
+
+    return portalContainer
+}
+
+const cleanupPortalContainer = (): void => {
+    const PORTAL_ID = 'blend-modal-portal'
+    const portalContainer = document.getElementById(PORTAL_ID)
+
+    if (portalContainer && portalContainer.children.length === 0) {
+        document.body.removeChild(portalContainer)
+    }
+}
 
 const ModalHeader = ({
     title,
@@ -170,8 +195,27 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         const modalTokens = useComponentToken('MODAL') as ModalTokensType
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
+        const [isMounted, setIsMounted] = useState(false)
+        const [portalContainer, setPortalContainer] =
+            useState<HTMLElement | null>(null)
 
         useScrollLock(isOpen)
+
+        useEffect(() => {
+            setIsMounted(true)
+        }, [])
+
+        useEffect(() => {
+            if (isMounted && isOpen) {
+                const container = getPortalContainer()
+                setPortalContainer(container)
+            } else if (!isOpen && portalContainer) {
+                setPortalContainer(null)
+                setTimeout(() => {
+                    cleanupPortalContainer()
+                }, 0)
+            }
+        }, [isMounted, isOpen, portalContainer])
 
         const handleBackdropClick = useCallback(() => {
             if (closeOnBackdropClick) {
@@ -179,94 +223,98 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             }
         }, [closeOnBackdropClick, onClose])
 
-        if (!isOpen) return null
+        if (!isMounted || !isOpen || !portalContainer) return null
 
-        if (isMobile && useDrawerOnMobile) {
+        const modalContent = (() => {
+            if (isMobile && useDrawerOnMobile) {
+                return (
+                    <MobileModal
+                        isOpen={isOpen}
+                        onClose={onClose}
+                        title={title}
+                        subtitle={subtitle}
+                        primaryAction={primaryAction}
+                        secondaryAction={secondaryAction}
+                        className={className}
+                        showCloseButton={showCloseButton}
+                        closeOnBackdropClick={closeOnBackdropClick}
+                        headerRightSlot={headerRightSlot}
+                        showDivider={showDivider}
+                    >
+                        {children}
+                    </MobileModal>
+                )
+            }
+
             return (
-                <MobileModal
-                    isOpen={isOpen}
-                    onClose={onClose}
-                    title={title}
-                    subtitle={subtitle}
-                    primaryAction={primaryAction}
-                    secondaryAction={secondaryAction}
-                    className={className}
-                    showCloseButton={showCloseButton}
-                    closeOnBackdropClick={closeOnBackdropClick}
-                    headerRightSlot={headerRightSlot}
-                    showDivider={showDivider}
-                >
-                    {children}
-                </MobileModal>
-            )
-        }
-
-        return (
-            <Block
-                position="fixed"
-                inset={0}
-                zIndex={modalTokens.zIndex}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                overflow="auto"
-                padding={FOUNDATION_THEME.unit[16]}
-            >
                 <Block
-                    onClick={handleBackdropClick}
+                    position="fixed"
+                    inset={0}
+                    zIndex={modalTokens.zIndex}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
-                    position="fixed"
-                    inset={0}
-                    backgroundColor={FOUNDATION_THEME.colors.gray[700]}
-                    opacity={0.5}
-                    pointerEvents="auto"
-                    role="presentation"
-                    aria-hidden="true"
-                />
-
-                <Block
-                    ref={ref}
-                    className={className}
-                    display="flex"
-                    flexDirection="column"
-                    position="relative"
-                    backgroundColor={FOUNDATION_THEME.colors.gray[0]}
-                    minWidth={minWidth}
-                    maxWidth={'calc(100vw - 156px)'}
-                    maxHeight={'calc(100vh - 156px)'}
-                    borderRadius={FOUNDATION_THEME.border.radius[12]}
-                    boxShadow={FOUNDATION_THEME.shadows.xs}
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="modal-title"
+                    overflow="auto"
+                    padding={FOUNDATION_THEME.unit[16]}
                 >
-                    <ModalHeader
-                        title={title}
-                        subtitle={subtitle}
-                        onClose={onClose}
-                        showCloseButton={showCloseButton}
-                        headerRightSlot={headerRightSlot}
-                        showDivider={showDivider}
+                    <Block
+                        onClick={handleBackdropClick}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        position="fixed"
+                        inset={0}
+                        backgroundColor={FOUNDATION_THEME.colors.gray[700]}
+                        opacity={0.5}
+                        pointerEvents="auto"
+                        role="presentation"
+                        aria-hidden="true"
                     />
 
                     <Block
-                        padding={modalTokens.bodyContainer.padding}
-                        overflow="auto"
-                        flexGrow={1}
+                        ref={ref}
+                        className={className}
+                        display="flex"
+                        flexDirection="column"
+                        position="relative"
+                        backgroundColor={FOUNDATION_THEME.colors.gray[0]}
+                        minWidth={minWidth}
+                        maxWidth={'calc(100vw - 156px)'}
+                        maxHeight={'calc(100vh - 156px)'}
+                        borderRadius={FOUNDATION_THEME.border.radius[12]}
+                        boxShadow={FOUNDATION_THEME.shadows.xs}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="modal-title"
                     >
-                        {children}
-                    </Block>
+                        <ModalHeader
+                            title={title}
+                            subtitle={subtitle}
+                            onClose={onClose}
+                            showCloseButton={showCloseButton}
+                            headerRightSlot={headerRightSlot}
+                            showDivider={showDivider}
+                        />
 
-                    <ModalFooter
-                        primaryAction={primaryAction}
-                        secondaryAction={secondaryAction}
-                        showDivider={showDivider}
-                    />
+                        <Block
+                            padding={modalTokens.bodyContainer.padding}
+                            overflow="auto"
+                            flexGrow={1}
+                        >
+                            {children}
+                        </Block>
+
+                        <ModalFooter
+                            primaryAction={primaryAction}
+                            secondaryAction={secondaryAction}
+                            showDivider={showDivider}
+                        />
+                    </Block>
                 </Block>
-            </Block>
-        )
+            )
+        })()
+
+        return createPortal(modalContent, portalContainer)
     }
 )
 
