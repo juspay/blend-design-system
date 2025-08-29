@@ -22,7 +22,7 @@ import Gradient from '@/app/changelog/icons/Gradient'
 
 export interface SharedDocLayoutProps {
     /** Title displayed in the navigation bar */
-    title: string
+    // title: string
     /** Base route for navigation (e.g., '/docs', '/changelog') */
     baseRoute: string
     /** Path to content directory for sidebar generation */
@@ -38,7 +38,7 @@ export interface SharedDocLayoutProps {
 }
 
 const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
-    title,
+    // title,
     baseRoute,
     contentPath,
     children,

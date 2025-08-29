@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import GradientBorderComponent from './GradientBorderWrapper'
 
 const ChangeLogCard = ({ children }: { children: React.ReactNode }) => {
