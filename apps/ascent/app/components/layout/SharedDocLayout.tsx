@@ -33,6 +33,8 @@ export interface SharedDocLayoutProps {
     className?: string
     /** Whether to show the theme toggle button */
     showThemeToggle?: boolean
+
+    showSidebar?: boolean
 }
 
 const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
@@ -42,6 +44,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
     children,
     className = '',
     showThemeToggle = true,
+    showSidebar = true,
 }) => {
     // Generate sidebar items based on content path
     const sidebarItems = getDirItems(contentPath)
@@ -54,12 +57,12 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                 <nav className="xl:h-25 lg:h-20 h-18 flex items-center justify-between px-6 sticky top-0 z-50 backdrop-blur-md">
                     {/* Left side - Title and drawer */}
                     <div className="flex items-center gap-4">
-                        {/* <div className="sidebar-drawer-trigger">
+                        <div className="sidebar-drawer-trigger">
                             <SidebarDrawer
                                 items={sidebarItems}
                                 baseRoute={baseRoute}
                             />
-                        </div> */}
+                        </div>
                         <Link
                             href="/"
                             className="flex items-center font-semibold text-lg text-[var(--foreground)] hover:text-[var(--muted-foreground)] transition-colors"
@@ -136,26 +139,28 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                         </a>
 
                         {/* Theme toggle */}
-                        {showThemeToggle && (
-                            <div data-nav-topbar>
-                                <ThemeToggle />
-                            </div>
-                        )}
+                        <div
+                            data-nav-topbar
+                            className={` ${showThemeToggle ? 'visible' : 'hidden'}`}
+                        >
+                            <ThemeToggle />
+                        </div>
                     </div>
                 </nav>
 
                 {/* Main content area */}
-                {/* <div className="w-screen flex bg-[var(--sidebar-background)] backdrop-blur-sm"> */}
-                {/* Sidebar */}
-                {/* <aside className="doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden">
+                <div className="w-screen flex bg-[var(--sidebar-background)] backdrop-blur-sm">
+                    <aside
+                        className={`doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden ${showSidebar ? 'visible' : 'hidden'}`}
+                    >
                         <Sidebar items={sidebarItems} baseRoute={baseRoute} />
-                    </aside> */}
+                    </aside>
 
-                {/* Main content */}
-                <div className="main-content-area mt-20 overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full rounded-[var(--rounded-100)]">
-                    {children}
+                    {/* Main content */}
+                    <div className="main-content-area mt-20 overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full rounded-[var(--rounded-100)]">
+                        {children}
+                    </div>
                 </div>
-                {/* </div> */}
 
                 {/* Floating shortcuts button */}
                 <FloatingShortcutsButton />
