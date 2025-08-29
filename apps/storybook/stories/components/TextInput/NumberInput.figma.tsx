@@ -42,7 +42,7 @@ import { NumberInput, NumberInputSize } from '@juspay/blend-design-system'
 // Base connection
 figma.connect(
     NumberInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4299-6919&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-515591&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Size mapping
@@ -113,7 +113,7 @@ figma.connect(
 // Variant: With label
 figma.connect(
     NumberInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4299-6919&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-515591&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: true },
         props: {
@@ -151,7 +151,7 @@ figma.connect(
 // Variant: Without label
 figma.connect(
     NumberInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4299-6919&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-515591&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: false },
         props: {
@@ -185,7 +185,7 @@ figma.connect(
 // Variant: Medium size
 figma.connect(
     NumberInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4299-6919&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-515591&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'md' },
         props: {
@@ -219,7 +219,7 @@ figma.connect(
 // Variant: Large size
 figma.connect(
     NumberInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4299-6919&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-515591&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'lg' },
         props: {

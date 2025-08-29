@@ -40,7 +40,7 @@ import { OTPInput } from '@juspay/blend-design-system'
 // Base connection
 figma.connect(
     OTPInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-1899&t=fl3OkGf4BoUjX5Nr-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516190&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Direct string mappings
@@ -99,7 +99,7 @@ figma.connect(
 // Variant: With label
 figma.connect(
     OTPInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-1899&t=fl3OkGf4BoUjX5Nr-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516190&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: true },
         props: {
@@ -131,7 +131,7 @@ figma.connect(
 // Variant: Without label
 figma.connect(
     OTPInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-1899&t=fl3OkGf4BoUjX5Nr-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516190&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: false },
         props: {
@@ -159,7 +159,7 @@ figma.connect(
 // Variant: With sublabel
 figma.connect(
     OTPInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-1899&t=fl3OkGf4BoUjX5Nr-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516190&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showSublabel: true },
         props: {
@@ -191,7 +191,7 @@ figma.connect(
 // Variant: With hint
 figma.connect(
     OTPInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3940-1899&t=fl3OkGf4BoUjX5Nr-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516190&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showHint: true },
         props: {

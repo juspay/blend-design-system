@@ -1,5 +1,15 @@
-import { ChartType, CustomTooltipProps, NewNestedDataPoint } from './types'
-import { capitaliseCamelCase, formatNumber } from './ChartUtils'
+import {
+    ChartType,
+    CustomTooltipProps,
+    NewNestedDataPoint,
+    XAxisConfig,
+    YAxisConfig,
+} from './types'
+import {
+    capitaliseCamelCase,
+    formatNumber,
+    getAxisFormatterWithConfig,
+} from './ChartUtils'
 import Block from '../../components/Primitives/Block/Block'
 import Text from '../../components/Text/Text'
 
@@ -15,6 +25,50 @@ interface AuxItem {
     val: string | number
 }
 
+const formatTooltipLabel = (
+    label: string | number,
+    xAxis?: XAxisConfig
+): string => {
+    if (!xAxis) return capitaliseCamelCase(String(label))
+
+    if (xAxis.tickFormatter) {
+        return xAxis.tickFormatter(label)
+    }
+
+    if (xAxis.type) {
+        return getAxisFormatterWithConfig(
+            xAxis.type,
+            xAxis.dateOnly,
+            xAxis.smart
+        )(label)
+    }
+
+    return capitaliseCamelCase(String(label))
+}
+
+const formatTooltipValue = (
+    value: string | number,
+    yAxis?: YAxisConfig
+): string => {
+    if (!yAxis) {
+        return typeof value === 'number' ? formatNumber(value) : String(value)
+    }
+
+    if (yAxis.tickFormatter) {
+        return yAxis.tickFormatter(value)
+    }
+
+    if (yAxis.type) {
+        return getAxisFormatterWithConfig(
+            yAxis.type,
+            yAxis.dateOnly,
+            yAxis.smart
+        )(value)
+    }
+
+    return typeof value === 'number' ? formatNumber(value) : String(value)
+}
+
 export const CustomTooltip = ({
     active,
     payload,
@@ -24,6 +78,8 @@ export const CustomTooltip = ({
     setHoveredKey,
     chartType,
     selectedKeys,
+    xAxis,
+    yAxis,
 }: CustomTooltipProps) => {
     if (!active || !payload || !payload.length) {
         return null
@@ -59,6 +115,8 @@ export const CustomTooltip = ({
                     hoveredKey={hoveredKey}
                     label={label}
                     getColor={getColor}
+                    xAxis={xAxis}
+                    yAxis={yAxis}
                 />
             )}
             {chartType === ChartType.BAR && (
@@ -66,6 +124,8 @@ export const CustomTooltip = ({
                     originalData={originalData}
                     label={label}
                     getColor={getColor}
+                    xAxis={xAxis}
+                    yAxis={yAxis}
                 />
             )}
             {chartType === ChartType.PIE && (
@@ -76,6 +136,8 @@ export const CustomTooltip = ({
                     setHoveredKey={setHoveredKey}
                     originalData={originalData}
                     hoveredKey={hoveredKey}
+                    xAxis={xAxis}
+                    yAxis={yAxis}
                 />
             )}
         </Block>
@@ -86,10 +148,14 @@ const BarChartTooltip = ({
     originalData,
     label,
     getColor,
+    xAxis,
+    yAxis,
 }: {
     originalData: NewNestedDataPoint[]
     label: string
     getColor: (key: string) => string | undefined
+    xAxis?: XAxisConfig
+    yAxis?: YAxisConfig
 }) => {
     const relevantData = originalData.find((item) => item.name === label)?.data
     return (
@@ -101,7 +167,7 @@ const BarChartTooltip = ({
                         fontWeight={600}
                         color={FOUNDATION_THEME.colors.gray[900]}
                     >
-                        {capitaliseCamelCase(label)}
+                        {formatTooltipLabel(label, xAxis)}
                     </Text>
                 </Block>
 
@@ -158,7 +224,10 @@ const BarChartTooltip = ({
                                             }
                                             truncate={true}
                                         >
-                                            {relevantData[key].primary.val}
+                                            {formatTooltipValue(
+                                                relevantData[key].primary.val,
+                                                yAxis
+                                            )}
                                         </Text>
                                     </Block>
                                 </Block>
@@ -178,6 +247,8 @@ const LineChartTooltip = ({
     payload,
     selectedKeys,
     setHoveredKey,
+    xAxis,
+    yAxis,
 }: {
     originalData: NewNestedDataPoint[]
     hoveredKey: string | null
@@ -187,6 +258,8 @@ const LineChartTooltip = ({
     payload: Payload<ValueType, NameType>[]
     selectedKeys: string[]
     setHoveredKey: (key: string) => void
+    xAxis?: XAxisConfig
+    yAxis?: YAxisConfig
 }) => {
     if (active && hoveredKey == null) {
         if (selectedKeys.length > 0) {
@@ -245,7 +318,7 @@ const LineChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[500]}
                         color={FOUNDATION_THEME.colors.gray[400]}
                     >
-                        {capitaliseCamelCase(label)}
+                        {formatTooltipLabel(label, xAxis)}
                     </Text>
                 </Block>
             </Block>
@@ -264,7 +337,7 @@ const LineChartTooltip = ({
                     color={FOUNDATION_THEME.colors.gray[900]}
                     truncate={true}
                 >
-                    {relevantData.primary.val}
+                    {formatTooltipValue(relevantData.primary.val, yAxis)}
                 </Text>
             </Block>
 
@@ -297,9 +370,7 @@ const LineChartTooltip = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={FOUNDATION_THEME.colors.gray[700]}
                             >
-                                {typeof auxItem.val === 'number'
-                                    ? formatNumber(auxItem.val)
-                                    : auxItem.val}
+                                {formatTooltipValue(auxItem.val, yAxis)}
                             </Text>
                         </Block>
                     ))}
@@ -316,6 +387,8 @@ const PieChartTooltip = ({
     payload,
     selectedKeys,
     setHoveredKey,
+    xAxis,
+    yAxis,
 }: {
     originalData: NewNestedDataPoint[]
     hoveredKey: string | null
@@ -323,6 +396,8 @@ const PieChartTooltip = ({
     payload: Payload<ValueType, NameType>[]
     selectedKeys: string[]
     setHoveredKey: (key: string) => void
+    xAxis?: XAxisConfig
+    yAxis?: YAxisConfig
 }) => {
     if (active && hoveredKey == null) {
         if (selectedKeys.length > 0) {
@@ -367,7 +442,7 @@ const PieChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[500]}
                         color={FOUNDATION_THEME.colors.gray[400]}
                     >
-                        {capitaliseCamelCase(originalData[0].name)}
+                        {formatTooltipLabel(originalData[0].name, xAxis)}
                     </Text>
                 </Block>
             </Block>
@@ -386,7 +461,7 @@ const PieChartTooltip = ({
                     color={FOUNDATION_THEME.colors.gray[900]}
                     truncate={true}
                 >
-                    {data.primary.val}
+                    {formatTooltipValue(data.primary.val, yAxis)}
                 </Text>
             </Block>
 
@@ -419,9 +494,7 @@ const PieChartTooltip = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={FOUNDATION_THEME.colors.gray[700]}
                             >
-                                {typeof auxItem.val === 'number'
-                                    ? formatNumber(auxItem.val)
-                                    : auxItem.val}
+                                {formatTooltipValue(auxItem.val, yAxis)}
                             </Text>
                         </Block>
                     ))}

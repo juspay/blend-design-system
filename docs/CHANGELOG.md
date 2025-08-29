@@ -1,12 +1,22 @@
-# Changelog for v0.0.14-beta (Beta)
+# Changelog for v0.0.14 (Stable)
 
-This is a beta release. Changes since last tag:
+This is a stable release. Changes since last stable release:
 
+- Merge pull request #297 from juspay/dev (2e5522a)
+- 302 charts and stats (#308) (8f37809)
+- feat: enhance DataTable component with improved cell dimensions (#309) (67c13a2)
+- feat: add maxVisibleItems prop to LeftPanelInfo (#312) (bbeb956)
+- feat: add truncation detection and tooltip support for selectors (#304) (84e568d)
+- chore: updated the figma link of all the components (#307) (663e085)
+- Feat/221 ds website landing page (#271) (a82a839)
+- chore: update pull request template (#301) (3792a7b)
+- chore: improved readme as per the community (#300) (1188735)
+- chore(release): v0.0.14-beta [BETA] (#296) (27f8cc2)
 - feat: enhance Tabs component with dynamic management features (#295) (ab90d75)
 - Merge pull request #289 from juspay/fix/data-table (d13921a)
 - chore: added the correct mapping for some of the updated compomnents (#293) (7460854)
 - 283 otpinput field enhancements (#292) (f805523)
 - 272 multi select dropdown field not working for normal view but fine for mweb (#287) (d555fc6)
 - Ds 231 Fix mweb calendar (#284) (1df11e9)
+- Merge pull request #282 from juspay/dev (e7e7376)
 - Merge pull request #281 from juspay/release/update-stable-version-0.0.13 (cf8788b)
-- chore(release): v0.0.13-beta [BETA] (#278) (33344e4)

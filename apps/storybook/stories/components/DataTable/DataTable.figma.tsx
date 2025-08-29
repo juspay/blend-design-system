@@ -30,7 +30,7 @@ import { DataTable, ColumnType } from '@juspay/blend-design-system'
 // Base DataTable connection
 figma.connect(
     DataTable,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=6252-24109&t=O53E5LTqGyp5e0cp-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-438276&t=2L1Yl830ZKZjFcrt-11',
     {
         props: {
             // Note: The DataTable Figma component doesn't expose properties

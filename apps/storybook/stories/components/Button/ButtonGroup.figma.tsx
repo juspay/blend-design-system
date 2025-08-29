@@ -31,7 +31,7 @@ import { figma } from '@figma/code-connect'
 
 figma.connect(
     ButtonGroup,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18797-274946&t=EWj7fDD0TbtPTknX-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18797-274946&t=Igz9fmVsO5gD0NMR-4',
     {
         props: {
             // Renamed mapping: stack (Figma) → stacked (Code)

@@ -282,7 +282,7 @@ const SimpleDataTableExample = () => {
         },
         {
             id: 5,
-            name: 'Apple Watch Series 9 test test test random text',
+            name: 'Apple Watch Series 9 Ultra Pro Max with Extended Battery Life and Advanced Health Monitoring Features',
             category: {
                 options: [
                     {
@@ -333,13 +333,69 @@ const SimpleDataTableExample = () => {
             inStock: true,
             manager: {
                 label: 'Kevin Lynch',
-                sublabel: 'VP Technology',
+                sublabel: 'VP Technology and Advanced Wearable Development',
                 imageUrl: 'https://randomuser.me/api/portraits/men/5.jpg',
             },
             rating: 4.6,
             tags: {
                 values: ['wearable', 'health', 'fitness'],
                 labels: ['Wearable', 'Health', 'Fitness'],
+            },
+        },
+        {
+            id: 6,
+            name: 'MacBook Air M3 with Revolutionary Performance and All-Day Battery Life',
+            category: {
+                options: [
+                    {
+                        id: 'laptop',
+                        label: 'Laptop',
+                        value: 'laptop',
+                        icon: <Laptop size={16} />,
+                    },
+                    {
+                        id: 'desktop',
+                        label: 'Desktop',
+                        value: 'desktop',
+                        icon: <Monitor size={16} />,
+                    },
+                    {
+                        id: 'tablet',
+                        label: 'Tablet',
+                        value: 'tablet',
+                        icon: <Tablet size={16} />,
+                    },
+                    {
+                        id: 'smartphone',
+                        label: 'Smartphone',
+                        value: 'smartphone',
+                        icon: <Smartphone size={16} />,
+                    },
+                ],
+                selectedValue: 'laptop',
+                placeholder: 'Select category...',
+            },
+            price: 1299.99,
+            launchDate: {
+                date: '2024-03-15',
+                format: 'MMM dd, yyyy',
+            },
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+            inStock: true,
+            manager: {
+                label: 'John Ternus',
+                sublabel: 'SVP Hardware Engineering',
+                imageUrl: 'https://randomuser.me/api/portraits/men/6.jpg',
+            },
+            rating: 4.9,
+            tags: {
+                values: ['premium', 'portable', 'efficient'],
+                labels: ['Premium', 'Portable', 'Efficient'],
             },
         },
     ]
@@ -375,8 +431,8 @@ const SimpleDataTableExample = () => {
                     ${value.toLocaleString()}
                 </span>
             ),
-            minWidth: '100px',
-            maxWidth: '150px',
+            minWidth: '150px',
+            maxWidth: '250px',
         },
         {
             field: 'launchDate',
@@ -1125,12 +1181,11 @@ const DataTableDemo = () => {
         totalRecords: 3000,
     })
 
-    // Strict column definitions using the new typing system
     const columns: ColumnDefinition<UserRow>[] = [
         {
             field: 'name',
-            header: 'User Profile',
-            headerSubtext: 'Name & Join Date',
+            header: 'User Profile Information and Account Details',
+            headerSubtext: 'Complete Name, Avatar & Join Date Information',
             type: ColumnType.AVATAR,
             renderCell: (value: AvatarColumnProps) => (
                 <div
@@ -1158,18 +1213,18 @@ const DataTableDemo = () => {
         },
         {
             field: 'email',
-            header: 'Contact Info',
-            headerSubtext: 'Email Address',
+            header: 'Primary Contact Information and Communication Details',
+            headerSubtext: 'Email Address for Business Communications',
             type: ColumnType.TEXT,
             isSortable: true,
             isEditable: true,
-            minWidth: '180px',
+            minWidth: '150px',
             maxWidth: '250px',
         },
         {
             field: 'role',
-            header: 'Access Level',
-            headerSubtext: 'User Role & Permissions',
+            header: 'System Access Level and Authorization Status',
+            headerSubtext: 'User Role, Permissions & Security Clearance Level',
             type: ColumnType.SELECT,
             isSortable: true,
             isEditable: true,
@@ -1178,7 +1233,7 @@ const DataTableDemo = () => {
         },
         {
             field: 'department',
-            header: 'Department',
+            header: 'Organizational Department and Business Unit Assignment',
             type: ColumnType.MULTISELECT,
             isSortable: true,
             isEditable: true,
@@ -1187,7 +1242,7 @@ const DataTableDemo = () => {
         },
         {
             field: 'gateway',
-            header: 'Gateway',
+            header: 'Network Gateway and Connection Point',
             type: ColumnType.SELECT,
             isSortable: true,
             isEditable: true,
@@ -1196,8 +1251,8 @@ const DataTableDemo = () => {
         },
         {
             field: 'status',
-            header: 'Account Status',
-            headerSubtext: 'Current State',
+            header: 'Current Account Status and Activity State',
+            headerSubtext: 'Real-time Account Status and Operational State',
             type: ColumnType.TAG,
             renderCell: (value: TagColumnProps) => (
                 <Tag
@@ -1221,10 +1276,11 @@ const DataTableDemo = () => {
         },
         {
             field: 'permissions',
-            header: 'User Permissions',
-            headerSubtext: 'Access Rights',
+            header: 'Detailed User Permissions and Access Rights Matrix',
+            headerSubtext:
+                'Comprehensive Access Rights and Security Permissions',
             type: ColumnType.REACT_ELEMENT,
-            isSortable: false, // Required for REACT_ELEMENT type
+            isSortable: false,
             renderCell: (value: unknown) => {
                 const permissionsData = value as {
                     values: string[]
@@ -1280,8 +1336,8 @@ const DataTableDemo = () => {
         },
         {
             field: 'revenue',
-            header: 'Revenue',
-            headerSubtext: 'Monthly Revenue Display',
+            header: 'Monthly Revenue Performance and Financial Metrics',
+            headerSubtext: 'Detailed Monthly Revenue Display and Analytics',
             type: ColumnType.TEXT,
             isSortable: true,
             isEditable: false,
@@ -1290,8 +1346,8 @@ const DataTableDemo = () => {
         },
         {
             field: 'growthRate',
-            header: 'Growth Rate',
-            headerSubtext: 'Monthly Growth %',
+            header: 'Business Growth Rate and Performance Indicators',
+            headerSubtext: 'Monthly Growth Percentage and Trend Analysis',
             type: ColumnType.NUMBER,
             isSortable: true,
             isEditable: true,
@@ -1300,8 +1356,9 @@ const DataTableDemo = () => {
         },
         {
             field: 'revenueAmount',
-            header: 'Revenue Filter',
-            headerSubtext: 'Slider Range Filter',
+            header: 'Advanced Revenue Filter and Range Selection Tool',
+            headerSubtext:
+                'Interactive Slider Range Filter for Revenue Analysis',
             type: ColumnType.SLIDER,
             isSortable: true,
             isEditable: false,
@@ -2016,6 +2073,15 @@ const DataTableDemo = () => {
                                     </>
                                 )}
                             </span>
+                            <br />
+                            <strong>🎯 TOOLTIP DEMO:</strong> Both column
+                            headers and text-based cell content with long names
+                            are automatically truncated and show tooltips on
+                            hover. Try hovering over the column headers and text
+                            cells (like email addresses, revenue, growth rate)
+                            to see the full text in a tooltip! Visual elements
+                            like avatars and tags don't show tooltips as they're
+                            not text-based content.
                         </p>
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>

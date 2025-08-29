@@ -38,7 +38,7 @@ import { Checkbox, CheckboxSize } from '@juspay/blend-design-system'
 
 figma.connect(
     Checkbox,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=10045-7478&t=C7UDCGRbfFzRvHuR-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-677129&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Size mapping - trying different possible mappings
@@ -64,8 +64,8 @@ figma.connect(
             // Disabled is a separate boolean property in Figma
             disabled: figma.boolean('disabled'),
 
-            // Direct string mappings
-            value: figma.string('value'),
+            // Mapping based on actual Figma properties
+            value: figma.string('label'), // label prop in Figma maps to value in code
             subtext: figma.string('subtext'),
 
             // Slot mapping - Figma uses hasSlot boolean, code uses actual slot content
