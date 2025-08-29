@@ -57,7 +57,9 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                 <nav className="xl:h-25 lg:h-20 h-18 flex items-center justify-between px-6 sticky top-0 z-50 backdrop-blur-md">
                     {/* Left side - Title and drawer */}
                     <div className="flex items-center gap-4">
-                        <div className="sidebar-drawer-trigger">
+                        <div
+                            className={`sidebar-drawer-trigger ${showSidebar ? 'visible' : '!hidden'}`}
+                        >
                             <SidebarDrawer
                                 items={sidebarItems}
                                 baseRoute={baseRoute}
@@ -157,7 +159,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                     </aside>
 
                     {/* Main content */}
-                    <div className="main-content-area mt-20 overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full rounded-[var(--rounded-100)]">
+                    <div className="main-content-area mt-20 overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full lg:rounded-[var(--rounded-100)] md:rounded-[var(--rounded-80)] sm:rounded-[var(--rounded-60)] rounded-[var(--rounded-50)] ">
                         {children}
                     </div>
                 </div>

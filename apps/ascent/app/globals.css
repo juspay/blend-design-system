@@ -105,6 +105,9 @@
 
     /* changelog */
     --rounded-100: 100px;
+    --rounded-80: 80px;
+    --rounded-60: 60px;
+    --rounded-50: 50px;
     --changelog-border-color: rgba(255, 255, 255, 0.05);
     --changelog-bg-color: 180deg, #060606_37.13%, rgba(0, 0, 0, 0.5) _140.17%;
     --pixel: 1px;
@@ -113,8 +116,8 @@
     --grey-300: #b3b3b3;
     --grey-400: #64677c;
     --grey-500: #4f4f4f;
-    --text-64: 64px;
     --text-40: 40px;
+    --text-64: 64px;
     --rounded-50: 50px;
     --rounded-46: 46px;
     --date-card-badge-color: rgba(255, 255, 255, 0.02);

@@ -10,10 +10,10 @@ const HomeDataList: React.FC = () => {
             {HomeData.map((obj, key) => (
                 <ChangeLogCard key={key}>
                     <DateBadge>{obj.date}</DateBadge>
-                    <h2 className="text-[var(--grey-100)] text-[length:var(--text-40)]">
+                    <h2 className="text-[var(--grey-100)] lg:text-[length:var(--text-40)] md:text-3xl sm:text-2xl xs:text-xl text-lg">
                         {obj.heading}
                     </h2>
-                    <div className="text-2xl text-[var(--grey-500)]">
+                    <div className="lg:text-2xl md:text-xl sm:text-lg xs:text-base text-sm text-[var(--grey-500)]">
                         {obj.paragraph}
                     </div>
                     <InfoBtn
