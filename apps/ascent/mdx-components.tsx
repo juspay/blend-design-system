@@ -5,6 +5,7 @@ import {
     ChangelogCard,
     ChangelogEntry,
 } from '@/components/changelog/ChangelogComponents'
+import { CommitLink } from '@/components/changelog/CommitLink'
 import {
     MDXComponents,
     PreviewComponents,
@@ -34,6 +35,7 @@ const components = {
     VersionHeader,
     ChangelogCard,
     ChangelogEntry,
+    CommitLink,
     GradientBorderComponent,
     DateBadge,
     Search,

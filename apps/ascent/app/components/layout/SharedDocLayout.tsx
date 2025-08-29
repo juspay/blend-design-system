@@ -31,6 +31,8 @@ export interface SharedDocLayoutProps {
     children: React.ReactNode
     /** Optional custom CSS classes */
     className?: string
+    /** Whether to show the theme toggle button */
+    showThemeToggle?: boolean
 }
 
 const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
@@ -39,6 +41,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
     contentPath,
     children,
     className = '',
+    showThemeToggle = true,
 }) => {
     // Generate sidebar items based on content path
     const sidebarItems = getDirItems(contentPath)
@@ -133,9 +136,11 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                         </a>
 
                         {/* Theme toggle */}
-                        <div data-nav-topbar>
-                            <ThemeToggle />
-                        </div>
+                        {showThemeToggle && (
+                            <div data-nav-topbar>
+                                <ThemeToggle />
+                            </div>
+                        )}
                     </div>
                 </nav>
 

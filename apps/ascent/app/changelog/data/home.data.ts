@@ -9,19 +9,11 @@ interface HomeDataType {
 const HomeData: HomeDataType[] = [
     {
         id: '1',
-        date: 'August 14, 2025',
-        heading: 'v0.0.12 - Stable',
+        date: 'August 28, 2025',
+        heading: 'v0.0.14 - Stable',
         paragraph:
-            'The Primary Button component had an issue where the text became slightly misaligned whenever an icon was placed alongside it. This inconsistency was especially noticeable in cases where buttons contained both leading and trailing icons, making the layout feel visually off-balance and reducing readability.',
-        link: '/changelog/v0.0.12',
-    },
-    {
-        id: '2',
-        date: 'July 28, 2025',
-        heading: 'v0.0.11 - Enhancements',
-        paragraph:
-            'The Primary Button component had an issue where the text became slightly misaligned whenever an icon was placed alongside it. This inconsistency was especially noticeable in cases where buttons contained both leading and trailing icons, making the layout feel visually off-balance and reducing readability.',
-        link: '/changelog/v0.0.11',
+            'Enhanced core components with dynamic tabs, improved data tables, and richer select/sidebar features for better usability. Introduced new chart & stat card formatting (currency, percentage, number, date/time) with advanced props and display modes. Shipped updates to Figma Code Connect, OTP inputs, drawers, landing page, and documentation for improved consistency and developer experience.',
+        link: '/changelog/v0.0.14',
     },
 ]
 

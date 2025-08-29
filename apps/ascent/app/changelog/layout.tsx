@@ -8,6 +8,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
             title={CHANGELOG_CONFIG.title}
             baseRoute={CHANGELOG_CONFIG.baseRoute}
             contentPath={CHANGELOG_CONFIG.contentPath}
+            showThemeToggle={false}
         >
             {children}
         </SharedDocLayout>
