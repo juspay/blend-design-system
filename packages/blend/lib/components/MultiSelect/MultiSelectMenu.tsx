@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
@@ -95,8 +95,80 @@ const MultiSelectMenu = ({
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
 
     const [searchText, setSearchText] = useState('')
-    const filteredItems = filterMenuGroups(items, searchText)
-    const availableValues = getAllAvailableValues(filteredItems)
+    const searchInputRef = useRef<HTMLInputElement>(null)
+    const contentRef = useRef<HTMLDivElement>(null)
+
+    const filteredItems = React.useMemo(
+        () => filterMenuGroups(items, searchText),
+        [items, searchText]
+    )
+    const availableValues = React.useMemo(
+        () => getAllAvailableValues(filteredItems),
+        [filteredItems]
+    )
+
+    useEffect(() => {
+        if (open && enableSearch && searchInputRef.current) {
+            const timer = setTimeout(() => {
+                searchInputRef.current?.focus()
+            }, 50)
+            return () => clearTimeout(timer)
+        }
+    }, [open, enableSearch])
+
+    // Handle keyboard events to maintain focus on search input
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            // If search is enabled and the event target is not the search input
+            if (
+                enableSearch &&
+                searchInputRef.current &&
+                e.target !== searchInputRef.current
+            ) {
+                // For printable characters, focus the search input and let it handle the input
+                if (
+                    e.key.length === 1 &&
+                    !e.ctrlKey &&
+                    !e.metaKey &&
+                    !e.altKey
+                ) {
+                    e.preventDefault()
+                    searchInputRef.current.focus()
+                    // Append the character to the search text
+                    const newValue = searchText + e.key
+                    setSearchText(newValue)
+                    // Set cursor position to end
+                    setTimeout(() => {
+                        if (searchInputRef.current) {
+                            searchInputRef.current.setSelectionRange(
+                                newValue.length,
+                                newValue.length
+                            )
+                        }
+                    }, 0)
+                    return
+                }
+
+                // For backspace, focus search input and handle deletion
+                if (e.key === 'Backspace' && searchText.length > 0) {
+                    e.preventDefault()
+                    searchInputRef.current.focus()
+                    const newValue = searchText.slice(0, -1)
+                    setSearchText(newValue)
+                    setTimeout(() => {
+                        if (searchInputRef.current) {
+                            searchInputRef.current.setSelectionRange(
+                                newValue.length,
+                                newValue.length
+                            )
+                        }
+                    }, 0)
+                    return
+                }
+            }
+        },
+        [enableSearch, searchText]
+    )
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled) return
@@ -108,6 +180,14 @@ const MultiSelectMenu = ({
         onOpenChange(newOpen)
     }
 
+    // Optimized search text change handler
+    const handleSearchChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            setSearchText(e.target.value)
+        },
+        []
+    )
+
     return (
         <RadixMenu.Root
             modal={false}
@@ -118,10 +198,13 @@ const MultiSelectMenu = ({
                 {trigger}
             </RadixMenu.Trigger>
             <Content
+                ref={contentRef}
                 align={alignment}
                 sideOffset={sideOffset}
                 alignOffset={alignOffset}
                 side={side}
+                avoidCollisions={false}
+                onKeyDown={handleKeyDown}
                 style={{
                     minWidth: minWidth || 250,
                     width:
@@ -136,13 +219,11 @@ const MultiSelectMenu = ({
                     {enableSearch && (
                         <Block>
                             <SearchInput
+                                ref={searchInputRef}
                                 placeholder={searchPlaceholder}
                                 value={searchText}
-                                onChange={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    setSearchText(e.target.value)
-                                }}
+                                onChange={handleSearchChange}
+                                autoFocus
                             />
                         </Block>
                     )}
