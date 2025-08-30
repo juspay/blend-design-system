@@ -59,46 +59,6 @@ const VideoBlock = ({
         return null
     }
 
-    // Function to detect if URL is a Google Drive video
-    const isGoogleDriveUrl = (url: string) => {
-        return (
-            url.includes('drive.google.com/file/d/') ||
-            url.includes('drive.google.com/open?id=')
-        )
-    }
-
-    // Function to extract Google Drive file ID and create embed URL
-    const getGoogleDriveEmbedUrl = (url: string) => {
-        // Handle both formats:
-        // https://drive.google.com/file/d/[FILE_ID]/view
-        // https://drive.google.com/open?id=[FILE_ID]
-
-        let fileId = null
-
-        // Format 1: /file/d/[FILE_ID]/
-        const fileRegExp = /\/file\/d\/([a-zA-Z0-9_-]+)\//
-        const fileMatch = url.match(fileRegExp)
-        if (fileMatch) {
-            fileId = fileMatch[1]
-        }
-
-        // Format 2: ?id=[FILE_ID]
-        if (!fileId) {
-            const idRegExp = /[?&]id=([a-zA-Z0-9_-]+)/
-            const idMatch = url.match(idRegExp)
-            if (idMatch) {
-                fileId = idMatch[1]
-            }
-        }
-
-        if (fileId) {
-            // Google Drive preview URL doesn't support the same parameters as YouTube/Vimeo
-            // but we can still create the embed URL
-            return `https://drive.google.com/file/d/${fileId}/preview`
-        }
-        return null
-    }
-
     const containerClasses =
         'w-[90vw] lg:-ml-30 md:-ml-22 sm:-ml-14 xs:-ml-8 -ml-5 rounded-br-[20vw]'
     const videoClasses = 'w-full rounded-br-[20vw] object-cover'
