@@ -14,7 +14,7 @@
     --surface: oklch(0.98 0 0);
 
     /* Enhanced sidebar and navigation tokens */
-    --sidebar-background: oklch(0.995 0 0);
+    /* --sidebar-background: oklch(0.995 0 0); */
     --sidebar-border: oklch(0.94 0 0);
     --sidebar-item-hover: oklch(0.96 0 0);
     --sidebar-item-active: oklch(0.92 0 0);
@@ -236,7 +236,7 @@
         --surface: oklch(0.2 0 0);
 
         /* Enhanced dark mode sidebar and navigation tokens */
-        --sidebar-background: oklch(0.16 0 0);
+        /* --sidebar-background: oklch(0.16 0 0); */
         --sidebar-border: oklch(0.25 0 0);
         --sidebar-item-hover: oklch(0.22 0 0);
         --sidebar-item-active: oklch(0.28 0 0);
@@ -288,7 +288,7 @@
     --surface: oklch(0.98 0 0);
 
     /* Enhanced light mode sidebar and navigation tokens */
-    --sidebar-background: oklch(0.995 0 0);
+    /* --sidebar-background: oklch(0.995 0 0); */
     --sidebar-border: oklch(0.94 0 0);
     --sidebar-item-hover: oklch(0.96 0 0);
     --sidebar-item-active: oklch(0.92 0 0);
@@ -339,7 +339,7 @@
     --surface: oklch(0.2 0 0);
 
     /* Enhanced dark mode sidebar and navigation tokens */
-    --sidebar-background: oklch(0.16 0 0);
+    /* --sidebar-background: oklch(0.16 0 0); */
     --sidebar-border: oklch(0.25 0 0);
     --sidebar-item-hover: oklch(0.22 0 0);
     --sidebar-item-active: oklch(0.28 0 0);

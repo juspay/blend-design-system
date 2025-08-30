@@ -19,6 +19,8 @@ import { getDirItems } from '@/docs/utils'
 import { Logo } from '@/app/changelog/icons/Logo'
 import { JuspayLogoTitle } from '@/app/changelog/icons/JuspayLogoTitle'
 import Gradient from '@/app/changelog/icons/Gradient'
+import { ConnectWithUs } from '@/app/landing/components/connect-with-us/ConnectWithUs'
+import { Footer } from '@/app/landing/components/footer/Footer'
 
 export interface SharedDocLayoutProps {
     /** Title displayed in the navigation bar */
@@ -54,9 +56,9 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
             <main className={`min-h-screen w-full ${className}`}>
                 <Gradient className="absolute right-0" />
                 {/* Navigation Bar */}
-                <nav className="xl:h-25 lg:h-20 h-18 flex items-center justify-between px-6 sticky top-0 z-50 backdrop-blur-md">
+                <nav className="xl:h-25 lg:h-20 md:h-16 sm:h-14 h-12 flex items-center justify-between xl:px-6 lg:px-5 md:px-4 sm:px-3 px-2 sticky top-0 z-50 backdrop-blur-md">
                     {/* Left side - Title and drawer */}
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center xl:gap-4 lg:gap-3 md:gap-2 gap-1">
                         <div
                             className={`sidebar-drawer-trigger ${showSidebar ? 'visible' : '!hidden'}`}
                         >
@@ -67,7 +69,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                         </div>
                         <Link
                             href="/"
-                            className="flex items-center font-semibold text-lg text-[var(--foreground)] hover:text-[var(--muted-foreground)] transition-colors"
+                            className="flex items-center font-semibold xl:text-lg lg:text-base md:text-sm sm:text-xs text-xs text-[var(--foreground)] hover:text-[var(--muted-foreground)] transition-colors"
                             data-nav-topbar
                         >
                             <Logo /> <JuspayLogoTitle />
@@ -75,8 +77,11 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                     </div>
 
                     {/* Right side - Search and navigation links */}
-                    <div className="flex items-center gap-3">
-                        <div className="max-w-sm" data-nav-topbar>
+                    <div className="flex items-center xl:gap-3 lg:gap-2 md:gap-2 sm:gap-1 gap-1">
+                        <div
+                            className="xl:max-w-sm lg:max-w-xs md:max-w-[350px] sm:max-w-[290px] max-w-[100px] "
+                            data-nav-topbar
+                        >
                             <SearchProvider />
                         </div>
 
@@ -166,6 +171,8 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
 
                 {/* Floating shortcuts button */}
                 <FloatingShortcutsButton />
+                <ConnectWithUs />
+                <Footer />
             </main>
         </GlobalKeyboardNavigationProvider>
     )

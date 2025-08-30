@@ -2,10 +2,9 @@ export const Logo = () => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="29"
-            height="29"
             viewBox="0 0 29 29"
             fill="none"
+            className="lg:w-7 lg:h-7 md:w-6 md:h-6 sm:w-5 sm:h-5 w-4 h-4"
         >
             <path
                 fillRule="evenodd"
