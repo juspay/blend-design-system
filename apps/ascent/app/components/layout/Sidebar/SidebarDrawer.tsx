@@ -43,7 +43,7 @@ const SidebarDrawer = ({ items, baseRoute = '/docs' }: SidebarDrawerProps) => {
                 >
                     <div className="h-full w-full grow pt-5 flex flex-col rounded-2xl bg-[var(--code-background)]">
                         <Drawer.Title className="hidden">
-                            <h1 className="text-2xl font-bold">Blend</h1>
+                            <p className="text-2xl font-bold">Blend</p>
                         </Drawer.Title>
                         <Sidebar items={items} baseRoute={baseRoute} />
                     </div>

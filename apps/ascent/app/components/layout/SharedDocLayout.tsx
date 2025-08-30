@@ -1,8 +1,3 @@
-/**
- * Shared layout component for docs, changelog, and other documentation sections
- * Eliminates code duplication between layout files
- */
-
 import Link from 'next/link'
 import React from 'react'
 import { Github } from 'lucide-react'
@@ -21,10 +16,15 @@ import {
     StorybookIcon,
 } from '@/components/ui/Icons'
 import { getDirItems } from '@/docs/utils'
+import { Logo } from '@/app/changelog/icons/Logo'
+import { JuspayLogoTitle } from '@/app/changelog/icons/JuspayLogoTitle'
+import Gradient from '@/app/changelog/icons/Gradient'
+import { ConnectWithUs } from '@/app/landing/components/connect-with-us/ConnectWithUs'
+import { Footer } from '@/app/landing/components/footer/Footer'
 
 export interface SharedDocLayoutProps {
     /** Title displayed in the navigation bar */
-    title: string
+    // title: string
     /** Base route for navigation (e.g., '/docs', '/changelog') */
     baseRoute: string
     /** Path to content directory for sidebar generation */
@@ -33,28 +33,35 @@ export interface SharedDocLayoutProps {
     children: React.ReactNode
     /** Optional custom CSS classes */
     className?: string
+    /** Whether to show the theme toggle button */
+    showThemeToggle?: boolean
+
+    showSidebar?: boolean
 }
 
 const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
-    title,
+    // title,
     baseRoute,
     contentPath,
     children,
     className = '',
+    showThemeToggle = true,
+    showSidebar = true,
 }) => {
     // Generate sidebar items based on content path
     const sidebarItems = getDirItems(contentPath)
 
     return (
         <GlobalKeyboardNavigationProvider>
-            <main
-                className={`min-h-screen w-screen bg-[var(--background)] ${className}`}
-            >
+            <main className={`min-h-screen w-full ${className}`}>
+                <Gradient className="absolute right-0" />
                 {/* Navigation Bar */}
-                <nav className="h-[var(--navbar-height)] flex items-center justify-between px-6 border-b border-[var(--border)] bg-[var(--sidebar-background)] backdrop-blur-sm sticky top-0 z-50">
+                <nav className="xl:h-25 lg:h-20 md:h-16 sm:h-14 h-12 flex items-center justify-between xl:px-6 lg:px-5 md:px-4 sm:px-3 px-2 sticky top-0 z-50 backdrop-blur-md">
                     {/* Left side - Title and drawer */}
-                    <div className="flex items-center gap-4">
-                        <div className="sidebar-drawer-trigger">
+                    <div className="flex items-center xl:gap-4 lg:gap-3 md:gap-2 gap-1">
+                        <div
+                            className={`sidebar-drawer-trigger ${showSidebar ? 'visible' : '!hidden'}`}
+                        >
                             <SidebarDrawer
                                 items={sidebarItems}
                                 baseRoute={baseRoute}
@@ -62,16 +69,19 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                         </div>
                         <Link
                             href="/"
-                            className="flex items-center font-semibold text-lg text-[var(--foreground)] hover:text-[var(--muted-foreground)] transition-colors"
+                            className="flex items-center font-semibold xl:text-lg lg:text-base md:text-sm sm:text-xs text-xs text-[var(--foreground)] hover:text-[var(--muted-foreground)] transition-colors"
                             data-nav-topbar
                         >
-                            <span>{title}</span>
+                            <Logo /> <JuspayLogoTitle />
                         </Link>
                     </div>
 
                     {/* Right side - Search and navigation links */}
-                    <div className="flex items-center gap-3">
-                        <div className="max-w-sm" data-nav-topbar>
+                    <div className="flex items-center xl:gap-3 lg:gap-2 md:gap-2 sm:gap-1 gap-1">
+                        <div
+                            className="xl:max-w-sm lg:max-w-xs md:max-w-[350px] sm:max-w-[290px] max-w-[100px] "
+                            data-nav-topbar
+                        >
                             <SearchProvider />
                         </div>
 
@@ -136,27 +146,31 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                         </a>
 
                         {/* Theme toggle */}
-                        <div data-nav-topbar>
+                        <div
+                            data-nav-topbar
+                            className={` ${showThemeToggle ? 'visible' : 'hidden'}`}
+                        >
                             <ThemeToggle />
                         </div>
                     </div>
                 </nav>
 
                 {/* Main content area */}
-                <div className="w-screen h-[calc(100vh-var(--navbar-height))] flex">
-                    {/* Sidebar */}
-                    <aside className="doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden">
+                <div className="w-screen flex bg-[var(--sidebar-background)] backdrop-blur-sm h-screen">
+                    <aside
+                        className={`doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden fixed left-0 top-[var(--navbar-height)] z-40 ${showSidebar ? 'visible' : 'hidden'}`}
+                    >
                         <Sidebar items={sidebarItems} baseRoute={baseRoute} />
                     </aside>
 
                     {/* Main content */}
-                    <div className="main-content-area flex-1 h-[calc(100vh-var(--navbar-height))] overflow-y-auto">
+                    <div className="main-content-area overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full lg:rounded-[var(--rounded-100)] md:rounded-[var(--rounded-80)] sm:rounded-[var(--rounded-60)] rounded-[var(--rounded-50)] ">
                         {children}
+                        <FloatingShortcutsButton />
+                        <ConnectWithUs />
+                        <Footer />
                     </div>
                 </div>
-
-                {/* Floating shortcuts button */}
-                <FloatingShortcutsButton />
             </main>
         </GlobalKeyboardNavigationProvider>
     )

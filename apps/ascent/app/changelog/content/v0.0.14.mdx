@@ -1,0 +1,342 @@
+---
+title: 'Version 0.0.14'
+description: 'Enhanced core components with dynamic tabs, improved data tables, and richer select/sidebar features for better usability. Introduced new chart & stat card formatting (currency, percentage, number, date/time) with advanced props and display modes. Shipped updates to Figma Code Connect, OTP inputs, drawers, landing page, and documentation for improved consistency and developer experience'
+---
+
+<VersionHeader version="v0.0.14" date="2024-08-28" status="stable" />
+
+<ChangelogCard summary="Tab Component" prId="295" commitHash="ab90d75" defaultExpanded={true}>
+
+<ChangelogEntry type="feat" component="Tab">
+    **Dynamic Tab Management** - Added comprehensive tab management system
+    allowing users to add any number of tabs, seamlessly switch between them via
+    an intuitive tab switcher, and close opened tabs with improved user
+    experience.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="Tab">
+    **Add Tab Button** - Introduced an "Add Tab" floating button that triggers a
+    fully customizable layout, giving developers flexibility to implement custom
+    tab creation workflows.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Data Table" prId={["289", "309"]} commitHash={["d13921a", "67c13a2"]}>
+
+<ChangelogEntry type="fix" component="DataTable">
+    **UI Cleanup** - Removed unwanted horizontal scrollbar for a significantly
+    cleaner and more professional table interface.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="DataTable">
+    **Configurable Settings** - Settings button visibility can now be controlled
+    via a dedicated prop, allowing for more customized table configurations
+    based on use case requirements.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="DataTable">
+    **Checkbox Default State** - Checkbox column is now **off by default**,
+    providing a cleaner initial state and requiring explicit opt-in for
+    selection functionality.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="DataTable">
+    **Smart Tooltips** - Long-text cells now intelligently show tooltips on
+    hover, improving content accessibility without cluttering the interface.
+</ChangelogEntry>
+
+<ChangelogEntry type="fix" component="DataTable">
+    **Pagination Layout Fix** - Resolved layout issue where "Rows per page" text
+    awkwardly appeared across two lines, ensuring consistent single-line
+    display.
+</ChangelogEntry>
+
+<ChangelogEntry type="fix" component="DataTable">
+    **Column Manager Enhancement** - Fixed column manager dropdown with improved
+    scrollability and prevented actionable elements from being cropped,
+    enhancing usability.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="DataTable">
+    **Cell Height Optimization** - Added **min-height** to table cells following
+    design specifications to reduce visual congestion and improve content
+    hierarchy.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="DataTable">
+    **Header Overflow Protection** - Added **tooltip functionality in table
+    headers** when text overflows, ensuring all header content remains
+    accessible regardless of column width.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Popover" prId="289" commitHash="d13921a">
+
+<ChangelogEntry type="feat" component="Popover">
+    **Design System Alignment** - Implemented correct padding and spacing by
+    default as per design specifications, ensuring consistent visual hierarchy
+    across all popover instances.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="Popover">
+    **React Element Support (d13921a)** - Added comprehensive support for
+    passing React elements, enabling fully custom popover UIs tailored to
+    specific use cases and design requirements.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Charts Component" prId="308" commitHash="8f37809">
+
+<ChangelogEntry type="feat" component="Charts">
+    **Advanced Formatting System** - Introduced comprehensive axis formatting
+    types for enhanced data visualization: - `AxisType.CURRENCY` → Transforms
+    `125000` into `"$125K"` for financial data - `AxisType.PERCENTAGE` →
+    Converts `87.5` to `"87.5%"` for ratio displays - `AxisType.NUMBER` →
+    Formats `1250000` as `"1.25M"` for large numbers - `AxisType.DATE_TIME` →
+    Renders `1693036800` as `"Aug 26, 2023"` for temporal data
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="Charts">
+    **Smart Date Display Modes** - Implemented intelligent date formatting
+    options: - `dateOnly: true` → Clean date-only display without time
+    components - `smart: true` → Dynamic time display that switches to date
+    format when day changes - Default mode → Comprehensive full date and time
+    information
+</ChangelogEntry>
+
+<ChangelogEntry type="breaking" component="Charts">
+    **API Restructuring** - Streamlined axis configuration by removing
+    individual props in favor of grouped settings: - `xAxisLabel` → Migrated to
+    `xAxis.label` for better organization - `yAxisLabel` → Now accessible via
+    `yAxis.label` - `xAxisInterval` → Consolidated under `xAxis.interval` -
+    `yAxisInterval` → Moved to `yAxis.interval` for consistency
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="Charts">
+    **Enhanced Customization Props** - Added powerful new properties for
+    advanced chart customization: - `customTick` → Support for custom SVG tick
+    components - `tickFormatter` → Flexible custom text formatting functions -
+    `barSize` → Precise control over bar width dimensions - `xAxis` and `yAxis`
+    → Comprehensive grouped axis configuration objects
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Stat Card Component" prId="308" commitHash="8f37809">
+
+<ChangelogEntry type="feat" component="StatCard">
+    **Unified Formatting System** - Integrated the same powerful **formatting
+    support** as Charts component, including CURRENCY, PERCENTAGE, NUMBER, and
+    DATE_TIME formatting for consistent data presentation across components.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="StatCard">
+    **Enhanced Configuration** - Introduced 3 essential new props:
+    `valueFormatter` for custom value display, `xAxis` and `yAxis` for
+    comprehensive axis configuration, providing complete control over stat
+    visualization.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Sidebar Component" prId="312" commitHash="bbeb956">
+
+<ChangelogEntry type="feat" component="Sidebar">
+    **Multi-Tenant Support** - Added comprehensive support for switching between
+    **any number of tenants**, providing scalable tenant management for
+    enterprise applications.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="Sidebar">
+    **Smart Tenant Limits** - Introduced **single-select fallback mechanism**
+    that automatically activates when maximum tenant count (from configuration)
+    is reached, ensuring optimal performance and user experience.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Single & Multi Select Components" prId="304" commitHash="84e568d">
+
+<ChangelogEntry type="feat" component="SingleSelect,MultiSelect">
+    **Value Truncation** - Added intelligent **truncation** for values in both
+    single and multiselect components, preventing UI overflow while maintaining
+    readability.
+</ChangelogEntry>
+
+<ChangelogEntry type="refactor" component="SingleSelect,MultiSelect">
+    **Code Organization** - Refactored selector logic into a dedicated file for
+    improved code clarity, maintainability, and easier future enhancements.
+</ChangelogEntry>
+
+<ChangelogEntry type="fix" component="SingleSelect,MultiSelect">
+    **Form Integration Fix** - Resolved critical form submission issues with
+    input fields, ensuring reliable data capture and form workflow integration.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="SingleSelect,MultiSelect">
+    **Simplified Interface** - Removed action button from default state,
+    providing a cleaner interface while maintaining optional action button
+    support for specific use cases.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="SingleSelect,MultiSelect">
+    **Flexible Sizing** - Added essential props: `customWidth` and
+    `customMaxWidth` for drawer components, enabling precise responsive design
+    control.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="SingleSelect">
+    **Search Enhancement** - Added `searchPlaceholder` support in single select,
+    improving user guidance and search experience customization.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Figma Code Connect" prId={["293", "307"]} commitHash={["7460854", "663e085"]}>
+
+<ChangelogEntry type="fix" component="FigmaCodeConnect">
+    **Prop Mapping Accuracy** - Corrected prop mappings for updated components,
+    ensuring generated code and Figma design snippets remain perfectly
+    synchronized across development workflows.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="FigmaCodeConnect">
+    **MCP Server Integration** - Updated mapping logic to work seamlessly with
+    **Blend MCP** servers, enhancing design-to-code workflow efficiency and
+    accuracy.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Component Updates">
+
+<ChangelogEntry
+    type="fix"
+    component="mWebCalendar"
+    prId="284"
+    commitHash="1df11e9"
+>
+    **Design Alignment** - Adjusted footer spacing to precisely align with
+    design specifications, ensuring consistent visual hierarchy across mobile
+    web calendar interfaces.
+</ChangelogEntry>
+
+<ChangelogEntry
+    type="feat"
+    component="BottomDrawer"
+    prId="284"
+    commitHash="1df11e9"
+>
+    **Actionable Footer** - Added comprehensive support for displaying
+    customizable actionable buttons at the bottom, enabling flexible
+    call-to-action workflows within drawer components.
+</ChangelogEntry>
+
+<ChangelogEntry
+    type="feat"
+    component="OTPInputs"
+    prId="292"
+    commitHash="f805523"
+>
+    **Enhanced Input Clearing** - Enabled deletion via **Backspace** key for
+    significantly smoother and more intuitive input clearing experience.
+</ChangelogEntry>
+
+<ChangelogEntry
+    type="feat"
+    component="OTPInputs"
+    prId="292"
+    commitHash="f805523"
+>
+    **Smart Focus Management** - Introduced **auto-focus** functionality on
+    input boxes, streamlining user interaction and improving accessibility.
+</ChangelogEntry>
+
+<ChangelogEntry
+    type="feat"
+    component="OTPInputs"
+    prId="292"
+    commitHash="f805523"
+>
+    **Clipboard Integration** - Added robust **copy-paste** functionality,
+    allowing users to efficiently input OTP codes from external sources.
+</ChangelogEntry>
+
+<ChangelogEntry
+    type="feat"
+    component="OTPInputs"
+    prId="292"
+    commitHash="f805523"
+>
+    **Configurable Length** - Added a flexible prop to configure the number of
+    OTP input boxes, supporting various OTP code lengths and security
+    requirements.
+</ChangelogEntry>
+
+<ChangelogEntry
+    type="feat"
+    component="MultivalueInputField"
+    prId="287"
+    commitHash="d555fc6"
+>
+    **Direct Tag Management** - Added intuitive ability to remove and destruct
+    tags directly from the input field, improving tag management user
+    experience.
+</ChangelogEntry>
+
+<ChangelogEntry
+    type="feat"
+    component="DropdownInput"
+    prId="287"
+    commitHash="d555fc6"
+>
+    **Positioning Control** - Added comprehensive support for controlling
+    dropdown rendering position (left or right alignment), ensuring optimal
+    display in various layout contexts.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Documentation & Infrastructure">
+
+<ChangelogEntry type="feat" prId="271" commitHash="a82a839">
+    **New Landing Page (a82a839)** - Launched a comprehensive **landing page**
+    for the Blend Design System, providing centralized access to documentation,
+    components, and resources for the design system community.
+</ChangelogEntry>
+
+<ChangelogEntry type="docs" prId="300" commitHash="1188735">
+    **README Enhancement** - Completely updated `README.md` to accurately
+    reflect current usage patterns, clarify project purpose, and provide clear
+    community contribution guidelines for open-source collaboration.
+</ChangelogEntry>
+
+<ChangelogEntry type="chore" prId="281" commitHash="cf8788b">
+    **Release Management** - Merge pull request #281 from
+    juspay/release/update-stable-version-0.0.13 for stable version deployment.
+</ChangelogEntry>
+
+<ChangelogEntry type="chore" prId="278" commitHash="33344e4">
+    **Beta Release Pipeline** - chore(release): v0.0.13-beta [BETA] (#278)
+    maintaining continuous beta release workflow.
+</ChangelogEntry>
+
+<ChangelogEntry type="chore" prId="297" commitHash="2e5522a">
+    **Development Integration** - Merge pull request #297 from juspay/dev
+    consolidating development branch improvements.
+</ChangelogEntry>
+
+<ChangelogEntry type="chore" prId="301" commitHash="3792a7b">
+    **PR Template Update** - Enhanced pull request template (#301) to improve
+    code review process and ensure consistent contribution standards.
+</ChangelogEntry>
+
+<ChangelogEntry type="chore" prId="296" commitHash="27f8cc2">
+    **Beta Release** - chore(release): v0.0.14-beta [BETA] (#296) for
+    comprehensive testing before stable release.
+</ChangelogEntry>
+
+</ChangelogCard>
