@@ -156,23 +156,21 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                 </nav>
 
                 {/* Main content area */}
-                <div className="w-screen flex bg-[var(--sidebar-background)] backdrop-blur-sm">
+                <div className="w-screen flex bg-[var(--sidebar-background)] backdrop-blur-sm h-screen">
                     <aside
-                        className={`doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden ${showSidebar ? 'visible' : 'hidden'}`}
+                        className={`doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden fixed left-0 top-[var(--navbar-height)] z-40 ${showSidebar ? 'visible' : 'hidden'}`}
                     >
                         <Sidebar items={sidebarItems} baseRoute={baseRoute} />
                     </aside>
 
                     {/* Main content */}
-                    <div className="main-content-area mt-20 overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full lg:rounded-[var(--rounded-100)] md:rounded-[var(--rounded-80)] sm:rounded-[var(--rounded-60)] rounded-[var(--rounded-50)] ">
+                    <div className="main-content-area overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full lg:rounded-[var(--rounded-100)] md:rounded-[var(--rounded-80)] sm:rounded-[var(--rounded-60)] rounded-[var(--rounded-50)] ">
                         {children}
+                        <FloatingShortcutsButton />
+                        <ConnectWithUs />
+                        <Footer />
                     </div>
                 </div>
-
-                {/* Floating shortcuts button */}
-                <FloatingShortcutsButton />
-                <ConnectWithUs />
-                <Footer />
             </main>
         </GlobalKeyboardNavigationProvider>
     )
