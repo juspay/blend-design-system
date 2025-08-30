@@ -8,12 +8,12 @@ const ImageBlock = ({
     altText: string
 }) => {
     return (
-        <div className="w-[90vw] h-[60vh] object-fit rounded-br-[20vw]">
+        <div className="w-[90vw] lg:-ml-30 md:-ml-22 sm:-ml-14 xs:-ml-8 -ml-5 object-cover rounded-br-[20vw]">
             <Image
                 src={imageUrl}
                 width={100}
                 height={100}
-                className="w-[1000px] rounded-br-[20vw] object-fit"
+                className="w-full rounded-br-[20vw] object-cover"
                 alt={altText}
             />
         </div>
