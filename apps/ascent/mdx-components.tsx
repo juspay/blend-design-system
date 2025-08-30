@@ -17,6 +17,7 @@ import { Search } from 'lucide-react'
 import ChangeLogCard from './app/changelog/components/ui/ChangeLogCard'
 import HomeDataList from './app/changelog/components/ui/HomeDataList'
 import ImageBlock from './app/changelog/components/ui/ImageBlock'
+import VideoBlock from './app/changelog/components/ui/VideoBlock'
 
 const components = {
     // Core MDX components (headings, paragraphs, links, etc.)
@@ -43,6 +44,7 @@ const components = {
     ChangeLogCard,
     HomeDataList,
     ImageBlock,
+    VideoBlock,
 }
 
 declare global {
