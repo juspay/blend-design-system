@@ -15,7 +15,18 @@ const VideoBlock = ({
 }) => {
     // Function to detect if URL is a YouTube video
     const isYouTubeUrl = (url: string) => {
-        return url.includes('youtube.com/watch') || url.includes('youtu.be/')
+        try {
+            const urlObj = new URL(url)
+            const hostname = urlObj.hostname.toLowerCase()
+            return (
+                ((hostname === 'www.youtube.com' ||
+                    hostname === 'youtube.com') &&
+                    urlObj.pathname.includes('/watch')) ||
+                hostname === 'youtu.be'
+            )
+        } catch {
+            return false
+        }
     }
 
     // Function to extract YouTube video ID and create embed URL
@@ -39,7 +50,13 @@ const VideoBlock = ({
 
     // Function to detect if URL is a Vimeo video
     const isVimeoUrl = (url: string) => {
-        return url.includes('vimeo.com/')
+        try {
+            const urlObj = new URL(url)
+            const hostname = urlObj.hostname.toLowerCase()
+            return hostname === 'vimeo.com' || hostname === 'www.vimeo.com'
+        } catch {
+            return false
+        }
     }
 
     // Function to extract Vimeo video ID and create embed URL
