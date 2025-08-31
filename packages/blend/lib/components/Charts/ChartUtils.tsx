@@ -1,4 +1,4 @@
-import { NewNestedDataPoint, FlattenedDataPoint } from './types'
+import { NewNestedDataPoint, FlattenedDataPoint, AxisType } from './types'
 
 export function transformNestedData(
     data: NewNestedDataPoint[],
@@ -128,4 +128,195 @@ export const capitaliseCamelCase = (text: string): string => {
             return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
         })
         .join(' ')
+}
+
+export const createSmartDateTimeFormatter = (): ((
+    value: string | number
+) => string) => {
+    let previousDate: string | null = null
+
+    return (value: string | number) => {
+        let date = new Date(value)
+        if (isNaN(date.getTime())) {
+            let timestamp = typeof value === 'string' ? parseInt(value) : value
+            if (timestamp < 946684800000) {
+                timestamp = timestamp * 1000
+            }
+            date = new Date(timestamp)
+            if (isNaN(date.getTime())) {
+                return value.toString()
+            }
+        }
+
+        const currentDate = date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+        })
+
+        if (previousDate === null || previousDate !== currentDate) {
+            previousDate = currentDate
+            return date.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+            })
+        }
+
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+        })
+    }
+}
+
+export const getAxisFormatterWithConfig = (
+    axisType: AxisType,
+    dateOnly?: boolean,
+    smart?: boolean
+): ((value: string | number) => string) => {
+    if (axisType === AxisType.DATE_TIME) {
+        if (smart) {
+            return createSmartDateTimeFormatter()
+        } else if (dateOnly) {
+            return (value: string | number) => {
+                const date = new Date(value)
+                if (isNaN(date.getTime())) {
+                    let timestamp =
+                        typeof value === 'string' ? parseInt(value) : value
+
+                    if (timestamp < 946684800000) {
+                        timestamp = timestamp * 1000
+                    }
+
+                    const timestampDate = new Date(timestamp)
+                    if (isNaN(timestampDate.getTime())) {
+                        return value.toString()
+                    }
+                    return timestampDate.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                    })
+                }
+                return date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                })
+            }
+        } else {
+            return (value: string | number) => {
+                const date = new Date(value)
+                if (isNaN(date.getTime())) {
+                    let timestamp =
+                        typeof value === 'string' ? parseInt(value) : value
+
+                    if (timestamp < 946684800000) {
+                        timestamp = timestamp * 1000
+                    }
+
+                    const timestampDate = new Date(timestamp)
+                    if (isNaN(timestampDate.getTime())) {
+                        return value.toString()
+                    }
+                    return timestampDate.toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                    })
+                }
+                return date.toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true,
+                })
+            }
+        }
+    }
+
+    return getAxisFormatter(axisType)
+}
+
+export const getAxisFormatter = (
+    axisType: AxisType
+): ((value: string | number) => string) => {
+    switch (axisType) {
+        case AxisType.DATE_TIME:
+            return (value: string | number) => {
+                const date = new Date(value)
+                if (isNaN(date.getTime())) {
+                    let timestamp =
+                        typeof value === 'string' ? parseInt(value) : value
+
+                    if (timestamp < 946684800000) {
+                        timestamp = timestamp * 1000
+                    }
+
+                    const timestampDate = new Date(timestamp)
+                    if (isNaN(timestampDate.getTime())) {
+                        return value.toString()
+                    }
+                    return timestampDate.toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                    })
+                }
+                return date.toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true,
+                })
+            }
+
+        case AxisType.CURRENCY:
+            return (value: string | number) => {
+                const numValue =
+                    typeof value === 'string' ? parseFloat(value) : value
+                if (isNaN(numValue)) return value.toString()
+
+                if (numValue >= 1000000) {
+                    return `$${(numValue / 1000000).toFixed(1)}M`
+                } else if (numValue >= 1000) {
+                    return `$${(numValue / 1000).toFixed(1)}K`
+                }
+                return `$${numValue.toLocaleString()}`
+            }
+
+        case AxisType.PERCENTAGE:
+            return (value: string | number) => {
+                const numValue =
+                    typeof value === 'string' ? parseFloat(value) : value
+                if (isNaN(numValue)) return value.toString()
+                return `${numValue}%`
+            }
+
+        case AxisType.NUMBER:
+            return (value: string | number) => {
+                const numValue =
+                    typeof value === 'string' ? parseFloat(value) : value
+                if (isNaN(numValue)) return value.toString()
+                return formatNumber(numValue)
+            }
+
+        default:
+            return (value: string | number) => value.toString()
+    }
 }

@@ -107,7 +107,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             >
                 <Block
                     ref={ref}
-                    margin={tokens?.dropdown?.item?.margin || '0px 6px'}
+                    // margin={tokens?.dropdown?.item?.margin || '0px 6px'}
                     padding={tokens?.dropdown?.item?.padding || '8px 6px'}
                     display="flex"
                     flexDirection="column"

@@ -330,7 +330,7 @@ const TableCell = forwardRef<
                 <Block
                     style={{
                         width: '100%',
-                        minHeight: `${FOUNDATION_THEME.unit[36]}`,
+                        minHeight: `${FOUNDATION_THEME.unit[52]}`,
                         display: 'flex',
                         alignItems: 'center',
                     }}
