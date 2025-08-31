@@ -3,7 +3,7 @@ const Gradient = ({ className }: { className: string }) => {
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="1258"
-            height="1183"
+            height="483"
             viewBox="0 0 1258 1183"
             fill="none"
             className={className}

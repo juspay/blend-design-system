@@ -54,7 +54,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
     return (
         <GlobalKeyboardNavigationProvider>
             <main className={`min-h-screen w-full ${className}`}>
-                <Gradient className="absolute right-0" />
+                {/* <Gradient className="absolute right-0" /> */}
                 {/* Navigation Bar */}
                 <nav className="xl:h-25 lg:h-20 md:h-16 sm:h-14 h-12 flex items-center justify-between xl:px-6 lg:px-5 md:px-4 sm:px-3 px-2 sticky top-0 z-50 backdrop-blur-md">
                     {/* Left side - Title and drawer */}
@@ -155,18 +155,18 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                     </div>
                 </nav>
 
+                <FloatingShortcutsButton />
                 {/* Main content area */}
-                <div className="w-screen flex bg-[var(--sidebar-background)] backdrop-blur-sm h-screen">
+                <div className="w-screen flex bg-[var(--sidebar-background)] h-[90vh] backdrop-blur-sm ">
                     <aside
-                        className={`doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden fixed left-0 top-[var(--navbar-height)] z-40 ${showSidebar ? 'visible' : 'hidden'}`}
+                        className={`doc-sidebar w-[240px]  overflow-hidden fixed left-0  z-40 ${showSidebar ? 'visible' : 'hidden'}`}
                     >
                         <Sidebar items={sidebarItems} baseRoute={baseRoute} />
                     </aside>
 
                     {/* Main content */}
-                    <div className="main-content-area overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full lg:rounded-[var(--rounded-100)] md:rounded-[var(--rounded-80)] sm:rounded-[var(--rounded-60)] rounded-[var(--rounded-50)] ">
+                    <div className=" overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full lg:rounded-[var(--rounded-100)] md:rounded-[var(--rounded-80)] sm:rounded-[var(--rounded-60)] rounded-[var(--rounded-50)] ">
                         {children}
-                        <FloatingShortcutsButton />
                         <ConnectWithUs />
                         <Footer />
                     </div>
