@@ -37,6 +37,8 @@ export interface SharedDocLayoutProps {
     showThemeToggle?: boolean
 
     showSidebar?: boolean
+
+    showFooter?: boolean
 }
 
 const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
@@ -47,6 +49,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
     className = '',
     showThemeToggle = true,
     showSidebar = true,
+    showFooter = false,
 }) => {
     // Generate sidebar items based on content path
     const sidebarItems = getDirItems(contentPath)
@@ -54,7 +57,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
     return (
         <GlobalKeyboardNavigationProvider>
             <main className={`min-h-screen w-full ${className}`}>
-                {/* <Gradient className="absolute right-0" /> */}
+                <Gradient className="absolute right-0" />
                 {/* Navigation Bar */}
                 <nav className="xl:h-25 lg:h-20 md:h-16 sm:h-14 h-12 flex items-center justify-between xl:px-6 lg:px-5 md:px-4 sm:px-3 px-2 sticky top-0 z-50 backdrop-blur-md">
                     {/* Left side - Title and drawer */}
@@ -167,8 +170,8 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                     {/* Main content */}
                     <div className=" overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full lg:rounded-[var(--rounded-100)] md:rounded-[var(--rounded-80)] sm:rounded-[var(--rounded-60)] rounded-[var(--rounded-50)] ">
                         {children}
-                        <ConnectWithUs />
-                        <Footer />
+                        {showFooter === true && <ConnectWithUs />}
+                        {showFooter === true && <Footer />}
                     </div>
                 </div>
             </main>

@@ -10,6 +10,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
             contentPath={CHANGELOG_CONFIG.contentPath}
             showThemeToggle={false}
             showSidebar={false}
+            showFooter={true}
         >
             {children}
         </SharedDocLayout>
