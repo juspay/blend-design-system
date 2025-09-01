@@ -54,9 +54,11 @@
             "component",
             "collapsible",
             "expandable",
-            "hierarchical"
+            "hierarchical",
+            "navigation",
+            "organization"
         ],
-        "content": "Usage\n\n\n\nAPI Reference\n\nAccordion Props\n\n void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nAccordionItem Props\n\n\n\nFeatures\n\n- Two visual variants (border and no-border)\n- Single and multiple selection modes\n- Flexible chevron positioning (left or right)\n- Rich content slots (left, right, subtext)\n- Disabled state support\n- Controlled and uncontrolled modes\n- Accessible by default\n- Smooth animations and transitions\n- Customizable styling through tokens\n\nUsage Examples\n\nBasic Accordion\n\nSimple accordion with border styling\n\n\n\nNo Border Accordion\n\nAccordion without border styling for a cleaner look\n\n\n\nMultiple Selection Accordion\n\nAllow multiple items to be expanded simultaneously\n\n\n\nAccordion with Icons and Slots\n\nRich accordion items with icons and additional content\n\n\n\nControlled Accordion\n\nAccordion with controlled state management\n\n\n\nDisabled Accordion Item\n\nAccordion item that cannot be expanded\n\n\n\nComponent Tokens\n\nYou can style the accordion component using the following tokens:\n\n\n\nEnums\n\nAccordionType\n\n\n\nAccordionChevronPosition",
+        "content": "Usage\n\n\n\nAPI Reference\n\nAccordion Props\n\n void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nAccordionItem Props\n\n\n\nFeatures\n\n- Visual Variants: Two distinct styles - bordered and borderless for different design contexts\n- Selection Modes: Single or multiple item expansion with controlled state management\n- Flexible Layout: Customizable chevron positioning (left or right side)\n- Rich Content Support: Multiple content slots for icons, subtitles, and additional elements\n- Interactive States: Comprehensive state management including hover, active, and disabled states\n- Accessibility First: Full keyboard navigation with ARIA compliance and screen reader support\n- Smooth Animations: Built-in expand/collapse animations with smooth transitions\n- Responsive Design: Adapts to different screen sizes with responsive design tokens\n- Controlled/Uncontrolled: Support for both controlled and uncontrolled component patterns\n- Customizable Styling: Extensive theming through design tokens for consistent branding\n\nUsage Examples\n\nBasic Accordion\n\nSimple accordion with border styling\n\n\n\nNo Border Accordion\n\nAccordion without border styling for a cleaner look\n\n\n\nMultiple Selection Accordion\n\nAllow multiple items to be expanded simultaneously\n\n\n\nAccordion with Icons and Slots\n\nRich accordion items with icons and additional content\n\n\n\nControlled Accordion\n\nAccordion with controlled state management\n\n\n\nDisabled Accordion Item\n\nAccordion item that cannot be expanded\n\n\n\nComponent Tokens\n\nYou can style the accordion component using the following tokens:\n\n\n\nBehavior\n\nExpansion Modes\n- Single Mode: Only one accordion item can be expanded at a time (default behavior)\n- Multiple Mode: Multiple items can be expanded simultaneously when isMultiple={true}\n- Default Values: Set initially expanded items using defaultValue prop\n\nState Management\n- Controlled: Use value and onValueChange props for external state control\n- Uncontrolled: Component manages its own internal state when no value prop is provided\n- Disabled Items: Individual items can be disabled while maintaining visual consistency\n\nAnimations\n- Smooth Transitions: Built-in CSS transitions for expand/collapse animations\n- Performance Optimized: Uses transform and opacity changes for smooth rendering\n- Accessibility Friendly: Respects user's motion preferences\n\nAccessibility\n\n- Keyboard Navigation: Full keyboard support with Enter/Space to toggle items\n- ARIA Compliance: Proper aria-expanded, aria-controls, and aria-labelledby attributes\n- Screen Reader Support: Descriptive labels and state announcements\n- Focus Management: Clear focus indicators and logical tab order\n- Semantic HTML: Uses proper heading and button elements for structure\n- High Contrast: Supports high contrast mode and custom color schemes\n\nEnums\n\nAccordionType\n\n\n\nAccordionChevronPosition",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\nAccordion Props\n\n void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n    ]}...",
         "sections": [
             {
@@ -125,6 +127,31 @@
                 "id": "component-tokens"
             },
             {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "Expansion Modes",
+                "level": 3,
+                "id": "expansion-modes"
+            },
+            {
+                "title": "State Management",
+                "level": 3,
+                "id": "state-management"
+            },
+            {
+                "title": "Animations",
+                "level": 3,
+                "id": "animations"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
+            },
+            {
                 "title": "Enums",
                 "level": 2,
                 "id": "enums"
@@ -147,8 +174,16 @@
         "path": "components/alert",
         "slug": "alert",
         "category": "components",
-        "tags": ["alert", "component", "notification"],
-        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'icon',\n                hintText: 'Icon displayed at the start of the alert',\n            },\n            { content: 'React.ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'actionPlacement',\n                hintText: 'Position of action buttons relative to content',\n            },\n            { content: 'AlertActionPlacement', hintText: 'enum' },\n            { content: 'RIGHT' },\n        ],\n    ]}\n    isHoverable={true}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Multiple alert variants (primary, success, warning, error, purple, orange, neutral)\n- Two visual styles (subtle, noFill)\n- Optional close button functionality\n- Primary and secondary action buttons\n- Custom icon support\n- Flexible action button placement (right or bottom)\n- Responsive design with proper spacing\n- Accessible keyboard navigation\n\nUsage Examples\n\nBasic Alert\n\nSimple alert with heading and description\n\n\n\nSuccess Alert with Close Button\n\nAlert with success styling and close functionality\n\n\n\nWarning Alert with Actions\n\nAlert with warning styling and action buttons\n\n\n\nError Alert with Icon\n\nAlert with error styling and custom icon\n\n\n\nAlert with Bottom Actions\n\nAlert with action buttons positioned at the bottom\n\n\n\nNo Fill Style Alert\n\nAlert with no background fill styling\n\n\n\nComponent Tokens\n\nYou can style the alert component using the following tokens:",
+        "tags": [
+            "alert",
+            "component",
+            "notification",
+            "message",
+            "banner",
+            "status",
+            "feedback"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'icon',\n                hintText: 'Custom icon displayed at the start of the alert',\n            },\n            { content: 'React.ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'actionPlacement',\n                hintText: 'Position of action buttons relative to content',\n            },\n            { content: 'AlertActionPlacement', hintText: 'enum' },\n            { content: 'AlertActionPlacement.RIGHT' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nAlertAction Type\n\nThe AlertAction type defines the structure for action buttons:\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- 7 Semantic Variants: Primary, Success, Warning, Error, Purple, Orange, and Neutral for different message types\n- 2 Visual Styles: Subtle (filled background) and No Fill (outline only) for different design contexts\n- Flexible Actions: Support for primary and secondary action buttons with customizable placement\n- Dismissible: Optional close button with callback functionality\n- Custom Icons: Support for custom icons to enhance visual communication\n- Responsive Layout: Automatic layout adjustment based on content and screen size\n- Accessible Design: Full keyboard navigation and screen reader support\n- Action Placement: Buttons can be positioned on the right or bottom for optimal layout\n- Max Width Control: Built-in max-width of 900px for optimal readability\n- Theme Integration: Consistent styling through design tokens\n\nUsage Examples\n\nBasic Information Alert\n\nSimple alert with heading and description only\n\n\n\nSuccess Alert with Close Button\n\nAlert confirming successful action with dismissible option\n\n\n\nWarning Alert with Actions\n\nAlert requiring user decision with action buttons\n\n\n\nError Alert with Custom Icon\n\nError alert with custom icon for enhanced visual communication\n\n\n\nAlert with Bottom Action Placement\n\nAlert with action buttons positioned below the content\n\n\n\nNo Fill Style Alert\n\nAlert with transparent background and border-only styling\n\n\n\nAlert with Only Close Button\n\nAlert with automatic bottom placement when only close button is provided\n\n\n\nComponent Tokens\n\nYou can style the Alert component using the following tokens:\n\n\n\nBehavior\n\nAction Placement Logic\n- Right Placement: When both primary and secondary actions are provided\n- Bottom Placement: When actionPlacement={AlertActionPlacement.BOTTOM} is explicitly set\n- Automatic Bottom: When only onClose is provided without other actions\n\nClose Button Behavior\n- Auto-positioning: Close button automatically moves to bottom when no other actions are present\n- Always Visible: Close button remains accessible when onClose prop is provided\n- Icon Consistency: Uses standard X icon from Lucide React\n\nResponsive Behavior\n- Max Width: Component has a maximum width of 900px for optimal readability\n- Flexible Layout: Content and actions adapt to available space\n- Mobile Friendly: Action buttons stack appropriately on smaller screens\n\nAccessibility\n\n- Semantic HTML: Uses proper ARIA roles and landmarks for alert content\n- Keyboard Navigation: All interactive elements are keyboard accessible\n- Screen Reader Support: Proper announcements for alert content and state changes\n- Focus Management: Clear focus indicators on all interactive elements\n- Color Independence: Alert meaning conveyed through text, not color alone\n- High Contrast: Supports high contrast mode and custom color schemes\n\nEnums\n\nAlertVariant\n\n\n\nAlertStyle\n\n\n\nAlertActionPlacement",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'icon...",
         "sections": [
             {
@@ -162,6 +197,11 @@
                 "id": "api-reference"
             },
             {
+                "title": "AlertAction Type",
+                "level": 2,
+                "id": "alertaction-type"
+            },
+            {
                 "title": "Features",
                 "level": 2,
                 "id": "features"
@@ -172,9 +212,9 @@
                 "id": "usage-examples"
             },
             {
-                "title": "Basic Alert",
+                "title": "Basic Information Alert",
                 "level": 3,
-                "id": "basic-alert"
+                "id": "basic-information-alert"
             },
             {
                 "title": "Success Alert with Close Button",
@@ -187,14 +227,14 @@
                 "id": "warning-alert-with-actions"
             },
             {
-                "title": "Error Alert with Icon",
+                "title": "Error Alert with Custom Icon",
                 "level": 3,
-                "id": "error-alert-with-icon"
+                "id": "error-alert-with-custom-icon"
             },
             {
-                "title": "Alert with Bottom Actions",
+                "title": "Alert with Bottom Action Placement",
                 "level": 3,
-                "id": "alert-with-bottom-actions"
+                "id": "alert-with-bottom-action-placement"
             },
             {
                 "title": "No Fill Style Alert",
@@ -202,9 +242,59 @@
                 "id": "no-fill-style-alert"
             },
             {
+                "title": "Alert with Only Close Button",
+                "level": 3,
+                "id": "alert-with-only-close-button"
+            },
+            {
                 "title": "Component Tokens",
                 "level": 2,
                 "id": "component-tokens"
+            },
+            {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "Action Placement Logic",
+                "level": 3,
+                "id": "action-placement-logic"
+            },
+            {
+                "title": "Close Button Behavior",
+                "level": 3,
+                "id": "close-button-behavior"
+            },
+            {
+                "title": "Responsive Behavior",
+                "level": 3,
+                "id": "responsive-behavior"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
+            },
+            {
+                "title": "Enums",
+                "level": 2,
+                "id": "enums"
+            },
+            {
+                "title": "AlertVariant",
+                "level": 3,
+                "id": "alertvariant"
+            },
+            {
+                "title": "AlertStyle",
+                "level": 3,
+                "id": "alertstyle"
+            },
+            {
+                "title": "AlertActionPlacement",
+                "level": 3,
+                "id": "alertactionplacement"
             }
         ]
     },
@@ -485,13 +575,13 @@
         ]
     },
     "button-group": {
-        "title": "Button Group V2",
-        "description": "The ButtonGroup component is a container that groups multiple Button components together with flexible layout options and automatic positioning.",
+        "title": "Button Group",
+        "description": "The ButtonGroup component is a container that groups multiple Button components together with flexible layout options and automatic positioning for cohesive action interfaces.",
         "path": "components/button-group",
         "slug": "button-group",
         "category": "components",
-        "tags": ["button-group", "component", "layout"],
-        "content": "Usage\n\n\n\nAPI Reference\n\n | ReactElement[]',\n                hintText: 'React elements',\n            },\n            { content: '' },\n        ],\n    ]}\n    isHoverable={true}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Flexible layout options (horizontal or stacked)\n- Automatic button positioning within the group\n- Seamless integration with Button components\n- Responsive design with proper spacing\n- Automatic gap management between buttons\n- Support for any number of Button children\n- Clean and consistent visual grouping\n\nUsage Examples\n\nBasic Button Group\n\nSimple horizontal button group with two buttons\n\n\n\nStacked Button Group\n\nVertical button group with stacked layout\n\n\n\nMultiple Buttons\n\nButton group with more than two buttons\n\n\n\nForm Actions\n\nCommon use case for form action buttons\n\n\n\nStacked Navigation\n\nVertical navigation with stacked buttons\n\n\n\nMixed Button Types\n\nGroup with different button types and states\n\n\n\nComponent Tokens\n\nButtonGroup uses Button Component. So you can style the button group component using the same tokens as the Button Component.",
+        "tags": ["button-group", "component", "layout", "container", "actions"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n | ReactElement[]',\n                hintText: 'React elements',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- 2 Layout Modes: Horizontal (default) and vertical stacked layouts for different design contexts\n- Automatic Positioning: Intelligent button positioning with left, center, and right positioning in stacked mode\n- Seamless Integration: Works exclusively with Button components for consistent styling\n- Smart Spacing: Automatic gap management - 10px for horizontal, 0px for stacked layout\n- Dynamic Children: Supports any number of Button components as children\n- Position Awareness: Automatically sets buttonGroupPosition prop for stacked buttons\n- Flexible Styling: Inherits all Button component styling capabilities\n- Responsive Design: Adapts to container constraints and screen sizes\n- Type Safety: TypeScript support with proper Button component validation\n- Clean Rendering: Optimized rendering with React.cloneElement for stacked mode\n\nUsage Examples\n\nBasic Horizontal Group\n\nDefault horizontal layout with standard spacing\n\n\n\nStacked Vertical Group\n\nVertical layout with connected button styling\n\n\n\nForm Action Buttons\n\nCommon form submission pattern\n\n\n\nNavigation Button Group\n\nStacked navigation menu with different button types\n\n\n\nDialog Action Buttons\n\nStandard dialog confirmation pattern\n\n\n\nToolbar Actions\n\nMultiple action buttons in horizontal layout\n\n\n\nLoading State Group\n\nButton group with loading states\n\n\n\nMixed Size Buttons\n\nButtons with different sizes in one group\n\n\n\nComponent Tokens\n\nButtonGroup uses the Button component's tokens for styling. The container itself has minimal styling:\n\n\n\nBehavior\n\nLayout Modes\n- Horizontal (Default): Buttons arranged side-by-side with 10px gap\n- Stacked: Buttons arranged vertically with 0px gap for connected appearance\n\nAutomatic Positioning\n- First Button: Gets buttonGroupPosition=\"left\" in stacked mode\n- Middle Buttons: Get buttonGroupPosition=\"center\" in stacked mode  \n- Last Button: Gets buttonGroupPosition=\"right\" in stacked mode\n- Single Button: Gets buttonGroupPosition=\"left\" in stacked mode\n\nChildren Management\n- Type Safety: Only accepts Button components as children\n- Dynamic Rendering: Automatically handles single or multiple Button children\n- Prop Injection: Adds positioning props to buttons in stacked mode\n- Key Management: Preserves existing keys or generates index-based keys\n\nResponsive Behavior\n- Container Adaptation: Adapts to parent container constraints\n- Button Scaling: Individual buttons maintain their responsive behavior\n- Overflow Handling: Horizontal groups may wrap based on Button properties\n\nAccessibility\n\n- Focus Management: Maintains proper tab order through button sequence\n- Keyboard Navigation: Standard button keyboard navigation (Tab, Enter, Space)\n- Screen Reader Support: Each button maintains its individual accessibility features\n- Semantic Structure: Uses proper button semantics for each child component\n- ARIA Compliance: Inherits ARIA attributes from individual Button components\n- High Contrast: Supports high contrast mode through Button component styling\n\nLayout Specifications\n\nHorizontal Layout (Default)\n\n\nStacked Layout\n\n\nBest Practices\n\nWhen to Use Horizontal Layout\n- Form action buttons (Cancel, Submit)\n- Dialog confirmations (No, Yes)\n- Navigation controls (Previous, Next)\n- Toolbar actions with limited buttons\n\nWhen to Use Stacked Layout\n- Vertical navigation menus\n- Action lists in sidebars\n- Mobile-first button groups\n- When vertical space is preferred over horizontal\n\nButton Combinations\n- Primary + Secondary: Most common pattern for forms\n- Multiple Secondary: For equal-weight actions\n- Danger + Secondary: For destructive confirmations\n- Success + Secondary: For positive confirmations",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n | ReactElement[]',\n                hintText: 'React elements',\n            },\n            { content: '' },\n        ],\n    ]}...",
         "sections": [
             {
@@ -515,50 +605,125 @@
                 "id": "usage-examples"
             },
             {
-                "title": "Basic Button Group",
+                "title": "Basic Horizontal Group",
                 "level": 3,
-                "id": "basic-button-group"
+                "id": "basic-horizontal-group"
             },
             {
-                "title": "Stacked Button Group",
+                "title": "Stacked Vertical Group",
                 "level": 3,
-                "id": "stacked-button-group"
+                "id": "stacked-vertical-group"
             },
             {
-                "title": "Multiple Buttons",
+                "title": "Form Action Buttons",
                 "level": 3,
-                "id": "multiple-buttons"
+                "id": "form-action-buttons"
             },
             {
-                "title": "Form Actions",
+                "title": "Navigation Button Group",
                 "level": 3,
-                "id": "form-actions"
+                "id": "navigation-button-group"
             },
             {
-                "title": "Stacked Navigation",
+                "title": "Dialog Action Buttons",
                 "level": 3,
-                "id": "stacked-navigation"
+                "id": "dialog-action-buttons"
             },
             {
-                "title": "Mixed Button Types",
+                "title": "Toolbar Actions",
                 "level": 3,
-                "id": "mixed-button-types"
+                "id": "toolbar-actions"
+            },
+            {
+                "title": "Loading State Group",
+                "level": 3,
+                "id": "loading-state-group"
+            },
+            {
+                "title": "Mixed Size Buttons",
+                "level": 3,
+                "id": "mixed-size-buttons"
             },
             {
                 "title": "Component Tokens",
                 "level": 2,
                 "id": "component-tokens"
+            },
+            {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "Layout Modes",
+                "level": 3,
+                "id": "layout-modes"
+            },
+            {
+                "title": "Automatic Positioning",
+                "level": 3,
+                "id": "automatic-positioning"
+            },
+            {
+                "title": "Children Management",
+                "level": 3,
+                "id": "children-management"
+            },
+            {
+                "title": "Responsive Behavior",
+                "level": 3,
+                "id": "responsive-behavior"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
+            },
+            {
+                "title": "Layout Specifications",
+                "level": 2,
+                "id": "layout-specifications"
+            },
+            {
+                "title": "Horizontal Layout (Default)",
+                "level": 3,
+                "id": "horizontal-layout-default"
+            },
+            {
+                "title": "Stacked Layout",
+                "level": 3,
+                "id": "stacked-layout"
+            },
+            {
+                "title": "Best Practices",
+                "level": 2,
+                "id": "best-practices"
+            },
+            {
+                "title": "When to Use Horizontal Layout",
+                "level": 3,
+                "id": "when-to-use-horizontal-layout"
+            },
+            {
+                "title": "When to Use Stacked Layout",
+                "level": 3,
+                "id": "when-to-use-stacked-layout"
+            },
+            {
+                "title": "Button Combinations",
+                "level": 3,
+                "id": "button-combinations"
             }
         ]
     },
     "button": {
         "title": "Button",
-        "description": "The Button component is a fundamental UI element used for user interactions.",
+        "description": "The Button component is a fundamental UI element used for user interactions, supporting multiple variants, sizes, and states.",
         "path": "components/button",
         "slug": "button",
         "category": "components",
-        "tags": ["button", "component"],
-        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'loading',\n                hintText:\n                    'Whether the button is in a loading state with spinner',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'buttonGroupPosition',\n                hintText: 'Position of the button within a button group',\n            },\n            { content: \"'center' | 'left' | 'right'\", hintText: 'union type' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'fullWidth',\n                hintText:\n                    'Whether the button should take the full width of its container',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'justifyContent',\n                hintText:\n                    'CSS justify-content property for button content alignment',\n            },\n            {\n                content: \"CSSObject['justifyContent']\",\n                hintText: 'CSS property',\n            },\n            { content: 'center' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Multiple button types (primary, secondary, danger, success)\n- Three sizes (small, medium, large)\n- Loading and disabled states\n- Icon support (leading and trailing)\n- Full width option\n- Flexible content alignment\n- Button group positioning support\n\nUsage Examples\n\nBasic Button\n\nSimple button with text\n\n\n\nButton with Icons\n\nButton with leading and trailing icons\n\n\n\nLoading Button\n\nButton in loading state\n\n\n\nFull Width Button\n\nButton that takes full width of container\n\n\n\nComponent Tokens\n\nYou can style the button component using the following tokens:",
+        "tags": ["button", "component", "interaction", "action", "primary"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'loading',\n                hintText: 'Alternative prop for loading state',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'fullWidth',\n                hintText: 'Whether the button should take full width of its container',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'buttonGroupPosition',\n                hintText: 'Position when used within a button group',\n            },\n            { content: \"'center' | 'left' | 'right'\", hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'justifyContent',\n                hintText: 'CSS justify-content property for button content alignment',\n            },\n            { content: 'CSSObject[\"justifyContent\"]', hintText: 'CSS property' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- 4 Button Types: Primary, Secondary, Danger, and Success variants for different actions\n- 3 Size Options: Small, Medium, and Large sizes for various interface contexts\n- 3 Sub-Types: Default, Icon Only, and Inline styles for different use cases\n- Icon Support: Leading and trailing icons with proper spacing and alignment\n- Loading States: Built-in loading spinner with text replacement\n- Disabled States: Visual and interactive disabled state support\n- Full Width Option: Expandable to container width when needed\n- Button Group Support: Integrated positioning for button group components\n- Flexible Alignment: Customizable content justification\n- Accessible Design: Full keyboard navigation and screen reader support\n- Consistent Styling: Design token integration for consistent theming\n\nUsage Examples\n\nBasic Button\n\nSimple primary button with text only\n\n\n\nButton with Leading Icon\n\nButton with an icon positioned before the text\n\n\n\nButton with Trailing Icon\n\nButton with an icon positioned after the text\n\n\n\nIcon Only Button\n\nButton displaying only an icon without text\n\n\n\nLoading Button\n\nButton in loading state with spinner\n\n\n\nDisabled Button\n\nButton in disabled state\n\n\n\nDanger Button\n\nButton for destructive actions\n\n\n\nSuccess Button\n\nButton for positive confirmation actions\n\n\n\nFull Width Button\n\nButton that expands to fill container width\n\n\n\nInline Button\n\nButton with inline styling for text-like appearance\n\n\n\nSmall Size Button\n\nCompact button for tight spaces\n\n\n\nLarge Size Button\n\nProminent button for primary actions\n\n\n\nComponent Tokens\n\nYou can style the Button component using the following tokens:\n\n\n\nBehavior\n\nLoading State\n- Spinner Display: Shows loading spinner and hides text content\n- Disabled Interaction: Button becomes non-interactive during loading\n- Visual Feedback: Provides clear indication of ongoing process\n\nDisabled State\n- Visual Changes: Reduced opacity and muted colors\n- Interaction Prevention: Click events are prevented\n- Focus Management: Button cannot receive keyboard focus\n\nIcon Positioning\n- Leading Icons: Positioned before text with proper spacing\n- Trailing Icons: Positioned after text with proper spacing\n- Icon Only: Centers icon when no text is present\n\nSize Scaling\n- Proportional Scaling: All elements scale proportionally with size\n- Icon Sizing: Icons automatically resize based on button size\n- Padding Adjustment: Internal spacing adjusts for optimal proportions\n\nAccessibility\n\n- Keyboard Navigation: Full keyboard support with Enter and Space key activation\n- Focus Indicators: Clear visual focus indicators for keyboard users\n- Screen Reader Support: Proper labeling and state announcements\n- ARIA Attributes: Appropriate aria-disabled and aria-pressed attributes\n- Color Independence: Button functionality conveyed through more than color alone\n- High Contrast: Supports high contrast mode and custom color schemes\n\nEnums\n\nButtonType\n\n\n\nButtonSize\n\n\n\nButtonSubType",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'load...",
         "sections": [
             {
@@ -587,9 +752,19 @@
                 "id": "basic-button"
             },
             {
-                "title": "Button with Icons",
+                "title": "Button with Leading Icon",
                 "level": 3,
-                "id": "button-with-icons"
+                "id": "button-with-leading-icon"
+            },
+            {
+                "title": "Button with Trailing Icon",
+                "level": 3,
+                "id": "button-with-trailing-icon"
+            },
+            {
+                "title": "Icon Only Button",
+                "level": 3,
+                "id": "icon-only-button"
             },
             {
                 "title": "Loading Button",
@@ -597,26 +772,113 @@
                 "id": "loading-button"
             },
             {
+                "title": "Disabled Button",
+                "level": 3,
+                "id": "disabled-button"
+            },
+            {
+                "title": "Danger Button",
+                "level": 3,
+                "id": "danger-button"
+            },
+            {
+                "title": "Success Button",
+                "level": 3,
+                "id": "success-button"
+            },
+            {
                 "title": "Full Width Button",
                 "level": 3,
                 "id": "full-width-button"
             },
             {
+                "title": "Inline Button",
+                "level": 3,
+                "id": "inline-button"
+            },
+            {
+                "title": "Small Size Button",
+                "level": 3,
+                "id": "small-size-button"
+            },
+            {
+                "title": "Large Size Button",
+                "level": 3,
+                "id": "large-size-button"
+            },
+            {
                 "title": "Component Tokens",
                 "level": 2,
                 "id": "component-tokens"
+            },
+            {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "Loading State",
+                "level": 3,
+                "id": "loading-state"
+            },
+            {
+                "title": "Disabled State",
+                "level": 3,
+                "id": "disabled-state"
+            },
+            {
+                "title": "Icon Positioning",
+                "level": 3,
+                "id": "icon-positioning"
+            },
+            {
+                "title": "Size Scaling",
+                "level": 3,
+                "id": "size-scaling"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
+            },
+            {
+                "title": "Enums",
+                "level": 2,
+                "id": "enums"
+            },
+            {
+                "title": "ButtonType",
+                "level": 3,
+                "id": "buttontype"
+            },
+            {
+                "title": "ButtonSize",
+                "level": 3,
+                "id": "buttonsize"
+            },
+            {
+                "title": "ButtonSubType",
+                "level": 3,
+                "id": "buttonsubtype"
             }
         ]
     },
     "charts": {
         "title": "Charts",
-        "description": "The Charts component provides various data visualization options including line charts, bar charts, and other graph types for displaying complex data in an intuitive format.",
+        "description": "The Charts component provides comprehensive data visualization with support for line charts, bar charts, and pie charts, featuring interactive legends, customizable axes, and responsive design.",
         "path": "components/charts",
         "slug": "charts",
         "category": "components",
-        "tags": ["charts", "component", "data-visualization"],
-        "content": "Usage\n\n\n\nAPI Reference\n\n\n\nData Structure\n\nThe Charts component expects data in a specific nested format that allows for flexible data representation across different chart types. Understanding this structure is crucial for proper implementation.\n\nCore Data Types\n\n\n\nData Format Examples\n\nLine/Bar Chart Data\n\nFor line and bar charts, each data point represents a category with multiple series:\n\n\n\nPie Chart Data\n\nFor pie charts, the structure remains the same but typically uses a single data series:\n\n\n\nData Transformation\n\nThe component internally transforms the nested data structure into a flattened format for rendering:\n\n\n\nKey Considerations\n\n1. Consistent Keys: All data points should have the same keys in their data object for proper legend generation\n2. Numeric Values: The val property must be a number for proper chart rendering\n3. Labels: The label property is used for tooltips and legend display\n4. Auxiliary Data: The optional aux array allows for additional data points (useful for complex visualizations)\n5. Empty Data: Handle cases where some data points might be missing or null\n\nData Validation\n\nEnsure your data follows these rules:\n\n- All val properties are numbers\n- All label properties are strings\n- Each data point has a unique name\n- Data series keys are consistent across all data points\n- Handle missing or null values appropriately\n\nFeatures\n\n- Multiple chart types (line, bar, pie)\n- Interactive legends with hover and click functionality\n- Customizable colors and styling\n- Responsive design\n- Axis labels support\n- Header slots for additional content\n- Legend positioning options\n- Data filtering and selection\n\nUsage Examples\n\nLine Chart\n\nBasic line chart with multiple data series\n\n\n\nBar Chart\n\nBar chart with custom colors\n\n\n\nPie Chart\n\nPie chart with right-positioned legend\n\n\n\nChart with Header Slots\n\nChart with custom header content\n\n\n\nData Structure\n\nThe Charts component expects data in a specific nested format:\n\n\n\nComponent Tokens\n\nYou can style the charts component using the following tokens:",
-        "excerpt": "Usage\n\n\n\nAPI Reference\n\n\n\nData Structure\n\nThe Charts component expects data in a specific nested format that allows for flexible data representation a...",
+        "tags": [
+            "charts",
+            "component",
+            "data-visualization",
+            "analytics",
+            "graphs",
+            "recharts"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n\n\nData Types\n\nNewNestedDataPoint\n\nThe main data structure for chart data:\n\n\n\nDataPoint\n\nStructure for individual data series:\n\n\n\nAxisConfig\n\nConfiguration for chart axes:\n\n string', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            { content: 'customTick', hintText: 'Custom tick component' },\n            { content: 'React.ComponentType', hintText: 'component' },\n            { content: '' },\n        ],\n        [\n            { content: 'dateOnly', hintText: 'For date axes, show only date without time' },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: '' },\n        ],\n        [\n            { content: 'smart', hintText: 'Enable smart formatting and intervals' },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- 3 Chart Types: Line, Bar, and Pie charts for different data visualization needs\n- Interactive Legends: Clickable legends with hover effects and data series toggling\n- Responsive Design: Adapts to different screen sizes with mobile-optimized layouts\n- Fullscreen Mode: Built-in fullscreen toggle for detailed data analysis\n- Custom Axes: Configurable X and Y axes with multiple data types and formatting options\n- Flexible Data Structure: Nested data format supporting multiple series and auxiliary data\n- Color Customization: Customizable color schemes with default palette\n- Header Slots: Multiple slots for custom header content and controls\n- Stacked Legends: Advanced legend layout with delta values and change indicators\n- Tooltip Integration: Rich tooltips with custom formatting and data display\n- Export Capabilities: Built-in chart export and fullscreen viewing\n- Accessibility Support: Screen reader compatible with proper ARIA labels\n\nUsage Examples\n\nBasic Line Chart\n\nSimple line chart with two data series\n\n\n\nBar Chart with Custom Axes\n\nBar chart with currency formatting on Y-axis\n\n\n\nPie Chart with Legend\n\nPie chart showing market share distribution\n\n\n\nChart with Header Slots\n\nChart with custom header content in multiple slots\n\n\n\nChart with Stacked Legends\n\nChart with delta values and change indicators\n\n\n\nChart with Custom Tick Formatting\n\nChart with percentage formatting and custom intervals\n\n\n\nResponsive Chart with Mobile Layout\n\nChart optimized for different screen sizes\n\n\n\nComponent Tokens\n\nYou can style the Charts component using the following tokens:\n\n\n\nBehavior\n\nInteractive Features\n- Legend Interaction: Click legends to toggle data series visibility\n- Hover Effects: Hover over chart elements for detailed tooltips\n- Fullscreen Mode: Toggle fullscreen for detailed analysis\n- Responsive Legends: Legends adapt position based on screen size\n\nData Processing\n- Data Transformation: Automatically flattens nested data for chart libraries\n- Series Management: Dynamic handling of multiple data series\n- Key Selection: Interactive selection and deselection of data keys\n\nMobile Responsiveness\n- Layout Adaptation: Automatic layout changes for small screens\n- Touch Interactions: Optimized touch interactions for mobile devices\n- Legend Positioning: Smart legend positioning based on screen size\n\nAccessibility\n\n- Keyboard Navigation: Full keyboard support for interactive elements\n- Screen Reader Support: Proper ARIA labels and data announcements\n- High Contrast: Supports high contrast mode and custom color schemes\n- Focus Management: Clear focus indicators for all interactive elements\n- Alternative Text: Meaningful descriptions for chart data\n- Color Independence: Chart data conveyed through patterns and labels, not just color\n\nEnums\n\nChartType\n\n\n\nChartLegendPosition\n\n\n\nAxisType\n\n\n\nAxisIntervalType\n\n\n\nLegendsChangeType",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n\n\nData Types\n\nNewNestedDataPoint\n\nThe main data structure for chart data:\n\n\n\nDataPoint\n\nStructure for individual data series:...",
         "sections": [
             {
                 "title": "Usage",
@@ -629,44 +891,24 @@
                 "id": "api-reference"
             },
             {
-                "title": "Data Structure",
+                "title": "Data Types",
                 "level": 2,
-                "id": "data-structure"
+                "id": "data-types"
             },
             {
-                "title": "Core Data Types",
+                "title": "NewNestedDataPoint",
                 "level": 3,
-                "id": "core-data-types"
+                "id": "newnesteddatapoint"
             },
             {
-                "title": "Data Format Examples",
+                "title": "DataPoint",
                 "level": 3,
-                "id": "data-format-examples"
+                "id": "datapoint"
             },
             {
-                "title": "Line/Bar Chart Data",
-                "level": 4,
-                "id": "line-bar-chart-data"
-            },
-            {
-                "title": "Pie Chart Data",
-                "level": 4,
-                "id": "pie-chart-data"
-            },
-            {
-                "title": "Data Transformation",
+                "title": "AxisConfig",
                 "level": 3,
-                "id": "data-transformation"
-            },
-            {
-                "title": "Key Considerations",
-                "level": 3,
-                "id": "key-considerations"
-            },
-            {
-                "title": "Data Validation",
-                "level": 3,
-                "id": "data-validation"
+                "id": "axisconfig"
             },
             {
                 "title": "Features",
@@ -679,19 +921,19 @@
                 "id": "usage-examples"
             },
             {
-                "title": "Line Chart",
+                "title": "Basic Line Chart",
                 "level": 3,
-                "id": "line-chart"
+                "id": "basic-line-chart"
             },
             {
-                "title": "Bar Chart",
+                "title": "Bar Chart with Custom Axes",
                 "level": 3,
-                "id": "bar-chart"
+                "id": "bar-chart-with-custom-axes"
             },
             {
-                "title": "Pie Chart",
+                "title": "Pie Chart with Legend",
                 "level": 3,
-                "id": "pie-chart"
+                "id": "pie-chart-with-legend"
             },
             {
                 "title": "Chart with Header Slots",
@@ -699,25 +941,97 @@
                 "id": "chart-with-header-slots"
             },
             {
-                "title": "Data Structure",
-                "level": 2,
-                "id": "data-structure"
+                "title": "Chart with Stacked Legends",
+                "level": 3,
+                "id": "chart-with-stacked-legends"
+            },
+            {
+                "title": "Chart with Custom Tick Formatting",
+                "level": 3,
+                "id": "chart-with-custom-tick-formatting"
+            },
+            {
+                "title": "Responsive Chart with Mobile Layout",
+                "level": 3,
+                "id": "responsive-chart-with-mobile-layout"
             },
             {
                 "title": "Component Tokens",
                 "level": 2,
                 "id": "component-tokens"
+            },
+            {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "Interactive Features",
+                "level": 3,
+                "id": "interactive-features"
+            },
+            {
+                "title": "Data Processing",
+                "level": 3,
+                "id": "data-processing"
+            },
+            {
+                "title": "Mobile Responsiveness",
+                "level": 3,
+                "id": "mobile-responsiveness"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
+            },
+            {
+                "title": "Enums",
+                "level": 2,
+                "id": "enums"
+            },
+            {
+                "title": "ChartType",
+                "level": 3,
+                "id": "charttype"
+            },
+            {
+                "title": "ChartLegendPosition",
+                "level": 3,
+                "id": "chartlegendposition"
+            },
+            {
+                "title": "AxisType",
+                "level": 3,
+                "id": "axistype"
+            },
+            {
+                "title": "AxisIntervalType",
+                "level": 3,
+                "id": "axisintervaltype"
+            },
+            {
+                "title": "LegendsChangeType",
+                "level": 3,
+                "id": "legendschangetype"
             }
         ]
     },
     "checkbox": {
         "title": "Checkbox",
-        "description": "The Checkbox component allows users to select one or more options from a list, with support for indeterminate states, custom styling, and accessibility features.",
+        "description": "The Checkbox component allows users to select one or more options from a list, with support for indeterminate states, custom styling, and comprehensive accessibility features.",
         "path": "components/checkbox",
         "slug": "checkbox",
         "category": "components",
-        "tags": ["checkbox", "component", "form", "input", "selection"],
-        "content": "Usage\n\n\n\nAPI Reference\n\n void\",\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText:\n                    'Whether the checkbox is disabled and non-interactive',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText: 'Whether the checkbox is required (shows asterisk)',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Whether the checkbox is in an error state',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            { content: 'size', hintText: 'The size variant of the checkbox' },\n            { content: 'CheckboxSize', hintText: 'enum' },\n            { content: 'CheckboxSize.MEDIUM' },\n        ],\n        [\n            {\n                content: 'children',\n                hintText: 'The label text for the checkbox',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subtext',\n                hintText: 'Optional descriptive text displayed below the label',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slot',\n                hintText: 'Optional element to display alongside the label',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Two size variants (small, medium)\n- Three states (checked, unchecked, indeterminate)\n- Optional subtext for additional context\n- Optional slot for badges, icons, or other elements\n- Required field indicator (asterisk)\n- Error state styling\n- Disabled state support\n- Controlled and uncontrolled modes\n- Accessible by default\n- Built on Radix UI Checkbox\n- Customizable styling through tokens\n\nUsage Examples\n\nBasic Checkbox\n\nSimple checkbox with label\n\n\n\nCheckbox with Subtext\n\nCheckbox with additional descriptive text\n\n\n\nCheckbox with Slot\n\nCheckbox with additional element (badge, icon, etc.)\n\n\n\nDifferent States\n\nCheckboxes in various states\n\n\n\nDifferent Sizes\n\nCheckboxes with different size variants\n\n\n\nControlled vs Uncontrolled\n\nCheckboxes with different state management approaches\n\n\n\nForm Example\n\nComplete form with multiple checkboxes\n\n\n\nIndeterminate State\n\nCheckbox with indeterminate state (useful for \"select all\" scenarios)\n\n\n\nComponent Tokens\n\nYou can style the checkbox component using the following tokens:\n\n\n\nEnums\n\nCheckboxSize\n\n\n\nType Definitions\n\nCheckboxCheckedState\n\n\n\nCheckboxInteractionState\n\n\n\nAccessibility Features\n\nThe Checkbox component includes several accessibility features:\n\n- Proper ARIA attributes: Uses appropriate ARIA roles and states\n- Keyboard navigation: Supports keyboard interaction (Space, Enter)\n- Screen reader support: Proper labeling and announcements\n- Focus management: Clear focus indicators and keyboard focus\n- Required field indication: Visual and programmatic indication of required fields\n- Error state communication: Clear error state communication to assistive technologies",
+        "tags": [
+            "checkbox",
+            "component",
+            "form",
+            "input",
+            "selection",
+            "control"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void\",\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'Whether the checkbox is disabled and non-interactive',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText: 'Whether the checkbox is required for form validation',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Whether the checkbox is in an error state',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'The size variant of the checkbox',\n            },\n            { content: 'CheckboxSize', hintText: 'enum' },\n            { content: 'CheckboxSize.MEDIUM' },\n        ],\n        [\n            {\n                content: 'children',\n                hintText: 'The label content displayed next to the checkbox',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subtext',\n                hintText: 'Optional descriptive text displayed below the label',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slot',\n                hintText: 'Optional content slot for additional elements',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- 3 Checkbox States: Checked, unchecked, and indeterminate states for complex scenarios\n- 2 Size Options: Small and medium sizes for different interface contexts\n- Interactive States: Hover, disabled, and error states with visual feedback\n- Controlled/Uncontrolled: Support for both controlled and uncontrolled component patterns\n- Form Integration: Seamless integration with forms including validation support\n- Accessibility First: Full ARIA compliance and keyboard navigation support\n- Custom Content: Support for labels, subtext, and additional content slots\n- Responsive Design: Consistent sizing and spacing across different screen sizes\n- Error Handling: Built-in error state styling for form validation\n- Icon Integration: Uses Lucide React icons for consistent check and indeterminate indicators\n- Theme Integration: Fully styled using design tokens for consistent theming\n\nUsage Examples\n\nBasic Checkbox\n\nSimple checkbox with label text\n\n\n\nCheckbox with Subtext\n\nCheckbox with additional descriptive text\n\n\n\nSmall Size Checkbox\n\nCompact checkbox for dense layouts\n\n\n\nIndeterminate Checkbox\n\nCheckbox in indeterminate state (partially selected)\n\n\n\nDisabled Checkbox\n\nNon-interactive checkbox in disabled state\n\n\n\nRequired Checkbox\n\nCheckbox marked as required for form validation\n\n\n\nError State Checkbox\n\nCheckbox in error state for validation feedback\n\n\n\nCheckbox with Custom Slot\n\nCheckbox with additional content in the slot\n\n\n\nUncontrolled Checkbox\n\nCheckbox with default state (uncontrolled)\n\n\n\nCheckbox List\n\nMultiple checkboxes for option selection\n\n\n\nForm Integration Example\n\nCheckbox integrated with form handling\n\n\n\nComponent Tokens\n\nYou can style the Checkbox component using the following tokens:\n\n\n\nBehavior\n\nState Management\n- Controlled: Use checked and onCheckedChange props for external state control\n- Uncontrolled: Use defaultChecked for internal state management\n- Indeterminate: Special state for partial selection scenarios\n\nInteractive States\n- Default: Normal interactive state with hover effects\n- Hover: Visual feedback on mouse hover\n- Disabled: Non-interactive state with reduced opacity\n- Error: Red styling to indicate validation errors\n\nForm Integration\n- Required Field: Visual indicators and validation support\n- Value Handling: Proper value attribute for form submissions\n- Validation: Error state styling for failed validation\n\nAccessibility Features\n- Keyboard Navigation: Tab navigation and Space key activation\n- Screen Reader: Proper labeling and state announcements\n- Focus Indicators: Clear visual focus indicators\n\nAccessibility\n\n- ARIA Compliance: Proper aria-checked, aria-disabled, and aria-required attributes\n- Keyboard Navigation: Full keyboard support with Tab and Space key activation\n- Screen Reader Support: Descriptive labels and state announcements\n- Focus Management: Clear focus indicators with proper contrast\n- Label Association: Proper label-input association using htmlFor attributes\n- Error Announcements: Screen reader announcements for error states\n- High Contrast: Supports high contrast mode and custom color schemes\n\nEnums\n\nCheckboxSize\n\n\n\nCheckbox States\n\n\n\nBest Practices\n\nWhen to Use\n- Multiple Selection: When users need to select multiple options\n- Terms Acceptance: For accepting terms, conditions, or agreements\n- Settings/Preferences: For enabling/disabling features or options\n- Form Controls: As part of larger forms for data collection\n\nLabel Guidelines\n- Clear and Concise: Use descriptive labels that clearly explain what will happen\n- Action-Oriented: Frame labels as actions (e.g., \"Enable notifications\")\n- Positive Language: Use positive phrasing when possible\n- Context Specific: Provide additional context through subtext when needed\n\nIndeterminate State\n- Partial Selection: Use when representing a partially selected state\n- Parent-Child Relationships: Common in hierarchical lists or tree structures\n- Group Selection: When some but not all items in a group are selected",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n void\",\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n        [\n            {...",
         "sections": [
             {
@@ -751,39 +1065,84 @@
                 "id": "checkbox-with-subtext"
             },
             {
-                "title": "Checkbox with Slot",
+                "title": "Small Size Checkbox",
                 "level": 3,
-                "id": "checkbox-with-slot"
+                "id": "small-size-checkbox"
             },
             {
-                "title": "Different States",
+                "title": "Indeterminate Checkbox",
                 "level": 3,
-                "id": "different-states"
+                "id": "indeterminate-checkbox"
             },
             {
-                "title": "Different Sizes",
+                "title": "Disabled Checkbox",
                 "level": 3,
-                "id": "different-sizes"
+                "id": "disabled-checkbox"
             },
             {
-                "title": "Controlled vs Uncontrolled",
+                "title": "Required Checkbox",
                 "level": 3,
-                "id": "controlled-vs-uncontrolled"
+                "id": "required-checkbox"
             },
             {
-                "title": "Form Example",
+                "title": "Error State Checkbox",
                 "level": 3,
-                "id": "form-example"
+                "id": "error-state-checkbox"
             },
             {
-                "title": "Indeterminate State",
+                "title": "Checkbox with Custom Slot",
                 "level": 3,
-                "id": "indeterminate-state"
+                "id": "checkbox-with-custom-slot"
+            },
+            {
+                "title": "Uncontrolled Checkbox",
+                "level": 3,
+                "id": "uncontrolled-checkbox"
+            },
+            {
+                "title": "Checkbox List",
+                "level": 3,
+                "id": "checkbox-list"
+            },
+            {
+                "title": "Form Integration Example",
+                "level": 3,
+                "id": "form-integration-example"
             },
             {
                 "title": "Component Tokens",
                 "level": 2,
                 "id": "component-tokens"
+            },
+            {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "State Management",
+                "level": 3,
+                "id": "state-management"
+            },
+            {
+                "title": "Interactive States",
+                "level": 3,
+                "id": "interactive-states"
+            },
+            {
+                "title": "Form Integration",
+                "level": 3,
+                "id": "form-integration"
+            },
+            {
+                "title": "Accessibility Features",
+                "level": 3,
+                "id": "accessibility-features"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
             },
             {
                 "title": "Enums",
@@ -796,24 +1155,29 @@
                 "id": "checkboxsize"
             },
             {
-                "title": "Type Definitions",
-                "level": 2,
-                "id": "type-definitions"
-            },
-            {
-                "title": "CheckboxCheckedState",
+                "title": "Checkbox States",
                 "level": 3,
-                "id": "checkboxcheckedstate"
+                "id": "checkbox-states"
             },
             {
-                "title": "CheckboxInteractionState",
-                "level": 3,
-                "id": "checkboxinteractionstate"
-            },
-            {
-                "title": "Accessibility Features",
+                "title": "Best Practices",
                 "level": 2,
-                "id": "accessibility-features"
+                "id": "best-practices"
+            },
+            {
+                "title": "When to Use",
+                "level": 3,
+                "id": "when-to-use"
+            },
+            {
+                "title": "Label Guidelines",
+                "level": 3,
+                "id": "label-guidelines"
+            },
+            {
+                "title": "Indeterminate State",
+                "level": 3,
+                "id": "indeterminate-state"
             }
         ]
     },
@@ -831,7 +1195,7 @@
             "sorting",
             "filtering"
         ],
-        "content": "Usage\n\n\n\nAPI Reference\n\n[]', hintText: 'array' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'idField',\n                hintText: 'Field name to use as unique identifier for rows',\n            },\n            { content: 'keyof T', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'title',\n                hintText: 'Optional title displayed above the table',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'description',\n                hintText: 'Optional description displayed below the title',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'enableSearch',\n                hintText: 'Enable global search functionality',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'enableFiltering',\n                hintText: 'Enable column-based filtering',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'enableRowSelection',\n                hintText: 'Enable row selection with checkboxes',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'enableRowExpansion',\n                hintText: 'Enable expandable rows for additional content',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'pagination',\n                hintText: 'Pagination configuration object',\n            },\n            { content: 'PaginationConfig', hintText: 'object' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'isLoading',\n                hintText: 'Show loading state for async operations',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nColumnDefinition\n\nEach column in the columns array should have the following structure:\n\n ReactNode', hintText: 'function' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nColumn Types\n\nThe DataTable supports various column types for different data presentations:\n\n\n\nFeatures\n\n- Flexible Column Types: Support for text, numbers, avatars, tags, progress bars, dates, and custom React elements\n- Advanced Sorting: Multi-column sorting with ascending/descending directions\n- Powerful Filtering: Column-based filters with multiple filter types (text, number, select, multiselect, date, boolean)\n- Global Search: Search across all columns or specific fields\n- Pagination: Client-side and server-side pagination with customizable page sizes\n- Row Selection: Single or multiple row selection with bulk actions\n- Row Expansion: Expandable rows for displaying additional content\n- Inline Editing: Editable cells with validation and save/cancel functionality\n- Column Management: Show/hide columns and adjust column order\n- Mobile Responsive: Optimized mobile view with column selection\n- Loading States: Built-in loading indicators for async operations\n- Export Functionality: Export selected rows to CSV\n- Custom Styling: Extensive theming with responsive design tokens\n- Accessibility: Full keyboard navigation and screen reader support\n\nUsage Examples\n\nBasic Data Table\n\nSimple table with text columns and sorting\n\n\n\nTable with Search and Filtering\n\nTable with global search and column filters\n\n\n\nTable with Row Selection and Bulk Actions\n\nTable with row selection and bulk action capabilities\n\n\n\nTable with Custom Column Types\n\nTable featuring avatar, tag, and progress columns\n\n\n\nTable with Row Expansion\n\nTable with expandable rows for additional details\n\n\n\nTable with Pagination\n\nTable with client-side pagination\n\n\n\nTable with Inline Editing\n\nTable with editable cells and save/cancel functionality\n\n\n\nServer-Side Operations\n\nTable with server-side pagination, sorting, and filtering\n\n\n\nComponent Tokens\n\nYou can style the DataTable component using the following tokens:\n\n\n\nBehavior\n\nSorting\n- Single Column: Click column headers to sort by that column\n- Direction Toggle: Click again to toggle between ascending/descending\n- Multiple Columns: Hold Shift while clicking for multi-column sorting\n- Sort Indicators: Visual arrows show current sort direction\n\nFiltering\n- Column Filters: Each column can have its own filter based on data type\n- Filter Types: Text, number, select, multiselect, date, boolean, and slider filters\n- Global Search: Searches across all visible columns\n- Filter Combination: Multiple filters work together with AND logic\n\nPagination\n- Page Navigation: Previous/Next buttons and direct page selection\n- Page Size: Customizable rows per page with dropdown selector\n- Server-Side: Supports server-side pagination for large datasets\n- URL Sync: Optional URL synchronization for bookmarkable states\n\nRow Selection\n- Single Selection: Click row for single selection\n- Multiple Selection: Checkbox column for multiple row selection\n- Select All: Header checkbox to select/deselect all visible rows\n- Bulk Actions: Actions that operate on selected rows\n\nMobile Responsiveness\n- Column Management: Mobile drawer for showing/hiding columns\n- Horizontal Scroll: Smooth scrolling for wide tables\n- Touch Friendly: Large touch targets for mobile interaction\n- Responsive Design: Adapts layout based on screen size\n\nAccessibility\n\n- Keyboard Navigation: Full keyboard navigation support with arrow keys\n- Screen Reader: Proper ARIA labels and roles for screen readers\n- Focus Management: Clear focus indicators and logical tab order\n- Sort Announcements: Screen reader announcements for sort changes\n- Filter Labels: Descriptive labels for all filter controls\n- Loading States: Accessible loading indicators with proper announcements",
+        "content": "Usage\n\n\n\nAPI Reference\n\n[]', hintText: 'array' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'idField',\n                hintText: 'Field name to use as unique identifier for rows',\n            },\n            { content: 'keyof T', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'title',\n                hintText: 'Optional title displayed above the table',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'description',\n                hintText: 'Optional description displayed below the title',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'enableSearch',\n                hintText: 'Enable global search functionality',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'enableFiltering',\n                hintText: 'Enable column-based filtering',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'enableRowSelection',\n                hintText: 'Enable row selection with checkboxes',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'enableRowExpansion',\n                hintText: 'Enable expandable rows for additional content',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'pagination',\n                hintText: 'Pagination configuration object',\n            },\n            { content: 'PaginationConfig', hintText: 'object' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'isLoading',\n                hintText: 'Show loading state for async operations',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nColumnDefinition\n\nEach column in the columns array should have the following structure:\n\n ReactNode',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nColumn Types\n\nThe DataTable supports various column types for different data presentations:\n\n\n\nFeatures\n\n- Flexible Column Types: Support for text, numbers, avatars, tags, progress bars, dates, and custom React elements\n- Advanced Sorting: Multi-column sorting with ascending/descending directions\n- Powerful Filtering: Column-based filters with multiple filter types (text, number, select, multiselect, date, boolean)\n- Global Search: Search across all columns or specific fields\n- Pagination: Client-side and server-side pagination with customizable page sizes\n- Row Selection: Single or multiple row selection with bulk actions\n- Row Expansion: Expandable rows for displaying additional content\n- Inline Editing: Editable cells with validation and save/cancel functionality\n- Column Management: Show/hide columns and adjust column order\n- Mobile Responsive: Optimized mobile view with column selection\n- Loading States: Built-in loading indicators for async operations\n- Export Functionality: Export selected rows to CSV\n- Custom Styling: Extensive theming with responsive design tokens\n- Accessibility: Full keyboard navigation and screen reader support\n\nUsage Examples\n\nBasic Data Table\n\nSimple table with text columns and sorting\n\n\n\nTable with Search and Filtering\n\nTable with global search and column filters\n\n\n\nTable with Row Selection and Bulk Actions\n\nTable with row selection and bulk action capabilities\n\n\n\nTable with Custom Column Types\n\nTable featuring avatar, tag, and progress columns\n\n\n\nTable with Row Expansion\n\nTable with expandable rows for additional details\n\n\n\nTable with Pagination\n\nTable with client-side pagination\n\n\n\nTable with Inline Editing\n\nTable with editable cells and save/cancel functionality\n\n\n\nServer-Side Operations\n\nTable with server-side pagination, sorting, and filtering\n\n\n\nComponent Tokens\n\nYou can style the DataTable component using the following tokens:\n\n\n\nBehavior\n\nSorting\n\n- Single Column: Click column headers to sort by that column\n- Direction Toggle: Click again to toggle between ascending/descending\n- Multiple Columns: Hold Shift while clicking for multi-column sorting\n- Sort Indicators: Visual arrows show current sort direction\n\nFiltering\n\n- Column Filters: Each column can have its own filter based on data type\n- Filter Types: Text, number, select, multiselect, date, boolean, and slider filters\n- Global Search: Searches across all visible columns\n- Filter Combination: Multiple filters work together with AND logic\n\nPagination\n\n- Page Navigation: Previous/Next buttons and direct page selection\n- Page Size: Customizable rows per page with dropdown selector\n- Server-Side: Supports server-side pagination for large datasets\n- URL Sync: Optional URL synchronization for bookmarkable states\n\nRow Selection\n\n- Single Selection: Click row for single selection\n- Multiple Selection: Checkbox column for multiple row selection\n- Select All: Header checkbox to select/deselect all visible rows\n- Bulk Actions: Actions that operate on selected rows\n\nMobile Responsiveness\n\n- Column Management: Mobile drawer for showing/hiding columns\n- Horizontal Scroll: Smooth scrolling for wide tables\n- Touch Friendly: Large touch targets for mobile interaction\n- Responsive Design: Adapts layout based on screen size\n\nAccessibility\n\n- Keyboard Navigation: Full keyboard navigation support with arrow keys\n- Screen Reader: Proper ARIA labels and roles for screen readers\n- Focus Management: Clear focus indicators and logical tab order\n- Sort Announcements: Screen reader announcements for sort changes\n- Filter Labels: Descriptive labels for all filter controls\n- Loading States: Accessible loading indicators with proper announcements",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n[]', hintText: 'array' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'idField',...",
         "sections": [
             {
@@ -948,12 +1312,19 @@
     },
     "menu": {
         "title": "Menu",
-        "description": "The Menu component provides dropdown navigation and action lists with support for icons, submenus, and various interaction patterns for organizing application functions.",
+        "description": "The Menu component provides dropdown navigation and action lists with support for grouping, search functionality, submenus, and various positioning options for organizing application functions.",
         "path": "components/menu",
         "slug": "menu",
         "category": "components",
-        "tags": ["menu", "component", "navigation"],
-        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'asModal',\n                hintText: 'Whether the menu should be rendered as a modal',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'alignment',\n                hintText: 'Alignment of the menu relative to the trigger',\n            },\n            { content: 'MenuAlignment', hintText: 'enum' },\n            { content: 'MenuAlignment.CENTER' },\n        ],\n        [\n            {\n                content: 'side',\n                hintText: 'Side of the trigger where the menu appears',\n            },\n            { content: 'MenuSide', hintText: 'enum' },\n            { content: 'MenuSide.BOTTOM' },\n        ],\n        [\n            {\n                content: 'sideOffset',\n                hintText: 'Distance between the trigger and menu',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '8' },\n        ],\n        [\n            {\n                content: 'alignOffset',\n                hintText: 'Offset for alignment positioning',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '0' },\n        ],\n        [\n            {\n                content: 'collisonBoundaryRef',\n                hintText: 'Element to use as collision boundary',\n            },\n            {\n                content: 'Element | null | Array',\n                hintText: 'union type',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nMenuItem API Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subMenu',\n                hintText: 'Array of sub-menu items for nested menus',\n            },\n            { content: 'MenuItemV2Type[]', hintText: 'array' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Dropdown menu with customizable positioning\n- Support for menu groups with labels and separators\n- Icon support with multiple slot positions\n- Sub-menu support for nested navigation\n- Search functionality for filtering menu items\n- Action variants with primary and danger types\n- Disabled state support\n- Keyboard navigation and accessibility\n- Customizable dimensions and styling\n- Modal and non-modal rendering modes\n\nUsage Examples\n\nBasic Menu\n\nSimple menu with basic items\n\n\n\nMenu with Icons\n\nMenu items with leading icons\n\n\n\nMenu with Groups\n\nMenu organized into groups with labels\n\n\n\nMenu with Search\n\nMenu with search functionality\n\n\n\nSub-menu\n\nMenu with nested sub-menus\n\n\n\nComponent Tokens\n\nYou can style the menu component using the following tokens:",
+        "tags": [
+            "menu",
+            "component",
+            "navigation",
+            "dropdown",
+            "popover",
+            "actions"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'asModal',\n                hintText: 'Whether to render the menu as a modal on mobile',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'alignment',\n                hintText: 'How the menu aligns relative to the trigger',\n            },\n            { content: 'MenuAlignment', hintText: 'enum' },\n            { content: 'MenuAlignment.CENTER' },\n        ],\n        [\n            {\n                content: 'side',\n                hintText: 'Which side of the trigger the menu appears on',\n            },\n            { content: 'MenuSide', hintText: 'enum' },\n            { content: 'MenuSide.BOTTOM' },\n        ],\n        [\n            {\n                content: 'sideOffset',\n                hintText: 'Distance in pixels from the trigger',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '8' },\n        ],\n        [\n            {\n                content: 'alignOffset',\n                hintText: 'Offset for fine-tuning alignment',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '0' },\n        ],\n        [\n            {\n                content: 'collisonBoundaryRef',\n                hintText: 'Element(s) to use as collision boundary',\n            },\n            { content: 'Element | null | Array', hintText: 'element' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nData Types\n\nMenuV2GroupType\n\nStructure for grouping menu items:\n\n\n\nMenuItemV2Type\n\nStructure for individual menu items:\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subMenu',\n                hintText: 'Nested menu items for creating submenus',\n            },\n            { content: 'MenuItemV2Type[]', hintText: 'array' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Flexible Positioning: 4 sides and 3 alignment options for optimal placement\n- Grouped Items: Organize menu items into labeled groups with optional separators\n- Search Functionality: Built-in search to filter menu items by label\n- Multiple Content Slots: 4 content slots per item for icons, badges, and additional content\n- Action Variants: Special styling for primary and danger actions\n- Submenu Support: Nested menu items for hierarchical navigation\n- Controlled/Uncontrolled: Support for both controlled and uncontrolled open states\n- Modal Mode: Renders as modal on mobile devices for better UX\n- Collision Detection: Automatic repositioning to stay within viewport\n- Disabled States: Individual menu items can be disabled\n- Custom Sizing: Configurable width and height constraints\n- Accessibility First: Full keyboard navigation and screen reader support\n\nUsage Examples\n\nBasic Action Menu\n\nSimple menu with common actions\n\n\n\nMenu with Search\n\nMenu with search functionality for filtering\n\n\n\nGrouped Menu with Separators\n\nMenu with multiple groups and separators\n\n\n\nMenu with Custom Positioning\n\nMenu with specific positioning and offsets\n\n\n\nControlled Menu\n\nMenu with controlled open state\n\n\n\nMenu with Submenus\n\nMenu with nested submenu items\n\n\n\nMobile Modal Menu\n\nMenu that renders as modal on mobile devices\n\n\n\nMenu with Status Items\n\nMenu items with additional status information\n\n\n\nComponent Tokens\n\nYou can style the Menu component using the following tokens:\n\n\n\nBehavior\n\nPositioning Logic\n- Side: Menu appears on specified side of trigger (top, right, bottom, left)\n- Alignment: Menu aligns to start, center, or end of trigger\n- Collision Detection: Automatically repositions if menu would overflow viewport\n- Offsets: Fine-tune positioning with side and align offsets\n\nSearch Functionality\n- Live Filtering: Menu items filter as user types\n- Label Matching: Searches both main label and subLabel text\n- Case Insensitive: Search is not case sensitive\n- Group Filtering: Empty groups are hidden when all items are filtered out\n\nInteraction Patterns\n- Click to Open: Trigger click opens the menu\n- Click Outside: Clicking outside closes the menu\n- Escape Key: Escape key closes the menu\n- Item Selection: Clicking menu item executes action and closes menu\n\nMobile Behavior\n- Modal Mode: When asModal={true}, renders as full-screen modal on mobile\n- Touch Interactions: Optimized for touch interactions\n- Responsive Sizing: Adapts to screen size constraints\n\nAccessibility\n\n- Keyboard Navigation: Full keyboard support with arrow keys, Enter, and Escape\n- Focus Management: Proper focus management when opening/closing menu\n- Screen Reader Support: ARIA labels and proper semantic structure\n- ARIA Compliance: Uses aria-expanded, aria-haspopup, and role attributes\n- High Contrast: Supports high contrast mode and custom color schemes\n- Tab Navigation: Proper tab order through menu items\n\nEnums\n\nMenuAlignment\n\n\n\nMenuSide\n\n\n\nMenuItemV2Variant\n\n\n\nMenuItemV2ActionType\n\n\n\nBest Practices\n\nMenu Organization\n- Group Related Items: Use groups to organize related functionality\n- Logical Order: Place most common actions at the top\n- Dangerous Actions: Use danger action type for destructive actions\n- Clear Labels: Use descriptive labels that clearly indicate the action\n\nSearch Implementation\n- Enable for Long Lists: Use search when menu has many items\n- Meaningful Placeholder: Provide helpful search placeholder text\n- Consider Performance: Search filters client-side, suitable for moderate lists\n\nPositioning Guidelines\n- Consider Context: Choose side and alignment based on trigger position\n- Avoid Overflow: Ensure menu doesn't extend beyond viewport\n- Mobile Considerations: Use modal mode for complex menus on mobile",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'asMo...",
         "sections": [
             {
@@ -967,9 +1338,19 @@
                 "id": "api-reference"
             },
             {
-                "title": "MenuItem API Reference",
+                "title": "Data Types",
                 "level": 2,
-                "id": "menuitem-api-reference"
+                "id": "data-types"
+            },
+            {
+                "title": "MenuV2GroupType",
+                "level": 3,
+                "id": "menuv2grouptype"
+            },
+            {
+                "title": "MenuItemV2Type",
+                "level": 3,
+                "id": "menuitemv2type"
             },
             {
                 "title": "Features",
@@ -982,19 +1363,9 @@
                 "id": "usage-examples"
             },
             {
-                "title": "Basic Menu",
+                "title": "Basic Action Menu",
                 "level": 3,
-                "id": "basic-menu"
-            },
-            {
-                "title": "Menu with Icons",
-                "level": 3,
-                "id": "menu-with-icons"
-            },
-            {
-                "title": "Menu with Groups",
-                "level": 3,
-                "id": "menu-with-groups"
+                "id": "basic-action-menu"
             },
             {
                 "title": "Menu with Search",
@@ -1002,25 +1373,125 @@
                 "id": "menu-with-search"
             },
             {
-                "title": "Sub-menu",
+                "title": "Grouped Menu with Separators",
                 "level": 3,
-                "id": "sub-menu"
+                "id": "grouped-menu-with-separators"
+            },
+            {
+                "title": "Menu with Custom Positioning",
+                "level": 3,
+                "id": "menu-with-custom-positioning"
+            },
+            {
+                "title": "Controlled Menu",
+                "level": 3,
+                "id": "controlled-menu"
+            },
+            {
+                "title": "Menu with Submenus",
+                "level": 3,
+                "id": "menu-with-submenus"
+            },
+            {
+                "title": "Mobile Modal Menu",
+                "level": 3,
+                "id": "mobile-modal-menu"
+            },
+            {
+                "title": "Menu with Status Items",
+                "level": 3,
+                "id": "menu-with-status-items"
             },
             {
                 "title": "Component Tokens",
                 "level": 2,
                 "id": "component-tokens"
+            },
+            {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "Positioning Logic",
+                "level": 3,
+                "id": "positioning-logic"
+            },
+            {
+                "title": "Search Functionality",
+                "level": 3,
+                "id": "search-functionality"
+            },
+            {
+                "title": "Interaction Patterns",
+                "level": 3,
+                "id": "interaction-patterns"
+            },
+            {
+                "title": "Mobile Behavior",
+                "level": 3,
+                "id": "mobile-behavior"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
+            },
+            {
+                "title": "Enums",
+                "level": 2,
+                "id": "enums"
+            },
+            {
+                "title": "MenuAlignment",
+                "level": 3,
+                "id": "menualignment"
+            },
+            {
+                "title": "MenuSide",
+                "level": 3,
+                "id": "menuside"
+            },
+            {
+                "title": "MenuItemV2Variant",
+                "level": 3,
+                "id": "menuitemv2variant"
+            },
+            {
+                "title": "MenuItemV2ActionType",
+                "level": 3,
+                "id": "menuitemv2actiontype"
+            },
+            {
+                "title": "Best Practices",
+                "level": 2,
+                "id": "best-practices"
+            },
+            {
+                "title": "Menu Organization",
+                "level": 3,
+                "id": "menu-organization"
+            },
+            {
+                "title": "Search Implementation",
+                "level": 3,
+                "id": "search-implementation"
+            },
+            {
+                "title": "Positioning Guidelines",
+                "level": 3,
+                "id": "positioning-guidelines"
             }
         ]
     },
     "modal": {
         "title": "Modal",
-        "description": "The Modal component creates overlay dialogs that focus user attention on specific content or actions, with backdrop blur, animations, and various configuration options.",
+        "description": "The Modal component creates overlay dialogs that focus user attention on specific content or actions, with backdrop blur, animations, mobile drawer support, and extensive customization options.",
         "path": "components/modal",
         "slug": "modal",
         "category": "components",
-        "tags": ["modal", "component", "dialog"],
-        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'title',\n                hintText: 'The title displayed in the modal header',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subtitle',\n                hintText: 'Optional subtitle displayed below the title',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'children',\n                hintText: 'The content to display in the modal body',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'primaryAction',\n                hintText: 'Primary action button configuration',\n            },\n            { content: 'ModalButtonAction', hintText: 'object' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'secondaryAction',\n                hintText: 'Secondary action button configuration',\n            },\n            { content: 'ModalButtonAction', hintText: 'object' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'className',\n                hintText: 'Additional CSS classes for the modal',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'showCloseButton',\n                hintText: 'Whether to show the close button in header',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'true' },\n        ],\n        [\n            {\n                content: 'closeOnBackdropClick',\n                hintText: 'Whether clicking backdrop closes modal',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'true' },\n        ],\n        [\n            {\n                content: 'headerRightSlot',\n                hintText: 'Custom content to display in header right area',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'showDivider',\n                hintText: 'Whether to show dividers between sections',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'true' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nModalButtonAction Type\n\nThe primaryAction and secondaryAction props accept a ModalButtonAction object with the following properties:\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            { content: 'disabled', hintText: 'Whether the button is disabled' },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'loading',\n                hintText: 'Whether the button shows loading state',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'leadingIcon',\n                hintText: 'Icon to display before button text',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'trailingIcon',\n                hintText: 'Icon to display after button text',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Overlay backdrop with blur effect\n- Responsive design with max-width and max-height constraints\n- Scrollable content area\n- Optional header with title and subtitle\n- Optional footer with action buttons\n- Close button in header (configurable)\n- Backdrop click to close (configurable)\n- Custom header right slot\n- Divider lines between sections (configurable)\n- Automatic scroll lock when modal is open\n- Keyboard accessibility support\n\nUsage Examples\n\nBasic Modal\n\nSimple modal with title and content\n\n\n\nModal with Actions\n\nModal with primary and secondary action buttons\n\n\n\nModal with Loading Action\n\nModal with a loading primary action\n\n\n\nCustom Modal\n\nModal with custom configuration\n\n\n\nComponent Tokens\n\nYou can style the modal component using the following tokens:",
+        "tags": ["modal", "component", "dialog", "overlay", "drawer", "popup"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'title',\n                hintText: 'The title displayed in the modal header',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subtitle',\n                hintText: 'Optional subtitle displayed below the title',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'children',\n                hintText: 'The content to display in the modal body',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'primaryAction',\n                hintText: 'Primary action button configuration',\n            },\n            { content: 'ModalButtonAction', hintText: 'object' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'secondaryAction',\n                hintText: 'Secondary action button configuration',\n            },\n            { content: 'ModalButtonAction', hintText: 'object' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'className',\n                hintText: 'Additional CSS class for the modal container',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'showCloseButton',\n                hintText: 'Whether to show the X close button in header',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'true' },\n        ],\n        [\n            {\n                content: 'showHeader',\n                hintText: 'Whether to display the modal header section',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'true' },\n        ],\n        [\n            {\n                content: 'showFooter',\n                hintText: 'Whether to display the modal footer section',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'true' },\n        ],\n        [\n            {\n                content: 'closeOnBackdropClick',\n                hintText: 'Whether clicking the backdrop closes the modal',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'customHeader',\n                hintText: 'Custom React component to replace the default header',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'customFooter',\n                hintText: 'Custom React component to replace the default footer',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'headerRightSlot',\n                hintText: 'Additional content displayed in the header right area',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'showDivider',\n                hintText: 'Whether to show divider line below header',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'minWidth',\n                hintText: 'Minimum width of the modal',\n            },\n            { content: 'string', hintText: 'CSS value' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'useDrawerOnMobile',\n                hintText: 'Whether to use drawer style on mobile devices',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nData Types\n\nModalButtonAction\n\nAction buttons use the Button component configuration:\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'Whether the button is disabled',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'isLoading',\n                hintText: 'Whether the button shows loading state',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'leadingIcon',\n                hintText: 'Icon displayed before the button text',\n            },\n            { content: 'React.ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'trailingIcon',\n                hintText: 'Icon displayed after the button text',\n            },\n            { content: 'React.ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Overlay Management: Full-screen overlay with backdrop blur and click-to-close options\n- Responsive Design: Automatic mobile drawer mode for better mobile experience\n- Flexible Actions: Primary and secondary actions with full Button component configuration\n- Custom Layouts: Support for custom headers, footers, and header right slots\n- Scroll Lock: Automatically prevents body scroll when modal is open\n- Accessibility First: Full keyboard navigation, focus management, and ARIA compliance\n- Animation Support: Smooth enter/exit animations with backdrop transitions\n- Header Control: Show/hide header, dividers, and close button as needed\n- Footer Control: Show/hide footer or replace with custom footer content\n- Size Control: Configurable minimum width and responsive sizing\n- Mobile Optimization: Drawer-style presentation on mobile devices\n- Backdrop Interaction: Configurable backdrop click behavior\n\nUsage Examples\n\nBasic Confirmation Modal\n\nSimple modal for confirming actions\n\n\n\nForm Modal with Loading State\n\nModal containing a form with loading action\n\n\n\nModal without Footer\n\nContent-only modal without action buttons\n\n\n\nModal with Custom Header\n\nModal with custom header content and right slot\n\n\n\nMobile Drawer Modal\n\nModal that becomes a drawer on mobile\n\n\n\nModal with Custom Footer\n\nModal with completely custom footer\n\n\n\nLarge Content Modal\n\nModal with minimum width and scrollable content\n\n\n\nModal with Icons in Actions\n\nModal with icons in action buttons\n\n\n\nCompletely Custom Modal\n\nModal with custom header and no default styling\n\n\n\nComponent Tokens\n\nYou can style the Modal component using the following tokens:\n\n\n\nBehavior\n\nModal Lifecycle\n- Open Animation: Smooth fade-in animation for backdrop and modal content\n- Close Animation: Fade-out animation when closing\n- Scroll Lock: Body scroll is locked when modal is open\n- Focus Management: Focus is trapped within the modal\n\nInteraction Patterns\n- Backdrop Click: Configurable backdrop click-to-close behavior\n- Escape Key: Escape key closes the modal by default\n- Close Button: Optional X button in header for closing\n- Action Buttons: Primary and secondary actions in footer\n\nMobile Behavior\n- Responsive Layout: Adapts to smaller screens automatically\n- Drawer Mode: Optional drawer-style presentation on mobile\n- Touch Interactions: Optimized for touch interactions\n- Safe Areas: Respects mobile safe areas and notches\n\nContent Management\n- Scrollable Content: Content area scrolls when content exceeds viewport\n- Header Pinning: Header stays fixed when content scrolls\n- Footer Pinning: Footer stays fixed at bottom\n- Responsive Sizing: Modal adapts to content size with constraints\n\nAccessibility\n\n- Focus Management: Focus is trapped within modal and restored on close\n- Keyboard Navigation: Full keyboard support with Tab, Shift+Tab, and Escape\n- Screen Reader Support: Proper ARIA roles, labels, and live regions\n- ARIA Compliance: Uses role=\"dialog\", aria-modal, and aria-labelledby\n- High Contrast: Supports high contrast mode and custom color schemes\n- Motion Preferences: Respects user's reduced motion preferences\n\nBest Practices\n\nWhen to Use Modals\n- Important Decisions: For critical actions that need user confirmation\n- Form Dialogs: For forms that interrupt the main workflow\n- Information Display: For detailed information that needs focus\n- Error Messages: For critical error messages that need attention\n\nModal Design Guidelines\n- Clear Purpose: Modal should have a clear, single purpose\n- Concise Content: Keep content focused and concise\n- Clear Actions: Action buttons should clearly indicate what will happen\n- Escape Routes: Always provide a way to close the modal\n\nMobile Considerations\n- Use Drawer Mode: Enable drawer mode for better mobile experience\n- Touch Targets: Ensure buttons are large enough for touch interaction\n- Content Length: Keep content length appropriate for mobile screens\n- Safe Areas: Consider mobile safe areas when positioning content\n\nAction Button Guidelines\n- Primary Action: Use for the main action user should take\n- Secondary Action: Use for alternative or cancel actions\n- Dangerous Actions: Use danger button type for destructive actions\n- Loading States: Show loading state for async operations",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'titl...",
         "sections": [
             {
@@ -1034,9 +1505,14 @@
                 "id": "api-reference"
             },
             {
-                "title": "ModalButtonAction Type",
+                "title": "Data Types",
                 "level": 2,
-                "id": "modalbuttonaction-type"
+                "id": "data-types"
+            },
+            {
+                "title": "ModalButtonAction",
+                "level": 3,
+                "id": "modalbuttonaction"
             },
             {
                 "title": "Features",
@@ -1049,29 +1525,109 @@
                 "id": "usage-examples"
             },
             {
-                "title": "Basic Modal",
+                "title": "Basic Confirmation Modal",
                 "level": 3,
-                "id": "basic-modal"
+                "id": "basic-confirmation-modal"
             },
             {
-                "title": "Modal with Actions",
+                "title": "Form Modal with Loading State",
                 "level": 3,
-                "id": "modal-with-actions"
+                "id": "form-modal-with-loading-state"
             },
             {
-                "title": "Modal with Loading Action",
+                "title": "Modal without Footer",
                 "level": 3,
-                "id": "modal-with-loading-action"
+                "id": "modal-without-footer"
             },
             {
-                "title": "Custom Modal",
+                "title": "Modal with Custom Header",
                 "level": 3,
-                "id": "custom-modal"
+                "id": "modal-with-custom-header"
+            },
+            {
+                "title": "Mobile Drawer Modal",
+                "level": 3,
+                "id": "mobile-drawer-modal"
+            },
+            {
+                "title": "Modal with Custom Footer",
+                "level": 3,
+                "id": "modal-with-custom-footer"
+            },
+            {
+                "title": "Large Content Modal",
+                "level": 3,
+                "id": "large-content-modal"
+            },
+            {
+                "title": "Modal with Icons in Actions",
+                "level": 3,
+                "id": "modal-with-icons-in-actions"
+            },
+            {
+                "title": "Completely Custom Modal",
+                "level": 3,
+                "id": "completely-custom-modal"
             },
             {
                 "title": "Component Tokens",
                 "level": 2,
                 "id": "component-tokens"
+            },
+            {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "Modal Lifecycle",
+                "level": 3,
+                "id": "modal-lifecycle"
+            },
+            {
+                "title": "Interaction Patterns",
+                "level": 3,
+                "id": "interaction-patterns"
+            },
+            {
+                "title": "Mobile Behavior",
+                "level": 3,
+                "id": "mobile-behavior"
+            },
+            {
+                "title": "Content Management",
+                "level": 3,
+                "id": "content-management"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
+            },
+            {
+                "title": "Best Practices",
+                "level": 2,
+                "id": "best-practices"
+            },
+            {
+                "title": "When to Use Modals",
+                "level": 3,
+                "id": "when-to-use-modals"
+            },
+            {
+                "title": "Modal Design Guidelines",
+                "level": 3,
+                "id": "modal-design-guidelines"
+            },
+            {
+                "title": "Mobile Considerations",
+                "level": 3,
+                "id": "mobile-considerations"
+            },
+            {
+                "title": "Action Button Guidelines",
+                "level": 3,
+                "id": "action-button-guidelines"
             }
         ]
     },
@@ -1081,8 +1637,19 @@
         "path": "components/popover",
         "slug": "popover",
         "category": "components",
-        "tags": ["popover", "component", "floating", "contextual", "overlay"],
-        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'open',\n                hintText: 'Controlled state for the popover visibility',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'asModal',\n                hintText: 'Whether the popover should behave as a modal',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'primaryAction',\n                hintText: 'Configuration for the primary action button',\n            },\n            { content: 'PopoverActionType', hintText: 'object' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'secondaryAction',\n                hintText: 'Configuration for the secondary action button',\n            },\n            { content: 'PopoverActionType', hintText: 'object' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'sideOffset',\n                hintText: 'Distance between the popover and trigger element',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '8' },\n        ],\n        [\n            {\n                content: 'side',\n                hintText: 'The side of the trigger where the popover appears',\n            },\n            {\n                content: \"'top' | 'right' | 'bottom' | 'left'\",\n                hintText: 'union type',\n            },\n            { content: 'bottom' },\n        ],\n        [\n            {\n                content: 'align',\n                hintText:\n                    'The alignment of the popover relative to the trigger',\n            },\n            { content: \"'start' | 'center' | 'end'\", hintText: 'union type' },\n            { content: 'center' },\n        ],\n        [\n            {\n                content: 'alignOffset',\n                hintText: 'Offset for the alignment position',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '0' },\n        ],\n        [\n            { content: 'width', hintText: 'Fixed width of the popover' },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            { content: 'minWidth', hintText: 'Minimum width of the popover' },\n            { content: 'number', hintText: 'number' },\n            { content: '320' },\n        ],\n        [\n            { content: 'maxWidth', hintText: 'Maximum width of the popover' },\n            { content: 'number', hintText: 'number' },\n            { content: '400' },\n        ],\n        [\n            { content: 'height', hintText: 'Fixed height of the popover' },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            { content: 'minHeight', hintText: 'Minimum height of the popover' },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            { content: 'maxHeight', hintText: 'Maximum height of the popover' },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            { content: 'zIndex', hintText: 'Z-index for the popover overlay' },\n            { content: 'number', hintText: 'number' },\n            { content: '1000' },\n        ],\n        [\n            { content: 'size', hintText: 'The size variant of the popover' },\n            { content: 'PopoverSize', hintText: 'enum' },\n            { content: 'PopoverSize.MEDIUM' },\n        ],\n        [\n            {\n                content: 'onClose',\n                hintText: 'Callback function called when the popover is closed',\n            },\n            { content: '() => void', hintText: 'function' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Two size variants (small, medium)\n- Flexible positioning (top, right, bottom, left)\n- Multiple alignment options (start, center, end)\n- Optional header with title and description\n- Optional action buttons (primary and secondary)\n- Close button support\n- Controlled and uncontrolled modes\n- Modal behavior option\n- Customizable dimensions\n- Accessible by default\n- Built on Radix UI Popover\n- Customizable styling through tokens\n\nUsage Examples\n\nBasic Popover\n\nSimple popover with header and content\n\n\n\nPopover with Actions\n\nPopover with primary and secondary action buttons\n\n\n\nSmall Popover\n\nCompact popover variant\n\n\n\nPopover with Custom Positioning\n\nPopover positioned on top of the trigger\n\n\n\nControlled Popover\n\nPopover with controlled state management\n\n\n\nPopover without Header\n\nPopover with only content and no header\n\n\n\nPopover with Rich Content\n\nComplex popover with forms and interactive elements\n\n\n\nComponent Tokens\n\nYou can style the popover component using the following tokens:\n\n\n\nEnums\n\nPopoverSize\n\n\n\nPopoverActionType\n\nThe PopoverActionType is an extension of ButtonV2Props with some properties omitted:\n\n\n\nThis means you can use most Button props for popover actions, except for buttonGroupPosition and subType which are automatically set by the popover component.",
+        "tags": [
+            "popover",
+            "component",
+            "floating",
+            "contextual",
+            "overlay",
+            "tooltip",
+            "dropdown",
+            "positioning",
+            "radix",
+            "actions"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'open',\n                hintText: 'Controlled state for the popover visibility',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'asModal',\n                hintText: 'Whether the popover should behave as a modal dialog',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'primaryAction',\n                hintText: 'Configuration for the primary action button in footer',\n            },\n            { content: 'PopoverActionType', hintText: 'object' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'secondaryAction',\n                hintText: 'Configuration for the secondary action button in footer',\n            },\n            { content: 'PopoverActionType', hintText: 'object' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'sideOffset',\n                hintText: 'Distance in pixels between the popover and trigger element',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '8' },\n        ],\n        [\n            {\n                content: 'side',\n                hintText: 'Which side of the trigger the popover appears on',\n            },\n            {\n                content: \"'top' | 'right' | 'bottom' | 'left'\",\n                hintText: 'union type',\n            },\n            { content: \"'bottom'\" },\n        ],\n        [\n            {\n                content: 'align',\n                hintText: 'How the popover aligns relative to the trigger element',\n            },\n            { content: \"'start' | 'center' | 'end'\", hintText: 'union type' },\n            { content: \"'center'\" },\n        ],\n        [\n            {\n                content: 'alignOffset',\n                hintText: 'Offset in pixels for fine-tuning the alignment position',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '0' },\n        ],\n        [\n            {\n                content: 'width',\n                hintText: 'Fixed width of the popover in pixels',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minWidth',\n                hintText: 'Minimum width of the popover in pixels',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '300' },\n        ],\n        [\n            {\n                content: 'maxWidth',\n                hintText: 'Maximum width of the popover in pixels',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '400' },\n        ],\n        [\n            {\n                content: 'height',\n                hintText: 'Fixed height of the popover in pixels',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minHeight',\n                hintText: 'Minimum height of the popover in pixels',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxHeight',\n                hintText: 'Maximum height of the popover in pixels',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'zIndex',\n                hintText: 'Z-index value for the popover overlay layer',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '1000' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'The size variant affecting typography and spacing',\n            },\n            { content: 'PopoverSize', hintText: 'enum' },\n            { content: 'PopoverSize.MEDIUM' },\n        ],\n        [\n            {\n                content: 'onClose',\n                hintText: 'Callback function called when the popover is closed',\n            },\n            { content: '() => void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'shadow',\n                hintText: 'Box shadow variant for the popover',\n            },\n            { content: \"'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'\", hintText: 'union type' },\n            { content: \"'lg'\" },\n        ],\n        [\n            {\n                content: 'useDrawerOnMobile',\n                hintText: 'Whether to render as drawer on mobile devices',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'true' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nData Types\n\nPopoverActionType\n\nAction buttons in popovers use the Button component configuration, excluding certain properties:\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'Whether the button is disabled',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'loading',\n                hintText: 'Whether the button shows loading state',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'Size of the button',\n            },\n            { content: 'ButtonSize', hintText: 'enum' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'leadingIcon',\n                hintText: 'Icon displayed before the button text',\n            },\n            { content: 'React.ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'trailingIcon',\n                hintText: 'Icon displayed after the button text',\n            },\n            { content: 'React.ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Flexible Positioning: 4 sides (top, right, bottom, left) with 3 alignment options (start, center, end)\n- Size Variants: Two size options (small, medium) for different content types\n- Action Buttons: Primary and secondary action buttons with full Button component support\n- Header Management: Optional header with title and description text\n- Close Button: Optional X button for dismissing the popover\n- Controlled State: Support for both controlled and uncontrolled open states\n- Modal Behavior: Option to render as modal dialog for critical interactions\n- Custom Dimensions: Configurable width, height, and size constraints\n- Mobile Optimization: Automatic drawer mode on mobile devices for better UX\n- Shadow Options: 7 shadow variants for different visual emphasis levels\n- Built on Radix UI: Leverages Radix UI Popover for robust accessibility and positioning\n- Collision Detection: Automatic repositioning to stay within viewport boundaries\n- Custom Styling: Comprehensive component token system for styling customization\n- Responsive Design: Adapts to different screen sizes and device types\n- Accessibility First: Full keyboard navigation, focus management, and screen reader support\n\nUsage Examples\n\nBasic Information Popover\n\nSimple popover displaying contextual information\n\n\n\nConfirmation Popover\n\nPopover for confirming destructive actions\n\n\n\nForm Popover\n\nPopover containing a form for quick actions\n\n\n\nSmall Quick Actions Popover\n\nCompact popover for quick actions\n\n\n\nPositioned Popover\n\nPopover with specific positioning and alignment\n\n\n\nControlled State Popover\n\nPopover with external state management\n\n\n\nContent-Only Popover\n\nPopover without header for custom layouts\n\n\n\nModal-Style Popover\n\nPopover that behaves as a modal for critical interactions\n\n\n\nComponent Tokens\n\nYou can style the Popover component using the following tokens:\n\n\n\nBehavior\n\nPositioning Logic\n- Side Placement: Popover appears on specified side of trigger (top, right, bottom, left)\n- Alignment Options: Aligns to start, center, or end of trigger element\n- Collision Detection: Automatically repositions if popover would overflow viewport\n- Offset Controls: Fine-tune positioning with side and align offsets\n\nInteraction Patterns\n- Click to Open: Trigger click opens the popover\n- Click Outside: Clicking outside the popover closes it\n- Escape Key: Escape key closes the popover\n- Action Execution: Action buttons execute their onClick handlers and close popover\n\nState Management\n- Controlled Mode: Use open and onOpenChange props for external state control\n- Uncontrolled Mode: Component manages its own open/closed state internally\n- Close Events: Multiple ways to close including actions, close button, escape key, and backdrop click\n\nMobile Behavior\n- Drawer Mode: When useDrawerOnMobile is true, renders as drawer on mobile devices\n- Touch Interactions: Optimized for touch interactions and gestures\n- Responsive Sizing: Adapts to mobile screen constraints and safe areas\n\nContent Management\n- Flexible Content: Supports any React content in children\n- Header Control: Optional header with title and description\n- Footer Actions: Optional action buttons in footer area\n- Custom Padding: Automatic padding handling with override options for custom content\n\nAccessibility\n\n- Focus Management: Focus is trapped within popover when open and restored on close\n- Keyboard Navigation: Full keyboard support with Tab, Shift+Tab, and Escape keys\n- Screen Reader Support: Proper ARIA roles, labels, and live regions\n- ARIA Compliance: Uses aria-expanded, aria-haspopup, and proper dialog semantics\n- High Contrast: Supports high contrast mode and respects user color preferences\n- Motion Preferences: Respects user's reduced motion preferences for animations\n\nEnums\n\nPopoverSize\n\n\n\nBest Practices\n\nWhen to Use Popovers\n- Contextual Information: For displaying additional information without navigation\n- Quick Actions: For forms or actions that don't require full page navigation\n- Settings and Preferences: For configuration options that are secondary to main flow\n- Help and Documentation: For providing contextual help or feature explanations\n\nPopover Design Guidelines\n- Clear Purpose: Each popover should have a focused, single purpose\n- Appropriate Trigger: Use clear, descriptive triggers that indicate popover content\n- Concise Content: Keep content focused and avoid overwhelming users\n- Consistent Positioning: Use consistent positioning patterns throughout your application\n\nContent Guidelines\n- Scannable Layout: Organize content with clear hierarchy and spacing\n- Action Clarity: Make action buttons clearly indicate what will happen\n- Error Handling: Provide clear feedback for form validation and errors\n- Loading States: Show loading states for async operations in actions\n\nMobile Considerations\n- Use Drawer Mode: Enable drawer mode for better mobile experience\n- Touch Targets: Ensure interactive elements meet minimum touch target sizes\n- Content Length: Keep content appropriate for mobile screen sizes\n- Safe Areas: Consider mobile safe areas and keyboard interactions",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'open...",
         "sections": [
             {
@@ -1096,6 +1663,16 @@
                 "id": "api-reference"
             },
             {
+                "title": "Data Types",
+                "level": 2,
+                "id": "data-types"
+            },
+            {
+                "title": "PopoverActionType",
+                "level": 3,
+                "id": "popoveractiontype"
+            },
+            {
                 "title": "Features",
                 "level": 2,
                 "id": "features"
@@ -1106,44 +1683,84 @@
                 "id": "usage-examples"
             },
             {
-                "title": "Basic Popover",
+                "title": "Basic Information Popover",
                 "level": 3,
-                "id": "basic-popover"
+                "id": "basic-information-popover"
             },
             {
-                "title": "Popover with Actions",
+                "title": "Confirmation Popover",
                 "level": 3,
-                "id": "popover-with-actions"
+                "id": "confirmation-popover"
             },
             {
-                "title": "Small Popover",
+                "title": "Form Popover",
                 "level": 3,
-                "id": "small-popover"
+                "id": "form-popover"
             },
             {
-                "title": "Popover with Custom Positioning",
+                "title": "Small Quick Actions Popover",
                 "level": 3,
-                "id": "popover-with-custom-positioning"
+                "id": "small-quick-actions-popover"
             },
             {
-                "title": "Controlled Popover",
+                "title": "Positioned Popover",
                 "level": 3,
-                "id": "controlled-popover"
+                "id": "positioned-popover"
             },
             {
-                "title": "Popover without Header",
+                "title": "Controlled State Popover",
                 "level": 3,
-                "id": "popover-without-header"
+                "id": "controlled-state-popover"
             },
             {
-                "title": "Popover with Rich Content",
+                "title": "Content-Only Popover",
                 "level": 3,
-                "id": "popover-with-rich-content"
+                "id": "content-only-popover"
+            },
+            {
+                "title": "Modal-Style Popover",
+                "level": 3,
+                "id": "modal-style-popover"
             },
             {
                 "title": "Component Tokens",
                 "level": 2,
                 "id": "component-tokens"
+            },
+            {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "Positioning Logic",
+                "level": 3,
+                "id": "positioning-logic"
+            },
+            {
+                "title": "Interaction Patterns",
+                "level": 3,
+                "id": "interaction-patterns"
+            },
+            {
+                "title": "State Management",
+                "level": 3,
+                "id": "state-management"
+            },
+            {
+                "title": "Mobile Behavior",
+                "level": 3,
+                "id": "mobile-behavior"
+            },
+            {
+                "title": "Content Management",
+                "level": 3,
+                "id": "content-management"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
             },
             {
                 "title": "Enums",
@@ -1156,9 +1773,29 @@
                 "id": "popoversize"
             },
             {
-                "title": "PopoverActionType",
+                "title": "Best Practices",
                 "level": 2,
-                "id": "popoveractiontype"
+                "id": "best-practices"
+            },
+            {
+                "title": "When to Use Popovers",
+                "level": 3,
+                "id": "when-to-use-popovers"
+            },
+            {
+                "title": "Popover Design Guidelines",
+                "level": 3,
+                "id": "popover-design-guidelines"
+            },
+            {
+                "title": "Content Guidelines",
+                "level": 3,
+                "id": "content-guidelines"
+            },
+            {
+                "title": "Mobile Considerations",
+                "level": 3,
+                "id": "mobile-considerations"
             }
         ]
     },
@@ -1168,8 +1805,19 @@
         "path": "components/radio",
         "slug": "radio",
         "category": "components",
-        "tags": ["radio", "component", "form", "input", "selection"],
-        "content": "Usage\n\n\n\nAPI Reference\n\nRadio Props\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText:\n                    'Whether the radio button is disabled and non-interactive',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText:\n                    'Whether the radio button is required (shows asterisk)',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Whether the radio button is in an error state',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'The size variant of the radio button',\n            },\n            { content: 'RadioSize', hintText: 'enum' },\n            { content: 'RadioSize.MEDIUM' },\n        ],\n        [\n            {\n                content: 'children',\n                hintText: 'The label text for the radio button',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subtext',\n                hintText: 'Optional descriptive text displayed below the label',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slot',\n                hintText: 'Optional element to display alongside the label',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'name',\n                hintText: 'The name attribute for form grouping',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nRadioGroup Props\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'Whether all radio buttons in the group are disabled',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Two size variants (small, medium)\n- Radio group management with automatic selection\n- Optional subtext for additional context\n- Optional slot for badges, icons, or other elements\n- Required field indicator (asterisk)\n- Error state styling\n- Disabled state support\n- Controlled and uncontrolled modes\n- Accessible by default\n- Built on native HTML radio inputs\n- Customizable styling through tokens\n\nUsage Examples\n\nBasic Radio Group\n\nSimple radio group with multiple options\n\n\n\nRadio with Subtext\n\nRadio buttons with additional descriptive text\n\n\n\nRadio with Slots\n\nRadio buttons with additional elements (badges, icons, etc.)\n\n\n\nDifferent Sizes\n\nRadio buttons with different size variants\n\n\n\nRadio States\n\nRadio buttons in various states\n\n\n\nControlled vs Uncontrolled\n\nRadio groups with different state management approaches\n\n\n\nIndividual Radio Controls\n\nRadio buttons used outside of a group\n\n\n\nComplex Form Example\n\nComplete form with radio group\n\n\n\nDisabled Radio Group\n\nRadio group with all options disabled\n\n\n\nComponent Tokens\n\nYou can style the radio component using the following tokens:\n\n\n\nEnums\n\nRadioSize\n\n\n\nType Definitions\n\nRadioState\n\n\n\nRadioIndicatorState\n\n\n\nAccessibility Features\n\nThe Radio component includes several accessibility features:\n\n- Proper ARIA attributes: Uses appropriate ARIA roles and states\n- Keyboard navigation: Supports keyboard interaction (Arrow keys, Space, Enter)\n- Screen reader support: Proper labeling and announcements\n- Focus management: Clear focus indicators and keyboard focus\n- Required field indication: Visual and programmatic indication of required fields\n- Error state communication: Clear error state communication to assistive technologies\n- Group semantics: Proper radio group semantics for screen readers\n- Mutual exclusivity: Ensures only one option can be selected within a group",
+        "tags": [
+            "radio",
+            "component",
+            "form",
+            "input",
+            "selection",
+            "group",
+            "choice",
+            "mutually-exclusive",
+            "keyboard-navigation",
+            "accessibility"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\nRadio Props\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText:\n                    'Whether the radio button is disabled and non-interactive',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText:\n                    'Whether the radio button is required (shows asterisk)',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Whether the radio button is in an error state',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'The size variant of the radio button',\n            },\n            { content: 'RadioSize', hintText: 'enum' },\n            { content: 'RadioSize.MEDIUM' },\n        ],\n        [\n            {\n                content: 'children',\n                hintText: 'The label text for the radio button',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subtext',\n                hintText: 'Optional descriptive text displayed below the label',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slot',\n                hintText: 'Optional element to display alongside the label',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'name',\n                hintText: 'The name attribute for form grouping',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nRadioGroup Props\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'Whether all radio buttons in the group are disabled',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Size Variants: Two size options (small, medium) for different contexts\n- Group Management: Automatic mutual exclusivity within RadioGroup containers\n- Rich Content Support: Optional subtext and slot elements for enhanced context\n- State Management: Support for controlled and uncontrolled modes\n- Form Integration: Native HTML radio input with proper form binding\n- Visual States: Required field indicators, error states, and disabled states\n- Keyboard Navigation: Full arrow key navigation within groups with auto-selection\n- Individual Controls: Can be used standalone outside of groups\n- Automatic IDs: Generated unique IDs when not provided\n- Accessibility First: ARIA compliance, screen reader support, and proper semantics\n- Custom Styling: Comprehensive token system for visual customization\n- Focus Management: Clear focus indicators and keyboard interaction patterns\n- Error Handling: Visual and programmatic error state communication\n- Responsive Design: Consistent behavior across different screen sizes\n- Type Safety: Full TypeScript support with proper type definitions\n\nUsage Examples\n\nBasic Radio Selection\n\nSimple radio group for basic option selection\n\n\n\nRadio with Enhanced Content\n\nRadio buttons with descriptive text and visual elements\n\n\n\nSize Variants\n\nRadio buttons in different sizes for various contexts\n\n\n\nForm Validation States\n\nRadio buttons with validation and required states\n\n\n\nPricing Options\n\nRadio group for subscription plan selection\n\n\n\nControlled vs Uncontrolled\n\nDifferent state management approaches for radio groups\n\n\n\nIndividual Radio Usage\n\nStandalone radio buttons for specific use cases\n\n\n\nComplex Configuration Form\n\nComplete configuration form with multiple radio groups\n\n\n\nDisabled State Management\n\nRadio groups with conditional disabling\n\n\n\nComponent Tokens\n\nYou can style the Radio component using the following tokens:\n\n\n\nBehavior\n\nSelection Behavior\n- Mutual Exclusivity: Only one radio button can be selected within a group\n- Group Management: RadioGroup automatically manages selection state\n- Value Tracking: Selected value is tracked and propagated through onChange callbacks\n- Default Selection: Support for default selected values in uncontrolled mode\n\nKeyboard Navigation\n- Arrow Keys: Navigate between radio buttons within a group\n- Auto-Selection: Arrow key navigation automatically selects the focused radio\n- Tab Behavior: Tab moves focus between radio groups, not individual radios\n- Space/Enter: Activates the currently focused radio button\n\nState Management\n- Controlled Mode: External state management with value and onChange props\n- Uncontrolled Mode: Internal state management with defaultValue prop\n- Individual Controls: Can be used standalone outside of groups\n- Validation Support: Built-in support for required and error states\n\nFocus Management\n- Group Focus: Only the selected radio (or first radio) in a group is focusable\n- Focus Indicators: Clear visual focus indicators for keyboard users\n- Focus Restoration: Focus is properly managed during dynamic updates\n- Skip Navigation: Proper tab order through radio groups\n\nContent Management\n- Label Association: Proper label association with radio inputs\n- Subtext Support: Optional descriptive text below main labels\n- Slot Content: Support for additional content like badges or icons\n- Required Indicators: Automatic asterisk display for required fields\n\nAccessibility\n\n- ARIA Compliance: Uses proper role=\"radiogroup\" and aria-checked attributes\n- Keyboard Navigation: Full keyboard support with arrow keys for navigation\n- Screen Reader Support: Proper announcements of state changes and group structure\n- Focus Management: Focus is trapped within radio groups during navigation\n- Label Association: Each radio is properly associated with its label\n- Group Semantics: Radio groups are announced as groups to screen readers\n- State Communication: Current selection and states are communicated to assistive technologies\n- Required Field Support: Required fields are announced to screen readers\n- Error State Support: Error states are communicated through ARIA attributes\n\nEnums\n\nRadioSize\n\n\n\nType Definitions\n\nRadioState\n\n\n\nRadioIndicatorState\n\n\n\nBest Practices\n\nWhen to Use Radio Buttons\n- Mutually Exclusive Choices: When users must select exactly one option from a list\n- Visible Options: When all options should be visible at once (typically 2-7 options)\n- Single Selection: When only one choice is allowed, unlike checkboxes\n- Form Controls: As part of forms where a selection is required\n\nRadio Group Design Guidelines\n- Clear Labels: Use descriptive labels that clearly explain each option\n- Logical Ordering: Order options logically (alphabetical, by importance, or frequency)\n- Default Selection: Consider providing a sensible default selection\n- Group Related Options: Keep related radio buttons together in groups\n\nContent Guidelines\n- Concise Labels: Keep radio button labels brief but descriptive\n- Helpful Subtext: Use subtext to provide additional context when needed\n- Consistent Formatting: Maintain consistent label and subtext formatting\n- Clear Hierarchy: Use typography and spacing to establish clear content hierarchy\n\nForm Integration\n- Validation: Implement proper validation for required radio groups\n- Error Messaging: Provide clear error messages for validation failures\n- Default Values: Set appropriate default values for better user experience\n- State Persistence: Consider persisting selections during form interactions",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\nRadio Props\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                c...",
         "sections": [
             {
@@ -1203,29 +1851,29 @@
                 "id": "usage-examples"
             },
             {
-                "title": "Basic Radio Group",
+                "title": "Basic Radio Selection",
                 "level": 3,
-                "id": "basic-radio-group"
+                "id": "basic-radio-selection"
             },
             {
-                "title": "Radio with Subtext",
+                "title": "Radio with Enhanced Content",
                 "level": 3,
-                "id": "radio-with-subtext"
+                "id": "radio-with-enhanced-content"
             },
             {
-                "title": "Radio with Slots",
+                "title": "Size Variants",
                 "level": 3,
-                "id": "radio-with-slots"
+                "id": "size-variants"
             },
             {
-                "title": "Different Sizes",
+                "title": "Form Validation States",
                 "level": 3,
-                "id": "different-sizes"
+                "id": "form-validation-states"
             },
             {
-                "title": "Radio States",
+                "title": "Pricing Options",
                 "level": 3,
-                "id": "radio-states"
+                "id": "pricing-options"
             },
             {
                 "title": "Controlled vs Uncontrolled",
@@ -1233,24 +1881,59 @@
                 "id": "controlled-vs-uncontrolled"
             },
             {
-                "title": "Individual Radio Controls",
+                "title": "Individual Radio Usage",
                 "level": 3,
-                "id": "individual-radio-controls"
+                "id": "individual-radio-usage"
             },
             {
-                "title": "Complex Form Example",
+                "title": "Complex Configuration Form",
                 "level": 3,
-                "id": "complex-form-example"
+                "id": "complex-configuration-form"
             },
             {
-                "title": "Disabled Radio Group",
+                "title": "Disabled State Management",
                 "level": 3,
-                "id": "disabled-radio-group"
+                "id": "disabled-state-management"
             },
             {
                 "title": "Component Tokens",
                 "level": 2,
                 "id": "component-tokens"
+            },
+            {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "Selection Behavior",
+                "level": 3,
+                "id": "selection-behavior"
+            },
+            {
+                "title": "Keyboard Navigation",
+                "level": 3,
+                "id": "keyboard-navigation"
+            },
+            {
+                "title": "State Management",
+                "level": 3,
+                "id": "state-management"
+            },
+            {
+                "title": "Focus Management",
+                "level": 3,
+                "id": "focus-management"
+            },
+            {
+                "title": "Content Management",
+                "level": 3,
+                "id": "content-management"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
             },
             {
                 "title": "Enums",
@@ -1278,9 +1961,29 @@
                 "id": "radioindicatorstate"
             },
             {
-                "title": "Accessibility Features",
+                "title": "Best Practices",
                 "level": 2,
-                "id": "accessibility-features"
+                "id": "best-practices"
+            },
+            {
+                "title": "When to Use Radio Buttons",
+                "level": 3,
+                "id": "when-to-use-radio-buttons"
+            },
+            {
+                "title": "Radio Group Design Guidelines",
+                "level": 3,
+                "id": "radio-group-design-guidelines"
+            },
+            {
+                "title": "Content Guidelines",
+                "level": 3,
+                "id": "content-guidelines"
+            },
+            {
+                "title": "Form Integration",
+                "level": 3,
+                "id": "form-integration"
             }
         ]
     },
@@ -1290,8 +1993,19 @@
         "path": "components/single-select",
         "slug": "single-select",
         "category": "components",
-        "tags": ["single-select", "component", "form", "dropdown", "selection"],
-        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'enableSearch',\n                hintText:\n                    'Whether to enable search functionality in the dropdown',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'slot',\n                hintText: 'Optional element to display alongside the trigger',\n            },\n            { content: 'ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'Whether the select is disabled and non-interactive',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'name',\n                hintText: 'The name attribute for form integration',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'alignment',\n                hintText:\n                    'The alignment of the dropdown menu relative to the trigger',\n            },\n            { content: 'SelectMenuAlignment', hintText: 'enum' },\n            { content: 'SelectMenuAlignment.CENTER' },\n        ],\n        [\n            {\n                content: 'side',\n                hintText: 'The side where the dropdown menu appears',\n            },\n            { content: 'SelectMenuSide', hintText: 'enum' },\n            { content: 'SelectMenuSide.BOTTOM' },\n        ],\n        [\n            {\n                content: 'sideOffset',\n                hintText: 'The offset distance from the trigger',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '8' },\n        ],\n        [\n            {\n                content: 'alignOffset',\n                hintText: 'The offset distance for alignment',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '0' },\n        ],\n        [\n            {\n                content: 'minWidth',\n                hintText: 'The minimum width of the dropdown menu',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxWidth',\n                hintText: 'The maximum width of the dropdown menu',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxHeight',\n                hintText: 'The maximum height of the dropdown menu',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Three size variants (small, medium, large)\n- Two visual variants (container, no-container)\n- Optional search functionality\n- Grouped menu items with labels\n- Sub-menu support for nested options\n- Multiple slot positions for additional content\n- Required field indicator\n- Help text with info icon\n- Customizable positioning and alignment\n- Keyboard navigation support\n- Accessible by default\n- Built on Radix UI primitives\n- Customizable dimensions\n\nUsage Examples\n\nBasic SingleSelect\n\nSimple select with basic options\n\n\n\nSingleSelect with Search\n\nSelect with search functionality\n\n\n\nSingleSelect with Groups\n\nSelect with grouped menu items\n\n\n\nSingleSelect with SubLabels\n\nSelect with additional descriptive text\n\n\n\nSingleSelect with Slots\n\nSelect with additional content elements\n\n\n\nDifferent Sizes\n\nSelect with different size variants\n\n\n\nDifferent Variants\n\nSelect with different visual variants\n\n\n\nDifferent Alignments\n\nSelect with different dropdown alignments\n\n\n\nDifferent Sides\n\nSelect with different dropdown positions\n\n\n\nSingleSelect with Custom Slot\n\nSelect with additional trigger content\n\n\n\nSingleSelect with Required Field\n\nSelect with required field indicator\n\n\n\nSingleSelect with Help Text\n\nSelect with help information\n\n\n\nDisabled SingleSelect\n\nSelect in disabled state\n\n\n\nSingleSelect with Custom Dimensions\n\nSelect with custom sizing\n\n\n\nComplex Form Example\n\nComplete form with multiple selects\n\n\n\nData Structure\n\nSelectMenuGroupType\n\n\n\nSelectMenuItemType\n\n\n\nEnums\n\nSelectMenuSize\n\n\n\nSelectMenuVariant\n\n\n\nSelectMenuAlignment\n\n\n\nSelectMenuSide\n\n\n\nAccessibility Features\n\nThe SingleSelect component includes several accessibility features:\n\n- Proper ARIA attributes: Uses appropriate ARIA roles and states\n- Keyboard navigation: Supports keyboard interaction (Arrow keys, Enter, Escape, Tab)\n- Screen reader support: Proper labeling and announcements\n- Focus management: Clear focus indicators and keyboard focus\n- Required field indication: Visual and programmatic indication of required fields\n- Help text integration: Accessible help information\n- Group semantics: Proper group labeling for screen readers\n- Search functionality: Accessible search with proper announcements\n- Built on Radix UI: Leverages Radix UI primitives for robust accessibility",
+        "tags": [
+            "single-select",
+            "component",
+            "form",
+            "dropdown",
+            "selection",
+            "search",
+            "keyboard-navigation",
+            "positioning",
+            "mobile-optimized",
+            "accessibility"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'enableSearch',\n                hintText: 'Whether to show search input in the dropdown menu',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'searchPlaceholder',\n                hintText: 'Placeholder text for the search input field',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slot',\n                hintText: 'Content displayed inside the trigger button (e.g., icons)',\n            },\n            { content: 'React.ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'Whether the select field is disabled and non-interactive',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'name',\n                hintText: 'Name attribute for form identification and submission',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'customTrigger',\n                hintText: 'Custom React element to replace the default trigger button',\n            },\n            { content: 'React.ReactNode', hintText: 'React node' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'useDrawerOnMobile',\n                hintText: 'Whether to render as drawer on mobile devices',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'true' },\n        ],\n        [\n            {\n                content: 'alignment',\n                hintText: 'How the dropdown menu aligns relative to the trigger',\n            },\n            { content: 'SelectMenuAlignment', hintText: 'enum' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'side',\n                hintText: 'Which side of the trigger the dropdown appears on',\n            },\n            { content: 'SelectMenuSide', hintText: 'enum' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'sideOffset',\n                hintText: 'Distance in pixels between trigger and dropdown',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'alignOffset',\n                hintText: 'Alignment offset in pixels for fine positioning',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minWidth',\n                hintText: 'Minimum width of the dropdown menu in pixels',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxWidth',\n                hintText: 'Maximum width of the dropdown menu in pixels',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxHeight',\n                hintText: 'Maximum height of the dropdown menu in pixels',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'inline',\n                hintText: 'Whether the select renders inline without fixed height',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'onBlur',\n                hintText: 'Callback function called when the select loses focus',\n            },\n            { content: '() => void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onFocus',\n                hintText: 'Callback function called when the select gains focus',\n            },\n            { content: '() => void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Whether the select is in an error state',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'errorMessage',\n                hintText: 'Error message displayed when error is true',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nData Types\n\nSelectMenuGroupType\n\nStructure for organizing menu items into groups:\n\n\n\nSelectMenuItemType\n\nStructure for individual selectable items:\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subMenu',\n                hintText: 'Nested menu items for creating hierarchical menus',\n            },\n            { content: 'SelectMenuItemType[]', hintText: 'array' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'tooltip',\n                hintText: 'Tooltip content displayed on hover',\n            },\n            { content: 'string | React.ReactNode', hintText: 'union type' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'tooltipProps',\n                hintText: 'Configuration options for the tooltip display',\n            },\n            { content: 'TooltipProps', hintText: 'object' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disableTruncation',\n                hintText: 'Whether to disable text truncation for long labels',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nFeatures\n\n- Size Variants: Three sizes (small, medium, large) for different interface densities\n- Visual Variants: Container and no-container styles for flexible integration\n- Search Functionality: Optional built-in search with customizable placeholder\n- Grouped Organization: Support for organizing items into labeled groups with separators\n- Rich Content Support: Multiple slot positions for icons, badges, and custom elements\n- Submenu Navigation: Hierarchical menu structure with nested item support\n- Form Integration: Complete form support with labels, validation, and error states\n- Mobile Optimization: Automatic drawer mode on mobile devices for better UX\n- Custom Triggers: Support for completely custom trigger elements\n- Flexible Positioning: 4 sides and 3 alignment options with offset controls\n- Tooltip Integration: Built-in tooltip support for menu items with configuration options\n- Keyboard Navigation: Full keyboard support with arrow keys and type-ahead search\n- Error Handling: Comprehensive error state management with custom error messages\n- Accessibility First: ARIA compliance, screen reader support, and focus management\n- Responsive Design: Adapts to different screen sizes and device types\n\nUsage Examples\n\nBasic Country Selection\n\nSimple select for country selection with flags\n\n\n\nUser Assignment with Rich Content\n\nSelect for user assignment with status indicators and profiles\n\n\n\nTechnology Stack Selection\n\nSelect for technology preferences with descriptions\n\n\n\nSize and Variant Comparisons\n\nDifferent sizes and styling variants\n\n\n\nForm Validation States\n\nSelect with validation and error handling\n\n\n\nCustom Trigger Example\n\nSelect with completely custom trigger element\n\n\n\nPositioning and Alignment\n\nSelect with custom positioning\n\n\n\nInline and Focus Management\n\nSelect with inline variant and focus handling\n\n\n\nComplete Project Setup Form\n\nComplex form with multiple interdependent selects\n\n\n\nComponent Tokens\n\nYou can style the SingleSelect component using the following tokens:\n\n\n\nBehavior\n\nSelection Behavior\n- Single Selection: Only one option can be selected at a time\n- Value Management: Selected value is controlled through props\n- Callback Execution: onSelect callback fires when selection changes\n- Auto-Close: Dropdown automatically closes after selection\n\nSearch Behavior\n- Live Filtering: Search filters options in real-time as user types\n- Label and SubLabel: Searches both main label and subLabel text\n- Case Insensitive: Search is not case sensitive\n- Group Filtering: Groups with no matching items are hidden\n\nKeyboard Navigation\n- Arrow Keys: Navigate through menu options\n- Enter/Space: Select the currently focused option\n- Escape: Close the dropdown menu\n- Type Ahead: Jump to options by typing first letters\n\nPositioning Logic\n- Auto-Positioning: Dropdown repositions to stay within viewport\n- Side Options: Can appear on top, bottom, left, or right of trigger\n- Alignment Control: Align to start, center, or end of trigger\n- Offset Adjustments: Fine-tune positioning with pixel offsets\n\nMobile Behavior\n- Drawer Mode: Renders as drawer on mobile devices when useDrawerOnMobile is true\n- Touch Optimization: Optimized for touch interactions\n- Responsive Sizing: Adapts to mobile screen constraints\n\nError State Management\n- Visual Indicators: Error styling applied to trigger and labels\n- Error Messages: Displays error message below the field\n- State Synchronization: Error state clears when valid selection is made\n\nFocus Management\n- Trigger Focus: Focus is managed on the trigger element\n- Menu Focus: Focus moves through menu items during navigation\n- Focus Restoration: Focus returns to trigger when menu closes\n- Focus Events: onFocus and onBlur callbacks for external focus management\n\nAccessibility\n\n- ARIA Compliance: Full ARIA support with role=\"combobox\", aria-expanded, and aria-haspopup\n- Keyboard Navigation: Complete keyboard support with arrow keys, Enter, Escape, and Tab\n- Screen Reader Support: Proper announcements for state changes and selections\n- Focus Management: Focus is trapped within dropdown and restored properly\n- Label Association: Form labels are properly associated with the select trigger\n- Group Semantics: Menu groups are announced as groups to screen readers\n- Search Accessibility: Search functionality is accessible with proper ARIA attributes\n- Error Communication: Error states are communicated through ARIA attributes\n- Required Field Support: Required fields are announced to assistive technologies\n\nEnums\n\nSelectMenuSize\n\n\n\nSelectMenuVariant\n\n\n\nSelectMenuAlignment\n\n\n\nSelectMenuSide\n\n\n\nBest Practices\n\nWhen to Use SingleSelect\n- Option Selection: When users need to choose one option from multiple choices\n- Form Fields: As form controls where a specific selection is required\n- Settings: For configuration options and preferences\n- Data Filtering: For filtering or sorting data based on categories\n\nDesign Guidelines\n- Clear Labels: Use descriptive labels that clearly explain the purpose\n- Logical Grouping: Group related options together with meaningful group labels\n- Appropriate Sizing: Choose size based on interface density and importance\n- Consistent Patterns: Use consistent selection patterns throughout your application\n\nContent Guidelines\n- Concise Options: Keep option labels brief but descriptive\n- Helpful SubLabels: Use subLabels to provide additional context when needed\n- Logical Ordering: Order options logically (alphabetical, by frequency, or importance)\n- Search Support: Enable search for lists with many options\n\nForm Integration\n- Validation: Implement proper validation with clear error messages\n- Required Fields: Mark required fields clearly with asterisks\n- Help Text: Provide contextual help when selection criteria may be unclear\n- Default Values: Consider providing sensible default selections when appropriate\n\nMobile Considerations\n- Drawer Mode: Use drawer mode on mobile for better touch experience\n- Touch Targets: Ensure adequate touch target sizes for mobile devices\n- Search Functionality: Enable search for long option lists on mobile\n- Performance: Consider lazy loading for very large option sets",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'enab...",
         "sections": [
             {
@@ -1305,94 +2019,9 @@
                 "id": "api-reference"
             },
             {
-                "title": "Features",
+                "title": "Data Types",
                 "level": 2,
-                "id": "features"
-            },
-            {
-                "title": "Usage Examples",
-                "level": 2,
-                "id": "usage-examples"
-            },
-            {
-                "title": "Basic SingleSelect",
-                "level": 3,
-                "id": "basic-singleselect"
-            },
-            {
-                "title": "SingleSelect with Search",
-                "level": 3,
-                "id": "singleselect-with-search"
-            },
-            {
-                "title": "SingleSelect with Groups",
-                "level": 3,
-                "id": "singleselect-with-groups"
-            },
-            {
-                "title": "SingleSelect with SubLabels",
-                "level": 3,
-                "id": "singleselect-with-sublabels"
-            },
-            {
-                "title": "SingleSelect with Slots",
-                "level": 3,
-                "id": "singleselect-with-slots"
-            },
-            {
-                "title": "Different Sizes",
-                "level": 3,
-                "id": "different-sizes"
-            },
-            {
-                "title": "Different Variants",
-                "level": 3,
-                "id": "different-variants"
-            },
-            {
-                "title": "Different Alignments",
-                "level": 3,
-                "id": "different-alignments"
-            },
-            {
-                "title": "Different Sides",
-                "level": 3,
-                "id": "different-sides"
-            },
-            {
-                "title": "SingleSelect with Custom Slot",
-                "level": 3,
-                "id": "singleselect-with-custom-slot"
-            },
-            {
-                "title": "SingleSelect with Required Field",
-                "level": 3,
-                "id": "singleselect-with-required-field"
-            },
-            {
-                "title": "SingleSelect with Help Text",
-                "level": 3,
-                "id": "singleselect-with-help-text"
-            },
-            {
-                "title": "Disabled SingleSelect",
-                "level": 3,
-                "id": "disabled-singleselect"
-            },
-            {
-                "title": "SingleSelect with Custom Dimensions",
-                "level": 3,
-                "id": "singleselect-with-custom-dimensions"
-            },
-            {
-                "title": "Complex Form Example",
-                "level": 3,
-                "id": "complex-form-example"
-            },
-            {
-                "title": "Data Structure",
-                "level": 2,
-                "id": "data-structure"
+                "id": "data-types"
             },
             {
                 "title": "SelectMenuGroupType",
@@ -1403,6 +2032,111 @@
                 "title": "SelectMenuItemType",
                 "level": 3,
                 "id": "selectmenuitemtype"
+            },
+            {
+                "title": "Features",
+                "level": 2,
+                "id": "features"
+            },
+            {
+                "title": "Usage Examples",
+                "level": 2,
+                "id": "usage-examples"
+            },
+            {
+                "title": "Basic Country Selection",
+                "level": 3,
+                "id": "basic-country-selection"
+            },
+            {
+                "title": "User Assignment with Rich Content",
+                "level": 3,
+                "id": "user-assignment-with-rich-content"
+            },
+            {
+                "title": "Technology Stack Selection",
+                "level": 3,
+                "id": "technology-stack-selection"
+            },
+            {
+                "title": "Size and Variant Comparisons",
+                "level": 3,
+                "id": "size-and-variant-comparisons"
+            },
+            {
+                "title": "Form Validation States",
+                "level": 3,
+                "id": "form-validation-states"
+            },
+            {
+                "title": "Custom Trigger Example",
+                "level": 3,
+                "id": "custom-trigger-example"
+            },
+            {
+                "title": "Positioning and Alignment",
+                "level": 3,
+                "id": "positioning-and-alignment"
+            },
+            {
+                "title": "Inline and Focus Management",
+                "level": 3,
+                "id": "inline-and-focus-management"
+            },
+            {
+                "title": "Complete Project Setup Form",
+                "level": 3,
+                "id": "complete-project-setup-form"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            },
+            {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "Selection Behavior",
+                "level": 3,
+                "id": "selection-behavior"
+            },
+            {
+                "title": "Search Behavior",
+                "level": 3,
+                "id": "search-behavior"
+            },
+            {
+                "title": "Keyboard Navigation",
+                "level": 3,
+                "id": "keyboard-navigation"
+            },
+            {
+                "title": "Positioning Logic",
+                "level": 3,
+                "id": "positioning-logic"
+            },
+            {
+                "title": "Mobile Behavior",
+                "level": 3,
+                "id": "mobile-behavior"
+            },
+            {
+                "title": "Error State Management",
+                "level": 3,
+                "id": "error-state-management"
+            },
+            {
+                "title": "Focus Management",
+                "level": 3,
+                "id": "focus-management"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
             },
             {
                 "title": "Enums",
@@ -1430,9 +2164,34 @@
                 "id": "selectmenuside"
             },
             {
-                "title": "Accessibility Features",
+                "title": "Best Practices",
                 "level": 2,
-                "id": "accessibility-features"
+                "id": "best-practices"
+            },
+            {
+                "title": "When to Use SingleSelect",
+                "level": 3,
+                "id": "when-to-use-singleselect"
+            },
+            {
+                "title": "Design Guidelines",
+                "level": 3,
+                "id": "design-guidelines"
+            },
+            {
+                "title": "Content Guidelines",
+                "level": 3,
+                "id": "content-guidelines"
+            },
+            {
+                "title": "Form Integration",
+                "level": 3,
+                "id": "form-integration"
+            },
+            {
+                "title": "Mobile Considerations",
+                "level": 3,
+                "id": "mobile-considerations"
             }
         ]
     },
