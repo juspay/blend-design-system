@@ -59,6 +59,15 @@ const previewComponents = {
     ChartPreview: dynamic(() => import('./Previews/ChartPreview'), {
         ssr: false,
     }),
+    AvatarPreview: dynamic(() => import('./Previews/AvatarPreview'), {
+        ssr: false,
+    }),
+    AvatarGroupPreview: dynamic(() => import('./Previews/AvatarGroupPreview'), {
+        ssr: false,
+    }),
+    BreadcrumbPreview: dynamic(() => import('./Previews/BreadcrumbPreview'), {
+        ssr: false,
+    }),
 }
 
 interface PreviewWrapperProps {

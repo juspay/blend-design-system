@@ -211,6 +211,34 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
         ),
         color: 'from-violet-500 to-purple-600',
     },
+    {
+        slug: 'avatar-group',
+        title: 'Avatar Group',
+        description:
+            'The AvatarGroup component displays multiple user profile images in a compact, stacked layout with overflow handling and optional selection functionality.',
+        icon: createIcon(
+            [],
+            [
+                React.createElement('circle', {
+                    key: 'circle1',
+                    cx: '9',
+                    cy: '11',
+                    r: '4',
+                }),
+                React.createElement('circle', {
+                    key: 'circle2',
+                    cx: '15',
+                    cy: '11',
+                    r: '4',
+                }),
+                React.createElement('path', {
+                    key: 'path',
+                    d: 'm6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2',
+                }),
+            ]
+        ),
+        color: 'from-indigo-500 to-blue-600',
+    },
 ]
 
 /**

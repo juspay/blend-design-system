@@ -1,15 +1,4 @@
 {
-    "(avatar-group)": {
-        "title": "Avatar Group",
-        "description": "The AvatarGroup component displays multiple avatars together, typically used to show team members, participants, or related users with overlap and stacking options.",
-        "path": "components/(avatar-group)",
-        "slug": "(avatar-group)",
-        "category": "components",
-        "tags": ["avatar-group", "component", "user"],
-        "content": "",
-        "excerpt": "",
-        "sections": []
-    },
     "(data-table)": {
         "title": "Data Table",
         "description": "The DataTable component displays structured data in a tabular format with sorting, filtering, pagination, and selection capabilities for managing large datasets efficiently.",
@@ -230,6 +219,88 @@
             }
         ]
     },
+    "avatar-group": {
+        "title": "Avatar Group",
+        "description": "The AvatarGroup component displays multiple user profile images in a compact, stacked layout with overflow handling and optional selection functionality.",
+        "path": "components/avatar-group",
+        "slug": "avatar-group",
+        "category": "components",
+        "tags": ["avatar-group", "component", "group", "users", "selection"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nAvatarData Type\n\nThe avatars prop accepts an array of AvatarData objects with the following properties:\n\n\n\nFeatures\n\n- Compact stacked layout for displaying multiple avatars\n- Configurable maximum visible count with overflow handling\n- Interactive overflow counter with searchable dropdown menu\n- Optional multi-selection functionality with visual feedback\n- Consistent sizing and shape options across all avatars\n- Accessible keyboard navigation and screen reader support\n- Automatic positioning of overflow menu\n- Built-in search functionality for large avatar lists\n- Smooth animations and hover effects\n\nUsage Examples\n\nBasic Avatar Group\n\nSimple avatar group with default settings\n\n\n\nAvatar Group with Overflow\n\nAvatar group that shows overflow counter when exceeding maxCount\n\n\n\nAvatar Group with Selection\n\nAvatar group with controlled selection functionality\n\n\n\nDifferent Sizes\n\nAvatar groups in various sizes\n\n\n\nRounded Shape\n\nAvatar group with rounded corners instead of circular\n\n\n\nAvatar Group with Online Status\n\nAvatar group showing online status indicators\n\n\n\nLarge Avatar Group with Search\n\nAvatar group with many avatars demonstrating search functionality\n\n\n\nComponent Tokens\n\nYou can style the avatar group component using the following tokens:\n\n\n\nAccessibility\n\n- ARIA Support: Uses proper ARIA roles and labels for screen readers\n- Keyboard Navigation: Full keyboard support with Enter/Space activation\n- Focus Management: Clear focus indicators and logical tab order\n- Screen Reader Announcements: Announces selection state and overflow information\n- Semantic HTML: Uses appropriate button and group roles\n- High Contrast: Supports high contrast mode with proper color tokens",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "AvatarData Type",
+                "level": 2,
+                "id": "avatardata-type"
+            },
+            {
+                "title": "Features",
+                "level": 2,
+                "id": "features"
+            },
+            {
+                "title": "Usage Examples",
+                "level": 2,
+                "id": "usage-examples"
+            },
+            {
+                "title": "Basic Avatar Group",
+                "level": 3,
+                "id": "basic-avatar-group"
+            },
+            {
+                "title": "Avatar Group with Overflow",
+                "level": 3,
+                "id": "avatar-group-with-overflow"
+            },
+            {
+                "title": "Avatar Group with Selection",
+                "level": 3,
+                "id": "avatar-group-with-selection"
+            },
+            {
+                "title": "Different Sizes",
+                "level": 3,
+                "id": "different-sizes"
+            },
+            {
+                "title": "Rounded Shape",
+                "level": 3,
+                "id": "rounded-shape"
+            },
+            {
+                "title": "Avatar Group with Online Status",
+                "level": 3,
+                "id": "avatar-group-with-online-status"
+            },
+            {
+                "title": "Large Avatar Group with Search",
+                "level": 3,
+                "id": "large-avatar-group-with-search"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
+            }
+        ]
+    },
     "avatar": {
         "title": "Avatar",
         "description": "The Avatar component displays user profile images, initials, or fallback icons with various sizes and styling options for user identification and personalization.",
@@ -328,10 +399,101 @@
         "path": "components/breadcrumb",
         "slug": "breadcrumb",
         "category": "components",
-        "tags": ["breadcrumb", "component", "navigation"],
-        "content": "",
-        "excerpt": "",
-        "sections": []
+        "tags": ["breadcrumb", "component", "navigation", "hierarchy", "path"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n\n\nBreadcrumbItemType\n\nEach item in the items array should have the following structure:\n\n\n\nFeatures\n\n- Hierarchical navigation display with clear visual separators\n- Automatic overflow handling for long navigation paths (max 4 visible items)\n- Responsive design that adapts to different screen sizes\n- Support for custom icons and content through left/right slots\n- Active state styling for the current page (last item)\n- Keyboard accessible navigation with proper focus management\n- Ellipsis menu for collapsed items (when more than 4 items)\n- Consistent spacing and typography following design tokens\n\nUsage Examples\n\nBasic Breadcrumb\n\nSimple breadcrumb with text-only navigation\n\n\n\nBreadcrumb with Icons\n\nBreadcrumb items with left slot icons\n\n\n\nLong Navigation Path\n\nBreadcrumb with overflow handling (shows ellipsis for middle items)\n\n\n\nBreadcrumb with Right Slots\n\nBreadcrumb items with additional content on the right\n\n\n\nSingle Item Breadcrumb\n\nBreadcrumb with just one item (shows as active)\n\n\n\nEmpty Breadcrumb\n\nBreadcrumb gracefully handles empty array\n\n\n\nComplex Navigation with Mixed Content\n\nBreadcrumb with various combinations of slots\n\n\n\nComponent Tokens\n\nYou can style the breadcrumb component using the following tokens:\n\n\n\nBehavior\n\nOverflow Handling\n- Up to 4 items: All items are displayed\n- More than 4 items: Shows first item + ellipsis + last 3 items\n- Ellipsis button: Indicates collapsed items (menu functionality planned)\n\nActive State\n- The last item in the breadcrumb is considered \"active\" (current page)\n- Active items use different styling (color, font weight)\n- Active items are not clickable (no href applied)\n\nNavigation\n- All items except the last one are clickable links\n- Proper semantic HTML structure for screen readers\n- Keyboard navigation support through standard link behavior\n\nAccessibility\n\n- Semantic HTML: Uses proper link elements for navigation\n- ARIA Support: Proper roles and labels for screen readers\n- Keyboard Navigation: Standard tab navigation through links\n- Visual Hierarchy: Clear distinction between active and inactive states\n- Focus Management: Visible focus indicators for keyboard users",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n\n\nBreadcrumbItemType\n\nEach item in the items array should have the following structure:\n\n\n\nFeatures\n\n- Hierarchical navigation...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "BreadcrumbItemType",
+                "level": 2,
+                "id": "breadcrumbitemtype"
+            },
+            {
+                "title": "Features",
+                "level": 2,
+                "id": "features"
+            },
+            {
+                "title": "Usage Examples",
+                "level": 2,
+                "id": "usage-examples"
+            },
+            {
+                "title": "Basic Breadcrumb",
+                "level": 3,
+                "id": "basic-breadcrumb"
+            },
+            {
+                "title": "Breadcrumb with Icons",
+                "level": 3,
+                "id": "breadcrumb-with-icons"
+            },
+            {
+                "title": "Long Navigation Path",
+                "level": 3,
+                "id": "long-navigation-path"
+            },
+            {
+                "title": "Breadcrumb with Right Slots",
+                "level": 3,
+                "id": "breadcrumb-with-right-slots"
+            },
+            {
+                "title": "Single Item Breadcrumb",
+                "level": 3,
+                "id": "single-item-breadcrumb"
+            },
+            {
+                "title": "Empty Breadcrumb",
+                "level": 3,
+                "id": "empty-breadcrumb"
+            },
+            {
+                "title": "Complex Navigation with Mixed Content",
+                "level": 3,
+                "id": "complex-navigation-with-mixed-content"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            },
+            {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "Overflow Handling",
+                "level": 3,
+                "id": "overflow-handling"
+            },
+            {
+                "title": "Active State",
+                "level": 3,
+                "id": "active-state"
+            },
+            {
+                "title": "Navigation",
+                "level": 3,
+                "id": "navigation"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
+            }
+        ]
     },
     "button-group": {
         "title": "Button Group V2",

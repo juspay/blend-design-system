@@ -1,9 +1,6 @@
 import React from 'react'
 import { PreviewWrapper } from '@/components/features/Documentation'
 
-// Custom preview components
-import AvatarPreview from '@/components/features/Documentation/Previews/AvatarPreview'
-
 // Preview factory function - eliminates code duplication
 const createPreview = (componentName: string) => () => (
     <PreviewWrapper component={componentName as any} />
@@ -30,6 +27,9 @@ const PREVIEW_COMPONENT_NAMES = [
     'Menu',
     'StatCard',
     'Chart',
+    'Avatar',
+    'AvatarGroup',
+    'Breadcrumb',
 ] as const
 
 // Generate all preview components programmatically
@@ -61,6 +61,6 @@ export const SingleSelectPreview = PreviewComponents.SingleSelectPreview
 export const MenuPreview = PreviewComponents.MenuPreview
 export const StatCardPreview = PreviewComponents.StatCardPreview
 export const ChartPreview = PreviewComponents.ChartPreview
-
-// Custom preview components that need manual export
-export { AvatarPreview }
+export const AvatarPreview = PreviewComponents.AvatarPreview
+export const AvatarGroupPreview = PreviewComponents.AvatarGroupPreview
+export const BreadcrumbPreview = PreviewComponents.BreadcrumbPreview
