@@ -62,7 +62,9 @@ const StatCard = ({
             return getAxisFormatterWithConfig(
                 xAxis.type,
                 xAxis.dateOnly,
-                xAxis.smart
+                xAxis.smart,
+                xAxis.timeZone,
+                xAxis.hour12
             )(label)
         }
         return String(label)
@@ -77,7 +79,9 @@ const StatCard = ({
             return getAxisFormatterWithConfig(
                 yAxis.type,
                 yAxis.dateOnly,
-                yAxis.smart
+                yAxis.smart,
+                yAxis.timeZone,
+                yAxis.hour12
             )(val)
         }
         return typeof val === 'number' ? val.toLocaleString() : String(val)
@@ -85,7 +89,13 @@ const StatCard = ({
 
     const formatMainValue = (val: string | number): string => {
         if (valueFormatter) {
-            return getAxisFormatterWithConfig(valueFormatter, false, false)(val)
+            return getAxisFormatterWithConfig(
+                valueFormatter,
+                false,
+                false,
+                undefined,
+                undefined
+            )(val)
         }
         return String(val)
     }

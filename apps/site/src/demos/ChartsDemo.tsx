@@ -17,6 +17,203 @@ import {
     AxisIntervalType,
 } from '../../../../packages/blend/lib/components/Charts/types'
 
+const TimezoneDemo = () => {
+    const [selectedTimezone, setSelectedTimezone] = useState('UTC')
+    const [use12HourFormat, setUse12HourFormat] = useState(false)
+
+    const timezoneData: NewNestedDataPoint[] = [
+        {
+            name: '1756252800000', // Aug 27, 2025, 00:00 UTC
+            data: {
+                activity: {
+                    primary: { label: 'User Activity', val: 150 },
+                    aux: [{ label: 'Sessions', val: 45 }],
+                },
+            },
+        },
+        {
+            name: '1756256400000', // Aug 27, 2025, 01:00 UTC
+            data: {
+                activity: {
+                    primary: { label: 'User Activity', val: 180 },
+                    aux: [{ label: 'Sessions', val: 52 }],
+                },
+            },
+        },
+        {
+            name: '1756260000000', // Aug 27, 2025, 02:00 UTCAM
+            data: {
+                activity: {
+                    primary: { label: 'User Activity', val: 220 },
+                    aux: [{ label: 'Sessions', val: 68 }],
+                },
+            },
+        },
+        {
+            name: '1756263600000', // Aug 27, 2025, 03:00 UTC
+            data: {
+                activity: {
+                    primary: { label: 'User Activity', val: 195 },
+                    aux: [{ label: 'Sessions', val: 59 }],
+                },
+            },
+        },
+        {
+            name: '1756267200000', // Aug 27, 2025, 04:00 UTC
+            data: {
+                activity: {
+                    primary: { label: 'User Activity', val: 165 },
+                    aux: [{ label: 'Sessions', val: 43 }],
+                },
+            },
+        },
+    ]
+
+    const timezoneOptions = [
+        { label: 'UTC (Default)', value: 'UTC' },
+        { label: 'New York (EDT)', value: 'America/New_York' },
+        { label: 'London (BST)', value: 'Europe/London' },
+        { label: 'Tokyo (JST)', value: 'Asia/Tokyo' },
+        { label: 'Mumbai (IST)', value: 'Asia/Kolkata' },
+        { label: 'Los Angeles (PDT)', value: 'America/Los_Angeles' },
+        { label: 'Sydney (AEST)', value: 'Australia/Sydney' },
+    ]
+
+    return (
+        <div className="flex flex-col gap-8">
+            {/* Timezone Selector */}
+            <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                <label className="block mb-2 font-medium text-gray-700">
+                    Select Timezone:
+                </label>
+                <SingleSelect
+                    label=""
+                    placeholder="Choose timezone"
+                    items={[{ items: timezoneOptions }]}
+                    selected={selectedTimezone}
+                    onSelect={(value) => setSelectedTimezone(value as string)}
+                />
+                <div className="mt-2 text-sm text-gray-600">
+                    Selected:{' '}
+                    {
+                        timezoneOptions.find(
+                            (tz) => tz.value === selectedTimezone
+                        )?.label
+                    }
+                </div>
+
+                {/* Hour Format Toggle */}
+                <div className="mt-4 p-3 bg-white border border-gray-200 rounded">
+                    <label className="flex items-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={use12HourFormat}
+                            onChange={(e) =>
+                                setUse12HourFormat(e.target.checked)
+                            }
+                            className="mr-2 cursor-pointer"
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                            Use 12-hour format (AM/PM)
+                        </span>
+                    </label>
+                    <div className="mt-1 text-xs text-gray-500">
+                        {use12HourFormat
+                            ? 'Display: "08:00 PM"'
+                            : 'Display: "20:00"'}
+                    </div>
+                </div>
+            </div>
+
+            {/* Chart with Selected Timezone */}
+            <Charts
+                data={timezoneData}
+                chartType={ChartType.LINE}
+                colors={['#3b82f6', '#10b981']}
+                xAxis={{
+                    label: `Time (${timezoneOptions.find((tz) => tz.value === selectedTimezone)?.label})`,
+                    type: AxisType.DATE_TIME,
+                    smart: true,
+                    timeZone: selectedTimezone, // 🌍 Dynamic timezone!
+                    hour12: use12HourFormat, // 🕐 Dynamic hour format!
+                }}
+                yAxis={{
+                    label: 'Activity Level',
+                    type: AxisType.NUMBER,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            🌍 Same Data, Different Timezones
+                        </h4>
+                    </div>
+                }
+            />
+
+            {/* Comparison Table */}
+            <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                <h5 className="font-semibold text-gray-800 mb-3">
+                    🕒 Timezone Comparison for "1756252800000":
+                </h5>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                    {timezoneOptions.map(({ label, value }) => {
+                        const date = new Date(1756252800000)
+                        const formatted = date.toLocaleString('en-US', {
+                            timeZone: value,
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: use12HourFormat,
+                        })
+                        return (
+                            <div
+                                key={value}
+                                className={`p-2 rounded ${
+                                    value === selectedTimezone
+                                        ? 'bg-blue-100 border border-blue-300'
+                                        : 'bg-white border border-gray-200'
+                                }`}
+                            >
+                                <div className="font-medium text-gray-700">
+                                    {label}:
+                                </div>
+                                <div className="text-gray-600">{formatted}</div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+
+            {/* Code Example */}
+            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <h5 className="font-semibold text-green-800 mb-2">
+                    💡 Usage Example:
+                </h5>
+                <pre className="text-xs text-green-700 bg-green-100 p-2 rounded overflow-x-auto">
+                    {`<Charts
+  data={timestampData}
+  xAxis={{
+    type: AxisType.DATE_TIME,
+    timeZone: "${selectedTimezone}", // 🌍 Any IANA timezone!
+    hour12: ${use12HourFormat}, // 🕐 12-hour or 24-hour format!
+  }}
+  yAxis={{
+    type: AxisType.NUMBER
+  }}
+/>`}
+                </pre>
+                <div className="mt-2 text-xs text-green-600">
+                    <strong>💡 Tip:</strong> Defaults to UTC timezone and
+                    24-hour format. Tooltips automatically use the same timezone
+                    and hour format as the axis!
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const ChartDemo = () => {
     const financialData: NewNestedDataPoint[] = [
         {
@@ -619,39 +816,432 @@ const ChartDemo = () => {
         },
     ]
 
-    // Sample data demonstrating POSIX time and UTC format support
-    const posixTimeData: NewNestedDataPoint[] = [
-        // POSIX timestamps (seconds since Unix epoch)
+    const timeData = [
         {
-            name: '1693036800',
+            name: '1756425600000',
             data: {
-                value: { primary: { label: 'CPU Usage', val: 45 }, aux: [] },
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 42 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 1 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 709 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 3609 },
+                    aux: [],
+                },
             },
-        }, // Aug 26, 2023
+        },
         {
-            name: '1693123200',
+            name: '1756429200000',
             data: {
-                value: { primary: { label: 'CPU Usage', val: 52 }, aux: [] },
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 3 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 719 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 150 },
+                    aux: [],
+                },
             },
-        }, // Aug 27, 2023
+        },
         {
-            name: '1693209600',
+            name: '1756432800000',
             data: {
-                value: { primary: { label: 'CPU Usage', val: 38 }, aux: [] },
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 0 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 721 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 0 },
+                    aux: [],
+                },
             },
-        }, // Aug 28, 2023
+        },
         {
-            name: '1693296000',
+            name: '1756440000000',
             data: {
-                value: { primary: { label: 'CPU Usage', val: 61 }, aux: [] },
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 0 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 720 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 0 },
+                    aux: [],
+                },
             },
-        }, // Aug 29, 2023
+        },
         {
-            name: '1693382400',
+            name: '1756443600000',
             data: {
-                value: { primary: { label: 'CPU Usage', val: 47 }, aux: [] },
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 0 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 719 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 0 },
+                    aux: [],
+                },
             },
-        }, // Aug 30, 2023
+        },
+        {
+            name: '1756447200000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 5 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 3 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 720 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 0 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756450800000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 0 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 0 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 3 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756454400000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 0 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 720 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 4 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756458000000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 0 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 720 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 13 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756461600000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 420 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 32 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 721 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 2 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756465200000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 472 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 5 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 720 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 1 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756468800000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 356 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 719 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 236 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 2 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756472400000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 13 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 45 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 721 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 805 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 2 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756476000000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 1 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 83 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 719 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 73 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 1 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756479600000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 8 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 155 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 722 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 8 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756483200000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 19 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 565 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 720 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 0 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756486800000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 7 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 386 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 610 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 0 },
+                    aux: [],
+                },
+            },
+        },
     ]
 
     const utcFormatData: NewNestedDataPoint[] = [
@@ -1051,6 +1641,26 @@ const ChartDemo = () => {
                 </div>
             </div>
 
+            {/* Timezone Selection Demo */}
+            <div className="chart-example-container mb-12">
+                <h3 className="text-xl font-bold mb-6">
+                    🌍 Timezone Selection Support
+                </h3>
+                <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 className="text-blue-800 font-semibold mb-2">
+                        ✨ New Feature: User-Selectable Timezones & Hour
+                        Formats!
+                    </h4>
+                    <p className="text-blue-700 text-sm">
+                        Charts now support displaying dates/times in any
+                        timezone with both 12-hour (AM/PM) and 24-hour formats.
+                        Defaults to UTC and 24-hour format for consistent
+                        behavior. Perfect for global applications!
+                    </p>
+                </div>
+                <TimezoneDemo />
+            </div>
+
             {/* POSIX and UTC Format Support */}
             <div className="chart-example-container mb-12">
                 <h3 className="text-xl font-bold mb-6">
@@ -1059,7 +1669,7 @@ const ChartDemo = () => {
                 <div className="flex flex-col gap-8">
                     {/* POSIX Time (Unix Timestamp in Seconds) */}
                     <Charts
-                        data={posixTimeData}
+                        data={timeData}
                         chartType={ChartType.BAR}
                         colors={['#ef4444']}
                         xAxis={{

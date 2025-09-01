@@ -66,6 +66,8 @@ export type AxisConfig = {
     customTick?: React.ComponentType<TickProps>
     dateOnly?: boolean
     smart?: boolean
+    timeZone?: string
+    hour12?: boolean
 }
 
 export type XAxisConfig = AxisConfig
