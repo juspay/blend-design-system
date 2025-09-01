@@ -11,6 +11,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
             baseRoute="/docs"
             contentPath="app/docs/content"
             sidebarItems={sidebarItems}
+            navbarBorderBottom={true}
         >
             {children}
         </SharedDocLayout>
