@@ -131,7 +131,6 @@ export const renderChart = ({
                                             FOUNDATION_THEME.font.weight[500],
                                     }) as TickProps
                         }
-                        dy={10}
                         label={
                             finalXAxis.label &&
                             finalXAxis.showLabel &&
@@ -290,7 +289,6 @@ export const renderChart = ({
                                             FOUNDATION_THEME.font.weight[500],
                                     }) as TickProps
                         }
-                        dy={10}
                         label={
                             finalXAxis.label &&
                             finalXAxis.showLabel &&

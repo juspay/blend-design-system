@@ -1,13 +1,18 @@
 import { EllipsisVertical, TrendingUp, Users, Activity } from 'lucide-react'
 import {
     Charts,
+    CoreChart,
+    ChartContainer,
+    ChartLegends,
     ChartType,
     ChartLegendPosition,
     Menu,
     NewNestedDataPoint,
     SingleSelect,
     FOUNDATION_THEME,
+    ChartHeader,
 } from '../../../../packages/blend/lib/main'
+import React from 'react'
 import { useState } from 'react'
 import { SelectMenuVariant } from '../../../../packages/blend/lib/components/Select'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
@@ -208,6 +213,214 @@ const TimezoneDemo = () => {
                     <strong>💡 Tip:</strong> Defaults to UTC timezone and
                     24-hour format. Tooltips automatically use the same timezone
                     and hour format as the axis!
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const GranularChartsDemo = () => {
+    // Sample data for different chart panels
+    const dashboardData: NewNestedDataPoint[] = [
+        {
+            name: '4 Aug',
+            data: {
+                overall: { primary: { label: 'Overall', val: 90 }, aux: [] },
+                visa: { primary: { label: 'VISA', val: 85 }, aux: [] },
+                unknown: { primary: { label: 'Unknown', val: 95 }, aux: [] },
+            },
+        },
+        {
+            name: '8 Aug',
+            data: {
+                overall: { primary: { label: 'Overall', val: 75 }, aux: [] },
+                visa: { primary: { label: 'VISA', val: 70 }, aux: [] },
+                unknown: { primary: { label: 'Unknown', val: 80 }, aux: [] },
+            },
+        },
+        {
+            name: '12 Aug',
+            data: {
+                overall: { primary: { label: 'Overall', val: 85 }, aux: [] },
+                visa: { primary: { label: 'VISA', val: 80 }, aux: [] },
+                unknown: { primary: { label: 'Unknown', val: 90 }, aux: [] },
+            },
+        },
+        {
+            name: '16 Aug',
+            data: {
+                overall: { primary: { label: 'Overall', val: 100 }, aux: [] },
+                visa: { primary: { label: 'VISA', val: 95 }, aux: [] },
+                unknown: { primary: { label: 'Unknown', val: 100 }, aux: [] },
+            },
+        },
+        {
+            name: '20 Aug',
+            data: {
+                overall: { primary: { label: 'Overall', val: 85 }, aux: [] },
+                visa: { primary: { label: 'VISA', val: 80 }, aux: [] },
+                unknown: { primary: { label: 'Unknown', val: 90 }, aux: [] },
+            },
+        },
+    ]
+
+    const chartColors = ['#3b82f6', '#10b981', '#f59e0b'] // Blue, Green, Amber
+
+    const [hoveredKey, setHoveredKey] = useState<string | null>(null)
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+    const chartContainerRef = React.useRef<HTMLDivElement>(null!)
+
+    const lineKeys =
+        dashboardData.length > 0 ? Object.keys(dashboardData[0].data) : []
+    const activeKeys = selectedKeys.length > 0 ? selectedKeys : lineKeys
+
+    const handleLegendClick = (key: string) => {
+        setSelectedKeys((prevSelected) => {
+            const isCurrentlySelected = prevSelected.includes(key)
+            if (isCurrentlySelected) {
+                const newSelection = prevSelected.filter((k) => k !== key)
+                return newSelection.length === 0
+                    ? lineKeys.filter((k) => k !== key)
+                    : newSelection
+            } else {
+                return prevSelected.length === 0
+                    ? [key]
+                    : [...prevSelected, key]
+            }
+        })
+    }
+
+    const handleLegendEnter = (key: string) => {
+        setHoveredKey(key)
+    }
+
+    const handleLegendLeave = () => {
+        setHoveredKey(null)
+    }
+
+    return (
+        <div className="space-y-8">
+            <div>
+                <h4 className="text-lg font-semibold mb-4">
+                    🔗 Level 4: Custom Dashboard with Shared State
+                </h4>
+                <ChartContainer>
+                    <div className="">
+                        {/* Header */}
+                        <ChartHeader
+                            slot1={<div>Slot 1</div>}
+                            slot2={<div>Slot 2</div>}
+                            slot3={<div>Slot 3</div>}
+                            chartHeaderSlot={<div>Chart Header Slot</div>}
+                            onFullscreen={() => {}}
+                            isExpanded={true}
+                            setIsExpanded={() => {}}
+                            isFullscreen={false}
+                        />
+
+                        {/* Interactive Shared Legends */}
+                        <div className="mb-6 p-3">
+                            <ChartLegends
+                                chartContainerRef={chartContainerRef}
+                                keys={lineKeys}
+                                colors={chartColors}
+                                handleLegendClick={handleLegendClick}
+                                handleLegendEnter={handleLegendEnter}
+                                handleLegendLeave={handleLegendLeave}
+                                selectedKeys={activeKeys}
+                                setSelectedKeys={setSelectedKeys}
+                                hoveredKey={hoveredKey}
+                                activeKeys={activeKeys}
+                            />
+                        </div>
+
+                        {/* Interactive Charts Grid */}
+                        <div
+                            ref={chartContainerRef}
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-3"
+                        >
+                            {[
+                                { title: 'MOTO', type: ChartType.LINE },
+                                { title: 'THREE_DS', type: ChartType.LINE },
+                                { title: 'Unknown', type: ChartType.LINE },
+                                {
+                                    title: 'Orders with Transaction(s)',
+                                    type: ChartType.LINE,
+                                },
+                                {
+                                    title: 'Additional Metric 1',
+                                    type: ChartType.LINE,
+                                },
+                                {
+                                    title: 'Additional Metric 2',
+                                    type: ChartType.LINE,
+                                },
+                            ].map((panel, index) => (
+                                <div
+                                    key={index}
+                                    className="p-4 flex flex-col gap-2 items-center justify-center h-full w-full"
+                                >
+                                    <h4 className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-4">
+                                        {panel.title}
+                                    </h4>
+                                    <div className="h-48 w-full">
+                                        <CoreChart
+                                            data={dashboardData}
+                                            chartType={panel.type}
+                                            colors={chartColors}
+                                            hoveredKey={hoveredKey}
+                                            onHoveredKeyChange={setHoveredKey}
+                                            selectedKeys={selectedKeys}
+                                            enableHover={true}
+                                            xAxis={{
+                                                show: true,
+                                                showLabel: false,
+                                            }}
+                                            yAxis={{
+                                                show: true,
+                                                showLabel: false,
+                                                type: AxisType.PERCENTAGE,
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </ChartContainer>
+                <p className="text-sm text-gray-600 mt-2">
+                    ↑ Complete interactive dashboard! Shared legend controls all
+                    charts. Hover over legend or any chart to highlight across
+                    all panels.
+                </p>
+            </div>
+
+            {/* Benefits Summary */}
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <h4 className="font-semibold text-green-800 mb-2">
+                    ✨ Interactive Component Levels:
+                </h4>
+                <div className="text-sm text-green-700 space-y-2">
+                    <div>
+                        <strong>🎯 CoreChart:</strong> Pure chart rendering,
+                        optional hover effects
+                    </div>
+                    <div>
+                        <strong>🖱️ CoreChart + enableHover:</strong> Basic hover
+                        interactions
+                    </div>
+                    <div>
+                        <strong>🎨 InteractiveChart:</strong> All-in-one with
+                        legends and interactions
+                    </div>
+                    <div>
+                        <strong>🔗 Custom Dashboard:</strong> Multiple charts
+                        with shared interactive state
+                    </div>
+                    <div>
+                        <strong>📊 Charts:</strong> Full-featured component
+                        (backward compatibility)
+                    </div>
                 </div>
             </div>
         </div>
@@ -1358,6 +1571,116 @@ const ChartDemo = () => {
             <h5 className="text-xl font-bold">
                 Charts Playground - All Variations
             </h5>
+
+            {/* Granular Chart Components Demo */}
+            <div className="chart-example-container mb-12">
+                <h3 className="text-xl font-bold mb-6">
+                    🧩 Granular Chart Components (New!)
+                </h3>
+                <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                    <h4 className="text-purple-800 font-semibold mb-2">
+                        ✨ Maximum Flexibility: Use Just What You Need
+                    </h4>
+                    <p className="text-purple-700 text-sm">
+                        Break down charts into granular pieces. Use CoreChart
+                        for pure chart rendering without any wrappers, or
+                        combine with optional container/header/legend components
+                        for complete customization. Perfect for building custom
+                        dashboard layouts.
+                    </p>
+                </div>
+                <GranularChartsDemo />
+
+                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 className="font-semibold text-blue-800 mb-2">
+                        📋 Component Hierarchy:
+                    </h4>
+                    <div className="text-sm text-blue-700 space-y-3">
+                        <div className="font-mono text-xs bg-blue-100 p-3 rounded">
+                            {`// Level 1: Pure chart (no interaction)
+<CoreChart 
+  data={data} 
+  chartType={ChartType.LINE} 
+  colors={colors}
+/>
+
+// Level 2: Chart with hover effects
+<CoreChart 
+  data={data} 
+  enableHover={true}
+  chartType={ChartType.BAR} 
+/>
+
+// Level 3: All-in-one interactive chart
+<InteractiveChart
+  data={data}
+  chartType={ChartType.LINE}
+  showLegends={true}
+  enableHover={true}
+  enableLegendClick={true}
+/>
+
+// Level 4: Custom dashboard with shared state
+const [hoveredKey, setHoveredKey] = useState(null)
+const [selectedKeys, setSelectedKeys] = useState([])
+
+<ChartContainer>
+  <ChartLegends 
+    keys={lineKeys} 
+    colors={colors}
+    handleLegendClick={handleLegendClick}
+    selectedKeys={selectedKeys}
+    hoveredKey={hoveredKey}
+  />
+  <div className="grid">
+    {panels.map(panel => (
+      <CoreChart 
+        key={panel.id}
+        data={panel.data}
+        hoveredKey={hoveredKey}
+        onHoveredKeyChange={setHoveredKey}
+        selectedKeys={selectedKeys}
+        enableHover={true}
+      />
+    ))}
+  </div>
+</ChartContainer>
+
+// Level 5: Full-featured (backward compatibility)
+<Charts 
+  data={data} 
+  chartHeaderSlot={<h3>Title</h3>}
+  stackedLegends={true}
+/>`}
+                        </div>
+                        <div>
+                            <strong>🎯 Choose Your Level:</strong>
+                            <ul className="ml-4 mt-1 space-y-1">
+                                <li>
+                                    • <code>CoreChart</code> → Pure chart
+                                    rendering, optional hover
+                                </li>
+                                <li>
+                                    • <code>CoreChart + enableHover</code> → Add
+                                    hover effects
+                                </li>
+                                <li>
+                                    • <code>InteractiveChart</code> → All-in-one
+                                    with legends & interactions
+                                </li>
+                                <li>
+                                    • <code>Custom Dashboard</code> → Multiple
+                                    charts with shared state
+                                </li>
+                                <li>
+                                    • <code>Charts</code> → Full-featured
+                                    (backward compatibility)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {/* Main Interactive Chart */}
             <div className="chart-example-container mb-12">
