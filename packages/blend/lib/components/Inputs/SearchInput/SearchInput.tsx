@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, forwardRef } from 'react'
 import { useRef, useState } from 'react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
@@ -21,108 +21,114 @@ const toPixels = (value: string | number | undefined): number => {
     return 0
 }
 
-const SearchInput = ({
-    leftSlot,
-    rightSlot,
-    error = false,
-    placeholder = 'Enter',
-    value,
-    onChange,
-    name,
-    ...rest
-}: SearchInputProps) => {
-    const searchInputTokens = useComponentToken(
-        'SEARCH_INPUT'
-    ) as SearchInputTokensType
+const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
+    (
+        {
+            leftSlot,
+            rightSlot,
+            error = false,
+            placeholder = 'Enter',
+            value,
+            onChange,
+            name,
+            ...rest
+        },
+        ref
+    ) => {
+        const searchInputTokens = useComponentToken(
+            'SEARCH_INPUT'
+        ) as SearchInputTokensType
 
-    const leftSlotRef = useRef<HTMLDivElement>(null)
-    const rightSlotRef = useRef<HTMLDivElement>(null)
+        const leftSlotRef = useRef<HTMLDivElement>(null)
+        const rightSlotRef = useRef<HTMLDivElement>(null)
 
-    const [leftSlotWidth, setLeftSlotWidth] = useState(0)
-    const [rightSlotWidth, setRightSlotWidth] = useState(0)
+        const [leftSlotWidth, setLeftSlotWidth] = useState(0)
+        const [rightSlotWidth, setRightSlotWidth] = useState(0)
 
-    useEffect(() => {
-        if (leftSlotRef.current) {
-            setLeftSlotWidth(leftSlotRef.current.offsetWidth)
-        } else {
-            setLeftSlotWidth(0)
-        }
-        if (rightSlotRef.current) {
-            setRightSlotWidth(rightSlotRef.current.offsetWidth)
-        } else {
-            setRightSlotWidth(0)
-        }
-    }, [leftSlot, rightSlot])
+        useEffect(() => {
+            if (leftSlotRef.current) {
+                setLeftSlotWidth(leftSlotRef.current.offsetWidth)
+            } else {
+                setLeftSlotWidth(0)
+            }
+            if (rightSlotRef.current) {
+                setRightSlotWidth(rightSlotRef.current.offsetWidth)
+            } else {
+                setRightSlotWidth(0)
+            }
+        }, [leftSlot, rightSlot])
 
-    const paddingX = toPixels(searchInputTokens.padding.x)
-    const paddingY = toPixels(searchInputTokens.padding.y)
-    const GAP = toPixels(searchInputTokens.gap)
+        const paddingX = toPixels(searchInputTokens.padding.x)
+        const paddingY = toPixels(searchInputTokens.padding.y)
+        const GAP = toPixels(searchInputTokens.gap)
 
-    const paddingInlineStart = leftSlot
-        ? paddingX + leftSlotWidth + GAP
-        : paddingX
-    const paddingInlineEnd = rightSlot
-        ? paddingX + rightSlotWidth + GAP
-        : paddingX
+        const paddingInlineStart = leftSlot
+            ? paddingX + leftSlotWidth + GAP
+            : paddingX
+        const paddingInlineEnd = rightSlot
+            ? paddingX + rightSlotWidth + GAP
+            : paddingX
 
-    return (
-        <Block position="relative" width={'100%'} height={40}>
-            {leftSlot && (
-                <Block
-                    ref={leftSlotRef}
-                    position="absolute"
-                    top={paddingY}
-                    left={paddingX}
-                    bottom={paddingY}
-                    contentCentered
-                >
-                    {leftSlot}
-                </Block>
-            )}
+        return (
+            <Block position="relative" width={'100%'} height={40}>
+                {leftSlot && (
+                    <Block
+                        ref={leftSlotRef}
+                        position="absolute"
+                        top={paddingY}
+                        left={paddingX}
+                        bottom={paddingY}
+                        contentCentered
+                    >
+                        {leftSlot}
+                    </Block>
+                )}
 
-            {rightSlot && (
-                <Block
-                    ref={rightSlotRef}
-                    position="absolute"
-                    top={paddingY}
-                    right={paddingX}
-                    bottom={paddingY}
-                    contentCentered
-                >
-                    {rightSlot}
-                </Block>
-            )}
+                {rightSlot && (
+                    <Block
+                        ref={rightSlotRef}
+                        position="absolute"
+                        top={paddingY}
+                        right={paddingX}
+                        bottom={paddingY}
+                        contentCentered
+                    >
+                        {rightSlot}
+                    </Block>
+                )}
 
-            <PrimitiveInput
-                name={name}
-                value={value}
-                onChange={onChange}
-                height={searchInputTokens.height}
-                width={searchInputTokens.width}
-                placeholder={placeholder}
-                paddingInlineStart={paddingInlineStart}
-                paddingInlineEnd={paddingInlineEnd}
-                paddingY={paddingY}
-                outline={searchInputTokens.outline}
-                borderRadius={searchInputTokens.borderRadius}
-                borderTop={searchInputTokens.borderTop.default}
-                borderLeft={searchInputTokens.borderLeft.default}
-                borderRight={searchInputTokens.borderRight.default}
-                borderBottom={
-                    error
-                        ? searchInputTokens.borderBottom.error
-                        : searchInputTokens.borderBottom.default
-                }
-                _hover={{
-                    borderBottom: searchInputTokens.borderBottom.hover,
-                }}
-                _focus={{
-                    borderBottom: searchInputTokens.borderBottom.focus,
-                }}
-                {...rest}
-            />
-        </Block>
-    )
-}
+                <PrimitiveInput
+                    ref={ref}
+                    name={name}
+                    value={value}
+                    onChange={onChange}
+                    height={searchInputTokens.height}
+                    width={searchInputTokens.width}
+                    placeholder={placeholder}
+                    paddingInlineStart={paddingInlineStart}
+                    paddingInlineEnd={paddingInlineEnd}
+                    paddingY={paddingY}
+                    outline={searchInputTokens.outline}
+                    borderRadius={searchInputTokens.borderRadius}
+                    borderTop={searchInputTokens.borderTop.default}
+                    borderLeft={searchInputTokens.borderLeft.default}
+                    borderRight={searchInputTokens.borderRight.default}
+                    borderBottom={
+                        error
+                            ? searchInputTokens.borderBottom.error
+                            : searchInputTokens.borderBottom.default
+                    }
+                    _hover={{
+                        borderBottom: searchInputTokens.borderBottom.hover,
+                    }}
+                    _focus={{
+                        borderBottom: searchInputTokens.borderBottom.focus,
+                    }}
+                    {...rest}
+                />
+            </Block>
+        )
+    }
+)
 
 export default SearchInput
