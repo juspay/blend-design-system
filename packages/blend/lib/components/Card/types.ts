@@ -13,10 +13,32 @@ export enum CardSlotVariant {
     LEFT = 'left',
 }
 
-export type CardProps = {
-    children: ReactNode
+export interface CardProps {
     className?: string
     maxWidth?: string
+
+    // Standard card content pattern (recommended)
+    title?: string
+    titleSlot?: ReactNode
+    headerActionSlot?: ReactNode
+    description?: string
+    content?: ReactNode
+    actionButton?: ButtonV2Props
+
+    // Bordered header variant props
+    borderedHeader?: {
+        title: string
+        titleSlot?: ReactNode
+        headerActionSlot?: ReactNode
+        headerDescription?: string
+        topSlot?: ReactNode
+        subHeaderTitle?: string
+        description?: string
+        content?: ReactNode
+        actionButton?: ButtonV2Props
+    }
+
+    // Legacy props for top/left slot variants (deprecated)
     header?: {
         variant?: CardHeaderVariant
         title?: string
@@ -24,11 +46,10 @@ export type CardProps = {
         actions?: ReactNode
         label?: ReactNode
     }
-    headerSlot?: ReactNode
     slot?: {
         variant: CardSlotVariant
         content: ReactNode
         centerAlign?: boolean
     }
-    bottomButton?: ButtonV2Props
+    children?: ReactNode
 }

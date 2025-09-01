@@ -2,10 +2,34 @@ import { forwardRef } from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import Button from '../Button/Button'
-import { CardHeaderVariant, CardSlotVariant, type CardProps } from './types'
+import { type CardProps } from './types'
+import { ButtonSubType } from '../Button/types'
 import type { CardTokenType } from './card.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { toPixels } from '../../global-utils/GlobalUtils'
+import {
+    isLegacyCard,
+    isTopSlotVariant,
+    isLeftSlotVariant,
+    isBorderedHeaderVariant,
+    getCardPadding,
+    getContentPadding,
+    getHeaderTextStyles,
+    getDescriptionStyles,
+    getHeaderMarginBottom,
+    getDescriptionMarginBottom,
+    getContentSlotMarginBottom,
+    getHeaderTextSlotSpacing,
+    getBorderedHeaderStyles,
+    getBorderedHeaderTitleStyles,
+    getBorderedHeaderDescriptionStyles,
+    getBorderedSubHeaderTitleStyles,
+    getBorderedDescriptionStyles,
+    getBorderedSlotSubHeaderSpacing,
+    getBorderedSubHeaderDescriptionSpacing,
+    getBorderedDescriptionContentSpacing,
+    getBorderedContentActionSpacing,
+} from './utils'
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
     (
@@ -13,42 +37,281 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
             children,
             className,
             maxWidth = 'auto',
+            // Standard card props
+            title,
+            titleSlot,
+            headerActionSlot,
+            description,
+            content,
+            actionButton,
+            // Bordered header variant
+            borderedHeader,
+            // Legacy props
             header,
-            headerSlot,
             slot,
-            bottomButton,
         },
         ref
     ) => {
         const cardToken = useResponsiveTokens<CardTokenType>('CARD')
 
-        const headerVariant = header?.variant || CardHeaderVariant.DEFAULT
-        const hasSlot = slot !== undefined
-        const isTopSlot =
-            slot?.variant === CardSlotVariant.TOP ||
-            slot?.variant === CardSlotVariant.TOP_WITH_PADDING
-        const isLeftSlot = slot?.variant === CardSlotVariant.LEFT
-        const isBorderedHeader =
-            headerVariant === CardHeaderVariant.BORDERED ||
-            headerVariant === CardHeaderVariant.BORDERED_WITH_LABEL
-        const shouldCenterAlign = slot?.centerAlign || false
+        // Card type detection
+        const isLegacy = isLegacyCard(slot, header)
+        const isBordered = Boolean(borderedHeader)
+        const isTopSlot = isTopSlotVariant(slot)
+        const isLeftSlot = isLeftSlotVariant(slot)
+        const isBorderedHeader = isBorderedHeaderVariant(header)
 
-        const cardPadding = isTopSlot
-            ? '0'
-            : isBorderedHeader
-              ? '0'
-              : isLeftSlot
-                ? cardToken.padding
-                : cardToken.padding
-        const contentPadding = isTopSlot
-            ? `0 ${cardToken.padding} ${cardToken.padding} ${cardToken.padding}` // No top padding for top slots
-            : isLeftSlot
-              ? '0'
-              : isBorderedHeader
-                ? cardToken.padding
-                : cardToken.content.padding
+        // Content flags for spacing calculations
+        const hasTitle = Boolean(title)
+        const hasTitleSlot = Boolean(titleSlot)
+        const hasHeaderActionSlot = Boolean(headerActionSlot)
+        const hasDescription = Boolean(description)
+        const hasContent = Boolean(content)
+        const hasActionButton = Boolean(actionButton)
+        const isInlineButton = actionButton?.subType === ButtonSubType.INLINE
 
-        const HeaderContent = ({
+        // Standard Card Component
+        const StandardCard = () => (
+            <Block
+                style={{
+                    padding: cardToken.padding,
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
+                {/* Header Section */}
+                {(hasTitle || hasTitleSlot || hasHeaderActionSlot) && (
+                    <Block
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        style={{
+                            marginBottom: getHeaderMarginBottom(
+                                hasDescription,
+                                hasContent,
+                                hasActionButton
+                            ),
+                        }}
+                    >
+                        {/* Title and Title Slot */}
+                        <Block
+                            display="flex"
+                            alignItems="center"
+                            style={{
+                                gap:
+                                    hasTitle && hasTitleSlot
+                                        ? getHeaderTextSlotSpacing()
+                                        : '0',
+                            }}
+                        >
+                            {hasTitle && (
+                                <Text style={getHeaderTextStyles(cardToken)}>
+                                    {title}
+                                </Text>
+                            )}
+                            {hasTitleSlot && <Block>{titleSlot}</Block>}
+                        </Block>
+
+                        {/* Header Action Slot */}
+                        {hasHeaderActionSlot && (
+                            <Block>{headerActionSlot}</Block>
+                        )}
+                    </Block>
+                )}
+
+                {/* Description */}
+                {hasDescription && (
+                    <Block
+                        style={{
+                            marginBottom: getDescriptionMarginBottom(
+                                hasContent,
+                                hasActionButton
+                            ),
+                        }}
+                    >
+                        <Text style={getDescriptionStyles(cardToken)}>
+                            {description}
+                        </Text>
+                    </Block>
+                )}
+
+                {/* Content Slot */}
+                {hasContent && (
+                    <Block
+                        style={{
+                            marginBottom: getContentSlotMarginBottom(
+                                hasActionButton,
+                                isInlineButton
+                            ),
+                        }}
+                    >
+                        {content}
+                    </Block>
+                )}
+
+                {/* Action Button */}
+                {hasActionButton && (
+                    <Block>
+                        <Button {...actionButton} />
+                    </Block>
+                )}
+
+                {/* Fallback for children (if no content prop) */}
+                {children && !hasContent && <Block>{children}</Block>}
+            </Block>
+        )
+
+        // Bordered Header Card Component
+        const BorderedHeaderCard = () => {
+            if (!borderedHeader) return null
+
+            const {
+                title: headerTitle,
+                titleSlot: headerTitleSlot,
+                headerActionSlot: headerActionSlot,
+                headerDescription,
+                topSlot,
+                subHeaderTitle,
+                description: borderedDescription,
+                content: borderedContent,
+                actionButton: borderedActionButton,
+            } = borderedHeader
+
+            const hasHeaderTitle = Boolean(headerTitle)
+            const hasHeaderTitleSlot = Boolean(headerTitleSlot)
+            const hasHeaderActionSlot = Boolean(headerActionSlot)
+            const hasHeaderDescription = Boolean(headerDescription)
+            const hasTopSlot = Boolean(topSlot)
+            const hasSubHeaderTitle = Boolean(subHeaderTitle)
+            const hasBorderedDescription = Boolean(borderedDescription)
+            const hasBorderedContent = Boolean(borderedContent)
+            const hasBorderedActionButton = Boolean(borderedActionButton)
+
+            return (
+                <>
+                    {/* Bordered Header Section */}
+                    <Block style={getBorderedHeaderStyles(cardToken)}>
+                        <Block
+                            display="flex"
+                            justifyContent="space-between"
+                            alignItems="flex-start"
+                        >
+                            {/* Header Title and Title Slot */}
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                style={{
+                                    gap:
+                                        hasHeaderTitle && hasHeaderTitleSlot
+                                            ? getHeaderTextSlotSpacing()
+                                            : '0',
+                                }}
+                            >
+                                {hasHeaderTitle && (
+                                    <Text
+                                        style={getBorderedHeaderTitleStyles(
+                                            cardToken
+                                        )}
+                                    >
+                                        {headerTitle}
+                                    </Text>
+                                )}
+                                {hasHeaderTitleSlot && (
+                                    <Block>{headerTitleSlot}</Block>
+                                )}
+                            </Block>
+
+                            {/* Header Action Slot */}
+                            {hasHeaderActionSlot && (
+                                <Block>{headerActionSlot}</Block>
+                            )}
+                        </Block>
+
+                        {/* Header Description */}
+                        {hasHeaderDescription && (
+                            <Text style={getBorderedHeaderDescriptionStyles()}>
+                                {headerDescription}
+                            </Text>
+                        )}
+                    </Block>
+
+                    {/* Content Area */}
+                    <Block
+                        style={{
+                            padding: cardToken.padding,
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}
+                    >
+                        {/* Top Slot */}
+                        {hasTopSlot && (
+                            <Block
+                                style={{
+                                    marginBottom: hasSubHeaderTitle
+                                        ? getBorderedSlotSubHeaderSpacing()
+                                        : '0',
+                                }}
+                            >
+                                {topSlot}
+                            </Block>
+                        )}
+
+                        {/* Sub Header Title */}
+                        {hasSubHeaderTitle && (
+                            <Block
+                                style={{
+                                    marginBottom: hasBorderedDescription
+                                        ? getBorderedSubHeaderDescriptionSpacing()
+                                        : '0',
+                                }}
+                            >
+                                <Text style={getBorderedSubHeaderTitleStyles()}>
+                                    {subHeaderTitle}
+                                </Text>
+                            </Block>
+                        )}
+
+                        {/* Description */}
+                        {hasBorderedDescription && (
+                            <Block
+                                style={{
+                                    marginBottom: hasBorderedContent
+                                        ? getBorderedDescriptionContentSpacing()
+                                        : '0',
+                                }}
+                            >
+                                <Text style={getBorderedDescriptionStyles()}>
+                                    {borderedDescription}
+                                </Text>
+                            </Block>
+                        )}
+
+                        {/* Content Slot */}
+                        {hasBorderedContent && (
+                            <Block
+                                style={{
+                                    marginBottom: hasBorderedActionButton
+                                        ? getBorderedContentActionSpacing()
+                                        : '0',
+                                }}
+                            >
+                                {borderedContent}
+                            </Block>
+                        )}
+
+                        {/* Action Button */}
+                        {hasBorderedActionButton && (
+                            <Block>
+                                <Button {...borderedActionButton} />
+                            </Block>
+                        )}
+                    </Block>
+                </>
+            )
+        }
+
+        // Legacy Card Components (kept for backward compatibility)
+        const LegacyHeaderContent = ({
             useDefaultStyle = false,
         }: {
             useDefaultStyle?: boolean
@@ -59,9 +322,11 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                     !header.subtitle &&
                     !header.actions &&
                     !header.label)
-            )
+            ) {
                 return null
+            }
 
+            const headerVariant = header.variant || 'default'
             const headerStyle = useDefaultStyle
                 ? cardToken.header.variants.default
                 : cardToken.header.variants[headerVariant]
@@ -126,63 +391,47 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
             )
         }
 
-        const SlotContent = () => {
-            if (!hasSlot) return null
+        const LegacySlotContent = () => {
+            if (!slot) return null
 
             const slotTokens = cardToken.slot.variants[slot.variant]
+            const shouldCenterAlign = slot.centerAlign || false
 
-            return (
-                <Block
-                    style={{
-                        ...slotTokens,
-                        display: 'flex',
-                        alignItems: shouldCenterAlign ? 'center' : 'flex-start',
-                        justifyContent: shouldCenterAlign
-                            ? 'center'
-                            : 'flex-start',
-                        textAlign: shouldCenterAlign ? 'center' : 'left',
-                        ...(isTopSlot && {
-                            minHeight: '142px',
-                            height: '50%',
-                            flex: 'none',
-                        }),
-                    }}
-                >
-                    {slot.content}
-                </Block>
-            )
+            const slotStyles: React.CSSProperties = {
+                padding: slotTokens.padding as string,
+                gap: slotTokens.gap as string,
+                height: slotTokens.height as string,
+                borderRadius: slotTokens.borderRadius as string,
+                overflow: slotTokens.overflow as string,
+                display: 'flex',
+                alignItems: shouldCenterAlign ? 'center' : 'flex-start',
+                justifyContent: shouldCenterAlign ? 'center' : 'flex-start',
+                textAlign: shouldCenterAlign ? 'center' : 'left',
+            }
+
+            if (isTopSlot) {
+                slotStyles.minHeight = '142px'
+                slotStyles.height = '50%'
+                slotStyles.flex = 'none'
+            }
+
+            return <Block style={slotStyles}>{slot.content}</Block>
         }
 
-        const ContentArea = () => (
-            <Block
-                style={{
-                    padding: contentPadding,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    ...(shouldCenterAlign &&
-                        isTopSlot && {
-                            textAlign: 'center',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }),
-                }}
-            >
-                {children}
-                {bottomButton && (
-                    <Block style={{ marginTop: '16px' }}>
-                        <Button {...bottomButton} />
-                    </Block>
-                )}
-            </Block>
-        )
+        const LegacyCard = () => {
+            const shouldCenterAlign = slot?.centerAlign || false
+            const contentPadding = getContentPadding(
+                isTopSlot,
+                isLeftSlot,
+                isBorderedHeader,
+                cardToken
+            )
 
-        // Main layout logic
-        const renderCardContent = () => {
             // Top slot layout
             if (isTopSlot) {
                 return (
                     <>
-                        <SlotContent />
+                        <LegacySlotContent />
                         <Block
                             style={{
                                 minHeight: '142px',
@@ -190,48 +439,45 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                                 flex: 'none',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                padding: `${cardToken.padding} ${cardToken.padding} 0 ${cardToken.padding}`, // No bottom padding to avoid double padding
+                                padding: `${String(cardToken.padding)} ${String(cardToken.padding)} 0 ${String(cardToken.padding)}`,
                             }}
                         >
-                            <HeaderContent useDefaultStyle />
+                            <LegacyHeaderContent useDefaultStyle />
                             <Block
                                 style={{
                                     flex: 1,
                                     display: 'flex',
                                     flexDirection: 'column',
-                                    padding: `0 0 ${cardToken.padding} 0`,
-                                    ...(shouldCenterAlign && {
-                                        textAlign: 'center',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }),
+                                    padding: `0 0 ${String(cardToken.padding)} 0`,
+                                    ...(shouldCenterAlign
+                                        ? {
+                                              textAlign: 'center',
+                                              alignItems: 'center',
+                                              justifyContent: 'center',
+                                          }
+                                        : {}),
                                 }}
                             >
                                 {children}
-                                {bottomButton && (
-                                    <Block style={{ marginTop: '16px' }}>
-                                        <Button {...bottomButton} />
-                                    </Block>
-                                )}
                             </Block>
                         </Block>
                     </>
                 )
             }
 
-            // Left slot layout - add padding to component itself
+            // Left slot layout
             if (isLeftSlot) {
                 return (
-                    <Block style={{ padding: cardToken.padding }}>
+                    <Block style={{ padding: String(cardToken.padding) }}>
                         <Block
                             display="flex"
                             style={{
-                                gap: cardToken.slot.variants[slot.variant].gap,
+                                gap: cardToken.slot.variants[slot!.variant].gap,
                             }}
                         >
-                            <SlotContent />
+                            <LegacySlotContent />
                             <Block style={{ flex: 1 }}>
-                                <HeaderContent />
+                                <LegacyHeaderContent />
                                 <Block
                                     style={{
                                         display: 'flex',
@@ -239,11 +485,6 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                                     }}
                                 >
                                     {children}
-                                    {bottomButton && (
-                                        <Block style={{ marginTop: '16px' }}>
-                                            <Button {...bottomButton} />
-                                        </Block>
-                                    )}
                                 </Block>
                             </Block>
                         </Block>
@@ -251,20 +492,36 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                 )
             }
 
-            // Default layout (no slot or header slot)
+            // Default legacy layout
             return (
                 <>
-                    {headerSlot ? (
-                        <Block style={cardToken.header.variants[headerVariant]}>
-                            {headerSlot}
-                        </Block>
-                    ) : (
-                        <HeaderContent />
-                    )}
-                    <ContentArea />
+                    <LegacyHeaderContent />
+                    <Block
+                        style={{
+                            padding: contentPadding,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            ...(shouldCenterAlign && isTopSlot
+                                ? {
+                                      textAlign: 'center',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                  }
+                                : {}),
+                        }}
+                    >
+                        {children}
+                    </Block>
                 </>
             )
         }
+
+        // Main card styles
+        const cardPadding = isLegacy
+            ? getCardPadding(isTopSlot, isBorderedHeader, isLeftSlot, cardToken)
+            : isBordered
+              ? '0'
+              : '0'
 
         return (
             <Block
@@ -275,7 +532,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                         maxWidth !== 'auto'
                             ? toPixels(maxWidth)
                             : cardToken.maxWidth,
-                    outline: cardToken.border.default, // Use outline instead of border
+                    outline: cardToken.border.default,
                     borderRadius: cardToken.borderRadius,
                     backgroundColor: cardToken.backgroundColor.default,
                     boxShadow: cardToken.boxShadow,
@@ -285,7 +542,6 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                     display: 'flex',
                     flexDirection: 'column',
                     ...(isTopSlot && { minHeight: '284px' }),
-                    // Fix border radius overflow for bordered headers
                     ...(isBorderedHeader &&
                         !isTopSlot && { overflow: 'hidden' }),
                 }}
@@ -302,7 +558,13 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                         .default as string
                 }}
             >
-                {renderCardContent()}
+                {isLegacy ? (
+                    <LegacyCard />
+                ) : isBordered ? (
+                    <BorderedHeaderCard />
+                ) : (
+                    <StandardCard />
+                )}
             </Block>
         )
     }
