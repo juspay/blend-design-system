@@ -189,6 +189,28 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
         ),
         color: 'from-pink-500 to-rose-600',
     },
+    {
+        slug: 'avatar',
+        title: 'Avatar',
+        description:
+            'The Avatar component displays user profile images, initials, or fallback icons with various sizes and styling options for user identification and personalization.',
+        icon: createIcon(
+            [],
+            [
+                React.createElement('circle', {
+                    key: 'circle',
+                    cx: '12',
+                    cy: '12',
+                    r: '10',
+                }),
+                React.createElement('path', {
+                    key: 'path',
+                    d: 'm15 9-6 6-3-3',
+                }),
+            ]
+        ),
+        color: 'from-violet-500 to-purple-600',
+    },
 ]
 
 /**
