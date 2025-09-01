@@ -113,7 +113,9 @@ export const renderChart = ({
                                     ? getAxisFormatterWithConfig(
                                           finalXAxis.type,
                                           finalXAxis.dateOnly,
-                                          finalXAxis.smart
+                                          finalXAxis.smart,
+                                          finalXAxis.timeZone,
+                                          finalXAxis.hour12
                                       )
                                     : undefined
                         }
@@ -129,7 +131,6 @@ export const renderChart = ({
                                             FOUNDATION_THEME.font.weight[500],
                                     }) as TickProps
                         }
-                        dy={10}
                         label={
                             finalXAxis.label &&
                             finalXAxis.showLabel &&
@@ -166,7 +167,9 @@ export const renderChart = ({
                                         ? getAxisFormatterWithConfig(
                                               finalYAxis.type,
                                               finalYAxis.dateOnly,
-                                              finalYAxis.smart
+                                              finalYAxis.smart,
+                                              finalYAxis.timeZone,
+                                              finalYAxis.hour12
                                           )
                                         : (value) => formatNumber(value)
                             }
@@ -268,7 +271,9 @@ export const renderChart = ({
                                     ? getAxisFormatterWithConfig(
                                           finalXAxis.type,
                                           finalXAxis.dateOnly,
-                                          finalXAxis.smart
+                                          finalXAxis.smart,
+                                          finalXAxis.timeZone,
+                                          finalXAxis.hour12
                                       )
                                     : undefined
                         }
@@ -284,7 +289,6 @@ export const renderChart = ({
                                             FOUNDATION_THEME.font.weight[500],
                                     }) as TickProps
                         }
-                        dy={10}
                         label={
                             finalXAxis.label &&
                             finalXAxis.showLabel &&
@@ -317,7 +321,9 @@ export const renderChart = ({
                                         ? getAxisFormatterWithConfig(
                                               finalYAxis.type,
                                               finalYAxis.dateOnly,
-                                              finalYAxis.smart
+                                              finalYAxis.smart,
+                                              finalYAxis.timeZone,
+                                              finalYAxis.hour12
                                           )
                                         : (value) => formatNumber(value)
                             }
