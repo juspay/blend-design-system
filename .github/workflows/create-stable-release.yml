@@ -263,6 +263,11 @@ jobs:
                       - 🔄 Ready for NPM stable publish
                       - 🔄 Dev branch ready for next development cycle
 
+                      **New Release Branch Strategy:**
+                      - After merging this PR, create a new `release` branch from `dev` for the next beta cycle
+                      - Future beta releases will be created from the `release` branch
+                      - This prevents issues with ongoing development in `dev` branch
+
                       ---
                       *This PR was automatically created after stable release creation*
                   labels: |

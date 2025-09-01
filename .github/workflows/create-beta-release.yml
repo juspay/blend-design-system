@@ -21,7 +21,7 @@ jobs:
     create-beta-release:
         name: Create Beta Release (No Publish)
         runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/dev'
+        if: github.ref == 'refs/heads/release'
         outputs:
             version: ${{ steps.bump_version.outputs.new_version }}
             tag: ${{ steps.bump_version.outputs.tag }}
@@ -137,7 +137,7 @@ jobs:
 
                   echo "# Changelog for v$VERSION (Beta)" > docs/CHANGELOG.md
                   echo "" >> docs/CHANGELOG.md
-                  echo "This is a beta release. Changes since last tag:" >> docs/CHANGELOG.md
+                  echo "This is a beta release from the release branch. Changes since last tag:" >> docs/CHANGELOG.md
                   echo "" >> docs/CHANGELOG.md
                   if [[ -n "$LAST_TAG" ]]; then
                     git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
@@ -174,7 +174,7 @@ jobs:
                   draft: false
                   prerelease: true
 
-            - name: Create Version Update PR to Dev
+            - name: Create Version Update PR to Release
               uses: peter-evans/create-pull-request@v6
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
@@ -185,19 +185,24 @@ jobs:
 
                       - Bump version to ${{ steps.bump_version.outputs.new_version }}
                       - Update changelog
-                      - **This is a BETA release - ready for NPM publishing**
+                      - **This is a BETA release from release branch - ready for NPM publishing**
 
                       This PR was automatically created by the beta release workflow.
 
                       **Next Steps:**
-                      1. Review and merge this PR
+                      1. Review and merge this PR to release branch
                       2. Trigger "Publish Beta to NPM" workflow to publish to npm with beta tag
-                      3. After testing, create PR from dev → main for stable release
+                      3. After testing, create PR from release → main for stable release
 
                       **Changes included:**
                       - Updated package.json version to beta
                       - Generated changelog
                       - Created GitHub release with prerelease flag
+
+                      **New Release Branch Strategy:**
+                      - Beta releases are now created from `release` branch
+                      - This prevents issues with ongoing development in `dev` branch
+                      - Stable releases will be promoted from `release` → `main`
                   labels: |
                       automated
                       release
@@ -208,7 +213,7 @@ jobs:
 
                       - Bump version to ${{ steps.bump_version.outputs.new_version }}
                       - Update changelog
-                      - Create beta release
+                      - Create beta release from release branch
 
                       [skip ci]
                   add-paths: |

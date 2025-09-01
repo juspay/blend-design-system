@@ -17,7 +17,7 @@ jobs:
         name: Publish Beta Version to NPM
         runs-on: ubuntu-latest
         environment: npm
-        if: github.ref == 'refs/heads/dev' && github.event.inputs.confirm_publish == 'PUBLISH'
+        if: github.ref == 'refs/heads/release' && github.event.inputs.confirm_publish == 'PUBLISH'
 
         steps:
             - name: Checkout Repo
@@ -108,18 +108,18 @@ jobs:
                   echo "stable_version=$STABLE_VERSION" >> $GITHUB_OUTPUT
                   echo "Stable version will be: $STABLE_VERSION"
 
-            - name: Create Dev to Main PR
+            - name: Create Release to Main PR
               if: steps.check_published.outputs.already_published != 'true'
               uses: peter-evans/create-pull-request@v6
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  head: dev
+                  head: release
                   base: main
                   title: 'feat: promote beta ${{ steps.verify_version.outputs.version }} to stable'
                   body: |
                       **Promote Beta to Stable Release**
 
-                      Beta version `${{ steps.verify_version.outputs.version }}` has been published to NPM and is ready for promotion to stable.
+                      Beta version `${{ steps.verify_version.outputs.version }}` has been published to NPM from the release branch and is ready for promotion to stable.
 
                       **Current Status:**
                       - ✅ Beta version published to NPM with `beta` tag
@@ -135,6 +135,11 @@ jobs:
                       **Version Info:**
                       - Beta: `${{ steps.verify_version.outputs.version }}`
                       - Stable: `${{ steps.stable_version.outputs.stable_version }}` (will be created when promoted)
+
+                      **New Release Branch Strategy:**
+                      - Beta was published from `release` branch
+                      - This prevents issues with ongoing development in `dev` branch
+                      - Stable release will be created from `main` after this merge
 
                       ---
                       *This PR was automatically created after successful beta NPM publish*
