@@ -30,6 +30,8 @@ export type StatCardAxisConfig = {
     tickFormatter?: (value: string | number) => string
     dateOnly?: boolean
     smart?: boolean
+    timeZone?: string
+    hour12?: boolean
 }
 
 export type StatCardProps = {

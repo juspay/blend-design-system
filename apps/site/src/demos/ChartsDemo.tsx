@@ -1,13 +1,18 @@
 import { EllipsisVertical, TrendingUp, Users, Activity } from 'lucide-react'
 import {
     Charts,
+    CoreChart,
+    ChartContainer,
+    ChartLegends,
     ChartType,
     ChartLegendPosition,
     Menu,
     NewNestedDataPoint,
     SingleSelect,
     FOUNDATION_THEME,
+    ChartHeader,
 } from '../../../../packages/blend/lib/main'
+import React from 'react'
 import { useState } from 'react'
 import { SelectMenuVariant } from '../../../../packages/blend/lib/components/Select'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
@@ -16,6 +21,411 @@ import {
     AxisType,
     AxisIntervalType,
 } from '../../../../packages/blend/lib/components/Charts/types'
+
+const TimezoneDemo = () => {
+    const [selectedTimezone, setSelectedTimezone] = useState('UTC')
+    const [use12HourFormat, setUse12HourFormat] = useState(false)
+
+    const timezoneData: NewNestedDataPoint[] = [
+        {
+            name: '1756252800000', // Aug 27, 2025, 00:00 UTC
+            data: {
+                activity: {
+                    primary: { label: 'User Activity', val: 150 },
+                    aux: [{ label: 'Sessions', val: 45 }],
+                },
+            },
+        },
+        {
+            name: '1756256400000', // Aug 27, 2025, 01:00 UTC
+            data: {
+                activity: {
+                    primary: { label: 'User Activity', val: 180 },
+                    aux: [{ label: 'Sessions', val: 52 }],
+                },
+            },
+        },
+        {
+            name: '1756260000000', // Aug 27, 2025, 02:00 UTCAM
+            data: {
+                activity: {
+                    primary: { label: 'User Activity', val: 220 },
+                    aux: [{ label: 'Sessions', val: 68 }],
+                },
+            },
+        },
+        {
+            name: '1756263600000', // Aug 27, 2025, 03:00 UTC
+            data: {
+                activity: {
+                    primary: { label: 'User Activity', val: 195 },
+                    aux: [{ label: 'Sessions', val: 59 }],
+                },
+            },
+        },
+        {
+            name: '1756267200000', // Aug 27, 2025, 04:00 UTC
+            data: {
+                activity: {
+                    primary: { label: 'User Activity', val: 165 },
+                    aux: [{ label: 'Sessions', val: 43 }],
+                },
+            },
+        },
+    ]
+
+    const timezoneOptions = [
+        { label: 'UTC (Default)', value: 'UTC' },
+        { label: 'New York (EDT)', value: 'America/New_York' },
+        { label: 'London (BST)', value: 'Europe/London' },
+        { label: 'Tokyo (JST)', value: 'Asia/Tokyo' },
+        { label: 'Mumbai (IST)', value: 'Asia/Kolkata' },
+        { label: 'Los Angeles (PDT)', value: 'America/Los_Angeles' },
+        { label: 'Sydney (AEST)', value: 'Australia/Sydney' },
+    ]
+
+    return (
+        <div className="flex flex-col gap-8">
+            {/* Timezone Selector */}
+            <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                <label className="block mb-2 font-medium text-gray-700">
+                    Select Timezone:
+                </label>
+                <SingleSelect
+                    label=""
+                    placeholder="Choose timezone"
+                    items={[{ items: timezoneOptions }]}
+                    selected={selectedTimezone}
+                    onSelect={(value) => setSelectedTimezone(value as string)}
+                />
+                <div className="mt-2 text-sm text-gray-600">
+                    Selected:{' '}
+                    {
+                        timezoneOptions.find(
+                            (tz) => tz.value === selectedTimezone
+                        )?.label
+                    }
+                </div>
+
+                {/* Hour Format Toggle */}
+                <div className="mt-4 p-3 bg-white border border-gray-200 rounded">
+                    <label className="flex items-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={use12HourFormat}
+                            onChange={(e) =>
+                                setUse12HourFormat(e.target.checked)
+                            }
+                            className="mr-2 cursor-pointer"
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                            Use 12-hour format (AM/PM)
+                        </span>
+                    </label>
+                    <div className="mt-1 text-xs text-gray-500">
+                        {use12HourFormat
+                            ? 'Display: "08:00 PM"'
+                            : 'Display: "20:00"'}
+                    </div>
+                </div>
+            </div>
+
+            {/* Chart with Selected Timezone */}
+            <Charts
+                data={timezoneData}
+                chartType={ChartType.LINE}
+                colors={['#3b82f6', '#10b981']}
+                xAxis={{
+                    label: `Time (${timezoneOptions.find((tz) => tz.value === selectedTimezone)?.label})`,
+                    type: AxisType.DATE_TIME,
+                    smart: true,
+                    timeZone: selectedTimezone, // 🌍 Dynamic timezone!
+                    hour12: use12HourFormat, // 🕐 Dynamic hour format!
+                }}
+                yAxis={{
+                    label: 'Activity Level',
+                    type: AxisType.NUMBER,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            🌍 Same Data, Different Timezones
+                        </h4>
+                    </div>
+                }
+            />
+
+            {/* Comparison Table */}
+            <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                <h5 className="font-semibold text-gray-800 mb-3">
+                    🕒 Timezone Comparison for "1756252800000":
+                </h5>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                    {timezoneOptions.map(({ label, value }) => {
+                        const date = new Date(1756252800000)
+                        const formatted = date.toLocaleString('en-US', {
+                            timeZone: value,
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: use12HourFormat,
+                        })
+                        return (
+                            <div
+                                key={value}
+                                className={`p-2 rounded ${
+                                    value === selectedTimezone
+                                        ? 'bg-blue-100 border border-blue-300'
+                                        : 'bg-white border border-gray-200'
+                                }`}
+                            >
+                                <div className="font-medium text-gray-700">
+                                    {label}:
+                                </div>
+                                <div className="text-gray-600">{formatted}</div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+
+            {/* Code Example */}
+            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <h5 className="font-semibold text-green-800 mb-2">
+                    💡 Usage Example:
+                </h5>
+                <pre className="text-xs text-green-700 bg-green-100 p-2 rounded overflow-x-auto">
+                    {`<Charts
+  data={timestampData}
+  xAxis={{
+    type: AxisType.DATE_TIME,
+    timeZone: "${selectedTimezone}", // 🌍 Any IANA timezone!
+    hour12: ${use12HourFormat}, // 🕐 12-hour or 24-hour format!
+  }}
+  yAxis={{
+    type: AxisType.NUMBER
+  }}
+/>`}
+                </pre>
+                <div className="mt-2 text-xs text-green-600">
+                    <strong>💡 Tip:</strong> Defaults to UTC timezone and
+                    24-hour format. Tooltips automatically use the same timezone
+                    and hour format as the axis!
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const GranularChartsDemo = () => {
+    // Sample data for different chart panels
+    const dashboardData: NewNestedDataPoint[] = [
+        {
+            name: '4 Aug',
+            data: {
+                overall: { primary: { label: 'Overall', val: 90 }, aux: [] },
+                visa: { primary: { label: 'VISA', val: 85 }, aux: [] },
+                unknown: { primary: { label: 'Unknown', val: 95 }, aux: [] },
+            },
+        },
+        {
+            name: '8 Aug',
+            data: {
+                overall: { primary: { label: 'Overall', val: 75 }, aux: [] },
+                visa: { primary: { label: 'VISA', val: 70 }, aux: [] },
+                unknown: { primary: { label: 'Unknown', val: 80 }, aux: [] },
+            },
+        },
+        {
+            name: '12 Aug',
+            data: {
+                overall: { primary: { label: 'Overall', val: 85 }, aux: [] },
+                visa: { primary: { label: 'VISA', val: 80 }, aux: [] },
+                unknown: { primary: { label: 'Unknown', val: 90 }, aux: [] },
+            },
+        },
+        {
+            name: '16 Aug',
+            data: {
+                overall: { primary: { label: 'Overall', val: 100 }, aux: [] },
+                visa: { primary: { label: 'VISA', val: 95 }, aux: [] },
+                unknown: { primary: { label: 'Unknown', val: 100 }, aux: [] },
+            },
+        },
+        {
+            name: '20 Aug',
+            data: {
+                overall: { primary: { label: 'Overall', val: 85 }, aux: [] },
+                visa: { primary: { label: 'VISA', val: 80 }, aux: [] },
+                unknown: { primary: { label: 'Unknown', val: 90 }, aux: [] },
+            },
+        },
+    ]
+
+    const chartColors = ['#3b82f6', '#10b981', '#f59e0b'] // Blue, Green, Amber
+
+    const [hoveredKey, setHoveredKey] = useState<string | null>(null)
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+    const chartContainerRef = React.useRef<HTMLDivElement>(null!)
+
+    const lineKeys =
+        dashboardData.length > 0 ? Object.keys(dashboardData[0].data) : []
+    const activeKeys = selectedKeys.length > 0 ? selectedKeys : lineKeys
+
+    const handleLegendClick = (key: string) => {
+        setSelectedKeys((prevSelected) => {
+            const isCurrentlySelected = prevSelected.includes(key)
+            if (isCurrentlySelected) {
+                const newSelection = prevSelected.filter((k) => k !== key)
+                return newSelection.length === 0
+                    ? lineKeys.filter((k) => k !== key)
+                    : newSelection
+            } else {
+                return prevSelected.length === 0
+                    ? [key]
+                    : [...prevSelected, key]
+            }
+        })
+    }
+
+    const handleLegendEnter = (key: string) => {
+        setHoveredKey(key)
+    }
+
+    const handleLegendLeave = () => {
+        setHoveredKey(null)
+    }
+
+    return (
+        <div className="space-y-8">
+            <div>
+                <h4 className="text-lg font-semibold mb-4">
+                    🔗 Level 4: Custom Dashboard with Shared State
+                </h4>
+                <ChartContainer>
+                    <div className="">
+                        {/* Header */}
+                        <ChartHeader
+                            slot1={<div>Slot 1</div>}
+                            slot2={<div>Slot 2</div>}
+                            slot3={<div>Slot 3</div>}
+                            chartHeaderSlot={<div>Chart Header Slot</div>}
+                            onFullscreen={() => {}}
+                            isExpanded={true}
+                            setIsExpanded={() => {}}
+                            isFullscreen={false}
+                        />
+
+                        {/* Interactive Shared Legends */}
+                        <div className="mb-6 p-3">
+                            <ChartLegends
+                                chartContainerRef={chartContainerRef}
+                                keys={lineKeys}
+                                colors={chartColors}
+                                handleLegendClick={handleLegendClick}
+                                handleLegendEnter={handleLegendEnter}
+                                handleLegendLeave={handleLegendLeave}
+                                selectedKeys={activeKeys}
+                                setSelectedKeys={setSelectedKeys}
+                                hoveredKey={hoveredKey}
+                                activeKeys={activeKeys}
+                            />
+                        </div>
+
+                        {/* Interactive Charts Grid */}
+                        <div
+                            ref={chartContainerRef}
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-3"
+                        >
+                            {[
+                                { title: 'MOTO', type: ChartType.LINE },
+                                { title: 'THREE_DS', type: ChartType.LINE },
+                                { title: 'Unknown', type: ChartType.LINE },
+                                {
+                                    title: 'Orders with Transaction(s)',
+                                    type: ChartType.LINE,
+                                },
+                                {
+                                    title: 'Additional Metric 1',
+                                    type: ChartType.LINE,
+                                },
+                                {
+                                    title: 'Additional Metric 2',
+                                    type: ChartType.LINE,
+                                },
+                            ].map((panel, index) => (
+                                <div
+                                    key={index}
+                                    className="p-4 flex flex-col gap-2 items-center justify-center h-full w-full"
+                                >
+                                    <h4 className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-4">
+                                        {panel.title}
+                                    </h4>
+                                    <div className="h-48 w-full">
+                                        <CoreChart
+                                            data={dashboardData}
+                                            chartType={panel.type}
+                                            colors={chartColors}
+                                            hoveredKey={hoveredKey}
+                                            onHoveredKeyChange={setHoveredKey}
+                                            selectedKeys={selectedKeys}
+                                            enableHover={true}
+                                            xAxis={{
+                                                show: true,
+                                                showLabel: false,
+                                            }}
+                                            yAxis={{
+                                                show: true,
+                                                showLabel: false,
+                                                type: AxisType.PERCENTAGE,
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </ChartContainer>
+                <p className="text-sm text-gray-600 mt-2">
+                    ↑ Complete interactive dashboard! Shared legend controls all
+                    charts. Hover over legend or any chart to highlight across
+                    all panels.
+                </p>
+            </div>
+
+            {/* Benefits Summary */}
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <h4 className="font-semibold text-green-800 mb-2">
+                    ✨ Interactive Component Levels:
+                </h4>
+                <div className="text-sm text-green-700 space-y-2">
+                    <div>
+                        <strong>🎯 CoreChart:</strong> Pure chart rendering,
+                        optional hover effects
+                    </div>
+                    <div>
+                        <strong>🖱️ CoreChart + enableHover:</strong> Basic hover
+                        interactions
+                    </div>
+                    <div>
+                        <strong>🎨 InteractiveChart:</strong> All-in-one with
+                        legends and interactions
+                    </div>
+                    <div>
+                        <strong>🔗 Custom Dashboard:</strong> Multiple charts
+                        with shared interactive state
+                    </div>
+                    <div>
+                        <strong>📊 Charts:</strong> Full-featured component
+                        (backward compatibility)
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 const ChartDemo = () => {
     const financialData: NewNestedDataPoint[] = [
@@ -619,39 +1029,432 @@ const ChartDemo = () => {
         },
     ]
 
-    // Sample data demonstrating POSIX time and UTC format support
-    const posixTimeData: NewNestedDataPoint[] = [
-        // POSIX timestamps (seconds since Unix epoch)
+    const timeData = [
         {
-            name: '1693036800',
+            name: '1756425600000',
             data: {
-                value: { primary: { label: 'CPU Usage', val: 45 }, aux: [] },
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 42 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 1 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 709 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 3609 },
+                    aux: [],
+                },
             },
-        }, // Aug 26, 2023
+        },
         {
-            name: '1693123200',
+            name: '1756429200000',
             data: {
-                value: { primary: { label: 'CPU Usage', val: 52 }, aux: [] },
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 3 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 719 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 150 },
+                    aux: [],
+                },
             },
-        }, // Aug 27, 2023
+        },
         {
-            name: '1693209600',
+            name: '1756432800000',
             data: {
-                value: { primary: { label: 'CPU Usage', val: 38 }, aux: [] },
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 0 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 721 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 0 },
+                    aux: [],
+                },
             },
-        }, // Aug 28, 2023
+        },
         {
-            name: '1693296000',
+            name: '1756440000000',
             data: {
-                value: { primary: { label: 'CPU Usage', val: 61 }, aux: [] },
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 0 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 720 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 0 },
+                    aux: [],
+                },
             },
-        }, // Aug 29, 2023
+        },
         {
-            name: '1693382400',
+            name: '1756443600000',
             data: {
-                value: { primary: { label: 'CPU Usage', val: 47 }, aux: [] },
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 0 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 719 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 0 },
+                    aux: [],
+                },
             },
-        }, // Aug 30, 2023
+        },
+        {
+            name: '1756447200000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 5 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 3 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 720 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 0 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756450800000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 0 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 0 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 3 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756454400000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 0 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 720 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 4 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756458000000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 0 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 720 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 13 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756461600000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 420 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 32 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 721 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 2 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756465200000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 472 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 5 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 720 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 1 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756468800000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 356 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 0 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 719 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 236 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 2 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756472400000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 13 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 45 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 721 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 805 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 2 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756476000000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 1 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 83 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 719 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 73 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 1 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756479600000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 8 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 155 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 722 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 8 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756483200000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 19 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 565 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 720 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 0 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: '1756486800000',
+            data: {
+                azhar_test: {
+                    primary: { label: 'azhar_test', val: 7 },
+                    aux: [],
+                },
+                eulerqa_sandbox: {
+                    primary: { label: 'eulerqa_sandbox', val: 386 },
+                    aux: [],
+                },
+                juspayhyderabad: {
+                    primary: { label: 'juspayhyderabad', val: 610 },
+                    aux: [],
+                },
+                tul_pprod: {
+                    primary: { label: 'tul_pprod', val: 0 },
+                    aux: [],
+                },
+                zee5_beta: {
+                    primary: { label: 'zee5_beta', val: 0 },
+                    aux: [],
+                },
+            },
+        },
     ]
 
     const utcFormatData: NewNestedDataPoint[] = [
@@ -768,6 +1571,116 @@ const ChartDemo = () => {
             <h5 className="text-xl font-bold">
                 Charts Playground - All Variations
             </h5>
+
+            {/* Granular Chart Components Demo */}
+            <div className="chart-example-container mb-12">
+                <h3 className="text-xl font-bold mb-6">
+                    🧩 Granular Chart Components (New!)
+                </h3>
+                <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                    <h4 className="text-purple-800 font-semibold mb-2">
+                        ✨ Maximum Flexibility: Use Just What You Need
+                    </h4>
+                    <p className="text-purple-700 text-sm">
+                        Break down charts into granular pieces. Use CoreChart
+                        for pure chart rendering without any wrappers, or
+                        combine with optional container/header/legend components
+                        for complete customization. Perfect for building custom
+                        dashboard layouts.
+                    </p>
+                </div>
+                <GranularChartsDemo />
+
+                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 className="font-semibold text-blue-800 mb-2">
+                        📋 Component Hierarchy:
+                    </h4>
+                    <div className="text-sm text-blue-700 space-y-3">
+                        <div className="font-mono text-xs bg-blue-100 p-3 rounded">
+                            {`// Level 1: Pure chart (no interaction)
+<CoreChart 
+  data={data} 
+  chartType={ChartType.LINE} 
+  colors={colors}
+/>
+
+// Level 2: Chart with hover effects
+<CoreChart 
+  data={data} 
+  enableHover={true}
+  chartType={ChartType.BAR} 
+/>
+
+// Level 3: All-in-one interactive chart
+<InteractiveChart
+  data={data}
+  chartType={ChartType.LINE}
+  showLegends={true}
+  enableHover={true}
+  enableLegendClick={true}
+/>
+
+// Level 4: Custom dashboard with shared state
+const [hoveredKey, setHoveredKey] = useState(null)
+const [selectedKeys, setSelectedKeys] = useState([])
+
+<ChartContainer>
+  <ChartLegends 
+    keys={lineKeys} 
+    colors={colors}
+    handleLegendClick={handleLegendClick}
+    selectedKeys={selectedKeys}
+    hoveredKey={hoveredKey}
+  />
+  <div className="grid">
+    {panels.map(panel => (
+      <CoreChart 
+        key={panel.id}
+        data={panel.data}
+        hoveredKey={hoveredKey}
+        onHoveredKeyChange={setHoveredKey}
+        selectedKeys={selectedKeys}
+        enableHover={true}
+      />
+    ))}
+  </div>
+</ChartContainer>
+
+// Level 5: Full-featured (backward compatibility)
+<Charts 
+  data={data} 
+  chartHeaderSlot={<h3>Title</h3>}
+  stackedLegends={true}
+/>`}
+                        </div>
+                        <div>
+                            <strong>🎯 Choose Your Level:</strong>
+                            <ul className="ml-4 mt-1 space-y-1">
+                                <li>
+                                    • <code>CoreChart</code> → Pure chart
+                                    rendering, optional hover
+                                </li>
+                                <li>
+                                    • <code>CoreChart + enableHover</code> → Add
+                                    hover effects
+                                </li>
+                                <li>
+                                    • <code>InteractiveChart</code> → All-in-one
+                                    with legends & interactions
+                                </li>
+                                <li>
+                                    • <code>Custom Dashboard</code> → Multiple
+                                    charts with shared state
+                                </li>
+                                <li>
+                                    • <code>Charts</code> → Full-featured
+                                    (backward compatibility)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {/* Main Interactive Chart */}
             <div className="chart-example-container mb-12">
@@ -1051,6 +1964,26 @@ const ChartDemo = () => {
                 </div>
             </div>
 
+            {/* Timezone Selection Demo */}
+            <div className="chart-example-container mb-12">
+                <h3 className="text-xl font-bold mb-6">
+                    🌍 Timezone Selection Support
+                </h3>
+                <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 className="text-blue-800 font-semibold mb-2">
+                        ✨ New Feature: User-Selectable Timezones & Hour
+                        Formats!
+                    </h4>
+                    <p className="text-blue-700 text-sm">
+                        Charts now support displaying dates/times in any
+                        timezone with both 12-hour (AM/PM) and 24-hour formats.
+                        Defaults to UTC and 24-hour format for consistent
+                        behavior. Perfect for global applications!
+                    </p>
+                </div>
+                <TimezoneDemo />
+            </div>
+
             {/* POSIX and UTC Format Support */}
             <div className="chart-example-container mb-12">
                 <h3 className="text-xl font-bold mb-6">
@@ -1059,7 +1992,7 @@ const ChartDemo = () => {
                 <div className="flex flex-col gap-8">
                     {/* POSIX Time (Unix Timestamp in Seconds) */}
                     <Charts
-                        data={posixTimeData}
+                        data={timeData}
                         chartType={ChartType.BAR}
                         colors={['#ef4444']}
                         xAxis={{
