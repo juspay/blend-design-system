@@ -17,7 +17,7 @@ jobs:
         name: Publish Beta Version to NPM
         runs-on: ubuntu-latest
         environment: npm
-        if: github.ref == 'refs/heads/release' && github.event.inputs.confirm_publish == 'PUBLISH'
+        if: github.ref == 'refs/heads/staging' && github.event.inputs.confirm_publish == 'PUBLISH'
 
         steps:
             - name: Checkout Repo
@@ -120,7 +120,7 @@ jobs:
                   body: |
                       **Promote Beta to Stable Release**
 
-                      Beta version `${{ steps.verify_version.outputs.version }}` has been published to NPM from the release branch and is ready for promotion to stable.
+                      Beta version `${{ steps.verify_version.outputs.version }}` has been published to NPM from the staging branch and is ready for promotion to stable.
 
                       **Current Status:**
                       - ✅ Beta version published to NPM with `beta` tag
@@ -138,9 +138,9 @@ jobs:
                       - Beta: `${{ steps.verify_version.outputs.version }}`
                       - Stable: `${{ steps.stable_version.outputs.stable_version }}` (will be created when promoted)
 
-                      **Release Branch Strategy:**
-                      - Beta was published from `release` branch
-                      - All automatic PRs go to `dev` first, then manually merged to `release` and `main`
+                      **staging Branch Strategy:**
+                      - Beta was published from `staging` branch
+                      - All automatic PRs go to `dev` first, then manually merged to `staging` and `main`
                       - This prevents issues with ongoing development in `dev` branch
 
                       ---

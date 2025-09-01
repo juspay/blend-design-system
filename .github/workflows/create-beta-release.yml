@@ -21,7 +21,7 @@ jobs:
     create-beta-release:
         name: Create Beta Release (No Publish)
         runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/release'
+        if: github.ref == 'refs/heads/staging'
         outputs:
             version: ${{ steps.bump_version.outputs.new_version }}
             tag: ${{ steps.bump_version.outputs.tag }}
@@ -137,7 +137,7 @@ jobs:
 
                   echo "# Changelog for v$VERSION (Beta)" > docs/CHANGELOG.md
                   echo "" >> docs/CHANGELOG.md
-                  echo "This is a beta release from the release branch. Changes since last tag:" >> docs/CHANGELOG.md
+                  echo "This is a beta release from the staging branch. Changes since last tag:" >> docs/CHANGELOG.md
                   echo "" >> docs/CHANGELOG.md
                   if [[ -n "$LAST_TAG" ]]; then
                     git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
@@ -186,7 +186,7 @@ jobs:
 
                       - Bump version to ${{ steps.bump_version.outputs.new_version }}
                       - Update changelog
-                      - **This is a BETA release from release branch - ready for NPM publishing**
+                      - **This is a BETA release from staging branch - ready for NPM publishing**
 
                       This PR was automatically created by the beta release workflow.
 
@@ -202,7 +202,7 @@ jobs:
                       - Created GitHub release with prerelease flag
 
                       **Release Branch Strategy:**
-                      - Beta releases are created from `release` branch
+                      - Beta releases are created from `staging` branch
                       - All automatic PRs go to `dev` first, then manually merged to `release`
                       - This prevents issues with ongoing development in `dev` branch
                   labels: |
@@ -215,7 +215,7 @@ jobs:
 
                       - Bump version to ${{ steps.bump_version.outputs.new_version }}
                       - Update changelog
-                      - Create beta release from release branch
+                      - Create beta release from staging branch
 
                       [skip ci]
                   add-paths: |
