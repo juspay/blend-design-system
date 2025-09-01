@@ -103,7 +103,7 @@ export const renderChart = ({
                         dataKey="name"
                         axisLine={false}
                         tickLine={false}
-                        // interval={finalXAxis.interval}
+                        interval={finalXAxis.interval}
                         tickFormatter={
                             finalXAxis.customTick
                                 ? undefined
