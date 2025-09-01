@@ -129,8 +129,8 @@ jobs:
 
                       **Next Steps:**
                       1. Review and merge this PR to dev branch first
-                      2. Manually create PR from dev → release and merge
-                      3. Manually create PR from release → main and merge
+                      2. Manually create PR from dev → staging and merge
+                      3. Manually create PR from staging → main and merge
                       4. Trigger "Create Stable Release" workflow to create stable GitHub release
                       5. Trigger "Publish Stable to NPM" workflow to publish with `latest` tag
 

@@ -192,9 +192,9 @@ jobs:
 
                       **Next Steps:**
                       1. Review and merge this PR to dev branch first
-                      2. Manually create PR from dev → release and merge
+                      2. Manually create PR from dev → staging and merge
                       3. Trigger "Publish Beta to NPM" workflow to publish to npm with beta tag
-                      4. After testing, create PR from release → main for stable release
+                      4. After testing, create PR from staging → main for stable release
 
                       **Changes included:**
                       - Updated package.json version to beta
@@ -203,7 +203,7 @@ jobs:
 
                       **Release Branch Strategy:**
                       - Beta releases are created from `staging` branch
-                      - All automatic PRs go to `dev` first, then manually merged to `release`
+                      - All automatic PRs go to `dev` first, then manually merged to `staging`
                       - This prevents issues with ongoing development in `dev` branch
                   labels: |
                       automated
