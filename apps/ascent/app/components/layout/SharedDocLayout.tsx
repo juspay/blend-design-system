@@ -1,5 +1,7 @@
+'use client'
+
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Github } from 'lucide-react'
 import {
     Sidebar,
@@ -15,7 +17,7 @@ import {
     ChangelogIcon,
     StorybookIcon,
 } from '@/components/ui/Icons'
-import { getDirItems } from '@/docs/utils'
+import type { DocItem } from '@/docs/utils'
 import { Logo } from '@/app/changelog/icons/Logo'
 import { JuspayLogoTitle } from '@/app/changelog/icons/JuspayLogoTitle'
 import Gradient from '@/app/changelog/icons/Gradient'
@@ -28,7 +30,9 @@ export interface SharedDocLayoutProps {
     /** Base route for navigation (e.g., '/docs', '/changelog') */
     baseRoute: string
     /** Path to content directory for sidebar generation */
-    contentPath: string
+    contentPath?: string
+    /** Pre-generated sidebar items (replaces contentPath for client components) */
+    sidebarItems?: DocItem[]
     /** Children components to render in the main content area */
     children: React.ReactNode
     /** Optional custom CSS classes */
@@ -44,15 +48,57 @@ export interface SharedDocLayoutProps {
 const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
     // title,
     baseRoute,
-    contentPath,
+    contentPath: _contentPath,
+    sidebarItems = [],
     children,
     className = '',
     showThemeToggle = true,
     showSidebar = true,
     showFooter = false,
 }) => {
-    // Generate sidebar items based on content path
-    const sidebarItems = getDirItems(contentPath)
+    // Theme detection state
+    const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+
+        // Check for saved theme preference or default to system preference
+        const savedTheme = localStorage.getItem('theme')
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+            .matches
+            ? 'dark'
+            : 'light'
+        const initialTheme = (savedTheme as 'light' | 'dark') || systemTheme
+        setTheme(initialTheme)
+
+        // Listen for theme changes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (
+                    mutation.type === 'attributes' &&
+                    mutation.attributeName === 'data-theme'
+                ) {
+                    const currentTheme = document.documentElement.getAttribute(
+                        'data-theme'
+                    ) as 'light' | 'dark'
+                    if (currentTheme) {
+                        setTheme(currentTheme)
+                    }
+                }
+            })
+        })
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme'],
+        })
+
+        return () => observer.disconnect()
+    }, [])
+
+    // Determine logo color based on theme
+    const logoColor = mounted ? (theme === 'dark' ? 'white' : 'black') : 'white'
 
     return (
         <GlobalKeyboardNavigationProvider>
@@ -75,7 +121,8 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                             className="flex items-center font-semibold xl:text-lg lg:text-base md:text-sm sm:text-xs text-xs text-[var(--foreground)] hover:text-[var(--muted-foreground)] transition-colors"
                             data-nav-topbar
                         >
-                            <Logo /> <JuspayLogoTitle />
+                            <Logo logoColor={logoColor} />{' '}
+                            <JuspayLogoTitle logoColor={logoColor} />
                         </Link>
                     </div>
 
@@ -158,6 +205,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                     </div>
                 </nav>
 
+                {/* Main content area */}
                 <FloatingShortcutsButton />
                 {/* Main content area */}
                 <div className="w-screen flex bg-[var(--sidebar-background)] h-[90vh] backdrop-blur-sm ">
