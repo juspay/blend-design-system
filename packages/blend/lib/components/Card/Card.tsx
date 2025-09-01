@@ -1,94 +1,269 @@
 import { forwardRef } from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import { CardHeaderVariant, type CardProps } from './types'
+import Button from '../Button/Button'
+import { CardHeaderVariant, CardSlotVariant, type CardProps } from './types'
 import type { CardTokenType } from './card.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { toPixels } from '../../global-utils/GlobalUtils'
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ children, className, maxWidth = 'auto', header, headerSlot }, ref) => {
+    (
+        {
+            children,
+            className,
+            maxWidth = 'auto',
+            header,
+            headerSlot,
+            slot,
+            bottomButton,
+        },
+        ref
+    ) => {
         const cardToken = useResponsiveTokens<CardTokenType>('CARD')
 
         const headerVariant = header?.variant || CardHeaderVariant.DEFAULT
+        const hasSlot = slot !== undefined
+        const isTopSlot =
+            slot?.variant === CardSlotVariant.TOP ||
+            slot?.variant === CardSlotVariant.TOP_WITH_PADDING
+        const isLeftSlot = slot?.variant === CardSlotVariant.LEFT
+        const isBorderedHeader =
+            headerVariant === CardHeaderVariant.BORDERED ||
+            headerVariant === CardHeaderVariant.BORDERED_WITH_LABEL
+        const shouldCenterAlign = slot?.centerAlign || false
 
-        const renderHeader = () => {
-            if (headerSlot) {
-                return (
+        const cardPadding = isTopSlot
+            ? '0'
+            : isBorderedHeader
+              ? '0'
+              : isLeftSlot
+                ? cardToken.padding
+                : cardToken.padding
+        const contentPadding = isTopSlot
+            ? `0 ${cardToken.padding} ${cardToken.padding} ${cardToken.padding}` // No top padding for top slots
+            : isLeftSlot
+              ? '0'
+              : isBorderedHeader
+                ? cardToken.padding
+                : cardToken.content.padding
+
+        const HeaderContent = ({
+            useDefaultStyle = false,
+        }: {
+            useDefaultStyle?: boolean
+        }) => {
+            if (
+                !header ||
+                (!header.title &&
+                    !header.subtitle &&
+                    !header.actions &&
+                    !header.label)
+            )
+                return null
+
+            const headerStyle = useDefaultStyle
+                ? cardToken.header.variants.default
+                : cardToken.header.variants[headerVariant]
+
+            return (
+                <Block style={headerStyle}>
                     <Block
-                        style={{
-                            ...cardToken.header.variants[headerVariant],
-                        }}
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
                     >
-                        {headerSlot}
+                        <Block display="flex" alignItems="center">
+                            {header.title && (
+                                <Text
+                                    style={{
+                                        fontSize:
+                                            cardToken.header.title.fontSize,
+                                        fontWeight:
+                                            cardToken.header.title.fontWeight,
+                                        color: cardToken.header.title.color,
+                                    }}
+                                >
+                                    {header.title}
+                                </Text>
+                            )}
+                            {header.label && (
+                                <Block
+                                    style={{
+                                        marginLeft:
+                                            cardToken.header.label.marginLeft,
+                                    }}
+                                >
+                                    {header.label}
+                                </Block>
+                            )}
+                            {header.subtitle && (
+                                <Text
+                                    style={{
+                                        fontSize:
+                                            cardToken.header.subtitle.fontSize,
+                                        fontWeight:
+                                            cardToken.header.subtitle
+                                                .fontWeight,
+                                        color: cardToken.header.subtitle.color,
+                                    }}
+                                >
+                                    {header.subtitle}
+                                </Text>
+                            )}
+                        </Block>
+                        {header.actions && (
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                style={{ gap: cardToken.header.actions.gap }}
+                            >
+                                {header.actions}
+                            </Block>
+                        )}
                     </Block>
+                </Block>
+            )
+        }
+
+        const SlotContent = () => {
+            if (!hasSlot) return null
+
+            const slotTokens = cardToken.slot.variants[slot.variant]
+
+            return (
+                <Block
+                    style={{
+                        ...slotTokens,
+                        display: 'flex',
+                        alignItems: shouldCenterAlign ? 'center' : 'flex-start',
+                        justifyContent: shouldCenterAlign
+                            ? 'center'
+                            : 'flex-start',
+                        textAlign: shouldCenterAlign ? 'center' : 'left',
+                        ...(isTopSlot && {
+                            minHeight: '142px',
+                            height: '50%',
+                            flex: 'none',
+                        }),
+                    }}
+                >
+                    {slot.content}
+                </Block>
+            )
+        }
+
+        const ContentArea = () => (
+            <Block
+                style={{
+                    padding: contentPadding,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    ...(shouldCenterAlign &&
+                        isTopSlot && {
+                            textAlign: 'center',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }),
+                }}
+            >
+                {children}
+                {bottomButton && (
+                    <Block style={{ marginTop: '16px' }}>
+                        <Button {...bottomButton} />
+                    </Block>
+                )}
+            </Block>
+        )
+
+        // Main layout logic
+        const renderCardContent = () => {
+            // Top slot layout
+            if (isTopSlot) {
+                return (
+                    <>
+                        <SlotContent />
+                        <Block
+                            style={{
+                                minHeight: '142px',
+                                height: '50%',
+                                flex: 'none',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                padding: `${cardToken.padding} ${cardToken.padding} 0 ${cardToken.padding}`, // No bottom padding to avoid double padding
+                            }}
+                        >
+                            <HeaderContent useDefaultStyle />
+                            <Block
+                                style={{
+                                    flex: 1,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    padding: `0 0 ${cardToken.padding} 0`,
+                                    ...(shouldCenterAlign && {
+                                        textAlign: 'center',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }),
+                                }}
+                            >
+                                {children}
+                                {bottomButton && (
+                                    <Block style={{ marginTop: '16px' }}>
+                                        <Button {...bottomButton} />
+                                    </Block>
+                                )}
+                            </Block>
+                        </Block>
+                    </>
                 )
             }
 
-            if (header && (header.title || header.subtitle || header.actions)) {
+            // Left slot layout - add padding to component itself
+            if (isLeftSlot) {
                 return (
-                    <Block
-                        style={{
-                            ...cardToken.header.variants[headerVariant],
-                        }}
-                    >
+                    <Block style={{ padding: cardToken.padding }}>
                         <Block
                             display="flex"
-                            justifyContent="space-between"
-                            alignItems="flex-start"
+                            style={{
+                                gap: cardToken.slot.variants[slot.variant].gap,
+                            }}
                         >
-                            <Block>
-                                {header.title && (
-                                    <Text
-                                        style={{
-                                            fontSize:
-                                                cardToken.header.title.fontSize,
-                                            fontWeight:
-                                                cardToken.header.title
-                                                    .fontWeight,
-                                            color: cardToken.header.title.color,
-                                            marginBottom:
-                                                cardToken.header.title
-                                                    .marginBottom,
-                                        }}
-                                    >
-                                        {header.title}
-                                    </Text>
-                                )}
-                                {header.subtitle && (
-                                    <Text
-                                        style={{
-                                            fontSize:
-                                                cardToken.header.subtitle
-                                                    .fontSize,
-                                            fontWeight:
-                                                cardToken.header.subtitle
-                                                    .fontWeight,
-                                            color: cardToken.header.subtitle
-                                                .color,
-                                        }}
-                                    >
-                                        {header.subtitle}
-                                    </Text>
-                                )}
-                            </Block>
-                            {header.actions && (
+                            <SlotContent />
+                            <Block style={{ flex: 1 }}>
+                                <HeaderContent />
                                 <Block
-                                    display="flex"
-                                    alignItems="center"
                                     style={{
-                                        gap: cardToken.header.actions.gap,
+                                        display: 'flex',
+                                        flexDirection: 'column',
                                     }}
                                 >
-                                    {header.actions}
+                                    {children}
+                                    {bottomButton && (
+                                        <Block style={{ marginTop: '16px' }}>
+                                            <Button {...bottomButton} />
+                                        </Block>
+                                    )}
                                 </Block>
-                            )}
+                            </Block>
                         </Block>
                     </Block>
                 )
             }
 
-            return null
+            // Default layout (no slot or header slot)
+            return (
+                <>
+                    {headerSlot ? (
+                        <Block style={cardToken.header.variants[headerVariant]}>
+                            {headerSlot}
+                        </Block>
+                    ) : (
+                        <HeaderContent />
+                    )}
+                    <ContentArea />
+                </>
+            )
         }
 
         return (
@@ -100,35 +275,34 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                         maxWidth !== 'auto'
                             ? toPixels(maxWidth)
                             : cardToken.maxWidth,
-                    border: cardToken.border.default,
+                    outline: cardToken.border.default, // Use outline instead of border
                     borderRadius: cardToken.borderRadius,
                     backgroundColor: cardToken.backgroundColor.default,
                     boxShadow: cardToken.boxShadow,
-                    padding: cardToken.padding,
+                    padding: cardPadding,
                     transition:
-                        'border-color 0.2s ease, background-color 0.2s ease',
+                        'outline-color 0.2s ease, background-color 0.2s ease',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    ...(isTopSlot && { minHeight: '284px' }),
+                    // Fix border radius overflow for bordered headers
+                    ...(isBorderedHeader &&
+                        !isTopSlot && { overflow: 'hidden' }),
                 }}
                 onMouseEnter={(e) => {
                     const target = e.currentTarget as HTMLElement
-                    target.style.border = cardToken.border.hover as string
+                    target.style.outline = cardToken.border.hover as string
                     target.style.backgroundColor = cardToken.backgroundColor
                         .hover as string
                 }}
                 onMouseLeave={(e) => {
                     const target = e.currentTarget as HTMLElement
-                    target.style.border = cardToken.border.default as string
+                    target.style.outline = cardToken.border.default as string
                     target.style.backgroundColor = cardToken.backgroundColor
                         .default as string
                 }}
             >
-                {renderHeader()}
-                <Block
-                    style={{
-                        padding: cardToken.content.padding,
-                    }}
-                >
-                    {children}
-                </Block>
+                {renderCardContent()}
             </Block>
         )
     }

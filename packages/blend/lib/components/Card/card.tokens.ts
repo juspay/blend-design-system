@@ -1,7 +1,7 @@
 //card.tokens.ts
 
 import type { CSSObject } from 'styled-components'
-import { CardHeaderVariant } from './types'
+import { CardHeaderVariant, CardSlotVariant } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
@@ -25,14 +25,12 @@ export type CardTokenType = {
                 padding: CSSObject['padding']
                 borderBottom: CSSObject['borderBottom']
                 backgroundColor: CSSObject['backgroundColor']
-                marginBottom: CSSObject['marginBottom']
             }
         }
         title: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: CSSObject['color']
-            marginBottom: CSSObject['marginBottom']
         }
         subtitle: {
             fontSize: CSSObject['fontSize']
@@ -42,9 +40,23 @@ export type CardTokenType = {
         actions: {
             gap: CSSObject['gap']
         }
+        label: {
+            marginLeft: CSSObject['marginLeft']
+        }
     }
     content: {
         padding: CSSObject['padding']
+    }
+    slot: {
+        variants: {
+            [key in CardSlotVariant]: {
+                padding: CSSObject['padding']
+                gap: CSSObject['gap']
+                height: CSSObject['height']
+                borderRadius: CSSObject['borderRadius']
+                overflow: CSSObject['overflow']
+            }
+        }
     }
 }
 
@@ -76,26 +88,22 @@ export const getCardTokens = (
                         padding: `0 0 ${foundationToken.unit[12]} 0`,
                         borderBottom: 'none',
                         backgroundColor: 'transparent',
-                        marginBottom: foundationToken.unit[12],
                     },
                     bordered: {
-                        padding: `0 0 ${foundationToken.unit[12]} 0`,
+                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
                         borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                        backgroundColor: 'transparent',
-                        marginBottom: foundationToken.unit[12],
+                        backgroundColor: foundationToken.colors.gray[25],
                     },
-                    elevated: {
-                        padding: foundationToken.unit[16],
-                        borderBottom: 'none',
-                        backgroundColor: foundationToken.colors.gray[50],
-                        marginBottom: foundationToken.unit[0],
+                    bordered_with_label: {
+                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
+                        borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                        backgroundColor: foundationToken.colors.gray[25],
                     },
                 },
                 title: {
                     fontSize: foundationToken.font.size.body.lg.fontSize,
                     fontWeight: foundationToken.font.weight[600],
                     color: foundationToken.colors.gray[900],
-                    marginBottom: foundationToken.unit[4],
                 },
                 subtitle: {
                     fontSize: foundationToken.font.size.body.sm.fontSize,
@@ -105,9 +113,37 @@ export const getCardTokens = (
                 actions: {
                     gap: foundationToken.unit[8],
                 },
+                label: {
+                    marginLeft: foundationToken.unit[8],
+                },
             },
             content: {
                 padding: foundationToken.unit[0],
+            },
+            slot: {
+                variants: {
+                    top: {
+                        padding: foundationToken.unit[0],
+                        gap: foundationToken.unit[0],
+                        height: '50%',
+                        borderRadius: `${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]} 0 0`,
+                        overflow: 'hidden',
+                    },
+                    top_with_padding: {
+                        padding: foundationToken.unit[16],
+                        gap: foundationToken.unit[0],
+                        height: '50%',
+                        borderRadius: `${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]} 0 0`,
+                        overflow: 'hidden',
+                    },
+                    left: {
+                        padding: foundationToken.unit[0],
+                        gap: foundationToken.unit[16],
+                        height: 'auto',
+                        borderRadius: foundationToken.unit[0],
+                        overflow: 'visible',
+                    },
+                },
             },
         },
         lg: {
@@ -127,29 +163,25 @@ export const getCardTokens = (
             header: {
                 variants: {
                     default: {
-                        padding: `0 0 ${foundationToken.unit[16]} 0`,
+                        padding: `0 0 ${foundationToken.unit[12]} 0`,
                         borderBottom: 'none',
                         backgroundColor: 'transparent',
-                        marginBottom: foundationToken.unit[16],
                     },
                     bordered: {
-                        padding: `0 0 ${foundationToken.unit[16]} 0`,
+                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
                         borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                        backgroundColor: 'transparent',
-                        marginBottom: foundationToken.unit[16],
+                        backgroundColor: foundationToken.colors.gray[25],
                     },
-                    elevated: {
-                        padding: foundationToken.unit[20],
-                        borderBottom: 'none',
-                        backgroundColor: foundationToken.colors.gray[50],
-                        marginBottom: foundationToken.unit[0],
+                    bordered_with_label: {
+                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
+                        borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                        backgroundColor: foundationToken.colors.gray[25],
                     },
                 },
                 title: {
                     fontSize: foundationToken.font.size.body.lg.fontSize,
                     fontWeight: foundationToken.font.weight[600],
                     color: foundationToken.colors.gray[900],
-                    marginBottom: foundationToken.unit[4],
                 },
                 subtitle: {
                     fontSize: foundationToken.font.size.body.md.fontSize,
@@ -159,9 +191,37 @@ export const getCardTokens = (
                 actions: {
                     gap: foundationToken.unit[12],
                 },
+                label: {
+                    marginLeft: foundationToken.unit[12],
+                },
             },
             content: {
                 padding: foundationToken.unit[0],
+            },
+            slot: {
+                variants: {
+                    top: {
+                        padding: foundationToken.unit[0],
+                        gap: foundationToken.unit[0],
+                        height: '50%',
+                        borderRadius: `${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]} 0 0`,
+                        overflow: 'hidden',
+                    },
+                    top_with_padding: {
+                        padding: foundationToken.unit[20],
+                        gap: foundationToken.unit[0],
+                        height: '50%',
+                        borderRadius: `${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]} 0 0`,
+                        overflow: 'hidden',
+                    },
+                    left: {
+                        padding: foundationToken.unit[0],
+                        gap: foundationToken.unit[20],
+                        height: 'auto',
+                        borderRadius: foundationToken.unit[0],
+                        overflow: 'visible',
+                    },
+                },
             },
         },
     }
