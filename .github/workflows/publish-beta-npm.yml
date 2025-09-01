@@ -108,13 +108,14 @@ jobs:
                   echo "stable_version=$STABLE_VERSION" >> $GITHUB_OUTPUT
                   echo "Stable version will be: $STABLE_VERSION"
 
-            - name: Create Release to Main PR
+            - name: Create Promotion PR to Dev First
               if: steps.check_published.outputs.already_published != 'true'
               uses: peter-evans/create-pull-request@v6
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   head: release
-                  base: main
+                  base: dev
+                  branch: promote/beta-to-stable-${{ steps.verify_version.outputs.version }}
                   title: 'feat: promote beta ${{ steps.verify_version.outputs.version }} to stable'
                   body: |
                       **Promote Beta to Stable Release**
@@ -126,20 +127,21 @@ jobs:
                       - ✅ GitHub beta release created
                       - 🔄 Ready for stable release process
 
-                      **Next Steps After Merging:**
-                      1. This will trigger creation of stable version (removing `-beta` suffix)
-                      2. Trigger "Create Stable Release" workflow to create stable GitHub release
-                      3. Trigger "Publish Stable to NPM" workflow to publish with `latest` tag
-                      4. Auto-backmerge to dev will be created
+                      **Next Steps:**
+                      1. Review and merge this PR to dev branch first
+                      2. Manually create PR from dev → release and merge
+                      3. Manually create PR from release → main and merge
+                      4. Trigger "Create Stable Release" workflow to create stable GitHub release
+                      5. Trigger "Publish Stable to NPM" workflow to publish with `latest` tag
 
                       **Version Info:**
                       - Beta: `${{ steps.verify_version.outputs.version }}`
                       - Stable: `${{ steps.stable_version.outputs.stable_version }}` (will be created when promoted)
 
-                      **New Release Branch Strategy:**
+                      **Release Branch Strategy:**
                       - Beta was published from `release` branch
+                      - All automatic PRs go to `dev` first, then manually merged to `release` and `main`
                       - This prevents issues with ongoing development in `dev` branch
-                      - Stable release will be created from `main` after this merge
 
                       ---
                       *This PR was automatically created after successful beta NPM publish*

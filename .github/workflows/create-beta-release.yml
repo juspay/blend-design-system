@@ -174,10 +174,11 @@ jobs:
                   draft: false
                   prerelease: true
 
-            - name: Create Version Update PR to Release
+            - name: Create Version Update PR to Dev
               uses: peter-evans/create-pull-request@v6
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
+                  base: dev
                   branch: release/update-beta-version-${{ steps.bump_version.outputs.new_version }}
                   title: 'chore(release): ${{ steps.bump_version.outputs.tag }} [BETA]'
                   body: |
@@ -190,19 +191,20 @@ jobs:
                       This PR was automatically created by the beta release workflow.
 
                       **Next Steps:**
-                      1. Review and merge this PR to release branch
-                      2. Trigger "Publish Beta to NPM" workflow to publish to npm with beta tag
-                      3. After testing, create PR from release → main for stable release
+                      1. Review and merge this PR to dev branch first
+                      2. Manually create PR from dev → release and merge
+                      3. Trigger "Publish Beta to NPM" workflow to publish to npm with beta tag
+                      4. After testing, create PR from release → main for stable release
 
                       **Changes included:**
                       - Updated package.json version to beta
                       - Generated changelog
                       - Created GitHub release with prerelease flag
 
-                      **New Release Branch Strategy:**
-                      - Beta releases are now created from `release` branch
+                      **Release Branch Strategy:**
+                      - Beta releases are created from `release` branch
+                      - All automatic PRs go to `dev` first, then manually merged to `release`
                       - This prevents issues with ongoing development in `dev` branch
-                      - Stable releases will be promoted from `release` → `main`
                   labels: |
                       automated
                       release
