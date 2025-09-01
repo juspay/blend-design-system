@@ -1,32 +1,9 @@
 import React, { useState } from 'react'
 import { ResponsiveContainer } from 'recharts'
-import {
-    ChartType,
-    NewNestedDataPoint,
-    XAxisConfig,
-    YAxisConfig,
-} from './types'
+import { ChartType, CoreChartProps } from './types'
 import { DEFAULT_COLORS } from './utils'
 import { renderChart } from './renderChart'
 import { transformNestedData } from './ChartUtils'
-
-export interface CoreChartProps {
-    chartType?: ChartType
-    data: NewNestedDataPoint[]
-    colors?: string[]
-    barsize?: number
-    xAxis?: XAxisConfig
-    yAxis?: YAxisConfig
-    height?: number | string
-    width?: number | string
-    isSmallScreen?: boolean
-
-    hoveredKey?: string | null
-    onHoveredKeyChange?: (key: string | null) => void
-    selectedKeys?: string[]
-
-    enableHover?: boolean
-}
 
 export const CoreChart: React.FC<CoreChartProps> = ({
     chartType = ChartType.LINE,
