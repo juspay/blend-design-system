@@ -1,22 +1,22 @@
-import Link from 'next/link'
+// import Link from 'next/link'
 import React, { memo } from 'react'
-import { Github } from 'lucide-react'
+// import { Github } from 'lucide-react'
 import {
-    SearchProvider,
-    ThemeToggle,
-    GlobalKeyboardNavigationProvider,
-    DocumentIcon,
-    ChangelogIcon,
-    StorybookIcon,
+    //     SearchProvider,
+    //     ThemeToggle,
+    //     GlobalKeyboardNavigationProvider,
+    //     DocumentIcon,
+    //     ChangelogIcon,
+    //     StorybookIcon,
     SharedDocLayout,
 } from '@/components'
-import {
-    EXTERNAL_URLS,
-    NAVIGATION_LABELS,
-    ROUTES,
-    LAYOUT_CONFIG,
-} from '@/blog/config'
-import { SHARED_NAV_CLASSES } from '@/lib/styles'
+// import {
+//     EXTERNAL_URLS,
+//     NAVIGATION_LABELS,
+//     ROUTES,
+//     LAYOUT_CONFIG,
+// } from '@/blog/config'
+// import { SHARED_NAV_CLASSES } from '@/lib/styles'
 
 interface BlogLayoutProps {
     children: React.ReactNode
