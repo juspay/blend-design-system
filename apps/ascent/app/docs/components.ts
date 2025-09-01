@@ -239,6 +239,46 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
         ),
         color: 'from-indigo-500 to-blue-600',
     },
+    {
+        slug: 'data-table',
+        title: 'Data Table',
+        description:
+            'The DataTable component displays structured data in a tabular format with sorting, filtering, pagination, and selection capabilities for managing large datasets efficiently.',
+        icon: createIcon(
+            [],
+            [
+                React.createElement('rect', {
+                    key: 'rect1',
+                    x: '3',
+                    y: '6',
+                    width: '18',
+                    height: '2',
+                }),
+                React.createElement('rect', {
+                    key: 'rect2',
+                    x: '3',
+                    y: '10',
+                    width: '18',
+                    height: '2',
+                }),
+                React.createElement('rect', {
+                    key: 'rect3',
+                    x: '3',
+                    y: '14',
+                    width: '18',
+                    height: '2',
+                }),
+                React.createElement('rect', {
+                    key: 'rect4',
+                    x: '3',
+                    y: '18',
+                    width: '18',
+                    height: '2',
+                }),
+            ]
+        ),
+        color: 'from-emerald-500 to-teal-600',
+    },
 ]
 
 /**

@@ -30,6 +30,7 @@ const PREVIEW_COMPONENT_NAMES = [
     'Avatar',
     'AvatarGroup',
     'Breadcrumb',
+    'DataTable',
 ] as const
 
 // Generate all preview components programmatically
@@ -64,3 +65,4 @@ export const ChartPreview = PreviewComponents.ChartPreview
 export const AvatarPreview = PreviewComponents.AvatarPreview
 export const AvatarGroupPreview = PreviewComponents.AvatarGroupPreview
 export const BreadcrumbPreview = PreviewComponents.BreadcrumbPreview
+export const DataTablePreview = PreviewComponents.DataTablePreview

@@ -68,6 +68,9 @@ const previewComponents = {
     BreadcrumbPreview: dynamic(() => import('./Previews/BreadcrumbPreview'), {
         ssr: false,
     }),
+    DataTablePreview: dynamic(() => import('./Previews/DataTablePreview'), {
+        ssr: false,
+    }),
 }
 
 interface PreviewWrapperProps {

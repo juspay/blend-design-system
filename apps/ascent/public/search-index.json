@@ -1,15 +1,4 @@
 {
-    "(data-table)": {
-        "title": "Data Table",
-        "description": "The DataTable component displays structured data in a tabular format with sorting, filtering, pagination, and selection capabilities for managing large datasets efficiently.",
-        "path": "components/(data-table)",
-        "slug": "(data-table)",
-        "category": "components",
-        "tags": ["data-table", "component", "table"],
-        "content": "",
-        "excerpt": "",
-        "sections": []
-    },
     "(date-range-picker)": {
         "title": "Date Range Picker",
         "description": "The DateRangePicker component allows users to select a range of dates with a calendar interface, useful for filtering data, scheduling, and time-based selections.",
@@ -226,8 +215,8 @@
         "slug": "avatar-group",
         "category": "components",
         "tags": ["avatar-group", "component", "group", "users", "selection"],
-        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nAvatarData Type\n\nThe avatars prop accepts an array of AvatarData objects with the following properties:\n\n\n\nFeatures\n\n- Compact stacked layout for displaying multiple avatars\n- Configurable maximum visible count with overflow handling\n- Interactive overflow counter with searchable dropdown menu\n- Optional multi-selection functionality with visual feedback\n- Consistent sizing and shape options across all avatars\n- Accessible keyboard navigation and screen reader support\n- Automatic positioning of overflow menu\n- Built-in search functionality for large avatar lists\n- Smooth animations and hover effects\n\nUsage Examples\n\nBasic Avatar Group\n\nSimple avatar group with default settings\n\n\n\nAvatar Group with Overflow\n\nAvatar group that shows overflow counter when exceeding maxCount\n\n\n\nAvatar Group with Selection\n\nAvatar group with controlled selection functionality\n\n\n\nDifferent Sizes\n\nAvatar groups in various sizes\n\n\n\nRounded Shape\n\nAvatar group with rounded corners instead of circular\n\n\n\nAvatar Group with Online Status\n\nAvatar group showing online status indicators\n\n\n\nLarge Avatar Group with Search\n\nAvatar group with many avatars demonstrating search functionality\n\n\n\nComponent Tokens\n\nYou can style the avatar group component using the following tokens:\n\n\n\nAccessibility\n\n- ARIA Support: Uses proper ARIA roles and labels for screen readers\n- Keyboard Navigation: Full keyboard support with Enter/Space activation\n- Focus Management: Clear focus indicators and logical tab order\n- Screen Reader Announcements: Announces selection state and overflow information\n- Semantic HTML: Uses appropriate button and group roles\n- High Contrast: Supports high contrast mode with proper color tokens",
-        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'function' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props...",
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nAvatarData Type\n\nThe avatars prop accepts an array of AvatarData objects with the following properties:\n\n\n\nFeatures\n\n- Compact stacked layout for displaying multiple avatars\n- Configurable maximum visible count with overflow handling\n- Interactive overflow counter with searchable dropdown menu\n- Optional multi-selection functionality with visual feedback\n- Consistent sizing and shape options across all avatars\n- Accessible keyboard navigation and screen reader support\n- Automatic positioning of overflow menu\n- Built-in search functionality for large avatar lists\n- Smooth animations and hover effects\n\nUsage Examples\n\nBasic Avatar Group\n\nSimple avatar group with default settings\n\n\n\nAvatar Group with Overflow\n\nAvatar group that shows overflow counter when exceeding maxCount\n\n\n\nAvatar Group with Selection\n\nAvatar group with controlled selection functionality\n\n\n\nDifferent Sizes\n\nAvatar groups in various sizes\n\n\n\nRounded Shape\n\nAvatar group with rounded corners instead of circular\n\n\n\nAvatar Group with Online Status\n\nAvatar group showing online status indicators\n\n\n\nLarge Avatar Group with Search\n\nAvatar group with many avatars demonstrating search functionality\n\n\n\nComponent Tokens\n\nYou can style the avatar group component using the following tokens:\n\n\n\nAccessibility\n\n- ARIA Support: Uses proper ARIA roles and labels for screen readers\n- Keyboard Navigation: Full keyboard support with Enter/Space activation\n- Focus Management: Clear focus indicators and logical tab order\n- Screen Reader Announcements: Announces selection state and overflow information\n- Semantic HTML: Uses appropriate button and group roles\n- High Contrast: Supports high contrast mode with proper color tokens",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-...",
         "sections": [
             {
                 "title": "Usage",
@@ -400,7 +389,7 @@
         "slug": "breadcrumb",
         "category": "components",
         "tags": ["breadcrumb", "component", "navigation", "hierarchy", "path"],
-        "content": "Usage\n\n\n\nAPI Reference\n\n\n\nBreadcrumbItemType\n\nEach item in the items array should have the following structure:\n\n\n\nFeatures\n\n- Hierarchical navigation display with clear visual separators\n- Automatic overflow handling for long navigation paths (max 4 visible items)\n- Responsive design that adapts to different screen sizes\n- Support for custom icons and content through left/right slots\n- Active state styling for the current page (last item)\n- Keyboard accessible navigation with proper focus management\n- Ellipsis menu for collapsed items (when more than 4 items)\n- Consistent spacing and typography following design tokens\n\nUsage Examples\n\nBasic Breadcrumb\n\nSimple breadcrumb with text-only navigation\n\n\n\nBreadcrumb with Icons\n\nBreadcrumb items with left slot icons\n\n\n\nLong Navigation Path\n\nBreadcrumb with overflow handling (shows ellipsis for middle items)\n\n\n\nBreadcrumb with Right Slots\n\nBreadcrumb items with additional content on the right\n\n\n\nSingle Item Breadcrumb\n\nBreadcrumb with just one item (shows as active)\n\n\n\nEmpty Breadcrumb\n\nBreadcrumb gracefully handles empty array\n\n\n\nComplex Navigation with Mixed Content\n\nBreadcrumb with various combinations of slots\n\n\n\nComponent Tokens\n\nYou can style the breadcrumb component using the following tokens:\n\n\n\nBehavior\n\nOverflow Handling\n- Up to 4 items: All items are displayed\n- More than 4 items: Shows first item + ellipsis + last 3 items\n- Ellipsis button: Indicates collapsed items (menu functionality planned)\n\nActive State\n- The last item in the breadcrumb is considered \"active\" (current page)\n- Active items use different styling (color, font weight)\n- Active items are not clickable (no href applied)\n\nNavigation\n- All items except the last one are clickable links\n- Proper semantic HTML structure for screen readers\n- Keyboard navigation support through standard link behavior\n\nAccessibility\n\n- Semantic HTML: Uses proper link elements for navigation\n- ARIA Support: Proper roles and labels for screen readers\n- Keyboard Navigation: Standard tab navigation through links\n- Visual Hierarchy: Clear distinction between active and inactive states\n- Focus Management: Visible focus indicators for keyboard users",
+        "content": "Usage\n\n\n\nAPI Reference\n\n\n\nBreadcrumbItemType\n\nEach item in the items array should have the following structure:\n\n\n\nFeatures\n\n- Hierarchical navigation display with clear visual separators\n- Automatic overflow handling for long navigation paths (max 4 visible items)\n- Responsive design that adapts to different screen sizes\n- Support for custom icons and content through left/right slots\n- Active state styling for the current page (last item)\n- Keyboard accessible navigation with proper focus management\n- Ellipsis menu for collapsed items (when more than 4 items)\n- Consistent spacing and typography following design tokens\n\nUsage Examples\n\nBasic Breadcrumb\n\nSimple breadcrumb with text-only navigation\n\n\n\nBreadcrumb with Icons\n\nBreadcrumb items with left slot icons\n\n\n\nLong Navigation Path\n\nBreadcrumb with overflow handling (shows ellipsis for middle items)\n\n\n\nBreadcrumb with Right Slots\n\nBreadcrumb items with additional content on the right\n\n\n\nSingle Item Breadcrumb\n\nBreadcrumb with just one item (shows as active)\n\n\n\nEmpty Breadcrumb\n\nBreadcrumb gracefully handles empty array\n\n\n\nComplex Navigation with Mixed Content\n\nBreadcrumb with various combinations of slots\n\n\n\nComponent Tokens\n\nYou can style the breadcrumb component using the following tokens:\n\n\n\nBehavior\n\nOverflow Handling\n\n- Up to 4 items: All items are displayed\n- More than 4 items: Shows first item + ellipsis + last 3 items\n- Ellipsis button: Indicates collapsed items (menu functionality planned)\n\nActive State\n\n- The last item in the breadcrumb is considered \"active\" (current page)\n- Active items use different styling (color, font weight)\n- Active items are not clickable (no href applied)\n\nNavigation\n\n- All items except the last one are clickable links\n- Proper semantic HTML structure for screen readers\n- Keyboard navigation support through standard link behavior\n\nAccessibility\n\n- Semantic HTML: Uses proper link elements for navigation\n- ARIA Support: Proper roles and labels for screen readers\n- Keyboard Navigation: Standard tab navigation through links\n- Visual Hierarchy: Clear distinction between active and inactive states\n- Focus Management: Visible focus indicators for keyboard users",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n\n\nBreadcrumbItemType\n\nEach item in the items array should have the following structure:\n\n\n\nFeatures\n\n- Hierarchical navigation...",
         "sections": [
             {
@@ -825,6 +814,135 @@
                 "title": "Accessibility Features",
                 "level": 2,
                 "id": "accessibility-features"
+            }
+        ]
+    },
+    "data-table": {
+        "title": "Data Table",
+        "description": "The DataTable component displays structured data in a tabular format with sorting, filtering, pagination, and selection capabilities for managing large datasets efficiently.",
+        "path": "components/data-table",
+        "slug": "data-table",
+        "category": "components",
+        "tags": [
+            "data-table",
+            "component",
+            "table",
+            "pagination",
+            "sorting",
+            "filtering"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n[]', hintText: 'array' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'idField',\n                hintText: 'Field name to use as unique identifier for rows',\n            },\n            { content: 'keyof T', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'title',\n                hintText: 'Optional title displayed above the table',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'description',\n                hintText: 'Optional description displayed below the title',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'enableSearch',\n                hintText: 'Enable global search functionality',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'enableFiltering',\n                hintText: 'Enable column-based filtering',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'enableRowSelection',\n                hintText: 'Enable row selection with checkboxes',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'enableRowExpansion',\n                hintText: 'Enable expandable rows for additional content',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'pagination',\n                hintText: 'Pagination configuration object',\n            },\n            { content: 'PaginationConfig', hintText: 'object' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'isLoading',\n                hintText: 'Show loading state for async operations',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: 'false' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nColumnDefinition\n\nEach column in the columns array should have the following structure:\n\n ReactNode', hintText: 'function' },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nColumn Types\n\nThe DataTable supports various column types for different data presentations:\n\n\n\nFeatures\n\n- Flexible Column Types: Support for text, numbers, avatars, tags, progress bars, dates, and custom React elements\n- Advanced Sorting: Multi-column sorting with ascending/descending directions\n- Powerful Filtering: Column-based filters with multiple filter types (text, number, select, multiselect, date, boolean)\n- Global Search: Search across all columns or specific fields\n- Pagination: Client-side and server-side pagination with customizable page sizes\n- Row Selection: Single or multiple row selection with bulk actions\n- Row Expansion: Expandable rows for displaying additional content\n- Inline Editing: Editable cells with validation and save/cancel functionality\n- Column Management: Show/hide columns and adjust column order\n- Mobile Responsive: Optimized mobile view with column selection\n- Loading States: Built-in loading indicators for async operations\n- Export Functionality: Export selected rows to CSV\n- Custom Styling: Extensive theming with responsive design tokens\n- Accessibility: Full keyboard navigation and screen reader support\n\nUsage Examples\n\nBasic Data Table\n\nSimple table with text columns and sorting\n\n\n\nTable with Search and Filtering\n\nTable with global search and column filters\n\n\n\nTable with Row Selection and Bulk Actions\n\nTable with row selection and bulk action capabilities\n\n\n\nTable with Custom Column Types\n\nTable featuring avatar, tag, and progress columns\n\n\n\nTable with Row Expansion\n\nTable with expandable rows for additional details\n\n\n\nTable with Pagination\n\nTable with client-side pagination\n\n\n\nTable with Inline Editing\n\nTable with editable cells and save/cancel functionality\n\n\n\nServer-Side Operations\n\nTable with server-side pagination, sorting, and filtering\n\n\n\nComponent Tokens\n\nYou can style the DataTable component using the following tokens:\n\n\n\nBehavior\n\nSorting\n- Single Column: Click column headers to sort by that column\n- Direction Toggle: Click again to toggle between ascending/descending\n- Multiple Columns: Hold Shift while clicking for multi-column sorting\n- Sort Indicators: Visual arrows show current sort direction\n\nFiltering\n- Column Filters: Each column can have its own filter based on data type\n- Filter Types: Text, number, select, multiselect, date, boolean, and slider filters\n- Global Search: Searches across all visible columns\n- Filter Combination: Multiple filters work together with AND logic\n\nPagination\n- Page Navigation: Previous/Next buttons and direct page selection\n- Page Size: Customizable rows per page with dropdown selector\n- Server-Side: Supports server-side pagination for large datasets\n- URL Sync: Optional URL synchronization for bookmarkable states\n\nRow Selection\n- Single Selection: Click row for single selection\n- Multiple Selection: Checkbox column for multiple row selection\n- Select All: Header checkbox to select/deselect all visible rows\n- Bulk Actions: Actions that operate on selected rows\n\nMobile Responsiveness\n- Column Management: Mobile drawer for showing/hiding columns\n- Horizontal Scroll: Smooth scrolling for wide tables\n- Touch Friendly: Large touch targets for mobile interaction\n- Responsive Design: Adapts layout based on screen size\n\nAccessibility\n\n- Keyboard Navigation: Full keyboard navigation support with arrow keys\n- Screen Reader: Proper ARIA labels and roles for screen readers\n- Focus Management: Clear focus indicators and logical tab order\n- Sort Announcements: Screen reader announcements for sort changes\n- Filter Labels: Descriptive labels for all filter controls\n- Loading States: Accessible loading indicators with proper announcements",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n[]', hintText: 'array' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'idField',...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "ColumnDefinition",
+                "level": 2,
+                "id": "columndefinition"
+            },
+            {
+                "title": "Column Types",
+                "level": 2,
+                "id": "column-types"
+            },
+            {
+                "title": "Features",
+                "level": 2,
+                "id": "features"
+            },
+            {
+                "title": "Usage Examples",
+                "level": 2,
+                "id": "usage-examples"
+            },
+            {
+                "title": "Basic Data Table",
+                "level": 3,
+                "id": "basic-data-table"
+            },
+            {
+                "title": "Table with Search and Filtering",
+                "level": 3,
+                "id": "table-with-search-and-filtering"
+            },
+            {
+                "title": "Table with Row Selection and Bulk Actions",
+                "level": 3,
+                "id": "table-with-row-selection-and-bulk-actions"
+            },
+            {
+                "title": "Table with Custom Column Types",
+                "level": 3,
+                "id": "table-with-custom-column-types"
+            },
+            {
+                "title": "Table with Row Expansion",
+                "level": 3,
+                "id": "table-with-row-expansion"
+            },
+            {
+                "title": "Table with Pagination",
+                "level": 3,
+                "id": "table-with-pagination"
+            },
+            {
+                "title": "Table with Inline Editing",
+                "level": 3,
+                "id": "table-with-inline-editing"
+            },
+            {
+                "title": "Server-Side Operations",
+                "level": 3,
+                "id": "server-side-operations"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            },
+            {
+                "title": "Behavior",
+                "level": 2,
+                "id": "behavior"
+            },
+            {
+                "title": "Sorting",
+                "level": 3,
+                "id": "sorting"
+            },
+            {
+                "title": "Filtering",
+                "level": 3,
+                "id": "filtering"
+            },
+            {
+                "title": "Pagination",
+                "level": 3,
+                "id": "pagination"
+            },
+            {
+                "title": "Row Selection",
+                "level": 3,
+                "id": "row-selection"
+            },
+            {
+                "title": "Mobile Responsiveness",
+                "level": 3,
+                "id": "mobile-responsiveness"
+            },
+            {
+                "title": "Accessibility",
+                "level": 2,
+                "id": "accessibility"
             }
         ]
     },

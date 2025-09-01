@@ -43,7 +43,7 @@ const ComponentPreview = ({
     if (tabs.length === 0) {
         return (
             <div className="w-full min-h-80 border-[var(--code-border)] border-1 rounded-md my-4 flex flex-col items-center justify-center">
-                <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4">
+                <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 p-6">
                     {children}
                 </div>
             </div>
@@ -55,7 +55,7 @@ const ComponentPreview = ({
             data-component-preview
             className="w-full min-h-80 border-[var(--code-border)] border-1 rounded-2xl mb-10 mt-25 flex flex-col items-center justify-center overflow-clip"
         >
-            <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 debug bg-white">
+            <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 debug bg-white p-6">
                 {children}
             </div>
             <div className="w-full border-t border-[var(--code-border)]">
