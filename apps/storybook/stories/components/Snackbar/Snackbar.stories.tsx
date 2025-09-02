@@ -24,6 +24,7 @@ import {
 const meta: Meta<typeof Snackbar> = {
     title: 'Components/Snackbar',
     component: Snackbar,
+
     parameters: {
         layout: 'fullscreen',
         docs: {
@@ -118,7 +119,7 @@ export const SnackbarVariants: Story = {
         >
             <Button
                 text="Show Info Snackbar"
-                leadingIcon={Info}
+                leadingIcon={<Info />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Info Notification',
@@ -129,7 +130,7 @@ export const SnackbarVariants: Story = {
             />
             <Button
                 text="Show Success Snackbar"
-                leadingIcon={CheckCircle}
+                leadingIcon={<CheckCircle />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Success!',
@@ -140,7 +141,7 @@ export const SnackbarVariants: Story = {
             />
             <Button
                 text="Show Warning Snackbar"
-                leadingIcon={AlertTriangle}
+                leadingIcon={<AlertTriangle />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Warning',
@@ -152,7 +153,7 @@ export const SnackbarVariants: Story = {
             />
             <Button
                 text="Show Error Snackbar"
-                leadingIcon={XCircle}
+                leadingIcon={<XCircle />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Error',
@@ -186,7 +187,7 @@ export const WithActionButton: Story = {
         >
             <Button
                 text="Show Delete with Undo"
-                leadingIcon={Trash2}
+                leadingIcon={<Trash2 />}
                 onClick={() =>
                     addSnackbar({
                         header: 'File Deleted',
@@ -208,7 +209,7 @@ export const WithActionButton: Story = {
             />
             <Button
                 text="Show Update Notification"
-                leadingIcon={Download}
+                leadingIcon={<Download />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Update Available',
@@ -246,7 +247,7 @@ export const WithCloseCallback: Story = {
         <div style={{ position: 'relative' }}>
             <Button
                 text="Show with Close Tracking"
-                leadingIcon={X}
+                leadingIcon={<X />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Tracking Close Event',
@@ -277,7 +278,7 @@ export const MultipleSnackbars: Story = {
         <div style={{ position: 'relative' }}>
             <Button
                 text="Show Multiple Stacked"
-                leadingIcon={Layers}
+                leadingIcon={<Layers />}
                 onClick={() => {
                     addSnackbar({
                         header: 'First Notification',
@@ -326,7 +327,7 @@ export const RealWorldExamples: Story = {
         >
             <Button
                 text="Show Save Success"
-                leadingIcon={Save}
+                leadingIcon={<Save />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Saved',
@@ -338,7 +339,7 @@ export const RealWorldExamples: Story = {
             />
             <Button
                 text="Show Network Error"
-                leadingIcon={WifiOff}
+                leadingIcon={<WifiOff />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Network Error',
@@ -360,7 +361,7 @@ export const RealWorldExamples: Story = {
             />
             <Button
                 text="Show Copy Success"
-                leadingIcon={Copy}
+                leadingIcon={<Copy />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Copied to Clipboard',
@@ -370,7 +371,7 @@ export const RealWorldExamples: Story = {
             />
             <Button
                 text="Show Session Warning"
-                leadingIcon={Clock}
+                leadingIcon={<Clock />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Session Expiring',
@@ -415,7 +416,7 @@ export const HeaderOnly: Story = {
         >
             <Button
                 text="Show Quick Copy"
-                leadingIcon={Copy}
+                leadingIcon={<Copy />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Copied!',
@@ -425,7 +426,7 @@ export const HeaderOnly: Story = {
             />
             <Button
                 text="Show Processing"
-                leadingIcon={Info}
+                leadingIcon={<Info />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Processing...',
@@ -435,7 +436,7 @@ export const HeaderOnly: Story = {
             />
             <Button
                 text="Show Quick Error"
-                leadingIcon={XCircle}
+                leadingIcon={<XCircle />}
                 onClick={() =>
                     addSnackbar({
                         header: 'Failed to load',
@@ -452,4 +453,21 @@ export const HeaderOnly: Story = {
             },
         },
     },
+}
+
+// Custom duration snackbar story
+export const CustomDurationToast: Story = {
+    render: () => (
+        <div style={{ position: 'relative' }}>
+            <Button
+                text="Show Snackbar with duration 15000"
+                onClick={() =>
+                    addSnackbar({
+                        header: 'Custom duration Snackbar',
+                        duration: 15000, // duration in ms, defaults to 4000
+                    })
+                }
+            />
+        </div>
+    ),
 }
