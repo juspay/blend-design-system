@@ -365,7 +365,14 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                         padding: cardToken.padding,
                     }}
                 >
-                    <Block style={{ flexShrink: 0 }}>{cardSlot}</Block>
+                    <Block
+                        style={{
+                            flexShrink: 0,
+                            minWidth: '92px',
+                        }}
+                    >
+                        {cardSlot}
+                    </Block>
 
                     <CardContent
                         props={props}
@@ -387,6 +394,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                                 ? 'center'
                                 : 'flex-start',
                             paddingBottom: cardToken.padding,
+                            minHeight: '142px',
                             ...(centerAlign && { padding: cardToken.padding }),
                         }}
                     >

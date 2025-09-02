@@ -36,7 +36,7 @@ const CardDemo = () => {
         <div
             style={{
                 width: '100%',
-                height: '120px',
+                height: '142px',
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 display: 'flex',
                 alignItems: 'center',
@@ -672,8 +672,8 @@ const CardDemo = () => {
                         cardSlot={
                             <div
                                 style={{
-                                    width: '80px',
-                                    height: '80px',
+                                    width: '142px',
+                                    height: '142px',
                                     borderRadius: '50%',
                                     background:
                                         'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -715,8 +715,8 @@ const CardDemo = () => {
                         cardSlot={
                             <div
                                 style={{
-                                    width: '28px',
-                                    height: '28px',
+                                    width: '92px',
+                                    height: '92px',
                                     background: '#f0f9ff',
                                     borderRadius: '12px',
                                     display: 'flex',
@@ -794,8 +794,8 @@ const CardDemo = () => {
                         cardSlot={
                             <div
                                 style={{
-                                    width: '28px',
-                                    height: '28px',
+                                    width: '92px',
+                                    height: '92px',
                                     background:
                                         'linear-gradient(135deg, #c084fc 0%, #e879f9 100%)',
                                     borderRadius: '12px',

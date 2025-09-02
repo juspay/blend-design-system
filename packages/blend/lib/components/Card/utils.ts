@@ -207,7 +207,7 @@ export const getAlignmentStyles = (
  * Gets custom card styles (simple wrapper with padding)
  */
 export const getCustomCardStyles = (cardToken: CardTokenType) => ({
-    padding: '16px', // Force 16px padding for custom cards
+    padding: cardToken.padding,
 })
 
 /**

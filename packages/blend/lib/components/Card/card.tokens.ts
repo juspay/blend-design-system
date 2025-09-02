@@ -1,7 +1,5 @@
-//card.tokens.ts
-
 import type { CSSObject } from 'styled-components'
-import { CardVariant, CardAlignment } from './types'
+import { CardAlignment } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
@@ -19,7 +17,6 @@ export type CardTokenType = {
     boxShadow: CSSObject['boxShadow']
     padding: CSSObject['padding']
 
-    // Header box styling (gray 25 background)
     header: {
         backgroundColor: CSSObject['backgroundColor']
         padding: CSSObject['padding']
@@ -41,7 +38,6 @@ export type CardTokenType = {
         }
     }
 
-    // Body content styling
     body: {
         padding: CSSObject['padding']
         title: {
@@ -55,7 +51,6 @@ export type CardTokenType = {
         }
     }
 
-    // Spacing configuration
     spacing: {
         headerToSubHeader: CSSObject['marginTop']
         subHeaderToBody: CSSObject['marginTop']
@@ -68,7 +63,6 @@ export type CardTokenType = {
         headerSlotSpacing: CSSObject['gap']
     }
 
-    // Alignment variants
     alignment: {
         [key in CardAlignment]: {
             padding: CSSObject['padding']
@@ -221,7 +215,6 @@ export const getCardTokens = (
                 vertical: {
                     padding: foundationToken.unit[16],
                     gap: foundationToken.unit[0],
-                    // minHeight: '284px',
                 },
                 horizontal: {
                     padding: foundationToken.unit[20],
