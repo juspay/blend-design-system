@@ -39,7 +39,9 @@ const formatTooltipLabel = (
         return getAxisFormatterWithConfig(
             xAxis.type,
             xAxis.dateOnly,
-            xAxis.smart
+            xAxis.smart,
+            xAxis.timeZone,
+            xAxis.hour12
         )(label)
     }
 
@@ -62,7 +64,9 @@ const formatTooltipValue = (
         return getAxisFormatterWithConfig(
             yAxis.type,
             yAxis.dateOnly,
-            yAxis.smart
+            yAxis.smart,
+            yAxis.timeZone,
+            yAxis.hour12
         )(value)
     }
 

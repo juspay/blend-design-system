@@ -61,7 +61,7 @@ export const SHARED_GRID_CLASSES = {
 
 // Table of Contents styling
 export const SHARED_TOC_CLASSES = {
-    CONTAINER: 'doc-toc-ctr max-w-[240px] w-full',
+    CONTAINER: ' max-w-[240px] w-full',
     STICKY: 'sticky top-4',
 } as const
 

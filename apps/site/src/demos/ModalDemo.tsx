@@ -817,6 +817,17 @@ const ModalDemo = () => {
                         </p>
                         <NoActionsModalExample />
                     </div>
+
+                    {/* Nested Modal */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Nested Modal
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                            Modal that opens another modal from primary button
+                        </p>
+                        <NestedModalExample />
+                    </div>
                 </div>
             </div>
 
@@ -1158,6 +1169,99 @@ const NoActionsModalExample = () => {
                             <p className="text-purple-600 text-sm">99.9%</p>
                         </div>
                     </div>
+                </div>
+            </Modal>
+        </>
+    )
+}
+
+const NestedModalExample = () => {
+    const [isFirstOpen, setIsFirstOpen] = useState(false)
+    const [isSecondOpen, setIsSecondOpen] = useState(false)
+
+    return (
+        <>
+            <Button
+                text="Open Nested Modal"
+                buttonType={ButtonType.PRIMARY}
+                size={ButtonSize.SMALL}
+                onClick={() => setIsFirstOpen(true)}
+            />
+
+            {/* First Modal */}
+            <Modal
+                isOpen={isFirstOpen}
+                onClose={() => setIsFirstOpen(false)}
+                title="First Modal"
+                subtitle="This modal will open another modal when you click 'Open Second Modal'"
+                primaryAction={{
+                    text: 'Open Second Modal',
+                    onClick: () => setIsSecondOpen(true),
+                    buttonType: ButtonType.PRIMARY,
+                }}
+                secondaryAction={{
+                    text: 'Close',
+                    onClick: () => setIsFirstOpen(false),
+                    buttonType: ButtonType.SECONDARY,
+                }}
+            >
+                <div className="space-y-4">
+                    <p className="text-gray-600">
+                        This demonstrates how our portal system handles multiple
+                        modals. Click the primary button to open a second modal
+                        on top of this one.
+                    </p>
+                    <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                        <p className="text-blue-700 text-sm">
+                            <strong>Portal Advantage:</strong> Each modal
+                            renders in its own portal container, ensuring proper
+                            z-index stacking and no interference between modals.
+                        </p>
+                    </div>
+                </div>
+            </Modal>
+
+            {/* Second Modal */}
+            <Modal
+                isOpen={isSecondOpen}
+                onClose={() => setIsSecondOpen(false)}
+                title="Second Modal"
+                subtitle="This modal opened on top of the first modal"
+                primaryAction={{
+                    text: 'Got it!',
+                    onClick: () => setIsSecondOpen(false),
+                    buttonType: ButtonType.PRIMARY,
+                }}
+                secondaryAction={{
+                    text: 'Close Both',
+                    onClick: () => {
+                        setIsSecondOpen(false)
+                        setIsFirstOpen(false)
+                    },
+                    buttonType: ButtonType.SECONDARY,
+                }}
+            >
+                <div className="space-y-4">
+                    <p className="text-gray-600">
+                        Perfect! This second modal is rendered on top of the
+                        first modal. Both modals are handled independently by
+                        our portal system.
+                    </p>
+                    <div className="bg-green-50 border border-green-200 rounded-md p-3">
+                        <p className="text-green-700 text-sm">
+                            <strong>Portal Benefits Demonstrated:</strong>
+                        </p>
+                        <ul className="text-green-600 text-sm mt-2 space-y-1">
+                            <li>• No z-index conflicts between modals</li>
+                            <li>• Independent event handling</li>
+                            <li>• Proper stacking order</li>
+                            <li>• Clean DOM separation</li>
+                        </ul>
+                    </div>
+                    <p className="text-sm text-gray-500">
+                        Try closing this modal first, then the first modal, or
+                        use "Close Both" to close them in sequence.
+                    </p>
                 </div>
             </Modal>
         </>
