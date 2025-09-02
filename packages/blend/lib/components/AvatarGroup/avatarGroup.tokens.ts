@@ -26,6 +26,21 @@ const avatarGroupTokens = {
             color: foundationToken.colors.gray[0],
         },
     },
+    darkThemeavatar: {
+        // added for DarkTheme , Using the existing Avatar tokens for styling the avatars themselves
+        stacking: {
+            zIndex: 1, // Base z-index for stacking
+        },
+        selected: {
+            ringColor: foundationToken.colors.primary[500],
+            ringWidth: '2px',
+            ringOffset: '2px',
+        },
+        border: {
+            width: '2px',
+            color: foundationToken.colors.gray[0],
+        },
+    },
     overflowCounter: {
         background: {
             default: foundationToken.colors.gray[900],
