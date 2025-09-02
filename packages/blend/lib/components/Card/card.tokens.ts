@@ -96,7 +96,6 @@ export const getCardTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveCardTokens => {
     return {
-        // $component.[$target].$property.[$variant].[$type].[$state]
         sm: {
             maxWidth: 'auto',
             border: `1px solid ${foundationToken.colors.gray[200]}`,

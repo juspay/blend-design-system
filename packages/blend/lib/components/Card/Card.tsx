@@ -12,82 +12,85 @@ import {
 } from './utils'
 import { DefaultCard, AlignedCard, CustomCard } from './CardComponents'
 
-const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
-    const { className, maxWidth = 'auto', ...restProps } = props
-    const cardToken = useResponsiveTokens<CardTokenType>('CARD')
-    const variant = getCardVariant(
-        'variant' in restProps ? restProps.variant : undefined
-    )
+const Card = forwardRef<HTMLDivElement, CardProps>(
+    ({ maxWidth = 'auto', ...props }, ref) => {
+        const cardToken = useResponsiveTokens<CardTokenType>('CARD')
+        const variant = getCardVariant(
+            'variant' in props ? props.variant : undefined
+        )
 
-    const renderCardContent = () => {
-        if (isDefaultCard(variant)) {
-            return (
-                <DefaultCard
-                    props={
-                        restProps as Extract<CardProps, { variant?: undefined }>
-                    }
-                    cardToken={cardToken}
-                />
-            )
-        }
-
-        if (isAlignedCard(variant)) {
-            return (
-                <AlignedCard
-                    props={
-                        restProps as Extract<CardProps, { variant: 'aligned' }>
-                    }
-                    cardToken={cardToken}
-                />
-            )
-        }
-
-        if (isCustomCard(variant)) {
-            return (
-                <CustomCard
-                    props={
-                        restProps as Extract<CardProps, { variant: 'custom' }>
-                    }
-                    cardToken={cardToken}
-                />
-            )
-        }
-
-        return null
-    }
-
-    const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-        const target = e.currentTarget as HTMLElement
-        target.style.outline = cardToken.border as string
-        target.style.backgroundColor = cardToken.backgroundColor as string
-    }
-
-    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-        const target = e.currentTarget as HTMLElement
-        target.style.outline = cardToken.border as string
-        target.style.backgroundColor = cardToken.backgroundColor as string
-    }
-
-    return (
-        <Block
-            ref={ref}
-            maxWidth={
-                maxWidth !== 'auto' ? toPixels(maxWidth) : cardToken.maxWidth
+        const renderCardContent = () => {
+            if (isDefaultCard(variant)) {
+                return (
+                    <DefaultCard
+                        props={
+                            props as Extract<CardProps, { variant?: undefined }>
+                        }
+                        cardToken={cardToken}
+                    />
+                )
             }
-            outline={cardToken.border}
-            borderRadius={cardToken.borderRadius}
-            backgroundColor={cardToken.backgroundColor}
-            boxShadow={cardToken.boxShadow}
-            overflow="hidden"
-            display="flex"
-            flexDirection="column"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-        >
-            {renderCardContent()}
-        </Block>
-    )
-})
+
+            if (isAlignedCard(variant)) {
+                return (
+                    <AlignedCard
+                        props={
+                            props as Extract<CardProps, { variant: 'aligned' }>
+                        }
+                        cardToken={cardToken}
+                    />
+                )
+            }
+
+            if (isCustomCard(variant)) {
+                return (
+                    <CustomCard
+                        props={
+                            props as Extract<CardProps, { variant: 'custom' }>
+                        }
+                        cardToken={cardToken}
+                    />
+                )
+            }
+
+            return null
+        }
+
+        const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+            const target = e.currentTarget as HTMLElement
+            target.style.outline = cardToken.border as string
+            target.style.backgroundColor = cardToken.backgroundColor as string
+        }
+
+        const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+            const target = e.currentTarget as HTMLElement
+            target.style.outline = cardToken.border as string
+            target.style.backgroundColor = cardToken.backgroundColor as string
+        }
+
+        return (
+            <Block
+                ref={ref}
+                maxWidth={
+                    maxWidth !== 'auto'
+                        ? toPixels(maxWidth)
+                        : cardToken.maxWidth
+                }
+                outline={cardToken.border}
+                borderRadius={cardToken.borderRadius}
+                backgroundColor={cardToken.backgroundColor}
+                boxShadow={cardToken.boxShadow}
+                overflow="hidden"
+                display="flex"
+                flexDirection="column"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+            >
+                {renderCardContent()}
+            </Block>
+        )
+    }
+)
 
 Card.displayName = 'Card'
 
