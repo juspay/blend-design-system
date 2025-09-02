@@ -24,6 +24,7 @@ const PREVIEW_COMPONENT_NAMES = [
     'Radio',
     'Switch',
     'SingleSelect',
+    'MultiSelect',
     'Menu',
     'StatCard',
     'Chart',
@@ -59,6 +60,7 @@ export const CheckboxPreview = PreviewComponents.CheckboxPreview
 export const RadioPreview = PreviewComponents.RadioPreview
 export const SwitchPreview = PreviewComponents.SwitchPreview
 export const SingleSelectPreview = PreviewComponents.SingleSelectPreview
+export const MultiSelectPreview = PreviewComponents.MultiSelectPreview
 export const MenuPreview = PreviewComponents.MenuPreview
 export const StatCardPreview = PreviewComponents.StatCardPreview
 export const ChartPreview = PreviewComponents.ChartPreview

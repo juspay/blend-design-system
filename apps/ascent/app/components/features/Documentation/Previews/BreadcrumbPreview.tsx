@@ -2,7 +2,7 @@
 
 import { Breadcrumb, BreadcrumbItemType } from '@juspay/blend-design-system'
 import { HomeIcon, FolderIcon } from 'lucide-react'
-import ComponentPreview from './ComponentPreview'
+import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const tsCode = `import { Breadcrumb, BreadcrumbItemType } from 'blend-v1'
 import { HomeIcon, FolderIcon } from 'lucide-react'

@@ -50,6 +50,9 @@ const previewComponents = {
         () => import('./Previews/SingleSelectPreview'),
         { ssr: false }
     ),
+    MultiSelectPreview: dynamic(() => import('./Previews/MultiSelectPreview'), {
+        ssr: false,
+    }),
     MenuPreview: dynamic(() => import('./Previews/MenuPreview'), {
         ssr: false,
     }),

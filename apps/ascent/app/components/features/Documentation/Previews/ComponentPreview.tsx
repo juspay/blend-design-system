@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import * as Tabs from '@radix-ui/react-tabs'
 import { highlight } from 'sugar-high'
 
@@ -16,27 +16,33 @@ const ComponentPreview = ({
     rescriptBinding,
     children,
 }: ComponentPreviewProps) => {
-    const tabs = [
-        { id: 'ts', label: 'TypeScript', content: ts, available: !!ts },
-        {
-            id: 'rescript',
-            label: 'Rescript',
-            content: rescript || '',
-            available: !!rescript,
-        },
-        {
-            id: 'rescriptBinding',
-            label: 'Rescript Binding',
-            content: rescriptBinding || '',
-            available: !!rescriptBinding,
-        },
-    ].filter((tab) => tab.available)
+    const tabs = useMemo(
+        () =>
+            [
+                { id: 'ts', label: 'TypeScript', content: ts, available: !!ts },
+                {
+                    id: 'rescript',
+                    label: 'Rescript',
+                    content: rescript || '',
+                    available: !!rescript,
+                },
+                {
+                    id: 'rescriptBinding',
+                    label: 'Rescript Binding',
+                    content: rescriptBinding || '',
+                    available: !!rescriptBinding,
+                },
+            ].filter((tab) => tab.available),
+        [ts, rescript, rescriptBinding]
+    )
 
-    const [activeTab, setActiveTab] = useState(tabs[0]?.id || 'ts')
+    const [activeTab, setActiveTab] = useState(
+        tabs.length > 0 ? tabs[0].id : 'ts'
+    )
 
     useEffect(() => {
-        if (!tabs.find((tab) => tab.id === activeTab)) {
-            setActiveTab(tabs[0]?.id || 'ts')
+        if (tabs.length > 0 && !tabs.find((tab) => tab.id === activeTab)) {
+            setActiveTab(tabs[0].id)
         }
     }, [activeTab, tabs])
 
@@ -91,12 +97,40 @@ const ComponentPreview = ({
 }
 
 export const Snippet = (code: string) => {
-    const codeHTML = highlight(code as string)
+    const [isClient, setIsClient] = React.useState(false)
+    const [highlighted, setHighlighted] = React.useState<string>('')
+
+    React.useEffect(() => {
+        setIsClient(true)
+        // Only run highlighting on client side
+        try {
+            const result = highlight(code || '') || code || ''
+            setHighlighted(result)
+        } catch {
+            setHighlighted(code || '')
+        }
+    }, [code])
+
+    // For SSR, render plain text without dangerouslySetInnerHTML
+    if (!isClient) {
+        return (
+            <div className="overflow-x-auto">
+                <pre
+                    data-code-snippet
+                    className="p-2 block whitespace-pre-wrap break-words"
+                >
+                    {code || ''}
+                </pre>
+            </div>
+        )
+    }
+
+    // Client-side: render with syntax highlighting
     return (
         <div className="overflow-x-auto">
             <pre
                 data-code-snippet
-                dangerouslySetInnerHTML={{ __html: codeHTML }}
+                dangerouslySetInnerHTML={{ __html: highlighted || code || '' }}
                 className="p-2 block whitespace-pre-wrap break-words"
             ></pre>
         </div>
