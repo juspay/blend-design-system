@@ -47,15 +47,36 @@ export type CardTokenType = {
     }
 
     spacing: {
-        headerToSubHeader: CSSObject['gap']
-        subHeaderToBody: CSSObject['marginTop']
-        bodySlot1ToTitle: CSSObject['marginTop']
-        titleToContent: CSSObject['marginTop']
-        contentToBodySlot2: CSSObject['marginTop']
-        bodySlot2ToAction: CSSObject['marginTop']
-        actionInline: CSSObject['marginTop']
-        actionRegular: CSSObject['marginTop']
-        headerSlotSpacing: CSSObject['gap']
+        header: {
+            subHeader: {
+                marginTop: CSSObject['marginTop']
+            }
+        }
+        body: {
+            slot1: {
+                marginTop: CSSObject['marginTop']
+            }
+            title: {
+                marginTop: CSSObject['marginTop']
+            }
+            content: {
+                marginTop: CSSObject['marginTop']
+            }
+            slot2: {
+                marginTop: CSSObject['marginTop']
+            }
+        }
+        action: {
+            inline: {
+                marginTop: CSSObject['marginTop']
+            }
+            regular: {
+                marginTop: CSSObject['marginTop']
+            }
+        }
+        headerSlot: {
+            gap: CSSObject['gap']
+        }
     }
 
     alignment: {
@@ -118,15 +139,36 @@ export const getCardTokens = (
             },
 
             spacing: {
-                headerToSubHeader: foundationToken.unit[2],
-                subHeaderToBody: foundationToken.unit[16],
-                bodySlot1ToTitle: foundationToken.unit[14],
-                titleToContent: foundationToken.unit[6],
-                contentToBodySlot2: foundationToken.unit[14],
-                bodySlot2ToAction: foundationToken.unit[14],
-                actionInline: foundationToken.unit[14],
-                actionRegular: foundationToken.unit[24],
-                headerSlotSpacing: foundationToken.unit[8],
+                header: {
+                    subHeader: {
+                        marginTop: foundationToken.unit[2],
+                    },
+                },
+                body: {
+                    slot1: {
+                        marginTop: foundationToken.unit[16],
+                    },
+                    title: {
+                        marginTop: foundationToken.unit[14],
+                    },
+                    content: {
+                        marginTop: foundationToken.unit[6],
+                    },
+                    slot2: {
+                        marginTop: foundationToken.unit[14],
+                    },
+                },
+                action: {
+                    inline: {
+                        marginTop: foundationToken.unit[14],
+                    },
+                    regular: {
+                        marginTop: foundationToken.unit[24],
+                    },
+                },
+                headerSlot: {
+                    gap: foundationToken.unit[8],
+                },
             },
 
             alignment: {
@@ -182,15 +224,36 @@ export const getCardTokens = (
             },
 
             spacing: {
-                headerToSubHeader: foundationToken.unit[2],
-                subHeaderToBody: foundationToken.unit[16],
-                bodySlot1ToTitle: foundationToken.unit[14],
-                titleToContent: foundationToken.unit[6],
-                contentToBodySlot2: foundationToken.unit[14],
-                bodySlot2ToAction: foundationToken.unit[14],
-                actionInline: foundationToken.unit[14],
-                actionRegular: foundationToken.unit[24],
-                headerSlotSpacing: foundationToken.unit[8],
+                header: {
+                    subHeader: {
+                        marginTop: foundationToken.unit[2],
+                    },
+                },
+                body: {
+                    slot1: {
+                        marginTop: foundationToken.unit[16],
+                    },
+                    title: {
+                        marginTop: foundationToken.unit[14],
+                    },
+                    content: {
+                        marginTop: foundationToken.unit[6],
+                    },
+                    slot2: {
+                        marginTop: foundationToken.unit[14],
+                    },
+                },
+                action: {
+                    inline: {
+                        marginTop: foundationToken.unit[14],
+                    },
+                    regular: {
+                        marginTop: foundationToken.unit[24],
+                    },
+                },
+                headerSlot: {
+                    gap: foundationToken.unit[8],
+                },
             },
 
             alignment: {

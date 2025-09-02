@@ -91,7 +91,7 @@ export const getBodyStyles = (cardToken: CardTokenType) => ({
  * Gets spacing between header slots
  */
 export const getHeaderSlotSpacing = (cardToken: CardTokenType): string => {
-    return String(cardToken.spacing.headerSlotSpacing)
+    return String(cardToken.spacing.headerSlot.gap)
 }
 
 /**
@@ -101,7 +101,8 @@ export const getHeaderMarginBottom = (
     hasSubHeader: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasSubHeader) return String(cardToken.spacing.headerToSubHeader)
+    if (hasSubHeader)
+        return String(cardToken.spacing.header.subHeader.marginTop)
     return '0'
 }
 
@@ -109,7 +110,7 @@ export const getHeaderMarginBottom = (
  * Gets margin bottom for sub header
  */
 export const getSubHeaderMarginBottom = (cardToken: CardTokenType): string => {
-    return String(cardToken.spacing.subHeaderToBody)
+    return String(cardToken.spacing.body.slot1.marginTop)
 }
 
 /**
@@ -119,7 +120,7 @@ export const getBodySlot1MarginBottom = (
     hasBodyTitle: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasBodyTitle) return String(cardToken.spacing.bodySlot1ToTitle)
+    if (hasBodyTitle) return String(cardToken.spacing.body.title.marginTop)
     return '0'
 }
 
@@ -130,7 +131,7 @@ export const getBodyTitleMarginBottom = (
     hasContent: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasContent) return String(cardToken.spacing.titleToContent)
+    if (hasContent) return String(cardToken.spacing.body.content.marginTop)
     return '0'
 }
 
@@ -141,7 +142,7 @@ export const getContentMarginBottom = (
     hasBodySlot2: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasBodySlot2) return String(cardToken.spacing.contentToBodySlot2)
+    if (hasBodySlot2) return String(cardToken.spacing.body.slot2.marginTop)
     return '0'
 }
 
@@ -155,8 +156,8 @@ export const getBodySlot2MarginBottom = (
 ): string => {
     if (!hasActionButton) return '0'
     return isInlineButton
-        ? String(cardToken.spacing.actionInline)
-        : String(cardToken.spacing.actionRegular)
+        ? String(cardToken.spacing.action.inline.marginTop)
+        : String(cardToken.spacing.action.regular.marginTop)
 }
 
 /**

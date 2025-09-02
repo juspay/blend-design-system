@@ -340,8 +340,10 @@ const CardContent: React.FC<{
                 <Block
                     style={{
                         marginTop: isInlineButton
-                            ? String(cardToken.spacing.actionInline)
-                            : String(cardToken.spacing.actionRegular),
+                            ? String(cardToken.spacing.action.inline.marginTop)
+                            : String(
+                                  cardToken.spacing.action.regular.marginTop
+                              ),
                     }}
                 >
                     <Button {...actionButton} />
@@ -366,7 +368,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: centerAlign ? 'center' : 'flex-start',
-                        gap: String(cardToken.spacing.headerSlotSpacing),
+                        gap: String(cardToken.spacing.headerSlot.gap),
                         padding: cardToken.padding,
                     }}
                 >
