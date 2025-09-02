@@ -57,8 +57,8 @@ function MyComponent() {
     <Charts
       chartType={ChartType.LINE}
       data={data}
-      xAxisLabel="Month"
-      yAxisLabel="Value"
+      xAxis={{ label: "Month" }}
+      yAxis={{ label: "Value" }}
       legendPosition={ChartLegendPosition.TOP}
       chartHeaderSlot={<div>Monthly Performance</div>}
     />
@@ -81,12 +81,19 @@ type nestedDataPoint = {
   data: Js.Dict.t<dataPoint>,
 }
 
+type axisConfig = {
+  label: option<string>,
+  showLabel: option<bool>,
+  interval: option<int>,
+  show: option<bool>,
+}
+
 @react.component
 let make = (
   ~chartType: option<chartType>=?,
   ~data: array<nestedDataPoint>,
-  ~xAxisLabel: option<string>=?,
-  ~yAxisLabel: option<string>=?,
+  ~xAxis: option<axisConfig>=?,
+  ~yAxis: option<axisConfig>=?,
   ~colors: option<array<string>>=?,
   ~metrics: option<array<string>>=?,
   ~slot1: option<React.element>=?,
@@ -98,8 +105,8 @@ let make = (
   <ChartsBinding
     ?chartType
     data
-    ?xAxisLabel
-    ?yAxisLabel
+    ?xAxis
+    ?yAxis
     ?colors
     ?metrics
     ?slot1
@@ -114,8 +121,8 @@ let make = (
 external make: (
   ~chartType: [#line | #bar | #pie]=?,
   ~data: array<nestedDataPoint>,
-  ~xAxisLabel: string=?,
-  ~yAxisLabel: string=?,
+  ~xAxis: axisConfig=?,
+  ~yAxis: axisConfig=?,
   ~colors: array<string>=?,
   ~metrics: array<string>=?,
   ~slot1: React.element=?,
@@ -135,8 +142,8 @@ external make: (
                 <Charts
                     chartType={ChartType.LINE}
                     data={sampleData}
-                    xAxisLabel="Month"
-                    yAxisLabel="Value"
+                    xAxis={{ label: 'Month' }}
+                    yAxis={{ label: 'Value' }}
                     legendPosition={ChartLegendPosition.TOP}
                     chartHeaderSlot={
                         <div className="text-black">Monthly Performance</div>

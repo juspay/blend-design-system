@@ -349,8 +349,8 @@ export const getMultiSelectTokens = (
                 outline: foundationToken.colors.gray[200],
                 borderRadius: foundationToken.unit[10],
                 item: {
-                    padding: foundationToken.unit[4],
-                    margin: foundationToken.unit[4],
+                    padding: `${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`,
+                    margin: `${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[0]}`,
                     borderRadius: foundationToken.unit[10],
                     gap: foundationToken.unit[4],
                     backgroundColor: {

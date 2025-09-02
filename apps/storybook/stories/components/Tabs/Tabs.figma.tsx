@@ -32,7 +32,7 @@ import { TabsTrigger, TabsVariant, TabsSize } from '@juspay/blend-design-system'
 
 figma.connect(
     TabsTrigger,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-733044&t=EWj7fDD0TbtPTknX-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-733044&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Renamed mapping: type (Figma) → variant (Code)
@@ -114,7 +114,7 @@ import { Tabs, TabsList, TabsContent } from '@juspay/blend-design-system'
 // TabSets - connection for TabsList component
 figma.connect(
     TabsList,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-733044&t=EWj7fDD0TbtPTknX-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-733044&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Renamed mapping: type (Figma) → variant (Code)

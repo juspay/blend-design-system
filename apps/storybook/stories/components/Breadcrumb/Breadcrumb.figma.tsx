@@ -21,7 +21,7 @@ import figma from '@figma/code-connect'
 
 figma.connect(
     Breadcrumb,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2159-6521',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-493172&t=Igz9fmVsO5gD0NMR-4',
     {
         props: {
             // Map the label directly
@@ -68,7 +68,7 @@ figma.connect(
 // Variant for item with left slot only
 figma.connect(
     Breadcrumb,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2159-6521',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-493172&t=Igz9fmVsO5gD0NMR-4',
     {
         variant: { hasLeftSlot: true, hasRightSlot: false },
         props: {
@@ -93,7 +93,7 @@ figma.connect(
 // Variant for item with right slot only
 figma.connect(
     Breadcrumb,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2159-6521',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-493172&t=Igz9fmVsO5gD0NMR-4',
     {
         variant: { hasLeftSlot: false, hasRightSlot: true },
         props: {
@@ -118,7 +118,7 @@ figma.connect(
 // Variant for item with both slots
 figma.connect(
     Breadcrumb,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2159-6521',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-493172&t=Igz9fmVsO5gD0NMR-4',
     {
         variant: { hasLeftSlot: true, hasRightSlot: true },
         props: {
@@ -145,7 +145,7 @@ figma.connect(
 // Variant for simple item (no slots)
 figma.connect(
     Breadcrumb,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2159-6521',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-493172&t=Igz9fmVsO5gD0NMR-4',
     {
         variant: { hasLeftSlot: false, hasRightSlot: false },
         props: {
@@ -166,7 +166,7 @@ figma.connect(
 // Example showing a complete breadcrumb navigation
 figma.connect(
     Breadcrumb,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2159-6521',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-493172&t=Igz9fmVsO5gD0NMR-4',
     {
         variant: { states: 'default' },
         props: {
@@ -214,7 +214,7 @@ figma.connect(
 // Active state variant (last item in breadcrumb)
 figma.connect(
     Breadcrumb,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2159-6521',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-493172&t=Igz9fmVsO5gD0NMR-4',
     {
         variant: { states: 'active' },
         props: {
@@ -253,7 +253,7 @@ figma.connect(
 // Full Breadcrumb component - base example
 figma.connect(
     Breadcrumb,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2169-255',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-493172&t=Igz9fmVsO5gD0NMR-4',
     {
         example: () => (
             <Breadcrumb

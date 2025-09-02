@@ -1,3 +1,5 @@
+import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
+
 export enum SelectMenuAlignment {
     START = 'start',
     CENTER = 'center',
@@ -57,6 +59,16 @@ export type SelectMenuItemType = {
     disabled?: boolean
     onClick?: () => void
     subMenu?: SelectMenuItemType[]
+    tooltip?: string | React.ReactNode
+    tooltipProps?: {
+        side?: TooltipSide
+        align?: TooltipAlign
+        size?: TooltipSize
+        showArrow?: boolean
+        delayDuration?: number
+        offset?: number
+    }
+    disableTruncation?: boolean
 }
 
 export type SingleSelectProps = {

@@ -12,6 +12,7 @@ import {
     MultiSelectMenuAlignment,
     MultiSelectMenuSize,
     type MultiSelectMenuGroupType,
+    MultiSelectMenuSide,
 } from '../MultiSelect/types'
 
 export const ColumnManager = <T extends Record<string, unknown>>({
@@ -68,6 +69,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             {mobileConfig.isMobile ? (
                 <MultiSelect
                     label=""
+                    side={MultiSelectMenuSide.BOTTOM}
                     placeholder="Select columns to display"
                     variant={MultiSelectVariant.CONTAINER}
                     size={MultiSelectMenuSize.MEDIUM}
@@ -103,6 +105,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                 <MultiSelect
                     label=""
                     placeholder="Manage Columns"
+                    side={MultiSelectMenuSide.BOTTOM}
                     variant={MultiSelectVariant.NO_CONTAINER}
                     alignment={MultiSelectMenuAlignment.END}
                     size={MultiSelectMenuSize.SMALL}

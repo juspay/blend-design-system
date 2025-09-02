@@ -32,6 +32,47 @@ export enum LegendsChangeType {
     DECREASE = 'decrease',
 }
 
+export enum AxisIntervalType {
+    PRESERVE_START = 'preserveStart',
+    PRESERVE_END = 'preserveEnd',
+    PRESERVE_START_END = 'preserveStartEnd',
+}
+
+export enum AxisType {
+    DATE_TIME = 'dateTime',
+    CURRENCY = 'currency',
+    PERCENTAGE = 'percentage',
+    NUMBER = 'number',
+}
+
+export type TickProps = {
+    x?: number
+    y?: number
+    payload?: {
+        value: string | number
+        index?: number
+        coordinate?: number
+    }
+    [key: string]: unknown
+}
+
+export type AxisConfig = {
+    label?: string
+    showLabel?: boolean
+    interval?: number | AxisIntervalType
+    show?: boolean
+    type?: AxisType
+    tickFormatter?: (value: string | number) => string
+    customTick?: React.ComponentType<TickProps>
+    dateOnly?: boolean
+    smart?: boolean
+    timeZone?: string
+    hour12?: boolean
+}
+
+export type XAxisConfig = AxisConfig
+export type YAxisConfig = AxisConfig
+
 export type NewNestedDataPoint = {
     name: string
     data: {
@@ -52,19 +93,36 @@ export type RenderChartProps = {
     lineKeys: string[]
     colors: string[]
     setHoveredKey: (key: string | null) => void
-    xAxisLabel?: string
-    yAxisLabel?: string
     data: NewNestedDataPoint[]
     selectedKeys: string[]
     isSmallScreen?: boolean
+    barsize?: number
+    xAxis?: XAxisConfig
+    yAxis?: YAxisConfig
+}
+
+export type CoreChartProps = {
+    chartType?: ChartType
+    data: NewNestedDataPoint[]
+    colors?: string[]
+    barsize?: number
+    xAxis?: XAxisConfig
+    yAxis?: YAxisConfig
+    height?: number | string
+    width?: number | string
+    isSmallScreen?: boolean
+
+    hoveredKey?: string | null
+    onHoveredKeyChange?: (key: string | null) => void
+    selectedKeys?: string[]
+
+    enableHover?: boolean
 }
 
 export type ChartsProps = {
     chartType?: ChartType
     data: NewNestedDataPoint[]
     colors?: string[]
-    xAxisLabel?: string
-    yAxisLabel?: string
     slot1?: ReactNode
     slot2?: ReactNode
     slot3?: ReactNode
@@ -72,6 +130,9 @@ export type ChartsProps = {
     chartHeaderSlot: ReactNode
     stackedLegends?: boolean
     stackedLegendsData?: StackedLegendsDataPoint[]
+    barsize?: number
+    xAxis?: XAxisConfig
+    yAxis?: YAxisConfig
 }
 
 export type FlattenedDataPoint = {
@@ -114,4 +175,6 @@ export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {
     setHoveredKey: (key: string) => void
     chartType: ChartType
     selectedKeys: string[]
+    xAxis?: XAxisConfig
+    yAxis?: YAxisConfig
 }

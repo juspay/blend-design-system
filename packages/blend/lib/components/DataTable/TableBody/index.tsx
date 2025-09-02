@@ -672,7 +672,6 @@ const TableBody = forwardRef<
                                                   onClick={(e) =>
                                                       e.stopPropagation()
                                                   }
-                                                  padding={`${FOUNDATION_THEME.unit[7]} ${FOUNDATION_THEME.unit[4]}`}
                                               >
                                                   <Checkbox
                                                       checked={
@@ -896,9 +895,6 @@ const TableBody = forwardRef<
                                                           tableToken.dataTable
                                                               .table.body.cell
                                                               .fontSize,
-                                                      padding:
-                                                          FOUNDATION_THEME
-                                                              .unit[16],
                                                   }}
                                               >
                                                   <Block

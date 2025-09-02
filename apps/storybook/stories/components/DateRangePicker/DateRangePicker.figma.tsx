@@ -38,7 +38,7 @@ import { DateRangePicker, DateRangePreset } from '@juspay/blend-design-system'
 // Base DateRangePicker connection
 figma.connect(
     DateRangePicker,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4904-5741&t=O53E5LTqGyp5e0cp-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18797-292891&t=2L1Yl830ZKZjFcrt-11',
     {
         props: {
             // Note: The DateRangePicker Figma component doesn't expose properties

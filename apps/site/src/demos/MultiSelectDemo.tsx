@@ -31,6 +31,10 @@ import {
     MultiSelectMenuSide,
     MultiSelectSelectionTagType,
 } from '../../../../packages/blend/lib/components/MultiSelect'
+import {
+    TooltipSide,
+    TooltipSize,
+} from '../../../../packages/blend/lib/components/Tooltip/types'
 
 const MultiSelectDemo = () => {
     // Playground state
@@ -158,6 +162,17 @@ const MultiSelectDemo = () => {
         []
     )
     const [combinedFeaturesSelected, setCombinedFeaturesSelected] = useState<
+        string[]
+    >([])
+
+    // Truncation demo state
+    const [truncationBasicSelected, setTruncationBasicSelected] = useState<
+        string[]
+    >([])
+    const [truncationCustomSelected, setTruncationCustomSelected] = useState<
+        string[]
+    >([])
+    const [truncationMixedSelected, setTruncationMixedSelected] = useState<
         string[]
     >([])
 
@@ -416,6 +431,140 @@ const MultiSelectDemo = () => {
         },
     ]
 
+    // Truncation test data
+    const truncationItems: MultiSelectMenuGroupType[] = [
+        {
+            groupLabel: 'Long Text Examples with Automatic Tooltips',
+            showSeparator: true,
+            items: [
+                {
+                    label: 'This is an extremely long label that will definitely be truncated in most dropdown configurations and should automatically show a tooltip',
+                    value: 'long-auto-1',
+                    subLabel:
+                        'This is also a very long sublabel that might get truncated and should show tooltip content automatically when hovered',
+                },
+                {
+                    label: 'Another exceptionally long option name that exceeds typical dropdown width limits and demonstrates automatic truncation detection',
+                    value: 'long-auto-2',
+                    subLabel: 'Short sub',
+                },
+                {
+                    label: 'Medium length option that might truncate on smaller screens',
+                    value: 'medium-auto-1',
+                    subLabel:
+                        'This sublabel is quite long and will likely be truncated on smaller containers or narrow dropdowns',
+                },
+            ],
+        },
+        {
+            groupLabel: 'Custom Tooltip Examples',
+            showSeparator: true,
+            items: [
+                {
+                    label: 'Database Configuration Manager',
+                    value: 'custom-tooltip-1',
+                    subLabel: 'Advanced settings',
+                    slot1: <Database size={16} />,
+                    tooltip:
+                        'This option configures database connections, connection pooling, transaction handling, and backup settings for your application',
+                    tooltipProps: {
+                        side: TooltipSide.RIGHT,
+                        size: TooltipSize.LARGE,
+                    },
+                },
+                {
+                    label: 'Cloud Storage Integration Service',
+                    value: 'custom-tooltip-2',
+                    subLabel: 'File management',
+                    slot1: <Server size={16} />,
+                    tooltip: (
+                        <div>
+                            <strong>Cloud Storage Service</strong>
+                            <br />
+                            <br />
+                            <strong>Supported Providers:</strong>
+                            <br />
+                            • AWS S3 - Scalable object storage
+                            <br />
+                            • Google Cloud Storage - Enterprise-grade
+                            <br />
+                            • Azure Blob Storage - Microsoft cloud
+                            <br />
+                            <br />
+                            <strong>Features:</strong>
+                            <br />
+                            • Automatic file upload/download
+                            <br />
+                            • Real-time synchronization
+                            <br />• Advanced security and encryption
+                        </div>
+                    ),
+                },
+                {
+                    label: 'API Gateway and Rate Limiting System',
+                    value: 'custom-tooltip-3',
+                    subLabel: 'Security & performance',
+                    slot1: <Shield size={16} />,
+                    tooltip:
+                        'Manages API requests, implements rate limiting, handles authentication, and provides detailed analytics for all API endpoints in your system',
+                },
+            ],
+        },
+        {
+            groupLabel: 'Mixed Content Examples',
+            items: [
+                {
+                    label: 'Short item',
+                    value: 'short-1',
+                    subLabel: 'Brief description',
+                },
+                {
+                    label: 'This is a longer item name that demonstrates mixed content lengths',
+                    value: 'mixed-1',
+                    subLabel: 'Short',
+                    slot1: <Star size={16} />,
+                    slot2: (
+                        <span style={{ color: 'green', fontSize: '12px' }}>
+                            ●
+                        </span>
+                    ),
+                },
+                {
+                    label: 'No Truncation Example',
+                    value: 'no-truncate-1',
+                    subLabel:
+                        "This item has truncation disabled so it won't show automatic tooltips even if the text is very long",
+                    disableTruncation: true,
+                    tooltip:
+                        'This item has truncation disabled but still shows this custom tooltip when you hover over it',
+                },
+                {
+                    label: 'Very Long Item Name That Will Be Truncated With Multiple Slots And Custom Tooltip Content',
+                    value: 'complex-1',
+                    subLabel:
+                        'This is a complex item with multiple slots, long text, and custom tooltip functionality',
+                    slot1: <Settings size={16} />,
+                    slot2: (
+                        <span
+                            style={{
+                                backgroundColor: '#e3f2fd',
+                                color: '#1976d2',
+                                padding: '2px 6px',
+                                borderRadius: '4px',
+                                fontSize: '10px',
+                            }}
+                        >
+                            NEW
+                        </span>
+                    ),
+                    slot3: <Target size={14} />,
+                    tooltip:
+                        'This complex item demonstrates how tooltips work with multiple slots, long labels, and various UI elements combined together',
+                },
+            ],
+        },
+    ]
+
     // Option arrays for controls
     const sizeOptions: MultiSelectMenuGroupType[] = [
         {
@@ -523,6 +672,9 @@ const MultiSelectDemo = () => {
         setDividersDisabledSelected([])
         setDividersMobileSelected([])
         setDividersComparisonSelected([])
+        setTruncationBasicSelected([])
+        setTruncationCustomSelected([])
+        setTruncationMixedSelected([])
         addSnackbar({
             header: 'All Selections Cleared',
             description: 'All multi-select values have been reset',
@@ -865,16 +1017,12 @@ const MultiSelectDemo = () => {
                                 false)
                             </li>
                             <li>
-                                • <strong>showActionButtons = true</strong> (was
-                                false)
+                                • <strong>Action buttons auto-show</strong> when
+                                primaryAction or secondaryAction is provided
                             </li>
                             <li>
-                                • <strong>Default Apply button</strong> with
-                                "Apply" text
-                            </li>
-                            <li>
-                                • <strong>Default Clear All button</strong> with
-                                "Clear All" text
+                                • <strong>No default action buttons</strong> -
+                                only show when explicitly provided
                             </li>
                         </ul>
                         <ul className="text-sm text-green-800 space-y-1">
@@ -899,12 +1047,133 @@ const MultiSelectDemo = () => {
                     </div>
                     <div className="mt-3 p-2 bg-white rounded border-l-4 border-green-400">
                         <p className="text-sm text-green-700">
-                            <strong>Migration Note:</strong> Existing
-                            implementations will automatically get these new
-                            defaults. To disable, explicitly set{' '}
-                            <code>enableSearch={false}</code>
-                            and <code>showActionButtons={false}</code>.
+                            <strong>Migration Note:</strong> Action buttons are
+                            now hidden by default and only show when
+                            primaryAction or secondaryAction props are provided.
+                            This is a breaking change from previous versions.
                         </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Action Button Behavior</h2>
+                <p className="text-gray-600">
+                    Action buttons are now hidden by default and only appear
+                    when primaryAction or secondaryAction props are provided.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            No Action Buttons (Default)
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Without primaryAction or secondaryAction, no action
+                            buttons are shown.
+                        </p>
+                        <MultiSelect
+                            label="Select Skills"
+                            items={skillItems}
+                            selectedValues={basicSimpleSelected}
+                            onChange={handleMultiSelectChange(
+                                basicSimpleSelected,
+                                setBasicSimpleSelected
+                            )}
+                            placeholder="Choose skills"
+                            enableSearch={true}
+                            enableSelectAll={true}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">With Primary Action</h3>
+                        <p className="text-sm text-gray-600">
+                            Action buttons automatically appear when
+                            primaryAction is provided.
+                        </p>
+                        <MultiSelect
+                            label="Select Skills"
+                            items={skillItems}
+                            selectedValues={actionButtonsSelected}
+                            onChange={handleMultiSelectChange(
+                                actionButtonsSelected,
+                                setActionButtonsSelected
+                            )}
+                            placeholder="Choose skills"
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            primaryAction={{
+                                text: 'Apply Selection',
+                                onClick: () => {
+                                    console.log(
+                                        'Applied skills:',
+                                        actionButtonsSelected
+                                    )
+                                },
+                            }}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">With Both Actions</h3>
+                        <p className="text-sm text-gray-600">
+                            Both primary and secondary action buttons are shown
+                            when provided.
+                        </p>
+                        <MultiSelect
+                            label="Select Skills"
+                            items={skillItems}
+                            selectedValues={searchMobileSelected}
+                            onChange={handleMultiSelectChange(
+                                searchMobileSelected,
+                                setSearchMobileSelected
+                            )}
+                            placeholder="Choose skills"
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            primaryAction={{
+                                text: 'Apply',
+                                onClick: () => {
+                                    console.log(
+                                        'Applied skills:',
+                                        searchMobileSelected
+                                    )
+                                },
+                            }}
+                            secondaryAction={{
+                                text: 'Reset',
+                                onClick: () => {
+                                    setSearchMobileSelected([])
+                                },
+                            }}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Explicit Control</h3>
+                        <p className="text-sm text-gray-600">
+                            You can still explicitly control with
+                            showActionButtons={false} even when actions are
+                            provided.
+                        </p>
+                        <MultiSelect
+                            label="Select Skills"
+                            items={skillItems}
+                            selectedValues={basicTextSelected}
+                            onChange={handleMultiSelectChange(
+                                basicTextSelected,
+                                setBasicTextSelected
+                            )}
+                            placeholder="Choose skills"
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            showActionButtons={false}
+                            primaryAction={{
+                                text: "This Won't Show",
+                                onClick: () => {},
+                            }}
+                        />
                     </div>
                 </div>
             </div>
@@ -1145,7 +1414,6 @@ const MultiSelectDemo = () => {
                             placeholder="Choose technologies"
                             enableSearch={true}
                             enableSelectAll={true}
-                            showActionButtons={true}
                             primaryAction={{
                                 text: 'Apply Filters',
                                 onClick: () => {
@@ -2305,7 +2573,6 @@ const MultiSelectDemo = () => {
                             showItemDividers={true}
                             enableSearch={true}
                             enableSelectAll={true}
-                            showActionButtons={true}
                             primaryAction={{
                                 text: 'Apply All',
                                 onClick: () => {
@@ -2370,6 +2637,189 @@ const MultiSelectDemo = () => {
                             work with all existing props and variants
                         </li>
                     </ul>
+                </div>
+            </div>
+
+            {/* Truncation & Tooltip Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    ✨ Truncation & Tooltip Examples
+                </h2>
+                <p className="text-gray-600">
+                    <strong>
+                        NEW: Automatic truncation detection with tooltips!
+                    </strong>
+                    MultiSelect now automatically detects when text is truncated
+                    and shows helpful tooltips. You can also add custom tooltips
+                    for enhanced user experience.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Automatic Truncation Tooltips
+                        </h3>
+                        <MultiSelect
+                            label="Long Text Options"
+                            sublabel="Hover over truncated items to see full text"
+                            items={truncationItems.slice(0, 1)} // First group only
+                            selectedValues={truncationBasicSelected}
+                            onChange={handleMultiSelectChange(
+                                truncationBasicSelected,
+                                setTruncationBasicSelected
+                            )}
+                            placeholder="Select items with long text..."
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            maxWidth={300} // Constrain width to force truncation
+                            useDrawerOnMobile={false}
+                        />
+                        {truncationBasicSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        Auto-Tooltip Items (
+                                        {truncationBasicSelected.length}):
+                                    </strong>{' '}
+                                    {truncationBasicSelected
+                                        .slice(0, 2)
+                                        .join(', ')}
+                                    {truncationBasicSelected.length > 2 &&
+                                        ` +${truncationBasicSelected.length - 2} more`}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    🔍 Tooltips appear automatically when text
+                                    is truncated
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Custom Tooltip Content
+                        </h3>
+                        <MultiSelect
+                            label="Enhanced Options"
+                            sublabel="Custom tooltips with rich content"
+                            items={truncationItems.slice(1, 2)} // Second group only
+                            selectedValues={truncationCustomSelected}
+                            onChange={handleMultiSelectChange(
+                                truncationCustomSelected,
+                                setTruncationCustomSelected
+                            )}
+                            placeholder="Select enhanced options..."
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            maxWidth={320}
+                            useDrawerOnMobile={false}
+                        />
+                        {truncationCustomSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        Custom Tooltip Items (
+                                        {truncationCustomSelected.length}):
+                                    </strong>{' '}
+                                    {truncationCustomSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    💡 Rich tooltip content with formatting and
+                                    details
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Mixed Content & Options
+                        </h3>
+                        <MultiSelect
+                            label="Advanced Examples"
+                            sublabel="Mix of auto, custom, and disabled tooltips"
+                            items={truncationItems.slice(2)} // Third group only
+                            selectedValues={truncationMixedSelected}
+                            onChange={handleMultiSelectChange(
+                                truncationMixedSelected,
+                                setTruncationMixedSelected
+                            )}
+                            placeholder="Select mixed content..."
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                            maxWidth={300}
+                            useDrawerOnMobile={false}
+                        />
+                        {truncationMixedSelected.length > 0 && (
+                            <div className="p-3 bg-purple-50 rounded-lg">
+                                <p className="text-sm text-purple-700">
+                                    <strong>
+                                        Mixed Content (
+                                        {truncationMixedSelected.length}):
+                                    </strong>{' '}
+                                    {truncationMixedSelected
+                                        .slice(0, 3)
+                                        .join(', ')}
+                                    {truncationMixedSelected.length > 3 &&
+                                        ` +${truncationMixedSelected.length - 3} more`}
+                                </p>
+                                <p className="text-xs text-purple-600 mt-1">
+                                    ⚙️ Demonstrates various tooltip
+                                    configurations
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+                    <h4 className="font-semibold text-blue-900 mb-2">
+                        🎉 Truncation & Tooltip Features:
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul className="text-sm text-blue-800 space-y-1">
+                            <li>
+                                • <strong>Automatic Detection:</strong> Uses
+                                ResizeObserver to detect truncation
+                            </li>
+                            <li>
+                                • <strong>Smart Tooltips:</strong> Only shows
+                                tooltips when text is actually cut off
+                            </li>
+                            <li>
+                                • <strong>Custom Content:</strong> Support for
+                                rich tooltip content with formatting
+                            </li>
+                            <li>
+                                • <strong>Responsive:</strong> Updates
+                                automatically when container size changes
+                            </li>
+                        </ul>
+                        <ul className="text-sm text-blue-800 space-y-1">
+                            <li>
+                                • <strong>Both Labels:</strong> Works for main
+                                labels and sublabels independently
+                            </li>
+                            <li>
+                                • <strong>Configurable:</strong> Disable
+                                truncation detection per item if needed
+                            </li>
+                            <li>
+                                • <strong>Performance:</strong> Efficient
+                                detection with proper cleanup
+                            </li>
+                            <li>
+                                • <strong>Accessible:</strong> Maintains proper
+                                focus and navigation
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="mt-3 p-2 bg-white rounded border-l-4 border-blue-400">
+                        <p className="text-sm text-blue-700">
+                            <strong>API Usage:</strong> Add <code>tooltip</code>{' '}
+                            property for custom content,
+                            <code>tooltipProps</code> for configuration, or{' '}
+                            <code>disableTruncation: true</code> to disable
+                            auto-tooltips.
+                        </p>
+                    </div>
                 </div>
             </div>
 

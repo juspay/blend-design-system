@@ -59,7 +59,7 @@ export const PAGE_LAYOUT = {
     title: 'scroll-m-20 text-4xl font-semibold tracking-tight sm:text-3xl xl:text-4xl text-[var(--primary)] mb-2',
     subtitle: 'mt-2 text-[var(--muted-foreground)] mb-8',
     grid: 'grid grid-cols-1 lg:grid-cols-2 gap-4 not-prose',
-    toc: 'doc-toc-ctr max-w-[240px] w-full',
+    toc: ' max-w-[240px] w-full',
     tocSticky: 'sticky top-4',
 } as const
 

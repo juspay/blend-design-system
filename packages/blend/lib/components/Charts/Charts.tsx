@@ -1,8 +1,8 @@
 import { ChartLegendPosition, ChartsProps, ChartType } from './types'
 import { ResponsiveContainer } from 'recharts'
 import { DEFAULT_COLORS } from './utils'
-import { ChartHeader } from './ChartHeader'
-import { ChartLegends } from './ChartLegend'
+import ChartHeader from './ChartHeader'
+import ChartLegends from './ChartLegend'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { renderChart } from './renderChart'
 import { transformNestedData } from './ChartUtils'
@@ -20,8 +20,6 @@ const Charts: React.FC<ChartsProps> = ({
     chartType = ChartType.LINE,
     data,
     colors,
-    xAxisLabel,
-    yAxisLabel,
     slot1,
     slot2,
     slot3,
@@ -29,6 +27,9 @@ const Charts: React.FC<ChartsProps> = ({
     chartHeaderSlot,
     stackedLegends = false,
     stackedLegendsData,
+    barsize,
+    xAxis,
+    yAxis,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -47,6 +48,22 @@ const Charts: React.FC<ChartsProps> = ({
     const flattenedData = transformNestedData(data, selectedKeys)
 
     const lineKeys = data.length > 0 ? Object.keys(data[0].data) : []
+
+    const mergedXAxis = {
+        label: xAxis?.label,
+        showLabel: xAxis?.showLabel || true,
+        interval: xAxis?.interval,
+        show: xAxis?.show || true,
+        ...xAxis,
+    }
+
+    const mergedYAxis = {
+        label: yAxis?.label,
+        showLabel: yAxis?.showLabel || true,
+        interval: yAxis?.interval,
+        show: yAxis?.show || true,
+        ...yAxis,
+    }
 
     const isLargeScreen = () => {
         return window.innerWidth >= 1024
@@ -252,13 +269,20 @@ const Charts: React.FC<ChartsProps> = ({
                                           lineKeys,
                                           colors,
                                           setHoveredKey,
-                                          xAxisLabel,
-                                          yAxisLabel: isSmallScreen
-                                              ? undefined
-                                              : yAxisLabel,
                                           data,
                                           selectedKeys,
                                           isSmallScreen: false,
+                                          barsize,
+                                          xAxis: mergedXAxis,
+                                          yAxis: {
+                                              ...mergedYAxis,
+                                              label: isSmallScreen
+                                                  ? undefined
+                                                  : mergedYAxis.label,
+                                              showLabel: isSmallScreen
+                                                  ? false
+                                                  : mergedYAxis.showLabel,
+                                          },
                                       })}
                                   </ResponsiveContainer>
                               </Block>
@@ -286,13 +310,20 @@ const Charts: React.FC<ChartsProps> = ({
                                           lineKeys,
                                           colors,
                                           setHoveredKey,
-                                          xAxisLabel,
-                                          yAxisLabel: isSmallScreen
-                                              ? undefined
-                                              : yAxisLabel,
                                           data,
                                           selectedKeys,
                                           isSmallScreen,
+                                          barsize,
+                                          xAxis: mergedXAxis,
+                                          yAxis: {
+                                              ...mergedYAxis,
+                                              label: isSmallScreen
+                                                  ? undefined
+                                                  : mergedYAxis.label,
+                                              showLabel: isSmallScreen
+                                                  ? false
+                                                  : mergedYAxis.showLabel,
+                                          },
                                       })}
                                   </ResponsiveContainer>
                               </Block>
@@ -439,13 +470,20 @@ const Charts: React.FC<ChartsProps> = ({
                                           lineKeys,
                                           colors,
                                           setHoveredKey,
-                                          xAxisLabel,
-                                          yAxisLabel: isSmallScreen
-                                              ? undefined
-                                              : yAxisLabel,
                                           data,
                                           selectedKeys,
                                           isSmallScreen,
+                                          barsize,
+                                          xAxis: mergedXAxis,
+                                          yAxis: {
+                                              ...mergedYAxis,
+                                              label: isSmallScreen
+                                                  ? undefined
+                                                  : mergedYAxis.label,
+                                              showLabel: isSmallScreen
+                                                  ? false
+                                                  : mergedYAxis.showLabel,
+                                          },
                                       })}
                                   </ResponsiveContainer>
                                   {isSmallScreen && (
@@ -572,13 +610,20 @@ const Charts: React.FC<ChartsProps> = ({
                                           lineKeys,
                                           colors,
                                           setHoveredKey,
-                                          xAxisLabel,
-                                          yAxisLabel: isSmallScreen
-                                              ? undefined
-                                              : yAxisLabel,
                                           data,
                                           selectedKeys,
                                           isSmallScreen,
+                                          barsize,
+                                          xAxis: mergedXAxis,
+                                          yAxis: {
+                                              ...mergedYAxis,
+                                              label: isSmallScreen
+                                                  ? undefined
+                                                  : mergedYAxis.label,
+                                              showLabel: isSmallScreen
+                                                  ? false
+                                                  : mergedYAxis.showLabel,
+                                          },
                                       })}
                                   </ResponsiveContainer>
                               </Block>

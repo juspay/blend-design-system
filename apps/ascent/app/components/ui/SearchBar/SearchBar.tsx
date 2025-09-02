@@ -257,13 +257,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchIndex }) => {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-[var(--muted-foreground)]"
+                    className="text-[var(--muted-foreground)] "
                 >
                     <circle cx="11" cy="11" r="8" />
                     <path d="m21 21-4.35-4.35" />
                 </svg>
-                <span className="flex-1 text-left">
-                    Search documentation...
+                <span className="flex-1 text-left sm:block hidden">
+                    Search documentation
                 </span>
                 <div className="hidden sm:flex gap-1">
                     <kbd className="bg-[var(--background)] text-[var(--muted-foreground)] pointer-events-none flex h-5 items-center justify-center gap-1 rounded border border-[var(--border)] px-1.5 font-sans text-[0.7rem] font-medium select-none">
@@ -605,7 +605,7 @@ const DesktopSearch = ({
                         </div>
                         <input
                             type="text"
-                            placeholder="Search documentation..."
+                            placeholder="Search documentation"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             className="w-full pl-10 pr-14 py-2 text-sm bg-transparent border-none outline-none text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] placeholder:font-normal font-medium"

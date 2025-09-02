@@ -38,7 +38,7 @@ import {
 
 figma.connect(
     Popover,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3971-365&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-671615&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Size mapping
@@ -116,7 +116,7 @@ figma.connect(
 // Variant with no actions
 figma.connect(
     Popover,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3971-365&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-671615&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { actions: false },
         props: {
@@ -147,7 +147,7 @@ figma.connect(
 // Variant with actions enabled but no buttons selected
 figma.connect(
     Popover,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3971-365&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-671615&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { actions: true, primary: false, secondary: false },
         props: {
@@ -176,7 +176,7 @@ figma.connect(
 // Variant with primary action only
 figma.connect(
     Popover,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3971-365&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-671615&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { actions: true, primary: true, secondary: false },
         props: {
@@ -209,7 +209,7 @@ figma.connect(
 // Variant with secondary action only
 figma.connect(
     Popover,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3971-365&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-671615&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { actions: true, primary: false, secondary: true },
         props: {
@@ -243,7 +243,7 @@ figma.connect(
 // Variant with both actions
 figma.connect(
     Popover,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3971-365&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-671615&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { actions: true, primary: true, secondary: true },
         props: {
@@ -284,7 +284,7 @@ figma.connect(
 // Small size variant with close button and no actions
 figma.connect(
     Popover,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3971-365&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-671615&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'sm', close: true, actions: false },
         example: () => (
@@ -305,7 +305,7 @@ figma.connect(
 // Small size variant with close button and actions
 figma.connect(
     Popover,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=3971-365&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-671615&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'sm', close: true, actions: true },
         props: {
