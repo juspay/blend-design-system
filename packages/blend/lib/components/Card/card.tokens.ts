@@ -7,13 +7,9 @@ export type CardState = 'default' | 'hover'
 
 export type CardTokenType = {
     maxWidth: CSSObject['maxWidth']
-    border: {
-        [key in CardState]?: CSSObject['border']
-    }
+    border: CSSObject['border']
     borderRadius: CSSObject['borderRadius']
-    backgroundColor: {
-        [key in CardState]?: CSSObject['backgroundColor']
-    }
+    backgroundColor: CSSObject['backgroundColor']
     boxShadow: CSSObject['boxShadow']
     padding: CSSObject['padding']
 
@@ -28,13 +24,12 @@ export type CardTokenType = {
             color: CSSObject['color']
         }
         tag: {
-            marginLeft: CSSObject['marginLeft']
+            gap: CSSObject['gap']
         }
         subHeader: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: CSSObject['color']
-            marginTop: CSSObject['marginTop']
         }
     }
 
@@ -52,7 +47,7 @@ export type CardTokenType = {
     }
 
     spacing: {
-        headerToSubHeader: CSSObject['marginTop']
+        headerToSubHeader: CSSObject['gap']
         subHeaderToBody: CSSObject['marginTop']
         bodySlot1ToTitle: CSSObject['marginTop']
         titleToContent: CSSObject['marginTop']
@@ -80,17 +75,12 @@ export const getCardTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveCardTokens => {
     return {
+        // $component.[$target].$property.[$variant].[$type].[$state]
         sm: {
             maxWidth: 'auto',
-            border: {
-                default: `1px solid ${foundationToken.colors.gray[200]}`,
-                hover: `1px solid ${foundationToken.colors.gray[300]}`,
-            },
+            border: `1px solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[12],
-            backgroundColor: {
-                default: foundationToken.colors.gray[0],
-                hover: foundationToken.colors.gray[25],
-            },
+            backgroundColor: foundationToken.colors.gray[0],
             boxShadow: foundationToken.shadows.sm,
             padding: foundationToken.unit[16],
 
@@ -105,13 +95,12 @@ export const getCardTokens = (
                     color: foundationToken.colors.gray[800],
                 },
                 tag: {
-                    marginLeft: foundationToken.unit[8],
+                    gap: foundationToken.unit[8],
                 },
                 subHeader: {
                     fontSize: foundationToken.font.size.body.sm.fontSize,
                     fontWeight: foundationToken.font.weight[400],
                     color: foundationToken.colors.gray[500],
-                    marginTop: foundationToken.unit[2],
                 },
             },
 
@@ -129,7 +118,7 @@ export const getCardTokens = (
             },
 
             spacing: {
-                headerToSubHeader: foundationToken.unit[4],
+                headerToSubHeader: foundationToken.unit[2],
                 subHeaderToBody: foundationToken.unit[16],
                 bodySlot1ToTitle: foundationToken.unit[14],
                 titleToContent: foundationToken.unit[6],
@@ -153,15 +142,9 @@ export const getCardTokens = (
         },
         lg: {
             maxWidth: 'auto',
-            border: {
-                default: `1px solid ${foundationToken.colors.gray[200]}`,
-                hover: `1px solid ${foundationToken.colors.gray[300]}`,
-            },
+            border: `1px solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[12],
-            backgroundColor: {
-                default: foundationToken.colors.gray[0],
-                hover: foundationToken.colors.gray[25],
-            },
+            backgroundColor: foundationToken.colors.gray[0],
             boxShadow: foundationToken.shadows.sm,
             padding: foundationToken.unit[16],
 
@@ -176,18 +159,17 @@ export const getCardTokens = (
                     color: foundationToken.colors.gray[800],
                 },
                 tag: {
-                    marginLeft: foundationToken.unit[8],
+                    gap: foundationToken.unit[8],
                 },
                 subHeader: {
                     fontSize: foundationToken.font.size.body.sm.fontSize,
                     fontWeight: foundationToken.font.weight[400],
                     color: foundationToken.colors.gray[500],
-                    marginTop: foundationToken.unit[2],
                 },
             },
 
             body: {
-                padding: foundationToken.unit[20],
+                padding: foundationToken.unit[16],
                 title: {
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
@@ -200,7 +182,7 @@ export const getCardTokens = (
             },
 
             spacing: {
-                headerToSubHeader: foundationToken.unit[4],
+                headerToSubHeader: foundationToken.unit[2],
                 subHeaderToBody: foundationToken.unit[16],
                 bodySlot1ToTitle: foundationToken.unit[14],
                 titleToContent: foundationToken.unit[6],

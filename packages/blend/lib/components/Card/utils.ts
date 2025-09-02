@@ -58,7 +58,7 @@ export const getSubHeaderStyles = (cardToken: CardTokenType) => ({
     fontSize: cardToken.header.subHeader.fontSize,
     fontWeight: cardToken.header.subHeader.fontWeight,
     color: cardToken.header.subHeader.color,
-    marginTop: cardToken.header.subHeader.marginTop,
+    // marginTop: cardToken.header.subHeader.marginTop,
 })
 
 /**

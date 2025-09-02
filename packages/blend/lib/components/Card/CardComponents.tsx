@@ -83,18 +83,23 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                         >
                             {headerSlot1 && <Block>{headerSlot1}</Block>}
 
-                            <Block>
+                            <Block
+                                display="flex"
+                                flexDirection="column"
+                                style={{
+                                    gap: hasSubHeader
+                                        ? getHeaderMarginBottom(
+                                              hasSubHeader,
+                                              cardToken
+                                          )
+                                        : '0',
+                                }}
+                            >
                                 <Block
                                     display="flex"
                                     alignItems="center"
                                     style={{
                                         gap: getHeaderSlotSpacing(cardToken),
-                                        marginBottom: hasSubHeader
-                                            ? getHeaderMarginBottom(
-                                                  hasSubHeader,
-                                                  cardToken
-                                              )
-                                            : '0',
                                     }}
                                 >
                                     {headerTitle && (
