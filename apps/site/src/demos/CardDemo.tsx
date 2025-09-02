@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import {
     Card,
-    CardHeaderVariant,
-    CardSlotVariant,
+    CardVariant,
+    CardAlignment,
     Tag,
     TagColor,
     TagVariant,
@@ -16,29 +16,27 @@ import {
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import {
     Star,
-    Heart,
-    MessageCircle,
     Settings,
     User,
-    Calendar,
     TrendingUp,
     MoreHorizontal,
-    Bell,
-    Download,
+    Calendar,
 } from 'lucide-react'
 
 const CardDemo = () => {
-    const [selectedVariant, setSelectedVariant] = useState<CardSlotVariant>(
-        CardSlotVariant.TOP
+    const [selectedVariant, setSelectedVariant] = useState<CardVariant>(
+        CardVariant.DEFAULT
     )
-    const [selectedHeaderVariant, setSelectedHeaderVariant] =
-        useState<CardHeaderVariant>(CardHeaderVariant.DEFAULT)
+    const [selectedAlignment, setSelectedAlignment] = useState<CardAlignment>(
+        CardAlignment.VERTICAL
+    )
+    const [centerAlign, setCenterAlign] = useState(false)
 
     const imageSlot = (
         <div
             style={{
                 width: '100%',
-                height: '100%',
+                height: '120px',
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 display: 'flex',
                 alignItems: 'center',
@@ -46,6 +44,7 @@ const CardDemo = () => {
                 color: 'white',
                 fontSize: '18px',
                 fontWeight: '600',
+                borderRadius: '8px',
             }}
         >
             Image Placeholder
@@ -55,8 +54,8 @@ const CardDemo = () => {
     const iconSlot = (
         <div
             style={{
-                width: '60px',
-                height: '60px',
+                width: '32px',
+                height: '32px',
                 background: '#f0f9ff',
                 borderRadius: '12px',
                 display: 'flex',
@@ -68,6 +67,7 @@ const CardDemo = () => {
             <TrendingUp size={24} color="#0ea5e9" />
         </div>
     )
+
     return (
         <div
             style={{
@@ -88,8 +88,8 @@ const CardDemo = () => {
                     Card Component Playground
                 </h1>
                 <p style={{ color: '#666', fontSize: '16px' }}>
-                    Explore all Card variants with different slot positions and
-                    header styles
+                    Explore the new Card structure with Default, Aligned, and
+                    Custom variants
                 </p>
             </div>
 
@@ -112,73 +112,94 @@ const CardDemo = () => {
                             fontWeight: '600',
                         }}
                     >
-                        Slot Variant
+                        Card Variant
                     </label>
                     <SingleSelect
                         label=""
-                        placeholder="Select Slot Variant"
+                        placeholder="Select Card Variant"
                         items={[
                             {
                                 items: [
                                     {
-                                        label: 'Top Slot',
-                                        value: CardSlotVariant.TOP,
+                                        label: 'Default',
+                                        value: CardVariant.DEFAULT,
                                     },
                                     {
-                                        label: 'Top Slot with Padding',
-                                        value: CardSlotVariant.TOP_WITH_PADDING,
+                                        label: 'Aligned',
+                                        value: CardVariant.ALIGNED,
                                     },
                                     {
-                                        label: 'Left Slot',
-                                        value: CardSlotVariant.LEFT,
+                                        label: 'Custom',
+                                        value: CardVariant.CUSTOM,
                                     },
                                 ],
                             },
                         ]}
                         selected={selectedVariant}
                         onSelect={(value) =>
-                            setSelectedVariant(value as CardSlotVariant)
+                            setSelectedVariant(value as CardVariant)
                         }
                     />
                 </div>
 
-                <div>
-                    <label
-                        style={{
-                            display: 'block',
-                            marginBottom: '8px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Header Variant
-                    </label>
-                    <SingleSelect
-                        label=""
-                        placeholder="Select Header Variant"
-                        items={[
-                            {
-                                items: [
+                {selectedVariant === CardVariant.ALIGNED && (
+                    <>
+                        <div>
+                            <label
+                                style={{
+                                    display: 'block',
+                                    marginBottom: '8px',
+                                    fontWeight: '600',
+                                }}
+                            >
+                                Alignment
+                            </label>
+                            <SingleSelect
+                                label=""
+                                placeholder="Select Alignment"
+                                items={[
                                     {
-                                        label: 'Default',
-                                        value: CardHeaderVariant.DEFAULT,
+                                        items: [
+                                            {
+                                                label: 'Vertical',
+                                                value: CardAlignment.VERTICAL,
+                                            },
+                                            {
+                                                label: 'Horizontal',
+                                                value: CardAlignment.HORIZONTAL,
+                                            },
+                                        ],
                                     },
-                                    {
-                                        label: 'Bordered',
-                                        value: CardHeaderVariant.BORDERED,
-                                    },
-                                    {
-                                        label: 'Bordered with Label',
-                                        value: CardHeaderVariant.BORDERED_WITH_LABEL,
-                                    },
-                                ],
-                            },
-                        ]}
-                        selected={selectedHeaderVariant}
-                        onSelect={(value) =>
-                            setSelectedHeaderVariant(value as CardHeaderVariant)
-                        }
-                    />
-                </div>
+                                ]}
+                                selected={selectedAlignment}
+                                onSelect={(value) =>
+                                    setSelectedAlignment(value as CardAlignment)
+                                }
+                            />
+                        </div>
+                        <div>
+                            <label
+                                style={{
+                                    display: 'block',
+                                    marginBottom: '8px',
+                                    fontWeight: '600',
+                                }}
+                            >
+                                Center Align
+                            </label>
+                            <Button
+                                text={centerAlign ? 'Enabled' : 'Disabled'}
+                                buttonType={
+                                    centerAlign
+                                        ? ButtonType.PRIMARY
+                                        : ButtonType.SECONDARY
+                                }
+                                size={ButtonSize.SMALL}
+                                onClick={() => setCenterAlign(!centerAlign)}
+                            />
+                        </div>
+                    </>
+                )}
             </div>
 
             {/* Explanation Note */}
@@ -190,14 +211,15 @@ const CardDemo = () => {
                     border: '1px solid #e0f2fe',
                     fontSize: '14px',
                     color: '#1e40af',
-                    marginBottom: '20px',
                 }}
             >
-                <strong>Note:</strong> When "Bordered" header variant is
-                selected, it uses the new bordered header pattern with gray 25
-                background and gray 200 border. For other variants, slot
-                selections (Top/Left) will show the legacy card patterns with
-                proper spacing and alignment.
+                <strong>Card Structure:</strong>
+                <br />• <strong>Default:</strong> Header box (gray 25) + Body
+                content with all slots
+                <br />• <strong>Aligned:</strong> Vertical/Horizontal layout, no
+                headerSlot1 & bodySlot2
+                <br />• <strong>Custom:</strong> Simple 16px padding wrapper for
+                custom content
             </div>
 
             {/* Interactive Card Example */}
@@ -212,943 +234,41 @@ const CardDemo = () => {
                     Interactive Example
                 </h2>
                 <div style={{ maxWidth: '400px' }}>
-                    {/* Standard Card */}
-                    {selectedVariant === CardSlotVariant.TOP &&
-                        selectedHeaderVariant === CardHeaderVariant.DEFAULT && (
-                            <Card
-                                title="Standard Card"
-                                titleSlot={
-                                    <Tag
-                                        text="Standard"
-                                        variant={TagVariant.SUBTLE}
-                                        color={TagColor.PRIMARY}
-                                        size={TagSize.SM}
-                                    />
-                                }
-                                headerActionSlot={
-                                    <Button
-                                        buttonType={ButtonType.SECONDARY}
-                                        size={ButtonSize.SMALL}
-                                        leadingIcon={<Settings size={16} />}
-                                    />
-                                }
-                                description="This follows the new standardized pattern with proper spacing and typography guidelines."
-                                content={
-                                    <div
-                                        style={{
-                                            padding: '12px',
-                                            backgroundColor: '#f3f4f6',
-                                            borderRadius: '6px',
-                                        }}
-                                    >
-                                        <Text style={{ fontSize: '14px' }}>
-                                            Content area with standard 16px gap
-                                            from description
-                                        </Text>
-                                    </div>
-                                }
-                                actionButton={{
-                                    text: 'Primary Action',
-                                    buttonType: ButtonType.PRIMARY,
-                                    size: ButtonSize.SMALL,
-                                }}
-                            />
-                        )}
-
-                    {/* Bordered Header Card */}
-                    {selectedHeaderVariant === CardHeaderVariant.BORDERED && (
+                    {selectedVariant === CardVariant.DEFAULT && (
                         <Card
-                            borderedHeader={{
-                                title: 'Bordered Header Card',
-                                titleSlot: (
-                                    <Tag
-                                        text="Bordered"
-                                        variant={TagVariant.ATTENTIVE}
-                                        color={TagColor.SUCCESS}
-                                        size={TagSize.SM}
-                                    />
-                                ),
-                                headerActionSlot: (
-                                    <Button
-                                        buttonType={ButtonType.SECONDARY}
-                                        size={ButtonSize.SMALL}
-                                        leadingIcon={<Settings size={16} />}
-                                    />
-                                ),
-                                headerDescription:
-                                    'Gray 25 background with gray 200 border',
-                                topSlot: (
-                                    <div
-                                        style={{
-                                            height: '60px',
-                                            backgroundColor: '#f0f9ff',
-                                            borderRadius: '8px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            border: '1px solid #e0f2fe',
-                                        }}
-                                    >
-                                        <TrendingUp size={24} color="#0ea5e9" />
-                                    </div>
-                                ),
-                                subHeaderTitle: 'Sub Header Title',
-                                description:
-                                    'Description with 6px gap from sub header title. All spacing follows the exact specifications.',
-                                content: (
-                                    <div
-                                        style={{
-                                            padding: '12px',
-                                            backgroundColor: '#f3f4f6',
-                                            borderRadius: '6px',
-                                        }}
-                                    >
-                                        <Text style={{ fontSize: '14px' }}>
-                                            Content with 14px gaps between
-                                            elements
-                                        </Text>
-                                    </div>
-                                ),
-                                actionButton: {
-                                    text: 'Bordered Action',
-                                    buttonType: ButtonType.PRIMARY,
-                                    size: ButtonSize.SMALL,
-                                },
-                            }}
-                        />
-                    )}
-
-                    {/* Legacy Top Slot Card */}
-                    {selectedVariant === CardSlotVariant.TOP &&
-                        selectedHeaderVariant !==
-                            CardHeaderVariant.BORDERED && (
-                            <Card
-                                header={{
-                                    variant: selectedHeaderVariant,
-                                    title: 'Top Slot Card',
-                                    subtitle:
-                                        selectedHeaderVariant ===
-                                        CardHeaderVariant.BORDERED_WITH_LABEL
-                                            ? undefined
-                                            : 'Image at the top',
-                                    label:
-                                        selectedHeaderVariant ===
-                                        CardHeaderVariant.BORDERED_WITH_LABEL ? (
-                                            <Tag
-                                                text="Featured"
-                                                variant={TagVariant.ATTENTIVE}
-                                                color={TagColor.SUCCESS}
-                                                size={TagSize.SM}
-                                            />
-                                        ) : undefined,
-                                    actions: (
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                            leadingIcon={<Settings size={16} />}
-                                        />
-                                    ),
-                                }}
-                                slot={{
-                                    variant: selectedVariant,
-                                    content: imageSlot,
-                                }}
-                                actionButton={{
-                                    text: 'View Details',
-                                    buttonType: ButtonType.PRIMARY,
-                                    size: ButtonSize.SMALL,
-                                }}
-                            >
+                            headerSlot1={
                                 <div
                                     style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: '12px',
-                                    }}
-                                >
-                                    <Text>
-                                        Top slot takes 50% height with image
-                                        content. Content area below with proper
-                                        spacing.
-                                    </Text>
-                                </div>
-                            </Card>
-                        )}
-
-                    {/* Legacy Top Slot with Padding (Center Aligned) */}
-                    {selectedVariant === CardSlotVariant.TOP_WITH_PADDING &&
-                        selectedHeaderVariant !==
-                            CardHeaderVariant.BORDERED && (
-                            <Card
-                                header={{
-                                    variant: selectedHeaderVariant,
-                                    title: 'Top Slot with Padding',
-                                    subtitle:
-                                        selectedHeaderVariant ===
-                                        CardHeaderVariant.BORDERED_WITH_LABEL
-                                            ? undefined
-                                            : 'Centered content',
-                                    label:
-                                        selectedHeaderVariant ===
-                                        CardHeaderVariant.BORDERED_WITH_LABEL ? (
-                                            <Tag
-                                                text="Centered"
-                                                variant={TagVariant.ATTENTIVE}
-                                                color={TagColor.SUCCESS}
-                                                size={TagSize.SM}
-                                            />
-                                        ) : undefined,
-                                    actions: (
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                            leadingIcon={<Settings size={16} />}
-                                        />
-                                    ),
-                                }}
-                                slot={{
-                                    variant: selectedVariant,
-                                    content: (
-                                        <div
-                                            style={{
-                                                textAlign: 'center',
-                                                color: 'white',
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                height: '100%',
-                                            }}
-                                        >
-                                            <User
-                                                size={32}
-                                                style={{ marginBottom: '8px' }}
-                                            />
-                                            <div
-                                                style={{
-                                                    fontSize: '16px',
-                                                    fontWeight: '600',
-                                                }}
-                                            >
-                                                Centered Content
-                                            </div>
-                                            <div
-                                                style={{
-                                                    fontSize: '14px',
-                                                    marginTop: '4px',
-                                                }}
-                                            >
-                                                Everything is center aligned
-                                            </div>
-                                        </div>
-                                    ),
-                                    centerAlign: true,
-                                }}
-                                actionButton={{
-                                    text: 'Center Action',
-                                    buttonType: ButtonType.PRIMARY,
-                                    size: ButtonSize.SMALL,
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: '12px',
-                                        textAlign: 'center',
-                                    }}
-                                >
-                                    <Text>
-                                        Content is center aligned when
-                                        centerAlign is true. Perfect for profile
-                                        cards.
-                                    </Text>
-                                </div>
-                            </Card>
-                        )}
-
-                    {/* Legacy Left Slot Card */}
-                    {selectedVariant === CardSlotVariant.LEFT &&
-                        selectedHeaderVariant !==
-                            CardHeaderVariant.BORDERED && (
-                            <Card
-                                header={{
-                                    variant: selectedHeaderVariant,
-                                    title: 'Left Slot Card',
-                                    subtitle:
-                                        selectedHeaderVariant ===
-                                        CardHeaderVariant.BORDERED_WITH_LABEL
-                                            ? undefined
-                                            : 'Icon on the left',
-                                    label:
-                                        selectedHeaderVariant ===
-                                        CardHeaderVariant.BORDERED_WITH_LABEL ? (
-                                            <Tag
-                                                text="Left"
-                                                variant={TagVariant.ATTENTIVE}
-                                                color={TagColor.SUCCESS}
-                                                size={TagSize.SM}
-                                            />
-                                        ) : undefined,
-                                    actions: (
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                            leadingIcon={<Settings size={16} />}
-                                        />
-                                    ),
-                                }}
-                                slot={{
-                                    variant: selectedVariant,
-                                    content: iconSlot,
-                                }}
-                                actionButton={{
-                                    text: 'Left Action',
-                                    buttonType: ButtonType.PRIMARY,
-                                    size: ButtonSize.SMALL,
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: '12px',
-                                    }}
-                                >
-                                    <Text>
-                                        Left slot contains icon/avatar. Content
-                                        flows to the right with proper gap
-                                        spacing.
-                                    </Text>
-                                    <div
-                                        style={{ display: 'flex', gap: '8px' }}
-                                    >
-                                        <Tag
-                                            text="Layout"
-                                            variant={TagVariant.SUBTLE}
-                                            color={TagColor.PRIMARY}
-                                            size={TagSize.SM}
-                                        />
-                                        <Tag
-                                            text="Design"
-                                            variant={TagVariant.SUBTLE}
-                                            color={TagColor.PURPLE}
-                                            size={TagSize.SM}
-                                        />
-                                    </div>
-                                </div>
-                            </Card>
-                        )}
-                </div>
-            </div>
-
-            {/* Standardized Card Examples */}
-            <div>
-                <h2
-                    style={{
-                        fontSize: '20px',
-                        fontWeight: '600',
-                        marginBottom: '16px',
-                    }}
-                >
-                    New Standardized Card Pattern
-                </h2>
-                <p
-                    style={{
-                        color: '#666',
-                        fontSize: '14px',
-                        marginBottom: '20px',
-                    }}
-                >
-                    These cards follow the new standardized content pattern:
-                    <br />• <strong>Title</strong> (Body LG, Gray 800,
-                    font-weight 600) + optional <strong>titleSlot</strong> (8px
-                    gap)
-                    <br />• <strong>headerActionSlot</strong> on the right
-                    (space-between layout)
-                    <br />• <strong>Description</strong> (Body MD, Gray 500, max
-                    2 lines with truncation, 4px gap from header)
-                    <br />• <strong>Content slot</strong> (16px gap from
-                    description)
-                    <br />• <strong>Action button</strong> (14px gap for inline
-                    buttons, 24px gap for regular buttons)
-                </p>
-
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns:
-                            'repeat(auto-fit, minmax(320px, 1fr))',
-                        gap: '20px',
-                        marginBottom: '32px',
-                    }}
-                >
-                    {/* Basic Standardized Card */}
-                    <Card
-                        title="Project Overview"
-                        description="Track your project progress and manage team collaboration effectively with real-time updates and notifications."
-                        content={
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '12px',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            fontSize: '14px',
-                                            color: '#666',
-                                        }}
-                                    >
-                                        Progress
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            fontSize: '14px',
-                                            fontWeight: '600',
-                                        }}
-                                    >
-                                        75%
-                                    </Text>
-                                </div>
-                                <div
-                                    style={{
-                                        width: '100%',
-                                        height: '8px',
-                                        backgroundColor: '#f3f4f6',
+                                        width: '24px',
+                                        height: '24px',
+                                        backgroundColor: '#3b82f6',
                                         borderRadius: '4px',
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            width: '75%',
-                                            height: '100%',
-                                            backgroundColor: '#10b981',
-                                            borderRadius: '4px',
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        }
-                        actionButton={{
-                            text: 'View Details',
-                            buttonType: ButtonType.PRIMARY,
-                            size: ButtonSize.SMALL,
-                        }}
-                    />
-
-                    <Card
-                        title="Notifications"
-                        titleSlot={
-                            <Tag
-                                text="3 New"
-                                variant={TagVariant.ATTENTIVE}
-                                color={TagColor.WARNING}
-                                size={TagSize.SM}
-                            />
-                        }
-                        headerActionSlot={
-                            <Button
-                                buttonType={ButtonType.SECONDARY}
-                                size={ButtonSize.SMALL}
-                                leadingIcon={<Bell size={16} />}
-                            />
-                        }
-                        description="Stay updated with the latest notifications from your team and projects."
-                        content={
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '8px',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        padding: '8px',
-                                        backgroundColor: '#f9fafb',
-                                        borderRadius: '6px',
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            fontSize: '14px',
-                                            fontWeight: '600',
-                                        }}
-                                    >
-                                        New message from John
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#666',
-                                        }}
-                                    >
-                                        2 minutes ago
-                                    </Text>
-                                </div>
-                                <div
-                                    style={{
-                                        padding: '8px',
-                                        backgroundColor: '#f9fafb',
-                                        borderRadius: '6px',
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            fontSize: '14px',
-                                            fontWeight: '600',
-                                        }}
-                                    >
-                                        Task completed
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#666',
-                                        }}
-                                    >
-                                        5 minutes ago
-                                    </Text>
-                                </div>
-                            </div>
-                        }
-                        actionButton={{
-                            text: 'View All',
-                            buttonType: ButtonType.SECONDARY,
-                            subType: ButtonSubType.INLINE,
-                            size: ButtonSize.SMALL,
-                        }}
-                    />
-
-                    {/* Card with Menu Action */}
-                    <Card
-                        title="Downloads"
-                        headerActionSlot={
-                            <Button
-                                buttonType={ButtonType.SECONDARY}
-                                size={ButtonSize.SMALL}
-                                leadingIcon={<MoreHorizontal size={16} />}
-                            />
-                        }
-                        description="Access and manage your downloaded files and documents from various projects and sources."
-                        content={
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '10px',
-                                }}
-                            >
-                                <div
-                                    style={{
                                         display: 'flex',
                                         alignItems: 'center',
-                                        gap: '12px',
+                                        justifyContent: 'center',
                                     }}
                                 >
-                                    <Download size={16} color="#6b7280" />
-                                    <div style={{ flex: 1 }}>
-                                        <Text
-                                            style={{
-                                                fontSize: '14px',
-                                                fontWeight: '600',
-                                            }}
-                                        >
-                                            project-report.pdf
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                fontSize: '12px',
-                                                color: '#666',
-                                            }}
-                                        >
-                                            2.4 MB
-                                        </Text>
-                                    </div>
+                                    <Star size={14} color="white" />
                                 </div>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '12px',
-                                    }}
-                                >
-                                    <Download size={16} color="#6b7280" />
-                                    <div style={{ flex: 1 }}>
-                                        <Text
-                                            style={{
-                                                fontSize: '14px',
-                                                fontWeight: '600',
-                                            }}
-                                        >
-                                            design-assets.zip
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                fontSize: '12px',
-                                                color: '#666',
-                                            }}
-                                        >
-                                            15.8 MB
-                                        </Text>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        actionButton={{
-                            text: 'Manage Files',
-                            buttonType: ButtonType.PRIMARY,
-                            size: ButtonSize.SMALL,
-                        }}
-                    />
-
-                    {/* Simple Card with just header and action */}
-                    <Card
-                        title="Quick Actions"
-                        actionButton={{
-                            text: 'Get Started',
-                            buttonType: ButtonType.PRIMARY,
-                            size: ButtonSize.SMALL,
-                        }}
-                    />
-
-                    {/* Card with long description (truncated) */}
-                    <Card
-                        title="Documentation"
-                        titleSlot={
-                            <Tag
-                                text="Updated"
-                                variant={TagVariant.SUBTLE}
-                                color={TagColor.SUCCESS}
-                                size={TagSize.SM}
-                            />
-                        }
-                        description="This is a very long description that should be truncated after two lines. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."
-                        content={
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    gap: '8px',
-                                    flexWrap: 'wrap',
-                                }}
-                            >
+                            }
+                            headerTitle="Default Card"
+                            headerTag={
                                 <Tag
-                                    text="API"
-                                    variant={TagVariant.SUBTLE}
-                                    color={TagColor.PRIMARY}
-                                    size={TagSize.SM}
-                                />
-                                <Tag
-                                    text="Components"
-                                    variant={TagVariant.SUBTLE}
-                                    color={TagColor.PURPLE}
-                                    size={TagSize.SM}
-                                />
-                                <Tag
-                                    text="Guides"
-                                    variant={TagVariant.SUBTLE}
-                                    color={TagColor.SUCCESS}
-                                    size={TagSize.SM}
-                                />
-                            </div>
-                        }
-                        actionButton={{
-                            text: 'Read More',
-                            buttonType: ButtonType.SECONDARY,
-                            subType: ButtonSubType.INLINE,
-                            size: ButtonSize.SMALL,
-                        }}
-                    />
-
-                    {/* Card with only content slot */}
-                    <Card
-                        title="Statistics"
-                        content={
-                            <div
-                                style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: '1fr 1fr',
-                                    gap: '16px',
-                                }}
-                            >
-                                <div style={{ textAlign: 'center' }}>
-                                    <Text
-                                        style={{
-                                            fontSize: '24px',
-                                            fontWeight: '700',
-                                            color: '#10b981',
-                                        }}
-                                    >
-                                        142
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#666',
-                                        }}
-                                    >
-                                        Active Users
-                                    </Text>
-                                </div>
-                                <div style={{ textAlign: 'center' }}>
-                                    <Text
-                                        style={{
-                                            fontSize: '24px',
-                                            fontWeight: '700',
-                                            color: '#3b82f6',
-                                        }}
-                                    >
-                                        89%
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#666',
-                                        }}
-                                    >
-                                        Completion
-                                    </Text>
-                                </div>
-                            </div>
-                        }
-                    />
-
-                    {/* Card demonstrating regular button spacing (24px gap) */}
-                    <Card
-                        title="Regular Button Gap"
-                        description="This card demonstrates the 24px gap between content and regular buttons."
-                        content={
-                            <div
-                                style={{
-                                    padding: '12px',
-                                    backgroundColor: '#f3f4f6',
-                                    borderRadius: '6px',
-                                }}
-                            >
-                                <Text style={{ fontSize: '14px' }}>
-                                    Content area above button
-                                </Text>
-                            </div>
-                        }
-                        actionButton={{
-                            text: 'Regular Button',
-                            buttonType: ButtonType.PRIMARY,
-                            size: ButtonSize.SMALL,
-                        }}
-                    />
-
-                    {/* Card demonstrating inline button spacing (14px gap) */}
-                    <Card
-                        title="Inline Button Gap"
-                        description="This card demonstrates the 14px gap between content and inline buttons."
-                        content={
-                            <div
-                                style={{
-                                    padding: '12px',
-                                    backgroundColor: '#f3f4f6',
-                                    borderRadius: '6px',
-                                }}
-                            >
-                                <Text style={{ fontSize: '14px' }}>
-                                    Content area above button
-                                </Text>
-                            </div>
-                        }
-                        actionButton={{
-                            text: 'Inline Button',
-                            buttonType: ButtonType.SECONDARY,
-                            subType: ButtonSubType.INLINE,
-                            size: ButtonSize.SMALL,
-                        }}
-                    />
-                </div>
-            </div>
-
-            {/* Bordered Header Variant Examples */}
-            <div>
-                <h2
-                    style={{
-                        fontSize: '20px',
-                        fontWeight: '600',
-                        marginBottom: '16px',
-                    }}
-                >
-                    Bordered Header Variant
-                </h2>
-                <p
-                    style={{
-                        color: '#666',
-                        fontSize: '14px',
-                        marginBottom: '20px',
-                    }}
-                >
-                    Bordered header cards have a special layout with:
-                    <br />• <strong>Header</strong>: Gray 25 background, 12px
-                    top/bottom + 16px left/right padding
-                    <br />• <strong>Header title</strong> (Body LG, Gray 800,
-                    font-weight 600) + optional slots
-                    <br />• <strong>Header description</strong> (Body SM, Gray
-                    500) below title
-                    <br />• <strong>Content area</strong>: Standard padding with
-                    specific spacing
-                    <br />• <strong>Sub header title</strong> (Body MD, Gray
-                    800, font-weight 500) - 14px gap from slot
-                    <br />• <strong>Description</strong> (Body MD, Gray 500) -
-                    6px gap from sub header
-                    <br />• <strong>Content + Action</strong> with 14px gaps
-                </p>
-
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns:
-                            'repeat(auto-fit, minmax(320px, 1fr))',
-                        gap: '20px',
-                        marginBottom: '32px',
-                    }}
-                >
-                    {/* Bordered Header Card - Full Example */}
-                    <Card
-                        borderedHeader={{
-                            title: 'Analytics Dashboard',
-                            titleSlot: (
-                                <Tag
-                                    text="Pro"
+                                    text="New"
                                     variant={TagVariant.ATTENTIVE}
                                     color={TagColor.SUCCESS}
                                     size={TagSize.SM}
                                 />
-                            ),
-                            headerActionSlot: (
+                            }
+                            headerSlot2={
                                 <Button
                                     buttonType={ButtonType.SECONDARY}
                                     size={ButtonSize.SMALL}
                                     leadingIcon={<Settings size={16} />}
                                 />
-                            ),
-                            headerDescription: 'Real-time performance metrics',
-                            topSlot: (
-                                <div
-                                    style={{
-                                        height: '60px',
-                                        backgroundColor: '#f0f9ff',
-                                        borderRadius: '8px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        border: '1px solid #e0f2fe',
-                                    }}
-                                >
-                                    <TrendingUp size={24} color="#0ea5e9" />
-                                </div>
-                            ),
-                            subHeaderTitle: 'Monthly Performance',
-                            description:
-                                'Track your key metrics and performance indicators with real-time data visualization and insights.',
-                            content: (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        gap: '16px',
-                                    }}
-                                >
-                                    <div style={{ textAlign: 'center' }}>
-                                        <Text
-                                            style={{
-                                                fontSize: '20px',
-                                                fontWeight: '700',
-                                                color: '#10b981',
-                                            }}
-                                        >
-                                            92%
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                fontSize: '12px',
-                                                color: '#666',
-                                            }}
-                                        >
-                                            Success Rate
-                                        </Text>
-                                    </div>
-                                    <div style={{ textAlign: 'center' }}>
-                                        <Text
-                                            style={{
-                                                fontSize: '20px',
-                                                fontWeight: '700',
-                                                color: '#3b82f6',
-                                            }}
-                                        >
-                                            $12.5K
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                fontSize: '12px',
-                                                color: '#666',
-                                            }}
-                                        >
-                                            Revenue
-                                        </Text>
-                                    </div>
-                                </div>
-                            ),
-                            actionButton: {
-                                text: 'View Report',
-                                buttonType: ButtonType.PRIMARY,
-                                size: ButtonSize.SMALL,
-                            },
-                        }}
-                    />
-
-                    {/* Bordered Header Card - Minimal Example */}
-                    <Card
-                        borderedHeader={{
-                            title: 'Team Updates',
-                            headerActionSlot: (
-                                <Button
-                                    buttonType={ButtonType.SECONDARY}
-                                    size={ButtonSize.SMALL}
-                                    leadingIcon={<Bell size={16} />}
-                                />
-                            ),
-                            headerDescription: 'Latest activity',
-                            subHeaderTitle: 'Recent Changes',
-                            description:
-                                'Stay informed about the latest updates and changes from your team members.',
-                            actionButton: {
-                                text: 'View All',
-                                buttonType: ButtonType.SECONDARY,
-                                subType: ButtonSubType.INLINE,
-                                size: ButtonSize.SMALL,
-                            },
-                        }}
-                    />
-
-                    {/* Bordered Header Card - With Content Slot */}
-                    <Card
-                        borderedHeader={{
-                            title: 'Project Status',
-                            titleSlot: (
-                                <Tag
-                                    text="Active"
-                                    variant={TagVariant.SUBTLE}
-                                    color={TagColor.SUCCESS}
-                                    size={TagSize.SM}
-                                />
-                            ),
-                            headerDescription: 'Current project overview',
-                            topSlot: (
+                            }
+                            subHeader="This demonstrates the header box with gray 25 background"
+                            bodySlot1={
                                 <div
                                     style={{
                                         padding: '12px',
@@ -1163,69 +283,138 @@ const CardDemo = () => {
                                             color: '#92400e',
                                         }}
                                     >
-                                        🚀 Project is on track and progressing
-                                        well
+                                        📋 Body Slot 1: Important notice or
+                                        status
                                     </Text>
                                 </div>
-                            ),
-                            subHeaderTitle: 'Development Progress',
-                            content: (
+                            }
+                            bodyTitle="Body Title Section"
+                            content="This is the main content area where you can put any descriptive text or information about the card."
+                            bodySlot2={
                                 <div
                                     style={{
                                         display: 'flex',
-                                        flexDirection: 'column',
                                         gap: '8px',
+                                        flexWrap: 'wrap',
                                     }}
                                 >
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                        }}
-                                    >
-                                        <Text style={{ fontSize: '14px' }}>
-                                            Frontend
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                fontSize: '14px',
-                                                fontWeight: '600',
-                                            }}
-                                        >
-                                            85%
-                                        </Text>
-                                    </div>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                        }}
-                                    >
-                                        <Text style={{ fontSize: '14px' }}>
-                                            Backend
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                fontSize: '14px',
-                                                fontWeight: '600',
-                                            }}
-                                        >
-                                            92%
-                                        </Text>
-                                    </div>
+                                    <Tag
+                                        text="Feature"
+                                        variant={TagVariant.SUBTLE}
+                                        color={TagColor.PRIMARY}
+                                        size={TagSize.SM}
+                                    />
+                                    <Tag
+                                        text="Demo"
+                                        variant={TagVariant.SUBTLE}
+                                        color={TagColor.PURPLE}
+                                        size={TagSize.SM}
+                                    />
                                 </div>
-                            ),
-                            actionButton: {
-                                text: 'View Details',
+                            }
+                            actionButton={{
+                                text: 'Take Action',
                                 buttonType: ButtonType.PRIMARY,
                                 size: ButtonSize.SMALL,
-                            },
-                        }}
-                    />
+                            }}
+                        />
+                    )}
+
+                    {selectedVariant === CardVariant.ALIGNED && (
+                        <Card
+                            variant={CardVariant.ALIGNED}
+                            alignment={selectedAlignment}
+                            centerAlign={centerAlign}
+                            cardSlot={
+                                selectedAlignment === CardAlignment.VERTICAL
+                                    ? imageSlot
+                                    : iconSlot
+                            }
+                            headerTitle="Aligned Card"
+                            headerTag={
+                                <Tag
+                                    text="Aligned"
+                                    variant={TagVariant.ATTENTIVE}
+                                    color={TagColor.WARNING}
+                                    size={TagSize.SM}
+                                />
+                            }
+                            headerSlot2={
+                                <Button
+                                    buttonType={ButtonType.SECONDARY}
+                                    size={ButtonSize.SMALL}
+                                    leadingIcon={<MoreHorizontal size={16} />}
+                                />
+                            }
+                            subHeader={`${selectedAlignment} alignment ${centerAlign ? 'with center align' : 'without center align'}`}
+                            bodyTitle="Aligned Content"
+                            content="CardSlot positioned based on alignment, content shows center alignment effect."
+                            actionButton={{
+                                text: 'Aligned Action',
+                                buttonType: ButtonType.PRIMARY,
+                                size: ButtonSize.SMALL,
+                            }}
+                        />
+                    )}
+
+                    {selectedVariant === CardVariant.CUSTOM && (
+                        <Card variant={CardVariant.CUSTOM}>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '16px',
+                                    textAlign: 'center',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        width: '80px',
+                                        height: '80px',
+                                        backgroundColor: '#10b981',
+                                        borderRadius: '50%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        margin: '0 auto',
+                                    }}
+                                >
+                                    <User size={32} color="white" />
+                                </div>
+                                <div>
+                                    <h3
+                                        style={{
+                                            margin: '0 0 8px 0',
+                                            fontSize: '18px',
+                                            fontWeight: '600',
+                                        }}
+                                    >
+                                        Custom Content
+                                    </h3>
+                                    <p
+                                        style={{
+                                            margin: '0',
+                                            color: '#666',
+                                            fontSize: '14px',
+                                        }}
+                                    >
+                                        This is a custom card where you have
+                                        complete control over the content. Just
+                                        16px padding wrapper!
+                                    </p>
+                                </div>
+                                <Button
+                                    text="Custom Action"
+                                    buttonType={ButtonType.PRIMARY}
+                                    size={ButtonSize.SMALL}
+                                />
+                            </div>
+                        </Card>
+                    )}
                 </div>
             </div>
 
-            {/* All Variants Showcase */}
+            {/* Default Card Examples */}
             <div>
                 <h2
                     style={{
@@ -1234,173 +423,567 @@ const CardDemo = () => {
                         marginBottom: '16px',
                     }}
                 >
-                    Legacy Card Variants
+                    Default Card Examples
                 </h2>
+                <p
+                    style={{
+                        color: '#666',
+                        fontSize: '14px',
+                        marginBottom: '20px',
+                    }}
+                >
+                    Default cards have a header box (gray 25 background) and
+                    body content area with proper spacing:
+                    <br />• <strong>Header:</strong> headerSlot1 → headerTitle →
+                    headerTag → headerSlot2 (8px gaps)
+                    <br />• <strong>Sub Header:</strong> Below header with 4px
+                    gap
+                    <br />• <strong>Body:</strong> bodySlot1 → bodyTitle →
+                    content → bodySlot2 → actionButton
+                </p>
 
-                {/* Top Slot Variants */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Top Slot Variants
-                    </h3>
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns:
-                                'repeat(auto-fit, minmax(300px, 1fr))',
-                            gap: '20px',
-                        }}
-                    >
-                        {/* Top Slot without Padding */}
-                        <Card
-                            header={{
-                                variant: CardHeaderVariant.DEFAULT,
-                                title: 'Top Slot',
-                                subtitle: 'No padding in slot area',
-                                actions: <Star size={16} color="#fbbf24" />,
-                            }}
-                            slot={{
-                                variant: CardSlotVariant.TOP,
-                                content: imageSlot,
-                            }}
-                        >
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(320px, 1fr))',
+                        gap: '20px',
+                        marginBottom: '32px',
+                    }}
+                >
+                    {/* Full Featured Default Card */}
+                    <Card
+                        headerSlot1={iconSlot}
+                        headerTitle="Analytics Dashboard"
+                        headerTag={
+                            <Tag
+                                text="Pro"
+                                variant={TagVariant.ATTENTIVE}
+                                color={TagColor.SUCCESS}
+                                size={TagSize.SM}
+                            />
+                        }
+                        headerSlot2={
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Settings size={16} />}
+                            />
+                        }
+                        subHeader="Real-time performance metrics and insights"
+                        bodySlot1={
                             <div
                                 style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '8px',
+                                    padding: '12px',
+                                    backgroundColor: '#f0f9ff',
+                                    borderRadius: '8px',
+                                    border: '1px solid #e0f2fe',
                                 }}
                             >
-                                <Text>
-                                    Content area has 16px padding. Slot takes
-                                    50% height with no padding.
-                                </Text>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    <Tag
-                                        text="Design"
-                                        variant={TagVariant.SUBTLE}
-                                        color={TagColor.PRIMARY}
-                                        size={TagSize.SM}
-                                    />
-                                    <Tag
-                                        text="UI/UX"
-                                        variant={TagVariant.SUBTLE}
-                                        color={TagColor.PURPLE}
-                                        size={TagSize.SM}
-                                    />
-                                </div>
-                            </div>
-                        </Card>
-
-                        {/* Top Slot with Padding */}
-                        <Card
-                            header={{
-                                variant: CardHeaderVariant.DEFAULT,
-                                title: 'Top Slot with Padding',
-                                subtitle: 'Centered content in slot',
-                            }}
-                            slot={{
-                                variant: CardSlotVariant.TOP_WITH_PADDING,
-                                content: (
-                                    <div
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                    }}
+                                >
+                                    <TrendingUp size={16} color="#0ea5e9" />
+                                    <Text
                                         style={{
-                                            textAlign: 'center',
-                                            color: 'white',
+                                            fontSize: '14px',
+                                            color: '#0ea5e9',
+                                            fontWeight: '600',
                                         }}
                                     >
-                                        <User
-                                            size={32}
-                                            style={{ marginBottom: '8px' }}
-                                        />
-                                        <div
-                                            style={{
-                                                fontSize: '16px',
-                                                fontWeight: '600',
-                                            }}
-                                        >
-                                            User Profile
-                                        </div>
-                                    </div>
-                                ),
-                            }}
-                            actionButton={{
-                                text: 'View Profile',
-                                buttonType: ButtonType.PRIMARY,
-                                size: ButtonSize.SMALL,
+                                        Performance is up 23% this month
+                                    </Text>
+                                </div>
+                            </div>
+                        }
+                        bodyTitle="Monthly Summary"
+                        content="Track your key metrics and performance indicators with comprehensive analytics and real-time data visualization."
+                        bodySlot2={
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    gap: '16px',
+                                }}
+                            >
+                                <div style={{ textAlign: 'center' }}>
+                                    <Text
+                                        style={{
+                                            fontSize: '20px',
+                                            fontWeight: '700',
+                                            color: '#10b981',
+                                        }}
+                                    >
+                                        92%
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            fontSize: '12px',
+                                            color: '#666',
+                                        }}
+                                    >
+                                        Success Rate
+                                    </Text>
+                                </div>
+                                <div style={{ textAlign: 'center' }}>
+                                    <Text
+                                        style={{
+                                            fontSize: '20px',
+                                            fontWeight: '700',
+                                            color: '#3b82f6',
+                                        }}
+                                    >
+                                        $12.5K
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            fontSize: '12px',
+                                            color: '#666',
+                                        }}
+                                    >
+                                        Revenue
+                                    </Text>
+                                </div>
+                            </div>
+                        }
+                        actionButton={{
+                            text: 'View Full Report',
+                            buttonType: ButtonType.PRIMARY,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+
+                    {/* Minimal Default Card */}
+                    <Card
+                        headerTitle="Simple Card"
+                        headerSlot2={
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<MoreHorizontal size={16} />}
+                            />
+                        }
+                        bodyTitle="Basic Example"
+                        content="This shows a minimal default card with just the essential elements."
+                        actionButton={{
+                            text: 'Learn More',
+                            buttonType: ButtonType.SECONDARY,
+                            subType: ButtonSubType.INLINE,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+
+                    {/* Card with Tags */}
+                    <Card
+                        headerTitle="Project Status"
+                        headerTag={
+                            <Tag
+                                text="Active"
+                                variant={TagVariant.SUBTLE}
+                                color={TagColor.SUCCESS}
+                                size={TagSize.SM}
+                            />
+                        }
+                        subHeader="Current development progress"
+                        content="All systems are operational and the project is progressing according to schedule."
+                        bodySlot2={
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    gap: '8px',
+                                    flexWrap: 'wrap',
+                                }}
+                            >
+                                <Tag
+                                    text="Frontend"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.PRIMARY}
+                                    size={TagSize.SM}
+                                />
+                                <Tag
+                                    text="Backend"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.PURPLE}
+                                    size={TagSize.SM}
+                                />
+                                <Tag
+                                    text="Testing"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.WARNING}
+                                    size={TagSize.SM}
+                                />
+                            </div>
+                        }
+                        actionButton={{
+                            text: 'View Details',
+                            buttonType: ButtonType.PRIMARY,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+                </div>
+            </div>
+
+            {/* Aligned Card Examples */}
+            <div>
+                <h2
+                    style={{
+                        fontSize: '20px',
+                        fontWeight: '600',
+                        marginBottom: '16px',
+                    }}
+                >
+                    Aligned Card Examples
+                </h2>
+                <p
+                    style={{
+                        color: '#666',
+                        fontSize: '14px',
+                        marginBottom: '20px',
+                    }}
+                >
+                    Aligned cards support vertical/horizontal layouts with
+                    optional center alignment:
+                    <br />• <strong>No headerSlot1</strong> and{' '}
+                    <strong>no bodySlot2</strong>
+                    <br />• <strong>centerAlign</strong> option centers all
+                    content
+                    <br />• Perfect for image cards, profile cards, or
+                    horizontal layouts
+                </p>
+
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(320px, 1fr))',
+                        gap: '20px',
+                        marginBottom: '32px',
+                    }}
+                >
+                    {/* Vertical Aligned Card - Center Aligned */}
+                    <Card
+                        variant={CardVariant.ALIGNED}
+                        alignment={CardAlignment.VERTICAL}
+                        centerAlign={true}
+                        cardSlot={
+                            <div
+                                style={{
+                                    width: '80px',
+                                    height: '80px',
+                                    borderRadius: '50%',
+                                    background:
+                                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: 'white',
+                                    fontSize: '24px',
+                                    fontWeight: '600',
+                                }}
+                            >
+                                JD
+                            </div>
+                        }
+                        headerTitle="Profile Card"
+                        headerTag={
+                            <Tag
+                                text="Premium"
+                                variant={TagVariant.ATTENTIVE}
+                                color={TagColor.SUCCESS}
+                                size={TagSize.SM}
+                            />
+                        }
+                        subHeader="Centered vertical layout"
+                        bodyTitle="John Doe"
+                        content="Senior Developer with expertise in React and Node.js."
+                        actionButton={{
+                            text: 'View Profile',
+                            buttonType: ButtonType.SECONDARY,
+                            subType: ButtonSubType.INLINE,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+
+                    {/* Horizontal Aligned Card */}
+                    <Card
+                        variant={CardVariant.ALIGNED}
+                        alignment={CardAlignment.HORIZONTAL}
+                        cardSlot={
+                            <div
+                                style={{
+                                    width: '28px',
+                                    height: '28px',
+                                    background: '#f0f9ff',
+                                    borderRadius: '12px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    border: '1px solid #e0f2fe',
+                                }}
+                            >
+                                <TrendingUp size={24} color="#0ea5e9" />
+                            </div>
+                        }
+                        headerTitle="New App Launch"
+                        headerSlot2={
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<MoreHorizontal size={16} />}
+                            />
+                        }
+                        subHeader="Description (max 1-2 lines)"
+                        content="Lorem ipsum dolor sit amet consectetur. Suscipit at dolor morbi adipiscing."
+                        actionButton={{
+                            text: 'Send Message',
+                            buttonType: ButtonType.PRIMARY,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+
+                    {/* Vertical without Center Align */}
+                    <Card
+                        variant={CardVariant.ALIGNED}
+                        alignment={CardAlignment.VERTICAL}
+                        centerAlign={false}
+                        cardSlot={imageSlot}
+                        headerTitle="Image Card"
+                        subHeader="Standard vertical alignment"
+                        bodyTitle="Beautiful Gradient"
+                        content="This card showcases vertical alignment without center alignment, perfect for image-heavy content."
+                        actionButton={{
+                            text: 'View Gallery',
+                            buttonType: ButtonType.SECONDARY,
+                            subType: ButtonSubType.INLINE,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+
+                    {/* Aligned Card without cardSlot */}
+                    <Card
+                        variant={CardVariant.ALIGNED}
+                        alignment={CardAlignment.VERTICAL}
+                        headerTitle="No CardSlot"
+                        headerTag={
+                            <Tag
+                                text="Full Space"
+                                variant={TagVariant.SUBTLE}
+                                color={TagColor.PRIMARY}
+                                size={TagSize.SM}
+                            />
+                        }
+                        subHeader="Header and body take full card space with 16px padding"
+                        bodyTitle="Full Width Content"
+                        content="When no cardSlot is provided, the header and body content take the full card space with proper 16px padding throughout."
+                        actionButton={{
+                            text: 'Learn More',
+                            buttonType: ButtonType.SECONDARY,
+                            subType: ButtonSubType.INLINE,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+
+                    {/* Horizontal Aligned Card - Matching Figma */}
+                    <Card
+                        variant={CardVariant.ALIGNED}
+                        alignment={CardAlignment.HORIZONTAL}
+                        cardSlot={
+                            <div
+                                style={{
+                                    width: '28px',
+                                    height: '28px',
+                                    background:
+                                        'linear-gradient(135deg, #c084fc 0%, #e879f9 100%)',
+                                    borderRadius: '12px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        width: '24px',
+                                        height: '24px',
+                                        background: 'rgba(255,255,255,0.2)',
+                                        borderRadius: '4px',
+                                    }}
+                                />
+                            </div>
+                        }
+                        headerTitle="Customize Board"
+                        headerTag={
+                            <Tag
+                                text="NEW"
+                                variant={TagVariant.ATTENTIVE}
+                                color={TagColor.SUCCESS}
+                                size={TagSize.SM}
+                            />
+                        }
+                        subHeader="Description (max 1-2 lines)"
+                        content="Lorem ipsum dolor sit amet consectetur. Suscipit at dolor morbi adipiscing dispiscing..."
+                        actionButton={{
+                            text: 'Latest Feature',
+                            buttonType: ButtonType.SECONDARY,
+                            subType: ButtonSubType.INLINE,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+                </div>
+            </div>
+
+            {/* Custom Card Examples */}
+            <div>
+                <h2
+                    style={{
+                        fontSize: '20px',
+                        fontWeight: '600',
+                        marginBottom: '16px',
+                    }}
+                >
+                    Custom Card Examples
+                </h2>
+                <p
+                    style={{
+                        color: '#666',
+                        fontSize: '14px',
+                        marginBottom: '20px',
+                    }}
+                >
+                    Custom cards provide a simple 16px padding wrapper for
+                    complete creative control:
+                </p>
+
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(320px, 1fr))',
+                        gap: '20px',
+                        marginBottom: '32px',
+                    }}
+                >
+                    {/* Custom Dashboard Card */}
+                    <Card variant={CardVariant.CUSTOM}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '16px',
                             }}
                         >
                             <div
                                 style={{
                                     display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '8px',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
                                 }}
                             >
-                                <Text>
-                                    Slot has padding and content is centered.
-                                    Perfect for profile cards.
-                                </Text>
+                                <h3
+                                    style={{
+                                        margin: 0,
+                                        fontSize: '18px',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Custom Dashboard
+                                </h3>
+                                <Button
+                                    buttonType={ButtonType.SECONDARY}
+                                    size={ButtonSize.SMALL}
+                                    leadingIcon={<Calendar size={16} />}
+                                />
                             </div>
-                        </Card>
-                    </div>
-                </div>
-
-                {/* Left Slot Variant */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Left Slot Variant
-                    </h3>
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns:
-                                'repeat(auto-fit, minmax(350px, 1fr))',
-                            gap: '20px',
-                        }}
-                    >
-                        <Card
-                            header={{
-                                variant: CardHeaderVariant.BORDERED,
-                                title: 'Analytics Dashboard',
-                                subtitle: 'Monthly performance metrics',
-                                actions: (
+                            <div
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr',
+                                    gap: '12px',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        textAlign: 'center',
+                                        padding: '16px',
+                                        backgroundColor: '#f0f9ff',
+                                        borderRadius: '8px',
+                                    }}
+                                >
                                     <div
-                                        style={{ display: 'flex', gap: '8px' }}
+                                        style={{
+                                            fontSize: '24px',
+                                            fontWeight: '700',
+                                            color: '#3b82f6',
+                                        }}
                                     >
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                            leadingIcon={<Calendar size={16} />}
-                                        />
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                            leadingIcon={<Settings size={16} />}
-                                        />
+                                        142
                                     </div>
-                                ),
-                            }}
-                            slot={{
-                                variant: CardSlotVariant.LEFT,
-                                content: iconSlot,
-                            }}
-                            actionButton={{
-                                text: 'View Details',
-                                buttonType: ButtonType.PRIMARY,
-                                size: ButtonSize.SMALL,
+                                    <div
+                                        style={{
+                                            fontSize: '12px',
+                                            color: '#666',
+                                        }}
+                                    >
+                                        Total Users
+                                    </div>
+                                </div>
+                                <div
+                                    style={{
+                                        textAlign: 'center',
+                                        padding: '16px',
+                                        backgroundColor: '#f0fdf4',
+                                        borderRadius: '8px',
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            fontSize: '24px',
+                                            fontWeight: '700',
+                                            color: '#10b981',
+                                        }}
+                                    >
+                                        89%
+                                    </div>
+                                    <div
+                                        style={{
+                                            fontSize: '12px',
+                                            color: '#666',
+                                        }}
+                                    >
+                                        Success Rate
+                                    </div>
+                                </div>
+                            </div>
+                            <Button
+                                text="View Analytics"
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
+                            />
+                        </div>
+                    </Card>
+
+                    {/* Custom Form Card */}
+                    <Card variant={CardVariant.CUSTOM}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '16px',
                             }}
                         >
+                            <h3
+                                style={{
+                                    margin: 0,
+                                    fontSize: '18px',
+                                    fontWeight: '600',
+                                    textAlign: 'center',
+                                }}
+                            >
+                                Quick Contact
+                            </h3>
                             <div
                                 style={{
                                     display: 'flex',
@@ -1408,201 +991,45 @@ const CardDemo = () => {
                                     gap: '12px',
                                 }}
                             >
-                                <div
+                                <input
+                                    type="text"
+                                    placeholder="Your name"
                                     style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
+                                        padding: '12px',
+                                        border: '1px solid #e5e7eb',
+                                        borderRadius: '6px',
+                                        fontSize: '14px',
                                     }}
-                                >
-                                    <Text
-                                        style={{
-                                            fontSize: '24px',
-                                            fontWeight: '700',
-                                        }}
-                                    >
-                                        $12,345
-                                    </Text>
-                                    <Tag
-                                        text="+12%"
-                                        variant={TagVariant.ATTENTIVE}
-                                        color={TagColor.SUCCESS}
-                                        size={TagSize.SM}
-                                    />
-                                </div>
-                                <Text style={{ color: '#666' }}>
-                                    Revenue increased by 12% compared to last
-                                    month. Great progress!
-                                </Text>
-                            </div>
-                        </Card>
-
-                        <Card
-                            header={{
-                                variant: CardHeaderVariant.DEFAULT,
-                                title: 'Team Member',
-                                actions: (
-                                    <MessageCircle size={16} color="#6b7280" />
-                                ),
-                            }}
-                            slot={{
-                                variant: CardSlotVariant.LEFT,
-                                content: (
-                                    <div
-                                        style={{
-                                            width: '60px',
-                                            height: '60px',
-                                            borderRadius: '50%',
-                                            background:
-                                                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            color: 'white',
-                                            fontSize: '20px',
-                                            fontWeight: '600',
-                                        }}
-                                    >
-                                        JD
-                                    </div>
-                                ),
-                            }}
-                        >
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '8px',
-                                }}
-                            >
-                                <div>
-                                    <Text
-                                        style={{
-                                            fontSize: '16px',
-                                            fontWeight: '600',
-                                        }}
-                                    >
-                                        John Doe
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            color: '#666',
-                                            fontSize: '14px',
-                                        }}
-                                    >
-                                        Senior Developer
-                                    </Text>
-                                </div>
-                                <Text style={{ fontSize: '14px' }}>
-                                    Experienced full-stack developer with
-                                    expertise in React and Node.js.
-                                </Text>
-                                <div
+                                />
+                                <input
+                                    type="email"
+                                    placeholder="Your email"
                                     style={{
-                                        display: 'flex',
-                                        gap: '6px',
-                                        flexWrap: 'wrap',
+                                        padding: '12px',
+                                        border: '1px solid #e5e7eb',
+                                        borderRadius: '6px',
+                                        fontSize: '14px',
                                     }}
-                                >
-                                    <Tag
-                                        text="React"
-                                        variant={TagVariant.SUBTLE}
-                                        color={TagColor.PRIMARY}
-                                        size={TagSize.SM}
-                                    />
-                                    <Tag
-                                        text="Node.js"
-                                        variant={TagVariant.SUBTLE}
-                                        color={TagColor.SUCCESS}
-                                        size={TagSize.SM}
-                                    />
-                                    <Tag
-                                        text="TypeScript"
-                                        variant={TagVariant.SUBTLE}
-                                        color={TagColor.WARNING}
-                                        size={TagSize.SM}
-                                    />
-                                </div>
-                            </div>
-                        </Card>
-                    </div>
-                </div>
-
-                {/* No Slot Examples */}
-                <div>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Traditional Cards (No Slots)
-                    </h3>
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns:
-                                'repeat(auto-fit, minmax(280px, 1fr))',
-                            gap: '20px',
-                        }}
-                    >
-                        <Card
-                            header={{
-                                variant: CardHeaderVariant.DEFAULT,
-                                title: 'Simple Card',
-                                subtitle: 'Basic card without slots',
-                            }}
-                        >
-                            <Text>
-                                This is a traditional card without any slots.
-                                Perfect for simple content display.
-                            </Text>
-                        </Card>
-
-                        <Card
-                            header={{
-                                variant: CardHeaderVariant.BORDERED,
-                                title: 'Bordered Header',
-                                actions: <Heart size={16} color="#ef4444" />,
-                            }}
-                        >
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '8px',
-                                }}
-                            >
-                                <Text>Card with bordered header variant.</Text>
-                                <Button
-                                    text="Action Button"
-                                    buttonType={ButtonType.PRIMARY}
-                                    size={ButtonSize.SMALL}
+                                />
+                                <textarea
+                                    placeholder="Your message"
+                                    rows={3}
+                                    style={{
+                                        padding: '12px',
+                                        border: '1px solid #e5e7eb',
+                                        borderRadius: '6px',
+                                        fontSize: '14px',
+                                        resize: 'vertical',
+                                    }}
                                 />
                             </div>
-                        </Card>
-
-                        <Card
-                            header={{
-                                variant: CardHeaderVariant.BORDERED_WITH_LABEL,
-                                title: 'Header with Label',
-                                label: (
-                                    <Tag
-                                        text="Featured"
-                                        variant={TagVariant.ATTENTIVE}
-                                        color={TagColor.PRIMARY}
-                                        size={TagSize.SM}
-                                    />
-                                ),
-                            }}
-                        >
-                            <Text>
-                                This card uses the bordered with label header
-                                variant with gray-25 background.
-                            </Text>
-                        </Card>
-                    </div>
+                            <Button
+                                text="Send Message"
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
+                            />
+                        </div>
+                    </Card>
                 </div>
             </div>
 
@@ -1622,7 +1049,7 @@ const CardDemo = () => {
                         marginBottom: '12px',
                     }}
                 >
-                    Usage Guidelines
+                    Card Usage Guidelines
                 </h3>
                 <div
                     style={{
@@ -1636,33 +1063,35 @@ const CardDemo = () => {
                         <Text
                             style={{ fontWeight: '600', marginBottom: '4px' }}
                         >
-                            Top Slot
+                            Default Cards
                         </Text>
                         <Text style={{ fontSize: '14px', color: '#666' }}>
-                            Use for image headers, charts, or visual content
-                            that should take prominent space.
+                            Use for structured content with header box (gray 25)
+                            and all available slots. Perfect for dashboards and
+                            data displays.
                         </Text>
                     </div>
                     <div>
                         <Text
                             style={{ fontWeight: '600', marginBottom: '4px' }}
                         >
-                            Left Slot
+                            Aligned Cards
                         </Text>
                         <Text style={{ fontSize: '14px', color: '#666' }}>
-                            Perfect for avatars, icons, or small visual elements
-                            alongside content.
+                            Use for image cards, profiles, or when you need
+                            specific layout control. No headerSlot1 or
+                            bodySlot2.
                         </Text>
                     </div>
                     <div>
                         <Text
                             style={{ fontWeight: '600', marginBottom: '4px' }}
                         >
-                            Header with Label
+                            Custom Cards
                         </Text>
                         <Text style={{ fontSize: '14px', color: '#666' }}>
-                            Use when you need to highlight status or category
-                            with a prominent header.
+                            Use when you need complete creative control. Just a
+                            16px padding wrapper for your custom content.
                         </Text>
                     </div>
                 </div>

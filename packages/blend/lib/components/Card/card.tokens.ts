@@ -1,7 +1,7 @@
 //card.tokens.ts
 
 import type { CSSObject } from 'styled-components'
-import { CardHeaderVariant, CardSlotVariant } from './types'
+import { CardVariant, CardAlignment } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
@@ -18,44 +18,62 @@ export type CardTokenType = {
     }
     boxShadow: CSSObject['boxShadow']
     padding: CSSObject['padding']
-    gap: CSSObject['gap']
+
+    // Header box styling (gray 25 background)
     header: {
-        variants: {
-            [key in CardHeaderVariant]: {
-                padding: CSSObject['padding']
-                borderBottom: CSSObject['borderBottom']
-                backgroundColor: CSSObject['backgroundColor']
-            }
-        }
+        backgroundColor: CSSObject['backgroundColor']
+        padding: CSSObject['padding']
+        borderBottom: CSSObject['borderBottom']
+        borderRadius: CSSObject['borderRadius']
         title: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: CSSObject['color']
         }
-        subtitle: {
+        tag: {
+            marginLeft: CSSObject['marginLeft']
+        }
+        subHeader: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: CSSObject['color']
+            marginTop: CSSObject['marginTop']
+        }
+    }
+
+    // Body content styling
+    body: {
+        padding: CSSObject['padding']
+        title: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: CSSObject['color']
         }
-        actions: {
+        content: {
+            fontSize: CSSObject['fontSize']
+            color: CSSObject['color']
+        }
+    }
+
+    // Spacing configuration
+    spacing: {
+        headerToSubHeader: CSSObject['marginTop']
+        subHeaderToBody: CSSObject['marginTop']
+        bodySlot1ToTitle: CSSObject['marginTop']
+        titleToContent: CSSObject['marginTop']
+        contentToBodySlot2: CSSObject['marginTop']
+        bodySlot2ToAction: CSSObject['marginTop']
+        actionInline: CSSObject['marginTop']
+        actionRegular: CSSObject['marginTop']
+        headerSlotSpacing: CSSObject['gap']
+    }
+
+    // Alignment variants
+    alignment: {
+        [key in CardAlignment]: {
+            padding: CSSObject['padding']
             gap: CSSObject['gap']
-        }
-        label: {
-            marginLeft: CSSObject['marginLeft']
-        }
-    }
-    content: {
-        padding: CSSObject['padding']
-    }
-    slot: {
-        variants: {
-            [key in CardSlotVariant]: {
-                padding: CSSObject['padding']
-                gap: CSSObject['gap']
-                height: CSSObject['height']
-                borderRadius: CSSObject['borderRadius']
-                overflow: CSSObject['overflow']
-            }
+            minHeight?: CSSObject['minHeight']
         }
     }
 }
@@ -81,68 +99,61 @@ export const getCardTokens = (
             },
             boxShadow: foundationToken.shadows.sm,
             padding: foundationToken.unit[16],
-            gap: foundationToken.unit[16],
+
             header: {
-                variants: {
-                    default: {
-                        padding: `0 0 ${foundationToken.unit[12]} 0`,
-                        borderBottom: 'none',
-                        backgroundColor: 'transparent',
-                    },
-                    bordered: {
-                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
-                        borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                        backgroundColor: foundationToken.colors.gray[25],
-                    },
-                    bordered_with_label: {
-                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
-                        borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                        backgroundColor: foundationToken.colors.gray[25],
-                    },
-                },
+                backgroundColor: foundationToken.colors.gray[25],
+                padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
+                borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                borderRadius: `${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]} 0 0`,
                 title: {
                     fontSize: foundationToken.font.size.body.lg.fontSize,
                     fontWeight: foundationToken.font.weight[600],
-                    color: foundationToken.colors.gray[900],
+                    color: foundationToken.colors.gray[800],
                 },
-                subtitle: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[400],
-                    color: foundationToken.colors.gray[600],
-                },
-                actions: {
-                    gap: foundationToken.unit[8],
-                },
-                label: {
+                tag: {
                     marginLeft: foundationToken.unit[8],
                 },
+                subHeader: {
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
+                    fontWeight: foundationToken.font.weight[400],
+                    color: foundationToken.colors.gray[500],
+                    marginTop: foundationToken.unit[2],
+                },
             },
-            content: {
-                padding: foundationToken.unit[0],
+
+            body: {
+                padding: foundationToken.unit[16],
+                title: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
+                    color: foundationToken.colors.gray[800],
+                },
+                content: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    color: foundationToken.colors.gray[500],
+                },
             },
-            slot: {
-                variants: {
-                    top: {
-                        padding: foundationToken.unit[0],
-                        gap: foundationToken.unit[0],
-                        height: '50%',
-                        borderRadius: `${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]} 0 0`,
-                        overflow: 'hidden',
-                    },
-                    top_with_padding: {
-                        padding: foundationToken.unit[16],
-                        gap: foundationToken.unit[0],
-                        height: '50%',
-                        borderRadius: `${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]} 0 0`,
-                        overflow: 'hidden',
-                    },
-                    left: {
-                        padding: foundationToken.unit[0],
-                        gap: foundationToken.unit[16],
-                        height: 'auto',
-                        borderRadius: foundationToken.unit[0],
-                        overflow: 'visible',
-                    },
+
+            spacing: {
+                headerToSubHeader: foundationToken.unit[4],
+                subHeaderToBody: foundationToken.unit[16],
+                bodySlot1ToTitle: foundationToken.unit[14],
+                titleToContent: foundationToken.unit[6],
+                contentToBodySlot2: foundationToken.unit[14],
+                bodySlot2ToAction: foundationToken.unit[14],
+                actionInline: foundationToken.unit[14],
+                actionRegular: foundationToken.unit[24],
+                headerSlotSpacing: foundationToken.unit[8],
+            },
+
+            alignment: {
+                vertical: {
+                    padding: foundationToken.unit[16],
+                    gap: foundationToken.unit[0],
+                },
+                horizontal: {
+                    padding: foundationToken.unit[16],
+                    gap: foundationToken.unit[16],
                 },
             },
         },
@@ -158,69 +169,63 @@ export const getCardTokens = (
                 hover: foundationToken.colors.gray[25],
             },
             boxShadow: foundationToken.shadows.sm,
-            padding: foundationToken.unit[20],
-            gap: foundationToken.unit[20],
+            padding: foundationToken.unit[16],
+
             header: {
-                variants: {
-                    default: {
-                        padding: `0 0 ${foundationToken.unit[12]} 0`,
-                        borderBottom: 'none',
-                        backgroundColor: 'transparent',
-                    },
-                    bordered: {
-                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
-                        borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                        backgroundColor: foundationToken.colors.gray[25],
-                    },
-                    bordered_with_label: {
-                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
-                        borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                        backgroundColor: foundationToken.colors.gray[25],
-                    },
-                },
+                backgroundColor: foundationToken.colors.gray[25],
+                padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
+                borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                borderRadius: `${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]} 0 0`,
                 title: {
                     fontSize: foundationToken.font.size.body.lg.fontSize,
                     fontWeight: foundationToken.font.weight[600],
-                    color: foundationToken.colors.gray[900],
+                    color: foundationToken.colors.gray[800],
                 },
-                subtitle: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
+                tag: {
+                    marginLeft: foundationToken.unit[8],
+                },
+                subHeader: {
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
                     fontWeight: foundationToken.font.weight[400],
-                    color: foundationToken.colors.gray[600],
-                },
-                actions: {
-                    gap: foundationToken.unit[12],
-                },
-                label: {
-                    marginLeft: foundationToken.unit[12],
+                    color: foundationToken.colors.gray[500],
+                    marginTop: foundationToken.unit[2],
                 },
             },
-            content: {
-                padding: foundationToken.unit[0],
+
+            body: {
+                padding: foundationToken.unit[20],
+                title: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
+                    color: foundationToken.colors.gray[800],
+                },
+                content: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    color: foundationToken.colors.gray[500],
+                },
             },
-            slot: {
-                variants: {
-                    top: {
-                        padding: foundationToken.unit[0],
-                        gap: foundationToken.unit[0],
-                        height: '50%',
-                        borderRadius: `${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]} 0 0`,
-                        overflow: 'hidden',
-                    },
-                    top_with_padding: {
-                        padding: foundationToken.unit[20],
-                        gap: foundationToken.unit[0],
-                        height: '50%',
-                        borderRadius: `${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]} 0 0`,
-                        overflow: 'hidden',
-                    },
-                    left: {
-                        padding: foundationToken.unit[0],
-                        gap: foundationToken.unit[20],
-                        height: 'auto',
-                        borderRadius: foundationToken.unit[0],
-                        overflow: 'visible',
-                    },
+
+            spacing: {
+                headerToSubHeader: foundationToken.unit[4],
+                subHeaderToBody: foundationToken.unit[16],
+                bodySlot1ToTitle: foundationToken.unit[14],
+                titleToContent: foundationToken.unit[6],
+                contentToBodySlot2: foundationToken.unit[14],
+                bodySlot2ToAction: foundationToken.unit[14],
+                actionInline: foundationToken.unit[14],
+                actionRegular: foundationToken.unit[24],
+                headerSlotSpacing: foundationToken.unit[8],
+            },
+
+            alignment: {
+                vertical: {
+                    padding: foundationToken.unit[16],
+                    gap: foundationToken.unit[0],
+                    // minHeight: '284px',
+                },
+                horizontal: {
+                    padding: foundationToken.unit[20],
+                    gap: foundationToken.unit[20],
                 },
             },
         },

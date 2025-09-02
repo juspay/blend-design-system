@@ -1,255 +1,220 @@
-import { CardHeaderVariant, CardSlotVariant } from './types'
+import { CardVariant, CardAlignment } from './types'
 import type { CardTokenType } from './card.tokens'
+import { ButtonSubType } from '../Button/types'
 
 /**
- * Determines if the card is using legacy slot variants
+ * Determines the card variant type
  */
-export const isLegacyCard = (
-    slot?: {
-        variant: CardSlotVariant
-        content: React.ReactNode
-        centerAlign?: boolean
-    },
-    header?: {
-        variant?: CardHeaderVariant
-        title?: string
-        subtitle?: string
-        actions?: React.ReactNode
-        label?: React.ReactNode
-    }
-): boolean => {
-    return slot !== undefined || header !== undefined
+export const getCardVariant = (variant?: CardVariant): CardVariant => {
+    return variant || CardVariant.DEFAULT
 }
 
 /**
- * Checks if the slot is a top variant
+ * Checks if card is default variant
  */
-export const isTopSlotVariant = (slot?: {
-    variant: CardSlotVariant
-    content: React.ReactNode
-    centerAlign?: boolean
-}): boolean => {
-    return (
-        slot?.variant === CardSlotVariant.TOP ||
-        slot?.variant === CardSlotVariant.TOP_WITH_PADDING
-    )
+export const isDefaultCard = (variant?: CardVariant): boolean => {
+    return getCardVariant(variant) === CardVariant.DEFAULT
 }
 
 /**
- * Checks if the slot is a left variant
+ * Checks if card is aligned variant
  */
-export const isLeftSlotVariant = (slot?: {
-    variant: CardSlotVariant
-    content: React.ReactNode
-    centerAlign?: boolean
-}): boolean => {
-    return slot?.variant === CardSlotVariant.LEFT
+export const isAlignedCard = (variant?: CardVariant): boolean => {
+    return getCardVariant(variant) === CardVariant.ALIGNED
 }
 
 /**
- * Checks if the header has a bordered variant
+ * Checks if card is custom variant
  */
-export const isBorderedHeaderVariant = (header?: {
-    variant?: CardHeaderVariant
-    title?: string
-    subtitle?: string
-    actions?: React.ReactNode
-    label?: React.ReactNode
-}): boolean => {
-    const headerVariant = header?.variant || CardHeaderVariant.DEFAULT
-    return (
-        headerVariant === CardHeaderVariant.BORDERED ||
-        headerVariant === CardHeaderVariant.BORDERED_WITH_LABEL
-    )
+export const isCustomCard = (variant?: CardVariant): boolean => {
+    return getCardVariant(variant) === CardVariant.CUSTOM
 }
 
 /**
- * Calculates the main card padding based on variant
+ * Gets header box styles for default card
  */
-export const getCardPadding = (
-    isTopSlot: boolean,
-    isBorderedHeader: boolean,
-    isLeftSlot: boolean,
-    cardToken: CardTokenType
-): string => {
-    if (isTopSlot) return '0'
-    if (isBorderedHeader) return '0'
-    return String(cardToken.padding || '16px')
-}
-
-/**
- * Calculates the content padding based on variant
- */
-export const getContentPadding = (
-    isTopSlot: boolean,
-    isLeftSlot: boolean,
-    isBorderedHeader: boolean,
-    cardToken: CardTokenType
-): string => {
-    const padding = String(cardToken.padding || '16px')
-    if (isTopSlot) {
-        return `0 ${padding} ${padding} ${padding}`
-    }
-    if (isLeftSlot) return '0'
-    if (isBorderedHeader) return padding
-    return String(cardToken.content?.padding || '16px')
-}
-
-/**
- * Gets the spacing between header and description
- */
-export const getHeaderDescriptionSpacing = (): string => {
-    return '4px'
-}
-
-/**
- * Gets the spacing between description and content slot
- */
-export const getDescriptionContentSpacing = (): string => {
-    return '16px'
-}
-
-/**
- * Gets the spacing between content slot and action button
- */
-export const getContentActionSpacing = (isInlineButton: boolean): string => {
-    return isInlineButton ? '14px' : '24px'
-}
-
-/**
- * Gets the spacing between header text and header slot
- */
-export const getHeaderTextSlotSpacing = (): string => {
-    return '8px'
-}
-
-/**
- * Gets the standard card header styles
- */
-export const getHeaderTextStyles = (cardToken: CardTokenType) => ({
-    fontSize: cardToken.header.title.fontSize, // body lg
-    fontWeight: '600',
-    color: '#1F2937', // gray 800
+export const getHeaderBoxStyles = (cardToken: CardTokenType) => ({
+    backgroundColor: cardToken.header.backgroundColor,
+    padding: cardToken.header.padding,
+    borderBottom: cardToken.header.borderBottom,
+    borderRadius: cardToken.header.borderRadius,
+    display: 'flex',
+    flexDirection: 'column' as const,
 })
 
 /**
- * Gets the standard card description styles with 2-line truncation
+ * Gets header title styles
  */
-export const getDescriptionStyles = (cardToken: CardTokenType) => ({
-    fontSize: cardToken.header.subtitle.fontSize, // body md
-    color: '#6B7280', // gray 500
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical' as const,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
+export const getHeaderTitleStyles = (cardToken: CardTokenType) => ({
+    fontSize: cardToken.header.title.fontSize,
+    fontWeight: cardToken.header.title.fontWeight,
+    color: cardToken.header.title.color,
 })
 
 /**
- * Determines margin bottom for header section based on what follows
+ * Gets sub header styles
+ */
+export const getSubHeaderStyles = (cardToken: CardTokenType) => ({
+    fontSize: cardToken.header.subHeader.fontSize,
+    fontWeight: cardToken.header.subHeader.fontWeight,
+    color: cardToken.header.subHeader.color,
+    marginTop: cardToken.header.subHeader.marginTop,
+})
+
+/**
+ * Gets body title styles
+ */
+export const getBodyTitleStyles = (cardToken: CardTokenType) => ({
+    fontSize: cardToken.body.title.fontSize,
+    fontWeight: cardToken.body.title.fontWeight,
+    color: cardToken.body.title.color,
+})
+
+/**
+ * Gets body content styles
+ */
+export const getBodyContentStyles = (cardToken: CardTokenType) => ({
+    fontSize: cardToken.body.content.fontSize,
+    color: cardToken.body.content.color,
+})
+
+/**
+ * Gets body container styles
+ */
+export const getBodyStyles = (cardToken: CardTokenType) => ({
+    padding: cardToken.body.padding,
+    display: 'flex',
+    flexDirection: 'column' as const,
+})
+
+/**
+ * Gets spacing between header slots
+ */
+export const getHeaderSlotSpacing = (cardToken: CardTokenType): string => {
+    return String(cardToken.spacing.headerSlotSpacing)
+}
+
+/**
+ * Gets margin bottom for header based on what follows
  */
 export const getHeaderMarginBottom = (
-    hasDescription: boolean,
-    hasContentSlot: boolean,
-    hasActionButton: boolean
+    hasSubHeader: boolean,
+    cardToken: CardTokenType
 ): string => {
-    if (hasDescription) return getHeaderDescriptionSpacing()
-    if (hasContentSlot) return getDescriptionContentSpacing()
-    if (hasActionButton) return getDescriptionContentSpacing()
+    if (hasSubHeader) return String(cardToken.spacing.headerToSubHeader)
     return '0'
 }
 
 /**
- * Determines margin bottom for description section based on what follows
+ * Gets margin bottom for sub header
  */
-export const getDescriptionMarginBottom = (
-    hasContentSlot: boolean,
-    hasActionButton: boolean
+export const getSubHeaderMarginBottom = (cardToken: CardTokenType): string => {
+    return String(cardToken.spacing.subHeaderToBody)
+}
+
+/**
+ * Gets margin bottom for body slot 1
+ */
+export const getBodySlot1MarginBottom = (
+    hasBodyTitle: boolean,
+    cardToken: CardTokenType
 ): string => {
-    if (hasContentSlot) return getDescriptionContentSpacing()
-    if (hasActionButton) return getDescriptionContentSpacing()
+    if (hasBodyTitle) return String(cardToken.spacing.bodySlot1ToTitle)
     return '0'
 }
 
 /**
- * Determines margin bottom for content slot based on action button type
+ * Gets margin bottom for body title
  */
-export const getContentSlotMarginBottom = (
+export const getBodyTitleMarginBottom = (
+    hasContent: boolean,
+    cardToken: CardTokenType
+): string => {
+    if (hasContent) return String(cardToken.spacing.titleToContent)
+    return '0'
+}
+
+/**
+ * Gets margin bottom for content
+ */
+export const getContentMarginBottom = (
+    hasBodySlot2: boolean,
+    cardToken: CardTokenType
+): string => {
+    if (hasBodySlot2) return String(cardToken.spacing.contentToBodySlot2)
+    return '0'
+}
+
+/**
+ * Gets margin bottom for body slot 2
+ */
+export const getBodySlot2MarginBottom = (
     hasActionButton: boolean,
-    isInlineButton: boolean
+    isInlineButton: boolean,
+    cardToken: CardTokenType
 ): string => {
     if (!hasActionButton) return '0'
-    return getContentActionSpacing(isInlineButton)
+    return isInlineButton
+        ? String(cardToken.spacing.actionInline)
+        : String(cardToken.spacing.actionRegular)
 }
 
 /**
- * Gets the spacing between slot and sub header title for bordered variant
+ * Gets alignment styles for aligned cards
  */
-export const getBorderedSlotSubHeaderSpacing = (): string => {
-    return '14px'
+export const getAlignmentStyles = (
+    alignment: CardAlignment,
+    centerAlign: boolean,
+    cardToken: CardTokenType
+) => {
+    const alignmentConfig = cardToken.alignment[alignment]
+
+    const baseStyles = {
+        padding: alignmentConfig.padding,
+        gap: alignmentConfig.gap,
+        minHeight: alignmentConfig.minHeight,
+    }
+
+    if (alignment === CardAlignment.VERTICAL) {
+        return {
+            ...baseStyles,
+            display: 'flex',
+            flexDirection: 'column' as const,
+            ...(centerAlign && {
+                alignItems: 'center',
+                textAlign: 'center' as const,
+                justifyContent: 'center',
+            }),
+        }
+    }
+
+    if (alignment === CardAlignment.HORIZONTAL) {
+        return {
+            ...baseStyles,
+            display: 'flex',
+            flexDirection: 'row' as const,
+            ...(centerAlign && {
+                alignItems: 'center',
+                textAlign: 'center' as const,
+            }),
+        }
+    }
+
+    return baseStyles
 }
 
 /**
- * Gets the spacing between sub header title and description for bordered variant
+ * Gets custom card styles (simple wrapper with padding)
  */
-export const getBorderedSubHeaderDescriptionSpacing = (): string => {
-    return '6px'
+export const getCustomCardStyles = (cardToken: CardTokenType) => ({
+    padding: '16px', // Force 16px padding for custom cards
+})
+
+/**
+ * Determines if action button is inline type
+ */
+export const isInlineActionButton = (actionButton?: {
+    subType?: ButtonSubType
+}): boolean => {
+    return actionButton?.subType === ButtonSubType.INLINE
 }
-
-/**
- * Gets the spacing between description and content slot for bordered variant
- */
-export const getBorderedDescriptionContentSpacing = (): string => {
-    return '14px'
-}
-
-/**
- * Gets the spacing between content slot and action button for bordered variant
- */
-export const getBorderedContentActionSpacing = (): string => {
-    return '14px'
-}
-
-/**
- * Gets the bordered header styles
- */
-export const getBorderedHeaderStyles = (cardToken: CardTokenType) => ({
-    padding: '12px 16px',
-    backgroundColor: '#F9FAFB', // gray 25
-    borderBottom: '1px solid #E5E7EB', // gray 200
-})
-
-/**
- * Gets the bordered header title styles
- */
-export const getBorderedHeaderTitleStyles = (cardToken: CardTokenType) => ({
-    fontSize: cardToken.header.title.fontSize, // body lg
-    fontWeight: '600',
-    color: '#1F2937', // gray 800
-})
-
-/**
- * Gets the bordered header description styles
- */
-export const getBorderedHeaderDescriptionStyles = () => ({
-    fontSize: '12px', // body sm
-    color: '#6B7280', // gray 500
-    marginTop: '2px',
-})
-
-/**
- * Gets the sub header title styles for bordered variant
- */
-export const getBorderedSubHeaderTitleStyles = () => ({
-    fontSize: '14px', // body md
-    fontWeight: '500',
-    color: '#1F2937', // gray 800
-})
-
-/**
- * Gets the description styles for bordered variant
- */
-export const getBorderedDescriptionStyles = () => ({
-    fontSize: '14px', // body md
-    color: '#6B7280', // gray 500
-})
