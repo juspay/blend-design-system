@@ -1,4 +1,4 @@
-interface HomeDataType {
+type HomeDataType = {
     id: string
     date: string
     heading: string

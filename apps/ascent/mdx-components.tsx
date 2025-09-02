@@ -44,6 +44,7 @@ const components = {
     ChangelogEntry,
     CommitLink,
     GradientBorderWrapper,
+    GradientBorderComponent: GradientBorderWrapper, // Alias for backward compatibility
     DateBadge,
     Search,
     ChangeLogCard,
