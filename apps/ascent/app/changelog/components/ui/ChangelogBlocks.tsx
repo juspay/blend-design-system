@@ -1,4 +1,122 @@
-const VideoBlock = ({
+import React from 'react'
+import Image from 'next/image'
+
+// ParagraphBlock component
+export const ParagraphBlock = ({
+    paragraphText,
+}: {
+    paragraphText: string
+}) => {
+    return (
+        <p className="xl:text-4xl lg:text-3xl md:text-2xl sm:text-xl xs:text-lg text-base font-light text-[var(--grey-500)]">
+            {paragraphText}
+        </p>
+    )
+}
+
+// SubHeadingBlock component
+export const SubHeadingBlock = ({
+    subHeadingText,
+}: {
+    subHeadingText: string
+}) => {
+    return (
+        <h2 className="xl:text-5xl lg:text-4xl md:text-3xl sm:text-2xl xs:text-xl text-lg text-[var(--grey-100)]">
+            {subHeadingText}
+        </h2>
+    )
+}
+
+// HeadingBlock component
+export const HeadingBlock = ({ headingText }: { headingText: string }) => {
+    return (
+        <h1 className="xl:text-[length:var(--text-56)] lg:text-5xl md:text-4xl sm:text-3xl xs:text-2xl text-xl text-[var(--grey-100)]">
+            {headingText}
+        </h1>
+    )
+}
+
+// DateBadge component
+export const DateBadge = ({ children }: { children: React.ReactNode }) => {
+    return (
+        <span className="border-[length:var(--pixel)] border-[var(--grey-400)] bg-transparent text-[var(--grey-300)] lg:p-3 md:p-2 p-1 lg:text-base sm:text-sm text-xs rounded-[var(--rounded-46)] w-fit">
+            {children}
+        </span>
+    )
+}
+
+// GradientBorderWrapper component
+export const GradientBorderWrapper = ({
+    children,
+    thickness,
+    borderColor,
+    width,
+    height,
+    rounded,
+    bgColor,
+    className,
+}: {
+    children: React.ReactNode
+    thickness: string
+    borderColor: string
+    width: string
+    bgColor: string
+    height?: string
+    rounded?: string
+    className?: string
+}) => {
+    return (
+        <div
+            className={`${thickness} ${borderColor} ${width} ${height} ${rounded}`}
+        >
+            <div className={`h-full w-full ${bgColor} ${rounded} ${className}`}>
+                {children}
+            </div>
+        </div>
+    )
+}
+
+// ChangeLogCard component
+export const ChangeLogCard = ({ children }: { children: React.ReactNode }) => {
+    return (
+        <article>
+            <GradientBorderWrapper
+                thickness="p-[var(--pixel)]"
+                borderColor="bg-[var(--search-bar-to)]"
+                width="w-full"
+                rounded="rounded-[var(--rounded-50)]"
+                bgColor="bg-black"
+                className="lg:p-14 md:p-12 sm:p-10 xs:p-8 p-6 flex flex-col lg:gap-16 md:gap-12 sm:gap-10 gap-8 transition bg-gradient-to-b from-[#161616] to-[var(--documentation-card-gradient-to)]"
+            >
+                {children}
+            </GradientBorderWrapper>
+        </article>
+    )
+}
+
+// ImageBlock component
+export const ImageBlock = ({
+    imageUrl,
+    altText,
+}: {
+    imageUrl: string
+    altText: string
+}) => {
+    return (
+        <div className="w-[90vw] lg:-ml-30 md:-ml-22 sm:-ml-14 xs:-ml-8 -ml-5 object-cover rounded-br-[20vw]">
+            <Image
+                src={imageUrl}
+                width={100}
+                height={100}
+                className="w-full rounded-br-[20vw] object-cover"
+                alt={altText}
+            />
+        </div>
+    )
+}
+
+// VideoBlock component
+export const VideoBlock = ({
     videoUrl,
     altText = 'Video content',
     autoPlay = false,
@@ -142,5 +260,3 @@ const VideoBlock = ({
         </div>
     )
 }
-
-export default VideoBlock

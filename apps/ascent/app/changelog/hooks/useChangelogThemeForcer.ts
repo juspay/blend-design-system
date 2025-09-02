@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 
-export default function ChangelogThemeForcer() {
+export const useChangelogThemeForcer = () => {
     useEffect(() => {
         const forceDarkMode = () => {
             // Set dark mode on document element
@@ -45,6 +45,4 @@ export default function ChangelogThemeForcer() {
             observer.disconnect()
         }
     }, [])
-
-    return null // This component doesn't render anything
 }

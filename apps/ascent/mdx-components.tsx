@@ -11,16 +11,18 @@ import {
     PreviewComponents,
     TableComponents,
 } from '@/components/mdx'
-import GradientBorderComponent from './app/changelog/components/ui/GradientBorderWrapper'
-import DateBadge from './app/changelog/components/ui/DateBadge'
+import {
+    GradientBorderWrapper,
+    DateBadge,
+    ChangeLogCard,
+    ImageBlock,
+    VideoBlock,
+    HeadingBlock,
+    SubHeadingBlock,
+    ParagraphBlock,
+} from './app/changelog/components/ui/ChangelogBlocks'
 import { Search } from 'lucide-react'
-import ChangeLogCard from './app/changelog/components/ui/ChangeLogCard'
 import HomeDataList from './app/changelog/components/ui/HomeDataList'
-import ImageBlock from './app/changelog/components/ui/ImageBlock'
-import VideoBlock from './app/changelog/components/ui/VideoBlock'
-import HeadingBlock from './app/changelog/components/ui/HeadingBlock'
-import SubHeadingBlock from './app/changelog/components/ui/SubHeadingBlock'
-import ParagraphBlock from './app/changelog/components/ui/ParagraphBlock'
 
 const components = {
     // Core MDX components (headings, paragraphs, links, etc.)
@@ -41,7 +43,7 @@ const components = {
     ChangelogCard,
     ChangelogEntry,
     CommitLink,
-    GradientBorderComponent,
+    GradientBorderWrapper,
     DateBadge,
     Search,
     ChangeLogCard,
