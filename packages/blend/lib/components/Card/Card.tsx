@@ -71,22 +71,16 @@ const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
     return (
         <Block
             ref={ref}
-            className={className}
-            style={{
-                maxWidth:
-                    maxWidth !== 'auto'
-                        ? toPixels(maxWidth)
-                        : cardToken.maxWidth,
-                outline: cardToken.border,
-                borderRadius: cardToken.borderRadius,
-                backgroundColor: cardToken.backgroundColor,
-                boxShadow: cardToken.boxShadow,
-                transition:
-                    'outline-color 0.2s ease, background-color 0.2s ease',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-            }}
+            maxWidth={
+                maxWidth !== 'auto' ? toPixels(maxWidth) : cardToken.maxWidth
+            }
+            outline={cardToken.border}
+            borderRadius={cardToken.borderRadius}
+            backgroundColor={cardToken.backgroundColor}
+            boxShadow={cardToken.boxShadow}
+            overflow="hidden"
+            display="flex"
+            flexDirection="column"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
