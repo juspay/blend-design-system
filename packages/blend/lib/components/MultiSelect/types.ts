@@ -39,6 +39,7 @@ export type MultiSelectMenuItemType = {
     slot3?: React.ReactNode
     slot4?: React.ReactNode
     disabled?: boolean
+    alwaysSelected?: boolean
     onClick?: () => void
     subMenu?: MultiSelectMenuItemType[]
     tooltip?: string | React.ReactNode

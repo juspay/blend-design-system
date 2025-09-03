@@ -51,7 +51,9 @@ const SelectAllItem = ({
     selectAllText: string
 }) => {
     const allValues = items.flatMap((group) =>
-        group.items.filter((item) => !item.disabled).map((item) => item.value)
+        group.items
+            .filter((item) => !item.disabled && !item.alwaysSelected)
+            .map((item) => item.value)
     )
 
     const allSelected =
@@ -144,7 +146,7 @@ const MultiSelectItem = ({
         maxSelections !== undefined &&
         selectedCount >= maxSelections &&
         !isSelected
-    const isItemDisabled = item.disabled || isMaxReached
+    const isItemDisabled = item.disabled || isMaxReached || item.alwaysSelected
 
     return (
         <Block

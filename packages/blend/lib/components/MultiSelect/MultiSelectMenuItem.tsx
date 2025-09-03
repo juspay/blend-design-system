@@ -20,7 +20,7 @@ const MultiSelectMenuItem = ({
         maxSelections !== undefined &&
         selected.length >= maxSelections &&
         !isSelected
-    const isItemDisabled = item.disabled || isMaxReached
+    const isItemDisabled = item.disabled || isMaxReached || item.alwaysSelected
 
     const getSelectedPosition = ():
         | 'first'

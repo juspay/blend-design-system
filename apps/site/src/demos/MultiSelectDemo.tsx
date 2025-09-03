@@ -173,6 +173,12 @@ const MultiSelectDemo = () => {
         string[]
     >([])
 
+    // Always Selected demo state
+    const [alwaysSelectedBasicSelected, setAlwaysSelectedBasicSelected] =
+        useState<string[]>(['react', 'nodejs']) // Pre-select some items that are always selected
+    const [alwaysSelectedAdvancedSelected, setAlwaysSelectedAdvancedSelected] =
+        useState<string[]>(['users.view', 'content.create']) // Pre-select some permissions
+
     // Truncation demo state
     const [truncationBasicSelected, setTruncationBasicSelected] = useState<
         string[]
@@ -2652,6 +2658,307 @@ const MultiSelectDemo = () => {
                             gets top border radius and the last item gets bottom
                             border radius. Middle items have no border radius
                             for a seamless connected appearance.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Always Selected Feature */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    🔒 Always Selected Feature
+                </h2>
+                <p className="text-gray-600">
+                    <strong>
+                        NEW: Force certain items to always be selected and
+                        disabled!
+                    </strong>
+                    Use the{' '}
+                    <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                        alwaysSelected: true
+                    </code>{' '}
+                    property on items to make them permanently selected and
+                    non-deselectable. Perfect for mandatory requirements or core
+                    permissions.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Core Technologies (Always Selected)
+                        </h3>
+                        <MultiSelect
+                            label="Required Tech Stack"
+                            sublabel="Some technologies are mandatory for this project"
+                            items={[
+                                {
+                                    groupLabel: 'Frontend (Required)',
+                                    showSeparator: true,
+                                    items: [
+                                        {
+                                            label: 'React',
+                                            value: 'react',
+                                            slot1: <Code size={16} />,
+                                            alwaysSelected: true,
+                                        },
+                                        {
+                                            label: 'Vue.js',
+                                            value: 'vue',
+                                            slot1: <Code size={16} />,
+                                        },
+                                        {
+                                            label: 'Angular',
+                                            value: 'angular',
+                                            slot1: <Code size={16} />,
+                                        },
+                                    ],
+                                },
+                                {
+                                    groupLabel: 'Backend (Required)',
+                                    showSeparator: true,
+                                    items: [
+                                        {
+                                            label: 'Node.js',
+                                            value: 'nodejs',
+                                            slot1: <Server size={16} />,
+                                            alwaysSelected: true,
+                                        },
+                                        {
+                                            label: 'Python',
+                                            value: 'python',
+                                            slot1: <Server size={16} />,
+                                        },
+                                        {
+                                            label: 'Java',
+                                            value: 'java',
+                                            slot1: <Server size={16} />,
+                                        },
+                                    ],
+                                },
+                                {
+                                    groupLabel: 'Database (Optional)',
+                                    items: [
+                                        {
+                                            label: 'PostgreSQL',
+                                            value: 'postgresql',
+                                            slot1: <Database size={16} />,
+                                        },
+                                        {
+                                            label: 'MySQL',
+                                            value: 'mysql',
+                                            slot1: <Database size={16} />,
+                                        },
+                                        {
+                                            label: 'MongoDB',
+                                            value: 'mongodb',
+                                            slot1: <Database size={16} />,
+                                        },
+                                    ],
+                                },
+                            ]}
+                            selectedValues={alwaysSelectedBasicSelected}
+                            onChange={handleMultiSelectChange(
+                                alwaysSelectedBasicSelected,
+                                setAlwaysSelectedBasicSelected
+                            )}
+                            placeholder="Select additional technologies"
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {alwaysSelectedBasicSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        Tech Stack (
+                                        {alwaysSelectedBasicSelected.length}):
+                                    </strong>{' '}
+                                    {alwaysSelectedBasicSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    🔒 React and Node.js are always selected
+                                    (mandatory)
+                                </p>
+                                <p className="text-xs text-blue-600">
+                                    ✅ You can select additional optional
+                                    technologies
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Base Permissions (Always Selected)
+                        </h3>
+                        <MultiSelect
+                            label="User Access Control"
+                            sublabel="Basic permissions are mandatory for all users"
+                            items={[
+                                {
+                                    groupLabel: 'Basic Access (Required)',
+                                    showSeparator: true,
+                                    items: [
+                                        {
+                                            label: 'View Users',
+                                            value: 'users.view',
+                                            subLabel: 'Read-only access',
+                                            slot1: <Users size={16} />,
+                                            alwaysSelected: true,
+                                        },
+                                        {
+                                            label: 'Edit Users',
+                                            value: 'users.edit',
+                                            subLabel: 'Modify user data',
+                                            slot1: <Users size={16} />,
+                                        },
+                                        {
+                                            label: 'Delete Users',
+                                            value: 'users.delete',
+                                            subLabel: 'Remove users',
+                                            slot1: <Users size={16} />,
+                                        },
+                                    ],
+                                },
+                                {
+                                    groupLabel: 'Content Management (Required)',
+                                    showSeparator: true,
+                                    items: [
+                                        {
+                                            label: 'Create Content',
+                                            value: 'content.create',
+                                            subLabel: 'Add new content',
+                                            slot1: <Star size={16} />,
+                                            alwaysSelected: true,
+                                        },
+                                        {
+                                            label: 'Edit Content',
+                                            value: 'content.edit',
+                                            subLabel: 'Modify existing',
+                                            slot1: <Star size={16} />,
+                                        },
+                                        {
+                                            label: 'Publish Content',
+                                            value: 'content.publish',
+                                            subLabel: 'Make content live',
+                                            slot1: <Star size={16} />,
+                                        },
+                                    ],
+                                },
+                                {
+                                    groupLabel: 'System Settings (Optional)',
+                                    items: [
+                                        {
+                                            label: 'View Settings',
+                                            value: 'settings.view',
+                                            subLabel: 'Read-only access',
+                                            slot1: <Settings size={16} />,
+                                        },
+                                        {
+                                            label: 'Edit Settings',
+                                            value: 'settings.edit',
+                                            subLabel: 'Modify settings',
+                                            slot1: <Settings size={16} />,
+                                        },
+                                        {
+                                            label: 'Advanced Settings',
+                                            value: 'settings.advanced',
+                                            subLabel: 'System config',
+                                            slot1: <Shield size={16} />,
+                                        },
+                                    ],
+                                },
+                            ]}
+                            selectedValues={alwaysSelectedAdvancedSelected}
+                            onChange={handleMultiSelectChange(
+                                alwaysSelectedAdvancedSelected,
+                                setAlwaysSelectedAdvancedSelected
+                            )}
+                            placeholder="Grant additional permissions"
+                            enableSearch={true}
+                            enableSelectAll={false}
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                            useDrawerOnMobile={false}
+                        />
+                        {alwaysSelectedAdvancedSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        Granted Permissions (
+                                        {alwaysSelectedAdvancedSelected.length}
+                                        ):
+                                    </strong>{' '}
+                                    {alwaysSelectedAdvancedSelected
+                                        .slice(0, 3)
+                                        .join(', ')}
+                                    {alwaysSelectedAdvancedSelected.length >
+                                        3 &&
+                                        ` +${alwaysSelectedAdvancedSelected.length - 3} more`}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    🔒 View Users and Create Content are always
+                                    granted (mandatory)
+                                </p>
+                                <p className="text-xs text-green-600">
+                                    ✅ Additional permissions can be granted as
+                                    needed
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border border-orange-200">
+                    <h4 className="font-semibold text-orange-900 mb-2">
+                        🔒 Always Selected Features:
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul className="text-sm text-orange-800 space-y-1">
+                            <li>
+                                • <strong>Mandatory Items:</strong> Set
+                                alwaysSelected: true to make items permanently
+                                selected
+                            </li>
+                            <li>
+                                • <strong>Visual Indication:</strong> Always
+                                selected items appear disabled but selected
+                            </li>
+                            <li>
+                                • <strong>Cannot be Deselected:</strong> Users
+                                cannot uncheck these items
+                            </li>
+                            <li>
+                                • <strong>Select All Exclusion:</strong> Always
+                                selected items are excluded from "Select All"
+                                logic
+                            </li>
+                        </ul>
+                        <ul className="text-sm text-orange-800 space-y-1">
+                            <li>
+                                • <strong>Works Everywhere:</strong> Desktop
+                                dropdown, mobile drawer, and submenus
+                            </li>
+                            <li>
+                                • <strong>Search Compatible:</strong> Always
+                                selected items remain visible in search results
+                            </li>
+                            <li>
+                                • <strong>Max Selections Compatible:</strong>{' '}
+                                Always selected items don't count toward
+                                maxSelections limit
+                            </li>
+                            <li>
+                                • <strong>Perfect for Requirements:</strong>{' '}
+                                Ideal for mandatory permissions, core features,
+                                etc.
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="mt-3 p-2 bg-white rounded border-l-4 border-orange-400">
+                        <p className="text-sm text-orange-700">
+                            <strong>Use Cases:</strong> Core permissions that
+                            all users must have, mandatory project requirements,
+                            essential features that cannot be disabled,
+                            compliance requirements, or baseline configurations.
                         </p>
                     </div>
                 </div>

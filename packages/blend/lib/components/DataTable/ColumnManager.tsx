@@ -19,6 +19,8 @@ export const ColumnManager = <T extends Record<string, unknown>>({
     columns,
     visibleColumns,
     onColumnChange,
+    maxSelections,
+    alwaysSelectedColumns = [],
 }: ColumnManagerProps<T>) => {
     const mobileConfig = useMobileDataTable()
     const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
@@ -32,6 +34,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             items: managableColumns.map((column) => ({
                 label: column.header,
                 value: String(column.field),
+                alwaysSelected: alwaysSelectedColumns.includes(String(column.field)),
             })),
         },
     ]
@@ -40,7 +43,13 @@ export const ColumnManager = <T extends Record<string, unknown>>({
 
     const handleMultiSelectChange = (value: string) => {
         if (value === '') {
-            if (visibleColumns.length > 1) {
+            // Handle deselect all - keep only always selected columns
+            const alwaysSelectedCols = visibleColumns.filter((col) =>
+                alwaysSelectedColumns.includes(String(col.field))
+            )
+            if (alwaysSelectedCols.length > 0) {
+                onColumnChange(alwaysSelectedCols)
+            } else if (visibleColumns.length > 1) {
                 onColumnChange([visibleColumns[0]])
             }
         } else {
@@ -48,18 +57,27 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             const isCurrentlyVisible = visibleColumns.some(
                 (col) => col.field === field
             )
+            const isAlwaysSelected = alwaysSelectedColumns.includes(String(field))
 
             if (isCurrentlyVisible) {
-                if (visibleColumns.length > 1) {
+                // Don't allow deselecting always selected columns
+                if (!isAlwaysSelected && visibleColumns.length > 1) {
                     const newVisibleColumns = visibleColumns.filter(
                         (col) => col.field !== field
                     )
                     onColumnChange(newVisibleColumns)
                 }
             } else {
-                const columnToAdd = columns.find((col) => col.field === field)
-                if (columnToAdd) {
-                    onColumnChange([...visibleColumns, columnToAdd])
+                // Check max selections limit before adding
+                const currentSelectableCount = visibleColumns.filter(
+                    (col) => !alwaysSelectedColumns.includes(String(col.field))
+                ).length
+                
+                if (!maxSelections || currentSelectableCount < maxSelections || isAlwaysSelected) {
+                    const columnToAdd = columns.find((col) => col.field === field)
+                    if (columnToAdd) {
+                        onColumnChange([...visibleColumns, columnToAdd])
+                    }
                 }
             }
         }
@@ -81,6 +99,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     showItemDividers={true}
                     showHeaderBorder={false}
                     showActionButtons={false}
+                    maxSelections={maxSelections}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"
@@ -118,6 +137,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     showActionButtons={false}
                     maxHeight={400}
                     showHeaderBorder={false}
+                    maxSelections={maxSelections}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"
