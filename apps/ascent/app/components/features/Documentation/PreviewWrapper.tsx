@@ -83,6 +83,9 @@ const previewComponents = {
     ProgressBarPreview: dynamic(() => import('./Previews/ProgressBarPreview'), {
         ssr: false,
     }),
+    SidebarPreview: dynamic(() => import('./Previews/SidebarPreview'), {
+        ssr: false,
+    }),
     SliderPreview: dynamic(() => import('./Previews/SliderPreview'), {
         ssr: false,
     }),
