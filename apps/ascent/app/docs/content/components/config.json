@@ -18,6 +18,7 @@
         "menu",
         "modal",
         "multivalueinput",
+        "numberinput",
         "multi-select",
         "popover",
         "progressbar",
