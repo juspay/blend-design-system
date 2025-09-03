@@ -29,6 +29,7 @@ import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
 import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
 import { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
+import { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -62,7 +63,8 @@ export const useComponentToken = (
     | ProgressBarTokenType
     | DrawerTokensType
     | ResponsiveChartTokens
-    | ResponsiveSnackbarTokens => {
+    | ResponsiveSnackbarTokens
+    | ResponsiveKeyValuePairTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -126,6 +128,8 @@ export const useComponentToken = (
             return componentTokens.CHARTS
         case 'SNACKBAR':
             return componentTokens.SNACKBAR
+        case 'KEYVALUEPAIR':
+            return componentTokens.KEYVALUEPAIR
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

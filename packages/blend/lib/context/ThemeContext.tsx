@@ -120,6 +120,10 @@ import {
     getSnackbarTokens,
     ResponsiveSnackbarTokens,
 } from '../components/Snackbar/snackbar.tokens'
+import {
+    getKeyValuePairTokens,
+    ResponsiveKeyValuePairTokens,
+} from '../components/KeyValuePair/KeyValuePair.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -152,6 +156,7 @@ export type ComponentTokenType = {
     DRAWER?: DrawerTokensType
     CHARTS?: ResponsiveChartTokens
     SNACKBAR?: ResponsiveSnackbarTokens
+    KEYVALUEPAIR?: ResponsiveKeyValuePairTokens
 }
 
 type ThemeContextType = {
@@ -193,6 +198,7 @@ const ThemeContext = createContext<ThemeContextType>({
         DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
         CHARTS: getChartTokens(FOUNDATION_THEME),
         SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
+        KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })
