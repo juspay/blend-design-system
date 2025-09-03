@@ -36,6 +36,9 @@ const PREVIEW_COMPONENT_NAMES = [
     'ProgressBar',
     'Sidebar',
     'Slider',
+    'TextInput',
+    'DropdownInput',
+    'MultiValueInput',
 ] as const
 
 // Generate all preview components programmatically
@@ -76,3 +79,6 @@ export const DrawerPreview = PreviewComponents.DrawerPreview
 export const ProgressBarPreview = PreviewComponents.ProgressBarPreview
 export const SidebarPreview = PreviewComponents.SidebarPreview
 export const SliderPreview = PreviewComponents.SliderPreview
+export const TextInputPreview = PreviewComponents.TextInputPreview
+export const DropdownInputPreview = PreviewComponents.DropdownInputPreview
+export const MultiValueInputPreview = PreviewComponents.MultiValueInputPreview

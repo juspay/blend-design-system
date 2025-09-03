@@ -89,6 +89,21 @@ const previewComponents = {
     SliderPreview: dynamic(() => import('./Previews/SliderPreview'), {
         ssr: false,
     }),
+    TextInputPreview: dynamic(() => import('./Previews/TextInputPreview'), {
+        ssr: false,
+    }),
+    DropdownInputPreview: dynamic(
+        () => import('./Previews/DropdownInputPreview'),
+        {
+            ssr: false,
+        }
+    ),
+    MultiValueInputPreview: dynamic(
+        () => import('./Previews/MultiValueInputPreview'),
+        {
+            ssr: false,
+        }
+    ),
 }
 
 interface PreviewWrapperProps {
