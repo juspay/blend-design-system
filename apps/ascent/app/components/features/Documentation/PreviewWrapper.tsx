@@ -116,6 +116,9 @@ const previewComponents = {
     TextareaPreview: dynamic(() => import('./Previews/TextareaPreview'), {
         ssr: false,
     }),
+    UnitInputPreview: dynamic(() => import('./Previews/UnitInputPreview'), {
+        ssr: false,
+    }),
 }
 
 interface PreviewWrapperProps {
