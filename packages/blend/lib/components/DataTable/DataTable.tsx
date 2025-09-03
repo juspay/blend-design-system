@@ -787,8 +787,12 @@ const DataTable = forwardRef(
                                     enableColumnManager={
                                         effectiveEnableColumnManager
                                     }
-                                    columnManagerMaxSelections={columnManagerMaxSelections}
-                                    columnManagerAlwaysSelected={columnManagerAlwaysSelected?.map(field => String(field))}
+                                    columnManagerMaxSelections={
+                                        columnManagerMaxSelections
+                                    }
+                                    columnManagerAlwaysSelected={columnManagerAlwaysSelected?.map(
+                                        (field) => String(field)
+                                    )}
                                     enableRowExpansion={enableRowExpansion}
                                     enableRowSelection={enableRowSelection}
                                     rowActions={

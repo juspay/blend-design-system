@@ -693,7 +693,9 @@ const TableHeader = forwardRef<
                                     }
                                     onColumnChange={onColumnChange}
                                     maxSelections={columnManagerMaxSelections}
-                                    alwaysSelectedColumns={columnManagerAlwaysSelected}
+                                    alwaysSelectedColumns={
+                                        columnManagerAlwaysSelected
+                                    }
                                 />
                             </Block>
                         </th>

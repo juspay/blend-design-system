@@ -34,7 +34,9 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             items: managableColumns.map((column) => ({
                 label: column.header,
                 value: String(column.field),
-                alwaysSelected: alwaysSelectedColumns.includes(String(column.field)),
+                alwaysSelected: alwaysSelectedColumns.includes(
+                    String(column.field)
+                ),
             })),
         },
     ]
@@ -57,7 +59,9 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             const isCurrentlyVisible = visibleColumns.some(
                 (col) => col.field === field
             )
-            const isAlwaysSelected = alwaysSelectedColumns.includes(String(field))
+            const isAlwaysSelected = alwaysSelectedColumns.includes(
+                String(field)
+            )
 
             if (isCurrentlyVisible) {
                 // Don't allow deselecting always selected columns
@@ -72,9 +76,15 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                 const currentSelectableCount = visibleColumns.filter(
                     (col) => !alwaysSelectedColumns.includes(String(col.field))
                 ).length
-                
-                if (!maxSelections || currentSelectableCount < maxSelections || isAlwaysSelected) {
-                    const columnToAdd = columns.find((col) => col.field === field)
+
+                if (
+                    !maxSelections ||
+                    currentSelectableCount < maxSelections ||
+                    isAlwaysSelected
+                ) {
+                    const columnToAdd = columns.find(
+                        (col) => col.field === field
+                    )
                     if (columnToAdd) {
                         onColumnChange([...visibleColumns, columnToAdd])
                     }
