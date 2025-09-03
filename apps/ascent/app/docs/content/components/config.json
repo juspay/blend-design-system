@@ -19,6 +19,7 @@
         "modal",
         "multivalueinput",
         "numberinput",
+        "otpinput",
         "multi-select",
         "popover",
         "progressbar",

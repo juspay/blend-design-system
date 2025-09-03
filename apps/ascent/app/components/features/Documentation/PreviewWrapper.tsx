@@ -107,6 +107,9 @@ const previewComponents = {
     NumberInputPreview: dynamic(() => import('./Previews/NumberInputPreview'), {
         ssr: false,
     }),
+    OTPInputPreview: dynamic(() => import('./Previews/OTPInputPreview'), {
+        ssr: false,
+    }),
 }
 
 interface PreviewWrapperProps {
