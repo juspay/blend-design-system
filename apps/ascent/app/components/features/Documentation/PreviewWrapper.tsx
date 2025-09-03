@@ -80,6 +80,9 @@ const previewComponents = {
     DrawerPreview: dynamic(() => import('./Previews/DrawerPreview'), {
         ssr: false,
     }),
+    ProgressBarPreview: dynamic(() => import('./Previews/ProgressBarPreview'), {
+        ssr: false,
+    }),
     SliderPreview: dynamic(() => import('./Previews/SliderPreview'), {
         ssr: false,
     }),

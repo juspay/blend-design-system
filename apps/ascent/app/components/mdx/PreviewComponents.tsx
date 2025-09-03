@@ -33,6 +33,7 @@ const PREVIEW_COMPONENT_NAMES = [
     'Breadcrumb',
     'DataTable',
     'Drawer',
+    'ProgressBar',
     'Slider',
 ] as const
 
@@ -71,4 +72,5 @@ export const AvatarGroupPreview = PreviewComponents.AvatarGroupPreview
 export const BreadcrumbPreview = PreviewComponents.BreadcrumbPreview
 export const DataTablePreview = PreviewComponents.DataTablePreview
 export const DrawerPreview = PreviewComponents.DrawerPreview
+export const ProgressBarPreview = PreviewComponents.ProgressBarPreview
 export const SliderPreview = PreviewComponents.SliderPreview
