@@ -21,6 +21,7 @@
         "numberinput",
         "otpinput",
         "searchinput",
+        "textarea",
         "multi-select",
         "popover",
         "progressbar",

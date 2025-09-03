@@ -113,6 +113,9 @@ const previewComponents = {
     SearchInputPreview: dynamic(() => import('./Previews/SearchInputPreview'), {
         ssr: false,
     }),
+    TextareaPreview: dynamic(() => import('./Previews/TextareaPreview'), {
+        ssr: false,
+    }),
 }
 
 interface PreviewWrapperProps {
