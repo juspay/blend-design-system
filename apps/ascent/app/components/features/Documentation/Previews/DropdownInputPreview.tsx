@@ -1,5 +1,5 @@
 'use client'
-import { DropdownInput } from '@juspay/blend-design-system'
+import { DropdownInput, DropdownPosition } from '@juspay/blend-design-system'
 import React, { useState } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
@@ -142,7 +142,7 @@ external make: (
                     dropDownValue={currency}
                     onDropDownChange={(value) => setCurrency(value)}
                     dropDownItems={currencyOptions}
-                    dropdownPosition="right"
+                    dropdownPosition={DropdownPosition.RIGHT}
                     hintText="Enter price and select currency"
                 />
             </div>
