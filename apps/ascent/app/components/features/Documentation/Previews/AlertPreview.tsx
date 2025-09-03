@@ -4,18 +4,26 @@ import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const AlertPreview = () => {
-    const tsCode = `import { Alert, AlertVariant, AlertStyle } from "@juspay/blend-design-system";
+    const tsCode = `import { Alert, AlertVariant, AlertStyle, AlertActionPlacement } from 'blend-v1'
 
 function MyComponent() {
-  return (
-    <Alert
-      heading="Success!"
-      description="Your changes have been saved successfully."
-      variant={AlertVariant.SUCCESS}
-      style={AlertStyle.SUBTLE}
-      onClose={() => console.log("closed")}
-    />
-  );
+    return (
+        <Alert
+            heading="Update Available"
+            description="A new version of the application is available. Please update to get the latest features."
+            variant={AlertVariant.PRIMARY}
+            style={AlertStyle.SUBTLE}
+            primaryAction={{
+                label: "Update Now",
+                onClick: () => console.log("Update clicked")
+            }}
+            secondaryAction={{
+                label: "Later",
+                onClick: () => console.log("Later clicked")
+            }}
+            onClose={() => console.log("Alert dismissed")}
+        />
+    )
 }`
 
     const reCode = `type alertVariant = [#primary | #success | #warning | #error | #purple | #orange | #neutral]
@@ -71,11 +79,19 @@ external make: (
             rescriptBinding={bindingCode}
         >
             <Alert
-                heading="Success!"
-                description="Your changes have been saved successfully."
-                variant={AlertVariant.SUCCESS}
+                heading="Update Available"
+                description="A new version of the application is available. Please update to get the latest features."
+                variant={AlertVariant.PRIMARY}
                 style={AlertStyle.SUBTLE}
-                onClose={() => console.log('closed')}
+                primaryAction={{
+                    label: 'Update Now',
+                    onClick: () => console.log('Update clicked'),
+                }}
+                secondaryAction={{
+                    label: 'Later',
+                    onClick: () => console.log('Later clicked'),
+                }}
+                onClose={() => console.log('Alert dismissed')}
             />
         </ComponentPreview>
     )

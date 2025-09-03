@@ -50,6 +50,9 @@ const previewComponents = {
         () => import('./Previews/SingleSelectPreview'),
         { ssr: false }
     ),
+    MultiSelectPreview: dynamic(() => import('./Previews/MultiSelectPreview'), {
+        ssr: false,
+    }),
     MenuPreview: dynamic(() => import('./Previews/MenuPreview'), {
         ssr: false,
     }),
@@ -59,6 +62,69 @@ const previewComponents = {
     ChartPreview: dynamic(() => import('./Previews/ChartPreview'), {
         ssr: false,
     }),
+    AvatarPreview: dynamic(() => import('./Previews/AvatarPreview'), {
+        ssr: false,
+    }),
+    AvatarGroupPreview: dynamic(() => import('./Previews/AvatarGroupPreview'), {
+        ssr: false,
+    }),
+    BreadcrumbPreview: dynamic(() => import('./Previews/BreadcrumbPreview'), {
+        ssr: false,
+    }),
+    DataTablePreview: dynamic(() => import('./Previews/DataTablePreview'), {
+        ssr: false,
+    }),
+    ButtonGroupPreview: dynamic(() => import('./Previews/ButtonGroupPreview'), {
+        ssr: false,
+    }),
+    DrawerPreview: dynamic(() => import('./Previews/DrawerPreview'), {
+        ssr: false,
+    }),
+    ProgressBarPreview: dynamic(() => import('./Previews/ProgressBarPreview'), {
+        ssr: false,
+    }),
+    SidebarPreview: dynamic(() => import('./Previews/SidebarPreview'), {
+        ssr: false,
+    }),
+    SliderPreview: dynamic(() => import('./Previews/SliderPreview'), {
+        ssr: false,
+    }),
+    TextInputPreview: dynamic(() => import('./Previews/TextInputPreview'), {
+        ssr: false,
+    }),
+    DropdownInputPreview: dynamic(
+        () => import('./Previews/DropdownInputPreview'),
+        {
+            ssr: false,
+        }
+    ),
+    MultiValueInputPreview: dynamic(
+        () => import('./Previews/MultiValueInputPreview'),
+        {
+            ssr: false,
+        }
+    ),
+    NumberInputPreview: dynamic(() => import('./Previews/NumberInputPreview'), {
+        ssr: false,
+    }),
+    OTPInputPreview: dynamic(() => import('./Previews/OTPInputPreview'), {
+        ssr: false,
+    }),
+    SearchInputPreview: dynamic(() => import('./Previews/SearchInputPreview'), {
+        ssr: false,
+    }),
+    TextareaPreview: dynamic(() => import('./Previews/TextareaPreview'), {
+        ssr: false,
+    }),
+    UnitInputPreview: dynamic(() => import('./Previews/UnitInputPreview'), {
+        ssr: false,
+    }),
+    DateRangePickerPreview: dynamic(
+        () => import('./Previews/DateRangePickerPreview'),
+        {
+            ssr: false,
+        }
+    ),
 }
 
 interface PreviewWrapperProps {
