@@ -75,6 +75,7 @@ const MultiSelectMenu = ({
     searchPlaceholder = 'Search options...',
     enableSelectAll = false,
     selectAllText = 'Select All',
+    maxSelections,
     onSelectAll,
     alignment = MultiSelectMenuAlignment.CENTER,
     side = MultiSelectMenuSide.BOTTOM,
@@ -225,6 +226,7 @@ const MultiSelectMenu = ({
                         availableValues.length > 0 && (
                             <Block
                                 borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                                padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[6]}`}
                             >
                                 <SelectAllItem
                                     selected={selected}
@@ -239,7 +241,7 @@ const MultiSelectMenu = ({
                 <ScrollableContent
                     style={{
                         maxHeight: maxHeight ? `${maxHeight - 80}px` : '320px',
-                        padding: `${FOUNDATION_THEME.unit[6]} 0`,
+                        padding: FOUNDATION_THEME.unit[6],
                     }}
                 >
                     {filteredItems.map(
@@ -249,9 +251,8 @@ const MultiSelectMenu = ({
                                     <RadixMenu.Label asChild>
                                         <PrimitiveText
                                             fontSize={12}
-                                            padding="6px 8px"
+                                            padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
                                             userSelect="none"
-                                            margin="0px 6px"
                                             textTransform="uppercase"
                                             color={
                                                 FOUNDATION_THEME.colors
@@ -272,6 +273,10 @@ const MultiSelectMenu = ({
                                             selected={selected}
                                             item={item}
                                             onSelect={onSelect}
+                                            maxSelections={maxSelections}
+                                            allItems={filteredItems.flatMap(
+                                                (g) => g.items
+                                            )}
                                         />
                                     )
                                 )}

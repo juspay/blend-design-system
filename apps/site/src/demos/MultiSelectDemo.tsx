@@ -165,6 +165,14 @@ const MultiSelectDemo = () => {
         string[]
     >([])
 
+    const [maxSelectionsBasicSelected, setMaxSelectionsBasicSelected] =
+        useState<string[]>([])
+    const [maxSelectionsAdvancedSelected, setMaxSelectionsAdvancedSelected] =
+        useState<string[]>([])
+    const [borderRadiusFixSelected, setBorderRadiusFixSelected] = useState<
+        string[]
+    >([])
+
     // Truncation demo state
     const [truncationBasicSelected, setTruncationBasicSelected] = useState<
         string[]
@@ -675,6 +683,9 @@ const MultiSelectDemo = () => {
         setTruncationBasicSelected([])
         setTruncationCustomSelected([])
         setTruncationMixedSelected([])
+        setMaxSelectionsBasicSelected([])
+        setMaxSelectionsAdvancedSelected([])
+        setBorderRadiusFixSelected([])
         addSnackbar({
             header: 'All Selections Cleared',
             description: 'All multi-select values have been reset',
@@ -2463,11 +2474,194 @@ const MultiSelectDemo = () => {
                 </div>
             </div>
 
+            {/* Max Selections Feature */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    🎯 Max Selections Feature
+                </h2>
+                <p className="text-gray-600">
+                    <strong>
+                        NEW: Limit the maximum number of selections!
+                    </strong>
+                    Use the{' '}
+                    <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                        maxSelections
+                    </code>{' '}
+                    prop to restrict how many items users can select. Items
+                    become disabled when the limit is reached.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Max 3 Selections</h3>
+                        <MultiSelect
+                            label="Choose up to 3 skills"
+                            sublabel="Selection limit: 3 items"
+                            items={skillItems}
+                            selectedValues={maxSelectionsBasicSelected}
+                            onChange={handleMultiSelectChange(
+                                maxSelectionsBasicSelected,
+                                setMaxSelectionsBasicSelected
+                            )}
+                            placeholder="Select up to 3 skills"
+                            maxSelections={3}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {maxSelectionsBasicSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        Selected (
+                                        {maxSelectionsBasicSelected.length}/3):
+                                    </strong>{' '}
+                                    {maxSelectionsBasicSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    {maxSelectionsBasicSelected.length >= 3
+                                        ? '🚫 Maximum reached - other items are disabled'
+                                        : `✅ ${3 - maxSelectionsBasicSelected.length} more selections allowed`}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Max 5 Permissions</h3>
+                        <MultiSelect
+                            label="Grant up to 5 permissions"
+                            sublabel="Security limit: 5 permissions max"
+                            items={permissionItems}
+                            selectedValues={maxSelectionsAdvancedSelected}
+                            onChange={handleMultiSelectChange(
+                                maxSelectionsAdvancedSelected,
+                                setMaxSelectionsAdvancedSelected
+                            )}
+                            placeholder="Select up to 5 permissions"
+                            maxSelections={5}
+                            enableSearch={true}
+                            enableSelectAll={false}
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                            useDrawerOnMobile={false}
+                        />
+                        {maxSelectionsAdvancedSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        Granted (
+                                        {maxSelectionsAdvancedSelected.length}
+                                        /5):
+                                    </strong>{' '}
+                                    {maxSelectionsAdvancedSelected
+                                        .slice(0, 3)
+                                        .join(', ')}
+                                    {maxSelectionsAdvancedSelected.length > 3 &&
+                                        ` +${maxSelectionsAdvancedSelected.length - 3} more`}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    {maxSelectionsAdvancedSelected.length >= 5
+                                        ? '🔒 Security limit reached'
+                                        : `🔓 ${5 - maxSelectionsAdvancedSelected.length} more permissions can be granted`}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Border Radius Fix Demo
+                        </h3>
+                        <MultiSelect
+                            label="Select multiple items"
+                            sublabel="Notice the improved border radius on selected items"
+                            items={simpleItems}
+                            selectedValues={borderRadiusFixSelected}
+                            onChange={handleMultiSelectChange(
+                                borderRadiusFixSelected,
+                                setBorderRadiusFixSelected
+                            )}
+                            placeholder="Select multiple to see border fix"
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {borderRadiusFixSelected.length > 0 && (
+                            <div className="p-3 bg-purple-50 rounded-lg">
+                                <p className="text-sm text-purple-700">
+                                    <strong>
+                                        Selected (
+                                        {borderRadiusFixSelected.length}):
+                                    </strong>{' '}
+                                    {borderRadiusFixSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-purple-600 mt-1">
+                                    {borderRadiusFixSelected.length > 1
+                                        ? '🎨 Border radius applied only to first/last selected items'
+                                        : '🎨 Single selection gets full border radius'}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-200">
+                    <h4 className="font-semibold text-blue-900 mb-2">
+                        🎯 Max Selections Features:
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul className="text-sm text-blue-800 space-y-1">
+                            <li>
+                                • <strong>Flexible Limits:</strong> Set any
+                                number as maximum (e.g., maxSelections={3})
+                            </li>
+                            <li>
+                                • <strong>Smart Disabling:</strong> Unselected
+                                items become disabled when limit is reached
+                            </li>
+                            <li>
+                                • <strong>Selected Items Stay Active:</strong>{' '}
+                                Already selected items can still be deselected
+                            </li>
+                            <li>
+                                • <strong>Visual Feedback:</strong> Disabled
+                                items show appropriate styling
+                            </li>
+                        </ul>
+                        <ul className="text-sm text-blue-800 space-y-1">
+                            <li>
+                                • <strong>Works Everywhere:</strong> Desktop
+                                dropdown, mobile drawer, and submenus
+                            </li>
+                            <li>
+                                • <strong>Search Compatible:</strong> Limit
+                                applies to filtered results too
+                            </li>
+                            <li>
+                                • <strong>Border Radius Fix:</strong> Selected
+                                items now have proper border radius
+                            </li>
+                            <li>
+                                • <strong>Accessibility:</strong> Screen readers
+                                understand disabled state
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="mt-3 p-2 bg-white rounded border-l-4 border-blue-400">
+                        <p className="text-sm text-blue-700">
+                            <strong>Border Radius Improvement:</strong> When
+                            multiple items are selected, only the first item
+                            gets top border radius and the last item gets bottom
+                            border radius. Middle items have no border radius
+                            for a seamless connected appearance.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             {/* New Features Demo */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">New Features Demo</h2>
+                <h2 className="text-2xl font-bold">Other New Features</h2>
                 <p className="text-gray-600">
-                    Showcase the latest features: controllable header border and
+                    Additional latest features: controllable header border and
                     improved item dividers.
                 </p>
 

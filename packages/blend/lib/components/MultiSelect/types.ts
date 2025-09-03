@@ -83,6 +83,8 @@ export type MultiSelectProps = {
     enableSelectAll?: boolean
     selectAllText?: string
 
+    maxSelections?: number
+
     // custom trigger
     customTrigger?: React.ReactNode
 
@@ -142,6 +144,8 @@ export type MultiSelectMenuProps = {
     enableSelectAll?: boolean
     selectAllText?: string
     onSelectAll?: (selectAll: boolean) => void
+
+    maxSelections?: number
 
     // alignment
     alignment?: MultiSelectMenuAlignment
