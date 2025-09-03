@@ -119,6 +119,12 @@ const previewComponents = {
     UnitInputPreview: dynamic(() => import('./Previews/UnitInputPreview'), {
         ssr: false,
     }),
+    DateRangePickerPreview: dynamic(
+        () => import('./Previews/DateRangePickerPreview'),
+        {
+            ssr: false,
+        }
+    ),
 }
 
 interface PreviewWrapperProps {

@@ -44,6 +44,7 @@ const PREVIEW_COMPONENT_NAMES = [
     'SearchInput',
     'Textarea',
     'UnitInput',
+    'DateRangePicker',
 ] as const
 
 // Generate all preview components programmatically
@@ -92,3 +93,4 @@ export const OTPInputPreview = PreviewComponents.OTPInputPreview
 export const SearchInputPreview = PreviewComponents.SearchInputPreview
 export const TextareaPreview = PreviewComponents.TextareaPreview
 export const UnitInputPreview = PreviewComponents.UnitInputPreview
+export const DateRangePickerPreview = PreviewComponents.DateRangePickerPreview
