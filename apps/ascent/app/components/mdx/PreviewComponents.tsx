@@ -41,6 +41,7 @@ const PREVIEW_COMPONENT_NAMES = [
     'MultiValueInput',
     'NumberInput',
     'OTPInput',
+    'SearchInput',
 ] as const
 
 // Generate all preview components programmatically
@@ -86,3 +87,4 @@ export const DropdownInputPreview = PreviewComponents.DropdownInputPreview
 export const MultiValueInputPreview = PreviewComponents.MultiValueInputPreview
 export const NumberInputPreview = PreviewComponents.NumberInputPreview
 export const OTPInputPreview = PreviewComponents.OTPInputPreview
+export const SearchInputPreview = PreviewComponents.SearchInputPreview

@@ -110,6 +110,9 @@ const previewComponents = {
     OTPInputPreview: dynamic(() => import('./Previews/OTPInputPreview'), {
         ssr: false,
     }),
+    SearchInputPreview: dynamic(() => import('./Previews/SearchInputPreview'), {
+        ssr: false,
+    }),
 }
 
 interface PreviewWrapperProps {
