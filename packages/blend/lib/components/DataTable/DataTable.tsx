@@ -77,6 +77,8 @@ const DataTable = forwardRef(
             serverSidePagination = false,
             isLoading = false,
             enableColumnManager = true,
+            columnManagerMaxSelections,
+            columnManagerAlwaysSelected,
             showToolbar = true,
             showSettings = false,
             enableInlineEdit = false,
@@ -120,7 +122,32 @@ const DataTable = forwardRef(
         const [visibleColumns, setVisibleColumns] = useState<
             ColumnDefinition<T>[]
         >(() => {
-            return initialColumns.filter((col) => col.isVisible !== false)
+            const allVisibleColumns = initialColumns.filter(
+                (col) => col.isVisible !== false
+            )
+
+            if (columnManagerMaxSelections && columnManagerAlwaysSelected) {
+                const alwaysSelectedFields = columnManagerAlwaysSelected.map(
+                    (field) => String(field)
+                )
+                const alwaysSelectedCols = allVisibleColumns.filter((col) =>
+                    alwaysSelectedFields.includes(String(col.field))
+                )
+                const selectableCols = allVisibleColumns.filter(
+                    (col) => !alwaysSelectedFields.includes(String(col.field))
+                )
+
+                const maxSelectableCount =
+                    columnManagerMaxSelections - alwaysSelectedCols.length
+                const limitedSelectableCols = selectableCols.slice(
+                    0,
+                    Math.max(0, maxSelectableCount)
+                )
+
+                return [...alwaysSelectedCols, ...limitedSelectableCols]
+            }
+
+            return allVisibleColumns
         })
         const [previousColumnCount, setPreviousColumnCount] = useState<number>(
             () => initialColumns.filter((col) => col.isVisible !== false).length
@@ -749,8 +776,7 @@ const DataTable = forwardRef(
                             <table
                                 style={{
                                     width: tableToken.dataTable.table.width,
-                                    minWidth:
-                                        tableToken.dataTable.table.minWidth,
+                                    minWidth: 'auto',
                                     tableLayout:
                                         tableToken.dataTable.table.tableLayout,
                                     borderCollapse:
@@ -785,6 +811,12 @@ const DataTable = forwardRef(
                                     enableColumnManager={
                                         effectiveEnableColumnManager
                                     }
+                                    columnManagerMaxSelections={
+                                        columnManagerMaxSelections
+                                    }
+                                    columnManagerAlwaysSelected={columnManagerAlwaysSelected?.map(
+                                        (field) => String(field)
+                                    )}
                                     enableRowExpansion={enableRowExpansion}
                                     enableRowSelection={enableRowSelection}
                                     rowActions={

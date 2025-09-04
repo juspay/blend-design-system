@@ -39,4 +39,5 @@ export type SelectItemProps = {
     type: SelectItemType
     showCheckmark?: boolean
     className?: string
+    selectedPosition?: 'first' | 'middle' | 'last' | 'only' | 'none'
 }
