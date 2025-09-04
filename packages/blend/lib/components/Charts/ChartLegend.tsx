@@ -378,4 +378,4 @@ const StackedLegends: React.FC<{
 
 ChartLegendsComponent.displayName = 'ChartLegends'
 
-export const ChartLegends = React.memo(ChartLegendsComponent)
+export default React.memo(ChartLegendsComponent)

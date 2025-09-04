@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, forwardRef } from 'react'
+import { useState, useEffect, useMemo, forwardRef, useRef } from 'react'
 import {
     DataTableProps,
     SortDirection,
@@ -112,6 +112,7 @@ const DataTable = forwardRef(
     ) => {
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
+        const scrollContainerRef = useRef<HTMLDivElement>(null)
 
         const [sortConfig, setSortConfig] = useState<SortConfig | null>(
             defaultSort || null
@@ -121,6 +122,9 @@ const DataTable = forwardRef(
         >(() => {
             return initialColumns.filter((col) => col.isVisible !== false)
         })
+        const [previousColumnCount, setPreviousColumnCount] = useState<number>(
+            () => initialColumns.filter((col) => col.isVisible !== false).length
+        )
         const [currentPage, setCurrentPage] = useState<number>(
             pagination?.currentPage || 1
         )
@@ -335,6 +339,24 @@ const DataTable = forwardRef(
         useEffect(() => {
             updateSelectAllState(selectedRows)
         }, [currentData, selectedRows])
+
+        useEffect(() => {
+            const currentColumnCount = visibleColumns.length
+
+            if (
+                currentColumnCount > previousColumnCount &&
+                scrollContainerRef.current
+            ) {
+                setTimeout(() => {
+                    if (scrollContainerRef.current) {
+                        scrollContainerRef.current.scrollLeft =
+                            scrollContainerRef.current.scrollWidth
+                    }
+                }, 100)
+            }
+
+            setPreviousColumnCount(currentColumnCount)
+        }, [visibleColumns.length, previousColumnCount])
 
         const handleSelectAll = (checked: boolean | 'indeterminate') => {
             const newSelectAll = checked === true
@@ -717,6 +739,7 @@ const DataTable = forwardRef(
                         }}
                     >
                         <ScrollableContainer
+                            ref={scrollContainerRef}
                             style={{
                                 height: '100%',
                                 maxHeight: '100%',

@@ -66,6 +66,8 @@ export type AxisConfig = {
     customTick?: React.ComponentType<TickProps>
     dateOnly?: boolean
     smart?: boolean
+    timeZone?: string
+    hour12?: boolean
 }
 
 export type XAxisConfig = AxisConfig
@@ -97,6 +99,24 @@ export type RenderChartProps = {
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+}
+
+export type CoreChartProps = {
+    chartType?: ChartType
+    data: NewNestedDataPoint[]
+    colors?: string[]
+    barsize?: number
+    xAxis?: XAxisConfig
+    yAxis?: YAxisConfig
+    height?: number | string
+    width?: number | string
+    isSmallScreen?: boolean
+
+    hoveredKey?: string | null
+    onHoveredKeyChange?: (key: string | null) => void
+    selectedKeys?: string[]
+
+    enableHover?: boolean
 }
 
 export type ChartsProps = {
