@@ -66,6 +66,8 @@ const TableHeader = forwardRef<
             selectAll,
             enableInlineEdit = false,
             enableColumnManager = true,
+            columnManagerMaxSelections,
+            columnManagerAlwaysSelected,
             enableRowExpansion = false,
             enableRowSelection = true,
             rowActions,
@@ -534,6 +536,9 @@ const TableHeader = forwardRef<
                                                                     filterState={
                                                                         filterState
                                                                     }
+                                                                    sortState={
+                                                                        sortState
+                                                                    }
                                                                     onColumnFilter={
                                                                         onColumnFilter
                                                                     }
@@ -598,6 +603,7 @@ const TableHeader = forwardRef<
                                                         filterState={
                                                             filterState
                                                         }
+                                                        sortState={sortState}
                                                         onColumnFilter={
                                                             onColumnFilter
                                                         }
@@ -690,6 +696,10 @@ const TableHeader = forwardRef<
                                         allVisibleColumns || localColumns
                                     }
                                     onColumnChange={onColumnChange}
+                                    maxSelections={columnManagerMaxSelections}
+                                    alwaysSelectedColumns={
+                                        columnManagerAlwaysSelected
+                                    }
                                 />
                             </Block>
                         </th>
