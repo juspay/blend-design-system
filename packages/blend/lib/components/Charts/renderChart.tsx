@@ -16,9 +16,13 @@ import {
     formatNumber,
     lightenHexColor,
     getAxisFormatterWithConfig,
+    createStableSmartFormatter,
 } from './ChartUtils'
 import { CustomTooltip } from './CustomTooltip'
 import { FOUNDATION_THEME } from '../../tokens'
+import Text from '../Text/Text'
+import Block from '../Primitives/Block/Block'
+import { Button, ButtonType } from '../Button'
 
 export const renderChart = ({
     flattenedData,
@@ -33,6 +37,7 @@ export const renderChart = ({
     barsize,
     xAxis,
     yAxis,
+    noData,
 }: RenderChartProps) => {
     const finalXAxis = {
         label: xAxis?.label,
@@ -49,6 +54,7 @@ export const renderChart = ({
         show: yAxis?.show ?? true,
         ...yAxis,
     }
+
     const getColor = (key: string, chartType: ChartType) => {
         const originalIndex = lineKeys.indexOf(key)
         const baseColor = colors[originalIndex % colors.length]
@@ -80,6 +86,65 @@ export const renderChart = ({
         gridStroke: FOUNDATION_THEME.colors.gray[150],
     }
 
+    if (flattenedData.length === 0) {
+        return (
+            <Block
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                flexDirection="column"
+                gap={28}
+            >
+                <Block
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    flexDirection="column"
+                    gap={16}
+                >
+                    {noData?.slot && noData?.slot}
+                    <Block
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Text
+                            variant="body.lg"
+                            color={FOUNDATION_THEME.colors.gray[800]}
+                            fontWeight={600}
+                        >
+                            {noData?.title || 'No data available'}
+                        </Text>
+                        <Text
+                            variant="body.md"
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                            fontWeight={500}
+                        >
+                            {noData?.subtitle ||
+                                'Data will appear here once available'}
+                        </Text>
+                    </Block>
+                </Block>
+                {noData?.button && (
+                    <Button
+                        buttonType={
+                            noData.button.buttonType || ButtonType.SECONDARY
+                        }
+                        text={noData.button.text}
+                        onClick={noData.button.onClick}
+                        disabled={noData.button.disabled}
+                        subType={noData.button.subType}
+                        size={noData.button.size}
+                        leadingIcon={noData.button.leadingIcon}
+                        trailingIcon={noData.button.trailingIcon}
+                        loading={noData.button.loading}
+                    />
+                )}
+            </Block>
+        )
+    }
+
     switch (chartType) {
         case ChartType.LINE:
             return (
@@ -94,8 +159,8 @@ export const renderChart = ({
                             finalXAxis.label &&
                             finalXAxis.showLabel &&
                             finalXAxis.show
-                                ? 30
-                                : 0,
+                                ? 50
+                                : 30,
                     }}
                     onMouseLeave={() => setHoveredKey(null)}
                 >
@@ -104,21 +169,11 @@ export const renderChart = ({
                         axisLine={false}
                         tickLine={false}
                         interval={finalXAxis.interval}
-                        tickFormatter={
-                            finalXAxis.customTick
-                                ? undefined
-                                : finalXAxis.tickFormatter
-                                  ? finalXAxis.tickFormatter
-                                  : finalXAxis.type
-                                    ? getAxisFormatterWithConfig(
-                                          finalXAxis.type,
-                                          finalXAxis.dateOnly,
-                                          finalXAxis.smart,
-                                          finalXAxis.timeZone,
-                                          finalXAxis.hour12
-                                      )
-                                    : undefined
-                        }
+                        tickMargin={20}
+                        tickFormatter={createStableSmartFormatter(
+                            finalXAxis,
+                            flattenedData
+                        )}
                         tick={
                             (!finalXAxis.show
                                 ? false
@@ -126,7 +181,7 @@ export const renderChart = ({
                                   ? finalXAxis.customTick
                                   : {
                                         fill: FOUNDATION_THEME.colors.gray[400],
-                                        fontSize: 14,
+                                        fontSize: 12,
                                         fontWeight:
                                             FOUNDATION_THEME.font.weight[500],
                                     }) as TickProps
@@ -139,9 +194,9 @@ export const renderChart = ({
                                 ? {
                                       value: finalXAxis.label,
                                       position: 'bottom',
-                                      offset: 15,
+                                      offset: 35,
                                       fill: FOUNDATION_THEME.colors.gray[400],
-                                      fontSize: 14,
+                                      fontSize: 12,
                                       fontWeight:
                                           FOUNDATION_THEME.font.weight[500],
                                   }
@@ -154,7 +209,8 @@ export const renderChart = ({
                     />
                     {!isSmallScreen && finalYAxis.show && (
                         <YAxis
-                            width={50}
+                            // width={50}
+
                             axisLine={false}
                             tickLine={false}
                             interval={finalYAxis.interval}
@@ -179,7 +235,7 @@ export const renderChart = ({
                                     : {
                                           fill: FOUNDATION_THEME.colors
                                               .gray[400],
-                                          fontSize: 14,
+                                          fontSize: 12,
                                           fontWeight:
                                               FOUNDATION_THEME.font.weight[500],
                                       }) as TickProps
@@ -194,7 +250,7 @@ export const renderChart = ({
                                           offset: -15,
                                           fill: FOUNDATION_THEME.colors
                                               .gray[400],
-                                          fontSize: 14,
+                                          fontSize: 12,
                                           fontWeight:
                                               FOUNDATION_THEME.font.weight[500],
                                       }
@@ -248,8 +304,8 @@ export const renderChart = ({
                             finalXAxis.label &&
                             finalXAxis.showLabel &&
                             finalXAxis.show
-                                ? 30
-                                : 0,
+                                ? 50
+                                : 30,
                     }}
                     onMouseLeave={() => setHoveredKey(null)}
                 >
@@ -262,21 +318,11 @@ export const renderChart = ({
                         axisLine={false}
                         tickLine={false}
                         interval={finalXAxis.interval}
-                        tickFormatter={
-                            finalXAxis.customTick
-                                ? undefined
-                                : finalXAxis.tickFormatter
-                                  ? finalXAxis.tickFormatter
-                                  : finalXAxis.type
-                                    ? getAxisFormatterWithConfig(
-                                          finalXAxis.type,
-                                          finalXAxis.dateOnly,
-                                          finalXAxis.smart,
-                                          finalXAxis.timeZone,
-                                          finalXAxis.hour12
-                                      )
-                                    : undefined
-                        }
+                        tickMargin={20}
+                        tickFormatter={createStableSmartFormatter(
+                            finalXAxis,
+                            flattenedData
+                        )}
                         tick={
                             (!finalXAxis.show
                                 ? false
@@ -284,7 +330,7 @@ export const renderChart = ({
                                   ? finalXAxis.customTick
                                   : {
                                         fill: FOUNDATION_THEME.colors.gray[400],
-                                        fontSize: 14,
+                                        fontSize: 12,
                                         fontWeight:
                                             FOUNDATION_THEME.font.weight[500],
                                     }) as TickProps
@@ -297,9 +343,9 @@ export const renderChart = ({
                                 ? {
                                       value: finalXAxis.label,
                                       position: 'bottom',
-                                      offset: 15,
+                                      offset: 35,
                                       fill: FOUNDATION_THEME.colors.gray[400],
-                                      fontSize: 14,
+                                      fontSize: 12,
                                       fontWeight:
                                           FOUNDATION_THEME.font.weight[500],
                                   }
@@ -308,7 +354,7 @@ export const renderChart = ({
                     />
                     {!isSmallScreen && finalYAxis.show && (
                         <YAxis
-                            width={50}
+                            // width={50}
                             axisLine={false}
                             tickLine={false}
                             interval={finalYAxis.interval}
@@ -333,7 +379,7 @@ export const renderChart = ({
                                     : {
                                           fill: FOUNDATION_THEME.colors
                                               .gray[400],
-                                          fontSize: 14,
+                                          fontSize: 12,
                                           fontWeight:
                                               FOUNDATION_THEME.font.weight[500],
                                       }) as TickProps
@@ -348,7 +394,7 @@ export const renderChart = ({
                                           offset: -15,
                                           fill: FOUNDATION_THEME.colors
                                               .gray[400],
-                                          fontSize: 14,
+                                          fontSize: 12,
                                           fontWeight:
                                               FOUNDATION_THEME.font.weight[500],
                                       }
