@@ -71,42 +71,40 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                     />
                 </StyledCheckboxRoot>
 
-                {children && (
-                    <Block
-                        display="flex"
-                        flexDirection="column"
-                        gap={tokens.content.gap}
-                    >
-                        <Block display="flex" alignItems="center">
-                            <CheckboxContent
-                                uniqueId={uniqueId}
-                                disabled={disabled}
-                                error={error}
-                                required={required}
-                                size={size}
-                                children={children}
-                                tokens={tokens}
-                            />
+                <Block
+                    display="flex"
+                    flexDirection="column"
+                    gap={tokens.content.gap}
+                >
+                    <Block display="flex" alignItems="center">
+                        <CheckboxContent
+                            uniqueId={uniqueId}
+                            disabled={disabled}
+                            error={error}
+                            required={required}
+                            size={size}
+                            children={children}
+                            tokens={tokens}
+                        />
 
-                            {slot && (
-                                <Block as="span" marginLeft={tokens.slotGap}>
-                                    {slot}
-                                </Block>
-                            )}
-                        </Block>
-
-                        {subtext && (
-                            <CheckboxSubtext
-                                size={size}
-                                disabled={disabled}
-                                error={error}
-                                tokens={tokens}
-                            >
-                                {subtext}
-                            </CheckboxSubtext>
+                        {slot && (
+                            <Block as="span" marginLeft={tokens.slotGap}>
+                                {slot}
+                            </Block>
                         )}
                     </Block>
-                )}
+
+                    {subtext && (
+                        <CheckboxSubtext
+                            size={size}
+                            disabled={disabled}
+                            error={error}
+                            tokens={tokens}
+                        >
+                            {subtext}
+                        </CheckboxSubtext>
+                    )}
+                </Block>
             </Block>
         )
     }

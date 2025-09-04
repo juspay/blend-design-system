@@ -8,11 +8,6 @@ tags:
     - form
     - input
     - selection
-    - group
-    - choice
-    - mutually-exclusive
-    - keyboard-navigation
-    - accessibility
 RepoFolderName: Radio
 StorybookLink: components-radio-radio--docs
 ---
@@ -23,50 +18,25 @@ StorybookLink: components-radio-radio--docs
 
 ```tsx
 import { Radio, RadioGroup, RadioSize } from 'blend-v1'
-import { useState } from 'react'
 
 function MyComponent() {
-    const [selectedPlan, setSelectedPlan] = useState('basic')
+    const [selectedOption, setSelectedOption] = useState('option1')
 
     return (
         <RadioGroup
-            name="subscription-plan"
-            value={selectedPlan}
-            onChange={setSelectedPlan}
-            label="Choose your subscription plan"
+            name="options"
+            value={selectedOption}
+            onChange={setSelectedOption}
+            label="Select an option"
         >
-            <Radio
-                value="basic"
-                subtext="Perfect for individuals and small projects"
-                slot={
-                    <span className="text-green-600 text-sm font-medium">
-                        Free
-                    </span>
-                }
-            >
-                Basic Plan
+            <Radio value="option1" size={RadioSize.MEDIUM}>
+                Option 1
             </Radio>
-            <Radio
-                value="pro"
-                subtext="Advanced features for growing teams"
-                slot={
-                    <span className="text-blue-600 text-sm font-medium">
-                        $9/month
-                    </span>
-                }
-            >
-                Professional Plan
+            <Radio value="option2" size={RadioSize.MEDIUM}>
+                Option 2
             </Radio>
-            <Radio
-                value="enterprise"
-                subtext="Custom solutions for large organizations"
-                slot={
-                    <span className="text-purple-600 text-sm font-medium">
-                        Contact Sales
-                    </span>
-                }
-            >
-                Enterprise Plan
+            <Radio value="option3" size={RadioSize.MEDIUM}>
+                Option 3
             </Radio>
         </RadioGroup>
     )
@@ -261,448 +231,272 @@ function MyComponent() {
 
 ## Features
 
-- **Size Variants**: Two size options (small, medium) for different contexts
-- **Group Management**: Automatic mutual exclusivity within RadioGroup containers
-- **Rich Content Support**: Optional subtext and slot elements for enhanced context
-- **State Management**: Support for controlled and uncontrolled modes
-- **Form Integration**: Native HTML radio input with proper form binding
-- **Visual States**: Required field indicators, error states, and disabled states
-- **Keyboard Navigation**: Full arrow key navigation within groups with auto-selection
-- **Individual Controls**: Can be used standalone outside of groups
-- **Automatic IDs**: Generated unique IDs when not provided
-- **Accessibility First**: ARIA compliance, screen reader support, and proper semantics
-- **Custom Styling**: Comprehensive token system for visual customization
-- **Focus Management**: Clear focus indicators and keyboard interaction patterns
-- **Error Handling**: Visual and programmatic error state communication
-- **Responsive Design**: Consistent behavior across different screen sizes
-- **Type Safety**: Full TypeScript support with proper type definitions
+- Two size variants (small, medium)
+- Radio group management with automatic selection
+- Optional subtext for additional context
+- Optional slot for badges, icons, or other elements
+- Required field indicator (asterisk)
+- Error state styling
+- Disabled state support
+- Controlled and uncontrolled modes
+- Accessible by default
+- Built on native HTML radio inputs
+- Customizable styling through tokens
 
 ## Usage Examples
 
-### Basic Radio Selection
+### Basic Radio Group
 
-Simple radio group for basic option selection
+Simple radio group with multiple options
 
 ```tsx
-import { Radio, RadioGroup, RadioSize } from 'blend-v1'
-import { useState } from 'react'
+import { Radio, RadioGroup } from 'blend-v1'
 
-const [selectedSize, setSelectedSize] = useState('medium')
+function MyComponent() {
+    const [selectedOption, setSelectedOption] = useState('option1')
 
+    return (
+        <RadioGroup
+            name="options"
+            value={selectedOption}
+            onChange={setSelectedOption}
+            label="Select an option"
+        >
+            <Radio value="option1">Option 1</Radio>
+            <Radio value="option2">Option 2</Radio>
+            <Radio value="option3">Option 3</Radio>
+        </RadioGroup>
+    )
+}
+```
+
+### Radio with Subtext
+
+Radio buttons with additional descriptive text
+
+```tsx
 <RadioGroup
-    name="product-size"
+    name="size-options"
     value={selectedSize}
     onChange={setSelectedSize}
-    label="Select product size"
+    label="Choose your size"
 >
-    <Radio value="small">Small</Radio>
-    <Radio value="medium">Medium</Radio>
-    <Radio value="large">Large</Radio>
-    <Radio value="extra-large">Extra Large</Radio>
-</RadioGroup>
-```
-
-### Radio with Enhanced Content
-
-Radio buttons with descriptive text and visual elements
-
-```tsx
-import { Star, Crown, Gem } from 'lucide-react'
-
-const [selectedTier, setSelectedTier] = useState('standard')
-
-<RadioGroup
-    name="service-tier"
-    value={selectedTier}
-    onChange={setSelectedTier}
-    label="Choose your service tier"
->
-    <Radio
-        value="basic"
-        subtext="Essential features for getting started"
-        slot={<Star size={16} className="text-gray-400" />}
-    >
-        Basic Tier
+    <Radio value="small" subtext="Perfect for small spaces">
+        Small
     </Radio>
-    <Radio
-        value="standard"
-        subtext="Most popular choice with advanced features"
-        slot={<Crown size={16} className="text-blue-500" />}
-    >
-        Standard Tier
+    <Radio value="medium" subtext="Standard size for most use cases">
+        Medium
     </Radio>
-    <Radio
-        value="premium"
-        subtext="All features with priority support"
-        slot={<Gem size={16} className="text-purple-500" />}
-    >
-        Premium Tier
+    <Radio value="large" subtext="Ideal for large displays">
+        Large
     </Radio>
 </RadioGroup>
 ```
 
-### Size Variants
+### Radio with Slots
 
-Radio buttons in different sizes for various contexts
+Radio buttons with additional elements (badges, icons, etc.)
 
 ```tsx
-const [compactChoice, setCompactChoice] = useState('option1')
-const [standardChoice, setStandardChoice] = useState('option1')
-
-// Small size for compact interfaces
 <RadioGroup
-    name="compact-options"
-    value={compactChoice}
-    onChange={setCompactChoice}
-    label="Compact Options"
+    name="theme-options"
+    value={selectedTheme}
+    onChange={setSelectedTheme}
+    label="Choose your theme"
 >
-    <Radio value="option1" size={RadioSize.SMALL}>
-        Compact Option 1
+    <Radio value="light" slot={<span>☀️</span>}>
+        Light Theme
     </Radio>
-    <Radio value="option2" size={RadioSize.SMALL}>
-        Compact Option 2
+    <Radio value="dark" slot={<span>🌙</span>}>
+        Dark Theme
     </Radio>
-</RadioGroup>
-
-// Medium size for standard interfaces
-<RadioGroup
-    name="standard-options"
-    value={standardChoice}
-    onChange={setStandardChoice}
-    label="Standard Options"
->
-    <Radio value="option1" size={RadioSize.MEDIUM}>
-        Standard Option 1
-    </Radio>
-    <Radio value="option2" size={RadioSize.MEDIUM}>
-        Standard Option 2
+    <Radio
+        value="auto"
+        slot={<span>🔄</span>}
+        subtext="Follows system preference"
+    >
+        Auto Theme
     </Radio>
 </RadioGroup>
 ```
 
-### Form Validation States
+### Different Sizes
 
-Radio buttons with validation and required states
+Radio buttons with different size variants
 
 ```tsx
-const [paymentMethod, setPaymentMethod] = useState('')
-const [hasError, setHasError] = useState(false)
-
-<RadioGroup
-    name="payment-method"
-    value={paymentMethod}
-    onChange={(value) => {
-        setPaymentMethod(value)
-        setHasError(false)
-    }}
-    label="Select payment method"
->
-    <Radio
-        value="credit-card"
-        required
-        error={hasError && !paymentMethod}
-        subtext="Visa, Mastercard, American Express"
-    >
-        Credit Card
-    </Radio>
-    <Radio
-        value="paypal"
-        subtext="Pay securely with your PayPal account"
-    >
-        PayPal
-    </Radio>
-    <Radio
-        value="bank-transfer"
-        subtext="Direct bank transfer (2-3 business days)"
-    >
-        Bank Transfer
-    </Radio>
-    <Radio
-        value="apple-pay"
-        disabled
-        subtext="Currently unavailable"
-    >
-        Apple Pay
-    </Radio>
+// Small size
+<RadioGroup name="small-size" value={selectedOption} onChange={setSelectedOption}>
+  <Radio value="option1" size={RadioSize.SMALL}>
+    Small Option 1
+  </Radio>
+  <Radio value="option2" size={RadioSize.SMALL}>
+    Small Option 2
+  </Radio>
 </RadioGroup>
 
-{hasError && !paymentMethod && (
-    <p className="text-red-500 text-sm mt-2">
-        Please select a payment method
-    </p>
-)}
+// Medium size (default)
+<RadioGroup name="medium-size" value={selectedOption} onChange={setSelectedOption}>
+  <Radio value="option1" size={RadioSize.MEDIUM}>
+    Medium Option 1
+  </Radio>
+  <Radio value="option2" size={RadioSize.MEDIUM}>
+    Medium Option 2
+  </Radio>
+</RadioGroup>
 ```
 
-### Pricing Options
+### Radio States
 
-Radio group for subscription plan selection
+Radio buttons in various states
 
 ```tsx
-const [billingCycle, setBillingCycle] = useState('monthly')
-
-<RadioGroup
-    name="billing-cycle"
-    value={billingCycle}
-    onChange={setBillingCycle}
-    label="Choose billing cycle"
->
-    <Radio
-        value="monthly"
-        subtext="Flexible monthly payments"
-        slot={<span className="text-sm text-gray-600">$29/month</span>}
-    >
-        Monthly Billing
+<RadioGroup name="states" value={selectedOption} onChange={setSelectedOption}>
+    <Radio value="normal">Normal state</Radio>
+    <Radio value="required" required={true}>
+        Required field
     </Radio>
-    <Radio
-        value="yearly"
-        subtext="Save 20% with annual billing"
-        slot={
-            <div className="text-right">
-                <span className="text-sm text-gray-400 line-through">$348</span>
-                <span className="text-sm text-green-600 ml-2">$279/year</span>
-            </div>
-        }
-    >
-        Annual Billing
+    <Radio value="disabled" disabled={true}>
+        Disabled option
+    </Radio>
+    <Radio value="error" error={true}>
+        Error state
     </Radio>
 </RadioGroup>
 ```
 
 ### Controlled vs Uncontrolled
 
-Different state management approaches for radio groups
+Radio groups with different state management approaches
 
 ```tsx
-// Controlled example
-const [controlledValue, setControlledValue] = useState('option-b')
+// Controlled radio group
+const [selectedValue, setSelectedValue] = useState("option1");
 
 <RadioGroup
-    name="controlled-example"
-    value={controlledValue}
-    onChange={setControlledValue}
-    label="Controlled Radio Group"
+  name="controlled"
+  value={selectedValue}
+  onChange={setSelectedValue}
+  label="Controlled Group"
 >
-    <Radio value="option-a">Option A</Radio>
-    <Radio value="option-b">Option B</Radio>
-    <Radio value="option-c">Option C</Radio>
+  <Radio value="option1">Option 1</Radio>
+  <Radio value="option2">Option 2</Radio>
 </RadioGroup>
 
-// Uncontrolled example with default value
+// Uncontrolled radio group
 <RadioGroup
-    name="uncontrolled-example"
-    defaultValue="default-option"
-    label="Uncontrolled Radio Group"
-    onChange={(value) => console.log('Selected:', value)}
+  name="uncontrolled"
+  defaultValue="option1"
+  label="Uncontrolled Group"
 >
-    <Radio value="default-option">Default Option</Radio>
-    <Radio value="alternative-option">Alternative Option</Radio>
+  <Radio value="option1">Option 1</Radio>
+  <Radio value="option2">Option 2</Radio>
 </RadioGroup>
 ```
 
-### Individual Radio Usage
+### Individual Radio Controls
 
-Standalone radio buttons for specific use cases
+Radio buttons used outside of a group
 
 ```tsx
-const [termsAccepted, setTermsAccepted] = useState(false)
-const [newsletterSubscription, setNewsletterSubscription] = useState('weekly')
+const [selectedIndividual, setSelectedIndividual] = useState("individual1");
 
-// Single radio for agreement
 <Radio
-    name="terms-agreement"
-    value="accepted"
-    checked={termsAccepted}
-    onChange={setTermsAccepted}
-    required
+  value="individual1"
+  name="individual"
+  checked={selectedIndividual === "individual1"}
+  onChange={(checked) => checked && setSelectedIndividual("individual1")}
 >
-    I agree to the Terms of Service and Privacy Policy
+  Individual Radio 1
 </Radio>
 
-// Individual radios for newsletter frequency
-<div className="space-y-3">
-    <h4 className="font-medium">Newsletter Frequency</h4>
-
-    <Radio
-        name="newsletter-frequency"
-        value="daily"
-        checked={newsletterSubscription === 'daily'}
-        onChange={(checked) => checked && setNewsletterSubscription('daily')}
-        subtext="Daily updates and news"
-    >
-        Daily
-    </Radio>
-
-    <Radio
-        name="newsletter-frequency"
-        value="weekly"
-        checked={newsletterSubscription === 'weekly'}
-        onChange={(checked) => checked && setNewsletterSubscription('weekly')}
-        subtext="Weekly digest of important updates"
-    >
-        Weekly
-    </Radio>
-
-    <Radio
-        name="newsletter-frequency"
-        value="never"
-        checked={newsletterSubscription === 'never'}
-        onChange={(checked) => checked && setNewsletterSubscription('never')}
-        subtext="No newsletter emails"
-    >
-        Never
-    </Radio>
-</div>
+<Radio
+  value="individual2"
+  name="individual"
+  checked={selectedIndividual === "individual2"}
+  onChange={(checked) => checked && setSelectedIndividual("individual2")}
+  subtext="This is an individual radio control"
+>
+  Individual Radio 2
+</Radio>
 ```
 
-### Complex Configuration Form
+### Complex Form Example
 
-Complete configuration form with multiple radio groups
+Complete form with radio group
 
 ```tsx
-function ConfigurationForm() {
-    const [serverRegion, setServerRegion] = useState('us-east')
-    const [instanceType, setInstanceType] = useState('standard')
-    const [backupFrequency, setBackupFrequency] = useState('daily')
+function SubscriptionForm() {
+    const [selectedPlan, setSelectedPlan] = useState('basic')
 
     return (
-        <form className="space-y-8">
-            <RadioGroup
-                name="server-region"
-                value={serverRegion}
-                onChange={setServerRegion}
-                label="Server Region"
-            >
-                <Radio
-                    value="us-east"
-                    subtext="Virginia, USA - Lowest latency for East Coast"
-                    slot={
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                            Recommended
-                        </span>
-                    }
-                >
-                    US East (Virginia)
-                </Radio>
-                <Radio
-                    value="us-west"
-                    subtext="California, USA - Optimal for West Coast"
-                >
-                    US West (California)
-                </Radio>
-                <Radio
-                    value="eu-central"
-                    subtext="Frankfurt, Germany - GDPR compliant"
-                >
-                    EU Central (Frankfurt)
-                </Radio>
-                <Radio
-                    value="asia-pacific"
-                    subtext="Singapore - Best for Asian markets"
-                >
-                    Asia Pacific (Singapore)
-                </Radio>
-            </RadioGroup>
+        <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Subscription Plan</h3>
 
             <RadioGroup
-                name="instance-type"
-                value={instanceType}
-                onChange={setInstanceType}
-                label="Instance Type"
+                name="subscription-plan"
+                value={selectedPlan}
+                onChange={setSelectedPlan}
+                label="Choose your plan"
             >
                 <Radio
                     value="basic"
-                    subtext="1 CPU, 1GB RAM - For testing and development"
-                    slot={
-                        <span className="text-sm text-gray-600">$5/month</span>
-                    }
+                    subtext="Perfect for individuals and small projects"
+                    slot={<span className="text-green-500 text-sm">Free</span>}
                 >
-                    Basic
+                    Basic Plan
                 </Radio>
-                <Radio
-                    value="standard"
-                    subtext="2 CPU, 4GB RAM - For small to medium applications"
-                    slot={
-                        <span className="text-sm text-gray-600">$20/month</span>
-                    }
-                >
-                    Standard
-                </Radio>
-                <Radio
-                    value="performance"
-                    subtext="4 CPU, 8GB RAM - For high-traffic applications"
-                    slot={
-                        <span className="text-sm text-gray-600">$40/month</span>
-                    }
-                >
-                    Performance
-                </Radio>
-            </RadioGroup>
 
-            <RadioGroup
-                name="backup-frequency"
-                value={backupFrequency}
-                onChange={setBackupFrequency}
-                label="Backup Frequency"
-            >
-                <Radio value="hourly" subtext="Every hour - Maximum protection">
-                    Hourly Backups
-                </Radio>
-                <Radio value="daily" subtext="Once per day - Recommended">
-                    Daily Backups
-                </Radio>
                 <Radio
-                    value="weekly"
-                    subtext="Once per week - Basic protection"
+                    value="pro"
+                    subtext="Advanced features for growing teams"
+                    slot={<span className="text-blue-500 text-sm">$9/mo</span>}
                 >
-                    Weekly Backups
+                    Pro Plan
                 </Radio>
-                <Radio value="manual" subtext="Only when requested">
-                    Manual Backups
+
+                <Radio
+                    value="enterprise"
+                    subtext="Custom solutions for large organizations"
+                    slot={
+                        <span className="text-purple-500 text-sm">Custom</span>
+                    }
+                >
+                    Enterprise Plan
                 </Radio>
             </RadioGroup>
-        </form>
+        </div>
     )
 }
 ```
 
-### Disabled State Management
+### Disabled Radio Group
 
-Radio groups with conditional disabling
+Radio group with all options disabled
 
 ```tsx
-const [isAdvancedMode, setIsAdvancedMode] = useState(false)
-const [selectedOption, setSelectedOption] = useState('basic')
-
-<div className="space-y-6">
-    <Radio
-        name="advanced-toggle"
-        value="advanced"
-        checked={isAdvancedMode}
-        onChange={setIsAdvancedMode}
-    >
-        Enable Advanced Mode
-    </Radio>
-
-    <RadioGroup
-        name="configuration-options"
-        value={selectedOption}
-        onChange={setSelectedOption}
-        label="Configuration Options"
-        disabled={!isAdvancedMode}
-    >
-        <Radio value="basic">Basic Configuration</Radio>
-        <Radio value="intermediate">Intermediate Setup</Radio>
-        <Radio value="advanced">Advanced Setup</Radio>
-        <Radio value="expert">Expert Mode</Radio>
-    </RadioGroup>
-</div>
+<RadioGroup
+    name="disabled-group"
+    value={selectedOption}
+    onChange={setSelectedOption}
+    label="Disabled Options"
+    disabled={true}
+>
+    <Radio value="option1">Option 1</Radio>
+    <Radio value="option2">Option 2</Radio>
+    <Radio value="option3">Option 3</Radio>
+</RadioGroup>
 ```
 
 ## Component Tokens
 
-You can style the Radio component using the following tokens:
+You can style the radio component using the following tokens:
 
 ```tsx
+export type RadioSize = 'sm' | 'md'
+export type RadioState = 'default' | 'hover' | 'disabled' | 'error'
+export type RadioIndicatorState = 'active' | 'inactive'
+
 export type RadioTokensType = {
     gap: CSSObject['gap']
     slotGap: CSSObject['gap']
@@ -773,62 +567,8 @@ export type RadioTokensType = {
             [key in RadioSize]: CSSObject['width']
         }
     }
-
-    required: {
-        color: CSSObject['color']
-        spacing: CSSObject['marginLeft']
-    }
 }
 ```
-
-## Behavior
-
-### Selection Behavior
-
-- **Mutual Exclusivity**: Only one radio button can be selected within a group
-- **Group Management**: RadioGroup automatically manages selection state
-- **Value Tracking**: Selected value is tracked and propagated through onChange callbacks
-- **Default Selection**: Support for default selected values in uncontrolled mode
-
-### Keyboard Navigation
-
-- **Arrow Keys**: Navigate between radio buttons within a group
-- **Auto-Selection**: Arrow key navigation automatically selects the focused radio
-- **Tab Behavior**: Tab moves focus between radio groups, not individual radios
-- **Space/Enter**: Activates the currently focused radio button
-
-### State Management
-
-- **Controlled Mode**: External state management with value and onChange props
-- **Uncontrolled Mode**: Internal state management with defaultValue prop
-- **Individual Controls**: Can be used standalone outside of groups
-- **Validation Support**: Built-in support for required and error states
-
-### Focus Management
-
-- **Group Focus**: Only the selected radio (or first radio) in a group is focusable
-- **Focus Indicators**: Clear visual focus indicators for keyboard users
-- **Focus Restoration**: Focus is properly managed during dynamic updates
-- **Skip Navigation**: Proper tab order through radio groups
-
-### Content Management
-
-- **Label Association**: Proper label association with radio inputs
-- **Subtext Support**: Optional descriptive text below main labels
-- **Slot Content**: Support for additional content like badges or icons
-- **Required Indicators**: Automatic asterisk display for required fields
-
-## Accessibility
-
-- **ARIA Compliance**: Uses proper `role="radiogroup"` and `aria-checked` attributes
-- **Keyboard Navigation**: Full keyboard support with arrow keys for navigation
-- **Screen Reader Support**: Proper announcements of state changes and group structure
-- **Focus Management**: Focus is trapped within radio groups during navigation
-- **Label Association**: Each radio is properly associated with its label
-- **Group Semantics**: Radio groups are announced as groups to screen readers
-- **State Communication**: Current selection and states are communicated to assistive technologies
-- **Required Field Support**: Required fields are announced to screen readers
-- **Error State Support**: Error states are communicated through ARIA attributes
 
 ## Enums
 
@@ -836,8 +576,8 @@ export type RadioTokensType = {
 
 ```tsx
 enum RadioSize {
-    SMALL = 'sm', // Compact radio for dense interfaces
-    MEDIUM = 'md', // Standard radio size for most use cases
+    SMALL = 'sm',
+    MEDIUM = 'md',
 }
 ```
 
@@ -855,32 +595,15 @@ type RadioState = 'default' | 'hover' | 'disabled' | 'error'
 type RadioIndicatorState = 'active' | 'inactive'
 ```
 
-## Best Practices
+## Accessibility Features
 
-### When to Use Radio Buttons
+The Radio component includes several accessibility features:
 
-- **Mutually Exclusive Choices**: When users must select exactly one option from a list
-- **Visible Options**: When all options should be visible at once (typically 2-7 options)
-- **Single Selection**: When only one choice is allowed, unlike checkboxes
-- **Form Controls**: As part of forms where a selection is required
-
-### Radio Group Design Guidelines
-
-- **Clear Labels**: Use descriptive labels that clearly explain each option
-- **Logical Ordering**: Order options logically (alphabetical, by importance, or frequency)
-- **Default Selection**: Consider providing a sensible default selection
-- **Group Related Options**: Keep related radio buttons together in groups
-
-### Content Guidelines
-
-- **Concise Labels**: Keep radio button labels brief but descriptive
-- **Helpful Subtext**: Use subtext to provide additional context when needed
-- **Consistent Formatting**: Maintain consistent label and subtext formatting
-- **Clear Hierarchy**: Use typography and spacing to establish clear content hierarchy
-
-### Form Integration
-
-- **Validation**: Implement proper validation for required radio groups
-- **Error Messaging**: Provide clear error messages for validation failures
-- **Default Values**: Set appropriate default values for better user experience
-- **State Persistence**: Consider persisting selections during form interactions
+- **Proper ARIA attributes**: Uses appropriate ARIA roles and states
+- **Keyboard navigation**: Supports keyboard interaction (Arrow keys, Space, Enter)
+- **Screen reader support**: Proper labeling and announcements
+- **Focus management**: Clear focus indicators and keyboard focus
+- **Required field indication**: Visual and programmatic indication of required fields
+- **Error state communication**: Clear error state communication to assistive technologies
+- **Group semantics**: Proper radio group semantics for screen readers
+- **Mutual exclusivity**: Ensures only one option can be selected within a group

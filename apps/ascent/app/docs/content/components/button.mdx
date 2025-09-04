@@ -1,13 +1,10 @@
 ---
 title: Button
-description: The Button component is a fundamental UI element used for user interactions, supporting multiple variants, sizes, and states.
+description: The Button component is a fundamental UI element used for user interactions.
 category: components
 tags:
     - button
     - component
-    - interaction
-    - action
-    - primary
 RepoFolderName: Button
 StorybookLink: components-button-buttonv2--docs
 ---
@@ -17,15 +14,15 @@ StorybookLink: components-button-buttonv2--docs
 ## Usage
 
 ```tsx
-import { Button, ButtonType, ButtonSize, ButtonSubType } from 'blend-v1'
+import { Button, ButtonVariant, ButtonSize } from 'blend-v1'
 
 function MyComponent() {
     return (
         <Button
-            buttonType={ButtonType.PRIMARY}
-            size={ButtonSize.MEDIUM}
-            text="Get Started"
-            onClick={() => console.log('Button clicked')}
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Medium}
+            text="Click me"
+            onClick={() => console.log('clicked')}
         />
     )
 }
@@ -46,7 +43,7 @@ function MyComponent() {
         [
             { content: 'size', hintText: 'The size of the button' },
             { content: 'ButtonSize', hintText: 'enum' },
-            { content: 'ButtonSize.MEDIUM' },
+            { content: 'ButtonSize.SMALL' },
         ],
         [
             {
@@ -83,25 +80,8 @@ function MyComponent() {
         ],
         [
             {
-                content: 'isLoading',
-                hintText:
-                    'Whether the button is in a loading state with spinner',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'isDisabled',
-                hintText: 'Whether the button is disabled and non-interactive',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
                 content: 'disabled',
-                hintText: 'Alternative prop for disabling the button',
+                hintText: 'Whether the button is disabled and non-interactive',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
@@ -117,16 +97,8 @@ function MyComponent() {
         [
             {
                 content: 'loading',
-                hintText: 'Alternative prop for loading state',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'fullWidth',
                 hintText:
-                    'Whether the button should take full width of its container',
+                    'Whether the button is in a loading state with spinner',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
@@ -134,10 +106,19 @@ function MyComponent() {
         [
             {
                 content: 'buttonGroupPosition',
-                hintText: 'Position when used within a button group',
+                hintText: 'Position of the button within a button group',
             },
-            { content: "'center' | 'left' | 'right'", hintText: 'string' },
+            { content: "'center' | 'left' | 'right'", hintText: 'union type' },
             { content: '' },
+        ],
+        [
+            {
+                content: 'fullWidth',
+                hintText:
+                    'Whether the button should take the full width of its container',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
         ],
         [
             {
@@ -146,10 +127,10 @@ function MyComponent() {
                     'CSS justify-content property for button content alignment',
             },
             {
-                content: 'CSSObject["justifyContent"]',
+                content: "CSSObject['justifyContent']",
                 hintText: 'CSS property',
             },
-            { content: '' },
+            { content: 'center' },
         ],
     ]}
     className="mb-8"
@@ -159,301 +140,107 @@ function MyComponent() {
 
 ## Features
 
-- **4 Button Types**: Primary, Secondary, Danger, and Success variants for different actions
-- **3 Size Options**: Small, Medium, and Large sizes for various interface contexts
-- **3 Sub-Types**: Default, Icon Only, and Inline styles for different use cases
-- **Icon Support**: Leading and trailing icons with proper spacing and alignment
-- **Loading States**: Built-in loading spinner with text replacement
-- **Disabled States**: Visual and interactive disabled state support
-- **Full Width Option**: Expandable to container width when needed
-- **Button Group Support**: Integrated positioning for button group components
-- **Flexible Alignment**: Customizable content justification
-- **Accessible Design**: Full keyboard navigation and screen reader support
-- **Consistent Styling**: Design token integration for consistent theming
+- Multiple button types (primary, secondary, danger, success)
+- Three sizes (small, medium, large)
+- Loading and disabled states
+- Icon support (leading and trailing)
+- Full width option
+- Flexible content alignment
+- Button group positioning support
 
 ## Usage Examples
 
 ### Basic Button
 
-Simple primary button with text only
+Simple button with text
+
+```tsx
+<Button text="Click me" buttonType={ButtonType.PRIMARY} />
+```
+
+### Button with Icons
+
+Button with leading and trailing icons
 
 ```tsx
 <Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.MEDIUM}
-    text="Save Changes"
-    onClick={() => console.log('Save clicked')}
-/>
-```
-
-### Button with Leading Icon
-
-Button with an icon positioned before the text
-
-```tsx
-import { Download } from 'lucide-react'
-;<Button
-    buttonType={ButtonType.SECONDARY}
-    size={ButtonSize.MEDIUM}
-    text="Download"
-    leadingIcon={<Download size={16} />}
-    onClick={() => console.log('Download clicked')}
-/>
-```
-
-### Button with Trailing Icon
-
-Button with an icon positioned after the text
-
-```tsx
-import { ChevronRight } from 'lucide-react'
-;<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.MEDIUM}
-    text="Continue"
-    trailingIcon={<ChevronRight size={16} />}
-    onClick={() => console.log('Continue clicked')}
-/>
-```
-
-### Icon Only Button
-
-Button displaying only an icon without text
-
-```tsx
-import { Settings } from 'lucide-react'
-;<Button
-    buttonType={ButtonType.SECONDARY}
-    size={ButtonSize.MEDIUM}
-    subType={ButtonSubType.ICON_ONLY}
-    leadingIcon={<Settings size={20} />}
-    onClick={() => console.log('Settings clicked')}
+    text="Save"
+    leadingIcon={<SaveIcon />}
+    buttonType={ButtonType.SUCCESS}
 />
 ```
 
 ### Loading Button
 
-Button in loading state with spinner
+Button in loading state
 
 ```tsx
-<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.MEDIUM}
-    text="Processing..."
-    isLoading={true}
-    onClick={() => console.log('Processing')}
-/>
-```
-
-### Disabled Button
-
-Button in disabled state
-
-```tsx
-<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.MEDIUM}
-    text="Submit"
-    isDisabled={true}
-    onClick={() => console.log('This will not fire')}
-/>
-```
-
-### Danger Button
-
-Button for destructive actions
-
-```tsx
-<Button
-    buttonType={ButtonType.DANGER}
-    size={ButtonSize.MEDIUM}
-    text="Delete Account"
-    onClick={() => console.log('Delete clicked')}
-/>
-```
-
-### Success Button
-
-Button for positive confirmation actions
-
-```tsx
-import { Check } from 'lucide-react'
-;<Button
-    buttonType={ButtonType.SUCCESS}
-    size={ButtonSize.MEDIUM}
-    text="Confirm"
-    leadingIcon={<Check size={16} />}
-    onClick={() => console.log('Confirmed')}
-/>
+<Button text="Processing..." loading={true} buttonType={ButtonType.PRIMARY} />
 ```
 
 ### Full Width Button
 
-Button that expands to fill container width
+Button that takes full width of container
 
 ```tsx
-<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.LARGE}
-    text="Sign Up Now"
-    fullWidth={true}
-    onClick={() => console.log('Sign up clicked')}
-/>
-```
-
-### Inline Button
-
-Button with inline styling for text-like appearance
-
-```tsx
-<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.SMALL}
-    subType={ButtonSubType.INLINE}
-    text="Learn more"
-    onClick={() => console.log('Learn more clicked')}
-/>
-```
-
-### Small Size Button
-
-Compact button for tight spaces
-
-```tsx
-<Button
-    buttonType={ButtonType.SECONDARY}
-    size={ButtonSize.SMALL}
-    text="Cancel"
-    onClick={() => console.log('Cancel clicked')}
-/>
-```
-
-### Large Size Button
-
-Prominent button for primary actions
-
-```tsx
-<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.LARGE}
-    text="Get Started"
-    onClick={() => console.log('Get started clicked')}
-/>
+<Button text="Full Width" fullWidth={true} buttonType={ButtonType.SECONDARY} />
 ```
 
 ## Component Tokens
 
-You can style the Button component using the following tokens:
+You can style the button component using the following tokens:
 
 ```tsx
-export type ButtonTokenType = {
-    width: CSSObject['width']
-    height: CSSObject['height']
-    padding: CSSObject['padding']
-    borderRadius: CSSObject['borderRadius']
-    fontSize: CSSObject['fontSize']
-    fontWeight: CSSObject['fontWeight']
-    lineHeight: CSSObject['lineHeight']
-    border: CSSObject['border']
+export type ButtonState = 'default' | 'hover' | 'active' | 'disabled'
 
-    colors: {
+export type ButtonTokensType = {
+    gap: CSSObject['gap']
+    backgroundColor: {
         [key in ButtonType]: {
-            background: {
-                default: CSSObject['backgroundColor']
-                hover: CSSObject['backgroundColor']
-                active: CSSObject['backgroundColor']
-                disabled: CSSObject['backgroundColor']
-            }
-            text: {
-                default: CSSObject['color']
-                hover: CSSObject['color']
-                active: CSSObject['color']
-                disabled: CSSObject['color']
-            }
-            border: {
-                default: CSSObject['borderColor']
-                hover: CSSObject['borderColor']
-                active: CSSObject['borderColor']
-                disabled: CSSObject['borderColor']
+            [key in ButtonSubType]: {
+                [key in ButtonState]: CSSObject['background']
             }
         }
     }
-
-    sizes: {
+    color: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in ButtonState]: CSSObject['color']
+            }
+        }
+    }
+    borderRadius: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in ButtonState]: CSSObject['borderRadius']
+            }
+        }
+    }
+    padding: {
         [key in ButtonSize]: {
-            height: CSSObject['height']
-            padding: CSSObject['padding']
-            fontSize: CSSObject['fontSize']
-            iconSize: number
+            [key in ButtonSubType]: CSSObject['padding']
         }
     }
-}
-```
-
-## Behavior
-
-### Loading State
-
-- **Spinner Display**: Shows loading spinner and hides text content
-- **Disabled Interaction**: Button becomes non-interactive during loading
-- **Visual Feedback**: Provides clear indication of ongoing process
-
-### Disabled State
-
-- **Visual Changes**: Reduced opacity and muted colors
-- **Interaction Prevention**: Click events are prevented
-- **Focus Management**: Button cannot receive keyboard focus
-
-### Icon Positioning
-
-- **Leading Icons**: Positioned before text with proper spacing
-- **Trailing Icons**: Positioned after text with proper spacing
-- **Icon Only**: Centers icon when no text is present
-
-### Size Scaling
-
-- **Proportional Scaling**: All elements scale proportionally with size
-- **Icon Sizing**: Icons automatically resize based on button size
-- **Padding Adjustment**: Internal spacing adjusts for optimal proportions
-
-## Accessibility
-
-- **Keyboard Navigation**: Full keyboard support with Enter and Space key activation
-- **Focus Indicators**: Clear visual focus indicators for keyboard users
-- **Screen Reader Support**: Proper labeling and state announcements
-- **ARIA Attributes**: Appropriate `aria-disabled` and `aria-pressed` attributes
-- **Color Independence**: Button functionality conveyed through more than color alone
-- **High Contrast**: Supports high contrast mode and custom color schemes
-
-## Enums
-
-### ButtonType
-
-```tsx
-enum ButtonType {
-    PRIMARY = 'primary', // Main action button with prominent styling
-    SECONDARY = 'secondary', // Secondary action with subtle styling
-    DANGER = 'danger', // Destructive action with red styling
-    SUCCESS = 'success', // Positive action with green styling
-}
-```
-
-### ButtonSize
-
-```tsx
-enum ButtonSize {
-    SMALL = 'sm', // Compact size for tight spaces (32px height)
-    MEDIUM = 'md', // Standard size for most use cases (40px height)
-    LARGE = 'lg', // Prominent size for primary actions (48px height)
-}
-```
-
-### ButtonSubType
-
-```tsx
-enum ButtonSubType {
-    DEFAULT = 'default', // Standard button with background and text
-    ICON_ONLY = 'iconOnly', // Button displaying only an icon
-    INLINE = 'inline', // Text-like button for inline usage
+    border: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in ButtonState]: CSSObject['border']
+            }
+        }
+    }
+    shadow: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in ButtonState]: CSSObject['boxShadow']
+            }
+        }
+    }
+    outline: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in ButtonState]: CSSObject['outline']
+            }
+        }
+    }
 }
 ```

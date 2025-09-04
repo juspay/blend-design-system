@@ -8,8 +8,6 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     selectAll: boolean | 'indeterminate'
     enableInlineEdit?: boolean
     enableColumnManager?: boolean
-    columnManagerMaxSelections?: number
-    columnManagerAlwaysSelected?: string[]
     enableRowExpansion?: boolean
     enableRowSelection?: boolean
     rowActions?: RowActionsConfig<T>

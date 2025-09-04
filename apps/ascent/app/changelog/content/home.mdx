@@ -3,39 +3,33 @@ title: 'Home'
 description: 'Blend Design System changelog - track all updates and improvements'
 ---
 
-<section className="lg:p-30 md:p-22 sm:p-14 xs:p-8 p-5 lg:rounded-[var(--rounded-100)] md:rounded-[var(--rounded-80)] sm:rounded-[var(--rounded-60)] rounded-[var(--rounded-50)] border-[length:var(--pixel)] border-[var(--changelog-border-color)] bg-[linear-gradient(180deg,#060606_37.13%,rgba(0,0,0,0.5)_140.17%)]">
-  <header className="md:items-end flex md:flex-row flex-col md:gap-5 gap-10 justify-between">
-    <div>
-      <div className="text-[var(--grey-500)] lg:text-xl md:text-base sm:text-sm text-xs">
-        Last Updated: August 14, 2025
-      </div>
-      <h1 id="changelog-heading" className="text-[var(--grey-200)] lg:text-[length:var(--text-64)] md:text-5xl sm:text-3xl text-xl">
-        ChangeLogs
-      </h1>
-    </div>
+# Changelog
 
-    <form role="search">
-      <GradientBorderComponent
-        thickness="p-[var(--pixel)]"
-        borderColor="bg-[#191919]"
-        width="lg:w-sm md:w-3xs sm:w-2xs w-40"
-        height="lg:h-15 md:h-12 sm:h-10 h-8"
-        rounded="rounded-full"
-        bgColor="bg-[linear-gradient(to_right,var(--search-bar-from)_0%,var(--search-bar-to)_50%,var(--search-bar-from)_100%)]"
-        className="relative "
-      >
-        <Search className="absolute lg:top-5 lg:left-4 sm:top-3 sm:left-3 top-2 left-2  text-[var(--grey-500)] md:size-5 size-4" />
-        <input
-          type="search"
-          placeholder="Search"
-          className="w-full h-full lg:pl-12 sm:pl-10 pl-8 lg:text-base sm:text-sm text-xs pr-6 py-3 placeholder:text-[var(--grey-500)]"
-        />
-      </GradientBorderComponent>
-    </form>
+Track all updates, improvements, and changes to the Blend Design System.
 
-  </header>
+## Latest Release
 
-  <div className="grid grid-cols-1 gap-18 w-full lg:mt-39 md:mt-30 sm:mt-26 mt-20">
-    <HomeDataList />
-  </div>
-</section>
+<ChangelogCard summary="v0.0.12 - Stable" defaultExpanded={true}>
+
+<ChangelogEntry type="feat">
+    **Mobile-friendly components** - Enhanced popover, drawer, modal, and
+    multi-select with responsive design patterns
+</ChangelogEntry>
+
+<ChangelogEntry type="fix">
+    **Component reliability** - Improved focus management, accessibility, and
+    performance optimizations
+</ChangelogEntry>
+
+</ChangelogCard>
+
+## Quick Links
+
+- **[v0.0.12](/changelog/v0.0.12)** - Latest stable release with mobile improvements
+- **[v0.0.11](/changelog/v0.0.11)** - Component reliability and performance enhancements
+- **[Documentation](/docs)** - Complete component API and usage examples
+- **[NPM Package](https://www.npmjs.com/package/@juspay/blend-design-system)** - Install and get started
+
+---
+
+**Browse versions** using the sidebar to see detailed release notes and migration guides.

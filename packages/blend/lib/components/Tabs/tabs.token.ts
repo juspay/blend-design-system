@@ -155,31 +155,31 @@ export const getTabsTokens = (
                 fontWeight: {
                     [TabsVariant.UNDERLINE]: {
                         default: foundationToken.font.weight[500],
-                        active: foundationToken.font.weight[500],
+                        active: foundationToken.font.weight[600],
                     },
                     [TabsVariant.BOXED]: {
                         default: foundationToken.font.weight[500],
-                        active: foundationToken.font.weight[500],
+                        active: foundationToken.font.weight[600],
                     },
                     [TabsVariant.FLOATING]: {
                         default: foundationToken.font.weight[500],
-                        active: foundationToken.font.weight[500],
+                        active: foundationToken.font.weight[600],
                     },
                     [TabsVariant.PILLS]: {
                         default: foundationToken.font.weight[500],
-                        active: foundationToken.font.weight[500],
+                        active: foundationToken.font.weight[600],
                     },
                 },
                 color: {
                     [TabsVariant.UNDERLINE]: {
                         default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[500],
+                        hover: foundationToken.colors.gray[600],
                         active: foundationToken.colors.gray[700],
                         disabled: foundationToken.colors.gray[400],
                     },
                     [TabsVariant.BOXED]: {
                         default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[500],
+                        hover: foundationToken.colors.gray[600],
                         active: foundationToken.colors.gray[700],
                         disabled: foundationToken.colors.gray[400],
                     },
@@ -313,31 +313,31 @@ export const getTabsTokens = (
                 fontWeight: {
                     [TabsVariant.UNDERLINE]: {
                         default: foundationToken.font.weight[500],
-                        active: foundationToken.font.weight[500],
+                        active: foundationToken.font.weight[600],
                     },
                     [TabsVariant.BOXED]: {
                         default: foundationToken.font.weight[500],
-                        active: foundationToken.font.weight[500],
+                        active: foundationToken.font.weight[600],
                     },
                     [TabsVariant.FLOATING]: {
                         default: foundationToken.font.weight[500],
-                        active: foundationToken.font.weight[500],
+                        active: foundationToken.font.weight[600],
                     },
                     [TabsVariant.PILLS]: {
                         default: foundationToken.font.weight[500],
-                        active: foundationToken.font.weight[500],
+                        active: foundationToken.font.weight[600],
                     },
                 },
                 color: {
                     [TabsVariant.UNDERLINE]: {
                         default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[500],
+                        hover: foundationToken.colors.gray[600],
                         active: foundationToken.colors.gray[700],
                         disabled: foundationToken.colors.gray[400],
                     },
                     [TabsVariant.BOXED]: {
                         default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[500],
+                        hover: foundationToken.colors.gray[600],
                         active: foundationToken.colors.gray[700],
                         disabled: foundationToken.colors.gray[400],
                     },

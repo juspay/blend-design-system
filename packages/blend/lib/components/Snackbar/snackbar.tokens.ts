@@ -102,7 +102,7 @@ export const getSnackbarTokens = (
                     },
                     actionButton: {
                         padding: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[2])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[2])}`,
-                        color: foundationToken.colors.primary[400],
+                        color: foundationToken.colors.gray[100],
                         fontSize: 14,
                         fontWeight: foundationToken.font.weight[600],
                     },
@@ -159,7 +159,7 @@ export const getSnackbarTokens = (
                     actionButton: {
                         padding: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[2])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[2])}`,
 
-                        color: foundationToken.colors.primary[400],
+                        color: foundationToken.colors.gray[100],
                         fontSize: 14,
                         fontWeight: foundationToken.font.weight[600],
                     },

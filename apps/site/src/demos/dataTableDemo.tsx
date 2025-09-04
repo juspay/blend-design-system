@@ -2292,8 +2292,6 @@ const DataTableDemo = () => {
                 enableRowExpansion
                 enableRowSelection={enableRowSelection}
                 enableColumnManager={enableColumnManager}
-                columnManagerMaxSelections={5}
-                columnManagerAlwaysSelected={['name', 'email']}
                 showSettings={showSettings}
                 renderExpandedRow={renderExpandedRow}
                 isRowExpandable={isRowExpandable}

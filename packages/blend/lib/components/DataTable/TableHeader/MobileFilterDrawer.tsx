@@ -13,12 +13,7 @@ import { Checkbox } from '../../Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
 import Slider from '../../Slider/Slider'
 import { SliderSize, SliderValueType } from '../../Slider/types'
-import {
-    ColumnDefinition,
-    ColumnType,
-    FilterType,
-    SortDirection,
-} from '../types'
+import { ColumnDefinition, ColumnType, FilterType } from '../types'
 import { getColumnTypeConfig } from '../columnTypes'
 import { TableTokenType } from '../dataTable.tokens'
 import {
@@ -26,7 +21,6 @@ import {
     FilterHandlers,
     FilterState,
     ColumnFilterHandler,
-    SortState,
 } from './handlers'
 import {
     getSelectMenuItems,
@@ -49,7 +43,6 @@ type MobileFilterDrawerProps = {
     sortHandlers: SortHandlers
     filterHandlers: FilterHandlers
     filterState: FilterState
-    sortState: SortState
     onColumnFilter?: ColumnFilterHandler
     onPopoverClose?: () => void
 }
@@ -60,7 +53,6 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
     sortHandlers,
     filterHandlers,
     filterState,
-    sortState,
     onColumnFilter,
     onPopoverClose,
 }) => {
@@ -68,14 +60,6 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
 
     const columnConfig = getColumnTypeConfig(column.type || ColumnType.TEXT)
     const fieldKey = String(column.field)
-
-    // Check if this column is currently sorted
-    const isCurrentField = sortState.currentSortField === fieldKey
-    const currentDirection = isCurrentField
-        ? sortState.currentSortDirection
-        : SortDirection.NONE
-    const isAscendingActive = currentDirection === SortDirection.ASCENDING
-    const isDescendingActive = currentDirection === SortDirection.DESCENDING
 
     const handleSortAndClose = (sortFn: () => void) => {
         sortFn()
@@ -90,11 +74,11 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
         setFilterDrawerOpen(false)
     }
 
+    // Render sort and filter menu items with no gaps
     const renderSortItem = (
         icon: React.ReactNode,
         label: string,
-        onClick: () => void,
-        isActive: boolean = false
+        onClick: () => void
     ) => (
         <Block
             display="flex"
@@ -102,9 +86,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
             gap={FOUNDATION_THEME.unit[8]}
             padding="14px 20px"
             cursor="pointer"
-            backgroundColor={
-                isActive ? FOUNDATION_THEME.colors.gray[50] : 'transparent'
-            }
+            backgroundColor="transparent"
             _hover={{
                 backgroundColor: FOUNDATION_THEME.colors.gray[50],
             }}
@@ -381,8 +363,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                             () =>
                                 handleSortAndClose(() =>
                                     sortHandlers.handleSortAscending(fieldKey)
-                                ),
-                            isAscendingActive
+                                )
                         )}
                         {renderSortItem(
                             <ArrowDown
@@ -393,8 +374,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                             () =>
                                 handleSortAndClose(() =>
                                     sortHandlers.handleSortDescending(fieldKey)
-                                ),
-                            isDescendingActive
+                                )
                         )}
                     </>
                 )}

@@ -1,7 +1,10 @@
-'use client'
+/**
+ * Shared layout component for docs, changelog, and other documentation sections
+ * Eliminates code duplication between layout files
+ */
 
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Github } from 'lucide-react'
 import {
     Sidebar,
@@ -17,105 +20,41 @@ import {
     ChangelogIcon,
     StorybookIcon,
 } from '@/components/ui/Icons'
-import type { DocItem } from '@/docs/utils'
-import { Logo } from '@/app/changelog/icons/Logo'
-import { JuspayLogoTitle } from '@/app/changelog/icons/JuspayLogoTitle'
-import Gradient from '@/app/changelog/icons/Gradient'
-import { ConnectWithUs } from '@/app/landing/components/connect-with-us/ConnectWithUs'
-import { Footer } from '@/app/landing/components/footer/Footer'
+import { getDirItems } from '@/docs/utils'
 
 export interface SharedDocLayoutProps {
     /** Title displayed in the navigation bar */
-    // title: string
+    title: string
     /** Base route for navigation (e.g., '/docs', '/changelog') */
     baseRoute: string
     /** Path to content directory for sidebar generation */
-    contentPath?: string
-    /** Pre-generated sidebar items (replaces contentPath for client components) */
-    sidebarItems?: DocItem[]
+    contentPath: string
     /** Children components to render in the main content area */
     children: React.ReactNode
     /** Optional custom CSS classes */
     className?: string
-    /** Whether to show the theme toggle button */
-    showThemeToggle?: boolean
-
-    showSidebar?: boolean
-
-    showFooter?: boolean
-
-    navbarBorderBottom?: boolean
 }
 
 const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
-    // title,
+    title,
     baseRoute,
-    contentPath: _contentPath,
-    sidebarItems = [],
+    contentPath,
     children,
     className = '',
-    showThemeToggle = true,
-    showSidebar = true,
-    showFooter = false,
-    navbarBorderBottom = false,
 }) => {
-    // Theme detection state
-    const [theme, setTheme] = useState<'light' | 'dark'>('dark')
-    const [mounted, setMounted] = useState(false)
-
-    useEffect(() => {
-        setMounted(true)
-
-        // Check for saved theme preference or default to system preference
-        const savedTheme = localStorage.getItem('theme')
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
-            .matches
-            ? 'dark'
-            : 'light'
-        const initialTheme = (savedTheme as 'light' | 'dark') || systemTheme
-        setTheme(initialTheme)
-
-        // Listen for theme changes
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (
-                    mutation.type === 'attributes' &&
-                    mutation.attributeName === 'data-theme'
-                ) {
-                    const currentTheme = document.documentElement.getAttribute(
-                        'data-theme'
-                    ) as 'light' | 'dark'
-                    if (currentTheme) {
-                        setTheme(currentTheme)
-                    }
-                }
-            })
-        })
-
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ['data-theme'],
-        })
-
-        return () => observer.disconnect()
-    }, [])
-
-    // Determine logo color based on theme
-    const logoColor = mounted ? (theme === 'dark' ? 'white' : 'black') : 'white'
+    // Generate sidebar items based on content path
+    const sidebarItems = getDirItems(contentPath)
 
     return (
         <GlobalKeyboardNavigationProvider>
-            <main className={`min-h-screen w-full ${className}`}>
-                <Gradient className="absolute right-0" />
+            <main
+                className={`min-h-screen w-screen bg-[var(--background)] ${className}`}
+            >
                 {/* Navigation Bar */}
-                <nav
-                    className={`xl:h-25 lg:h-20 md:h-16 sm:h-14 h-12 flex items-center justify-between xl:px-6 lg:px-5 md:px-4 sm:px-3 px-2 sticky top-0 z-50 backdrop-blur-md ${navbarBorderBottom ? (theme === 'light' ? 'border-b border-neutral-200' : 'border-b border-neutral-800') : 'border-none'} `}
-                >
+                <nav className="h-[var(--navbar-height)] flex items-center justify-between px-6 border-b border-[var(--border)] bg-[var(--sidebar-background)] backdrop-blur-sm sticky top-0 z-50">
                     {/* Left side - Title and drawer */}
-                    <div className="flex items-center xl:gap-4 lg:gap-3 md:gap-2 gap-1">
-                        <div
-                            className={`sidebar-drawer-trigger z-[50]  ${showSidebar ? 'visible' : '!hidden'}`}
-                        >
+                    <div className="flex items-center gap-4">
+                        <div className="sidebar-drawer-trigger">
                             <SidebarDrawer
                                 items={sidebarItems}
                                 baseRoute={baseRoute}
@@ -123,20 +62,16 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                         </div>
                         <Link
                             href="/"
-                            className="flex items-center font-semibold xl:text-lg lg:text-base md:text-sm sm:text-xs text-xs text-[var(--foreground)] hover:text-[var(--muted-foreground)] transition-colors"
+                            className="flex items-center font-semibold text-lg text-[var(--foreground)] hover:text-[var(--muted-foreground)] transition-colors"
                             data-nav-topbar
                         >
-                            <Logo logoColor={logoColor} />{' '}
-                            <JuspayLogoTitle logoColor={logoColor} />
+                            <span>{title}</span>
                         </Link>
                     </div>
 
                     {/* Right side - Search and navigation links */}
-                    <div className="flex items-center xl:gap-3 lg:gap-2 md:gap-2 sm:gap-1 gap-1">
-                        <div
-                            className="xl:max-w-sm lg:max-w-xs md:max-w-[350px] sm:max-w-[290px] max-w-[100px] "
-                            data-nav-topbar
-                        >
+                    <div className="flex items-center gap-3">
+                        <div className="max-w-sm" data-nav-topbar>
                             <SearchProvider />
                         </div>
 
@@ -201,32 +136,27 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                         </a>
 
                         {/* Theme toggle */}
-                        <div
-                            data-nav-topbar
-                            className={` ${showThemeToggle ? 'visible' : 'hidden'}`}
-                        >
+                        <div data-nav-topbar>
                             <ThemeToggle />
                         </div>
                     </div>
                 </nav>
 
                 {/* Main content area */}
-                <FloatingShortcutsButton />
-                {/* Main content area */}
-                <div className="w-screen flex bg-[var(--sidebar-background)] h-[90vh] backdrop-blur-sm ">
-                    <div
-                        className={`doc-sidebar backdrop:blur-lg z-40   w-[240px] overflow-hidden fixed left-0 h-full ${theme === 'light' ? 'border-r border-neutral-200' : 'border-r border-neutral-800'} ${showSidebar ? 'visible' : 'hidden'}`}
-                    >
+                <div className="w-screen h-[calc(100vh-var(--navbar-height))] flex">
+                    {/* Sidebar */}
+                    <aside className="doc-sidebar w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-hidden">
                         <Sidebar items={sidebarItems} baseRoute={baseRoute} />
-                    </div>
+                    </aside>
 
                     {/* Main content */}
-                    <div className=" overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full lg:rounded-[var(--rounded-100)] md:rounded-[var(--rounded-80)] sm:rounded-[var(--rounded-60)] rounded-[var(--rounded-50)] ">
+                    <div className="main-content-area flex-1 h-[calc(100vh-var(--navbar-height))] overflow-y-auto">
                         {children}
-                        {showFooter === true && <ConnectWithUs />}
-                        {showFooter === true && <Footer />}
                     </div>
                 </div>
+
+                {/* Floating shortcuts button */}
+                <FloatingShortcutsButton />
             </main>
         </GlobalKeyboardNavigationProvider>
     )

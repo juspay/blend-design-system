@@ -1,9 +1,4 @@
-import {
-    NewNestedDataPoint,
-    FlattenedDataPoint,
-    AxisType,
-    XAxisConfig,
-} from './types'
+import { NewNestedDataPoint, FlattenedDataPoint, AxisType } from './types'
 
 export function transformNestedData(
     data: NewNestedDataPoint[],
@@ -269,103 +264,6 @@ export const getAxisFormatterWithConfig = (
     }
 
     return getAxisFormatter(axisType, timeZone, hour12)
-}
-// Have to revisit from optimizaion POV.
-export const createStableSmartFormatter = (
-    xAxisConfig: XAxisConfig,
-    flattenedData: FlattenedDataPoint[]
-): ((value: string | number) => string) | undefined => {
-    if (xAxisConfig?.customTick) return undefined
-    if (xAxisConfig?.tickFormatter) return xAxisConfig.tickFormatter
-    if (
-        xAxisConfig?.type &&
-        xAxisConfig.type === AxisType.DATE_TIME &&
-        xAxisConfig?.smart
-    ) {
-        const isPreserveStartEnd =
-            xAxisConfig?.interval === 'preserveStartEnd' ||
-            xAxisConfig?.interval === 'preserveStart' ||
-            xAxisConfig?.interval === 'preserveEnd'
-
-        const dataValues = flattenedData.map((d) => d.name)
-        const dateMap = new Set<string>()
-        const showFullDateForValue = new Map<string, boolean>()
-
-        dataValues.forEach((value) => {
-            let date = new Date(value)
-            if (isNaN(date.getTime())) {
-                let timestamp =
-                    typeof value === 'string' ? parseInt(value) : value
-                if (timestamp < 946684800000) {
-                    timestamp = timestamp * 1000
-                }
-                date = new Date(timestamp)
-            }
-
-            if (!isNaN(date.getTime())) {
-                const dateString = date.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                    timeZone: xAxisConfig?.timeZone || 'UTC',
-                })
-
-                const shouldShowFull = isPreserveStartEnd
-                    ? false
-                    : !dateMap.has(dateString)
-                dateMap.add(dateString)
-                showFullDateForValue.set(value.toString(), shouldShowFull)
-            }
-        })
-
-        return (value: string | number) => {
-            let date = new Date(value)
-            if (isNaN(date.getTime())) {
-                let timestamp =
-                    typeof value === 'string' ? parseInt(value) : value
-                if (timestamp < 946684800000) {
-                    timestamp = timestamp * 1000
-                }
-                date = new Date(timestamp)
-                if (isNaN(date.getTime())) {
-                    return value.toString()
-                }
-            }
-
-            const shouldShowFullDate = showFullDateForValue.get(
-                value.toString()
-            )
-
-            if (shouldShowFullDate) {
-                return date.toLocaleString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: xAxisConfig?.hour12 ?? false,
-                    timeZone: xAxisConfig?.timeZone || 'UTC',
-                })
-            } else {
-                return date.toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: xAxisConfig?.hour12 ?? false,
-                    timeZone: xAxisConfig?.timeZone || 'UTC',
-                })
-            }
-        }
-    }
-    if (xAxisConfig?.type) {
-        return getAxisFormatterWithConfig(
-            xAxisConfig.type,
-            xAxisConfig.dateOnly,
-            xAxisConfig?.smart ?? false,
-            xAxisConfig.timeZone,
-            xAxisConfig.hour12
-        )
-    }
-    return undefined
 }
 
 export const getAxisFormatter = (

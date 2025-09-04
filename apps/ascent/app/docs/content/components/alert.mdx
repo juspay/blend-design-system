@@ -6,10 +6,6 @@ tags:
     - alert
     - component
     - notification
-    - message
-    - banner
-    - status
-    - feedback
 RepoFolderName: Alert
 StorybookLink: components-alert--docs
 ---
@@ -19,24 +15,16 @@ StorybookLink: components-alert--docs
 ## Usage
 
 ```tsx
-import { Alert, AlertVariant, AlertStyle, AlertActionPlacement } from 'blend-v1'
+import { Alert, AlertVariant, AlertStyle } from 'blend-v1'
 
 function MyComponent() {
     return (
         <Alert
-            heading="Update Available"
-            description="A new version of the application is available. Please update to get the latest features."
-            variant={AlertVariant.PRIMARY}
+            heading="Success!"
+            description="Your changes have been saved successfully."
+            variant={AlertVariant.SUCCESS}
             style={AlertStyle.SUBTLE}
-            primaryAction={{
-                label: 'Update Now',
-                onClick: () => console.log('Update clicked'),
-            }}
-            secondaryAction={{
-                label: 'Later',
-                onClick: () => console.log('Later clicked'),
-            }}
-            onClose={() => console.log('Alert dismissed')}
+            onClose={() => console.log('closed')}
         />
     )
 }
@@ -65,12 +53,12 @@ function MyComponent() {
         [
             { content: 'variant', hintText: 'The visual variant of the alert' },
             { content: 'AlertVariant', hintText: 'enum' },
-            { content: 'AlertVariant.PRIMARY' },
+            { content: 'PRIMARY' },
         ],
         [
             { content: 'style', hintText: 'The visual style of the alert' },
             { content: 'AlertStyle', hintText: 'enum' },
-            { content: 'AlertStyle.SUBTLE' },
+            { content: 'SUBTLE' },
         ],
         [
             {
@@ -99,7 +87,7 @@ function MyComponent() {
         [
             {
                 content: 'icon',
-                hintText: 'Custom icon displayed at the start of the alert',
+                hintText: 'Icon displayed at the start of the alert',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
@@ -110,37 +98,10 @@ function MyComponent() {
                 hintText: 'Position of action buttons relative to content',
             },
             { content: 'AlertActionPlacement', hintText: 'enum' },
-            { content: 'AlertActionPlacement.RIGHT' },
+            { content: 'RIGHT' },
         ],
     ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## AlertAction Type
-
-The `AlertAction` type defines the structure for action buttons:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'label',
-                hintText: 'Text displayed on the action button',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'onClick',
-                hintText: 'Function called when the action button is clicked',
-            },
-            { content: '() => void', hintText: 'function' },
-            { content: '' },
-        ],
-    ]}
+    isHoverable={true}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
@@ -148,134 +109,114 @@ The `AlertAction` type defines the structure for action buttons:
 
 ## Features
 
-- **7 Semantic Variants**: Primary, Success, Warning, Error, Purple, Orange, and Neutral for different message types
-- **2 Visual Styles**: Subtle (filled background) and No Fill (outline only) for different design contexts
-- **Flexible Actions**: Support for primary and secondary action buttons with customizable placement
-- **Dismissible**: Optional close button with callback functionality
-- **Custom Icons**: Support for custom icons to enhance visual communication
-- **Responsive Layout**: Automatic layout adjustment based on content and screen size
-- **Accessible Design**: Full keyboard navigation and screen reader support
-- **Action Placement**: Buttons can be positioned on the right or bottom for optimal layout
-- **Max Width Control**: Built-in max-width of 900px for optimal readability
-- **Theme Integration**: Consistent styling through design tokens
+- Multiple alert variants (primary, success, warning, error, purple, orange, neutral)
+- Two visual styles (subtle, noFill)
+- Optional close button functionality
+- Primary and secondary action buttons
+- Custom icon support
+- Flexible action button placement (right or bottom)
+- Responsive design with proper spacing
+- Accessible keyboard navigation
 
 ## Usage Examples
 
-### Basic Information Alert
+### Basic Alert
 
-Simple alert with heading and description only
+Simple alert with heading and description
 
 ```tsx
 <Alert
     heading="Information"
-    description="This is an important informational message for the user."
+    description="This is an informational message."
     variant={AlertVariant.PRIMARY}
 />
 ```
 
 ### Success Alert with Close Button
 
-Alert confirming successful action with dismissible option
+Alert with success styling and close functionality
 
 ```tsx
 <Alert
     heading="Success!"
     description="Your changes have been saved successfully."
     variant={AlertVariant.SUCCESS}
-    onClose={() => console.log('Alert dismissed')}
+    onClose={() => console.log('Alert closed')}
 />
 ```
 
 ### Warning Alert with Actions
 
-Alert requiring user decision with action buttons
+Alert with warning styling and action buttons
 
 ```tsx
 <Alert
-    heading="Unsaved Changes"
-    description="You have unsaved changes. Do you want to save them before leaving?"
+    heading="Warning"
+    description="Are you sure you want to delete this item?"
     variant={AlertVariant.WARNING}
     primaryAction={{
-        label: 'Save Changes',
-        onClick: () => console.log('Save clicked'),
+        label: 'Delete',
+        onClick: () => console.log('Delete clicked'),
     }}
     secondaryAction={{
-        label: 'Discard',
-        onClick: () => console.log('Discard clicked'),
+        label: 'Cancel',
+        onClick: () => console.log('Cancel clicked'),
     }}
 />
 ```
 
-### Error Alert with Custom Icon
+### Error Alert with Icon
 
-Error alert with custom icon for enhanced visual communication
+Alert with error styling and custom icon
 
 ```tsx
 import { AlertCircle } from 'lucide-react'
 ;<Alert
-    heading="Connection Error"
-    description="Unable to connect to the server. Please check your internet connection and try again."
+    heading="Error"
+    description="Something went wrong. Please try again."
     variant={AlertVariant.ERROR}
-    icon={<AlertCircle size={20} />}
-    primaryAction={{
-        label: 'Retry',
-        onClick: () => console.log('Retry clicked'),
-    }}
-    onClose={() => console.log('Error dismissed')}
+    icon={<AlertCircle size={16} />}
+    onClose={() => console.log('Error alert closed')}
 />
 ```
 
-### Alert with Bottom Action Placement
+### Alert with Bottom Actions
 
-Alert with action buttons positioned below the content
+Alert with action buttons positioned at the bottom
 
 ```tsx
 <Alert
-    heading="Software Update"
-    description="A new version is available with important security updates and new features."
+    heading="Update Available"
+    description="A new version is available for download."
     variant={AlertVariant.PURPLE}
-    actionPlacement={AlertActionPlacement.BOTTOM}
     primaryAction={{
-        label: 'Download Update',
-        onClick: () => console.log('Download clicked'),
+        label: 'Update Now',
+        onClick: () => console.log('Update clicked'),
     }}
     secondaryAction={{
-        label: 'Remind Me Later',
+        label: 'Later',
         onClick: () => console.log('Later clicked'),
     }}
+    actionPlacement={AlertActionPlacement.BOTTOM}
 />
 ```
 
 ### No Fill Style Alert
 
-Alert with transparent background and border-only styling
+Alert with no background fill styling
 
 ```tsx
 <Alert
-    heading="System Maintenance"
-    description="Scheduled maintenance will occur tonight from 2:00 AM to 4:00 AM UTC."
+    heading="Neutral Message"
+    description="This alert uses the no-fill style."
     variant={AlertVariant.NEUTRAL}
     style={AlertStyle.NO_FILL}
-    icon={<span>🔧</span>}
-/>
-```
-
-### Alert with Only Close Button
-
-Alert with automatic bottom placement when only close button is provided
-
-```tsx
-<Alert
-    heading="Welcome!"
-    description="Welcome to the new version of our application. Explore the updated interface and new features."
-    variant={AlertVariant.PRIMARY}
-    onClose={() => console.log('Welcome message dismissed')}
 />
 ```
 
 ## Component Tokens
 
-You can style the Alert component using the following tokens:
+You can style the alert component using the following tokens:
 
 ```tsx
 export type AlertTokenType = {
@@ -283,87 +224,14 @@ export type AlertTokenType = {
     borderRadius: CSSObject['borderRadius']
     background: {
         [key in AlertVariant]: {
-            [key in AlertStyle]: CSSObject['backgroundColor']
+            [key in AlertStyle]: CSSObject['color']
         }
     }
     border: {
-        [key in AlertVariant]: CSSObject['border']
+        [key in AlertVariant]: CSSObject['color']
     }
     button: {
         [key in AlertVariant]: CSSObject['color']
     }
-    heading: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
-    }
-    description: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-        lineHeight: CSSObject['lineHeight']
-    }
-}
-```
-
-## Behavior
-
-### Action Placement Logic
-
-- **Right Placement**: When both primary and secondary actions are provided
-- **Bottom Placement**: When `actionPlacement={AlertActionPlacement.BOTTOM}` is explicitly set
-- **Automatic Bottom**: When only `onClose` is provided without other actions
-
-### Close Button Behavior
-
-- **Auto-positioning**: Close button automatically moves to bottom when no other actions are present
-- **Always Visible**: Close button remains accessible when `onClose` prop is provided
-- **Icon Consistency**: Uses standard X icon from Lucide React
-
-### Responsive Behavior
-
-- **Max Width**: Component has a maximum width of 900px for optimal readability
-- **Flexible Layout**: Content and actions adapt to available space
-- **Mobile Friendly**: Action buttons stack appropriately on smaller screens
-
-## Accessibility
-
-- **Semantic HTML**: Uses proper ARIA roles and landmarks for alert content
-- **Keyboard Navigation**: All interactive elements are keyboard accessible
-- **Screen Reader Support**: Proper announcements for alert content and state changes
-- **Focus Management**: Clear focus indicators on all interactive elements
-- **Color Independence**: Alert meaning conveyed through text, not color alone
-- **High Contrast**: Supports high contrast mode and custom color schemes
-
-## Enums
-
-### AlertVariant
-
-```tsx
-enum AlertVariant {
-    PRIMARY = 'primary', // Blue color scheme for general information
-    SUCCESS = 'success', // Green color scheme for positive feedback
-    WARNING = 'warning', // Yellow color scheme for caution messages
-    ERROR = 'error', // Red color scheme for error messages
-    PURPLE = 'purple', // Purple color scheme for feature announcements
-    ORANGE = 'orange', // Orange color scheme for marketing messages
-    NEUTRAL = 'neutral', // Gray color scheme for neutral information
-}
-```
-
-### AlertStyle
-
-```tsx
-enum AlertStyle {
-    SUBTLE = 'subtle', // Filled background with subtle colors
-    NO_FILL = 'noFill', // Transparent background with border only
-}
-```
-
-### AlertActionPlacement
-
-```tsx
-enum AlertActionPlacement {
-    BOTTOM = 'bottom', // Action buttons positioned below content
-    RIGHT = 'right', // Action buttons positioned to the right of content
 }
 ```

@@ -4,7 +4,6 @@ import {
     NameType,
     ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
-import { ButtonV2Props } from '../Button'
 
 export type DataPoint = {
     primary: {
@@ -57,13 +56,6 @@ export type TickProps = {
     [key: string]: unknown
 }
 
-export type NoDataProps = {
-    title?: string
-    subtitle?: string
-    slot?: ReactNode
-    button?: ButtonV2Props
-}
-
 export type AxisConfig = {
     label?: string
     showLabel?: boolean
@@ -107,7 +99,6 @@ export type RenderChartProps = {
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
-    noData?: NoDataProps
 }
 
 export type CoreChartProps = {
@@ -142,7 +133,6 @@ export type ChartsProps = {
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
-    noData?: NoDataProps
 }
 
 export type FlattenedDataPoint = {

@@ -1,18 +1,16 @@
 import React from 'react'
+import { SharedDocLayout } from '@/components/layout'
 import { CHANGELOG_CONFIG } from './config'
-import { ChangelogLayoutWrapper } from './components/ChangelogLayoutWrapper'
 
 const layout = ({ children }: { children: React.ReactNode }) => {
     return (
-        <ChangelogLayoutWrapper
+        <SharedDocLayout
+            title={CHANGELOG_CONFIG.title}
             baseRoute={CHANGELOG_CONFIG.baseRoute}
-            sidebarItems={[]}
-            showThemeToggle={false}
-            showSidebar={false}
-            showFooter={true}
+            contentPath={CHANGELOG_CONFIG.contentPath}
         >
             {children}
-        </ChangelogLayoutWrapper>
+        </SharedDocLayout>
     )
 }
 

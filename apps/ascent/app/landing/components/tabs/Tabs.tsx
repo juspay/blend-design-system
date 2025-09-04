@@ -20,7 +20,7 @@ export const TabButtons = ({
         >
             <div className="w-full h-full rounded-[var(--tab-bar-border-radius)] bg-black opacity-90">
                 <div
-                    className={`md:py-2.5 md:px-3 py-1 px-2 rounded-[var(--tabs-border-radius)] lg:text-[length:var(--tab-btn-font-size)] md:text-[length:var(--tab-btn-font-size-md)] sm:text-[length:var(--tab-btn-font-size-sm)] xs:text-[length:var(--tab-btn-font-size-xs)] text-[length:var(--tab-heading-font-size-xs)] ${selected == label ? 'bg-[var(--tab-bg-color-selected)] text-[var(--tab-btn-text-color-selected)] ' : 'bg-transparent text-[var(--tab-btn-text-color)]'}`}
+                    className={`md:py-2.5 md:px-3 py-1 px-2 rounded-[var(--tabs-border-radius)] lg:text-[length:var(--tab-btn-font-size)] md:text-[length:var(--tab-btn-font-size-md)] sm:text-[length:var(--tab-btn-font-size-sm)] text-[length:var(--tab-btn-font-size-xs)] ${selected == label ? 'bg-[var(--tab-bg-color-selected)] text-[var(--tab-btn-text-color-selected)] ' : 'bg-transparent text-[var(--tab-btn-text-color)]'}`}
                 >
                     <p>{text}</p>
                 </div>
@@ -37,7 +37,7 @@ export const Tabs = ({
     handleTabSelection: (label: string) => void
 }) => {
     return (
-        <div className="text-[var(--design-system-heading-background)] opacity-80 lg:w-[var(--tabs-section-width)] md:w-[var(--tabs-section-width-md)] sm:w-[var(--tabs-section-width-sm)] xs:w-[var(--tabs-section-width-xs)] w-[var(--tabs-section-width-xxs)] flex justify-center relative backdrop-blur-md rounded-[var(--tab-bar-border-radius)] bg-[image:var(--landing-tabs-bar-gradient)] p-[var(--padding-1-pixel)] z-30">
+        <div className="text-[var(--design-system-heading-background)] opacity-80 lg:w-[var(--tabs-section-width)] md:w-[var(--tabs-section-width-md)] sm:w-[var(--tabs-section-width-sm)] w-[var(--tabs-section-width-xs)] flex justify-center relative backdrop-blur-md rounded-[var(--tab-bar-border-radius)] bg-[image:var(--landing-tabs-bar-gradient)] p-[var(--padding-1-pixel)] z-30">
             <div className="w-full h-full rounded-[var(--tab-bar-border-radius)] bg-black flex items-center  md:p-6 p-3 justify-between">
                 {TabsList.map((tab, key) => (
                     <TabButtons

@@ -1,0 +1,72 @@
+---
+title: 'Version 0.0.12'
+description: 'Stable release with mobile-friendly components and popover improvements'
+---
+
+<VersionHeader version="v0.0.12" date="2024-01-15" status="stable" />
+
+This is a stable release with significant improvements to mobile experience and new component features.
+
+<ChangelogCard summary="Mobile-Friendly Components" defaultExpanded={true}>
+
+<ChangelogEntry type="feat" component="Popover">
+    Added PopoverDemo and MobilePopover component with improved mobile
+    experience and touch-friendly interactions.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="Drawer,Modal,MultiSelect">
+    Implement mobile-friendly components with responsive design patterns,
+    improved touch targets, and better mobile navigation.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Component Enhancements">
+
+<ChangelogEntry type="feat" component="Popover">
+    Enhanced popover positioning and collision detection for better user
+    experience across different screen sizes.
+</ChangelogEntry>
+
+<ChangelogEntry type="fix" component="Modal">
+    Fixed modal backdrop click handling and improved focus management for better
+    accessibility.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Developer Experience">
+
+<ChangelogEntry type="docs">
+    Updated component documentation with mobile usage examples and best
+    practices.
+</ChangelogEntry>
+
+<ChangelogEntry type="chore">
+    Improved build process and development tooling for better developer
+    experience.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+## Migration Guide
+
+This release includes some improvements that may require minor updates to your existing code:
+
+### Popover Component
+
+- The `MobilePopover` component is now available for mobile-specific implementations
+- Existing `Popover` usage remains unchanged and backward compatible
+
+### Modal Component
+
+- Improved focus management may affect custom focus handling
+- Review any custom modal implementations for compatibility
+
+## What's Next
+
+In the next release, we're planning to add:
+
+- Enhanced form components with better validation
+- New chart components for data visualization
+- Improved theming system with CSS custom properties

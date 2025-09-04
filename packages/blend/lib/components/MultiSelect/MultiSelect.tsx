@@ -43,7 +43,6 @@ const MultiSelect = ({
     searchPlaceholder = 'Search options...',
     enableSelectAll = false,
     selectAllText = 'Select All',
-    maxSelections,
     customTrigger,
     useDrawerOnMobile = true,
     minWidth,
@@ -173,7 +172,6 @@ const MultiSelect = ({
                 searchPlaceholder={searchPlaceholder}
                 enableSelectAll={enableSelectAll}
                 selectAllText={selectAllText}
-                maxSelections={maxSelections}
                 onSelectAll={
                     enableSelectAll
                         ? (selectAll: boolean) =>

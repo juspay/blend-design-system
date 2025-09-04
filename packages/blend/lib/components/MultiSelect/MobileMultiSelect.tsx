@@ -51,9 +51,7 @@ const SelectAllItem = ({
     selectAllText: string
 }) => {
     const allValues = items.flatMap((group) =>
-        group.items
-            .filter((item) => !item.disabled && !item.alwaysSelected)
-            .map((item) => item.value)
+        group.items.filter((item) => !item.disabled).map((item) => item.value)
     )
 
     const allSelected =
@@ -133,21 +131,11 @@ const MultiSelectItem = ({
     item,
     isSelected,
     onChange,
-    maxSelections,
-    selectedCount,
 }: {
     item: MultiSelectMenuItemType
     isSelected: boolean
     onChange: (value: string) => void
-    maxSelections?: number
-    selectedCount: number
 }) => {
-    const isMaxReached =
-        maxSelections !== undefined &&
-        selectedCount >= maxSelections &&
-        !isSelected
-    const isItemDisabled = item.disabled || isMaxReached || item.alwaysSelected
-
     return (
         <Block
             display="flex"
@@ -156,12 +144,12 @@ const MultiSelectItem = ({
             padding="8px 6px"
             margin="0px 8px"
             borderRadius={4}
-            cursor={isItemDisabled ? 'not-allowed' : 'pointer'}
+            cursor={item.disabled ? 'not-allowed' : 'pointer'}
             _hover={{
                 backgroundColor: FOUNDATION_THEME.colors.gray[50],
             }}
             onClick={() => {
-                if (!isItemDisabled) {
+                if (!item.disabled) {
                     onChange(item.value)
                 }
             }}
@@ -200,9 +188,9 @@ const MultiSelectItem = ({
                     <Checkbox
                         size={CheckboxSize.SMALL}
                         checked={isSelected}
-                        disabled={isItemDisabled}
+                        disabled={item.disabled}
                         onCheckedChange={() => {
-                            if (!isItemDisabled) {
+                            if (!item.disabled) {
                                 onChange(item.value)
                             }
                         }}
@@ -244,7 +232,6 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     searchPlaceholder = 'Search options...',
     enableSelectAll = false,
     selectAllText = 'Select All',
-    maxSelections,
     customTrigger,
     onBlur,
     onFocus,
@@ -461,12 +448,6 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                                 }
                                                                 onChange={
                                                                     onChange
-                                                                }
-                                                                maxSelections={
-                                                                    maxSelections
-                                                                }
-                                                                selectedCount={
-                                                                    selectedValues.length
                                                                 }
                                                             />
                                                             {shouldShowDivider && (
