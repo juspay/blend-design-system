@@ -246,7 +246,7 @@ export const SingleSelectItems: React.FC<{
                         : typeof selectedValues === 'string'
                           ? selectedValues
                           : ''
-                    
+
                     const isSelected = currentSelected === item.value
 
                     return (
@@ -255,14 +255,25 @@ export const SingleSelectItems: React.FC<{
                             display="flex"
                             alignItems="center"
                             justifyContent="space-between"
-                            padding={tableToken.dataTable.table.header.filter.sortOption.padding}
-                            borderRadius={tableToken.dataTable.table.header.filter.sortOption.borderRadius}
+                            padding={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.padding
+                            }
+                            borderRadius={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.borderRadius
+                            }
                             cursor="pointer"
                             backgroundColor={
-                                isSelected ? tableToken.dataTable.table.header.filter.sortOption.hoverBackground : "transparent"
+                                isSelected
+                                    ? tableToken.dataTable.table.header.filter
+                                          .sortOption.hoverBackground
+                                    : 'transparent'
                             }
                             _hover={{
-                                backgroundColor: tableToken.dataTable.table.header.filter.sortOption.hoverBackground,
+                                backgroundColor:
+                                    tableToken.dataTable.table.header.filter
+                                        .sortOption.hoverBackground,
                             }}
                             onClick={() => {
                                 filterHandlers.handleSelectFilter(
@@ -276,16 +287,21 @@ export const SingleSelectItems: React.FC<{
                         >
                             <PrimitiveText
                                 style={{
-                                    fontSize: tableToken.dataTable.table.header.filter.sortOption.fontSize,
-                                    color: tableToken.dataTable.table.header.filter.sortOption.textColor,
-                                    fontWeight: tableToken.dataTable.table.header.filter.sortOption.fontWeight,
+                                    fontSize:
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.fontSize,
+                                    color: tableToken.dataTable.table.header
+                                        .filter.sortOption.textColor,
+                                    fontWeight:
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.fontWeight,
                                     flexGrow: 1,
                                 }}
                             >
                                 {item.label}
                             </PrimitiveText>
-                            <Checkbox 
-                                checked={isSelected} 
+                            <Checkbox
+                                checked={isSelected}
                                 size={CheckboxSize.SMALL}
                             />
                         </Block>
@@ -333,7 +349,7 @@ export const MultiSelectItems: React.FC<{
                     const currentSelected = Array.isArray(selectedValues)
                         ? selectedValues
                         : []
-                    
+
                     const isSelected = currentSelected.includes(item.value)
 
                     return (
@@ -342,14 +358,25 @@ export const MultiSelectItems: React.FC<{
                             display="flex"
                             alignItems="center"
                             justifyContent="space-between"
-                            padding={tableToken.dataTable.table.header.filter.sortOption.padding}
-                            borderRadius={tableToken.dataTable.table.header.filter.sortOption.borderRadius}
+                            padding={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.padding
+                            }
+                            borderRadius={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.borderRadius
+                            }
                             cursor="pointer"
                             backgroundColor={
-                                isSelected ? tableToken.dataTable.table.header.filter.sortOption.hoverBackground : "transparent"
+                                isSelected
+                                    ? tableToken.dataTable.table.header.filter
+                                          .sortOption.hoverBackground
+                                    : 'transparent'
                             }
                             _hover={{
-                                backgroundColor: tableToken.dataTable.table.header.filter.sortOption.hoverBackground,
+                                backgroundColor:
+                                    tableToken.dataTable.table.header.filter
+                                        .sortOption.hoverBackground,
                             }}
                             onClick={() => {
                                 filterHandlers.handleMultiSelectFilter(
@@ -362,16 +389,21 @@ export const MultiSelectItems: React.FC<{
                         >
                             <PrimitiveText
                                 style={{
-                                    fontSize: tableToken.dataTable.table.header.filter.sortOption.fontSize,
-                                    color: tableToken.dataTable.table.header.filter.sortOption.textColor,
-                                    fontWeight: tableToken.dataTable.table.header.filter.sortOption.fontWeight,
+                                    fontSize:
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.fontSize,
+                                    color: tableToken.dataTable.table.header
+                                        .filter.sortOption.textColor,
+                                    fontWeight:
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.fontWeight,
                                     flexGrow: 1,
                                 }}
                             >
                                 {item.label}
                             </PrimitiveText>
-                            <Checkbox 
-                                checked={isSelected} 
+                            <Checkbox
+                                checked={isSelected}
                                 size={CheckboxSize.SMALL}
                             />
                         </Block>
