@@ -321,6 +321,24 @@ const SingleSelectMenu = ({
                     </Block>
                 )}
                 {filteredItems &&
+                filteredItems.length === 0 &&
+                searchText.length > 0 ? (
+                    <Block
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        padding={`${FOUNDATION_THEME.unit[2]} ${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[8]} ${FOUNDATION_THEME.unit[0]}`}
+                    >
+                        <Text
+                            variant="body.md"
+                            color={FOUNDATION_THEME.colors.gray[400]}
+                            textAlign="center"
+                        >
+                            No results found
+                        </Text>
+                    </Block>
+                ) : (
+                    filteredItems &&
                     filteredItems.map((group, groupId) => (
                         <React.Fragment key={groupId}>
                             {group.groupLabel && (
@@ -363,7 +381,8 @@ const SingleSelectMenu = ({
                                     </RadixMenu.Separator>
                                 )}
                         </React.Fragment>
-                    ))}
+                    ))
+                )}
             </Content>
         </RadixMenu.Root>
     )

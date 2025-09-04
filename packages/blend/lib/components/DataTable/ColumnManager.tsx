@@ -29,7 +29,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
 
     const multiSelectItems: MultiSelectMenuGroupType[] = [
         {
-            groupLabel: 'Manage Columns',
+            groupLabel: '',
             showSeparator: false,
             items: managableColumns.map((column) => ({
                 label: column.header,

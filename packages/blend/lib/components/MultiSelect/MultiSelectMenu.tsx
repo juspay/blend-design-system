@@ -244,62 +244,85 @@ const MultiSelectMenu = ({
                         padding: FOUNDATION_THEME.unit[6],
                     }}
                 >
-                    {filteredItems.map(
-                        (group: MultiSelectMenuGroupType, groupId: number) => (
-                            <React.Fragment key={groupId}>
-                                {group.groupLabel && (
-                                    <RadixMenu.Label asChild>
-                                        <PrimitiveText
-                                            fontSize={12}
-                                            padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
-                                            userSelect="none"
-                                            textTransform="uppercase"
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[400]
-                                            }
-                                        >
-                                            {group.groupLabel}
-                                        </PrimitiveText>
-                                    </RadixMenu.Label>
-                                )}
-                                {group.items.map(
-                                    (
-                                        item: MultiSelectMenuItemType,
-                                        itemIndex: number
-                                    ) => (
-                                        <MultiSelectMenuItem
-                                            key={`${groupId}-${itemIndex}`}
-                                            selected={selected}
-                                            item={item}
-                                            onSelect={onSelect}
-                                            maxSelections={maxSelections}
-                                            allItems={filteredItems.flatMap(
-                                                (g) => g.items
-                                            )}
-                                        />
-                                    )
-                                )}
-                                {groupId !== filteredItems.length - 1 &&
-                                    group.showSeparator && (
-                                        <RadixMenu.Separator asChild>
-                                            <Block
-                                                height={
-                                                    multiSelectTokens.dropdown
-                                                        .seperator.height
+                    {filteredItems.length === 0 && searchText.length > 0 ? (
+                        <Block
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            padding={FOUNDATION_THEME.unit[6]}
+                        >
+                            <PrimitiveText
+                                fontSize={14}
+                                color={FOUNDATION_THEME.colors.gray[400]}
+                                textAlign="center"
+                            >
+                                No results found
+                            </PrimitiveText>
+                        </Block>
+                    ) : (
+                        filteredItems.map(
+                            (
+                                group: MultiSelectMenuGroupType,
+                                groupId: number
+                            ) => (
+                                <React.Fragment key={groupId}>
+                                    {group.groupLabel && (
+                                        <RadixMenu.Label asChild>
+                                            <PrimitiveText
+                                                fontSize={12}
+                                                padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
+                                                userSelect="none"
+                                                textTransform="uppercase"
+                                                color={
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[400]
                                                 }
-                                                backgroundColor={
-                                                    multiSelectTokens.dropdown
-                                                        .seperator.color
-                                                }
-                                                margin={
-                                                    multiSelectTokens.dropdown
-                                                        .seperator.margin
-                                                }
-                                            ></Block>
-                                        </RadixMenu.Separator>
+                                            >
+                                                {group.groupLabel}
+                                            </PrimitiveText>
+                                        </RadixMenu.Label>
                                     )}
-                            </React.Fragment>
+                                    {group.items.map(
+                                        (
+                                            item: MultiSelectMenuItemType,
+                                            itemIndex: number
+                                        ) => (
+                                            <MultiSelectMenuItem
+                                                key={`${groupId}-${itemIndex}`}
+                                                selected={selected}
+                                                item={item}
+                                                onSelect={onSelect}
+                                                maxSelections={maxSelections}
+                                                allItems={filteredItems.flatMap(
+                                                    (g) => g.items
+                                                )}
+                                            />
+                                        )
+                                    )}
+                                    {groupId !== filteredItems.length - 1 &&
+                                        group.showSeparator && (
+                                            <RadixMenu.Separator asChild>
+                                                <Block
+                                                    height={
+                                                        multiSelectTokens
+                                                            .dropdown.seperator
+                                                            .height
+                                                    }
+                                                    backgroundColor={
+                                                        multiSelectTokens
+                                                            .dropdown.seperator
+                                                            .color
+                                                    }
+                                                    margin={
+                                                        multiSelectTokens
+                                                            .dropdown.seperator
+                                                            .margin
+                                                    }
+                                                ></Block>
+                                            </RadixMenu.Separator>
+                                        )}
+                                </React.Fragment>
+                            )
                         )
                     )}
                 </ScrollableContent>
