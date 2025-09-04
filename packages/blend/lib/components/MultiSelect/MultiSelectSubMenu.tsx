@@ -20,12 +20,10 @@ const MultiSelectSubMenu = ({
     item,
     onSelect,
     selected,
-    maxSelections,
 }: {
     item: MultiSelectMenuItemType
     onSelect: (value: string) => void
     selected: string[]
-    maxSelections?: number
 }) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -132,7 +130,6 @@ const MultiSelectSubMenu = ({
                             item={subItem}
                             onSelect={onSelect}
                             selected={selected}
-                            maxSelections={maxSelections}
                         />
                     ))}
                 </Block>

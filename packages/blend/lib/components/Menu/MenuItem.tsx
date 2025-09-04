@@ -10,7 +10,6 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { type MenuItemStates, type MenuTokensType } from './menu.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { Tooltip } from '../Tooltip'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -99,7 +98,7 @@ const MenuItem = ({ item, idx }: { item: MenuItemV2Type; idx: number }) => {
         item.variant = MenuItemV2Variant.DEFAULT
     }
 
-    const menuItemContent = (
+    return (
         <RadixMenu.Item
             asChild
             disabled={item.disabled}
@@ -176,17 +175,6 @@ const MenuItem = ({ item, idx }: { item: MenuItemV2Type; idx: number }) => {
             </Block>
         </RadixMenu.Item>
     )
-
-    // Wrap with tooltip if tooltip content is provided
-    if (item.tooltip) {
-        return (
-            <Tooltip content={item.tooltip} {...item.tooltipProps}>
-                {menuItemContent}
-            </Tooltip>
-        )
-    }
-
-    return menuItemContent
 }
 
 MenuItem.displayName = 'MenuItem'

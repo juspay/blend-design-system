@@ -1,7 +1,7 @@
 import { ArrowDown, RotateCcw, ArrowUp } from 'lucide-react'
 import { capitaliseCamelCase } from './ChartUtils'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
-import React, { useState, useRef, useCallback, useEffect } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import { DropdownMenu } from 'radix-ui'
 import { useDebounce } from '../../hooks/useDebounce'
 import { ChartLegendsProps, StackedLegendsDataPoint } from './types'
@@ -33,88 +33,38 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
     const lastWidth = useRef<number>(0)
     const legendItemsContainerRef = useRef<HTMLDivElement>(null!)
     const [cuttOffIndex, setCuttOffIndex] = useState<number>(keys.length)
-    const isExpanding = useRef<boolean>(false)
-    // Have to revisit from optimizaion POV.
+
     const handleResize = useCallback(() => {
         if (!legendItemsContainerRef.current) return
-
-        const container = legendItemsContainerRef.current
-        const containerRect = container.getBoundingClientRect()
-        const containerWidth = containerRect.width
-
+        const { right: containerRight } =
+            legendItemsContainerRef.current.getBoundingClientRect()
         const BUFFER = 30
-        const MORE_BUTTON_ESTIMATED_WIDTH = 80
-        const GAP_SIZE =
-            typeof legendTokens.gap.lg === 'string'
-                ? parseFloat(legendTokens.gap.lg)
-                : (legendTokens.gap.lg as number) || 16
+        const legendItems = Array.from(legendItemsContainerRef.current.children)
 
-        const legendItems = Array.from(container.children)
-
-        if (isExpanding.current && legendItems.length < keys.length) {
-            setCuttOffIndex(keys.length)
-            isExpanding.current = false
-
-            setTimeout(() => {
-                handleResize()
-            }, 50)
-            return
-        }
-
-        let totalWidth = 0
-        let optimalCutoff = 0
-
-        for (let i = 0; i < Math.min(legendItems.length, keys.length); i++) {
-            const itemWidth = (
-                legendItems[i] as HTMLElement
-            ).getBoundingClientRect().width
-
-            const totalGaps = i > 0 ? i * GAP_SIZE : 0
-
-            const remainingItems = keys.length - (i + 1)
-            const needsMoreButton = remainingItems > 0
-            const requiredSpace =
-                totalWidth +
-                itemWidth +
-                totalGaps +
-                (needsMoreButton ? MORE_BUTTON_ESTIMATED_WIDTH + GAP_SIZE : 0) +
-                BUFFER
-
-            if (requiredSpace <= containerWidth) {
-                totalWidth += itemWidth
-                optimalCutoff = i + 1
-            } else {
-                break
+        let currentIndex = 0
+        for (const item of legendItems) {
+            const itemRight = item.getBoundingClientRect().right
+            if (itemRight + BUFFER > containerRight) {
+                if (cuttOffIndex >= currentIndex) {
+                    setCuttOffIndex(currentIndex)
+                    return
+                }
             }
+            currentIndex++
         }
+        if (currentIndex !== cuttOffIndex) {
+            setCuttOffIndex(currentIndex)
+        }
+    }, [cuttOffIndex])
 
-        const newCutoff = Math.max(1, Math.min(optimalCutoff, keys.length))
-        setCuttOffIndex(newCutoff)
-    }, [keys.length, legendTokens.gap.lg])
-
-    const debouncedResize = useDebounce(handleResize, 150)
+    const debouncedResize = useDebounce(handleResize, 100)
 
     useResizeObserver(chartContainerRef, ({ width }) => {
-        if (width && Math.abs(width - lastWidth.current) > 10) {
-            if (width > lastWidth.current + 20) {
-                isExpanding.current = true
-            }
-
+        if (width && width !== lastWidth.current) {
             lastWidth.current = width
             debouncedResize()
         }
     })
-
-    useEffect(() => {
-        setCuttOffIndex(keys.length)
-        isExpanding.current = false
-
-        const timeoutId = setTimeout(() => {
-            handleResize()
-        }, 150)
-
-        return () => clearTimeout(timeoutId)
-    }, [keys.length, handleResize])
 
     const getItemOpacity = (dataKey: string) => {
         if (hoveredKey) {
@@ -159,7 +109,6 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                 whiteSpace="nowrap"
                 style={{ flex: 1 }}
                 justifyContent={isSmallScreen ? 'center' : 'start'}
-                gap={legendTokens.gap.lg}
             >
                 {keys.slice(0, cuttOffIndex).map((dataKey, index) => (
                     <Block

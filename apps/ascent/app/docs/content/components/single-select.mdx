@@ -8,74 +8,37 @@ tags:
     - form
     - dropdown
     - selection
-    - search
-    - keyboard-navigation
-    - positioning
-    - mobile-optimized
-    - accessibility
 RepoFolderName: SingleSelect
 StorybookLink: components-singleselect-singleselect--docs
 ---
-
-<SingleSelectPreview />
 
 ## Usage
 
 ```tsx
 import { SingleSelect, SelectMenuSize, SelectMenuVariant } from 'blend-v1'
-import { useState } from 'react'
-import { User, MapPin, Star } from 'lucide-react'
 
 function MyComponent() {
-    const [selectedUser, setSelectedUser] = useState('')
+    const [selectedValue, setSelectedValue] = useState('')
 
-    const teamMembers = [
+    const items = [
         {
-            groupLabel: 'Developers',
             items: [
-                {
-                    label: 'Sarah Johnson',
-                    value: 'sarah-johnson',
-                    subLabel: 'Frontend Developer',
-                    slot1: <User size={16} className="text-blue-500" />,
-                    slot4: <Star size={14} className="text-yellow-500" />,
-                },
-                {
-                    label: 'Mike Chen',
-                    value: 'mike-chen',
-                    subLabel: 'Backend Developer',
-                    slot1: <User size={16} className="text-green-500" />,
-                    slot4: <Star size={14} className="text-yellow-500" />,
-                },
-            ],
-        },
-        {
-            groupLabel: 'Designers',
-            items: [
-                {
-                    label: 'Alex Rivera',
-                    value: 'alex-rivera',
-                    subLabel: 'UI/UX Designer',
-                    slot1: <User size={16} className="text-purple-500" />,
-                    slot4: <Star size={14} className="text-yellow-500" />,
-                },
+                { label: 'Option 1', value: 'option1' },
+                { label: 'Option 2', value: 'option2' },
+                { label: 'Option 3', value: 'option3' },
             ],
         },
     ]
 
     return (
         <SingleSelect
-            label="Assign team member"
-            placeholder="Select a team member"
-            items={teamMembers}
-            selected={selectedUser}
-            onSelect={setSelectedUser}
-            enableSearch={true}
-            searchPlaceholder="Search team members..."
+            label="Select an option"
+            placeholder="Choose an option"
+            items={items}
+            selected={selectedValue}
+            onSelect={setSelectedValue}
             size={SelectMenuSize.MEDIUM}
             variant={SelectMenuVariant.CONTAINER}
-            required={true}
-            helpIconText="Choose a team member to assign this task"
         />
     )
 }
@@ -88,8 +51,7 @@ function MyComponent() {
         [
             {
                 content: 'label',
-                hintText:
-                    'The main label text displayed above the select field',
+                hintText: 'The label text for the select component',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
@@ -98,7 +60,7 @@ function MyComponent() {
             {
                 content: 'subLabel',
                 hintText:
-                    'Optional secondary label text displayed below the main label',
+                    'Optional sub-label text displayed below the main label',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
@@ -106,7 +68,7 @@ function MyComponent() {
         [
             {
                 content: 'hintText',
-                hintText: 'Optional help text displayed below the select field',
+                hintText: 'Optional hint text displayed below the select',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
@@ -114,7 +76,7 @@ function MyComponent() {
         [
             {
                 content: 'required',
-                hintText: 'Whether the field is required (displays asterisk)',
+                hintText: 'Whether the select is required (shows asterisk)',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
@@ -122,8 +84,7 @@ function MyComponent() {
         [
             {
                 content: 'helpIconText',
-                hintText:
-                    'Tooltip text displayed when hovering over the help icon',
+                hintText: 'Optional help text displayed with an info icon',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
@@ -131,7 +92,7 @@ function MyComponent() {
         [
             {
                 content: 'placeholder',
-                hintText: 'Placeholder text shown when no option is selected',
+                hintText: 'The placeholder text when no option is selected',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
@@ -139,7 +100,7 @@ function MyComponent() {
         [
             {
                 content: 'size',
-                hintText: 'Size variant affecting the select field dimensions',
+                hintText: 'The size variant of the select component',
             },
             { content: 'SelectMenuSize', hintText: 'enum' },
             { content: 'SelectMenuSize.MEDIUM' },
@@ -147,7 +108,7 @@ function MyComponent() {
         [
             {
                 content: 'items',
-                hintText: 'Array of grouped menu items for selection',
+                hintText: 'Array of menu groups containing selectable items',
             },
             { content: 'SelectMenuGroupType[]', hintText: 'array' },
             { content: '' },
@@ -155,23 +116,20 @@ function MyComponent() {
         [
             {
                 content: 'variant',
-                hintText: 'Visual variant determining styling approach',
+                hintText: 'The visual variant of the select component',
             },
             { content: 'SelectMenuVariant', hintText: 'enum' },
             { content: 'SelectMenuVariant.CONTAINER' },
         ],
         [
-            {
-                content: 'selected',
-                hintText: 'Currently selected value (controlled component)',
-            },
+            { content: 'selected', hintText: 'The currently selected value' },
             { content: 'string', hintText: 'string' },
             { content: '' },
         ],
         [
             {
                 content: 'onSelect',
-                hintText: 'Callback function called when an option is selected',
+                hintText: 'Callback when a value is selected',
             },
             { content: '(value: string) => void', hintText: 'function' },
             { content: '' },
@@ -179,33 +137,24 @@ function MyComponent() {
         [
             {
                 content: 'enableSearch',
-                hintText: 'Whether to show search input in the dropdown menu',
+                hintText:
+                    'Whether to enable search functionality in the dropdown',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
         ],
         [
             {
-                content: 'searchPlaceholder',
-                hintText: 'Placeholder text for the search input field',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
                 content: 'slot',
-                hintText:
-                    'Content displayed inside the trigger button (e.g., icons)',
+                hintText: 'Optional element to display alongside the trigger',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: 'ReactNode', hintText: 'React node' },
             { content: '' },
         ],
         [
             {
                 content: 'disabled',
-                hintText:
-                    'Whether the select field is disabled and non-interactive',
+                hintText: 'Whether the select is disabled and non-interactive',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
@@ -213,66 +162,48 @@ function MyComponent() {
         [
             {
                 content: 'name',
-                hintText:
-                    'Name attribute for form identification and submission',
+                hintText: 'The name attribute for form integration',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
         ],
         [
             {
-                content: 'customTrigger',
-                hintText:
-                    'Custom React element to replace the default trigger button',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'useDrawerOnMobile',
-                hintText: 'Whether to render as drawer on mobile devices',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-        [
-            {
                 content: 'alignment',
                 hintText:
-                    'How the dropdown menu aligns relative to the trigger',
+                    'The alignment of the dropdown menu relative to the trigger',
             },
             { content: 'SelectMenuAlignment', hintText: 'enum' },
-            { content: '' },
+            { content: 'SelectMenuAlignment.CENTER' },
         ],
         [
             {
                 content: 'side',
-                hintText: 'Which side of the trigger the dropdown appears on',
+                hintText: 'The side where the dropdown menu appears',
             },
             { content: 'SelectMenuSide', hintText: 'enum' },
-            { content: '' },
+            { content: 'SelectMenuSide.BOTTOM' },
         ],
         [
             {
                 content: 'sideOffset',
-                hintText: 'Distance in pixels between trigger and dropdown',
+                hintText: 'The offset distance from the trigger',
             },
             { content: 'number', hintText: 'number' },
-            { content: '' },
+            { content: '8' },
         ],
         [
             {
                 content: 'alignOffset',
-                hintText: 'Alignment offset in pixels for fine positioning',
+                hintText: 'The offset distance for alignment',
             },
             { content: 'number', hintText: 'number' },
-            { content: '' },
+            { content: '0' },
         ],
         [
             {
                 content: 'minWidth',
-                hintText: 'Minimum width of the dropdown menu in pixels',
+                hintText: 'The minimum width of the dropdown menu',
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
@@ -280,7 +211,7 @@ function MyComponent() {
         [
             {
                 content: 'maxWidth',
-                hintText: 'Maximum width of the dropdown menu in pixels',
+                hintText: 'The maximum width of the dropdown menu',
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
@@ -288,217 +219,10 @@ function MyComponent() {
         [
             {
                 content: 'maxHeight',
-                hintText: 'Maximum height of the dropdown menu in pixels',
+                hintText: 'The maximum height of the dropdown menu',
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
-        ],
-        [
-            {
-                content: 'inline',
-                hintText:
-                    'Whether the select renders inline without fixed height',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'onBlur',
-                hintText:
-                    'Callback function called when the select loses focus',
-            },
-            { content: '() => void', hintText: 'function' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'onFocus',
-                hintText:
-                    'Callback function called when the select gains focus',
-            },
-            { content: '() => void', hintText: 'function' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'error',
-                hintText: 'Whether the select is in an error state',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'errorMessage',
-                hintText: 'Error message displayed when error is true',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Data Types
-
-### SelectMenuGroupType
-
-Structure for organizing menu items into groups:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'groupLabel',
-                hintText: 'Optional label text for the group section',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'items',
-                hintText: 'Array of selectable items within this group',
-            },
-            { content: 'SelectMenuItemType[]', hintText: 'array' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'showSeparator',
-                hintText: 'Whether to show separator line after this group',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### SelectMenuItemType
-
-Structure for individual selectable items:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'label',
-                hintText: 'Main display text for the menu item',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'value',
-                hintText: 'Unique value identifier for the menu item',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'checked',
-                hintText: 'Whether the item is currently selected',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'subLabel',
-                hintText: 'Optional secondary text displayed below the label',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'slot1',
-                hintText: 'First content slot (typically for leading icons)',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'slot2',
-                hintText: 'Second content slot for additional elements',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'slot3',
-                hintText: 'Third content slot for additional elements',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'slot4',
-                hintText:
-                    'Fourth content slot (typically for trailing elements)',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'disabled',
-                hintText:
-                    'Whether the menu item is disabled and non-selectable',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'onClick',
-                hintText: 'Custom click handler for the menu item',
-            },
-            { content: '() => void', hintText: 'function' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'subMenu',
-                hintText: 'Nested menu items for creating hierarchical menus',
-            },
-            { content: 'SelectMenuItemType[]', hintText: 'array' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'tooltip',
-                hintText: 'Tooltip content displayed on hover',
-            },
-            { content: 'string | React.ReactNode', hintText: 'union type' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'tooltipProps',
-                hintText: 'Configuration options for the tooltip display',
-            },
-            { content: 'TooltipProps', hintText: 'object' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'disableTruncation',
-                hintText: 'Whether to disable text truncation for long labels',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
         ],
     ]}
     className="mb-8"
@@ -508,641 +232,487 @@ Structure for individual selectable items:
 
 ## Features
 
-- **Size Variants**: Three sizes (small, medium, large) for different interface densities
-- **Visual Variants**: Container and no-container styles for flexible integration
-- **Search Functionality**: Optional built-in search with customizable placeholder
-- **Grouped Organization**: Support for organizing items into labeled groups with separators
-- **Rich Content Support**: Multiple slot positions for icons, badges, and custom elements
-- **Submenu Navigation**: Hierarchical menu structure with nested item support
-- **Form Integration**: Complete form support with labels, validation, and error states
-- **Mobile Optimization**: Automatic drawer mode on mobile devices for better UX
-- **Custom Triggers**: Support for completely custom trigger elements
-- **Flexible Positioning**: 4 sides and 3 alignment options with offset controls
-- **Tooltip Integration**: Built-in tooltip support for menu items with configuration options
-- **Keyboard Navigation**: Full keyboard support with arrow keys and type-ahead search
-- **Error Handling**: Comprehensive error state management with custom error messages
-- **Accessibility First**: ARIA compliance, screen reader support, and focus management
-- **Responsive Design**: Adapts to different screen sizes and device types
+- Three size variants (small, medium, large)
+- Two visual variants (container, no-container)
+- Optional search functionality
+- Grouped menu items with labels
+- Sub-menu support for nested options
+- Multiple slot positions for additional content
+- Required field indicator
+- Help text with info icon
+- Customizable positioning and alignment
+- Keyboard navigation support
+- Accessible by default
+- Built on Radix UI primitives
+- Customizable dimensions
 
 ## Usage Examples
 
-### Basic Country Selection
+### Basic SingleSelect
 
-Simple select for country selection with flags
-
-```tsx
-import { SingleSelect, SelectMenuSize } from 'blend-v1'
-import { useState } from 'react'
-
-const [selectedCountry, setSelectedCountry] = useState('')
-
-const countries = [
-    {
-        items: [
-            {
-                label: 'United States',
-                value: 'us',
-                slot1: '🇺🇸'
-            },
-            {
-                label: 'United Kingdom',
-                value: 'uk',
-                slot1: '🇬🇧'
-            },
-            {
-                label: 'Canada',
-                value: 'ca',
-                slot1: '🇨🇦'
-            },
-            {
-                label: 'Australia',
-                value: 'au',
-                slot1: '🇦🇺'
-            },
-        ],
-    },
-]
-
-<SingleSelect
-    label="Country"
-    placeholder="Select your country"
-    items={countries}
-    selected={selectedCountry}
-    onSelect={setSelectedCountry}
-    enableSearch={true}
-    searchPlaceholder="Search countries..."
-    size={SelectMenuSize.MEDIUM}
-/>
-```
-
-### User Assignment with Rich Content
-
-Select for user assignment with status indicators and profiles
+Simple select with basic options
 
 ```tsx
-import { User, Circle } from 'lucide-react'
+import { SingleSelect } from 'blend-v1'
 
-const [assignedUser, setAssignedUser] = useState('')
+function MyComponent() {
+    const [selectedValue, setSelectedValue] = useState('')
 
-const teamMembers = [
-    {
-        groupLabel: 'Available',
-        items: [
-            {
-                label: 'Sarah Chen',
-                value: 'sarah-chen',
-                subLabel: 'Frontend Developer • Available',
-                slot1: (
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User size={14} className="text-blue-600" />
-                    </div>
-                ),
-                slot4: <Circle size={8} className="text-green-500 fill-current" />,
-            },
-            {
-                label: 'Mike Rodriguez',
-                value: 'mike-rodriguez',
-                subLabel: 'Backend Developer • Available',
-                slot1: (
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                        <User size={14} className="text-green-600" />
-                    </div>
-                ),
-                slot4: <Circle size={8} className="text-green-500 fill-current" />,
-            },
-        ],
-    },
-    {
-        groupLabel: 'Busy',
-        items: [
-            {
-                label: 'Alex Taylor',
-                value: 'alex-taylor',
-                subLabel: 'UI/UX Designer • In meeting',
-                slot1: (
-                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                        <User size={14} className="text-purple-600" />
-                    </div>
-                ),
-                slot4: <Circle size={8} className="text-yellow-500 fill-current" />,
-            },
-        ],
-    },
-]
-
-<SingleSelect
-    label="Assign to team member"
-    placeholder="Select team member"
-    items={teamMembers}
-    selected={assignedUser}
-    onSelect={setAssignedUser}
-    enableSearch={true}
-    searchPlaceholder="Search team members..."
-    required={true}
-    helpIconText="Choose an available team member to assign this task"
-/>
-```
-
-### Technology Stack Selection
-
-Select for technology preferences with descriptions
-
-```tsx
-import { Code, Database, Globe } from 'lucide-react'
-
-const [selectedStack, setSelectedStack] = useState('')
-
-const technologyStacks = [
-    {
-        groupLabel: 'Frontend Frameworks',
-        items: [
-            {
-                label: 'React',
-                value: 'react',
-                subLabel: 'Popular library for building user interfaces',
-                slot1: <Code size={16} className="text-blue-500" />,
-                slot4: <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Popular</span>,
-            },
-            {
-                label: 'Vue.js',
-                value: 'vue',
-                subLabel: 'Progressive framework for building UIs',
-                slot1: <Code size={16} className="text-green-500" />,
-            },
-            {
-                label: 'Angular',
-                value: 'angular',
-                subLabel: 'Platform for building mobile and desktop apps',
-                slot1: <Code size={16} className="text-red-500" />,
-            },
-        ],
-    },
-    {
-        groupLabel: 'Backend Technologies',
-        items: [
-            {
-                label: 'Node.js',
-                value: 'nodejs',
-                subLabel: 'JavaScript runtime for server-side development',
-                slot1: <Globe size={16} className="text-green-600" />,
-            },
-            {
-                label: 'Python Django',
-                value: 'django',
-                subLabel: 'High-level Python web framework',
-                slot1: <Database size={16} className="text-blue-600" />,
-            },
-        ],
-    },
-]
-
-<SingleSelect
-    label="Preferred technology stack"
-    placeholder="Choose your stack"
-    items={technologyStacks}
-    selected={selectedStack}
-    onSelect={setSelectedStack}
-    enableSearch={true}
-    size={SelectMenuSize.LARGE}
-    maxHeight={300}
-/>
-```
-
-### Size and Variant Comparisons
-
-Different sizes and styling variants
-
-```tsx
-import { SelectMenuSize, SelectMenuVariant } from 'blend-v1'
-
-const options = [
-    {
-        items: [
-            { label: 'Option 1', value: 'option1' },
-            { label: 'Option 2', value: 'option2' },
-            { label: 'Option 3', value: 'option3' },
-        ],
-    },
-]
-
-// Small container variant
-<SingleSelect
-    label="Small Size"
-    placeholder="Small select"
-    items={options}
-    selected={value}
-    onSelect={setValue}
-    size={SelectMenuSize.SMALL}
-    variant={SelectMenuVariant.CONTAINER}
-/>
-
-// Medium no-container variant
-<SingleSelect
-    label="Medium No-Container"
-    placeholder="Medium select"
-    items={options}
-    selected={value}
-    onSelect={setValue}
-    size={SelectMenuSize.MEDIUM}
-    variant={SelectMenuVariant.NO_CONTAINER}
-/>
-
-// Large container variant
-<SingleSelect
-    label="Large Size"
-    placeholder="Large select"
-    items={options}
-    selected={value}
-    onSelect={setValue}
-    size={SelectMenuSize.LARGE}
-    variant={SelectMenuVariant.CONTAINER}
-/>
-```
-
-### Form Validation States
-
-Select with validation and error handling
-
-```tsx
-import { useState } from 'react'
-
-const [selectedPriority, setSelectedPriority] = useState('')
-const [hasError, setHasError] = useState(false)
-
-const priorityOptions = [
-    {
-        items: [
-            {
-                label: 'Low',
-                value: 'low',
-                slot1: (
-                    <Circle size={8} className="text-green-500 fill-current" />
-                ),
-                subLabel: 'Can be completed when time permits',
-            },
-            {
-                label: 'Medium',
-                value: 'medium',
-                slot1: (
-                    <Circle size={8} className="text-yellow-500 fill-current" />
-                ),
-                subLabel: 'Should be completed within a week',
-            },
-            {
-                label: 'High',
-                value: 'high',
-                slot1: (
-                    <Circle size={8} className="text-orange-500 fill-current" />
-                ),
-                subLabel: 'Needs immediate attention',
-            },
-            {
-                label: 'Critical',
-                value: 'critical',
-                slot1: (
-                    <Circle size={8} className="text-red-500 fill-current" />
-                ),
-                subLabel: 'Urgent - drop everything else',
-            },
-        ],
-    },
-]
-
-const handleSubmit = () => {
-    if (!selectedPriority) {
-        setHasError(true)
-    } else {
-        setHasError(false)
-        // Process form
-    }
-}
-
-;<SingleSelect
-    label="Task Priority"
-    placeholder="Select priority level"
-    items={priorityOptions}
-    selected={selectedPriority}
-    onSelect={(value) => {
-        setSelectedPriority(value)
-        setHasError(false)
-    }}
-    required={true}
-    error={hasError}
-    errorMessage="Please select a priority level"
-    helpIconText="Choose the appropriate priority for this task"
-/>
-```
-
-### Custom Trigger Example
-
-Select with completely custom trigger element
-
-```tsx
-import { ChevronDown, Settings } from 'lucide-react'
-
-const [selectedSetting, setSelectedSetting] = useState('default')
-
-const settingOptions = [
-    {
-        items: [
-            { label: 'Default Theme', value: 'default' },
-            { label: 'Dark Theme', value: 'dark' },
-            { label: 'Light Theme', value: 'light' },
-            { label: 'Auto Theme', value: 'auto' },
-        ],
-    },
-]
-
-<SingleSelect
-    items={settingOptions}
-    selected={selectedSetting}
-    onSelect={setSelectedSetting}
-    customTrigger={
-        <button className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
-            <Settings size={16} />
-            <span>Theme Settings</span>
-            <ChevronDown size={14} />
-        </button>
-    }
-/>
-```
-
-### Positioning and Alignment
-
-Select with custom positioning
-
-```tsx
-import { SelectMenuAlignment, SelectMenuSide } from 'blend-v1'
-
-// End-aligned dropdown on top
-<SingleSelect
-    label="Top Aligned"
-    placeholder="Choose option"
-    items={options}
-    selected={value}
-    onSelect={setValue}
-    side={SelectMenuSide.TOP}
-    alignment={SelectMenuAlignment.END}
-    sideOffset={12}
-    alignOffset={-10}
-/>
-
-// Start-aligned dropdown on right
-<SingleSelect
-    label="Right Aligned"
-    placeholder="Choose option"
-    items={options}
-    selected={value}
-    onSelect={setValue}
-    side={SelectMenuSide.RIGHT}
-    alignment={SelectMenuAlignment.START}
-    minWidth={250}
-    maxHeight={200}
-/>
-```
-
-### Inline and Focus Management
-
-Select with inline variant and focus handling
-
-```tsx
-const [selectedOption, setSelectedOption] = useState('')
-
-<SingleSelect
-    placeholder="Inline select"
-    items={options}
-    selected={selectedOption}
-    onSelect={setSelectedOption}
-    variant={SelectMenuVariant.NO_CONTAINER}
-    inline={true}
-    onFocus={() => console.log('Select focused')}
-    onBlur={() => console.log('Select blurred')}
-    slot={<span className="text-blue-500">⚙️</span>}
-/>
-```
-
-### Complete Project Setup Form
-
-Complex form with multiple interdependent selects
-
-```tsx
-function ProjectSetupForm() {
-    const [projectType, setProjectType] = useState('')
-    const [framework, setFramework] = useState('')
-    const [deployment, setDeployment] = useState('')
-    const [teamLead, setTeamLead] = useState('')
-
-    const projectTypes = [
+    const items = [
         {
             items: [
-                {
-                    label: 'Web Application',
-                    value: 'web-app',
-                    slot1: <Globe size={16} />,
-                },
-                {
-                    label: 'Mobile App',
-                    value: 'mobile-app',
-                    slot1: <Smartphone size={16} />,
-                },
-                {
-                    label: 'Desktop Application',
-                    value: 'desktop-app',
-                    slot1: <Monitor size={16} />,
-                },
-                {
-                    label: 'API Service',
-                    value: 'api-service',
-                    slot1: <Server size={16} />,
-                },
+                { label: 'Option 1', value: 'option1' },
+                { label: 'Option 2', value: 'option2' },
+                { label: 'Option 3', value: 'option3' },
             ],
         },
     ]
 
-    const getFrameworkOptions = () => {
-        if (projectType === 'web-app') {
-            return [
-                {
-                    items: [
-                        {
-                            label: 'React',
-                            value: 'react',
-                            subLabel: 'Component-based library',
-                        },
-                        {
-                            label: 'Vue.js',
-                            value: 'vue',
-                            subLabel: 'Progressive framework',
-                        },
-                        {
-                            label: 'Angular',
-                            value: 'angular',
-                            subLabel: 'Full-featured framework',
-                        },
-                    ],
-                },
-            ]
-        }
-        return [{ items: [] }]
-    }
-
     return (
-        <form className="space-y-6 max-w-md">
-            <h3 className="text-xl font-semibold">New Project Setup</h3>
-
-            <SingleSelect
-                label="Project Type"
-                placeholder="What are you building?"
-                items={projectTypes}
-                selected={projectType}
-                onSelect={(value) => {
-                    setProjectType(value)
-                    setFramework('') // Reset dependent field
-                }}
-                required={true}
-                size={SelectMenuSize.LARGE}
-            />
-
-            {projectType && (
-                <SingleSelect
-                    label="Framework"
-                    placeholder="Choose your framework"
-                    items={getFrameworkOptions()}
-                    selected={framework}
-                    onSelect={setFramework}
-                    required={true}
-                    enableSearch={true}
-                />
-            )}
-
-            <SingleSelect
-                label="Team Lead"
-                placeholder="Assign a team lead"
-                items={teamMembers}
-                selected={teamLead}
-                onSelect={setTeamLead}
-                enableSearch={true}
-                searchPlaceholder="Search team members..."
-                helpIconText="Choose someone to lead this project"
-            />
-
-            <SingleSelect
-                label="Deployment Target"
-                placeholder="Where will this be deployed?"
-                items={deploymentOptions}
-                selected={deployment}
-                onSelect={setDeployment}
-                subLabel="This can be changed later in project settings"
-            />
-        </form>
+        <SingleSelect
+            label="Select an option"
+            placeholder="Choose an option"
+            items={items}
+            selected={selectedValue}
+            onSelect={setSelectedValue}
+        />
     )
 }
 ```
 
-## Component Tokens
+### SingleSelect with Search
 
-You can style the SingleSelect component using the following tokens:
+Select with search functionality
 
 ```tsx
-export type SingleSelectTokensType = {
-    trigger: {
-        height: {
-            [key in SelectMenuSize]: CSSObject['height']
-        }
-        paddingX: {
-            [key in SelectMenuSize]: CSSObject['paddingLeft']
-        }
-        paddingY: {
-            [key in SelectMenuSize]: CSSObject['paddingTop']
-        }
-        borderRadius: {
-            [key in SelectMenuSize]: CSSObject['borderRadius']
-        }
-        backgroundColor: {
-            [key in SelectMenuVariant]: {
-                closed: CSSObject['backgroundColor']
-                open: CSSObject['backgroundColor']
-                hover: CSSObject['backgroundColor']
-                focus: CSSObject['backgroundColor']
-                error: CSSObject['backgroundColor']
-            }
-        }
-        outline: {
-            [key in SelectMenuVariant]: {
-                closed: CSSObject['outline']
-                open: CSSObject['outline']
-                hover: CSSObject['outline']
-                focus: CSSObject['outline']
-                error: CSSObject['outline']
-            }
-        }
-        boxShadow: {
-            [key in SelectMenuVariant]: CSSObject['boxShadow']
-        }
-    }
+const items = [
+    {
+        items: [
+            { label: 'English', value: 'en', slot1: '🇺🇸' },
+            { label: 'Spanish', value: 'es', slot1: '🇪🇸' },
+            { label: 'French', value: 'fr', slot1: '🇫🇷' },
+            { label: 'German', value: 'de', slot1: '🇩🇪' },
+        ],
+    },
+]
+
+;<SingleSelect
+    label="Select Language"
+    placeholder="Choose a language"
+    items={items}
+    selected={selectedLanguage}
+    onSelect={setSelectedLanguage}
+    enableSearch={true}
+/>
+```
+
+### SingleSelect with Groups
+
+Select with grouped menu items
+
+```tsx
+const countries = [
+    {
+        groupLabel: 'Popular Countries',
+        items: [
+            { label: 'United States', value: 'us', slot1: '🇺🇸' },
+            { label: 'United Kingdom', value: 'uk', slot1: '🇬🇧' },
+            { label: 'Canada', value: 'ca', slot1: '🇨🇦' },
+        ],
+    },
+    {
+        groupLabel: 'Other Countries',
+        items: [
+            { label: 'Germany', value: 'de', slot1: '🇩🇪' },
+            { label: 'France', value: 'fr', slot1: '🇫🇷' },
+            { label: 'Japan', value: 'jp', slot1: '🇯🇵' },
+        ],
+    },
+]
+
+;<SingleSelect
+    label="Select Country"
+    placeholder="Choose a country"
+    items={countries}
+    selected={selectedCountry}
+    onSelect={setSelectedCountry}
+/>
+```
+
+### SingleSelect with SubLabels
+
+Select with additional descriptive text
+
+```tsx
+const categories = [
+    {
+        groupLabel: 'Technology',
+        items: [
+            {
+                label: 'Web Development',
+                value: 'web-dev',
+                subLabel: 'HTML, CSS, JavaScript',
+            },
+            {
+                label: 'Mobile Development',
+                value: 'mobile-dev',
+                subLabel: 'iOS, Android, React Native',
+            },
+            {
+                label: 'Data Science',
+                value: 'data-science',
+                subLabel: 'Python, R, Machine Learning',
+            },
+        ],
+    },
+]
+
+;<SingleSelect
+    label="Select Category"
+    placeholder="Choose a category"
+    items={categories}
+    selected={selectedCategory}
+    onSelect={setSelectedCategory}
+    enableSearch={true}
+/>
+```
+
+### SingleSelect with Slots
+
+Select with additional content elements
+
+```tsx
+const users = [
+    {
+        groupLabel: 'Active Users',
+        items: [
+            {
+                label: 'John Doe',
+                value: 'john',
+                slot1: '👤',
+                slot2: <span className="text-green-500 text-xs">Online</span>,
+                subLabel: 'john.doe@example.com',
+            },
+            {
+                label: 'Jane Smith',
+                value: 'jane',
+                slot1: '👤',
+                slot2: <span className="text-gray-500 text-xs">Away</span>,
+                subLabel: 'jane.smith@example.com',
+            },
+        ],
+    },
+]
+
+;<SingleSelect
+    label="Select User"
+    placeholder="Choose a user"
+    items={users}
+    selected={selectedUser}
+    onSelect={setSelectedUser}
+    enableSearch={true}
+/>
+```
+
+### Different Sizes
+
+Select with different size variants
+
+```tsx
+// Small size
+<SingleSelect
+  label="Small Select"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  size={SelectMenuSize.SMALL}
+/>
+
+// Medium size (default)
+<SingleSelect
+  label="Medium Select"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  size={SelectMenuSize.MEDIUM}
+/>
+
+// Large size
+<SingleSelect
+  label="Large Select"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  size={SelectMenuSize.LARGE}
+/>
+```
+
+### Different Variants
+
+Select with different visual variants
+
+```tsx
+// Container variant (default)
+<SingleSelect
+  label="Container Variant"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  variant={SelectMenuVariant.CONTAINER}
+/>
+
+// No container variant
+<SingleSelect
+  label="No Container Variant"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  variant={SelectMenuVariant.NO_CONTAINER}
+/>
+```
+
+### Different Alignments
+
+Select with different dropdown alignments
+
+```tsx
+// Start alignment
+<SingleSelect
+  label="Start Alignment"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  alignment={SelectMenuAlignment.START}
+/>
+
+// Center alignment (default)
+<SingleSelect
+  label="Center Alignment"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  alignment={SelectMenuAlignment.CENTER}
+/>
+
+// End alignment
+<SingleSelect
+  label="End Alignment"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  alignment={SelectMenuAlignment.END}
+/>
+```
+
+### Different Sides
+
+Select with different dropdown positions
+
+```tsx
+// Bottom side (default)
+<SingleSelect
+  label="Bottom Side"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  side={SelectMenuSide.BOTTOM}
+/>
+
+// Top side
+<SingleSelect
+  label="Top Side"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  side={SelectMenuSide.TOP}
+/>
+
+// Left side
+<SingleSelect
+  label="Left Side"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  side={SelectMenuSide.LEFT}
+/>
+
+// Right side
+<SingleSelect
+  label="Right Side"
+  placeholder="Choose an option"
+  items={items}
+  selected={selectedValue}
+  onSelect={setSelectedValue}
+  side={SelectMenuSide.RIGHT}
+/>
+```
+
+### SingleSelect with Custom Slot
+
+Select with additional trigger content
+
+```tsx
+<SingleSelect
+    label="Select with Icon"
+    placeholder="Choose an option"
+    items={items}
+    selected={selectedValue}
+    onSelect={setSelectedValue}
+    slot={<span className="text-blue-500">🌐</span>}
+/>
+```
+
+### SingleSelect with Required Field
+
+Select with required field indicator
+
+```tsx
+<SingleSelect
+    label="Required Field"
+    placeholder="Choose an option"
+    items={items}
+    selected={selectedValue}
+    onSelect={setSelectedValue}
+    required={true}
+    hintText="This field is required"
+/>
+```
+
+### SingleSelect with Help Text
+
+Select with help information
+
+```tsx
+<SingleSelect
+    label="Select with Help"
+    placeholder="Choose an option"
+    items={items}
+    selected={selectedValue}
+    onSelect={setSelectedValue}
+    helpIconText="This will help you choose the right option for your needs"
+/>
+```
+
+### Disabled SingleSelect
+
+Select in disabled state
+
+```tsx
+<SingleSelect
+    label="Disabled Select"
+    placeholder="Choose an option"
+    items={items}
+    selected={selectedValue}
+    onSelect={setSelectedValue}
+    disabled={true}
+/>
+```
+
+### SingleSelect with Custom Dimensions
+
+Select with custom sizing
+
+```tsx
+<SingleSelect
+    label="Custom Dimensions"
+    placeholder="Choose an option"
+    items={items}
+    selected={selectedValue}
+    onSelect={setSelectedValue}
+    minWidth={300}
+    maxWidth={400}
+    maxHeight={200}
+/>
+```
+
+### Complex Form Example
+
+Complete form with multiple selects
+
+```tsx
+function UserProfileForm() {
+    const [selectedCountry, setSelectedCountry] = useState('')
+    const [selectedLanguage, setSelectedLanguage] = useState('')
+    const [selectedCategory, setSelectedCategory] = useState('')
+
+    return (
+        <div className="space-y-4">
+            <h3 className="text-lg font-semibold">User Profile Settings</h3>
+
+            <SingleSelect
+                label="Country"
+                placeholder="Select your country"
+                items={countries}
+                selected={selectedCountry}
+                onSelect={setSelectedCountry}
+                required={true}
+                helpIconText="This helps us provide localized content"
+            />
+
+            <SingleSelect
+                label="Language"
+                placeholder="Select your preferred language"
+                items={languages}
+                selected={selectedLanguage}
+                onSelect={setSelectedLanguage}
+                enableSearch={true}
+                subLabel="Choose the language for the interface"
+            />
+
+            <SingleSelect
+                label="Category"
+                placeholder="Select your interest category"
+                items={categories}
+                selected={selectedCategory}
+                onSelect={setSelectedCategory}
+                enableSearch={true}
+                slot={<span className="text-purple-500">📚</span>}
+            />
+        </div>
+    )
 }
 ```
 
-## Behavior
+## Data Structure
 
-### Selection Behavior
+### SelectMenuGroupType
 
-- **Single Selection**: Only one option can be selected at a time
-- **Value Management**: Selected value is controlled through props
-- **Callback Execution**: onSelect callback fires when selection changes
-- **Auto-Close**: Dropdown automatically closes after selection
+```tsx
+type SelectMenuGroupType = {
+    groupLabel?: string
+    items: SelectMenuItemType[]
+    showSeparator?: boolean
+}
+```
 
-### Search Behavior
+### SelectMenuItemType
 
-- **Live Filtering**: Search filters options in real-time as user types
-- **Label and SubLabel**: Searches both main label and subLabel text
-- **Case Insensitive**: Search is not case sensitive
-- **Group Filtering**: Groups with no matching items are hidden
-
-### Keyboard Navigation
-
-- **Arrow Keys**: Navigate through menu options
-- **Enter/Space**: Select the currently focused option
-- **Escape**: Close the dropdown menu
-- **Type Ahead**: Jump to options by typing first letters
-
-### Positioning Logic
-
-- **Auto-Positioning**: Dropdown repositions to stay within viewport
-- **Side Options**: Can appear on top, bottom, left, or right of trigger
-- **Alignment Control**: Align to start, center, or end of trigger
-- **Offset Adjustments**: Fine-tune positioning with pixel offsets
-
-### Mobile Behavior
-
-- **Drawer Mode**: Renders as drawer on mobile devices when useDrawerOnMobile is true
-- **Touch Optimization**: Optimized for touch interactions
-- **Responsive Sizing**: Adapts to mobile screen constraints
-
-### Error State Management
-
-- **Visual Indicators**: Error styling applied to trigger and labels
-- **Error Messages**: Displays error message below the field
-- **State Synchronization**: Error state clears when valid selection is made
-
-### Focus Management
-
-- **Trigger Focus**: Focus is managed on the trigger element
-- **Menu Focus**: Focus moves through menu items during navigation
-- **Focus Restoration**: Focus returns to trigger when menu closes
-- **Focus Events**: onFocus and onBlur callbacks for external focus management
-
-## Accessibility
-
-- **ARIA Compliance**: Full ARIA support with `role="combobox"`, `aria-expanded`, and `aria-haspopup`
-- **Keyboard Navigation**: Complete keyboard support with arrow keys, Enter, Escape, and Tab
-- **Screen Reader Support**: Proper announcements for state changes and selections
-- **Focus Management**: Focus is trapped within dropdown and restored properly
-- **Label Association**: Form labels are properly associated with the select trigger
-- **Group Semantics**: Menu groups are announced as groups to screen readers
-- **Search Accessibility**: Search functionality is accessible with proper ARIA attributes
-- **Error Communication**: Error states are communicated through ARIA attributes
-- **Required Field Support**: Required fields are announced to assistive technologies
+```tsx
+type SelectMenuItemType = {
+    label: string
+    value: string
+    checked?: boolean
+    subLabel?: string
+    slot1?: React.ReactNode
+    slot2?: React.ReactNode
+    slot3?: React.ReactNode
+    slot4?: React.ReactNode
+    disabled?: boolean
+    onClick?: () => void
+    subMenu?: SelectMenuItemType[]
+}
+```
 
 ## Enums
 
@@ -1150,9 +720,9 @@ export type SingleSelectTokensType = {
 
 ```tsx
 enum SelectMenuSize {
-    SMALL = 'sm', // Compact select for dense interfaces
-    MEDIUM = 'md', // Standard select size for most use cases
-    LARGE = 'lg', // Large select for emphasized or touch-friendly interfaces
+    SMALL = 'sm',
+    MEDIUM = 'md',
+    LARGE = 'lg',
 }
 ```
 
@@ -1160,8 +730,8 @@ enum SelectMenuSize {
 
 ```tsx
 enum SelectMenuVariant {
-    CONTAINER = 'container', // Full container styling with borders and background
-    NO_CONTAINER = 'no-container', // Minimal styling without background container
+    CONTAINER = 'container',
+    NO_CONTAINER = 'no-container',
 }
 ```
 
@@ -1169,9 +739,9 @@ enum SelectMenuVariant {
 
 ```tsx
 enum SelectMenuAlignment {
-    START = 'start', // Align dropdown to start edge of trigger
-    CENTER = 'center', // Center align dropdown with trigger
-    END = 'end', // Align dropdown to end edge of trigger
+    START = 'start',
+    CENTER = 'center',
+    END = 'end',
 }
 ```
 
@@ -1179,46 +749,23 @@ enum SelectMenuAlignment {
 
 ```tsx
 enum SelectMenuSide {
-    TOP = 'top', // Dropdown appears above trigger
-    LEFT = 'left', // Dropdown appears to left of trigger
-    RIGHT = 'right', // Dropdown appears to right of trigger
-    BOTTOM = 'bottom', // Dropdown appears below trigger
+    TOP = 'top',
+    LEFT = 'left',
+    RIGHT = 'right',
+    BOTTOM = 'bottom',
 }
 ```
 
-## Best Practices
+## Accessibility Features
 
-### When to Use SingleSelect
+The SingleSelect component includes several accessibility features:
 
-- **Option Selection**: When users need to choose one option from multiple choices
-- **Form Fields**: As form controls where a specific selection is required
-- **Settings**: For configuration options and preferences
-- **Data Filtering**: For filtering or sorting data based on categories
-
-### Design Guidelines
-
-- **Clear Labels**: Use descriptive labels that clearly explain the purpose
-- **Logical Grouping**: Group related options together with meaningful group labels
-- **Appropriate Sizing**: Choose size based on interface density and importance
-- **Consistent Patterns**: Use consistent selection patterns throughout your application
-
-### Content Guidelines
-
-- **Concise Options**: Keep option labels brief but descriptive
-- **Helpful SubLabels**: Use subLabels to provide additional context when needed
-- **Logical Ordering**: Order options logically (alphabetical, by frequency, or importance)
-- **Search Support**: Enable search for lists with many options
-
-### Form Integration
-
-- **Validation**: Implement proper validation with clear error messages
-- **Required Fields**: Mark required fields clearly with asterisks
-- **Help Text**: Provide contextual help when selection criteria may be unclear
-- **Default Values**: Consider providing sensible default selections when appropriate
-
-### Mobile Considerations
-
-- **Drawer Mode**: Use drawer mode on mobile for better touch experience
-- **Touch Targets**: Ensure adequate touch target sizes for mobile devices
-- **Search Functionality**: Enable search for long option lists on mobile
-- **Performance**: Consider lazy loading for very large option sets
+- **Proper ARIA attributes**: Uses appropriate ARIA roles and states
+- **Keyboard navigation**: Supports keyboard interaction (Arrow keys, Enter, Escape, Tab)
+- **Screen reader support**: Proper labeling and announcements
+- **Focus management**: Clear focus indicators and keyboard focus
+- **Required field indication**: Visual and programmatic indication of required fields
+- **Help text integration**: Accessible help information
+- **Group semantics**: Proper group labeling for screen readers
+- **Search functionality**: Accessible search with proper announcements
+- **Built on Radix UI**: Leverages Radix UI primitives for robust accessibility

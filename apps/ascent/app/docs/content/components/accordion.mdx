@@ -8,8 +8,6 @@ tags:
     - collapsible
     - expandable
     - hierarchical
-    - navigation
-    - organization
 RepoFolderName: Accordion
 StorybookLink: components-accordion-accordion--docs
 ---
@@ -29,23 +27,11 @@ import {
 function MyComponent() {
     return (
         <Accordion accordionType={AccordionType.BORDER} isMultiple={false}>
-            <AccordionItem value="item-1" title="Getting Started">
-                <p>
-                    Learn how to install and configure the design system in your
-                    project.
-                </p>
+            <AccordionItem value="item-1" title="Accordion Item 1">
+                <p>This is the content of the first accordion item.</p>
             </AccordionItem>
-            <AccordionItem value="item-2" title="Components">
-                <p>
-                    Explore our comprehensive collection of reusable UI
-                    components.
-                </p>
-            </AccordionItem>
-            <AccordionItem value="item-3" title="Customization">
-                <p>
-                    Customize components using design tokens and theming
-                    options.
-                </p>
+            <AccordionItem value="item-2" title="Accordion Item 2">
+                <p>This is the content of the second accordion item.</p>
             </AccordionItem>
         </Accordion>
     )
@@ -210,16 +196,15 @@ function MyComponent() {
 
 ## Features
 
-- **Visual Variants**: Two distinct styles - bordered and borderless for different design contexts
-- **Selection Modes**: Single or multiple item expansion with controlled state management
-- **Flexible Layout**: Customizable chevron positioning (left or right side)
-- **Rich Content Support**: Multiple content slots for icons, subtitles, and additional elements
-- **Interactive States**: Comprehensive state management including hover, active, and disabled states
-- **Accessibility First**: Full keyboard navigation with ARIA compliance and screen reader support
-- **Smooth Animations**: Built-in expand/collapse animations with smooth transitions
-- **Responsive Design**: Adapts to different screen sizes with responsive design tokens
-- **Controlled/Uncontrolled**: Support for both controlled and uncontrolled component patterns
-- **Customizable Styling**: Extensive theming through design tokens for consistent branding
+- Two visual variants (border and no-border)
+- Single and multiple selection modes
+- Flexible chevron positioning (left or right)
+- Rich content slots (left, right, subtext)
+- Disabled state support
+- Controlled and uncontrolled modes
+- Accessible by default
+- Smooth animations and transitions
+- Customizable styling through tokens
 
 ## Usage Examples
 
@@ -398,43 +383,14 @@ export type AccordionTokenType = {
 }
 ```
 
-## Behavior
-
-### Expansion Modes
-
-- **Single Mode**: Only one accordion item can be expanded at a time (default behavior)
-- **Multiple Mode**: Multiple items can be expanded simultaneously when `isMultiple={true}`
-- **Default Values**: Set initially expanded items using `defaultValue` prop
-
-### State Management
-
-- **Controlled**: Use `value` and `onValueChange` props for external state control
-- **Uncontrolled**: Component manages its own internal state when no `value` prop is provided
-- **Disabled Items**: Individual items can be disabled while maintaining visual consistency
-
-### Animations
-
-- **Smooth Transitions**: Built-in CSS transitions for expand/collapse animations
-- **Performance Optimized**: Uses transform and opacity changes for smooth rendering
-- **Accessibility Friendly**: Respects user's motion preferences
-
-## Accessibility
-
-- **Keyboard Navigation**: Full keyboard support with Enter/Space to toggle items
-- **ARIA Compliance**: Proper `aria-expanded`, `aria-controls`, and `aria-labelledby` attributes
-- **Screen Reader Support**: Descriptive labels and state announcements
-- **Focus Management**: Clear focus indicators and logical tab order
-- **Semantic HTML**: Uses proper heading and button elements for structure
-- **High Contrast**: Supports high contrast mode and custom color schemes
-
 ## Enums
 
 ### AccordionType
 
 ```tsx
 enum AccordionType {
-    BORDER = 'border', // Accordion with visible borders around items
-    NO_BORDER = 'noBorder', // Clean accordion without borders
+    BORDER = 'border',
+    NO_BORDER = 'noBorder',
 }
 ```
 
@@ -442,7 +398,7 @@ enum AccordionType {
 
 ```tsx
 enum AccordionChevronPosition {
-    LEFT = 'left', // Chevron icon positioned on the left side
-    RIGHT = 'right', // Chevron icon positioned on the right side (default)
+    LEFT = 'left',
+    RIGHT = 'right',
 }
 ```

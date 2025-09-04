@@ -102,8 +102,6 @@ export type ColumnManagerProps<T extends Record<string, unknown>> = {
     columns: ColumnDefinition<T>[]
     visibleColumns: ColumnDefinition<T>[]
     onColumnChange: (columns: ColumnDefinition<T>[]) => void
-    maxSelections?: number
-    alwaysSelectedColumns?: string[]
 }
 
 export type AdvancedFilterProps = {
@@ -285,8 +283,6 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     onAdvancedFiltersChange?: (filters: unknown[]) => void
     columnFreeze?: number
     enableColumnManager?: boolean
-    columnManagerMaxSelections?: number
-    columnManagerAlwaysSelected?: (keyof T)[]
     pagination?: PaginationConfig
     serverSidePagination?: boolean
     onPageChange?: (page: number) => void

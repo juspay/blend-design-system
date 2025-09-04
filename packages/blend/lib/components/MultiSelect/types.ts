@@ -39,7 +39,6 @@ export type MultiSelectMenuItemType = {
     slot3?: React.ReactNode
     slot4?: React.ReactNode
     disabled?: boolean
-    alwaysSelected?: boolean
     onClick?: () => void
     subMenu?: MultiSelectMenuItemType[]
     tooltip?: string | React.ReactNode
@@ -83,8 +82,6 @@ export type MultiSelectProps = {
     searchPlaceholder?: string
     enableSelectAll?: boolean
     selectAllText?: string
-
-    maxSelections?: number
 
     // custom trigger
     customTrigger?: React.ReactNode
@@ -145,8 +142,6 @@ export type MultiSelectMenuProps = {
     enableSelectAll?: boolean
     selectAllText?: string
     onSelectAll?: (selectAll: boolean) => void
-
-    maxSelections?: number
 
     // alignment
     alignment?: MultiSelectMenuAlignment

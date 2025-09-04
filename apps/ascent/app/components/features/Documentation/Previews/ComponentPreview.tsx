@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import * as Tabs from '@radix-ui/react-tabs'
 import { highlight } from 'sugar-high'
 
@@ -16,40 +16,34 @@ const ComponentPreview = ({
     rescriptBinding,
     children,
 }: ComponentPreviewProps) => {
-    const tabs = useMemo(
-        () =>
-            [
-                { id: 'ts', label: 'TypeScript', content: ts, available: !!ts },
-                {
-                    id: 'rescript',
-                    label: 'Rescript',
-                    content: rescript || '',
-                    available: !!rescript,
-                },
-                {
-                    id: 'rescriptBinding',
-                    label: 'Rescript Binding',
-                    content: rescriptBinding || '',
-                    available: !!rescriptBinding,
-                },
-            ].filter((tab) => tab.available),
-        [ts, rescript, rescriptBinding]
-    )
+    const tabs = [
+        { id: 'ts', label: 'TypeScript', content: ts, available: !!ts },
+        {
+            id: 'rescript',
+            label: 'Rescript',
+            content: rescript || '',
+            available: !!rescript,
+        },
+        {
+            id: 'rescriptBinding',
+            label: 'Rescript Binding',
+            content: rescriptBinding || '',
+            available: !!rescriptBinding,
+        },
+    ].filter((tab) => tab.available)
 
-    const [activeTab, setActiveTab] = useState(
-        tabs.length > 0 ? tabs[0].id : 'ts'
-    )
+    const [activeTab, setActiveTab] = useState(tabs[0]?.id || 'ts')
 
     useEffect(() => {
-        if (tabs.length > 0 && !tabs.find((tab) => tab.id === activeTab)) {
-            setActiveTab(tabs[0].id)
+        if (!tabs.find((tab) => tab.id === activeTab)) {
+            setActiveTab(tabs[0]?.id || 'ts')
         }
     }, [activeTab, tabs])
 
     if (tabs.length === 0) {
         return (
             <div className="w-full min-h-80 border-[var(--code-border)] border-1 rounded-md my-4 flex flex-col items-center justify-center">
-                <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 p-6">
+                <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4">
                     {children}
                 </div>
             </div>
@@ -61,7 +55,7 @@ const ComponentPreview = ({
             data-component-preview
             className="w-full min-h-80 border-[var(--code-border)] border-1 rounded-2xl mb-10 mt-25 flex flex-col items-center justify-center overflow-clip"
         >
-            <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 debug bg-white p-6">
+            <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 debug bg-white">
                 {children}
             </div>
             <div className="w-full border-t border-[var(--code-border)]">
@@ -97,40 +91,12 @@ const ComponentPreview = ({
 }
 
 export const Snippet = (code: string) => {
-    const [isClient, setIsClient] = React.useState(false)
-    const [highlighted, setHighlighted] = React.useState<string>('')
-
-    React.useEffect(() => {
-        setIsClient(true)
-        // Only run highlighting on client side
-        try {
-            const result = highlight(code || '') || code || ''
-            setHighlighted(result)
-        } catch {
-            setHighlighted(code || '')
-        }
-    }, [code])
-
-    // For SSR, render plain text without dangerouslySetInnerHTML
-    if (!isClient) {
-        return (
-            <div className="overflow-x-auto">
-                <pre
-                    data-code-snippet
-                    className="p-2 block whitespace-pre-wrap break-words"
-                >
-                    {code || ''}
-                </pre>
-            </div>
-        )
-    }
-
-    // Client-side: render with syntax highlighting
+    const codeHTML = highlight(code as string)
     return (
         <div className="overflow-x-auto">
             <pre
                 data-code-snippet
-                dangerouslySetInnerHTML={{ __html: highlighted || code || '' }}
+                dangerouslySetInnerHTML={{ __html: codeHTML }}
                 className="p-2 block whitespace-pre-wrap break-words"
             ></pre>
         </div>

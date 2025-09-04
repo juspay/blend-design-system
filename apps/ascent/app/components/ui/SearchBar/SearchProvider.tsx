@@ -57,8 +57,8 @@ const SearchProvider: React.FC = () => {
                     <circle cx="11" cy="11" r="8" />
                     <path d="m21 21-4.35-4.35" />
                 </svg>
-                <span className="flex-1 text-left sm:block hidden">
-                    Search documentation
+                <span className="flex-1 text-left">
+                    Search documentation...
                 </span>
                 <div className="hidden sm:flex gap-1">
                     <kbd className="bg-[var(--background)] text-[var(--muted-foreground)] pointer-events-none flex h-5 items-center justify-center gap-1 rounded border border-[var(--border)] px-1.5 font-sans text-[0.7rem] font-medium select-none">

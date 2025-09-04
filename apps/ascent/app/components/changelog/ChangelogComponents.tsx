@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 
-type VersionHeaderProps = {
+interface VersionHeaderProps {
     version: string
     date: string
     status: 'stable' | 'beta' | 'alpha'
@@ -43,40 +44,18 @@ export const VersionHeader = ({
     )
 }
 
-type ChangelogCardProps = {
+interface ChangelogCardProps {
     summary: string
     children: React.ReactNode
     defaultExpanded?: boolean
-    prId?: string | string[]
-    prUrl?: string | string[]
-    commitHash?: string | string[]
-    commitUrl?: string | string[]
 }
 
 export const ChangelogCard = ({
     summary,
     children,
     defaultExpanded = false,
-    prId,
-    prUrl,
-    commitHash,
-    commitUrl,
 }: ChangelogCardProps) => {
     const [isExpanded, setIsExpanded] = useState(defaultExpanded)
-
-    // Normalize to arrays
-    const prIds = Array.isArray(prId) ? prId : prId ? [prId] : []
-    const prUrls = Array.isArray(prUrl) ? prUrl : prUrl ? [prUrl] : []
-    const commitHashes = Array.isArray(commitHash)
-        ? commitHash
-        : commitHash
-          ? [commitHash]
-          : []
-    const commitUrls = Array.isArray(commitUrl)
-        ? commitUrl
-        : commitUrl
-          ? [commitUrl]
-          : []
 
     return (
         <div className="bg-[var(--card)] border border-[var(--border)] rounded-lg mb-6 overflow-hidden">
@@ -87,55 +66,6 @@ export const ChangelogCard = ({
                 <div className="flex items-center justify-between">
                     <h3 className="text-lg font-semibold text-[var(--foreground)]">
                         {summary}
-                        {(prIds.length > 0 || commitHashes.length > 0) && (
-                            <span className="text-sm font-normal ml-2">
-                                {prIds.map((id, index) => {
-                                    const url =
-                                        prUrls[index] ||
-                                        `https://github.com/juspay/blend-design-system/pull/${id}`
-                                    return (
-                                        <span key={`pr-${id}`}>
-                                            {index > 0 && ', '}
-                                            <a
-                                                href={url}
-                                                className="commit-link"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                onClick={(e) =>
-                                                    e.stopPropagation()
-                                                }
-                                            >
-                                                #{id}
-                                            </a>
-                                        </span>
-                                    )
-                                })}
-                                {prIds.length > 0 &&
-                                    commitHashes.length > 0 &&
-                                    ' • '}
-                                {commitHashes.map((hash, index) => {
-                                    const url =
-                                        commitUrls[index] ||
-                                        `https://github.com/juspay/blend-design-system/commit/${hash}`
-                                    return (
-                                        <span key={`commit-${hash}`}>
-                                            {index > 0 && ', '}
-                                            <a
-                                                href={url}
-                                                className="commit-link"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                onClick={(e) =>
-                                                    e.stopPropagation()
-                                                }
-                                            >
-                                                {hash.substring(0, 7)}
-                                            </a>
-                                        </span>
-                                    )
-                                })}
-                            </span>
-                        )}
                     </h3>
                     <svg
                         className={`w-5 h-5 text-[var(--muted-foreground)] transition-transform duration-200 ${
@@ -163,7 +93,7 @@ export const ChangelogCard = ({
     )
 }
 
-type ChangelogEntryProps = {
+interface ChangelogEntryProps {
     type:
         | 'feat'
         | 'fix'
@@ -176,34 +106,13 @@ type ChangelogEntryProps = {
         | 'chore'
     component?: string
     children: React.ReactNode
-    prId?: string | string[]
-    prUrl?: string | string[]
-    commitHash?: string | string[]
-    commitUrl?: string | string[]
 }
 
 export const ChangelogEntry = ({
     type,
     component,
     children,
-    prId,
-    prUrl,
-    commitHash,
-    commitUrl,
 }: ChangelogEntryProps) => {
-    // Normalize to arrays
-    const prIds = Array.isArray(prId) ? prId : prId ? [prId] : []
-    const prUrls = Array.isArray(prUrl) ? prUrl : prUrl ? [prUrl] : []
-    const commitHashes = Array.isArray(commitHash)
-        ? commitHash
-        : commitHash
-          ? [commitHash]
-          : []
-    const commitUrls = Array.isArray(commitUrl)
-        ? commitUrl
-        : commitUrl
-          ? [commitUrl]
-          : []
     const typeColors = {
         feat: 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200',
         fix: 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
@@ -237,56 +146,20 @@ export const ChangelogEntry = ({
                 {typeLabels[type]}
             </span>
             <div className="flex-1 min-w-0">
-                {(component || prIds.length > 0 || commitHashes.length > 0) && (
+                {component && (
                     <div className="flex items-center gap-2 mb-1">
-                        {component && (
-                            <span className="text-sm font-medium text-[var(--foreground)]">
-                                {component}
-                            </span>
-                        )}
-                        {(prIds.length > 0 || commitHashes.length > 0) && (
-                            <span className="text-xs text-[var(--muted-foreground)]">
-                                {prIds.map((id, index) => {
-                                    const url =
-                                        prUrls[index] ||
-                                        `https://github.com/juspay/blend-design-system/pull/${id}`
-                                    return (
-                                        <span key={`pr-${id}`}>
-                                            {index > 0 && ', '}
-                                            <a
-                                                href={url}
-                                                className="commit-link"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                #{id}
-                                            </a>
-                                        </span>
-                                    )
-                                })}
-                                {prIds.length > 0 &&
-                                    commitHashes.length > 0 &&
-                                    ' • '}
-                                {commitHashes.map((hash, index) => {
-                                    const url =
-                                        commitUrls[index] ||
-                                        `https://github.com/juspay/blend-design-system/commit/${hash}`
-                                    return (
-                                        <span key={`commit-${hash}`}>
-                                            {index > 0 && ', '}
-                                            <a
-                                                href={url}
-                                                className="commit-link"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                {hash.substring(0, 7)}
-                                            </a>
-                                        </span>
-                                    )
-                                })}
-                            </span>
-                        )}
+                        <span className="text-sm font-medium text-[var(--foreground)]">
+                            {component}
+                        </span>
+                        {component.split(',').map((comp, index) => (
+                            <Link
+                                key={index}
+                                href={`/docs/components/${comp.trim().toLowerCase()}`}
+                                className="text-xs text-blue-500 hover:text-blue-700 dark:text-blue-400 hover:dark:text-blue-300 underline"
+                            >
+                                View docs
+                            </Link>
+                        ))}
                     </div>
                 )}
                 <div className="text-sm text-[var(--muted-foreground)] leading-relaxed">

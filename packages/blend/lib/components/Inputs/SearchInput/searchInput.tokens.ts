@@ -38,10 +38,6 @@ export type SearchInputTokensType = {
     }
     outline: CSSObject['outline']
     boxShadow: CSSObject['boxShadow']
-    color: CSSObject['color']
-    fontSize: CSSObject['fontSize']
-    fontWeight: CSSObject['fontWeight']
-    placeholderColor: CSSObject['color']
 }
 
 const searchInputTokens: Readonly<SearchInputTokensType> = {
@@ -79,10 +75,6 @@ const searchInputTokens: Readonly<SearchInputTokensType> = {
     },
     outline: 'none',
     boxShadow: FOUNDATION_THEME.shadows.sm,
-    color: FOUNDATION_THEME.colors.gray[900],
-    fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-    fontWeight: FOUNDATION_THEME.font.weight[500],
-    placeholderColor: FOUNDATION_THEME.colors.gray[400],
 }
 
 export const getSearchInputTokens = (
@@ -123,10 +115,6 @@ export const getSearchInputTokens = (
         },
         outline: 'none',
         boxShadow: foundationTokens.shadows.sm,
-        color: foundationTokens.colors.gray[900],
-        fontSize: foundationTokens.font.size.body.md.fontSize,
-        fontWeight: foundationTokens.font.weight[500],
-        placeholderColor: foundationTokens.colors.gray[400],
     }
 }
 

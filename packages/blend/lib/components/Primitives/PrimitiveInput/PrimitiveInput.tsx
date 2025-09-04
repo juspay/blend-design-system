@@ -17,7 +17,6 @@ type PrimitiveInputProps = StateStyles & {
     fontSize?: CSSObject['fontSize']
     fontWeight?: CSSObject['fontWeight']
     lineHeight?: CSSObject['lineHeight']
-    placeholderColor?: CSSObject['color']
     // Positioning
     position?: CSSObject['position']
     inset?: CSSObject['inset']
@@ -121,7 +120,6 @@ const blockedProps = [
     'fontSize',
     'fontWeight',
     'lineHeight',
-    'placeholderColor',
     // All base props
     'padding',
     'paddingTop',
@@ -230,11 +228,6 @@ const getStyles = (props: PrimitiveInputProps): CSSObject => {
     if (props.fontSize !== undefined) styles.fontSize = props.fontSize
     if (props.fontWeight !== undefined) styles.fontWeight = props.fontWeight
     if (props.lineHeight !== undefined) styles.lineHeight = props.lineHeight
-    if (props.placeholderColor !== undefined) {
-        styles['&::placeholder'] = {
-            color: props.placeholderColor,
-        }
-    }
 
     if (props.position !== undefined) styles.position = props.position
     if (props.inset !== undefined) styles.inset = props.inset

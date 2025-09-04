@@ -46,7 +46,12 @@ export type ChartTokensType = {
         minHeight: CSSObject['minHeight']
     }
     content: {
-        padding: CSSObject['padding']
+        padding: {
+            [key in ChartSize]: CSSObject['padding']
+        }
+        paddingX: {
+            [key in ChartSize]: CSSObject['padding']
+        }
         gap: {
             [key in ChartSize]: CSSObject['gap']
         }
@@ -173,7 +178,16 @@ export const getChartTokens = (
                 minHeight: foundationToken.unit[48],
             },
             content: {
-                padding: `${String(foundationToken.unit[0])}  ${String(foundationToken.unit[12])}   ${String(foundationToken.unit[8])} ${String(foundationToken.unit[12])} `,
+                padding: {
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[16],
+                    lg: foundationToken.unit[20],
+                },
+                paddingX: {
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[16],
+                    lg: foundationToken.unit[16],
+                },
                 gap: {
                     sm: foundationToken.unit[16],
                     md: foundationToken.unit[20],
@@ -308,7 +322,16 @@ export const getChartTokens = (
                 minHeight: foundationToken.unit[48],
             },
             content: {
-                padding: `${String(foundationToken.unit[20])}  ${String(foundationToken.unit[16])}   ${String(foundationToken.unit[16])} ${String(foundationToken.unit[16])} `,
+                padding: {
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[16],
+                    lg: foundationToken.unit[20],
+                },
+                paddingX: {
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[16],
+                    lg: foundationToken.unit[16],
+                },
                 gap: {
                     sm: foundationToken.unit[16],
                     md: foundationToken.unit[20],
@@ -353,7 +376,7 @@ export const getChartTokens = (
                         fullscreen: foundationToken.colors.gray[600],
                         collapsed: foundationToken.colors.gray[400],
                     },
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: 500,
                 },
                 button: {

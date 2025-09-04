@@ -1,14 +1,11 @@
 ---
 title: Charts
-description: The Charts component provides comprehensive data visualization with support for line charts, bar charts, and pie charts, featuring interactive legends, customizable axes, and responsive design.
+description: The Charts component provides various data visualization options including line charts, bar charts, and other graph types for displaying complex data in an intuitive format.
 category: components
 tags:
     - charts
     - component
     - data-visualization
-    - analytics
-    - graphs
-    - recharts
 RepoFolderName: Charts
 StorybookLink: components-charts--docs
 ---
@@ -18,49 +15,28 @@ StorybookLink: components-charts--docs
 ## Usage
 
 ```tsx
-import { Charts, ChartType, ChartLegendPosition, AxisType } from 'blend-v1'
+import { Charts, ChartType, ChartLegendPosition } from 'blend-v1'
 
 function MyComponent() {
     const data = [
         {
             name: 'Jan',
             data: {
-                sales: { primary: { label: 'Sales', val: 4000 } },
-                revenue: { primary: { label: 'Revenue', val: 2400 } },
+                sales: { primary: { label: 'Sales', val: 400 } },
+                revenue: { primary: { label: 'Revenue', val: 240 } },
             },
         },
-        {
-            name: 'Feb',
-            data: {
-                sales: { primary: { label: 'Sales', val: 3000 } },
-                revenue: { primary: { label: 'Revenue', val: 1398 } },
-            },
-        },
-        {
-            name: 'Mar',
-            data: {
-                sales: { primary: { label: 'Sales', val: 2000 } },
-                revenue: { primary: { label: 'Revenue', val: 9800 } },
-            },
-        },
+        // ... more data points
     ]
 
     return (
         <Charts
             chartType={ChartType.LINE}
             data={data}
-            chartHeaderSlot={<h3>Monthly Performance Dashboard</h3>}
+            xAxisLabel="Month"
+            yAxisLabel="Value"
             legendPosition={ChartLegendPosition.TOP}
-            xAxis={{
-                label: 'Month',
-                type: AxisType.DATE_TIME,
-                showLabel: true,
-            }}
-            yAxis={{
-                label: 'Value',
-                type: AxisType.CURRENCY,
-                showLabel: true,
-            }}
+            chartHeaderSlot={<div>Monthly Performance</div>}
         />
     )
 }
@@ -76,11 +52,18 @@ function MyComponent() {
             { content: 'ChartType.LINE' },
         ],
         [
-            {
-                content: 'data',
-                hintText: 'Array of nested data points for the chart',
-            },
+            { content: 'data', hintText: 'Array of data points for the chart' },
             { content: 'NewNestedDataPoint[]', hintText: 'array' },
+            { content: 'required' },
+        ],
+        [
+            { content: 'xAxisLabel', hintText: 'Label for the x-axis' },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            { content: 'yAxisLabel', hintText: 'Label for the y-axis' },
+            { content: 'string', hintText: 'string' },
             { content: '' },
         ],
         [
@@ -90,6 +73,14 @@ function MyComponent() {
             },
             { content: 'string[]', hintText: 'array' },
             { content: 'DEFAULT_COLORS' },
+        ],
+        [
+            {
+                content: 'metrics',
+                hintText: 'Array of metric names to display',
+            },
+            { content: 'string[]', hintText: 'array' },
+            { content: '' },
         ],
         [
             { content: 'slot1', hintText: 'First slot in the chart header' },
@@ -117,41 +108,10 @@ function MyComponent() {
         [
             {
                 content: 'chartHeaderSlot',
-                hintText: 'Main content for the chart header',
+                hintText: 'Main header content for the chart',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'stackedLegends',
-                hintText: 'Whether to use stacked legend layout',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'stackedLegendsData',
-                hintText: 'Data for stacked legends with delta values',
-            },
-            { content: 'StackedLegendsDataPoint[]', hintText: 'array' },
-            { content: '' },
-        ],
-        [
-            { content: 'barsize', hintText: 'Size of bars in bar charts' },
-            { content: 'number', hintText: 'number' },
-            { content: '' },
-        ],
-        [
-            { content: 'xAxis', hintText: 'Configuration for the X-axis' },
-            { content: 'XAxisConfig', hintText: 'object' },
-            { content: '' },
-        ],
-        [
-            { content: 'yAxis', hintText: 'Configuration for the Y-axis' },
-            { content: 'YAxisConfig', hintText: 'object' },
-            { content: '' },
+            { content: 'required' },
         ],
     ]}
     className="mb-8"
@@ -159,462 +119,263 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## Data Types
+## Data Structure
 
-### NewNestedDataPoint
+The Charts component expects data in a specific nested format that allows for flexible data representation across different chart types. Understanding this structure is crucial for proper implementation.
 
-The main data structure for chart data:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'name',
-                hintText: 'Label for this data point (e.g., month, category)',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'data',
-                hintText: 'Object containing the data series for this point',
-            },
-            { content: '{ [key: string]: DataPoint }', hintText: 'object' },
-            { content: '' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### DataPoint
-
-Structure for individual data series:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'primary',
-                hintText: 'Primary data with label and value',
-            },
-            { content: '{ label: string, val: number }', hintText: 'object' },
-            { content: '' },
-        ],
-        [
-            { content: 'aux', hintText: 'Optional auxiliary data points' },
-            { content: '{ label: string, val: number }[]', hintText: 'array' },
-            { content: '' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### AxisConfig
-
-Configuration for chart axes:
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'label', hintText: 'Label text for the axis' },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'showLabel',
-                hintText: 'Whether to display the axis label',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-        [
-            {
-                content: 'interval',
-                hintText: 'Interval between ticks or interval type',
-            },
-            {
-                content: 'number | AxisIntervalType',
-                hintText: 'number or enum',
-            },
-            { content: '' },
-        ],
-        [
-            { content: 'show', hintText: 'Whether to display the axis' },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-        [
-            {
-                content: 'type',
-                hintText: 'Type of data displayed on this axis',
-            },
-            { content: 'AxisType', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'tickFormatter',
-                hintText: 'Custom formatter for tick values',
-            },
-            {
-                content: '(value: string | number) => string',
-                hintText: 'function',
-            },
-            { content: '' },
-        ],
-        [
-            { content: 'customTick', hintText: 'Custom tick component' },
-            {
-                content: 'React.ComponentType<TickProps>',
-                hintText: 'component',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'dateOnly',
-                hintText: 'For date axes, show only date without time',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'smart',
-                hintText: 'Enable smart formatting and intervals',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Features
-
-- **3 Chart Types**: Line, Bar, and Pie charts for different data visualization needs
-- **Interactive Legends**: Clickable legends with hover effects and data series toggling
-- **Responsive Design**: Adapts to different screen sizes with mobile-optimized layouts
-- **Fullscreen Mode**: Built-in fullscreen toggle for detailed data analysis
-- **Custom Axes**: Configurable X and Y axes with multiple data types and formatting options
-- **Flexible Data Structure**: Nested data format supporting multiple series and auxiliary data
-- **Color Customization**: Customizable color schemes with default palette
-- **Header Slots**: Multiple slots for custom header content and controls
-- **Stacked Legends**: Advanced legend layout with delta values and change indicators
-- **Tooltip Integration**: Rich tooltips with custom formatting and data display
-- **Export Capabilities**: Built-in chart export and fullscreen viewing
-- **Accessibility Support**: Screen reader compatible with proper ARIA labels
-
-## Usage Examples
-
-### Basic Line Chart
-
-Simple line chart with two data series
+### Core Data Types
 
 ```tsx
-const salesData = [
+// Main data point structure
+type DataPoint = {
+    primary: {
+        label: string // Display label for the data point
+        val: number // Numeric value for the data point
+    }
+    aux?: {
+        // Optional auxiliary data points
+        label: string
+        val: number
+    }[]
+}
+
+// Nested data structure for the chart
+type NewNestedDataPoint = {
+    name: string // Category or time period name (e.g., "Jan", "Q1")
+    data: {
+        [key: string]: DataPoint // Key-value pairs for different data series
+    }
+}
+```
+
+### Data Format Examples
+
+#### Line/Bar Chart Data
+
+For line and bar charts, each data point represents a category with multiple series:
+
+```tsx
+const lineChartData = [
     {
         name: 'Jan',
         data: {
-            sales: { primary: { label: 'Sales', val: 4000 } },
-            profit: { primary: { label: 'Profit', val: 2400 } },
+            sales: {
+                primary: { label: 'Sales', val: 400 },
+            },
+            revenue: {
+                primary: { label: 'Revenue', val: 240 },
+            },
+            profit: {
+                primary: { label: 'Profit', val: 180 },
+            },
         },
     },
     {
         name: 'Feb',
         data: {
-            sales: { primary: { label: 'Sales', val: 3000 } },
-            profit: { primary: { label: 'Profit', val: 1398 } },
-        },
-    },
-    {
-        name: 'Mar',
-        data: {
-            sales: { primary: { label: 'Sales', val: 2000 } },
-            profit: { primary: { label: 'Profit', val: 9800 } },
-        },
-    },
-]
-
-<Charts
-    chartType={ChartType.LINE}
-    data={salesData}
-    chartHeaderSlot={<h3>Sales Performance</h3>}
-    colors={['#8884d8', '#82ca9d']}
-/>
-```
-
-### Bar Chart with Custom Axes
-
-Bar chart with currency formatting on Y-axis
-
-```tsx
-const revenueData = [
-    {
-        name: 'Q1',
-        data: {
-            revenue: { primary: { label: 'Revenue', val: 100000 } },
-            expenses: { primary: { label: 'Expenses', val: 75000 } },
-        },
-    },
-    {
-        name: 'Q2',
-        data: {
-            revenue: { primary: { label: 'Revenue', val: 120000 } },
-            expenses: { primary: { label: 'Expenses', val: 85000 } },
+            sales: {
+                primary: { label: 'Sales', val: 300 },
+            },
+            revenue: {
+                primary: { label: 'Revenue', val: 139 },
+            },
+            profit: {
+                primary: { label: 'Profit', val: 120 },
+            },
         },
     },
 ]
-
-<Charts
-    chartType={ChartType.BAR}
-    data={revenueData}
-    chartHeaderSlot={<h3>Quarterly Financial Report</h3>}
-    barsize={40}
-    xAxis={{
-        label: 'Quarter',
-        showLabel: true,
-    }}
-    yAxis={{
-        label: 'Amount',
-        type: AxisType.CURRENCY,
-        showLabel: true,
-    }}
-/>
 ```
 
-### Pie Chart with Legend
+#### Pie Chart Data
 
-Pie chart showing market share distribution
+For pie charts, the structure remains the same but typically uses a single data series:
 
 ```tsx
-const marketData = [
+const pieChartData = [
     {
         name: 'Market Share',
         data: {
-            mobile: { primary: { label: 'Mobile', val: 45 } },
-            desktop: { primary: { label: 'Desktop', val: 35 } },
-            tablet: { primary: { label: 'Tablet', val: 20 } },
+            productA: {
+                primary: { label: 'Product A', val: 35 },
+            },
+            productB: {
+                primary: { label: 'Product B', val: 25 },
+            },
+            productC: {
+                primary: { label: 'Product C', val: 20 },
+            },
+            productD: {
+                primary: { label: 'Product D', val: 20 },
+            },
         },
     },
 ]
+```
 
+### Data Transformation
+
+The component internally transforms the nested data structure into a flattened format for rendering:
+
+```tsx
+// Internal transformation
+type FlattenedDataPoint = {
+    name: string
+    [key: string]: number | string // Dynamic keys for each data series
+}
+
+// Example transformation
+// Input: { name: "Jan", data: { sales: { primary: { val: 400 } } } }
+// Output: { name: "Jan", sales: 400 }
+```
+
+### Key Considerations
+
+1. **Consistent Keys**: All data points should have the same keys in their `data` object for proper legend generation
+2. **Numeric Values**: The `val` property must be a number for proper chart rendering
+3. **Labels**: The `label` property is used for tooltips and legend display
+4. **Auxiliary Data**: The optional `aux` array allows for additional data points (useful for complex visualizations)
+5. **Empty Data**: Handle cases where some data points might be missing or null
+
+### Data Validation
+
+Ensure your data follows these rules:
+
+- All `val` properties are numbers
+- All `label` properties are strings
+- Each data point has a unique `name`
+- Data series keys are consistent across all data points
+- Handle missing or null values appropriately
+
+## Features
+
+- Multiple chart types (line, bar, pie)
+- Interactive legends with hover and click functionality
+- Customizable colors and styling
+- Responsive design
+- Axis labels support
+- Header slots for additional content
+- Legend positioning options
+- Data filtering and selection
+
+## Usage Examples
+
+### Line Chart
+
+Basic line chart with multiple data series
+
+```tsx
+const data = [
+    {
+        name: 'Jan',
+        data: {
+            sales: { primary: { label: 'Sales', val: 400 } },
+            revenue: { primary: { label: 'Revenue', val: 240 } },
+        },
+    },
+    // ... more data
+]
+
+;<Charts
+    chartType={ChartType.LINE}
+    data={data}
+    xAxisLabel="Month"
+    yAxisLabel="Value"
+    chartHeaderSlot={<div>Monthly Performance</div>}
+/>
+```
+
+### Bar Chart
+
+Bar chart with custom colors
+
+```tsx
+<Charts
+    chartType={ChartType.BAR}
+    data={data}
+    colors={['#8884d8', '#82ca9d', '#ffc658']}
+    legendPosition={ChartLegendPosition.RIGHT}
+    chartHeaderSlot={<div>Revenue Analysis</div>}
+/>
+```
+
+### Pie Chart
+
+Pie chart with right-positioned legend
+
+```tsx
 <Charts
     chartType={ChartType.PIE}
-    data={marketData}
-    chartHeaderSlot={<h3>Device Usage Distribution</h3>}
+    data={data}
     legendPosition={ChartLegendPosition.RIGHT}
-    colors={['#0088FE', '#00C49F', '#FFBB28']}
+    chartHeaderSlot={<div>Market Share</div>}
 />
 ```
 
 ### Chart with Header Slots
 
-Chart with custom header content in multiple slots
+Chart with custom header content
 
 ```tsx
 <Charts
     chartType={ChartType.LINE}
-    data={salesData}
-    chartHeaderSlot={<h3>Sales Dashboard</h3>}
-    slot1={<span>Last 30 days</span>}
-    slot2={
-        <div className="flex gap-2">
-            <button>Export</button>
-            <button>Settings</button>
-        </div>
+    data={data}
+    slot1={<div>Total Sales</div>}
+    slot2={<div>$12,450</div>}
+    slot3={<div>+15% from last month</div>}
+    chartHeaderSlot={<div>Sales Dashboard</div>}
+/>
+```
+
+## Data Structure
+
+The Charts component expects data in a specific nested format:
+
+```tsx
+type NewNestedDataPoint = {
+    name: string
+    data: {
+        [key: string]: DataPoint
     }
-    slot3={<span>Updated 5 min ago</span>}
-/>
-```
+}
 
-### Chart with Stacked Legends
-
-Chart with delta values and change indicators
-
-```tsx
-const stackedData = [
-    { value: 12500, delta: 15.2, changeType: LegendsChangeType.INCREASE },
-    { value: 8300, delta: -5.1, changeType: LegendsChangeType.DECREASE },
-]
-
-<Charts
-    chartType={ChartType.BAR}
-    data={salesData}
-    chartHeaderSlot={<h3>Performance Metrics</h3>}
-    stackedLegends={true}
-    stackedLegendsData={stackedData}
-/>
-```
-
-### Chart with Custom Tick Formatting
-
-Chart with percentage formatting and custom intervals
-
-```tsx
-<Charts
-    chartType={ChartType.LINE}
-    data={conversionData}
-    chartHeaderSlot={<h3>Conversion Rates</h3>}
-    yAxis={{
-        label: 'Conversion Rate',
-        type: AxisType.PERCENTAGE,
-        tickFormatter: (value) => `${value}%`,
-        interval: 'preserveStartEnd',
-    }}
-    xAxis={{
-        label: 'Date',
-        type: AxisType.DATE_TIME,
-        dateOnly: true,
-    }}
-/>
-```
-
-### Responsive Chart with Mobile Layout
-
-Chart optimized for different screen sizes
-
-```tsx
-<Charts
-    chartType={ChartType.BAR}
-    data={mobileData}
-    chartHeaderSlot={<h3>Mobile Analytics</h3>}
-    legendPosition={ChartLegendPosition.TOP}
-    colors={['#FF6B6B', '#4ECDC4', '#45B7D1']}
-/>
+type DataPoint = {
+    primary: {
+        label: string
+        val: number
+    }
+    aux?: {
+        label: string
+        val: number
+    }[]
+}
 ```
 
 ## Component Tokens
 
-You can style the Charts component using the following tokens:
+You can style the charts component using the following tokens:
 
 ```tsx
 export type ChartTokensType = {
     container: {
-        padding: CSSObject['padding']
-        backgroundColor: CSSObject['backgroundColor']
-        borderRadius: CSSObject['borderRadius']
         border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        backgroundColor: CSSObject['backgroundColor']
+        padding: CSSObject['padding']
     }
     header: {
         padding: CSSObject['padding']
-        marginBottom: CSSObject['marginBottom']
-        title: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            color: CSSObject['color']
-        }
+        gap: CSSObject['gap']
     }
     legend: {
         gap: CSSObject['gap']
         padding: CSSObject['padding']
-        item: {
-            padding: CSSObject['padding']
-            borderRadius: CSSObject['borderRadius']
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-        }
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
     }
     chart: {
         height: CSSObject['height']
-        minHeight: CSSObject['minHeight']
+        width: CSSObject['width']
     }
-    tooltip: {
-        backgroundColor: CSSObject['backgroundColor']
-        border: CSSObject['border']
-        borderRadius: CSSObject['borderRadius']
-        padding: CSSObject['padding']
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
-}
-```
-
-## Behavior
-
-### Interactive Features
-
-- **Legend Interaction**: Click legends to toggle data series visibility
-- **Hover Effects**: Hover over chart elements for detailed tooltips
-- **Fullscreen Mode**: Toggle fullscreen for detailed analysis
-- **Responsive Legends**: Legends adapt position based on screen size
-
-### Data Processing
-
-- **Data Transformation**: Automatically flattens nested data for chart libraries
-- **Series Management**: Dynamic handling of multiple data series
-- **Key Selection**: Interactive selection and deselection of data keys
-
-### Mobile Responsiveness
-
-- **Layout Adaptation**: Automatic layout changes for small screens
-- **Touch Interactions**: Optimized touch interactions for mobile devices
-- **Legend Positioning**: Smart legend positioning based on screen size
-
-## Accessibility
-
-- **Keyboard Navigation**: Full keyboard support for interactive elements
-- **Screen Reader Support**: Proper ARIA labels and data announcements
-- **High Contrast**: Supports high contrast mode and custom color schemes
-- **Focus Management**: Clear focus indicators for all interactive elements
-- **Alternative Text**: Meaningful descriptions for chart data
-- **Color Independence**: Chart data conveyed through patterns and labels, not just color
-
-## Enums
-
-### ChartType
-
-```tsx
-enum ChartType {
-    LINE = 'line', // Line chart for trends over time
-    BAR = 'bar', // Bar chart for categorical comparisons
-    PIE = 'pie', // Pie chart for part-to-whole relationships
-}
-```
-
-### ChartLegendPosition
-
-```tsx
-enum ChartLegendPosition {
-    TOP = 'top', // Legend positioned above the chart
-    RIGHT = 'right', // Legend positioned to the right of the chart
-}
-```
-
-### AxisType
-
-```tsx
-enum AxisType {
-    DATE_TIME = 'dateTime', // Date/time axis with date formatting
-    CURRENCY = 'currency', // Currency axis with monetary formatting
-    PERCENTAGE = 'percentage', // Percentage axis with % formatting
-    NUMBER = 'number', // Numeric axis with number formatting
-}
-```
-
-### AxisIntervalType
-
-```tsx
-enum AxisIntervalType {
-    PRESERVE_START = 'preserveStart', // Always show first tick
-    PRESERVE_END = 'preserveEnd', // Always show last tick
-    PRESERVE_START_END = 'preserveStartEnd', // Always show first and last ticks
-}
-```
-
-### LegendsChangeType
-
-```tsx
-enum LegendsChangeType {
-    INCREASE = 'increase', // Positive change indicator
-    DECREASE = 'decrease', // Negative change indicator
 }
 ```
