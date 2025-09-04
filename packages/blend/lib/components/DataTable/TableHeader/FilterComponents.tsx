@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { ArrowUp, ArrowDown, Search, ChevronRight } from 'lucide-react'
+import { ArrowUp, ArrowDown, Search, ChevronRight, Check } from 'lucide-react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { SearchInput } from '../../Inputs/SearchInput'
@@ -110,10 +110,17 @@ export const SortOptions: React.FC<{
                         fontWeight:
                             tableToken.dataTable.table.header.filter.sortOption
                                 .fontWeight,
+                        flexGrow: 1,
                     }}
                 >
                     Sort Ascending
                 </PrimitiveText>
+                {isAscendingActive && (
+                    <Check
+                        size={FOUNDATION_THEME.unit[16]}
+                        color={FOUNDATION_THEME.colors.gray[900]}
+                    />
+                )}
             </Block>
             <Block
                 display="flex"
@@ -157,10 +164,17 @@ export const SortOptions: React.FC<{
                         fontWeight:
                             tableToken.dataTable.table.header.filter.sortOption
                                 .fontWeight,
+                        flexGrow: 1,
                     }}
                 >
                     Sort Descending
                 </PrimitiveText>
+                {isDescendingActive && (
+                    <Check
+                        size={FOUNDATION_THEME.unit[16]}
+                        color={FOUNDATION_THEME.colors.green[900]}
+                    />
+                )}
             </Block>
         </Block>
     )
