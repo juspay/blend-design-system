@@ -156,7 +156,6 @@ coverage/
 .firebase/
 .firebaserc.local
 
-# Build outputs
 dist/
 apps/ascent/out/
 apps/ascent/.next/
