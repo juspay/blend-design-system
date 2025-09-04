@@ -23,6 +23,7 @@ import {
 } from './app/changelog/components/ui/ChangelogBlocks'
 import { Search } from 'lucide-react'
 import HomeDataList from './app/changelog/components/ui/HomeDataList'
+import { ComponentGrid } from '@/components/ui/ComponentGrid'
 
 const components = {
     // Core MDX components (headings, paragraphs, links, etc.)
@@ -37,6 +38,7 @@ const components = {
     // Documentation components
     DocsTypeTable,
     Preview,
+    ComponentGrid,
 
     // Changelog components
     VersionHeader,

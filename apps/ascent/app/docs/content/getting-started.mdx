@@ -1,28 +1,161 @@
 ---
 title: Getting Started
-description: Welcome to the documentation! This is a sample MDX file that demonstrates the routing system.
+description: Get started with Blend Design System. Learn installation, setup, and best practices for using our design system in your projects.
 category: documentation
 tags:
-    - component
     - getting-started
+    - installation
+    - setup
 ---
 
-## Features
+# Getting Started with Blend Design System
 
-- **MDX Support**: Full MDX rendering with custom components
-- **Dynamic Routing**: Automatic routing based on file structure
-- **Syntax Highlighting**: Code blocks with syntax highlighting
+Welcome to Blend Design System! This guide will help you get started with implementing Blend in your project, whether you're a team member or an open source contributor.
 
-## Code Example
+## What is Blend?
 
-```javascript
-function hello() {
-    console.log('Hello, MDX!')
+Blend is a comprehensive design system that provides:
+
+- **React Components**: Production-ready components with TypeScript support
+- **Design Tokens**: Consistent design tokens for colors, typography, spacing, and more
+- **Figma Integration**: Direct sync between Figma designs and code components
+
+## Installation
+
+Choose your preferred package manager to install Blend:
+
+```bash
+# npm
+npm install @juspay/blend-design-system
+
+# yarn
+yarn add @juspay/blend-design-system
+
+# pnpm
+pnpm add @juspay/blend-design-system
+```
+
+## Basic Setup
+
+### 1. Start Using Components
+
+```tsx
+import { Button, Alert, TextInput } from '@juspay/blend-design-system'
+
+function MyApp() {
+    return (
+        <div>
+            <Alert variant="info" title="Welcome">
+                Your Blend setup is complete!
+            </Alert>
+
+            <TextInput
+                label="Email"
+                placeholder="Enter your email"
+                type="email"
+            />
+
+            <Button variant="primary" size="md">
+                Get Started
+            </Button>
+        </div>
+    )
 }
 ```
 
+### 2. Theme Configuration (Optional)
+
+Configure your application theme:
+
+```tsx
+import { ThemeProvider } from '@juspay/blend-design-system'
+
+function App() {
+    return (
+        <ThemeProvider theme="light">
+            {' '}
+            {/* or "dark" */}
+            <YourAppContent />
+        </ThemeProvider>
+    )
+}
+```
+
+## Framework-Specific Setup
+
+### Next.js Configuration
+
+For Next.js applications, add this to your `next.config.js`:
+
+```javascript
+module.exports = {
+    transpilePackages: ['@juspay/blend-design-system'],
+    experimental: {
+        esmExternals: 'loose',
+    },
+}
+```
+
+### TypeScript Configuration
+
+Ensure your `tsconfig.json` includes:
+
+```json
+{
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "jsx": "react-jsx"
+    }
+}
+```
+
+## Development Environment Setup
+
+For contributors or those wanting to run the project locally:
+
+### Prerequisites
+
+- **Node.js** 18+ and pnpm
+- **Git** for version control
+
+### Setup Steps
+
+```bash
+# Clone the repository
+git clone https://github.com/juspay/blend-design-system.git
+cd blend-design-system
+
+# Install dependencies
+pnpm install
+
+# Build the design system
+pnpm build
+
+# Start development mode
+pnpm dev
+```
+
+## Best Practices
+
+### Component Usage
+
+- Always refer to our [component documentation](/docs/components) for API reference
+- Use TypeScript for better development experience and type safety
+- Follow established patterns for consistent implementation
+
+### Design Tokens
+
+- Use design tokens instead of hardcoded values
+- Reference our [design tokens guide](/docs/foundation/tokens) for available tokens
+- Maintain consistency with the design system guidelines
+
 ## Next Steps
 
-1. Create more MDX files in the `docs` folder
-2. They will automatically be available at `/docs/[filename]`
-3. Customize the components in `mdx-components.tsx`
+1. **Explore Components**: Browse our [component library](/docs/components)
+2. **Learn Design Tokens**: Understand our [foundation system](/docs/foundation)
+3. **Contributing**: Check our [contribution guide](/docs/contributing) to contribute to the project
+4. **Get Support**: Join our community discussions for help and feedback
+
+That's it! You're ready to start building with Blend Design System. 🚀

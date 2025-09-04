@@ -1,0 +1,427 @@
+---
+title: Contributing
+description: Learn how to contribute to Blend Design System. Guidelines for open source contributors, developers, and designers.
+category: documentation
+tags:
+    - contributing
+    - open-source
+    - development
+    - community
+---
+
+# Contributing to Blend Design System
+
+We welcome contributions from the community! Whether you're fixing bugs, adding new components, improving documentation, or proposing new features, your contributions help make Blend better for everyone.
+
+## Before You Start
+
+### Code of Conduct
+
+Please read and follow our [Code of Conduct](https://github.com/juspay/blend-design-system/blob/main/CODE_OF_CONDUCT.md). We're committed to maintaining a welcoming and inclusive community.
+
+### Getting Help
+
+- **GitHub Discussions**: Ask questions and share ideas
+- **Issues**: Report bugs and request features
+- **Discord**: Join our community for real-time chat
+
+## Development Setup
+
+### Prerequisites
+
+- **Node.js** 18+
+- **pnpm** (recommended package manager)
+- **Git** for version control
+- **Code Editor** (VS Code recommended with ReScript extension)
+
+### Fork and Clone
+
+```bash
+# Fork the repository on GitHub, then clone your fork
+git clone https://github.com/YOUR_USERNAME/blend-design-system.git
+cd blend-design-system
+
+# Add upstream remote
+git remote add upstream https://github.com/juspay/blend-design-system.git
+```
+
+### Install Dependencies
+
+```bash
+# Install all dependencies
+pnpm install
+
+# Build the design system
+pnpm build
+
+# Start development mode
+pnpm dev
+```
+
+### Development Workflow
+
+```bash
+# Create a new branch for your feature
+git checkout -b feature/your-feature-name
+
+# Make your changes
+# ...
+
+# Run tests
+pnpm test
+
+# Run linting
+pnpm lint
+
+# Build to ensure everything works
+pnpm build
+```
+
+## Project Structure
+
+Understanding the monorepo structure:
+
+```
+blend-design-system/
+├── packages/
+│   └── blend/                 # Main design system package
+│       ├── lib/
+│       │   ├── components/    # React components
+│       │   ├── foundation/    # Design tokens and themes
+│       │   └── utils/         # Utility functions
+│       └── src/               # ReScript source files
+├── apps/
+│   ├── ascent/               # Documentation site
+│   ├── storybook/            # Component playground
+│   └── playground/           # Development testing
+└── tools/                    # Build tools and utilities
+```
+
+## Types of Contributions
+
+### 🐛 Bug Fixes
+
+1. **Check existing issues** before creating new ones
+2. **Include reproduction steps** and expected vs actual behavior
+3. **Add tests** to prevent regression
+4. **Update documentation** if needed
+
+**Example Bug Fix Process:**
+
+```bash
+# Create branch
+git checkout -b fix/button-disabled-state
+
+# Make your fix
+# Add tests
+# Update docs if needed
+
+# Commit and push
+git commit -m "fix: button disabled state styling"
+git push origin fix/button-disabled-state
+```
+
+### ✨ New Components
+
+Creating new components requires careful planning and implementation:
+
+#### Component Structure
+
+```
+components/YourComponent/
+├── YourComponent.tsx         # Main React component
+├── YourComponent.res         # ReScript implementation
+├── types.ts                  # TypeScript definitions
+├── index.ts                  # Exports
+├── YourComponent.stories.tsx # Storybook stories
+└── __tests__/
+    └── YourComponent.test.tsx
+```
+
+#### Component Template
+
+```tsx
+import { ComponentTokens } from './types'
+
+export interface YourComponentProps {
+    children?: React.ReactNode
+    variant?: 'primary' | 'secondary'
+    size?: 'sm' | 'md' | 'lg'
+    className?: string
+}
+
+export const YourComponent = ({
+    children,
+    variant = 'primary',
+    size = 'md',
+    className,
+    ...props
+}: YourComponentProps) => {
+    // Implementation
+}
+```
+
+#### ReScript Bindings
+
+```rescript
+@module("@juspay/blend-design-system") @react.component
+external make: (
+    ~children: React.element=?,
+    ~variant: [#primary | #secondary]=?,
+    ~size: [#sm | #md | #lg]=?,
+    ~className: string=?,
+) => React.element = "YourComponent"
+```
+
+#### Requirements for New Components
+
+- **Accessibility**: WCAG 2.1 AA compliance
+- **TypeScript**: Full type definitions
+- **ReScript**: Complete bindings
+- **Tests**: Unit and integration tests
+- **Stories**: Comprehensive Storybook stories
+- **Documentation**: Usage examples and API reference
+
+### 📚 Documentation
+
+Documentation improvements are always welcome:
+
+- Improve existing component documentation
+- Add usage examples and best practices
+- Update getting started guides
+- Fix typos and improve clarity
+- Add troubleshooting sections
+
+### 🎨 Design Tokens
+
+When proposing design token changes:
+
+1. **Create an issue first** to discuss the change
+2. **Ensure backward compatibility** where possible
+3. **Update all affected components**
+4. **Include design rationale** and use cases
+5. **Test across all themes**
+
+## Testing Requirements
+
+### Unit Tests
+
+- Test all component variants and states
+- Test accessibility features
+- Test error boundaries and edge cases
+- Maintain minimum 80% code coverage
+
+### Integration Tests
+
+- Test component interactions
+- Test theme switching
+- Test responsive behavior
+
+### Visual Regression Tests
+
+- Use Storybook for visual testing
+- Test all component stories
+- Include different themes and screen sizes
+
+### Running Tests
+
+```bash
+# Run all tests
+pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Run tests with coverage
+pnpm test:coverage
+
+# Run visual tests
+pnpm test:visual
+```
+
+## Documentation Standards
+
+### Component Documentation
+
+Each component should include:
+
+- **API Reference**: Complete prop documentation
+- **Usage Examples**: Common use cases
+- **Accessibility**: ARIA labels, keyboard navigation
+- **Do's and Don'ts**: Best practices and anti-patterns
+- **Troubleshooting**: Common issues and solutions
+
+### Code Comments
+
+- Document complex logic and business rules
+- Explain design decisions and trade-offs
+- Include links to relevant design specifications
+- Use JSDoc for public APIs
+
+## Submission Guidelines
+
+### Before Submitting
+
+1. **Ensure all tests pass**: `pnpm test`
+2. **Run linting**: `pnpm lint`
+3. **Check TypeScript**: `pnpm type-check`
+4. **Update documentation** if needed
+5. **Add changeset** for versioning
+
+### Changeset Creation
+
+```bash
+# Add changeset for your changes
+pnpm changeset
+
+# Follow prompts to describe your changes
+# Choose appropriate semver bump (patch/minor/major)
+```
+
+### Pull Request Guidelines
+
+#### PR Title Format
+
+```
+type(scope): brief description
+
+Examples:
+feat(button): add loading state
+fix(modal): resolve focus trap issue
+docs(getting-started): update installation guide
+```
+
+#### PR Description Template
+
+```markdown
+## Description
+
+Brief description of changes
+
+## Type of Change
+
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+
+## Testing
+
+- [ ] Tests pass locally
+- [ ] Added tests for new functionality
+- [ ] Visual tests updated
+
+## Screenshots (if applicable)
+
+[Add screenshots for visual changes]
+
+## Breaking Changes
+
+[Describe any breaking changes]
+
+## Related Issues
+
+Closes #[issue number]
+```
+
+### Review Process
+
+1. **Automated checks** must pass
+2. **Design team review** for UI changes
+3. **Code review** by maintainers
+4. **Documentation review** if applicable
+5. **Final approval** and merge
+
+## Release Process
+
+### Semantic Versioning
+
+We follow [Semantic Versioning](https://semver.org/):
+
+- **Patch** (1.0.1): Bug fixes
+- **Minor** (1.1.0): New features, backward compatible
+- **Major** (2.0.0): Breaking changes
+
+### Release Notes
+
+Contributors are recognized in release notes:
+
+- Bug fixes and improvements
+- New features and components
+- Breaking changes
+- Special thanks to contributors
+
+## Community Recognition
+
+### Contributor Levels
+
+- **First-time Contributor**: Welcome badge
+- **Regular Contributor**: Community member badge
+- **Core Contributor**: Maintainer consideration
+- **Maintainer**: Repository access and responsibilities
+
+### Showcase
+
+Projects using Blend are featured in our community showcase. Share your implementations to inspire others!
+
+## Troubleshooting
+
+### Common Development Issues
+
+**Build failures:**
+
+```bash
+# Clear everything and reinstall
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+```
+
+**TypeScript errors:**
+
+- Check component exports in `index.ts`
+- Verify type definitions are complete
+- Ensure ReScript bindings match TypeScript interfaces
+
+**Test failures:**
+
+- Check for async operations in tests
+- Verify mocks are properly configured
+- Ensure clean test environment
+
+### Getting Unstuck
+
+If you're stuck:
+
+1. Check existing documentation and issues
+2. Ask in GitHub Discussions
+3. Join our Discord community
+4. Reach out to maintainers
+
+## Resources
+
+### Development Tools
+
+- **Storybook**: Component development and testing
+- **TypeScript**: Type safety and IntelliSense
+- **ReScript**: Functional programming support
+- **Jest**: Testing framework
+- **ESLint**: Code linting
+
+### Design Resources
+
+- **Figma**: Design files and specifications
+- **Design Tokens**: Token definitions and usage
+- **Accessibility**: WCAG guidelines and tools
+
+### Learning Materials
+
+- **React**: Component development
+- **TypeScript**: Type system
+- **ReScript**: Functional programming
+- **Testing**: Best practices
+
+## Thank You
+
+Thank you for contributing to Blend Design System! Your efforts help create better experiences for developers and users worldwide. Every contribution, no matter how small, makes a difference.
+
+Welcome to the community! 🎉
