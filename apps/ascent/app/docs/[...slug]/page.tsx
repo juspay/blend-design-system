@@ -39,9 +39,6 @@ export async function generateStaticParams() {
 
     scanDirectory(contentDir)
 
-    // Also add the root path for getting-started.mdx
-    paths.push({ slug: ['getting-started'] })
-
     return paths
 }
 

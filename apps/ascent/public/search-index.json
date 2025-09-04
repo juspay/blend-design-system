@@ -4837,28 +4837,364 @@
     },
     "getting-started": {
         "title": "Getting Started",
-        "description": "Welcome to the documentation! This is a sample MDX file that demonstrates the routing system.",
+        "description": "Get started with Blend Design System for your team or as a community contributor. Learn installation, setup, and best practices.",
         "path": "getting-started",
         "slug": "getting-started",
         "category": "documentation",
-        "tags": ["component", "getting-started"],
-        "content": "Features\n\n- MDX Support: Full MDX rendering with custom components\n- Dynamic Routing: Automatic routing based on file structure\n- Syntax Highlighting: Code blocks with syntax highlighting\n\nCode Example\n\n\n\nNext Steps\n\n1. Create more MDX files in the docs folder\n2. They will automatically be available at /docs/[filename]\n3. Customize the components in mdx-components.tsx",
-        "excerpt": "Features\n\n- MDX Support: Full MDX rendering with custom components\n- Dynamic Routing: Automatic routing based on file structure\n- Syntax Highlighting:...",
+        "tags": [
+            "getting-started",
+            "installation",
+            "setup",
+            "community",
+            "teams"
+        ],
+        "content": "Getting Started with Blend Design System\n\nWelcome to Blend Design System! This guide will help you get started whether you're a team member implementing Blend in your project or a community contributor looking to contribute to the design system.\n\nQuick Overview\n\nBlend is a comprehensive design system that provides:\n\n- React Components: Production-ready components with TypeScript support\n- ReScript Bindings: First-class ReScript support for functional programming\n- Design Tokens: Consistent design tokens for colors, typography, spacing, and more\n- Figma Integration: Direct sync between Figma designs and code components\n- Development Tools: CLI tools, documentation, and developer experience enhancements\n\n---\n\nFor Teams: Implementation Guide\n\nInstallation\n\nChoose your preferred package manager to install Blend:\n\n\n\nBasic Setup\n\n1. Import Styles\n\nAdd Blend's CSS to your application:\n\n\n\n2. Basic Component Usage\n\nStart using Blend components in your application:\n\n\n\n3. Theme Configuration\n\nConfigure your application theme:\n\n\n\nNext.js Setup\n\nFor Next.js applications, add the following configuration:\n\n\n\nTypeScript Configuration\n\nEnsure your tsconfig.json includes:\n\n\n\nReScript Setup\n\nFor ReScript projects, add to your bsconfig.json:\n\n\n\nThen use components in ReScript:\n\n\n\nTeam Best Practices\n\nComponent Documentation\n- Always refer to our component documentation for API reference\n- Use TypeScript for better development experience and type safety\n- Follow established patterns for consistent implementation\n\nDesign Token Usage\n- Use design tokens instead of hardcoded values\n- Reference our design tokens guide for available tokens\n- Maintain consistency with the design system guidelines\n\nCode Review Guidelines\n- Ensure components are used according to their intended purpose\n- Verify accessibility requirements are met\n- Check for proper prop usage and TypeScript compliance\n- Test components across different screen sizes and themes\n\nTesting Recommendations\n- Test components in both light and dark themes\n- Verify keyboard navigation and screen reader compatibility\n- Test responsive behavior across breakpoints\n- Include unit tests for custom logic involving Blend components\n\n---\n\nFor Community: Contribution Guide\n\nDevelopment Environment Setup\n\nPrerequisites\n\n- Node.js 18+ and npm/yarn/pnpm\n- Git for version control\n- Code Editor (VS Code recommended with ReScript extension)\n\n1. Fork and Clone\n\n\n\n2. Install Dependencies\n\n\n\n3. Development Workflow\n\n\n\nProject Structure\n\nUnderstanding the monorepo structure:\n\n\n\nContribution Types\n\n🐛 Bug Fixes\n- Check existing issues before creating new ones\n- Include reproduction steps and expected vs actual behavior\n- Add tests to prevent regression\n- Update documentation if needed\n\n✨ New Components\n- Follow the component creation guide\n- Include TypeScript types and ReScript bindings\n- Add comprehensive documentation and examples\n- Ensure accessibility compliance (WCAG 2.1 AA)\n- Include Storybook stories for all variants\n\n📚 Documentation\n- Improve existing component documentation\n- Add usage examples and best practices\n- Update getting started guides\n- Fix typos and improve clarity\n\n🎨 Design Tokens\n- Propose changes through GitHub issues first\n- Ensure backward compatibility\n- Update all affected components\n- Include design rationale and use cases\n\nComponent Development Guidelines\n\nCreating New Components\n\n1. Component Structure:\n\n\n2. Component Template:\n\n\n3. Add ReScript Bindings:\n\n\nTesting Requirements\n\nUnit Tests\n- Test all component variants and states\n- Test accessibility features\n- Test error boundaries and edge cases\n- Maintain minimum 80% code coverage\n\nIntegration Tests\n- Test component interactions\n- Test theme switching\n- Test responsive behavior\n\nVisual Regression Tests\n- Use Storybook for visual testing\n- Test all component stories\n- Include different themes and screen sizes\n\nDocumentation Standards\n\nComponent Documentation\n- Include comprehensive API reference\n- Provide usage examples for all variants\n- Document accessibility features\n- Include do's and don'ts\n- Add troubleshooting section\n\nCode Comments\n- Document complex logic and business rules\n- Explain design decisions and trade-offs\n- Include links to relevant design specifications\n\nSubmission Process\n\nPull Request Guidelines\n\n1. Before Submitting:\n   - Ensure all tests pass\n   - Run linting and fix any issues\n   - Update relevant documentation\n   - Add changeset for versioning\n\n2. PR Description:\n   - Clear title describing the change\n   - Detailed description of what changed and why\n   - Screenshots for visual changes\n   - Breaking changes clearly marked\n   - Related issue numbers\n\n3. Review Process:\n   - Automated checks must pass\n   - Design team review for UI changes\n   - Code review by maintainers\n   - Documentation review if applicable\n\nChangeset Creation\n\n\n\nCommunity Resources\n\nGetting Help\n- GitHub Discussions: Ask questions and share ideas\n- Issues: Report bugs and request features  \n- Discord: Join our community for real-time chat\n- Documentation: Comprehensive guides and API reference\n\nRecognition\n- Contributors are recognized in release notes\n- Significant contributions earn contributor badges\n- Community showcase for projects using Blend\n\nCode of Conduct\n- Be respectful and inclusive\n- Follow our Code of Conduct\n- Help maintain a welcoming environment for all\n\n---\n\nCommon Issues and Solutions\n\nBuild Errors\n\nModule not found errors:\n\n\nTypeScript errors:\n- Ensure you're using the correct TypeScript version\n- Check tsconfig.json configuration\n- Verify component imports are correct\n\nStyling Issues\n\nStyles not applying:\n- Ensure you've imported the CSS file\n- Check CSS-in-JS configuration\n- Verify theme provider is set up correctly\n\nToken not working:\n- Confirm token exists in current theme\n- Check token naming convention\n- Verify import path is correct\n\nPerformance Optimization\n\nBundle size concerns:\n- Use tree shaking with proper imports\n- Only import components you need\n- Consider code splitting for large applications\n\nRuntime performance:\n- Use React.memo for expensive re-renders\n- Implement proper key props for lists\n- Monitor component re-render frequency\n\n---\n\nNext Steps\n\nFor Teams\n1. Explore Components: Browse our component library\n2. Learn Design Tokens: Understand our foundation system\n3. Join Community: Connect with other teams using Blend\n4. Stay Updated: Follow releases and updates\n\nFor Contributors\n1. Read Contributing Guide: Detailed contribution guidelines\n2. Join Discord: Connect with maintainers and other contributors\n3. Pick an Issue: Start with \"good first issue\" labels\n4. Propose Ideas: Share your ideas through GitHub Discussions\n\nWelcome to the Blend community! We're excited to see what you'll build. 🚀",
+        "excerpt": "Getting Started with Blend Design System\n\nWelcome to Blend Design System! This guide will help you get started whether you're a team member implementi...",
         "sections": [
             {
-                "title": "Features",
-                "level": 2,
-                "id": "features"
+                "title": "Getting Started with Blend Design System",
+                "level": 1,
+                "id": "getting-started-with-blend-design-system"
             },
             {
-                "title": "Code Example",
+                "title": "Quick Overview",
                 "level": 2,
-                "id": "code-example"
+                "id": "quick-overview"
+            },
+            {
+                "title": "For Teams: Implementation Guide",
+                "level": 2,
+                "id": "for-teams-implementation-guide"
+            },
+            {
+                "title": "Installation",
+                "level": 3,
+                "id": "installation"
+            },
+            {
+                "title": "npm",
+                "level": 1,
+                "id": "npm"
+            },
+            {
+                "title": "yarn",
+                "level": 1,
+                "id": "yarn"
+            },
+            {
+                "title": "pnpm",
+                "level": 1,
+                "id": "pnpm"
+            },
+            {
+                "title": "Basic Setup",
+                "level": 3,
+                "id": "basic-setup"
+            },
+            {
+                "title": "1. Import Styles",
+                "level": 4,
+                "id": "1-import-styles"
+            },
+            {
+                "title": "2. Basic Component Usage",
+                "level": 4,
+                "id": "2-basic-component-usage"
+            },
+            {
+                "title": "3. Theme Configuration",
+                "level": 4,
+                "id": "3-theme-configuration"
+            },
+            {
+                "title": "Next.js Setup",
+                "level": 3,
+                "id": "next-js-setup"
+            },
+            {
+                "title": "TypeScript Configuration",
+                "level": 3,
+                "id": "typescript-configuration"
+            },
+            {
+                "title": "ReScript Setup",
+                "level": 3,
+                "id": "rescript-setup"
+            },
+            {
+                "title": "Team Best Practices",
+                "level": 3,
+                "id": "team-best-practices"
+            },
+            {
+                "title": "Component Documentation",
+                "level": 4,
+                "id": "component-documentation"
+            },
+            {
+                "title": "Design Token Usage",
+                "level": 4,
+                "id": "design-token-usage"
+            },
+            {
+                "title": "Code Review Guidelines",
+                "level": 4,
+                "id": "code-review-guidelines"
+            },
+            {
+                "title": "Testing Recommendations",
+                "level": 4,
+                "id": "testing-recommendations"
+            },
+            {
+                "title": "For Community: Contribution Guide",
+                "level": 2,
+                "id": "for-community-contribution-guide"
+            },
+            {
+                "title": "Development Environment Setup",
+                "level": 3,
+                "id": "development-environment-setup"
+            },
+            {
+                "title": "Prerequisites",
+                "level": 4,
+                "id": "prerequisites"
+            },
+            {
+                "title": "1. Fork and Clone",
+                "level": 4,
+                "id": "1-fork-and-clone"
+            },
+            {
+                "title": "Fork the repository on GitHub, then clone your fork",
+                "level": 1,
+                "id": "fork-the-repository-on-github-then-clone-your-fork"
+            },
+            {
+                "title": "Add upstream remote",
+                "level": 1,
+                "id": "add-upstream-remote"
+            },
+            {
+                "title": "2. Install Dependencies",
+                "level": 4,
+                "id": "2-install-dependencies"
+            },
+            {
+                "title": "Install all dependencies",
+                "level": 1,
+                "id": "install-all-dependencies"
+            },
+            {
+                "title": "Build the design system",
+                "level": 1,
+                "id": "build-the-design-system"
+            },
+            {
+                "title": "Start development mode",
+                "level": 1,
+                "id": "start-development-mode"
+            },
+            {
+                "title": "3. Development Workflow",
+                "level": 4,
+                "id": "3-development-workflow"
+            },
+            {
+                "title": "Create a new branch for your feature",
+                "level": 1,
+                "id": "create-a-new-branch-for-your-feature"
+            },
+            {
+                "title": "Make your changes",
+                "level": 1,
+                "id": "make-your-changes"
+            },
+            {
+                "title": "...",
+                "level": 1,
+                "id": ""
+            },
+            {
+                "title": "Run tests",
+                "level": 1,
+                "id": "run-tests"
+            },
+            {
+                "title": "Run linting",
+                "level": 1,
+                "id": "run-linting"
+            },
+            {
+                "title": "Build to ensure everything works",
+                "level": 1,
+                "id": "build-to-ensure-everything-works"
+            },
+            {
+                "title": "Project Structure",
+                "level": 3,
+                "id": "project-structure"
+            },
+            {
+                "title": "Contribution Types",
+                "level": 3,
+                "id": "contribution-types"
+            },
+            {
+                "title": "🐛 Bug Fixes",
+                "level": 4,
+                "id": "bug-fixes"
+            },
+            {
+                "title": "✨ New Components",
+                "level": 4,
+                "id": "new-components"
+            },
+            {
+                "title": "📚 Documentation",
+                "level": 4,
+                "id": "documentation"
+            },
+            {
+                "title": "🎨 Design Tokens",
+                "level": 4,
+                "id": "design-tokens"
+            },
+            {
+                "title": "Component Development Guidelines",
+                "level": 3,
+                "id": "component-development-guidelines"
+            },
+            {
+                "title": "Creating New Components",
+                "level": 4,
+                "id": "creating-new-components"
+            },
+            {
+                "title": "Testing Requirements",
+                "level": 3,
+                "id": "testing-requirements"
+            },
+            {
+                "title": "Unit Tests",
+                "level": 4,
+                "id": "unit-tests"
+            },
+            {
+                "title": "Integration Tests",
+                "level": 4,
+                "id": "integration-tests"
+            },
+            {
+                "title": "Visual Regression Tests",
+                "level": 4,
+                "id": "visual-regression-tests"
+            },
+            {
+                "title": "Documentation Standards",
+                "level": 3,
+                "id": "documentation-standards"
+            },
+            {
+                "title": "Component Documentation",
+                "level": 4,
+                "id": "component-documentation"
+            },
+            {
+                "title": "Code Comments",
+                "level": 4,
+                "id": "code-comments"
+            },
+            {
+                "title": "Submission Process",
+                "level": 3,
+                "id": "submission-process"
+            },
+            {
+                "title": "Pull Request Guidelines",
+                "level": 4,
+                "id": "pull-request-guidelines"
+            },
+            {
+                "title": "Changeset Creation",
+                "level": 4,
+                "id": "changeset-creation"
+            },
+            {
+                "title": "Add changeset for your changes",
+                "level": 1,
+                "id": "add-changeset-for-your-changes"
+            },
+            {
+                "title": "Follow prompts to describe your changes",
+                "level": 1,
+                "id": "follow-prompts-to-describe-your-changes"
+            },
+            {
+                "title": "Choose appropriate semver bump (patch/minor/major)",
+                "level": 1,
+                "id": "choose-appropriate-semver-bump-patch-minor-major"
+            },
+            {
+                "title": "Community Resources",
+                "level": 3,
+                "id": "community-resources"
+            },
+            {
+                "title": "Getting Help",
+                "level": 4,
+                "id": "getting-help"
+            },
+            {
+                "title": "Recognition",
+                "level": 4,
+                "id": "recognition"
+            },
+            {
+                "title": "Code of Conduct",
+                "level": 4,
+                "id": "code-of-conduct"
+            },
+            {
+                "title": "Common Issues and Solutions",
+                "level": 2,
+                "id": "common-issues-and-solutions"
+            },
+            {
+                "title": "Build Errors",
+                "level": 3,
+                "id": "build-errors"
+            },
+            {
+                "title": "Clear node modules and reinstall",
+                "level": 1,
+                "id": "clear-node-modules-and-reinstall"
+            },
+            {
+                "title": "Styling Issues",
+                "level": 3,
+                "id": "styling-issues"
+            },
+            {
+                "title": "Performance Optimization",
+                "level": 3,
+                "id": "performance-optimization"
             },
             {
                 "title": "Next Steps",
                 "level": 2,
                 "id": "next-steps"
+            },
+            {
+                "title": "For Teams",
+                "level": 3,
+                "id": "for-teams"
+            },
+            {
+                "title": "For Contributors",
+                "level": 3,
+                "id": "for-contributors"
             }
         ]
     }
