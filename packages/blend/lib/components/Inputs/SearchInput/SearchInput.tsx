@@ -118,6 +118,10 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                             ? searchInputTokens.borderBottom.error
                             : searchInputTokens.borderBottom.default
                     }
+                    color={searchInputTokens.color}
+                    fontSize={searchInputTokens.fontSize}
+                    fontWeight={searchInputTokens.fontWeight}
+                    placeholderColor={searchInputTokens.placeholderColor}
                     _hover={{
                         borderBottom: searchInputTokens.borderBottom.hover,
                     }}
