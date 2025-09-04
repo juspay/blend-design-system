@@ -14,7 +14,7 @@
     --surface: oklch(0.98 0 0);
 
     /* Enhanced sidebar and navigation tokens */
-    --sidebar-background: oklch(0.995 0 0);
+    /* --sidebar-background: oklch(0.995 0 0); */
     --sidebar-border: oklch(0.94 0 0);
     --sidebar-item-hover: oklch(0.96 0 0);
     --sidebar-item-active: oklch(0.92 0 0);
@@ -102,6 +102,32 @@
     --documentation-card-gradient-to: #0000001a;
     --gray-text: #9e9e9e;
     --footer-text-color: #777e90;
+
+    /* changelog */
+    --rounded-100: 100px;
+    --rounded-80: 80px;
+    --rounded-60: 60px;
+    --rounded-50: 50px;
+    --changelog-border-color: rgba(255, 255, 255, 0.05);
+    --changelog-bg-color: 180deg, #060606_37.13%, rgba(0, 0, 0, 0.5) _140.17%;
+    --pixel: 1px;
+    --grey-100: #9f9f9f;
+    --grey-200: #9e9e9e;
+    --grey-300: #b3b3b3;
+    --grey-400: #64677c;
+    --grey-500: #4f4f4f;
+    --text-40: 40px;
+    --text-64: 64px;
+    --text-56: 56px;
+    --rounded-50: 50px;
+    --rounded-46: 46px;
+    --date-card-badge-color: rgba(255, 255, 255, 0.02);
+
+    --changelog-card-list-bg-from: rgba(6, 6, 6, 1);
+    --changelog-card-list-bg-to: rgba(0, 0, 0, 0.5);
+
+    --search-bar-from: #161616;
+    --search-bar-to: #191919;
 }
 
 @theme inline {
@@ -122,7 +148,7 @@
     --tab-bar-border-radius: 83px;
     --tab-btn-font-size: 18px;
     --padding-1-pixel: 1px;
-    --tabs-section-width: 636px;
+    --tabs-section-width: 700px;
     --tabs-border-radius: 50px;
     --tokenizer-heading-letter-spacing: 40px;
     --documentation-card-border-radius: 120px;
@@ -146,7 +172,7 @@
     /* md */
     --main-heading-text-md: 4rem;
     --subheading-font-size-md: 24px;
-    --tabs-section-width-md: 550px;
+    --tabs-section-width-md: 600px;
     --tab-btn-font-size-md: 14px;
     --tab-heading-font-size-md: 12px;
     --tokenizer-heading-letter-spacing-md: 30px;
@@ -161,7 +187,7 @@
     --main-heading-text-sm: 3.5rem;
     --gradient-heading-box-font-size-sm: 10px;
     --subheading-font-size-sm: 18px;
-    --tabs-section-width-sm: 500px;
+    --tabs-section-width-sm: 550px;
     --tab-btn-font-size-sm: 12px;
     --tab-heading-font-size-sm: 10px;
     --tokenizer-heading-letter-spacing-sm: 25px;
@@ -175,7 +201,7 @@
     /* xs */
     --main-heading-text-xs: 2rem;
     --gradient-heading-box-font-size-xs: 8px --subheading-font-size-xs: 14px;
-    --tabs-section-width-xs: 320px;
+    --tabs-section-width-xs: 400px;
     --tab-btn-font-size-xs: 10px;
     --tab-heading-font-size-xs: 8px;
     --tokenizer-heading-letter-spacing-xs: 20px;
@@ -187,9 +213,14 @@
     --documentation-card-rounded-xs: 50px;
     --playground-border-radius-xs: 80px;
 
+    --tabs-section-width-xxs: 330px;
     --text-xxs: 10px;
     --subheading-font-size-xxs: 12px;
     --playground-border-radius-xxs: 40px;
+    --changelog-bg-color: 180deg, #060606_37.13%, rgba(0, 0, 0, 0.5) _140.17%;
+    --border-color:
+        90deg, rgba(0, 0, 0, 0.25) _0%, rgba(0, 0, 0, 0.1) _48.08%,
+        rgba(0, 0, 0, 0.25) _100%;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -206,7 +237,7 @@
         --surface: oklch(0.2 0 0);
 
         /* Enhanced dark mode sidebar and navigation tokens */
-        --sidebar-background: oklch(0.16 0 0);
+        /* --sidebar-background: oklch(0.16 0 0); */
         --sidebar-border: oklch(0.25 0 0);
         --sidebar-item-hover: oklch(0.22 0 0);
         --sidebar-item-active: oklch(0.28 0 0);
@@ -258,7 +289,7 @@
     --surface: oklch(0.98 0 0);
 
     /* Enhanced light mode sidebar and navigation tokens */
-    --sidebar-background: oklch(0.995 0 0);
+    /* --sidebar-background: oklch(0.995 0 0); */
     --sidebar-border: oklch(0.94 0 0);
     --sidebar-item-hover: oklch(0.96 0 0);
     --sidebar-item-active: oklch(0.92 0 0);
@@ -309,7 +340,7 @@
     --surface: oklch(0.2 0 0);
 
     /* Enhanced dark mode sidebar and navigation tokens */
-    --sidebar-background: oklch(0.16 0 0);
+    /* --sidebar-background: oklch(0.16 0 0); */
     --sidebar-border: oklch(0.25 0 0);
     --sidebar-item-hover: oklch(0.22 0 0);
     --sidebar-item-active: oklch(0.28 0 0);
@@ -548,4 +579,25 @@ select:focus {
     font-family: var(--font-mono);
     font-size: 10px;
     margin: 0 2px;
+}
+
+/* Changelog commit link styling */
+.commit-link {
+    color: oklch(0.45 0.15 220);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.commit-link:hover {
+    color: oklch(0.35 0.18 220);
+    text-decoration: underline;
+}
+
+/* Dark mode support for commit links */
+.dark .commit-link {
+    color: oklch(0.65 0.15 220);
+}
+
+.dark .commit-link:hover {
+    color: oklch(0.75 0.18 220);
 }
