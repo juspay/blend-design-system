@@ -89,12 +89,12 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         const hasTooltip = shouldShowAutoTooltip || customTooltip
 
         const tooltipContent = customTooltip || (
-            <div>
-                {showTooltip && item.label && <div>{item.label}</div>}
+            <>
+                {showTooltip && item.label && <span>{item.label}</span>}
                 {showSubLabelTooltip && item.subLabel && (
-                    <div>{item.subLabel}</div>
+                    <Block style={{ display: 'block' }}>{item.subLabel}</Block>
                 )}
-            </div>
+            </>
         )
 
         const rightSlotConfig = getRightSlotConfig(isSelected, type, item)
