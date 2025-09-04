@@ -126,7 +126,7 @@ const Sidebar = ({ items, baseRoute = '/docs' }: SidebarProps) => {
     }
 
     return (
-        <div className="flex flex-col h-full bg-[var(--sidebar-background)] border-r border-[var(--sidebar-border)]">
+        <div className="flex flex-col h-full bg-[var(--sidebar-background)]">
             <div className="flex-1 overflow-y-auto py-6 px-4">
                 <div className="space-y-2">
                     {items.map((item) => renderSidebarItem(item))}

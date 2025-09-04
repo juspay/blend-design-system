@@ -1,0 +1,280 @@
+---
+title: Avatar
+description: The Avatar component displays user profile images, initials, or fallback icons with various sizes and styling options for user identification and personalization.
+category: components
+tags:
+    - avatar
+    - component
+    - user
+    - profile
+    - image
+RepoFolderName: Avatar
+StorybookLink: components-avatar--docs
+---
+
+<AvatarPreview />
+
+## Usage
+
+```tsx
+import { Avatar, AvatarSize, AvatarShape } from 'blend-v1'
+
+function MyComponent() {
+    return (
+        <Avatar
+            src="https://example.com/user-avatar.jpg"
+            alt="John Doe"
+            size={AvatarSize.MD}
+            shape={AvatarShape.CIRCULAR}
+            online={true}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'src',
+                hintText: 'The source URL of the avatar image',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'alt',
+                hintText:
+                    'Alternative text for the avatar image, also used for initials fallback',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'fallback',
+                hintText: 'Custom fallback content when image fails to load',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'The size variant of the avatar',
+            },
+            { content: 'AvatarSize', hintText: 'enum' },
+            { content: 'AvatarSize.MD' },
+        ],
+        [
+            {
+                content: 'shape',
+                hintText: 'The shape variant of the avatar',
+            },
+            { content: 'AvatarShape', hintText: 'enum' },
+            { content: 'AvatarShape.CIRCULAR' },
+        ],
+        [
+            {
+                content: 'online',
+                hintText: 'Whether to show the online status indicator',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'leadingSlot',
+                hintText: 'Content to display before the avatar',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'trailingSlot',
+                hintText: 'Content to display after the avatar',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- Multiple size variants (SM, MD, LG, XL)
+- Two shape options (circular and rounded)
+- Automatic fallback to initials when image fails
+- Custom fallback content support
+- Online status indicator
+- Leading and trailing slots for additional content
+- Accessible screen reader support
+- Automatic image error handling
+- Customizable styling through design tokens
+
+## Usage Examples
+
+### Basic Avatar
+
+Simple avatar with image source
+
+```tsx
+<Avatar src="https://example.com/avatar.jpg" alt="User Name" />
+```
+
+### Avatar with Initials Fallback
+
+Avatar that shows initials when image is unavailable
+
+```tsx
+<Avatar alt="John Doe" size={AvatarSize.LG} />
+```
+
+### Custom Fallback Content
+
+Avatar with custom fallback content
+
+```tsx
+<Avatar
+    src="invalid-image-url.jpg"
+    alt="User Name"
+    fallback={<UserIcon />}
+    size={AvatarSize.MD}
+/>
+```
+
+### Online Status Indicator
+
+Avatar with online status indicator
+
+```tsx
+<Avatar
+    src="https://example.com/avatar.jpg"
+    alt="Active User"
+    online={true}
+    size={AvatarSize.LG}
+/>
+```
+
+### Different Sizes
+
+Avatars in various sizes
+
+```tsx
+<Avatar src="avatar.jpg" alt="User" size={AvatarSize.SM} />
+<Avatar src="avatar.jpg" alt="User" size={AvatarSize.MD} />
+<Avatar src="avatar.jpg" alt="User" size={AvatarSize.LG} />
+<Avatar src="avatar.jpg" alt="User" size={AvatarSize.XL} />
+```
+
+### Rounded Shape
+
+Avatar with rounded corners instead of circular
+
+```tsx
+<Avatar
+    src="https://example.com/avatar.jpg"
+    alt="User Name"
+    shape={AvatarShape.ROUNDED}
+    size={AvatarSize.LG}
+/>
+```
+
+### Avatar with Slots
+
+Avatar with leading and trailing content
+
+```tsx
+<Avatar
+    src="https://example.com/avatar.jpg"
+    alt="Team Lead"
+    size={AvatarSize.MD}
+    online={true}
+    leadingSlot={<BadgeIcon />}
+    trailingSlot={<ChevronDown />}
+/>
+```
+
+### Text-Only Avatar
+
+Avatar using only initials (no image)
+
+```tsx
+<Avatar alt="Jane Smith" size={AvatarSize.XL} shape={AvatarShape.CIRCULAR} />
+```
+
+## Component Tokens
+
+You can style the avatar component using the following tokens:
+
+```tsx
+export type AvatarTokensType = {
+    container: {
+        background: {
+            default: CSSObject['backgroundColor']
+        }
+        border: {
+            withImage: CSSObject['borderColor']
+            withoutImage: CSSObject['borderColor']
+        }
+    }
+    text: {
+        color: {
+            default: CSSObject['color']
+        }
+    }
+    indicator: {
+        background: {
+            default: CSSObject['backgroundColor']
+        }
+        ring: {
+            color: CSSObject['borderColor']
+        }
+    }
+    sizes: {
+        [key in AvatarSize]: {
+            width: CSSObject['width']
+            height: CSSObject['height']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            indicatorSize: string
+            indicatorRingWidth: string
+            indicatorOffset: string
+        }
+    }
+    shapes: {
+        [key in AvatarShape]: {
+            borderRadius: CSSObject['borderRadius']
+        }
+    }
+}
+```
+
+## Enums
+
+### AvatarSize
+
+```tsx
+enum AvatarSize {
+    SM = 'sm', // 24px
+    MD = 'md', // 32px
+    LG = 'lg', // 40px
+    XL = 'xl', // 48px
+}
+```
+
+### AvatarShape
+
+```tsx
+enum AvatarShape {
+    CIRCULAR = 'circular',
+    ROUNDED = 'rounded',
+}
+```

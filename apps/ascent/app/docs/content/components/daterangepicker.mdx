@@ -1,0 +1,594 @@
+---
+title: DateRangePicker
+description: The DateRangePicker component provides a comprehensive date and time selection interface with calendar grid, preset options, mobile drawer support, and flexible configuration for single or range date selection with time picker integration.
+category: components
+tags:
+    - daterangepicker
+    - component
+    - date
+    - time
+    - calendar
+    - range
+    - picker
+    - form
+    - datetime
+    - schedule
+RepoFolderName: DateRangePicker
+StorybookLink: components-daterangepicker--docs
+---
+
+<DateRangePickerPreview />
+
+## Usage
+
+```tsx
+import { DateRangePicker, DateRange } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
+
+    const handleDateRangeChange = (range: DateRange) => {
+        setDateRange(range)
+        console.log('Selected date range:', range)
+    }
+
+    return (
+        <DateRangePicker
+            value={dateRange}
+            onChange={handleDateRangeChange}
+            showDateTimePicker={true}
+            showPresets={true}
+            allowSingleDateSelection={false}
+            dateFormat="dd/MM/yyyy"
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Current selected date range',
+            },
+            { content: 'DateRange | undefined', hintText: 'DateRange' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback when date range changes',
+            },
+            { content: '(range: DateRange) => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showDateTimePicker',
+                hintText: 'Whether to show date and time inputs',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'showPresets',
+                hintText: 'Whether to show quick preset options',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text for the trigger',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isDisabled',
+                hintText: 'Whether the picker is disabled',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'icon',
+                hintText: 'Custom icon for the trigger',
+            },
+            { content: 'ReactNode', hintText: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minDate',
+                hintText: 'Minimum selectable date',
+            },
+            { content: 'Date', hintText: 'Date' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxDate',
+                hintText: 'Maximum selectable date',
+            },
+            { content: 'Date', hintText: 'Date' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'dateFormat',
+                hintText: 'Format for displaying dates',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '"dd/MM/yyyy"' },
+        ],
+        [
+            {
+                content: 'allowSingleDateSelection',
+                hintText: 'Allow selection of single date instead of range',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'disableFutureDates',
+                hintText: 'Disable selection of future dates',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'disablePastDates',
+                hintText: 'Disable selection of past dates',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'triggerElement',
+                hintText: 'Custom trigger element',
+            },
+            { content: 'ReactNode', hintText: 'ReactNode' },
+            { content: 'null' },
+        ],
+        [
+            {
+                content: 'useDrawerOnMobile',
+                hintText: 'Use mobile drawer instead of popover on mobile',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'skipQuickFiltersOnMobile',
+                hintText: 'Hide preset options on mobile',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Types
+
+```tsx
+export type DateRange = {
+    startDate: Date
+    endDate: Date
+    showTimePicker?: boolean
+}
+
+export enum DateRangePreset {
+    CUSTOM = 'custom',
+    TODAY = 'today',
+    YESTERDAY = 'yesterday',
+    TOMORROW = 'tomorrow',
+    LAST_1_HOUR = 'last1Hour',
+    LAST_6_HOURS = 'last6Hours',
+    LAST_7_DAYS = 'last7Days',
+    LAST_30_DAYS = 'last30Days',
+    LAST_3_MONTHS = 'last3Months',
+    LAST_12_MONTHS = 'last12Months',
+    NEXT_7_DAYS = 'next7Days',
+    NEXT_30_DAYS = 'next30Days',
+    NEXT_3_MONTHS = 'next3Months',
+    NEXT_12_MONTHS = 'next12Months',
+}
+```
+
+## Component Tokens
+
+The DateRangePicker uses comprehensive tokens for styling all its sub-components:
+
+```tsx
+export type CalendarTokenType = {
+    quickRange: {
+        width: CSSObject['width']
+        trigger: {
+            /* Quick range trigger styling */
+        }
+        content: {
+            /* Dropdown content styling */
+        }
+        item: {
+            /* Individual preset item styling */
+        }
+    }
+    mobileDrawer: {
+        picker: {
+            /* Mobile time picker styling */
+        }
+        header: {
+            /* Mobile drawer header */
+        }
+        presetItem: {
+            /* Mobile preset items */
+        }
+        actionButtons: {
+            /* Mobile action buttons */
+        }
+    }
+    trigger: {
+        height: CSSObject['height']
+        borderRadius: CSSObject['borderRadius']
+        /* Complete trigger button styling */
+    }
+    calendar: {
+        inputs: {
+            /* Date/time input styling */
+        }
+        calendarGrid: {
+            /* Calendar grid and day styling */
+        }
+        footer: {
+            /* Footer controls styling */
+        }
+    }
+}
+```
+
+The component uses responsive tokens that provide comprehensive styling for desktop popover and mobile drawer experiences.
+
+## Features
+
+- **Date Range Selection**: Select start and end dates with visual range indication
+- **Time Picker Integration**: Optional time selection with date ranges
+- **Quick Presets**: Pre-defined date ranges (Today, Yesterday, Last 7 days, etc.)
+- **Mobile Optimized**: Responsive design with mobile drawer on small screens
+- **Single Date Mode**: Option to select single dates instead of ranges
+- **Date Validation**: Built-in validation with min/max date constraints
+- **Custom Triggers**: Support for custom trigger elements
+- **Keyboard Navigation**: Full keyboard accessibility support
+- **Flexible Formatting**: Configurable date display formats
+- **Time Zone Support**: Handles local time zone calculations
+
+## Usage Examples
+
+### Basic Date Range Picker
+
+Simple date range selection with presets:
+
+```tsx
+import { DateRangePicker, DateRange } from '@juspay/blend-design-system'
+
+const [reportDateRange, setReportDateRange] = useState<DateRange | undefined>(
+    undefined
+)
+
+const handleReportDateChange = (range: DateRange) => {
+    setReportDateRange(range)
+    // Fetch data for the selected range
+    fetchReportData(range)
+}
+
+;<DateRangePicker
+    value={reportDateRange}
+    onChange={handleReportDateChange}
+    showDateTimePicker={true}
+    showPresets={true}
+    dateFormat="dd/MM/yyyy"
+/>
+```
+
+### Single Date Selection
+
+Date picker for single date selection:
+
+```tsx
+const [eventDate, setEventDate] = useState<DateRange | undefined>(undefined)
+
+const handleEventDateChange = (range: DateRange) => {
+    setEventDate(range)
+}
+
+;<DateRangePicker
+    value={eventDate}
+    onChange={handleEventDateChange}
+    allowSingleDateSelection={true}
+    showPresets={false}
+    showDateTimePicker={false}
+    dateFormat="dd/MM/yyyy"
+/>
+```
+
+### Date Range with Time
+
+Precise date and time range selection:
+
+```tsx
+const [meetingSchedule, setMeetingSchedule] = useState<DateRange | undefined>(
+    undefined
+)
+
+const handleScheduleChange = (range: DateRange) => {
+    setMeetingSchedule(range)
+    console.log('Meeting scheduled:', {
+        start: range.startDate,
+        end: range.endDate,
+    })
+}
+
+;<DateRangePicker
+    value={meetingSchedule}
+    onChange={handleScheduleChange}
+    showDateTimePicker={true}
+    showPresets={true}
+    allowSingleDateSelection={false}
+    dateFormat="dd/MM/yyyy"
+/>
+```
+
+### Historical Data Selection
+
+Date range picker for historical data with future dates disabled:
+
+```tsx
+const [historicalRange, setHistoricalRange] = useState<DateRange | undefined>(
+    undefined
+)
+
+const handleHistoricalChange = (range: DateRange) => {
+    setHistoricalRange(range)
+    // Load historical analytics data
+    loadAnalyticsData(range)
+}
+
+;<DateRangePicker
+    value={historicalRange}
+    onChange={handleHistoricalChange}
+    disableFutureDates={true}
+    showPresets={true}
+    showDateTimePicker={false}
+    dateFormat="dd/MM/yyyy"
+/>
+```
+
+### Custom Trigger Element
+
+Date range picker with custom button trigger:
+
+```tsx
+const [customRange, setCustomRange] = useState<DateRange | undefined>(undefined)
+
+const CustomTrigger = () => (
+    <button
+        style={{
+            padding: '12px 16px',
+            border: '2px solid #e5e7eb',
+            borderRadius: '8px',
+            background: 'white',
+            cursor: 'pointer',
+        }}
+    >
+        📅{' '}
+        {customRange
+            ? `${customRange.startDate.toLocaleDateString()} - ${customRange.endDate.toLocaleDateString()}`
+            : 'Select Date Range'}
+    </button>
+)
+
+;<DateRangePicker
+    value={customRange}
+    onChange={setCustomRange}
+    triggerElement={<CustomTrigger />}
+    showPresets={true}
+    showDateTimePicker={true}
+/>
+```
+
+### Mobile-Optimized Configuration
+
+Date picker optimized for mobile experience:
+
+```tsx
+const [mobileRange, setMobileRange] = useState<DateRange | undefined>(undefined)
+
+;<DateRangePicker
+    value={mobileRange}
+    onChange={setMobileRange}
+    useDrawerOnMobile={true}
+    skipQuickFiltersOnMobile={false}
+    showDateTimePicker={true}
+    showPresets={true}
+    dateFormat="dd/MM/yyyy"
+/>
+```
+
+### Booking System Integration
+
+Date range picker for booking systems with constraints:
+
+```tsx
+const [bookingDates, setBookingDates] = useState<DateRange | undefined>(
+    undefined
+)
+
+const today = new Date()
+const maxDate = new Date()
+maxDate.setFullYear(today.getFullYear() + 1) // One year from now
+
+const handleBookingChange = (range: DateRange) => {
+    setBookingDates(range)
+    // Check availability for selected dates
+    checkAvailability(range)
+}
+
+;<DateRangePicker
+    value={bookingDates}
+    onChange={handleBookingChange}
+    minDate={today}
+    maxDate={maxDate}
+    disablePastDates={true}
+    showPresets={false}
+    showDateTimePicker={true}
+    allowSingleDateSelection={false}
+    dateFormat="dd/MM/yyyy"
+/>
+```
+
+### Analytics Dashboard
+
+Date range picker for analytics with common presets:
+
+```tsx
+const [analyticsRange, setAnalyticsRange] = useState<DateRange | undefined>(
+    undefined
+)
+
+const handleAnalyticsChange = (range: DateRange) => {
+    setAnalyticsRange(range)
+
+    // Update dashboard metrics
+    updateDashboardMetrics({
+        startDate: range.startDate,
+        endDate: range.endDate,
+        includeTime: true,
+    })
+}
+
+;<div>
+    <h3>Analytics Dashboard</h3>
+    <DateRangePicker
+        value={analyticsRange}
+        onChange={handleAnalyticsChange}
+        showPresets={true}
+        showDateTimePicker={false}
+        disableFutureDates={true}
+        dateFormat="dd/MM/yyyy"
+    />
+
+    {analyticsRange && (
+        <div>
+            Showing data from {analyticsRange.startDate.toLocaleDateString()}
+            to {analyticsRange.endDate.toLocaleDateString()}
+        </div>
+    )}
+</div>
+```
+
+## Behavior
+
+### Date Selection Flow
+
+- **Single Click**: Select single date or start of range
+- **Range Selection**: Click start date, then end date to complete range
+- **Visual Feedback**: Highlight selected dates and range preview
+- **Validation**: Ensure end date is after start date
+
+### Mobile Experience
+
+- **Drawer Interface**: Full-screen drawer on mobile devices
+- **Touch Optimized**: Large touch targets for mobile interaction
+- **Preset Integration**: Quick access to common date ranges
+- **Time Picker**: Scrollable time selection interface
+
+### Keyboard Navigation
+
+- **Tab Navigation**: Navigate between inputs and calendar
+- **Arrow Keys**: Navigate calendar grid
+- **Enter/Space**: Select dates and activate controls
+- **Escape**: Close picker without selection
+
+### Preset Functionality
+
+- **Quick Selection**: Common date ranges (Today, Last 7 days, etc.)
+- **Custom Presets**: Support for custom preset configurations
+- **Smart Defaults**: Intelligent preset suggestions based on context
+- **Mobile Adaptation**: Streamlined presets for mobile interfaces
+
+## Best Practices
+
+### When to Use DateRangePicker
+
+- **Analytics Dashboards**: Date range selection for data analysis
+- **Booking Systems**: Hotel, flight, and event booking date selection
+- **Report Generation**: Selecting time periods for reports
+- **Scheduling**: Meeting and event scheduling interfaces
+- **Data Filtering**: Filtering datasets by date ranges
+
+### Mobile Considerations
+
+- **Drawer Mode**: Use `useDrawerOnMobile={true}` for better mobile UX
+- **Preset Optimization**: Consider `skipQuickFiltersOnMobile` for simpler mobile UI
+- **Touch Targets**: Ensure adequate spacing for touch interaction
+- **Responsive Design**: Test across different mobile screen sizes
+
+### Date Range Configuration
+
+- **Logical Constraints**: Set appropriate min/max dates for your use case
+- **Future/Past Restrictions**: Use `disableFutureDates` or `disablePastDates` as needed
+- **Format Consistency**: Use consistent date formats across your application
+- **Time Zone Handling**: Consider time zone implications for your users
+
+### Accessibility Guidelines
+
+- **Label Association**: Provide clear labels for screen readers
+- **Keyboard Support**: Ensure full keyboard navigation functionality
+- **Focus Management**: Maintain proper focus flow through the interface
+- **Error Communication**: Provide accessible error messages for invalid selections
+- **ARIA Labels**: Use appropriate ARIA labels for complex calendar interactions
+
+### Performance Optimization
+
+- **State Management**: Use appropriate state management for complex applications
+- **Debouncing**: Consider debouncing for expensive operations triggered by date changes
+- **Memory Management**: Clean up event listeners and timers properly
+- **Lazy Loading**: Consider lazy loading for large calendar ranges
+
+### Form Integration
+
+- **Controlled Components**: Always use controlled date range state
+- **Validation**: Integrate with form validation libraries
+- **Submission Handling**: Properly format dates for API submission
+- **Reset Functionality**: Implement proper form reset behavior
+- **Default Values**: Provide sensible default date ranges when appropriate
+
+### User Experience Guidelines
+
+- **Clear Labels**: Use descriptive labels and placeholders
+- **Visual Feedback**: Show clear selection states and hover effects
+- **Error Handling**: Provide helpful error messages for invalid selections
+- **Loading States**: Show loading indicators during data fetching
+- **Confirmation**: Consider confirmation steps for critical date selections
+
+### Data Handling
+
+- **Time Zone Consistency**: Handle time zones consistently across your application
+- **Date Formatting**: Format dates appropriately for display and storage
+- **Range Validation**: Validate date ranges on both client and server
+- **Edge Cases**: Handle edge cases like leap years and daylight saving time
+- **Persistence**: Consider persisting user's preferred date ranges
