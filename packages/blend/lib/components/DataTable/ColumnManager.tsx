@@ -14,6 +14,7 @@ import {
     type MultiSelectMenuGroupType,
     MultiSelectMenuSide,
 } from '../MultiSelect/types'
+import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export const ColumnManager = <T extends Record<string, unknown>>({
     columns,
@@ -37,6 +38,12 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                 alwaysSelected: alwaysSelectedColumns.includes(
                     String(column.field)
                 ),
+                tooltipProps: {
+                    side: TooltipSide.LEFT,
+                    align: TooltipAlign.CENTER,
+                    size: TooltipSize.SMALL,
+                    delayDuration: 300,
+                },
             })),
         },
     ]
