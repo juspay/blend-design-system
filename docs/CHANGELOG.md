@@ -2,7 +2,23 @@
 
 This is a stable release. Changes since last stable release:
 
+- Merge pull request #354 from juspay/staging (cb8721b)
+- Merge pull request #353 from juspay/revert-351-revert-350-dev (f9ad5a4)
+- Revert "Revert "dev to staging"" (91036a2)
+- Merge pull request #352 from juspay/staging (b638f90)
+- Merge pull request #351 from juspay/revert-350-dev (24443f3)
+- Revert "dev to staging" (f83824e)
+- Merge pull request #350 from juspay/dev (af92a21)
+- Merge pull request #349 from juspay/release/update-stable-version-0.0.15 (2aec730)
+- chore(release): v0.0.15 [STABLE] (4e4651a)
 - Merge pull request #348 from juspay/staging (d6c03d6)
+- 337 chart xaxis ticks overlapping and inconsistency (#346) (79a9893)
+- feat: enhance MultiSelect component with maxSelections and selectedPo… (#339) (ab77657)
+- feat: added tooltip support in menu component (#345) (a089300)
+- chore: changed the action color of snackbar (#342) (ac025da)
+- feat: added the documentation of remaining component (#329) (fcc956c)
+- Merge pull request #335 from juspay/DS-305-card-component (7ccbbf2)
+- feat: changelog card components created (#303) (6f5fd3f)
 - Merge pull request #334 from juspay/dev (81ddbaa)
 - chore(release): v0.0.15-beta [BETA] (#333) (3544e33)
 - Dev to Staging (#332) (d13d2fa)
