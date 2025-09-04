@@ -7,6 +7,10 @@ import {
     MenuItemV2ActionType,
 } from '../../../../packages/blend/lib/components/Menu/types'
 import type { MenuV2GroupType } from '../../../../packages/blend/lib/components/Menu/types'
+import {
+    TooltipSide,
+    TooltipSize,
+} from '../../../../packages/blend/lib/components/Tooltip/types'
 import { Button } from '../../../../packages/blend/lib/components/Button'
 import { ButtonType } from '../../../../packages/blend/lib/components/Button/types'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
@@ -399,6 +403,86 @@ const longContentItems: MenuV2GroupType[] = [
                     'With detailed description that explains what this action will do when selected',
                 slot1: <Settings size={16} />,
                 onClick: () => console.log('Another long item'),
+            },
+        ],
+    },
+]
+
+const tooltipMenuItems: MenuV2GroupType[] = [
+    {
+        label: 'Basic Tooltips',
+        items: [
+            {
+                label: 'Profile Settings',
+                slot1: <User size={16} />,
+                onClick: () => console.log('Profile settings'),
+                tooltip: 'Manage your account and preferences',
+                tooltipProps: {
+                    side: TooltipSide.RIGHT,
+                    size: TooltipSize.LARGE,
+                },
+            },
+            {
+                label: 'Security',
+                slot1: <Shield size={16} />,
+                onClick: () => console.log('Security'),
+                tooltip: 'Configure privacy and security settings',
+                tooltipProps: {
+                    side: TooltipSide.RIGHT,
+                    size: TooltipSize.LARGE,
+                },
+            },
+            {
+                label: 'Notifications',
+                slot1: <Bell size={16} />,
+                onClick: () => console.log('Notifications'),
+                tooltip: (
+                    <div>
+                        <strong>Notification Settings</strong>
+                        <br />
+                        • Email alerts
+                        <br />
+                        • Push notifications
+                        <br />• SMS updates
+                    </div>
+                ),
+                tooltipProps: {
+                    side: TooltipSide.RIGHT,
+                    size: TooltipSize.LARGE,
+                },
+            },
+        ],
+        showSeparator: true,
+    },
+    {
+        label: 'Advanced Tooltips',
+        items: [
+            {
+                label: 'Data Export',
+                subLabel: 'Export your data',
+                slot1: <Download size={16} />,
+                variant: MenuItemV2Variant.ACTION,
+                actionType: MenuItemV2ActionType.PRIMARY,
+                onClick: () => console.log('Data export'),
+                tooltip:
+                    'Download all your data in various formats (JSON, CSV, PDF)',
+                tooltipProps: {
+                    side: TooltipSide.RIGHT,
+                    size: TooltipSize.LARGE,
+                },
+            },
+            {
+                label: 'Delete Account',
+                subLabel: 'Permanently remove',
+                slot1: <Trash2 size={16} />,
+                variant: MenuItemV2Variant.ACTION,
+                actionType: MenuItemV2ActionType.DANGER,
+                onClick: () => console.log('Delete account'),
+                tooltip: 'All your data will be permanently deleted',
+                tooltipProps: {
+                    side: TooltipSide.RIGHT,
+                    size: TooltipSize.LARGE,
+                },
             },
         ],
     },
@@ -1020,11 +1104,73 @@ export const MenuDemo: React.FC = () => {
                 </Block>
             </Block>
 
-            {/* 8. Combined Features */}
+            {/* 8. Tooltip Support */}
             <Block marginBottom="48px">
                 <Block marginBottom="16px">
                     <Text fontSize={28} fontWeight="semibold">
-                        8. Combined Features
+                        8. Tooltip Support
+                    </Text>
+                </Block>
+                <Block marginBottom="24px">
+                    <Text fontSize={14} color="gray.600">
+                        Menu items with contextual tooltips on hover - New
+                        Feature!
+                    </Text>
+                </Block>
+
+                <Block display="flex" gap="16px" flexWrap="wrap">
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                text="Basic Tooltips"
+                            />
+                        }
+                        items={tooltipMenuItems}
+                        maxWidth={280}
+                    />
+
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                text="Tooltip + Search"
+                            />
+                        }
+                        items={tooltipMenuItems}
+                        enableSearch={true}
+                        searchPlaceholder="Search settings..."
+                        maxWidth={320}
+                    />
+                </Block>
+
+                <Block
+                    marginTop="16px"
+                    padding="16px"
+                    backgroundColor="blue.50"
+                    borderRadius="8px"
+                >
+                    <Text fontSize={14} fontWeight="medium" color="blue.700">
+                        💡 Tooltip Features:
+                    </Text>
+                    <Text fontSize={12} color="blue.600" lineHeight="1.6">
+                        • String or React component content
+                        <br />
+                        • Customizable positioning (top, right, bottom, left)
+                        <br />
+                        • Multiple sizes and styling options
+                        <br />
+                        • Configurable delay and arrow display
+                        <br />• Works with all menu item variants
+                    </Text>
+                </Block>
+            </Block>
+
+            {/* 9. Combined Features */}
+            <Block marginBottom="48px">
+                <Block marginBottom="16px">
+                    <Text fontSize={28} fontWeight="semibold">
+                        9. Combined Features
                     </Text>
                 </Block>
                 <Block marginBottom="24px">
@@ -1246,6 +1392,23 @@ export const MenuDemo: React.FC = () => {
                             <Text fontSize={14} color="gray.600">
                                 Creates nested submenu (supports multiple
                                 levels)
+                            </Text>
+                        </Block>
+                        <Block marginBottom="12px">
+                            <Text fontWeight="medium">
+                                tooltip: string | ReactNode
+                            </Text>
+                            <Text fontSize={14} color="gray.600">
+                                Tooltip content shown on hover (NEW!)
+                            </Text>
+                        </Block>
+                        <Block marginBottom="12px">
+                            <Text fontWeight="medium">
+                                tooltipProps: TooltipProps
+                            </Text>
+                            <Text fontSize={14} color="gray.600">
+                                Tooltip configuration (side, align, size,
+                                showArrow, etc.)
                             </Text>
                         </Block>
                     </Block>

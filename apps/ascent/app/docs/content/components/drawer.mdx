@@ -1,0 +1,804 @@
+---
+title: Drawer
+description: The Drawer component provides slide-out panels that appear from any side of the screen, offering flexible layout options for forms, navigation, detailed views, and contextual actions.
+category: components
+tags:
+    - drawer
+    - component
+    - overlay
+    - panel
+    - sidebar
+    - slide-out
+    - modal
+    - navigation
+RepoFolderName: Drawer
+StorybookLink: components-drawer--docs
+---
+
+<DrawerPreview />
+
+## Usage
+
+```tsx
+import {
+    Drawer,
+    DrawerTrigger,
+    DrawerPortal,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerDescription,
+    DrawerBody,
+    DrawerFooter,
+    DrawerClose,
+    Button,
+    ButtonType,
+} from 'blend-v1'
+import { Menu } from 'lucide-react'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [isOpen, setIsOpen] = useState(false)
+
+    return (
+        <Drawer open={isOpen} onOpenChange={setIsOpen}>
+            <DrawerTrigger>
+                <Button
+                    text="Open Menu"
+                    buttonType={ButtonType.SECONDARY}
+                    leadingIcon={<Menu size={16} />}
+                />
+            </DrawerTrigger>
+
+            <DrawerPortal>
+                <DrawerOverlay />
+                <DrawerContent direction="left">
+                    <DrawerHeader>
+                        <DrawerTitle>Navigation Menu</DrawerTitle>
+                        <DrawerDescription>
+                            Choose from the options below to navigate
+                        </DrawerDescription>
+                    </DrawerHeader>
+
+                    <DrawerBody>
+                        <div className="space-y-4">
+                            <button className="w-full text-left p-3 hover:bg-gray-100 rounded">
+                                Dashboard
+                            </button>
+                            <button className="w-full text-left p-3 hover:bg-gray-100 rounded">
+                                Projects
+                            </button>
+                            <button className="w-full text-left p-3 hover:bg-gray-100 rounded">
+                                Settings
+                            </button>
+                        </div>
+                    </DrawerBody>
+
+                    <DrawerFooter>
+                        <DrawerClose>
+                            <Button
+                                text="Close"
+                                buttonType={ButtonType.SECONDARY}
+                                fullWidth
+                            />
+                        </DrawerClose>
+                    </DrawerFooter>
+                </DrawerContent>
+            </DrawerPortal>
+        </Drawer>
+    )
+}
+```
+
+## API Reference
+
+### Drawer
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'open',
+                hintText: 'Controls whether the drawer is visible',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onOpenChange',
+                hintText:
+                    'Callback function called when the drawer open state changes',
+            },
+            { content: '(open: boolean) => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'direction',
+                hintText: 'The direction from which the drawer slides in',
+            },
+            {
+                content: "'top' | 'bottom' | 'left' | 'right'",
+                hintText: 'union type',
+            },
+            { content: "'bottom'" },
+        ],
+        [
+            {
+                content: 'modal',
+                hintText: 'Whether the drawer should be modal with overlay',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'dismissible',
+                hintText:
+                    'Whether the drawer can be dismissed by clicking outside',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'showHandle',
+                hintText:
+                    'Whether to show the drag handle (bottom/top drawers only)',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'handle',
+                hintText: 'Custom handle element to replace the default handle',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'nested',
+                hintText:
+                    'Whether the drawer should be nested for stacking effect',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'snapPoints',
+                hintText: 'Custom snap points for the drawer (bottom/top only)',
+            },
+            { content: '(string | number)[]', hintText: 'array' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'activeSnapPoint',
+                hintText: 'Active snap point index or value',
+            },
+            { content: 'number | string | null', hintText: 'union type' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSnapPointChange',
+                hintText: 'Callback when snap point changes',
+            },
+            {
+                content: '(activeSnapPoint: number | string | null) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'fadeFromIndex',
+                hintText: 'Index from which the drawer should fade',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'snapToSequentialPoint',
+                hintText:
+                    'Disable velocity-based snapping for sequential navigation',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'mobileOffset',
+                hintText:
+                    'Custom mobile offset values overriding token defaults',
+            },
+            { content: 'MobileOffset', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'className',
+                hintText: 'Additional CSS class for the drawer content',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'overlayClassName',
+                hintText: 'Additional CSS class for the overlay',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'style',
+                hintText: 'Custom styles for the drawer content',
+            },
+            { content: 'React.CSSProperties', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'Drawer trigger and content components',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### DrawerPortal
+
+A portal component that renders drawer content at the document root level, ensuring proper stacking context.
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'children',
+                hintText: 'DrawerOverlay and DrawerContent components',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### DrawerOverlay
+
+The backdrop overlay that appears behind the drawer content.
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'className',
+                hintText: 'Additional CSS class for the overlay',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### DrawerContent
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'direction',
+                hintText: 'Override drawer direction for this content',
+            },
+            {
+                content: "'top' | 'bottom' | 'left' | 'right'",
+                hintText: 'union type',
+            },
+            { content: "'bottom'" },
+        ],
+        [
+            {
+                content: 'showHandle',
+                hintText: 'Whether to show the drag handle',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'handle',
+                hintText: 'Custom handle element',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'width',
+                hintText: 'Fixed width for left/right drawers',
+            },
+            { content: 'string | number', hintText: 'CSS value' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width for left/right drawers',
+            },
+            { content: 'string | number', hintText: 'CSS value' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'mobileOffset',
+                hintText: 'Custom mobile positioning offsets',
+            },
+            { content: 'MobileOffset', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'className',
+                hintText: 'Additional CSS class for the content',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'style',
+                hintText: 'Custom styles for the content',
+            },
+            { content: 'React.CSSProperties', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'Content to display inside the drawer',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### DrawerBody
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'overflowY',
+                hintText: 'Vertical overflow behavior for the drawer body',
+            },
+            {
+                content: "'auto' | 'hidden' | 'scroll' | 'visible'",
+                hintText: 'union type',
+            },
+            { content: "'auto'" },
+        ],
+        [
+            {
+                content: 'noPadding',
+                hintText: 'Whether to remove default padding from the body',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'hasFooter',
+                hintText:
+                    'Whether the drawer has a footer (affects border radius)',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'className',
+                hintText: 'Additional CSS class for the body',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'Content to display in the drawer body',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Data Types
+
+### MobileOffset
+
+Mobile positioning offset configuration:
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'top',
+                hintText: 'Distance from top of viewport on mobile',
+            },
+            { content: 'string', hintText: 'CSS value' },
+            { content: "'74px'" },
+        ],
+        [
+            {
+                content: 'bottom',
+                hintText: 'Distance from bottom of viewport on mobile',
+            },
+            { content: 'string', hintText: 'CSS value' },
+            { content: "'16px'" },
+        ],
+        [
+            {
+                content: 'left',
+                hintText: 'Distance from left of viewport on mobile',
+            },
+            { content: 'string', hintText: 'CSS value' },
+            { content: "'16px'" },
+        ],
+        [
+            {
+                content: 'right',
+                hintText: 'Distance from right of viewport on mobile',
+            },
+            { content: 'string', hintText: 'CSS value' },
+            { content: "'16px'" },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Features
+
+- **Full-Screen Overlay**: Uses DrawerPortal and DrawerOverlay to render above all app content with proper z-index stacking
+- **Multi-Directional**: Slide from any side (top, bottom, left, right) with responsive positioning
+- **Modular Components**: Composable header, body, and footer components for flexible layouts
+- **Snap Points**: Support for multiple snap positions on bottom/top drawers
+- **Drag Handle**: Optional drag handle for bottom/top drawers with gesture support
+- **Mobile Optimized**: Responsive design with mobile-specific positioning and offsets
+- **Overlay Control**: Optional modal overlay with backdrop click dismissal
+- **Nested Support**: Ability to stack drawers for complex navigation flows
+- **Built on Vaul**: Leverages Vaul library for robust gesture and animation support
+- **Custom Styling**: Comprehensive token system for complete visual customization
+- **Accessibility First**: Full keyboard navigation, focus management, and screen reader support
+- **Content-Driven Height**: Automatic sizing based on content with overflow handling
+- **Sequential Snapping**: Option to disable velocity-based snapping for controlled navigation
+
+## Specialized Components
+
+### StatusDrawer
+
+Pre-built drawer for status messages and confirmations:
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'heading',
+                hintText: 'The main heading text (gray-700, heading.sm)',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'description',
+                hintText: 'The description text (gray-500, body.md)',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot',
+                hintText:
+                    '56x56px slot for any React element (icon, image, etc.)',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'primaryButtonProps',
+                hintText: 'Primary action button configuration',
+            },
+            { content: 'ButtonV2Props', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'secondaryButtonProps',
+                hintText: 'Secondary action button configuration (optional)',
+            },
+            { content: 'ButtonV2Props', hintText: 'object' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Usage Examples
+
+### Basic Side Drawer
+
+Simple drawer for navigation content
+
+```tsx
+import {
+    Drawer,
+    DrawerTrigger,
+    DrawerPortal,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerBody,
+    Button,
+} from 'blend-v1'
+import { Menu } from 'lucide-react'
+;<Drawer>
+    <DrawerTrigger>
+        <Button text="Open Menu" leadingIcon={<Menu size={16} />} />
+    </DrawerTrigger>
+
+    <DrawerPortal>
+        <DrawerOverlay />
+        <DrawerContent direction="left" width={300}>
+            <DrawerBody>
+                <nav className="space-y-2">
+                    <a href="#" className="block p-3 hover:bg-gray-100 rounded">
+                        Dashboard
+                    </a>
+                    <a href="#" className="block p-3 hover:bg-gray-100 rounded">
+                        Projects
+                    </a>
+                    <a href="#" className="block p-3 hover:bg-gray-100 rounded">
+                        Settings
+                    </a>
+                </nav>
+            </DrawerBody>
+        </DrawerContent>
+    </DrawerPortal>
+</Drawer>
+```
+
+### Form Drawer
+
+Drawer with header, form content, and footer actions
+
+```tsx
+import { useState } from 'react'
+import { Save, X } from 'lucide-react'
+
+const [isOpen, setIsOpen] = useState(false)
+
+<Drawer open={isOpen} onOpenChange={setIsOpen}>
+    <DrawerTrigger>
+        <Button text="Add Contact" />
+    </DrawerTrigger>
+
+    <DrawerPortal>
+        <DrawerOverlay />
+        <DrawerContent direction="right" width={400}>
+            <DrawerHeader>
+                <DrawerTitle>Add New Contact</DrawerTitle>
+                <DrawerDescription>Enter contact information</DrawerDescription>
+            </DrawerHeader>
+
+            <DrawerBody>
+                <form className="space-y-4">
+                    <input type="text" placeholder="Full Name" className="w-full px-3 py-2 border rounded" />
+                    <input type="email" placeholder="Email" className="w-full px-3 py-2 border rounded" />
+                </form>
+            </DrawerBody>
+
+            <DrawerFooter>
+                <DrawerClose>
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </DrawerClose>
+                <Button text="Save" buttonType={ButtonType.PRIMARY} />
+            </DrawerFooter>
+        </DrawerContent>
+    </DrawerPortal>
+</Drawer>
+```
+
+### Status Drawer
+
+Pre-built drawer for confirmations
+
+```tsx
+import { StatusDrawer } from 'blend-v1'
+import { Trash2 } from 'lucide-react'
+
+const [showConfirm, setShowConfirm] = useState(false)
+
+<StatusDrawer
+    open={showConfirm}
+    onOpenChange={setShowConfirm}
+    heading="Delete Project"
+    description="This action cannot be undone."
+    slot={
+        <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center">
+            <Trash2 size={24} className="text-red-600" />
+        </div>
+    }
+    primaryButtonProps={{
+        text: 'Delete',
+        buttonType: ButtonType.DANGER,
+        onClick: () => setShowConfirm(false),
+    }}
+    secondaryButtonProps={{
+        text: 'Cancel',
+        buttonType: ButtonType.SECONDARY,
+        onClick: () => setShowConfirm(false),
+    }}
+/>
+```
+
+## Component Tokens
+
+You can style the Drawer component using the following tokens:
+
+```tsx
+export type DrawerTokensType = {
+    overlay: {
+        backgroundColor: CSSObject['backgroundColor']
+        zIndex: CSSObject['zIndex']
+    }
+    content: {
+        backgroundColor: CSSObject['backgroundColor']
+        borderRadius: CSSObject['borderRadius']
+        boxShadow: CSSObject['boxShadow']
+        zIndex: CSSObject['zIndex']
+        border: CSSObject['border']
+    }
+    mobileOffset: {
+        top: CSSObject['top']
+        bottom: CSSObject['bottom']
+        left: CSSObject['left']
+        right: CSSObject['right']
+    }
+    handle: {
+        backgroundColor: CSSObject['backgroundColor']
+        borderRadius: CSSObject['borderRadius']
+        width: CSSObject['width']
+        height: CSSObject['height']
+    }
+    header: {
+        padding: CSSObject['padding']
+        borderBottom: CSSObject['borderBottom']
+        backgroundColor: CSSObject['backgroundColor']
+        title: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            lineHeight: CSSObject['lineHeight']
+        }
+        description: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            lineHeight: CSSObject['lineHeight']
+        }
+    }
+    body: {
+        padding: CSSObject['padding']
+        backgroundColor: CSSObject['backgroundColor']
+        overflowY: CSSObject['overflowY']
+        borderRadius: CSSObject['borderRadius']
+    }
+    footer: {
+        padding: CSSObject['padding']
+        borderTop: CSSObject['borderTop']
+        backgroundColor: CSSObject['backgroundColor']
+        gap: CSSObject['gap']
+        alignItems: CSSObject['alignItems']
+        justifyContent: CSSObject['justifyContent']
+    }
+}
+```
+
+## Behavior
+
+### Slide Animation
+
+- **Direction Control**: Drawers slide in from the specified edge (top, bottom, left, right)
+- **Smooth Transitions**: Built-in spring animations for opening and closing
+- **Gesture Support**: Drag to open/close with velocity-based snapping
+- **Snap Points**: Multiple stopping positions for flexible sizing
+
+### State Management
+
+- **Controlled Mode**: Use `open` and `onOpenChange` props for external state control
+- **Uncontrolled Mode**: Component manages its own open/closed state internally
+- **Nested Support**: Multiple drawers can be stacked for complex navigation
+
+### Mobile Behavior
+
+- **Responsive Positioning**: Custom mobile offsets for optimal mobile experience
+- **Touch Gestures**: Full gesture support for drag-to-open and drag-to-close
+- **Safe Areas**: Respects mobile safe areas and notches
+- **Content Adaptation**: Automatic sizing adjustments for mobile viewports
+
+### Content Management
+
+- **Flexible Layout**: Modular header, body, and footer components
+- **Scrollable Content**: Body content scrolls when exceeding drawer height
+- **Overflow Control**: Configurable overflow behavior for different content types
+- **Dynamic Sizing**: Content-driven height with maximum constraints
+
+## Accessibility
+
+- **Focus Management**: Focus is trapped within drawer when open and restored on close
+- **Keyboard Navigation**: Full keyboard support with Tab, Shift+Tab, and Escape keys
+- **Screen Reader Support**: Proper ARIA roles, labels, and live regions
+- **ARIA Compliance**: Uses appropriate dialog semantics and state announcements
+- **High Contrast**: Supports high contrast mode and custom color schemes
+- **Motion Preferences**: Respects user's reduced motion preferences for animations
+
+## Best Practices
+
+### When to Use Drawers
+
+- **Navigation Menus**: For slide-out navigation that doesn't interrupt main content
+- **Detail Views**: For displaying additional information without page navigation
+- **Form Dialogs**: For forms that need more space than traditional modals
+- **Filter Panels**: For advanced filtering options that need persistent visibility
+
+### Drawer Design Guidelines
+
+- **Always Use Portal**: Always wrap DrawerContent with DrawerPortal and include DrawerOverlay for proper full-screen rendering
+- **Clear Purpose**: Each drawer should have a focused, single purpose
+- **Appropriate Direction**: Choose slide direction based on content type and screen size
+- **Consistent Behavior**: Use consistent slide directions throughout your application
+- **Content Organization**: Structure content with clear headers and logical sections
+
+### Content Guidelines
+
+- **Scannable Layout**: Organize content with clear hierarchy and spacing
+- **Action Placement**: Place primary actions in footer for easy access
+- **Scroll Indicators**: Provide visual cues when content extends beyond visible area
+- **Loading States**: Show loading states for dynamic content
+
+### Mobile Considerations
+
+- **Touch Targets**: Ensure interactive elements meet minimum touch target sizes
+- **Gesture Conflicts**: Avoid gesture conflicts with system navigation
+- **Safe Areas**: Consider mobile safe areas and keyboard interactions
+- **Performance**: Optimize animations and content loading for mobile devices
