@@ -105,7 +105,7 @@ export default function FloatingShortcutsButton() {
             {/* Floating Button */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="fixed bottom-6 right-6 z-40 p-3 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2"
+                className="fixed z-[9999] bottom-6 right-6 p-3 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2"
                 aria-label="Show keyboard shortcuts"
                 title="Keyboard shortcuts (?)"
             >

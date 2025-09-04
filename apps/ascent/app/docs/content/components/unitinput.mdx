@@ -1,0 +1,663 @@
+---
+title: UnitInput
+description: The UnitInput component provides a specialized numeric input field with integrated unit display, configurable positioning, multiple sizes, and support for left/right slots. Perfect for measurements, quantities, and unit-based data entry.
+category: components
+tags:
+    - unitinput
+    - component
+    - input
+    - numeric
+    - unit
+    - measurement
+    - quantity
+    - form
+    - number
+    - weight
+RepoFolderName: UnitInput
+StorybookLink: components-unitinput--docs
+---
+
+<UnitInputPreview />
+
+## Usage
+
+```tsx
+import {
+    UnitInput,
+    UnitInputSize,
+    UnitPosition,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [weight, setWeight] = useState<number | undefined>(undefined)
+
+    const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setWeight(e.target.value ? parseFloat(e.target.value) : undefined)
+    }
+
+    return (
+        <UnitInput
+            label="Weight"
+            placeholder="Enter weight"
+            value={weight}
+            onChange={handleWeightChange}
+            unit="kg"
+            unitPosition={UnitPosition.RIGHT}
+            size={UnitInputSize.MEDIUM}
+            min={0}
+            max={1000}
+            step={0.1}
+            hintText="Enter weight in kilograms"
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Current numeric value of the input',
+            },
+            { content: 'number | undefined', hintText: 'number' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback when input value changes',
+            },
+            {
+                content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'unit',
+                hintText: 'Unit text to display (e.g., "kg", "cm", "$")',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'unitPosition',
+                hintText: 'Position of the unit display',
+            },
+            {
+                content: 'UnitPosition.LEFT | UnitPosition.RIGHT',
+                hintText: 'enum',
+            },
+            { content: 'UnitPosition.RIGHT' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size variant of the input',
+            },
+            {
+                content: 'UnitInputSize.MEDIUM | UnitInputSize.LARGE',
+                hintText: 'enum',
+            },
+            { content: 'UnitInputSize.MEDIUM' },
+        ],
+        [
+            {
+                content: 'min',
+                hintText: 'Minimum allowed value',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'max',
+                hintText: 'Maximum allowed value',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'step',
+                hintText: 'Step interval for numeric input',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'Whether the input is in error state',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'errorMessage',
+                hintText: 'Error message to display when in error state',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText: 'Whether the input is required',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'Whether the input is disabled',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Primary label for the input',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '"Number Input"' },
+        ],
+        [
+            {
+                content: 'sublabel',
+                hintText: 'Secondary label or description',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text for the input',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hintText',
+                hintText: 'Helper text displayed below the input',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconHintText',
+                hintText: 'Tooltip text for the help icon',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText: 'React element to display on the left side',
+            },
+            { content: 'React.ReactNode', hintText: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText: 'React element to display on the right side',
+            },
+            { content: 'React.ReactNode', hintText: 'ReactNode' },
+            { content: '<Weight icon>' },
+        ],
+        [
+            {
+                content: 'name',
+                hintText: 'Name attribute for the input element',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFocus',
+                hintText: 'Callback when input receives focus',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onBlur',
+                hintText: 'Callback when input loses focus',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the UnitInput component using the following tokens:
+
+```tsx
+export type UnitInputTokensType = {
+    input: {
+        gap: CSSObject['gap']
+        borderRadius: CSSObject['borderRadius']
+        boxShadow: {
+            [key in UnitInputState]: CSSObject['boxShadow']
+        }
+        paddingX: {
+            [key in UnitInputSize]: CSSObject['padding']
+        }
+        paddingY: {
+            [key in UnitInputSize]: CSSObject['padding']
+        }
+        border: {
+            [key in UnitInputState]: CSSObject['border']
+        }
+        color: {
+            [key in UnitInputState]: CSSObject['color']
+        }
+        outline: {
+            [key in UnitInputState]: CSSObject['outline']
+        }
+        backgroundColor: {
+            [key in UnitInputState]: CSSObject['backgroundColor']
+        }
+    }
+}
+
+export type ResponsiveUnitInputTokens = {
+    [key in keyof BreakpointType]: UnitInputTokensType
+}
+
+export type UnitInputState =
+    | 'default'
+    | 'hover'
+    | 'focus'
+    | 'error'
+    | 'disabled'
+export enum UnitInputSize {
+    MEDIUM = 'md',
+    LARGE = 'lg',
+}
+export enum UnitPosition {
+    LEFT = 'left',
+    RIGHT = 'right',
+}
+```
+
+The component uses responsive tokens that adapt to different breakpoints with size-specific padding and consistent styling across all states.
+
+## Features
+
+- **Integrated Unit Display**: Built-in unit label with configurable positioning
+- **Multiple Sizes**: Medium and large size variants with responsive behavior
+- **Numeric Input**: Number input type with min, max, and step validation
+- **Slot Support**: Configurable left and right slots for icons or additional elements
+- **Responsive Labels**: Floating labels on small screens for large size variant
+- **Error States**: Visual error feedback with custom error messages
+- **Form Integration**: Full form library support with validation
+- **Accessibility**: Screen reader support and proper focus management
+- **Dynamic Padding**: Automatically adjusts padding based on unit and slot positioning
+- **Default Icon**: Includes Weight icon as default right slot
+
+## Usage Examples
+
+### Weight Input
+
+Basic weight input with right-positioned unit:
+
+```tsx
+import {
+    UnitInput,
+    UnitInputSize,
+    UnitPosition,
+} from '@juspay/blend-design-system'
+
+const [weight, setWeight] = useState<number | undefined>(undefined)
+
+const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setWeight(e.target.value ? parseFloat(e.target.value) : undefined)
+}
+
+;<UnitInput
+    label="Weight"
+    placeholder="Enter weight"
+    value={weight}
+    onChange={handleWeightChange}
+    unit="kg"
+    unitPosition={UnitPosition.RIGHT}
+    min={0}
+    max={200}
+    step={0.1}
+    hintText="Enter your weight in kilograms"
+/>
+```
+
+### Currency Input
+
+Price input with left-positioned currency unit:
+
+```tsx
+const [price, setPrice] = useState<number | undefined>(undefined)
+
+const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPrice(e.target.value ? parseFloat(e.target.value) : undefined)
+}
+
+;<UnitInput
+    label="Price"
+    placeholder="0.00"
+    value={price}
+    onChange={handlePriceChange}
+    unit="$"
+    unitPosition={UnitPosition.LEFT}
+    size={UnitInputSize.LARGE}
+    min={0}
+    step={0.01}
+    hintText="Enter price in USD"
+/>
+```
+
+### Distance Measurement
+
+Distance input with validation and error handling:
+
+```tsx
+const [distance, setDistance] = useState<number | undefined>(undefined)
+const [isInvalid, setIsInvalid] = useState(false)
+
+const validateDistance = (value: number | undefined) => {
+    if (value !== undefined && (value < 0 || value > 1000)) {
+        setIsInvalid(true)
+        return false
+    }
+    setIsInvalid(false)
+    return true
+}
+
+const handleDistanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value ? parseFloat(e.target.value) : undefined
+    setDistance(value)
+    validateDistance(value)
+}
+
+;<UnitInput
+    label="Distance"
+    sublabel="Running distance"
+    placeholder="Enter distance"
+    value={distance}
+    onChange={handleDistanceChange}
+    unit="km"
+    unitPosition={UnitPosition.RIGHT}
+    min={0}
+    max={1000}
+    step={0.1}
+    error={isInvalid}
+    errorMessage="Distance must be between 0 and 1000 km"
+    hintText="Enter distance in kilometers"
+    required
+/>
+```
+
+### Temperature Input
+
+Temperature measurement with custom icon:
+
+```tsx
+const [temperature, setTemperature] = useState<number | undefined>(undefined)
+
+const ThermometerIcon = () => (
+    <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#6B7280"
+    >
+        <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
+    </svg>
+)
+
+const handleTemperatureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTemperature(e.target.value ? parseFloat(e.target.value) : undefined)
+}
+
+;<UnitInput
+    label="Temperature"
+    placeholder="Enter temperature"
+    value={temperature}
+    onChange={handleTemperatureChange}
+    unit="°C"
+    unitPosition={UnitPosition.RIGHT}
+    leftSlot={<ThermometerIcon />}
+    min={-50}
+    max={100}
+    step={0.1}
+    hintText="Enter temperature in Celsius"
+/>
+```
+
+### Dimension Input
+
+Height measurement with large size:
+
+```tsx
+const [height, setHeight] = useState<number | undefined>(undefined)
+
+const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHeight(e.target.value ? parseFloat(e.target.value) : undefined)
+}
+
+;<UnitInput
+    label="Height"
+    placeholder="Enter height"
+    value={height}
+    onChange={handleHeightChange}
+    unit="cm"
+    unitPosition={UnitPosition.RIGHT}
+    size={UnitInputSize.LARGE}
+    min={0}
+    max={300}
+    step={1}
+    hintText="Enter height in centimeters"
+    helpIconHintText="Accurate height measurement improves recommendations"
+/>
+```
+
+### Speed Input
+
+Speed measurement with custom validation:
+
+```tsx
+const [speed, setSpeed] = useState<number | undefined>(undefined)
+const [speedUnit, setSpeedUnit] = useState('km/h')
+
+const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSpeed(e.target.value ? parseFloat(e.target.value) : undefined)
+}
+
+;<div>
+    <div style={{ marginBottom: '16px' }}>
+        <label>Speed Unit:</label>
+        <select
+            value={speedUnit}
+            onChange={(e) => setSpeedUnit(e.target.value)}
+            style={{ marginLeft: '8px' }}
+        >
+            <option value="km/h">km/h</option>
+            <option value="mph">mph</option>
+            <option value="m/s">m/s</option>
+        </select>
+    </div>
+
+    <UnitInput
+        label="Speed"
+        placeholder="Enter speed"
+        value={speed}
+        onChange={handleSpeedChange}
+        unit={speedUnit}
+        unitPosition={UnitPosition.RIGHT}
+        min={0}
+        max={speedUnit === 'km/h' ? 300 : speedUnit === 'mph' ? 200 : 100}
+        step={speedUnit === 'm/s' ? 0.1 : 1}
+        hintText={`Enter speed in ${speedUnit}`}
+    />
+</div>
+```
+
+### Volume Input
+
+Volume measurement with percentage display:
+
+```tsx
+const [volume, setVolume] = useState<number | undefined>(undefined)
+
+const VolumeIcon = () => (
+    <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#6B7280"
+    >
+        <polygon points="11 5,6 9,2 9,2 15,6 15,11 19,11 5" />
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+    </svg>
+)
+
+const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setVolume(e.target.value ? parseFloat(e.target.value) : undefined)
+}
+
+;<UnitInput
+    label="Volume"
+    sublabel="Audio level"
+    placeholder="0"
+    value={volume}
+    onChange={handleVolumeChange}
+    unit="%"
+    unitPosition={UnitPosition.RIGHT}
+    leftSlot={<VolumeIcon />}
+    min={0}
+    max={100}
+    step={1}
+    hintText="Set volume level (0-100%)"
+/>
+```
+
+## Behavior
+
+### Unit Positioning
+
+- **Right Position**: Unit appears on the right side with gray background
+- **Left Position**: Unit appears on the left side with gray background
+- **Border Integration**: Unit has matching border styling with the input
+- **Dynamic Width**: Unit container adjusts width based on content length
+
+### Size Variants
+
+- **Medium Size**: Standard padding and font size for most use cases
+- **Large Size**: Increased padding with floating labels on small screens
+- **Responsive Behavior**: Large size shows floating labels on mobile devices
+- **Consistent Spacing**: Maintains proper spacing regardless of size
+
+### Slot Management
+
+- **Left Slot**: Positioned between left edge and input, adjusted for unit position
+- **Right Slot**: Positioned between input and right edge, includes default Weight icon
+- **Dynamic Padding**: Input padding automatically adjusts based on slot widths
+- **Icon Integration**: Slots integrate seamlessly with unit positioning
+
+### Focus and Validation
+
+- **Focus States**: Visual focus indicators with border and shadow changes
+- **Numeric Validation**: Enforces numeric input with min, max, and step constraints
+- **Error Feedback**: Red borders and error message display for invalid states
+- **Required Fields**: Visual indicators for required form fields
+
+## Best Practices
+
+### When to Use UnitInput
+
+- **Measurements**: Weight, height, distance, temperature, speed
+- **Quantities**: Inventory counts, limits, quotas with units
+- **Financial**: Prices, amounts, budgets with currency units
+- **Scientific**: Laboratory measurements, calculations with units
+- **Configuration**: Settings that require specific units or measurements
+
+### Unit Selection Guidelines
+
+- **Clear Units**: Use widely recognized unit abbreviations (kg, cm, $, %)
+- **Consistent Units**: Maintain unit consistency within related inputs
+- **Localization**: Consider locale-specific units and formats
+- **Abbreviations**: Keep unit text short to maintain clean appearance
+- **Context**: Choose units appropriate for the target audience
+
+### Size and Layout
+
+- **Medium Size**: Default choice for most form layouts
+- **Large Size**: Use for prominent inputs or mobile-first designs
+- **Responsive Design**: Test floating label behavior on small screens
+- **Form Consistency**: Maintain consistent sizing within form groups
+- **Visual Hierarchy**: Use size to indicate input importance
+
+### Accessibility Considerations
+
+- **Label Association**: Ensure proper labeling including unit information
+- **Screen Readers**: Unit information should be accessible to assistive technology
+- **Focus Management**: Maintain clear focus indicators and keyboard navigation
+- **Error Communication**: Make validation errors accessible and specific
+- **Help Text**: Provide clear instructions about expected values and units
+
+### Validation and Error Handling
+
+- **Range Validation**: Set appropriate min/max values for the context
+- **Step Validation**: Use logical step values for the measurement type
+- **Unit Conversion**: Consider providing unit conversion helpers
+- **Error Messages**: Provide specific, actionable error messages
+- **Real-time Validation**: Validate input as user types when appropriate
+
+### Form Integration
+
+- **Controlled Components**: Always use controlled inputs with proper state management
+- **Data Types**: Handle number/undefined types appropriately
+- **Submission**: Convert and validate units before form submission
+- **Default Values**: Provide sensible defaults when appropriate
+- **Reset Functionality**: Implement proper form reset behavior
+
+### Performance Optimization
+
+- **State Management**: Use appropriate state patterns for complex forms
+- **Debouncing**: Consider debouncing for expensive validation operations
+- **Memory Management**: Clean up event listeners and effects properly
+- **Render Optimization**: Memoize expensive calculations and validations
+
+### User Experience
+
+- **Clear Placeholders**: Use descriptive placeholder text
+- **Helpful Hints**: Provide context about expected ranges and formats
+- **Progressive Enhancement**: Start with basic functionality
+- **Visual Feedback**: Show clear confirmation of successful input
+- **Error Recovery**: Allow easy correction of invalid inputs

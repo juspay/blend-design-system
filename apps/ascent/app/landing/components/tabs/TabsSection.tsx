@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Tabs } from './Tabs'
 import { TokenizerComp } from './tokenizer/Tokenizer'
 import { Components } from './components/Components'
@@ -11,6 +12,7 @@ import { Footer } from '../footer/Footer'
 
 export const TabsSection = () => {
     const [selectedTab, setSelectedTab] = useState('tokenizer')
+    const router = useRouter()
 
     // Refs for each section
     const tokenizerRef = useRef<HTMLDivElement>(null)
@@ -65,6 +67,12 @@ export const TabsSection = () => {
     }, []) // Empty dependency array ensures this runs only once on mount
 
     const handleTabSelection = (label: string) => {
+        // Handle navigation for changelog tab
+        if (label === 'changelog') {
+            router.push('/changelog')
+            return
+        }
+
         setSelectedTab(label)
         // Scroll to the selected component
         switch (label) {

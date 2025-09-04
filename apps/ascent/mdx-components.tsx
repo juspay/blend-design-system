@@ -5,13 +5,25 @@ import {
     ChangelogCard,
     ChangelogEntry,
 } from '@/components/changelog/ChangelogComponents'
+import { CommitLink } from '@/components/changelog/CommitLink'
 import {
     MDXComponents,
     PreviewComponents,
     TableComponents,
 } from '@/components/mdx'
+import {
+    GradientBorderWrapper,
+    DateBadge,
+    ChangeLogCard,
+    ImageBlock,
+    VideoBlock,
+    HeadingBlock,
+    SubHeadingBlock,
+    ParagraphBlock,
+} from './app/changelog/components/ui/ChangelogBlocks'
+import { Search } from 'lucide-react'
+import HomeDataList from './app/changelog/components/ui/HomeDataList'
 
-// Combine all modular MDX components
 const components = {
     // Core MDX components (headings, paragraphs, links, etc.)
     ...MDXComponents,
@@ -30,6 +42,18 @@ const components = {
     VersionHeader,
     ChangelogCard,
     ChangelogEntry,
+    CommitLink,
+    GradientBorderWrapper,
+    GradientBorderComponent: GradientBorderWrapper, // Alias for backward compatibility
+    DateBadge,
+    Search,
+    ChangeLogCard,
+    HomeDataList,
+    ImageBlock,
+    VideoBlock,
+    HeadingBlock,
+    SubHeadingBlock,
+    ParagraphBlock,
 }
 
 declare global {
