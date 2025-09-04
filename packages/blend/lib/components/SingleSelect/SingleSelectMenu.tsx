@@ -304,6 +304,7 @@ const SingleSelectMenu = ({
                         right={0}
                         zIndex={1000}
                         backgroundColor={FOUNDATION_THEME.colors.gray[0]}
+                        padding={FOUNDATION_THEME.unit[6]}
                     >
                         <Block marginBottom={FOUNDATION_THEME.unit[6]}>
                             <SearchInput
@@ -320,69 +321,77 @@ const SingleSelectMenu = ({
                         </Block>
                     </Block>
                 )}
-                {filteredItems &&
-                filteredItems.length === 0 &&
-                searchText.length > 0 ? (
-                    <Block
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        padding={`${FOUNDATION_THEME.unit[2]} ${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[8]} ${FOUNDATION_THEME.unit[0]}`}
-                    >
-                        <Text
-                            variant="body.md"
-                            color={FOUNDATION_THEME.colors.gray[400]}
-                            textAlign="center"
+                <Block
+                    padding={FOUNDATION_THEME.unit[6]}
+                    style={{
+                        paddingTop: enableSearch ? 0 : FOUNDATION_THEME.unit[6],
+                    }}
+                >
+                    {filteredItems &&
+                    filteredItems.length === 0 &&
+                    searchText.length > 0 ? (
+                        <Block
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            padding={`${FOUNDATION_THEME.unit[16]} ${FOUNDATION_THEME.unit[8]}`}
                         >
-                            No results found
-                        </Text>
-                    </Block>
-                ) : (
-                    filteredItems &&
-                    filteredItems.map((group, groupId) => (
-                        <React.Fragment key={groupId}>
-                            {group.groupLabel && (
-                                <Label>
-                                    <Text
-                                        variant="body.sm"
-                                        color={
-                                            FOUNDATION_THEME.colors.gray[400]
-                                        }
-                                    >
-                                        {group.groupLabel}
-                                    </Text>
-                                </Label>
-                            )}
-                            {group.items.map((item, itemIndex) => (
-                                <Item
-                                    key={`${groupId}-${itemIndex}`}
-                                    selected={selected}
-                                    item={item}
-                                    onSelect={onSelect}
-                                />
-                            ))}
-                            {groupId !== items.length - 1 &&
-                                group.showSeparator && (
-                                    <RadixMenu.Separator asChild>
-                                        <Block
-                                            height={
-                                                singleSelectTokens.dropdown
-                                                    .seperator.height
+                            <Text
+                                variant="body.md"
+                                color={FOUNDATION_THEME.colors.gray[400]}
+                                textAlign="center"
+                            >
+                                No results found
+                            </Text>
+                        </Block>
+                    ) : (
+                        filteredItems &&
+                        filteredItems.map((group, groupId) => (
+                            <React.Fragment key={groupId}>
+                                {group.groupLabel && (
+                                    <Label>
+                                        <Text
+                                            variant="body.sm"
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
                                             }
-                                            backgroundColor={
-                                                singleSelectTokens.dropdown
-                                                    .seperator.color
-                                            }
-                                            margin={
-                                                singleSelectTokens.dropdown
-                                                    .seperator.margin
-                                            }
-                                        ></Block>
-                                    </RadixMenu.Separator>
+                                        >
+                                            {group.groupLabel}
+                                        </Text>
+                                    </Label>
                                 )}
-                        </React.Fragment>
-                    ))
-                )}
+                                {group.items.map((item, itemIndex) => (
+                                    <Item
+                                        key={`${groupId}-${itemIndex}`}
+                                        selected={selected}
+                                        item={item}
+                                        onSelect={onSelect}
+                                    />
+                                ))}
+                                {groupId !== items.length - 1 &&
+                                    group.showSeparator && (
+                                        <RadixMenu.Separator asChild>
+                                            <Block
+                                                height={
+                                                    singleSelectTokens.dropdown
+                                                        .seperator.height
+                                                }
+                                                backgroundColor={
+                                                    singleSelectTokens.dropdown
+                                                        .seperator.color
+                                                }
+                                                margin={
+                                                    singleSelectTokens.dropdown
+                                                        .seperator.margin
+                                                }
+                                            ></Block>
+                                        </RadixMenu.Separator>
+                                    )}
+                            </React.Fragment>
+                        ))
+                    )}
+                </Block>
             </Content>
         </RadixMenu.Root>
     )
