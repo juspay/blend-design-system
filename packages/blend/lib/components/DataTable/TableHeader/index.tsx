@@ -536,6 +536,9 @@ const TableHeader = forwardRef<
                                                                     filterState={
                                                                         filterState
                                                                     }
+                                                                    sortState={
+                                                                        sortState
+                                                                    }
                                                                     onColumnFilter={
                                                                         onColumnFilter
                                                                     }
@@ -600,6 +603,7 @@ const TableHeader = forwardRef<
                                                         filterState={
                                                             filterState
                                                         }
+                                                        sortState={sortState}
                                                         onColumnFilter={
                                                             onColumnFilter
                                                         }
