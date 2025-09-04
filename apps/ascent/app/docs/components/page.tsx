@@ -4,14 +4,13 @@ import fs from 'fs'
 import path from 'path'
 import { COMPONENT_REGISTRY } from '@/docs/components'
 import {
-    DOCS_CONFIG,
     COMPONENT_CARD_STYLES,
     PAGE_LAYOUT,
     ARROW_ICON_PATH,
 } from '@/docs/config'
 
 // Component categories
-const COMPONENT_CATEGORIES = {
+const COMPONENT_CATEGORIES: { [key: string]: string[] } = {
     'Form Inputs': [
         'textinput',
         'numberinput',
@@ -58,7 +57,7 @@ async function getDocumentedComponents() {
             .filter((file) => file.endsWith('.mdx') && file !== 'page.mdx')
             .map((file) => file.replace('.mdx', ''))
 
-        console.log('📋 Found documented components:', documentedSlugs)
+        // Found documented components: documentedSlugs
 
         // Create component objects for documented components
         const documentedComponents = documentedSlugs.map((slug) => {
@@ -875,8 +874,8 @@ async function getDocumentedComponents() {
         })
 
         return categorizedComponents
-    } catch (error) {
-        console.error('Error reading components directory:', error)
+    } catch {
+        // Error reading components directory
         return {}
     }
 }
