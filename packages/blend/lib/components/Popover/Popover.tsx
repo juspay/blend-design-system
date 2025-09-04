@@ -90,9 +90,11 @@ const Popover = ({
             }}
             modal={asModal}
         >
-            <RadixPopover.Trigger asChild>{trigger}</RadixPopover.Trigger>
+            <RadixPopover.Trigger asChild style={{ outline: 'none' }}>
+                {trigger}
+            </RadixPopover.Trigger>
             <RadixPopover.Content
-                style={{ zIndex }}
+                style={{ zIndex, outline: 'none' }}
                 asChild
                 sideOffset={sideOffset}
                 side={side}
