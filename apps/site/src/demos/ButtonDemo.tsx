@@ -6,6 +6,7 @@ import {
     ButtonSize,
     ButtonSubType,
 } from '../../../../packages/blend/lib/components/Button'
+import type { SkeletonVariant } from '../../../../packages/blend/lib/components/Skeleton/skeleton.tokens'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
@@ -26,6 +27,8 @@ const ButtonDemo = () => {
     const [showTrailingIcon, setShowTrailingIcon] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [isSkeletonLoading, setIsSkeletonLoading] = useState(false)
+    const [skeletonVariant, setSkeletonVariant] =
+        useState<SkeletonVariant>('pulse')
     const [isDisabled, setIsDisabled] = useState(false)
     const [fullWidth, setFullWidth] = useState(false)
 
@@ -49,13 +52,19 @@ const ButtonDemo = () => {
         { value: ButtonSubType.INLINE, label: 'Inline' },
     ]
 
+    const skeletonVariantOptions = [
+        { value: 'pulse' as SkeletonVariant, label: 'Pulse' },
+        { value: 'wave' as SkeletonVariant, label: 'Wave' },
+        { value: 'shimmer' as SkeletonVariant, label: 'Shimmer' },
+    ]
+
     return (
         <div className="p-8 space-y-12">
             {/* Playground Section */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Playground</h2>
                 <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <TextInput
                             label="Text"
                             value={playgroundText}
@@ -91,6 +100,16 @@ const ButtonDemo = () => {
                                 setPlaygroundSubType(value as ButtonSubType)
                             }
                             placeholder="Select sub type"
+                        />
+
+                        <SingleSelect
+                            label="Skeleton Variant"
+                            items={[{ items: skeletonVariantOptions }]}
+                            selected={skeletonVariant}
+                            onSelect={(value) =>
+                                setSkeletonVariant(value as SkeletonVariant)
+                            }
+                            placeholder="Select skeleton variant"
                         />
                     </div>
 
@@ -151,6 +170,7 @@ const ButtonDemo = () => {
                             }
                             loading={isLoading}
                             skeletonLoading={isSkeletonLoading}
+                            skeletonVariant={skeletonVariant}
                             disabled={isDisabled}
                             fullWidth={fullWidth}
                             onClick={() => {
@@ -378,6 +398,55 @@ const ButtonDemo = () => {
                 </div>
             </div>
 
+            {/* Skeleton Variants Showcase */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Skeleton Variants Showcase
+                </h2>
+                <p className="text-gray-600">
+                    🎭 <strong>Three Animation Variants:</strong> Choose from
+                    pulse (gentle), wave (smooth), or shimmer (dynamic)
+                    animations to match your design needs and performance
+                    requirements.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {skeletonVariantOptions.map(({ value, label }) => (
+                        <div key={value} className="space-y-3">
+                            <h3 className="text-lg font-semibold">
+                                {label} Variant
+                            </h3>
+                            <div className="space-y-2">
+                                <Button
+                                    text="Download File"
+                                    leadingIcon={<Download size={16} />}
+                                    skeletonLoading={true}
+                                    skeletonVariant={value}
+                                />
+                                <Button
+                                    text="Small Button"
+                                    size={ButtonSize.SMALL}
+                                    skeletonLoading={true}
+                                    skeletonVariant={value}
+                                />
+                                <Button
+                                    text="Large Button"
+                                    size={ButtonSize.LARGE}
+                                    buttonType={ButtonType.SECONDARY}
+                                    skeletonLoading={true}
+                                    skeletonVariant={value}
+                                />
+                                <Button
+                                    subType={ButtonSubType.ICON_ONLY}
+                                    leadingIcon={<Settings size={16} />}
+                                    skeletonLoading={true}
+                                    skeletonVariant={value}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
             {/* Enhanced Skeleton Loading Showcase */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">
@@ -491,6 +560,7 @@ const ButtonDemo = () => {
                                         <Button
                                             text={text}
                                             skeletonLoading={true}
+                                            skeletonVariant="wave"
                                         />
                                         <Button
                                             text={text}
@@ -520,6 +590,7 @@ const ButtonDemo = () => {
                                     <Button
                                         text="Submit"
                                         skeletonLoading={true}
+                                        skeletonVariant="shimmer"
                                     />
                                     <Button
                                         text="Submit"

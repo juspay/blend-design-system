@@ -22,6 +22,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
             onClick,
             loading,
             skeletonLoading,
+            skeletonVariant = 'pulse',
             buttonGroupPosition,
             fullWidth,
             justifyContent = 'center',
@@ -56,7 +57,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                     hasLeadingIcon={!!leadingIcon}
                     hasTrailingIcon={!!trailingIcon}
                     loading={true}
-                    variant="pulse"
+                    variant={skeletonVariant}
                     data-testid="button-skeleton"
                 />
             )
