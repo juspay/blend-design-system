@@ -1,13 +1,21 @@
-// Base Skeleton component
-export { default as Skeleton } from './Skeleton'
+// ===================================
+// OPTIMIZED EXPORTS FOR TREE-SHAKING
+// ===================================
 
-// Primitive Skeleton components
+// Modern compound component (recommended)
+export { default as Skeleton } from './SkeletonCompound'
+
+// Individual components (for backward compatibility and tree-shaking)
+export { default as SkeletonBase } from './Skeleton'
 export { default as SkeletonText } from './SkeletonText'
 export { default as SkeletonAvatar } from './SkeletonAvatar'
 export { default as SkeletonButton } from './SkeletonButton'
 export { default as SkeletonCard } from './SkeletonCard'
 
-// Types
+// Shared utilities
+export { useSkeletonBase } from './hooks/useSkeletonBase'
+
+// Types (tree-shakable type-only exports)
 export type {
     SkeletonProps,
     SkeletonTextProps,
@@ -20,7 +28,7 @@ export type {
     SkeletonShape,
 } from './types'
 
-// Tokens
+// Tokens (tree-shakable type-only exports)
 export type {
     SkeletonTokensType,
     ResponsiveSkeletonTokens,
@@ -28,5 +36,5 @@ export type {
 
 export { getSkeletonTokens } from './skeleton.tokens'
 
-// Default export as main Skeleton component
-export { default } from './Skeleton'
+// Default export as compound component
+export { default } from './SkeletonCompound'

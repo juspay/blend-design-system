@@ -3,7 +3,7 @@ import styled, { keyframes, css } from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import type { SkeletonProps } from './types'
 import type { SkeletonTokensType } from './skeleton.tokens'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useSkeletonBase } from './hooks/useSkeletonBase'
 
 // Animation keyframes
 const pulseAnimation = keyframes`
@@ -132,28 +132,33 @@ const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
         },
         ref
     ) => {
-        const skeletonTokens =
-            useResponsiveTokens<SkeletonTokensType>('SKELETON')
+        const {
+            shouldRender,
+            tokens: skeletonTokens,
+            prefersReducedMotion,
+        } = useSkeletonBase(loading)
 
-        // If not loading, render children or nothing
-        if (!loading) {
+        if (!shouldRender) {
             return children ? <>{children}</> : null
         }
+
+        // Respect motion preferences for accessibility
+        const shouldAnimate = animate && !prefersReducedMotion
 
         return (
             <StyledSkeleton
                 ref={ref}
                 $variant={variant}
                 $shape={shape}
-                $animate={animate}
-                $skeletonTokens={skeletonTokens}
+                $animate={shouldAnimate}
+                $skeletonTokens={skeletonTokens!}
                 width={width}
                 height={height}
                 backgroundColor={
                     backgroundColor ||
                     (variant === 'shimmer'
                         ? 'transparent'
-                        : skeletonTokens.colors.base)
+                        : skeletonTokens?.colors.base)
                 }
                 aria-label="Loading content"
                 role="progressbar"

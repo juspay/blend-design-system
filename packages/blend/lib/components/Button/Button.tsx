@@ -43,12 +43,18 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
             return `0px 0px 0px 0px`
         }
 
-        // If skeleton loading is enabled, render skeleton
+        // If skeleton loading is enabled, render skeleton with exact props
         if (skeletonLoading) {
             return (
                 <SkeletonButton
+                    buttonType={buttonType}
                     size={size}
+                    subType={subType}
                     fullWidth={fullWidth}
+                    buttonGroupPosition={buttonGroupPosition}
+                    text={text}
+                    hasLeadingIcon={!!leadingIcon}
+                    hasTrailingIcon={!!trailingIcon}
                     loading={true}
                     variant="pulse"
                     data-testid="button-skeleton"

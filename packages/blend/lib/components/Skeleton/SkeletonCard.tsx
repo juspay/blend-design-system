@@ -5,8 +5,8 @@ import SkeletonText from './SkeletonText'
 import SkeletonAvatar from './SkeletonAvatar'
 import SkeletonButton from './SkeletonButton'
 import type { SkeletonCardProps } from './types'
-import type { SkeletonTokensType } from './skeleton.tokens'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { ButtonSize } from '../Button/types'
+import { useSkeletonBase } from './hooks/useSkeletonBase'
 
 const SkeletonCard = forwardRef<HTMLDivElement, SkeletonCardProps>(
     (
@@ -19,11 +19,11 @@ const SkeletonCard = forwardRef<HTMLDivElement, SkeletonCardProps>(
         },
         ref
     ) => {
-        const skeletonTokens =
-            useResponsiveTokens<SkeletonTokensType>('SKELETON')
+        const { shouldRender, tokens: skeletonTokens } =
+            useSkeletonBase(loading)
 
         // If not loading, render children or nothing
-        if (!loading) {
+        if (!shouldRender) {
             return children ? <>{children}</> : null
         }
 
@@ -34,7 +34,7 @@ const SkeletonCard = forwardRef<HTMLDivElement, SkeletonCardProps>(
                 <Block
                     display="flex"
                     alignItems="center"
-                    gap={skeletonTokens.spacing.gap}
+                    gap={skeletonTokens!.spacing.gap}
                 >
                     <SkeletonAvatar
                         variant={variant}
@@ -70,18 +70,18 @@ const SkeletonCard = forwardRef<HTMLDivElement, SkeletonCardProps>(
                 <Block
                     display="flex"
                     justifyContent="flex-end"
-                    gap={skeletonTokens.spacing.gap}
+                    gap={skeletonTokens!.spacing.gap}
                     marginTop="16px"
                 >
                     <SkeletonButton
                         variant={variant}
                         loading={loading}
-                        size="sm"
+                        size={ButtonSize.SMALL}
                     />
                     <SkeletonButton
                         variant={variant}
                         loading={loading}
-                        size="sm"
+                        size={ButtonSize.SMALL}
                         width="80px"
                     />
                 </Block>

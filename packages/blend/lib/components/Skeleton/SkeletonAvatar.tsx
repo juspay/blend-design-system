@@ -1,8 +1,7 @@
 import { forwardRef } from 'react'
 import Skeleton from './Skeleton'
 import type { SkeletonAvatarProps } from './types'
-import type { SkeletonTokensType } from './skeleton.tokens'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useSkeletonBase } from './hooks/useSkeletonBase'
 
 const SkeletonAvatar = forwardRef<HTMLDivElement, SkeletonAvatarProps>(
     (
@@ -15,16 +14,15 @@ const SkeletonAvatar = forwardRef<HTMLDivElement, SkeletonAvatarProps>(
         },
         ref
     ) => {
-        const skeletonTokens =
-            useResponsiveTokens<SkeletonTokensType>('SKELETON')
+        const { shouldRender, tokens: skeletonTokens } =
+            useSkeletonBase(loading)
 
-        // If not loading, don't render anything
-        if (!loading) {
+        if (!shouldRender) {
             return null
         }
 
         // Get size from tokens
-        const avatarSize = skeletonTokens.sizes.avatar[size] as string
+        const avatarSize = skeletonTokens!.sizes.avatar[size] as string
 
         return (
             <Skeleton

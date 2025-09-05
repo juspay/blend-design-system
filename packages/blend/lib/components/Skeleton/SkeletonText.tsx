@@ -2,8 +2,7 @@ import { forwardRef } from 'react'
 import Block from '../Primitives/Block/Block'
 import Skeleton from './Skeleton'
 import type { SkeletonTextProps } from './types'
-import type { SkeletonTokensType } from './skeleton.tokens'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useSkeletonBase } from './hooks/useSkeletonBase'
 
 const SkeletonText = forwardRef<HTMLDivElement, SkeletonTextProps>(
     (
@@ -18,11 +17,10 @@ const SkeletonText = forwardRef<HTMLDivElement, SkeletonTextProps>(
         },
         ref
     ) => {
-        const skeletonTokens =
-            useResponsiveTokens<SkeletonTokensType>('SKELETON')
+        const { shouldRender, tokens: skeletonTokens } =
+            useSkeletonBase(loading)
 
-        // If not loading, don't render anything
-        if (!loading) {
+        if (!shouldRender) {
             return null
         }
 
@@ -52,7 +50,9 @@ const SkeletonText = forwardRef<HTMLDivElement, SkeletonTextProps>(
                     return '20px'
                 case 'md':
                 default:
-                    return skeletonTokens.sizes.text.height as string
+                    return (
+                        (skeletonTokens?.sizes.text.height as string) || '16px'
+                    )
             }
         }
 
@@ -64,7 +64,11 @@ const SkeletonText = forwardRef<HTMLDivElement, SkeletonTextProps>(
                     ref={ref}
                     variant={variant}
                     loading={loading}
-                    width={singleWidth || skeletonTokens.sizes.text.minWidth}
+                    width={
+                        singleWidth ||
+                        skeletonTokens?.sizes.text.minWidth ||
+                        '100%'
+                    }
                     height={getTextHeight()}
                     shape="rounded"
                     data-testid="skeleton-text"
@@ -91,7 +95,7 @@ const SkeletonText = forwardRef<HTMLDivElement, SkeletonTextProps>(
                 ref={ref}
                 display="flex"
                 flexDirection="column"
-                gap={skeletonTokens.spacing.margin}
+                gap={skeletonTokens?.spacing.margin || '8px'}
                 data-testid="skeleton-text-container"
                 {...rest}
             >
