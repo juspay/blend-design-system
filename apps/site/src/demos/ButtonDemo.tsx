@@ -25,6 +25,7 @@ const ButtonDemo = () => {
     const [showLeadingIcon, setShowLeadingIcon] = useState(false)
     const [showTrailingIcon, setShowTrailingIcon] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [isSkeletonLoading, setIsSkeletonLoading] = useState(false)
     const [isDisabled, setIsDisabled] = useState(false)
     const [fullWidth, setFullWidth] = useState(false)
 
@@ -114,6 +115,13 @@ const ButtonDemo = () => {
                             onChange={() => setIsLoading(!isLoading)}
                         />
                         <Switch
+                            label="Skeleton Loading"
+                            checked={isSkeletonLoading}
+                            onChange={() =>
+                                setIsSkeletonLoading(!isSkeletonLoading)
+                            }
+                        />
+                        <Switch
                             label="Disabled"
                             checked={isDisabled}
                             onChange={() => setIsDisabled(!isDisabled)}
@@ -142,6 +150,7 @@ const ButtonDemo = () => {
                                 showTrailingIcon ? <X size={16} /> : undefined
                             }
                             loading={isLoading}
+                            skeletonLoading={isSkeletonLoading}
                             disabled={isDisabled}
                             fullWidth={fullWidth}
                             onClick={() => {
@@ -322,7 +331,7 @@ const ButtonDemo = () => {
             {/* States */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">States</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Default</h3>
                         <Button
@@ -336,8 +345,17 @@ const ButtonDemo = () => {
                     </div>
 
                     <div className="space-y-3">
-                        <h3 className="text-sm font-medium">Loading</h3>
+                        <h3 className="text-sm font-medium">
+                            Loading (Spinner)
+                        </h3>
                         <Button text="Loading" loading={true} />
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">
+                            Skeleton Loading
+                        </h3>
+                        <Button text="Skeleton" skeletonLoading={true} />
                     </div>
 
                     <div className="space-y-3">
@@ -356,6 +374,116 @@ const ButtonDemo = () => {
                                 })
                             }}
                         />
+                    </div>
+                </div>
+            </div>
+
+            {/* Skeleton Loading Showcase */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Skeleton Loading Showcase
+                </h2>
+                <p className="text-gray-600">
+                    Skeleton loading provides a better perceived performance
+                    during initial page loads. Compare with traditional spinner
+                    loading for user actions.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {/* Different sizes */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">All Sizes</h3>
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-500">Small</p>
+                                <Button
+                                    text="Small"
+                                    size={ButtonSize.SMALL}
+                                    skeletonLoading={true}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-500">Medium</p>
+                                <Button
+                                    text="Medium"
+                                    size={ButtonSize.MEDIUM}
+                                    skeletonLoading={true}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-500">Large</p>
+                                <Button
+                                    text="Large"
+                                    size={ButtonSize.LARGE}
+                                    skeletonLoading={true}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Different types */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">All Types</h3>
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-500">Primary</p>
+                                <Button
+                                    text="Primary"
+                                    buttonType={ButtonType.PRIMARY}
+                                    skeletonLoading={true}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-500">
+                                    Secondary
+                                </p>
+                                <Button
+                                    text="Secondary"
+                                    buttonType={ButtonType.SECONDARY}
+                                    skeletonLoading={true}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-500">Danger</p>
+                                <Button
+                                    text="Danger"
+                                    buttonType={ButtonType.DANGER}
+                                    skeletonLoading={true}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-500">Success</p>
+                                <Button
+                                    text="Success"
+                                    buttonType={ButtonType.SUCCESS}
+                                    skeletonLoading={true}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Different widths */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Width Variations
+                        </h3>
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-500">
+                                    Default Width
+                                </p>
+                                <Button text="Normal" skeletonLoading={true} />
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-500">
+                                    Full Width
+                                </p>
+                                <Button
+                                    text="Full Width"
+                                    fullWidth={true}
+                                    skeletonLoading={true}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

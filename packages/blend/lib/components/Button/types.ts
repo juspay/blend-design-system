@@ -32,6 +32,7 @@ export type ButtonV2Props = {
     disabled?: boolean
     onClick?: () => void
     loading?: boolean
+    skeletonLoading?: boolean
     buttonGroupPosition?: 'center' | 'left' | 'right'
     fullWidth?: boolean
     justifyContent?: CSSObject['justifyContent']

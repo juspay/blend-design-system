@@ -31,6 +31,7 @@ import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
 import { getChartTokens } from '../components/Charts/chart.tokens'
 import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 import { getCardTokens } from '../components/Card/card.tokens'
+import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -93,6 +94,8 @@ const initTokens = (
         SNACKBAR:
             componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
         CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
+        SKELETON:
+            componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
     }
 }
 
