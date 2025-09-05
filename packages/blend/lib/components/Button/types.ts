@@ -1,5 +1,6 @@
 import React from 'react'
 import type { CSSObject } from 'styled-components'
+import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
 
 export enum ButtonType {
     PRIMARY = 'primary',
@@ -32,6 +33,8 @@ export type ButtonV2Props = {
     disabled?: boolean
     onClick?: () => void
     loading?: boolean
+    skeletonLoading?: boolean
+    skeletonVariant?: SkeletonVariant
     buttonGroupPosition?: 'center' | 'left' | 'right'
     fullWidth?: boolean
     justifyContent?: CSSObject['justifyContent']

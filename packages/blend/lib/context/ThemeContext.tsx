@@ -124,6 +124,10 @@ import {
     getCardTokens,
     ResponsiveCardTokens,
 } from '../components/Card/card.tokens'
+import {
+    getSkeletonTokens,
+    ResponsiveSkeletonTokens,
+} from '../components/Skeleton/skeleton.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -157,6 +161,7 @@ export type ComponentTokenType = {
     CHARTS?: ResponsiveChartTokens
     SNACKBAR?: ResponsiveSnackbarTokens
     CARD?: ResponsiveCardTokens
+    SKELETON?: ResponsiveSkeletonTokens
 }
 
 type ThemeContextType = {
@@ -199,6 +204,7 @@ const ThemeContext = createContext<ThemeContextType>({
         CHARTS: getChartTokens(FOUNDATION_THEME),
         SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
         CARD: getCardTokens(FOUNDATION_THEME),
+        SKELETON: getSkeletonTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })
