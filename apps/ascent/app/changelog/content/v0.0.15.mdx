@@ -1,0 +1,211 @@
+---
+title: 'Version 0.0.15'
+description: 'Enhanced modal portal support, comprehensive chart improvements with timezone formatting, advanced data table features, and expanded component ecosystem including new Card component. Delivered significant UI/UX improvements across select components, tabs, popover, snackbar, and menu with better documentation and workflow updates.'
+---
+
+<VersionHeader version="v0.0.15" date="2024-09-05" status="stable" />
+
+<ChangelogCard summary="Modal Component" prId="323" commitHash="b687243" defaultExpanded={true}>
+
+<ChangelogEntry type="feat" component="Modal">
+    **Portal Support** - Added portal support for more flexible modal rendering,
+    enabling modals to be rendered outside their parent container hierarchy for
+    better z-index management and positioning control.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Charts Component" prId={["346", "330"]} commitHash={["79a9893", "d185ad0"]}>
+
+<ChangelogEntry type="feat" component="Charts">
+    **Empty State Handling** - Added comprehensive empty state handling for
+    charts, providing meaningful feedback when no data is available to display.
+</ChangelogEntry>
+
+<ChangelogEntry type="fix" component="Charts">
+    **Typography Improvements** - Fixed font size inconsistencies for x/y axis
+    labels, legends, and chart text elements for better readability and design
+    consistency.
+</ChangelogEntry>
+
+<ChangelogEntry type="fix" component="Charts">
+    **Axis Spacing** - Resolved inconsistent spacing between consecutive ticks
+    on the x-axis, ensuring uniform visual spacing and improved chart
+    readability.
+</ChangelogEntry>
+
+<ChangelogEntry type="fix" component="Charts">
+    **Legend Consistency** - Fixed "+n more" legend inconsistency issues,
+    providing reliable legend display for charts with multiple data series.
+</ChangelogEntry>
+
+<ChangelogEntry type="fix" component="Charts">
+    **Tick Overlap Prevention** - Handled overlapping of first x/y axis ticks,
+    ensuring all tick labels remain visible and readable regardless of data
+    density.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="Charts">
+    **ChartContainer Component** - Introduced reusable ChartContainer wrapper
+    with consistent styling including borders, background, and radius for
+    unified chart presentation.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="Charts">
+    **CoreChart Component** - Introduced CoreChart for pure rendering with
+    external state support for hover and selection interactions, enabling
+    advanced chart customization.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="Charts">
+    **Advanced Date/Time Formatting** - Added comprehensive date/time formatting
+    system with timezone support (IANA zones like UTC, EST, PST), 12/24-hour
+    format via `hour12` prop, smart formatting that adapts to time context, and
+    support for multiple input formats (POSIX, UTC strings, JS timestamps).
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Stats Component" prId="346" commitHash="79a9893">
+
+<ChangelogEntry type="feat" component="Stats">
+    **Empty State Handling** - Added empty state handling for stats components,
+    providing consistent user feedback when no statistical data is available.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Data Table Component" prId="339" commitHash="ab77657">
+
+<ChangelogEntry type="fix" component="DataTable">
+    **Scroll Behavior** - Removed unwanted scroll for default table behavior,
+    providing cleaner table presentation without unnecessary scrollbars.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="DataTable">
+    **Column Filter States** - Added active state for column filter items with
+    improved visual feedback and better tooltip positioning for enhanced user
+    experience.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="DataTable">
+    **Enhanced Search** - Added no result found state in single/multiselect
+    components within data tables, improving user feedback during search
+    operations.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="DataTable">
+    **Column Management** - Updated column filter dropdown with active state
+    indicators and improved tooltip positions for better usability.
+</ChangelogEntry>
+
+<ChangelogEntry type="fix" component="DataTable">
+    **Search Bar Focus** - Fixed manage columns search bar focus issues,
+    ensuring proper keyboard navigation and accessibility.
+</ChangelogEntry>
+
+<ChangelogEntry type="fix" component="DataTable">
+    **Dropdown Alignment** - Fixed manage columns dropdown alignment that was
+    positioned too far right, ensuring proper visual positioning.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="DataTable">
+    **Design Consistency** - Updated search input states, fonts, and design
+    tokens for consistent visual design across all table search interfaces.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="DataTable">
+    **Tooltip Enhancement** - Improved tooltip positioning in column manager for
+    better user experience and accessibility.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Select Components" prId="339" commitHash="ab77657">
+
+<ChangelogEntry type="feat" component="MultiSelect">
+    **Advanced Selection Control** - Updated multiselect to support maximum
+    items selected limits and always selected items functionality for better
+    data validation and user guidance.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="SingleSelect,MultiSelect">
+    **No Results State** - Added no result found state for both single and
+    multiselect components, providing clear feedback during search operations.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="SingleSelect,MultiSelect">
+    **Design Alignment** - Updated single and multiselect components with proper
+    padding, spacing, and design alignment for visual consistency.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="SingleSelect,MultiSelect">
+    **Search Enhancement** - Added `searchPlaceholder` support and improved
+    input states for better user guidance and interaction feedback.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Component Updates">
+
+<ChangelogEntry type="feat" component="Tabs" prId="339" commitHash="ab77657">
+    **State Typography** - Updated font size for hover and active states,
+    ensuring consistent text hierarchy and improved visual feedback.
+</ChangelogEntry>
+
+<ChangelogEntry type="fix" component="Popover" prId="339" commitHash="ab77657">
+    **Active State Cleanup** - Removed unwanted border and outline for active
+    state, providing cleaner visual presentation.
+</ChangelogEntry>
+
+<ChangelogEntry
+    type="feat"
+    component="Snackbar"
+    prId="342"
+    commitHash="ac025da"
+>
+    **Visual Hierarchy** - Differentiated title and actionable elements for
+    better visual hierarchy and improved user experience.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="Menu" prId="345" commitHash="a089300">
+    **Tooltip Support** - Added comprehensive tooltip support following the same
+    construction pattern as select components for consistent behavior.
+</ChangelogEntry>
+
+<ChangelogEntry type="feat" component="Card" prId="335" commitHash="7ccbbf2">
+    **New Component** - Added complete Card component support as per design
+    specifications, expanding the component library with essential layout
+    building blocks.
+</ChangelogEntry>
+
+</ChangelogCard>
+
+<ChangelogCard summary="Documentation & Infrastructure">
+
+<ChangelogEntry
+    type="docs"
+    prId={['329', '303']}
+    commitHash={['fcc956c', '6f5fd3f']}
+>
+    **Component Documentation** - Added comprehensive documentation for each
+    component under `/docs` directory, improving developer experience and
+    component usage guidance.
+</ChangelogEntry>
+
+<ChangelogEntry
+    type="feat"
+    prId={['329', '303']}
+    commitHash={['fcc956c', '6f5fd3f']}
+>
+    **Landing Page Enhancement** - Added changelog page support to the landing
+    page (`juspay.design`), providing centralized access to release information.
+</ChangelogEntry>
+
+<ChangelogEntry type="chore" prId="328" commitHash="31d8358">
+    **Release Workflow** - Updated release workflow for Blend library with
+    improved automation and introduced new staging branch for better release
+    management.
+</ChangelogEntry>
+
+</ChangelogCard>
