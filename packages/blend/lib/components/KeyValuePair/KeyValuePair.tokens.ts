@@ -25,7 +25,7 @@ export const getKeyValuePairTokens = (
             valueColor: foundationToken.colors.gray[600],
             keyFontSize: foundationToken.font.size.body.md.fontSize,
             valueFontSize: foundationToken.font.size.body.md.fontSize,
-            maxWidth: foundationToken.unit[200],
+            maxWidth: '200px',
         },
         lg: {
             gap: foundationToken.unit[4],
@@ -33,7 +33,7 @@ export const getKeyValuePairTokens = (
             valueColor: foundationToken.colors.gray[600],
             keyFontSize: foundationToken.font.size.body.lg.fontSize,
             valueFontSize: foundationToken.font.size.body.lg.fontSize,
-            maxWidth: foundationToken.unit[300],
+            maxWidth: '300px',
         },
     }
 }

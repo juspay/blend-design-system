@@ -1,5 +1,9 @@
 import { forwardRef } from 'react'
-import { KeyValuePairPropTypes, KeyValuePairStateType } from './types'
+import {
+    KeyValuePairPropTypes,
+    KeyValuePairSize,
+    KeyValuePairStateType,
+} from './types'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { KeyValuePairTokensType } from './KeyValuePair.tokens'
@@ -9,6 +13,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
     (
         {
             keyString,
+            size = KeyValuePairSize.SMALL,
             value,
             keySlot,
             valueLeftSlot,
@@ -19,6 +24,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
     ) => {
         const keyValuePairTokens =
             useResponsiveTokens<KeyValuePairTokensType>('KEYVALUEPAIR')
+        console.log('key value pair tokens: ', keyValuePairTokens)
         return (
             <Block
                 ref={ref}
