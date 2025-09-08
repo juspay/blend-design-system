@@ -1,17 +1,20 @@
 import styled, { css } from 'styled-components'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
-import type { CheckboxInteractionState } from './types'
-import { CheckboxSize } from './types'
+import {
+    CheckboxSize,
+    CheckboxCheckedState,
+    CheckboxInteractionState,
+} from './types'
 import type { CheckboxTokensType } from './checkbox.token'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const getInteractionState = (
     isDisabled: boolean,
     error?: boolean
-): Exclude<CheckboxInteractionState, 'hover'> => {
-    if (isDisabled) return 'disabled'
-    if (error) return 'error'
-    return 'default'
+): Exclude<CheckboxInteractionState, CheckboxInteractionState.HOVER> => {
+    if (isDisabled) return CheckboxInteractionState.DISABLED
+    if (error) return CheckboxInteractionState.ERROR
+    return CheckboxInteractionState.DEFAULT
 }
 
 export const StyledCheckboxRoot = styled(CheckboxPrimitive.Root)<{
@@ -27,12 +30,12 @@ export const StyledCheckboxRoot = styled(CheckboxPrimitive.Root)<{
 
     ${({ size, $isDisabled, $checked, $error }) => {
         const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
-        const currentCheckedState: 'checked' | 'unchecked' | 'indeterminate' =
+        const currentCheckedState: CheckboxCheckedState =
             $checked === 'indeterminate'
-                ? 'indeterminate'
+                ? CheckboxCheckedState.INDETERMINATE
                 : $checked
-                  ? 'checked'
-                  : 'unchecked'
+                  ? CheckboxCheckedState.CHECKED
+                  : CheckboxCheckedState.UNCHECKED
 
         const currentInteractionState = getInteractionState($isDisabled, $error)
 

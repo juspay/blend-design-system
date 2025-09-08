@@ -5,11 +5,18 @@ export enum CheckboxSize {
     MEDIUM = 'md',
 }
 
-export type CheckboxInteractionState =
-    | 'default'
-    | 'hover'
-    | 'disabled'
-    | 'error'
+export enum CheckboxCheckedState {
+    CHECKED = 'checked',
+    UNCHECKED = 'unchecked',
+    INDETERMINATE = 'indeterminate',
+}
+
+export enum CheckboxInteractionState {
+    DEFAULT = 'default',
+    HOVER = 'hover',
+    DISABLED = 'disabled',
+    ERROR = 'error',
+}
 
 export type CheckboxProps = {
     id?: string
