@@ -3,7 +3,7 @@ import type {
     StyledAvatarContainerProps,
     StyledAvatarIndicatorProps,
 } from './types'
-import avatarTokens from './token'
+import avatarTokens from './avatar.tokens'
 import { foundationToken } from '../../foundationToken'
 
 export const StyledAvatarContainer = styled.div<StyledAvatarContainerProps>`

@@ -12,12 +12,16 @@ import {
     MultiSelectMenuAlignment,
     MultiSelectMenuSize,
     type MultiSelectMenuGroupType,
+    MultiSelectMenuSide,
 } from '../MultiSelect/types'
+import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export const ColumnManager = <T extends Record<string, unknown>>({
     columns,
     visibleColumns,
     onColumnChange,
+    maxSelections,
+    alwaysSelectedColumns = [],
 }: ColumnManagerProps<T>) => {
     const mobileConfig = useMobileDataTable()
     const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
@@ -26,11 +30,20 @@ export const ColumnManager = <T extends Record<string, unknown>>({
 
     const multiSelectItems: MultiSelectMenuGroupType[] = [
         {
-            groupLabel: 'Manage Columns',
+            groupLabel: '',
             showSeparator: false,
             items: managableColumns.map((column) => ({
                 label: column.header,
                 value: String(column.field),
+                alwaysSelected: alwaysSelectedColumns.includes(
+                    String(column.field)
+                ),
+                tooltipProps: {
+                    side: TooltipSide.LEFT,
+                    align: TooltipAlign.CENTER,
+                    size: TooltipSize.SMALL,
+                    delayDuration: 300,
+                },
             })),
         },
     ]
@@ -39,7 +52,13 @@ export const ColumnManager = <T extends Record<string, unknown>>({
 
     const handleMultiSelectChange = (value: string) => {
         if (value === '') {
-            if (visibleColumns.length > 1) {
+            // Handle deselect all - keep only always selected columns
+            const alwaysSelectedCols = visibleColumns.filter((col) =>
+                alwaysSelectedColumns.includes(String(col.field))
+            )
+            if (alwaysSelectedCols.length > 0) {
+                onColumnChange(alwaysSelectedCols)
+            } else if (visibleColumns.length > 1) {
                 onColumnChange([visibleColumns[0]])
             }
         } else {
@@ -47,34 +66,45 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             const isCurrentlyVisible = visibleColumns.some(
                 (col) => col.field === field
             )
+            const isAlwaysSelected = alwaysSelectedColumns.includes(
+                String(field)
+            )
 
             if (isCurrentlyVisible) {
-                if (visibleColumns.length > 1) {
+                // Don't allow deselecting always selected columns
+                if (!isAlwaysSelected && visibleColumns.length > 1) {
                     const newVisibleColumns = visibleColumns.filter(
                         (col) => col.field !== field
                     )
                     onColumnChange(newVisibleColumns)
                 }
             } else {
-                const columnToAdd = columns.find((col) => col.field === field)
-                if (columnToAdd) {
-                    onColumnChange([...visibleColumns, columnToAdd])
+                // Check max selections limit before adding
+                const currentSelectableCount = visibleColumns.filter(
+                    (col) => !alwaysSelectedColumns.includes(String(col.field))
+                ).length
+
+                if (
+                    !maxSelections ||
+                    currentSelectableCount < maxSelections ||
+                    isAlwaysSelected
+                ) {
+                    const columnToAdd = columns.find(
+                        (col) => col.field === field
+                    )
+                    if (columnToAdd) {
+                        onColumnChange([...visibleColumns, columnToAdd])
+                    }
                 }
             }
         }
     }
-
-    const handleClearAll = () => {
-        if (visibleColumns.length > 1) {
-            onColumnChange([visibleColumns[0]])
-        }
-    }
-
     return (
         <Block>
             {mobileConfig.isMobile ? (
                 <MultiSelect
                     label=""
+                    side={MultiSelectMenuSide.BOTTOM}
                     placeholder="Select columns to display"
                     variant={MultiSelectVariant.CONTAINER}
                     size={MultiSelectMenuSize.MEDIUM}
@@ -83,19 +113,10 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     onChange={handleMultiSelectChange}
                     enableSearch={true}
                     enableSelectAll={false}
-                    showActionButtons={true}
                     showItemDividers={true}
                     showHeaderBorder={false}
-                    primaryAction={{
-                        text: 'Apply',
-                        onClick: () => {},
-                        disabled: false,
-                    }}
-                    secondaryAction={{
-                        text: 'Clear All',
-                        onClick: handleClearAll,
-                        disabled: visibleColumns.length <= 1,
-                    }}
+                    showActionButtons={false}
+                    maxSelections={maxSelections}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"
@@ -120,24 +141,20 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                 <MultiSelect
                     label=""
                     placeholder="Manage Columns"
+                    side={MultiSelectMenuSide.BOTTOM}
                     variant={MultiSelectVariant.NO_CONTAINER}
                     alignment={MultiSelectMenuAlignment.END}
                     size={MultiSelectMenuSize.SMALL}
                     items={multiSelectItems}
                     selectedValues={selectedColumnValues}
                     onChange={handleMultiSelectChange}
-                    enableSearch={false}
-                    showActionButtons={true}
-                    primaryAction={{
-                        text: 'Apply',
-                        onClick: () => {},
-                        disabled: false,
-                    }}
-                    secondaryAction={{
-                        text: 'Clear All',
-                        onClick: handleClearAll,
-                        disabled: visibleColumns.length <= 1,
-                    }}
+                    enableSearch={true}
+                    enableSelectAll={false}
+                    selectAllText="Select All Columns"
+                    showActionButtons={false}
+                    maxHeight={400}
+                    showHeaderBorder={false}
+                    maxSelections={maxSelections}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"

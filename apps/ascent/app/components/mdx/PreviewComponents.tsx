@@ -24,9 +24,27 @@ const PREVIEW_COMPONENT_NAMES = [
     'Radio',
     'Switch',
     'SingleSelect',
+    'MultiSelect',
     'Menu',
     'StatCard',
     'Chart',
+    'Avatar',
+    'AvatarGroup',
+    'Breadcrumb',
+    'DataTable',
+    'Drawer',
+    'ProgressBar',
+    'Sidebar',
+    'Slider',
+    'TextInput',
+    'DropdownInput',
+    'MultiValueInput',
+    'NumberInput',
+    'OTPInput',
+    'SearchInput',
+    'Textarea',
+    'UnitInput',
+    'DateRangePicker',
 ] as const
 
 // Generate all preview components programmatically
@@ -55,6 +73,24 @@ export const CheckboxPreview = PreviewComponents.CheckboxPreview
 export const RadioPreview = PreviewComponents.RadioPreview
 export const SwitchPreview = PreviewComponents.SwitchPreview
 export const SingleSelectPreview = PreviewComponents.SingleSelectPreview
+export const MultiSelectPreview = PreviewComponents.MultiSelectPreview
 export const MenuPreview = PreviewComponents.MenuPreview
 export const StatCardPreview = PreviewComponents.StatCardPreview
 export const ChartPreview = PreviewComponents.ChartPreview
+export const AvatarPreview = PreviewComponents.AvatarPreview
+export const AvatarGroupPreview = PreviewComponents.AvatarGroupPreview
+export const BreadcrumbPreview = PreviewComponents.BreadcrumbPreview
+export const DataTablePreview = PreviewComponents.DataTablePreview
+export const DrawerPreview = PreviewComponents.DrawerPreview
+export const ProgressBarPreview = PreviewComponents.ProgressBarPreview
+export const SidebarPreview = PreviewComponents.SidebarPreview
+export const SliderPreview = PreviewComponents.SliderPreview
+export const TextInputPreview = PreviewComponents.TextInputPreview
+export const DropdownInputPreview = PreviewComponents.DropdownInputPreview
+export const MultiValueInputPreview = PreviewComponents.MultiValueInputPreview
+export const NumberInputPreview = PreviewComponents.NumberInputPreview
+export const OTPInputPreview = PreviewComponents.OTPInputPreview
+export const SearchInputPreview = PreviewComponents.SearchInputPreview
+export const TextareaPreview = PreviewComponents.TextareaPreview
+export const UnitInputPreview = PreviewComponents.UnitInputPreview
+export const DateRangePickerPreview = PreviewComponents.DateRangePickerPreview

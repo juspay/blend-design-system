@@ -21,7 +21,7 @@ jobs:
     create-beta-release:
         name: Create Beta Release (No Publish)
         runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/dev'
+        if: github.ref == 'refs/heads/staging'
         outputs:
             version: ${{ steps.bump_version.outputs.new_version }}
             tag: ${{ steps.bump_version.outputs.tag }}
@@ -137,7 +137,7 @@ jobs:
 
                   echo "# Changelog for v$VERSION (Beta)" > docs/CHANGELOG.md
                   echo "" >> docs/CHANGELOG.md
-                  echo "This is a beta release. Changes since last tag:" >> docs/CHANGELOG.md
+                  echo "This is a beta release from the staging branch. Changes since last tag:" >> docs/CHANGELOG.md
                   echo "" >> docs/CHANGELOG.md
                   if [[ -n "$LAST_TAG" ]]; then
                     git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
@@ -178,6 +178,7 @@ jobs:
               uses: peter-evans/create-pull-request@v6
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
+                  base: dev
                   branch: release/update-beta-version-${{ steps.bump_version.outputs.new_version }}
                   title: 'chore(release): ${{ steps.bump_version.outputs.tag }} [BETA]'
                   body: |
@@ -185,19 +186,25 @@ jobs:
 
                       - Bump version to ${{ steps.bump_version.outputs.new_version }}
                       - Update changelog
-                      - **This is a BETA release - ready for NPM publishing**
+                      - **This is a BETA release from staging branch - ready for NPM publishing**
 
                       This PR was automatically created by the beta release workflow.
 
                       **Next Steps:**
-                      1. Review and merge this PR
-                      2. Trigger "Publish Beta to NPM" workflow to publish to npm with beta tag
-                      3. After testing, create PR from dev → main for stable release
+                      1. Review and merge this PR to dev branch first
+                      2. Manually create PR from dev → staging and merge
+                      3. Trigger "Publish Beta to NPM" workflow to publish to npm with beta tag
+                      4. After testing, create PR from staging → main for stable release
 
                       **Changes included:**
                       - Updated package.json version to beta
                       - Generated changelog
                       - Created GitHub release with prerelease flag
+
+                      **Release Branch Strategy:**
+                      - Beta releases are created from `staging` branch
+                      - All automatic PRs go to `dev` first, then manually merged to `staging`
+                      - This prevents issues with ongoing development in `dev` branch
                   labels: |
                       automated
                       release
@@ -208,7 +215,7 @@ jobs:
 
                       - Bump version to ${{ steps.bump_version.outputs.new_version }}
                       - Update changelog
-                      - Create beta release
+                      - Create beta release from staging branch
 
                       [skip ci]
                   add-paths: |

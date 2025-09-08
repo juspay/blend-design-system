@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, forwardRef } from 'react'
+import { useState, useEffect, useMemo, forwardRef, useRef } from 'react'
 import {
     DataTableProps,
     SortDirection,
@@ -38,6 +38,23 @@ import { foundationToken } from '../../foundationToken'
 import { useMobileDataTable } from './hooks/useMobileDataTable'
 import MobileColumnDrawer from './MobileColumnDrawer'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import styled from 'styled-components'
+
+const ScrollableContainer = styled(Block)`
+    overflow-x: auto;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+`
 
 const DataTable = forwardRef(
     <T extends Record<string, unknown>>(
@@ -60,10 +77,13 @@ const DataTable = forwardRef(
             serverSidePagination = false,
             isLoading = false,
             enableColumnManager = true,
+            columnManagerMaxSelections,
+            columnManagerAlwaysSelected,
             showToolbar = true,
+            showSettings = false,
             enableInlineEdit = false,
             enableRowExpansion = false,
-            enableRowSelection = true,
+            enableRowSelection = false,
             renderExpandedRow,
             isRowExpandable,
             pagination = {
@@ -94,6 +114,7 @@ const DataTable = forwardRef(
     ) => {
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
+        const scrollContainerRef = useRef<HTMLDivElement>(null)
 
         const [sortConfig, setSortConfig] = useState<SortConfig | null>(
             defaultSort || null
@@ -101,8 +122,36 @@ const DataTable = forwardRef(
         const [visibleColumns, setVisibleColumns] = useState<
             ColumnDefinition<T>[]
         >(() => {
-            return initialColumns.filter((col) => col.isVisible !== false)
+            const allVisibleColumns = initialColumns.filter(
+                (col) => col.isVisible !== false
+            )
+
+            if (columnManagerMaxSelections && columnManagerAlwaysSelected) {
+                const alwaysSelectedFields = columnManagerAlwaysSelected.map(
+                    (field) => String(field)
+                )
+                const alwaysSelectedCols = allVisibleColumns.filter((col) =>
+                    alwaysSelectedFields.includes(String(col.field))
+                )
+                const selectableCols = allVisibleColumns.filter(
+                    (col) => !alwaysSelectedFields.includes(String(col.field))
+                )
+
+                const maxSelectableCount =
+                    columnManagerMaxSelections - alwaysSelectedCols.length
+                const limitedSelectableCols = selectableCols.slice(
+                    0,
+                    Math.max(0, maxSelectableCount)
+                )
+
+                return [...alwaysSelectedCols, ...limitedSelectableCols]
+            }
+
+            return allVisibleColumns
         })
+        const [previousColumnCount, setPreviousColumnCount] = useState<number>(
+            () => initialColumns.filter((col) => col.isVisible !== false).length
+        )
         const [currentPage, setCurrentPage] = useState<number>(
             pagination?.currentPage || 1
         )
@@ -317,6 +366,24 @@ const DataTable = forwardRef(
         useEffect(() => {
             updateSelectAllState(selectedRows)
         }, [currentData, selectedRows])
+
+        useEffect(() => {
+            const currentColumnCount = visibleColumns.length
+
+            if (
+                currentColumnCount > previousColumnCount &&
+                scrollContainerRef.current
+            ) {
+                setTimeout(() => {
+                    if (scrollContainerRef.current) {
+                        scrollContainerRef.current.scrollLeft =
+                            scrollContainerRef.current.scrollWidth
+                    }
+                }, 100)
+            }
+
+            setPreviousColumnCount(currentColumnCount)
+        }, [visibleColumns.length, previousColumnCount])
 
         const handleSelectAll = (checked: boolean | 'indeterminate') => {
             const newSelectAll = checked === true
@@ -646,23 +713,25 @@ const DataTable = forwardRef(
                     onAdvancedFiltersChange={onAdvancedFiltersChange}
                     onClearAllFilters={clearAllFilters}
                     headerSlot1={
-                        <>
-                            <Menu
-                                items={formatOptions}
-                                alignment={MenuAlignment.END}
-                                sideOffset={8}
-                                alignOffset={-20}
-                                trigger={
-                                    <Button
-                                        buttonType={ButtonType.SECONDARY}
-                                        leadingIcon={<Settings />}
-                                        size={ButtonSize.SMALL}
-                                    >
-                                        Settings
-                                    </Button>
-                                }
-                            />
-                        </>
+                        showSettings ? (
+                            <>
+                                <Menu
+                                    items={formatOptions}
+                                    alignment={MenuAlignment.END}
+                                    sideOffset={8}
+                                    alignOffset={-20}
+                                    trigger={
+                                        <Button
+                                            buttonType={ButtonType.SECONDARY}
+                                            leadingIcon={<Settings />}
+                                            size={ButtonSize.SMALL}
+                                        >
+                                            Settings
+                                        </Button>
+                                    }
+                                />
+                            </>
+                        ) : null
                     }
                     headerSlot2={headerSlot1}
                     headerSlot3={headerSlot2}
@@ -696,12 +765,9 @@ const DataTable = forwardRef(
                             overflow: 'hidden',
                         }}
                     >
-                        <Block
+                        <ScrollableContainer
+                            ref={scrollContainerRef}
                             style={{
-                                overflowX: 'auto',
-                                overflowY: 'auto',
-                                scrollBehavior: 'smooth',
-                                WebkitOverflowScrolling: 'touch',
                                 height: '100%',
                                 maxHeight: '100%',
                                 position: 'relative',
@@ -710,8 +776,7 @@ const DataTable = forwardRef(
                             <table
                                 style={{
                                     width: tableToken.dataTable.table.width,
-                                    minWidth:
-                                        tableToken.dataTable.table.minWidth,
+                                    minWidth: 'auto',
                                     tableLayout:
                                         tableToken.dataTable.table.tableLayout,
                                     borderCollapse:
@@ -746,6 +811,12 @@ const DataTable = forwardRef(
                                     enableColumnManager={
                                         effectiveEnableColumnManager
                                     }
+                                    columnManagerMaxSelections={
+                                        columnManagerMaxSelections
+                                    }
+                                    columnManagerAlwaysSelected={columnManagerAlwaysSelected?.map(
+                                        (field) => String(field)
+                                    )}
                                     enableRowExpansion={enableRowExpansion}
                                     enableRowSelection={enableRowSelection}
                                     rowActions={
@@ -928,7 +999,7 @@ const DataTable = forwardRef(
                                     </tbody>
                                 )}
                             </table>
-                        </Block>
+                        </ScrollableContainer>
                     </Block>
 
                     <TableFooter

@@ -9,7 +9,7 @@ import { type ComponentTokenType, useTheme } from './ThemeContext'
 import type { ResponsiveTextInputTokens } from '../components/Inputs/TextInput/textInput.tokens'
 import type { ResponsiveNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
 import type { ResponsiveAlertTokens } from '../components/Alert/alert.tokens'
-import type { OTPInputTokensType } from '../components/Inputs/OTPInput/otpInput.tokens'
+import type { ResponsiveOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
 import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import type { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
@@ -29,6 +29,7 @@ import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
 import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
 import { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
+import { ResponsiveCardTokens } from '../components/Card/card.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -40,7 +41,7 @@ export const useComponentToken = (
     | ResponsiveNumberInputTokens
     | ResponsiveAlertTokens
     | ResponsiveRadioTokens
-    | OTPInputTokensType
+    | ResponsiveOTPInputTokens
     | ResponsiveUnitInputTokens
     | MultiValueInputTokensType
     | ResponsiveSwitchTokens
@@ -62,7 +63,8 @@ export const useComponentToken = (
     | ProgressBarTokenType
     | DrawerTokensType
     | ResponsiveChartTokens
-    | ResponsiveSnackbarTokens => {
+    | ResponsiveSnackbarTokens
+    | ResponsiveCardTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -126,6 +128,8 @@ export const useComponentToken = (
             return componentTokens.CHARTS
         case 'SNACKBAR':
             return componentTokens.SNACKBAR
+        case 'CARD':
+            return componentTokens.CARD
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

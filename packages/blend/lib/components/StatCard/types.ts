@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { SingleSelectProps } from '../SingleSelect'
+import { AxisType } from '../Charts/types'
 
 export enum StatCardVariant {
     LINE = 'line',
@@ -24,6 +25,15 @@ export type StatCardChange = {
     tooltip?: ReactNode
 }
 
+export type StatCardAxisConfig = {
+    type?: AxisType
+    tickFormatter?: (value: string | number) => string
+    dateOnly?: boolean
+    smart?: boolean
+    timeZone?: string
+    hour12?: boolean
+}
+
 export type StatCardProps = {
     title: string
     value: string | number
@@ -38,4 +48,7 @@ export type StatCardProps = {
     helpIconText?: string
     dropdownProps?: SingleSelectProps
     maxWidth?: string
+    xAxis?: StatCardAxisConfig
+    yAxis?: StatCardAxisConfig
+    valueFormatter?: AxisType
 }

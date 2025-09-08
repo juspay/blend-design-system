@@ -5,7 +5,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import { ChevronsDownUp, Expand } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
-export const ChartHeader: React.FC<ChartHeaderProps> = ({
+const ChartHeader: React.FC<ChartHeaderProps> = ({
     slot1,
     slot2,
     slot3,
@@ -108,3 +108,5 @@ export const ChartHeader: React.FC<ChartHeaderProps> = ({
         </Block>
     )
 }
+
+export default ChartHeader

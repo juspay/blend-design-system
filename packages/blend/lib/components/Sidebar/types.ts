@@ -11,6 +11,7 @@ export type LeftPanelInfo = {
     items: LeftPanelItem[]
     selected: string
     onSelect: (value: string) => void
+    maxVisibleItems?: number
 }
 
 export type SidebarProps = {

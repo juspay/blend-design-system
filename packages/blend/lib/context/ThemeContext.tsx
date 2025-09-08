@@ -34,7 +34,7 @@ import {
 } from '../components/Alert/alert.tokens'
 import {
     getOTPInputTokens,
-    type OTPInputTokensType,
+    type ResponsiveOTPInputTokens,
 } from '../components/Inputs/OTPInput/otpInput.tokens'
 import {
     getTooltipTokens,
@@ -120,6 +120,10 @@ import {
     getSnackbarTokens,
     ResponsiveSnackbarTokens,
 } from '../components/Snackbar/snackbar.tokens'
+import {
+    getCardTokens,
+    ResponsiveCardTokens,
+} from '../components/Card/card.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -130,7 +134,7 @@ export type ComponentTokenType = {
     TEXT_INPUT?: ResponsiveTextInputTokens
     NUMBER_INPUT?: ResponsiveNumberInputTokens
     ALERT?: ResponsiveAlertTokens
-    OTP_INPUT?: OTPInputTokensType
+    OTP_INPUT?: ResponsiveOTPInputTokens
     TOOLTIP?: ResponsiveTooltipTokens
     UNIT_INPUT?: ResponsiveUnitInputTokens
     MULTI_VALUE_INPUT?: MultiValueInputTokensType
@@ -152,6 +156,7 @@ export type ComponentTokenType = {
     DRAWER?: DrawerTokensType
     CHARTS?: ResponsiveChartTokens
     SNACKBAR?: ResponsiveSnackbarTokens
+    CARD?: ResponsiveCardTokens
 }
 
 type ThemeContextType = {
@@ -193,6 +198,7 @@ const ThemeContext = createContext<ThemeContextType>({
         DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
         CHARTS: getChartTokens(FOUNDATION_THEME),
         SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
+        CARD: getCardTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

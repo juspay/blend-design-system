@@ -43,6 +43,7 @@ const MultiSelect = ({
     searchPlaceholder = 'Search options...',
     enableSelectAll = false,
     selectAllText = 'Select All',
+    maxSelections,
     customTrigger,
     useDrawerOnMobile = true,
     minWidth,
@@ -57,21 +58,9 @@ const MultiSelect = ({
     onFocus,
     error,
     errorMessage,
-    showActionButtons = true,
-    primaryAction = {
-        text: 'Apply',
-        onClick: () => {},
-        disabled: false,
-        loading: false,
-    },
-    secondaryAction = {
-        text: 'Clear All',
-        onClick: () => {
-            selectedValues.forEach((value) => onChange(value))
-        },
-        disabled: false,
-        loading: false,
-    },
+    showActionButtons,
+    primaryAction,
+    secondaryAction,
     showItemDividers = false,
     showHeaderBorder = false,
 }: MultiSelectProps) => {
@@ -88,11 +77,14 @@ const MultiSelect = ({
     const showCancelButton =
         variant === MultiSelectVariant.CONTAINER && selectedValues.length > 0
 
-    // Add state for truncation detection
+    const shouldShowActionButtons =
+        showActionButtons !== undefined
+            ? showActionButtons
+            : !!(primaryAction || secondaryAction)
+
     const [showTooltip, setShowTooltip] = useState(false)
     const textContainerRef = useRef<HTMLDivElement>(null)
 
-    // Function to check if text is truncated
     const checkTruncation = () => {
         if (textContainerRef.current) {
             const isOverflowing =
@@ -143,7 +135,7 @@ const MultiSelect = ({
                 onFocus={onFocus}
                 error={error}
                 errorMessage={errorMessage}
-                showActionButtons={showActionButtons}
+                showActionButtons={shouldShowActionButtons}
                 primaryAction={primaryAction}
                 secondaryAction={secondaryAction}
                 showItemDividers={showItemDividers}
@@ -181,6 +173,7 @@ const MultiSelect = ({
                 searchPlaceholder={searchPlaceholder}
                 enableSelectAll={enableSelectAll}
                 selectAllText={selectAllText}
+                maxSelections={maxSelections}
                 onSelectAll={
                     enableSelectAll
                         ? (selectAll: boolean) =>
@@ -208,7 +201,7 @@ const MultiSelect = ({
                         onBlur?.()
                     }
                 }}
-                showActionButtons={showActionButtons}
+                showActionButtons={shouldShowActionButtons}
                 primaryAction={primaryAction}
                 secondaryAction={secondaryAction}
                 trigger={
@@ -249,6 +242,7 @@ const MultiSelect = ({
                                     }
                                 >
                                     <PrimitiveButton
+                                        type="button"
                                         position="relative"
                                         width={'100%'}
                                         display="flex"
@@ -481,6 +475,10 @@ const MultiSelect = ({
                                                             MultiSelectSelectionTagType.COUNT
                                                                 ? '0px 6px'
                                                                 : '0px 0px',
+                                                        overflow: 'hidden',
+                                                        textOverflow:
+                                                            'ellipsis',
+                                                        whiteSpace: 'nowrap',
                                                     }}
                                                 >
                                                     {selectionTagType ===
@@ -514,6 +512,7 @@ const MultiSelect = ({
                                 {variant === MultiSelectVariant.CONTAINER &&
                                     selectedValues.length > 0 && (
                                         <PrimitiveButton
+                                            type="button"
                                             borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
                                             backgroundColor={
                                                 FOUNDATION_THEME.colors.gray[0]

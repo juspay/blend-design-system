@@ -14,6 +14,7 @@ export type AddToastOptions = {
         label: string
         onClick: () => void
     }
+    duration?: number
 }
 
 export type CustomToastProps = {

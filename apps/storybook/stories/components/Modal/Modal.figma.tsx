@@ -15,26 +15,33 @@ import { Modal } from '@juspay/blend-design-system'
  *    - showHeader → showHeader
  *    - showFooter → showFooter
  *
- * 2. SPECIAL MAPPINGS:
+ * 2. RENAMED MAPPINGS:
  *    - hasCloseIcon (Figma) → showCloseButton (Code)
- *    - hasHeaderSlot (Figma) → headerRightSlot (Code)
+ *    - headerSlot (Figma) → headerRightSlot (Code)
  *
- * 3. CODE-ONLY PROPERTIES (not in Figma):
- *    - isOpen: Always true in Figma design
- *    - onClose: Functional prop
- *    - children: Content of the modal
- *    - primaryAction: Action button
- *    - secondaryAction: Action button
- *    - className: Styling prop
- *    - closeOnBackdropClick: Behavior prop
+ * 3. CONDITIONAL MAPPINGS:
+ *    - showFooter (Figma) → primaryAction & secondaryAction (Code): When showFooter is true, both action props are available
+ *    - hasHeaderSlot (Figma): Auto-calculated based on headerSlot content
+ *    - hasHeading (Figma): Auto-calculated based on title content
+ *    - hasSubHeading (Figma): Auto-calculated based on subtitle content
+ *
+ * 4. CODE-ONLY PROPERTIES (not in Figma):
+ *    - isOpen: Modal state control
+ *    - className: Styling customization
+ *    - closeOnBackdropClick: Behavior control
  *    - customHeader: Custom header component
  *    - customFooter: Custom footer component
- *    - showDivider: Visual prop
+ *    - showDivider: Visual divider control
+ *
+ * 5. FIGMA-ONLY PROPERTIES (not in Code):
+ *    - type: Visual variant in Figma
+ *    - hasHeading: Auto-calculated from title
+ *    - hasSubHeading: Auto-calculated from subtitle
  */
 
 figma.connect(
     Modal,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4891-5414&t=jEHPJiKmUT0XJ9QL-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-635480&t=2L1Yl830ZKZjFcrt-11',
     {
         props: {
             // Direct string mappings
@@ -45,7 +52,7 @@ figma.connect(
             showHeader: figma.boolean('showHeader'),
             showFooter: figma.boolean('showFooter'),
 
-            // Special mappings
+            // Renamed mappings
             showCloseButton: figma.boolean('hasCloseIcon'),
 
             // Header slot mapping
@@ -54,18 +61,33 @@ figma.connect(
                 false: undefined,
             }),
 
+            // Conditional action buttons based on showFooter
+            primaryAction: figma.boolean('showFooter', {
+                true: {
+                    label: 'Confirm',
+                    onClick: () => console.log('Primary action clicked'),
+                },
+                false: undefined,
+            }),
+
+            secondaryAction: figma.boolean('showFooter', {
+                true: {
+                    label: 'Cancel',
+                    onClick: () => console.log('Secondary action clicked'),
+                },
+                false: undefined,
+            }),
+
             // Fixed props for Code Connect
             isOpen: true, // Modal is always open in Figma
-            onClose: () => {}, // Required callback
+            onClose: () => console.log('Modal closed'), // Required callback
             children: <div>Modal content goes here</div>, // Required children
 
             // Note: The following props are not mapped as they don't exist in Figma:
-            // - primaryAction (action buttons)
-            // - secondaryAction (action buttons)
             // - className (styling)
             // - closeOnBackdropClick (behavior)
             // - customHeader (custom component)
-            // - customFooter (custom component)
+            // - customFooter (custom footer component)
             // - showDivider (visual option)
         },
 
@@ -76,6 +98,8 @@ figma.connect(
             showFooter,
             showCloseButton,
             headerRightSlot,
+            primaryAction,
+            secondaryAction,
             isOpen,
             onClose,
             children,
@@ -89,6 +113,8 @@ figma.connect(
                 showFooter={showFooter}
                 showCloseButton={showCloseButton}
                 headerRightSlot={headerRightSlot}
+                primaryAction={primaryAction}
+                secondaryAction={secondaryAction}
             >
                 {children}
             </Modal>

@@ -14,7 +14,7 @@
     --surface: oklch(0.98 0 0);
 
     /* Enhanced sidebar and navigation tokens */
-    --sidebar-background: oklch(0.995 0 0);
+    /* --sidebar-background: oklch(0.995 0 0); */
     --sidebar-border: oklch(0.94 0 0);
     --sidebar-item-hover: oklch(0.96 0 0);
     --sidebar-item-active: oklch(0.92 0 0);
@@ -49,6 +49,85 @@
     --sh-background: #f6f8fa;
     --code-background: #fefefe;
     --code-border: #e0e0e0;
+
+    /* Landing page */
+    --landing-background:
+        linear-gradient(0deg, #050505 0%, #050505 100%),
+        linear-gradient(180deg, #121316 10.86%, #0505e2 99.98%);
+    --design-system-heading-background: #898989;
+    --design-system-heading-border: linear-gradient(
+        90deg,
+        rgba(153, 153, 153, 0.5),
+        rgba(255, 255, 255, 0.5),
+        rgba(153, 153, 153, 0.5)
+    );
+    --intro-text-color: #a3a3a3;
+    --button-border: #64677c;
+    --button-text-color: #b3b3b3;
+    --heading-gradient: linear-gradient(
+        90deg,
+        #4b4b4b 0%,
+        #f5f5f5 53.37%,
+        #4b4b4b 100%
+    );
+    --landing-tabs-bar-gradient: linear-gradient(
+        90deg,
+        rgba(153, 153, 153, 0.5),
+        rgba(255, 255, 255, 0.5),
+        rgba(153, 153, 153, 0.5)
+    );
+    --tab-buttons-gradient: linear-gradient(
+        180deg,
+        #fefefe,
+        #37373b,
+        rgba(153, 153, 153, 0.5)
+    );
+    --tab-bg-color-selected: #ffffff2e;
+    --tab-btn-text-color: #b3b3b3;
+    --tab-btn-text-color-selected: #e3e3e3;
+    --tokenizer-border-gradient: linear-gradient(
+            90deg,
+            #121316,
+            #b3b3b3,
+            #050505
+        )
+        _1;
+    --components-heading-gradient: linear-gradient(
+        90deg,
+        #68686880 0%,
+        #d0d0d0 53%,
+        #68686880 100%
+    );
+    --documentation-card-gradient-from: #ffffff1a;
+    --documentation-card-gradient-to: #0000001a;
+    --gray-text: #9e9e9e;
+    --footer-text-color: #777e90;
+
+    /* changelog */
+    --rounded-100: 100px;
+    --rounded-80: 80px;
+    --rounded-60: 60px;
+    --rounded-50: 50px;
+    --changelog-border-color: rgba(255, 255, 255, 0.05);
+    --changelog-bg-color: 180deg, #060606_37.13%, rgba(0, 0, 0, 0.5) _140.17%;
+    --pixel: 1px;
+    --grey-100: #9f9f9f;
+    --grey-200: #9e9e9e;
+    --grey-300: #b3b3b3;
+    --grey-400: #64677c;
+    --grey-500: #4f4f4f;
+    --text-40: 40px;
+    --text-64: 64px;
+    --text-56: 56px;
+    --rounded-50: 50px;
+    --rounded-46: 46px;
+    --date-card-badge-color: rgba(255, 255, 255, 0.02);
+
+    --changelog-card-list-bg-from: rgba(6, 6, 6, 1);
+    --changelog-card-list-bg-to: rgba(0, 0, 0, 0.5);
+
+    --search-bar-from: #161616;
+    --search-bar-to: #191919;
 }
 
 @theme inline {
@@ -56,6 +135,92 @@
     --color-foreground: var(--foreground);
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
+}
+
+@theme {
+    --breakpoint-xs: 400px;
+
+    /* 2xl */
+    --main-heading-text: 8.25rem;
+    --subheading-font-size: 32px;
+    --tracking-half: 0.5rem;
+    --tracking-double: 2em;
+    --tab-bar-border-radius: 83px;
+    --tab-btn-font-size: 18px;
+    --padding-1-pixel: 1px;
+    --tabs-section-width: 700px;
+    --tabs-border-radius: 50px;
+    --tokenizer-heading-letter-spacing: 40px;
+    --documentation-card-border-radius: 120px;
+    --playground-min-height: 90vh;
+    --playground-border-radius: 200px;
+    --move-to-top-btn-size: 52px --footer-border-radius: 100px;
+    --tab-heading-font-size: 16px;
+    --chevron-right-size: 24px;
+    --subheading-letter-spacing: 2.5em;
+    --documentation-card-size: 500px;
+    --documentation-card-rounded: 120px;
+
+    /* xl */
+    --main-heading-text-xl: 6rem;
+    --subheading-font-size-xl: 28px;
+
+    /* lg */
+    --main-heading-text-lg: 5.5rem;
+    --subheading-font-size-lg: 24px;
+
+    /* md */
+    --main-heading-text-md: 4rem;
+    --subheading-font-size-md: 24px;
+    --tabs-section-width-md: 600px;
+    --tab-btn-font-size-md: 14px;
+    --tab-heading-font-size-md: 12px;
+    --tokenizer-heading-letter-spacing-md: 30px;
+    --info-btn-width-md: 160px;
+    --chevron-right-size-md: 22px;
+    --subheading-letter-spacing-md: 2.2em;
+    --documentation-card-size-md: 450px;
+    --documentation-card-rounded-md: 90px;
+    --playground-border-radius-md: 160px;
+
+    /* sm */
+    --main-heading-text-sm: 3.5rem;
+    --gradient-heading-box-font-size-sm: 10px;
+    --subheading-font-size-sm: 18px;
+    --tabs-section-width-sm: 550px;
+    --tab-btn-font-size-sm: 12px;
+    --tab-heading-font-size-sm: 10px;
+    --tokenizer-heading-letter-spacing-sm: 25px;
+    --info-btn-width-sm: 120px;
+    --chevron-right-size-sm: 20px;
+    --subheading-letter-spacing-sm: 2.1em;
+    --documentation-card-size-sm: 400px;
+    --documentation-card-rounded-sm: 70px;
+    --playground-border-radius-sm: 120px;
+
+    /* xs */
+    --main-heading-text-xs: 2rem;
+    --gradient-heading-box-font-size-xs: 8px --subheading-font-size-xs: 14px;
+    --tabs-section-width-xs: 400px;
+    --tab-btn-font-size-xs: 10px;
+    --tab-heading-font-size-xs: 8px;
+    --tokenizer-heading-letter-spacing-xs: 20px;
+    --info-btn-width-xs: 100px;
+    --chevron-right-size-xs: 18px;
+    --subheading-letter-spacing-xs: 2em;
+    --subheading-font-size-xs: 14px;
+    --documentation-card-size-xs: 350px;
+    --documentation-card-rounded-xs: 50px;
+    --playground-border-radius-xs: 80px;
+
+    --tabs-section-width-xxs: 330px;
+    --text-xxs: 10px;
+    --subheading-font-size-xxs: 12px;
+    --playground-border-radius-xxs: 40px;
+    --changelog-bg-color: 180deg, #060606_37.13%, rgba(0, 0, 0, 0.5) _140.17%;
+    --border-color:
+        90deg, rgba(0, 0, 0, 0.25) _0%, rgba(0, 0, 0, 0.1) _48.08%,
+        rgba(0, 0, 0, 0.25) _100%;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -72,7 +237,7 @@
         --surface: oklch(0.2 0 0);
 
         /* Enhanced dark mode sidebar and navigation tokens */
-        --sidebar-background: oklch(0.16 0 0);
+        /* --sidebar-background: oklch(0.16 0 0); */
         --sidebar-border: oklch(0.25 0 0);
         --sidebar-item-hover: oklch(0.22 0 0);
         --sidebar-item-active: oklch(0.28 0 0);
@@ -124,7 +289,7 @@
     --surface: oklch(0.98 0 0);
 
     /* Enhanced light mode sidebar and navigation tokens */
-    --sidebar-background: oklch(0.995 0 0);
+    /* --sidebar-background: oklch(0.995 0 0); */
     --sidebar-border: oklch(0.94 0 0);
     --sidebar-item-hover: oklch(0.96 0 0);
     --sidebar-item-active: oklch(0.92 0 0);
@@ -175,7 +340,7 @@
     --surface: oklch(0.2 0 0);
 
     /* Enhanced dark mode sidebar and navigation tokens */
-    --sidebar-background: oklch(0.16 0 0);
+    /* --sidebar-background: oklch(0.16 0 0); */
     --sidebar-border: oklch(0.25 0 0);
     --sidebar-item-hover: oklch(0.22 0 0);
     --sidebar-item-active: oklch(0.28 0 0);
@@ -414,4 +579,25 @@ select:focus {
     font-family: var(--font-mono);
     font-size: 10px;
     margin: 0 2px;
+}
+
+/* Changelog commit link styling */
+.commit-link {
+    color: oklch(0.45 0.15 220);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.commit-link:hover {
+    color: oklch(0.35 0.18 220);
+    text-decoration: underline;
+}
+
+/* Dark mode support for commit links */
+.dark .commit-link {
+    color: oklch(0.65 0.15 220);
+}
+
+.dark .commit-link:hover {
+    color: oklch(0.75 0.18 220);
 }

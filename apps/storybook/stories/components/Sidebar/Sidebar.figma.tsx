@@ -16,62 +16,60 @@ import {
  *
  * Figma vs Code Property Mappings:
  *
- * 1. DIRECT MAPPINGS:
- *    - The Figma component represents the visual sidebar structure
+ * 1. RENAMED MAPPINGS:
+ *    - sidebarSecondary (Figma) → leftPanel (Code)
  *
- * 2. CODE-ONLY PROPERTIES:
- *    - tenants: Array of tenant information
- *    - merchants: Array of merchant information
+ * 2. CODE-ONLY PROPERTIES (not in Figma):
+ *    - children: Main content area
  *    - data: Directory data for navigation structure
  *    - topbar: React node for topbar content
- *    - children: Main content area
+ *    - footer: Optional footer content
+ *    - sidebarTopSlot: Top slot content for sidebar
+ *    - sidebarCollapseKey: Key for sidebar collapse state
+ *    - tenants: Array of tenant information
+ *    - merchants: Array of merchant information
  *    - activeTenant: Currently selected tenant
  *    - setActiveTenant: Tenant selection handler
  *    - activeMerchant: Currently selected merchant
  *    - setActiveMerchant: Merchant selection handler
- *    - footer: Optional footer content
  */
 
 // Base Sidebar connection
 figma.connect(
     Sidebar,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=8210-129639&t=O53E5LTqGyp5e0cp-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-654676&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
-            // Note: The Sidebar Figma component doesn't expose properties
-            // All props are code-only and configured in the implementation
+            // Note: sidebarSecondary (Figma) → leftPanel (Code) mapping
+            // leftPanel expects a LeftPanelInfo object, not a boolean
+            // This is handled in the example with a conditional structure
+            // Note: Most Sidebar props are code-only and configured in the implementation
+            // The Figma component primarily represents the visual structure
         },
 
         example: () => (
             <Sidebar
-                tenants={[
-                    {
-                        label: 'Juspay',
-                        icon: (
-                            <div className="w-8 h-8 bg-blue-500 rounded-full" />
-                        ),
-                        id: 'juspay',
-                    },
-                    {
-                        label: 'Hyperswitch',
-                        icon: (
-                            <div className="w-8 h-8 bg-green-500 rounded-full" />
-                        ),
-                        id: 'hyperswitch',
-                    },
-                ]}
-                merchants={[
-                    {
-                        label: 'Production',
-                        icon: <BarChart className="w-4 h-4" />,
-                        id: 'prod',
-                    },
-                    {
-                        label: 'Sandbox',
-                        icon: <FileText className="w-4 h-4" />,
-                        id: 'sandbox',
-                    },
-                ]}
+                leftPanel={{
+                    items: [
+                        {
+                            label: 'Juspay',
+                            icon: (
+                                <div className="w-6 h-6 bg-blue-500 rounded" />
+                            ),
+                            value: 'juspay',
+                        },
+                        {
+                            label: 'Hyperswitch',
+                            icon: (
+                                <div className="w-6 h-6 bg-green-500 rounded" />
+                            ),
+                            value: 'hyperswitch',
+                        },
+                    ],
+                    selected: 'juspay',
+                    onSelect: (value: string) =>
+                        console.log('Selected:', value),
+                }}
                 data={[
                     {
                         label: 'Dashboard',
@@ -134,12 +132,6 @@ figma.connect(
                             <Settings className="w-5 h-5" />
                         </button>
                     </div>
-                }
-                activeTenant="juspay"
-                setActiveTenant={(tenant) => console.log('Set tenant:', tenant)}
-                activeMerchant="prod"
-                setActiveMerchant={(merchant) =>
-                    console.log('Set merchant:', merchant)
                 }
                 footer={
                     <div className="p-4 border-t">

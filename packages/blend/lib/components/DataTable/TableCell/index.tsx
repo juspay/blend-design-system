@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useRef, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { TableCellProps } from './types'
 import { TableTokenType } from '../dataTable.tokens'
@@ -10,6 +10,8 @@ import SingleSelect from '../../SingleSelect/SingleSelect'
 import { SelectMenuVariant } from '../../Select'
 import { SelectMenuGroupType } from '../../Select/types'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import Tooltip from '../../Tooltip/Tooltip'
+import { TooltipSize } from '../../Tooltip/types'
 
 const StyledTableCell = styled.td<{
     width?: React.CSSProperties
@@ -21,6 +23,62 @@ const StyledTableCell = styled.td<{
     box-sizing: border-box;
     max-width: 0;
 `
+
+const TruncatedTextWithTooltip = ({
+    text,
+    style = {},
+}: {
+    text: string
+    style?: React.CSSProperties
+}) => {
+    const textRef = useRef<HTMLSpanElement>(null)
+    const [isOverflowing, setIsOverflowing] = useState(false)
+
+    useEffect(() => {
+        const checkOverflow = () => {
+            if (textRef.current) {
+                const element = textRef.current
+                const isTextOverflowing =
+                    element.scrollWidth > element.clientWidth
+                setIsOverflowing(isTextOverflowing)
+            }
+        }
+
+        checkOverflow()
+
+        window.addEventListener('resize', checkOverflow)
+        return () => window.removeEventListener('resize', checkOverflow)
+    }, [text])
+
+    const truncatedContent = (
+        <span
+            ref={textRef}
+            style={{
+                display: 'block',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                ...style,
+            }}
+        >
+            {text}
+        </span>
+    )
+
+    if (isOverflowing) {
+        return (
+            <Tooltip
+                content={text}
+                size={TooltipSize.SMALL}
+                delayDuration={500}
+            >
+                {truncatedContent}
+            </Tooltip>
+        )
+    }
+
+    return truncatedContent
+}
 
 const TableCell = forwardRef<
     HTMLTableCellElement,
@@ -205,29 +263,20 @@ const TableCell = forwardRef<
                     return (
                         <Block
                             style={{
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
                                 width: '100%',
                                 lineHeight: '1.5',
                                 cursor: 'default',
                             }}
-                            title={formatDate(date)}
                         >
-                            <span
+                            <TruncatedTextWithTooltip
+                                text={formatDate(date)}
                                 style={{
-                                    display: 'block',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
                                     fontSize:
                                         FOUNDATION_THEME.font.size.body.sm
                                             .fontSize,
                                     color: FOUNDATION_THEME.colors.gray[700],
                                 }}
-                            >
-                                {formatDate(date)}
-                            </span>
+                            />
                         </Block>
                     )
                 }
@@ -250,25 +299,14 @@ const TableCell = forwardRef<
             return (
                 <Block
                     style={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
                         width: '100%',
                         lineHeight: '1.5',
                         cursor: 'default',
                     }}
-                    title={displayValue != null ? String(displayValue) : ''}
                 >
-                    <span
-                        style={{
-                            display: 'block',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                        }}
-                    >
-                        {displayValue != null ? String(displayValue) : ''}
-                    </span>
+                    <TruncatedTextWithTooltip
+                        text={displayValue != null ? String(displayValue) : ''}
+                    />
                 </Block>
             )
         }
@@ -292,7 +330,7 @@ const TableCell = forwardRef<
                 <Block
                     style={{
                         width: '100%',
-                        minHeight: `${FOUNDATION_THEME.unit[36]}`,
+                        minHeight: `${FOUNDATION_THEME.unit[52]}`,
                         display: 'flex',
                         alignItems: 'center',
                     }}

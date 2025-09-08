@@ -112,6 +112,17 @@ function MyComponent() {
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'duration',
+                hintText: 'Optional toast duration',
+            },
+            {
+                content: 'number',
+                hintText: 'number',
+            },
+            { content: '4000' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
@@ -268,6 +279,7 @@ function App() {
                     // Navigate to document view
                 },
             },
+            duration: 8000,
         })
     }
 

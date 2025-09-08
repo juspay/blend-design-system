@@ -47,7 +47,7 @@ import {
 // Base connection
 figma.connect(
     UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4314-10827&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Size mapping
@@ -154,7 +154,7 @@ figma.connect(
 // Variant: With label
 figma.connect(
     UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4314-10827&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: true },
         props: {
@@ -223,7 +223,7 @@ figma.connect(
 // Variant: Without label
 figma.connect(
     UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4314-10827&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: false },
         props: {
@@ -286,7 +286,7 @@ figma.connect(
 // Variant: Unit on left
 figma.connect(
     UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4314-10827&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { unitPosition: 'left' },
         props: {
@@ -350,7 +350,7 @@ figma.connect(
 // Variant: Unit on right
 figma.connect(
     UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4314-10827&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { unitPosition: 'right' },
         props: {
@@ -414,7 +414,7 @@ figma.connect(
 // Variant: Medium size
 figma.connect(
     UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4314-10827&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'md' },
         props: {
@@ -478,7 +478,7 @@ figma.connect(
 // Variant: Large size
 figma.connect(
     UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4314-10827&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'lg' },
         props: {
@@ -488,8 +488,8 @@ figma.connect(
             value: figma.string('placeholder'),
             unit: figma.string('unitText'),
             unitPosition: figma.enum('unitPosition', {
-                Left: UnitPosition.LEFT,
-                Right: UnitPosition.RIGHT,
+                left: UnitPosition.LEFT,
+                right: UnitPosition.RIGHT,
             }),
             leftSlot: figma.boolean('showLeftSlot', {
                 true: figma.instance('leftSlot'),
@@ -542,7 +542,7 @@ figma.connect(
 // Variant: Required field
 figma.connect(
     UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=4314-10827&t=p1mQD533Vr5OGOUG-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { mandatory: true },
         props: {

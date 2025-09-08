@@ -10,32 +10,33 @@ import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system'
  * Figma vs Code Property Mappings:
  *
  * 1. DIRECT MAPPINGS (same in both):
- *    - shape → shape
  *    - size → size
- *    - online → online
  *
- * 2. SPECIAL MAPPINGS:
- *    - placeholder (Figma) → Handled by not passing src and using alt prop
- *      When placeholder=true in Figma, we don't pass src and use alt for initials
+ * 2. RENAMED MAPPINGS:
+ *    - type (Figma) → shape (Code)
+ *    - notificationDot (Figma) → online (Code)
+ *    - placeholder (Figma) → fallback (Code)
  *
  * 3. CODE-ONLY PROPERTIES (not in Figma):
- *    - src: Image URL (handled based on placeholder prop)
- *    - alt: Alternative text (always provided for accessibility)
- *    - fallback: Custom fallback content (optional)
- *    - leadingSlot: Content before avatar (optional)
- *    - trailingSlot: Content after avatar (optional)
+ *    - src: Image URL (not controlled by Figma)
+ *    - alt: Alternative text (not controlled by Figma)
+ *    - leadingSlot: Content before avatar (not in Figma)
+ *    - trailingSlot: Content after avatar (not in Figma)
  *
- * Note: The Avatar component automatically generates initials from the alt text
- * when no src is provided, which corresponds to placeholder=true in Figma.
+ * 4. FIGMA-ONLY PROPERTIES (not in code):
+ *    - None identified
+ *
+ * Note: The Avatar component uses src for images and fallback for placeholder content.
+ * When no src is provided, the component shows the fallback or generates initials from alt.
  */
 
 figma.connect(
     Avatar,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2519-2437&t=syQLBedyuJq8TAlu-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18797-212273&t=Igz9fmVsO5gD0NMR-4',
     {
         props: {
-            // Direct enum mappings
-            shape: figma.enum('shape', {
+            // Renamed mappings - Figma prop name → Code prop name
+            shape: figma.enum('type', {
                 circular: AvatarShape.CIRCULAR,
                 rounded: AvatarShape.ROUNDED,
             }),
@@ -47,24 +48,28 @@ figma.connect(
                 xl: AvatarSize.XL,
             }),
 
-            // Boolean mapping
-            online: figma.boolean('online'),
+            // Renamed mapping - notificationDot (Figma) → online (Code)
+            online: figma.boolean('notificationDot'),
 
-            // Placeholder mapping - when true, we don't pass src
-            placeholder: figma.boolean('placeholder'),
+            // Renamed mapping - placeholder (Figma) → fallback (Code)
+            fallback: figma.boolean('placeholder', {
+                true: figma.string('placeholderText'),
+                false: undefined,
+            }),
         },
 
-        example: ({ shape, size, online, placeholder }) => {
-            // When placeholder is true, don't provide src so initials are shown
-            // When placeholder is false, provide a sample image URL
+        example: ({ shape, size, online, fallback }) => {
+            // Code-only props that are not controlled by Figma
             const avatarProps = {
                 shape,
                 size,
                 online,
-                alt: 'User Name', // Always provide alt text for accessibility
-                ...(placeholder
-                    ? {}
-                    : { src: 'https://example.com/avatar.jpg' }),
+                fallback,
+                // These props are not in Figma but exist in code:
+                src: undefined, // Not controlled by Figma
+                alt: 'User Name', // Not controlled by Figma - always provide for accessibility
+                // leadingSlot: undefined, // Not in Figma
+                // trailingSlot: undefined, // Not in Figma
             }
 
             return <Avatar {...avatarProps} />
@@ -85,112 +90,6 @@ figma.connect(
     }
 )
 
-// Variant for circular shape with placeholder
-figma.connect(
-    Avatar,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2519-2437&t=syQLBedyuJq8TAlu-11',
-    {
-        variant: { shape: 'circular', placeholder: true },
-        props: {
-            size: figma.enum('size', {
-                sm: AvatarSize.SM,
-                md: AvatarSize.MD,
-                lg: AvatarSize.LG,
-                xl: AvatarSize.XL,
-            }),
-            online: figma.boolean('online'),
-        },
-        example: ({ size, online }) => (
-            <Avatar
-                shape={AvatarShape.CIRCULAR}
-                size={size}
-                online={online}
-                alt="John Doe" // This will generate "JD" as initials
-            />
-        ),
-    }
-)
-
-// Variant for rounded shape with placeholder
-figma.connect(
-    Avatar,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2519-2437&t=syQLBedyuJq8TAlu-11',
-    {
-        variant: { shape: 'rounded', placeholder: true },
-        props: {
-            size: figma.enum('size', {
-                sm: AvatarSize.SM,
-                md: AvatarSize.MD,
-                lg: AvatarSize.LG,
-                xl: AvatarSize.XL,
-            }),
-            online: figma.boolean('online'),
-        },
-        example: ({ size, online }) => (
-            <Avatar
-                shape={AvatarShape.ROUNDED}
-                size={size}
-                online={online}
-                alt="Jane Smith" // This will generate "JS" as initials
-            />
-        ),
-    }
-)
-
-// Variant for circular shape with image
-figma.connect(
-    Avatar,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2519-2437&t=syQLBedyuJq8TAlu-11',
-    {
-        variant: { shape: 'circular', placeholder: false },
-        props: {
-            size: figma.enum('size', {
-                sm: AvatarSize.SM,
-                md: AvatarSize.MD,
-                lg: AvatarSize.LG,
-                xl: AvatarSize.XL,
-            }),
-            online: figma.boolean('online'),
-        },
-        example: ({ size, online }) => (
-            <Avatar
-                shape={AvatarShape.CIRCULAR}
-                size={size}
-                online={online}
-                src="https://example.com/user-avatar.jpg"
-                alt="User Profile"
-            />
-        ),
-    }
-)
-
-// Variant for rounded shape with image
-figma.connect(
-    Avatar,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=2519-2437&t=syQLBedyuJq8TAlu-11',
-    {
-        variant: { shape: 'rounded', placeholder: false },
-        props: {
-            size: figma.enum('size', {
-                sm: AvatarSize.SM,
-                md: AvatarSize.MD,
-                lg: AvatarSize.LG,
-                xl: AvatarSize.XL,
-            }),
-            online: figma.boolean('online'),
-        },
-        example: ({ size, online }) => (
-            <Avatar
-                shape={AvatarShape.ROUNDED}
-                size={size}
-                online={online}
-                src="https://example.com/profile-photo.jpg"
-                alt="Profile Photo"
-            />
-        ),
-    }
-)
-
 /**
  * Example of Avatar with additional features not in Figma:
  *
@@ -201,7 +100,7 @@ figma.connect(
  *   alt="User"
  * />
  *
- * // With slots
+ * // With slots (not available in Figma)
  * <Avatar
  *   src="/avatar.jpg"
  *   alt="User"

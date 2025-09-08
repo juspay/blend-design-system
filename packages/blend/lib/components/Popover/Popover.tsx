@@ -41,6 +41,9 @@ const Popover = ({
     const { innerWidth } = useBreakpoints()
     const isMobile = innerWidth < 1024
 
+    const isCustomPopover =
+        !heading && !description && !primaryAction && !secondaryAction
+
     useEffect(() => {
         if (open !== undefined) {
             setIsOpen(open)
@@ -87,9 +90,11 @@ const Popover = ({
             }}
             modal={asModal}
         >
-            <RadixPopover.Trigger asChild>{trigger}</RadixPopover.Trigger>
+            <RadixPopover.Trigger asChild style={{ outline: 'none' }}>
+                {trigger}
+            </RadixPopover.Trigger>
             <RadixPopover.Content
-                style={{ zIndex }}
+                style={{ zIndex, outline: 'none' }}
                 asChild
                 sideOffset={sideOffset}
                 side={side}
@@ -114,6 +119,16 @@ const Popover = ({
                     display="flex"
                     flexDirection="column"
                     gap={popoverTokens.gap}
+                    paddingLeft={
+                        isCustomPopover ? 0 : popoverTokens.padding.horizontal
+                    }
+                    paddingRight={
+                        isCustomPopover ? 0 : popoverTokens.padding.horizontal
+                    }
+                    paddingTop={isCustomPopover ? 0 : popoverTokens.padding.top}
+                    paddingBottom={
+                        isCustomPopover ? 0 : popoverTokens.padding.bottom
+                    }
                 >
                     <PopoverHeader
                         heading={heading}

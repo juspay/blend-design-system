@@ -30,6 +30,7 @@ import progressBarTokens from '../components/ProgressBar/progressbar.tokens'
 import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
 import { getChartTokens } from '../components/Charts/chart.tokens'
 import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
+import { getCardTokens } from '../components/Card/card.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -91,6 +92,7 @@ const initTokens = (
         CHARTS: componentTokens.CHARTS ?? getChartTokens(foundationTokens),
         SNACKBAR:
             componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
+        CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
     }
 }
 
