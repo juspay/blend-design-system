@@ -323,6 +323,10 @@ export const HDFC_COMPONENT_TOKENS: ComponentTokenType = {
         },
         outline: 'none',
         boxShadow: FOUNDATION_THEME.shadows.sm,
+        color: FOUNDATION_THEME.colors.gray[800],
+        fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+        fontWeight: FOUNDATION_THEME.font.weight[400],
+        placeholderColor: FOUNDATION_THEME.colors.gray[400],
     },
     // TAGS: {
     //   background: {

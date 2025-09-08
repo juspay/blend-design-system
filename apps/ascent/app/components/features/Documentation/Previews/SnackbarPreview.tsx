@@ -52,6 +52,7 @@ let addSnackbar = (
   ~variant: option<snackbarVariant>=?,
   ~onClose: option<unit => unit>=?,
   ~actionButton: option<{label: string, onClick: unit => unit}>=?,
+  ~duration: option<int>=?
 ) => {
   AddSnackbarBinding.addSnackbar(
     ~header,
@@ -59,6 +60,7 @@ let addSnackbar = (
     ?variant,
     ?onClose,
     ?actionButton,
+    ?duration
   )
 }`
 
@@ -72,6 +74,7 @@ external addSnackbar: (
   ~variant: [#info | #success | #warning | #error]=?,
   ~onClose: unit => unit=?,
   ~actionButton: {label: string, onClick: unit => unit}=?,
+  ~duration: int=?
 ) => unit = "addSnackbar"`
 
     const showSuccessSnackbar = () => {

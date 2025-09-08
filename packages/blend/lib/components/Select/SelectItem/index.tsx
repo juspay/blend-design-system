@@ -21,7 +21,15 @@ const MenuItemSlot = ({ slot }: { slot: React.ReactNode }) => {
 
 const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
     (
-        { item, onSelect, selected, type, showCheckmark = true, className },
+        {
+            item,
+            onSelect,
+            selected,
+            type,
+            showCheckmark = true,
+            className,
+            selectedPosition = 'none',
+        },
         ref
     ) => {
         const textRef = useRef<HTMLDivElement>(null)
@@ -81,12 +89,12 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         const hasTooltip = shouldShowAutoTooltip || customTooltip
 
         const tooltipContent = customTooltip || (
-            <div>
-                {showTooltip && item.label && <div>{item.label}</div>}
+            <>
+                {showTooltip && item.label && <span>{item.label}</span>}
                 {showSubLabelTooltip && item.subLabel && (
-                    <div>{item.subLabel}</div>
+                    <Block style={{ display: 'block' }}>{item.subLabel}</Block>
                 )}
-            </div>
+            </>
         )
 
         const rightSlotConfig = getRightSlotConfig(isSelected, type, item)
@@ -99,6 +107,27 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             )
         ) : null
 
+        const getBorderRadius = () => {
+            const defaultRadius = tokens?.dropdown?.item?.borderRadius
+
+            if (!isSelected || selectedPosition === 'none') {
+                return defaultRadius
+            }
+
+            switch (selectedPosition) {
+                case 'first':
+                    return `${defaultRadius} ${defaultRadius} 0 0`
+                case 'middle':
+                    return '0'
+                case 'last':
+                    return `0 0 ${defaultRadius} ${defaultRadius}`
+                case 'only':
+                    return defaultRadius
+                default:
+                    return defaultRadius
+            }
+        }
+
         const itemContent = (
             <RadixMenu.Item
                 asChild
@@ -107,12 +136,11 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             >
                 <Block
                     ref={ref}
-                    // margin={tokens?.dropdown?.item?.margin || '0px 6px'}
-                    padding={tokens?.dropdown?.item?.padding || '8px 6px'}
+                    padding={tokens?.dropdown?.item?.padding}
                     display="flex"
                     flexDirection="column"
                     gap={tokens?.dropdown?.item?.gap || 4}
-                    borderRadius={tokens?.dropdown?.item?.borderRadius || 4}
+                    borderRadius={getBorderRadius()}
                     outline="none"
                     border="none"
                     width="100%"

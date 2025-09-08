@@ -43,7 +43,7 @@ export const getAllValues = (groups: MultiSelectMenuGroupType[]): string[] => {
 
     const collectValues = (items: MultiSelectMenuItemType[]) => {
         items.forEach((item) => {
-            if (!item.disabled) {
+            if (!item.disabled && !item.alwaysSelected) {
                 values.push(item.value)
             }
             if (item.subMenu) {
@@ -105,7 +105,7 @@ export const getAllAvailableValues = (
 
     const collectValues = (items: MultiSelectMenuItemType[]) => {
         items.forEach((item) => {
-            if (!item.disabled) {
+            if (!item.disabled && !item.alwaysSelected) {
                 values.push(item.value)
             }
             if (item.subMenu) {

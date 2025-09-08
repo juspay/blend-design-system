@@ -162,19 +162,25 @@ export const addSnackbar = ({
     variant = SnackbarVariant.INFO,
     onClose,
     actionButton,
+    duration,
 }: AddToastOptions) => {
-    return sonnerToast.custom((t) => (
-        <StyledToast
-            header={header}
-            description={description}
-            variant={variant}
-            onClose={() => {
-                sonnerToast.dismiss(t)
-                onClose?.()
-            }}
-            actionButton={actionButton}
-        />
-    ))
+    return sonnerToast.custom(
+        (t) => (
+            <StyledToast
+                header={header}
+                description={description}
+                variant={variant}
+                onClose={() => {
+                    sonnerToast.dismiss(t)
+                    onClose?.()
+                }}
+                actionButton={actionButton}
+            />
+        ),
+        {
+            duration,
+        }
+    )
 }
 
 // Export the Toaster component
