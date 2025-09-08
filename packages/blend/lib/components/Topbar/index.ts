@@ -1,2 +1,2 @@
 export { default as Topbar } from './Topbar'
-export * from './types'
+export type { TopbarProps, MerchantInfo } from './types'

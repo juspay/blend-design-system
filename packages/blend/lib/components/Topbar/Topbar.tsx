@@ -1,11 +1,13 @@
 import { forwardRef } from 'react'
-import { PanelsTopLeft, ArrowLeft } from 'lucide-react'
+import { PanelsTopLeft, ArrowLeft, UserIcon } from 'lucide-react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import type { TopbarProps } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { SingleSelect } from '../SingleSelect'
+import { SelectMenuVariant } from '../Select/types'
 
 const ToggleButton = styled.button`
     display: flex;
@@ -45,6 +47,26 @@ const ActionButton = styled.button`
     }
 `
 
+const TenantIconButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    min-height: 36px;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+        background-color: ${FOUNDATION_THEME.colors.gray[100]};
+    }
+
+    &:active {
+        background-color: ${FOUNDATION_THEME.colors.gray[150]};
+    }
+`
+
 const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
     (
         {
@@ -61,6 +83,8 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             rightActions,
             showBackButton = false,
             onBackClick,
+            leftPanel,
+            merchantInfo,
         },
         ref
     ) => {
@@ -84,8 +108,83 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     )
                 }
 
-                // Show dropdown on the left side for mobile (provided by parent)
-                return sidebarTopSlot || null
+                return (
+                    <Block display="flex" alignItems="center" gap="6px">
+                        {leftPanel &&
+                            leftPanel.items &&
+                            leftPanel.items.length > 0 && (
+                                <SingleSelect
+                                    placeholder=""
+                                    variant={SelectMenuVariant.NO_CONTAINER}
+                                    items={[
+                                        {
+                                            items: leftPanel.items.map(
+                                                (tenant) => ({
+                                                    label: tenant.label,
+                                                    value:
+                                                        tenant.value ||
+                                                        tenant.label,
+                                                    slot1: tenant.icon,
+                                                })
+                                            ),
+                                        },
+                                    ]}
+                                    selected={leftPanel.selected}
+                                    onSelect={leftPanel.onSelect}
+                                    customTrigger={
+                                        <TenantIconButton>
+                                            {leftPanel.items.find(
+                                                (item) =>
+                                                    (item.value ||
+                                                        item.label) ===
+                                                    leftPanel.selected
+                                            )?.icon || leftPanel.items[0]?.icon}
+                                        </TenantIconButton>
+                                    }
+                                />
+                            )}
+
+                        {leftPanel &&
+                            leftPanel.items &&
+                            leftPanel.items.length > 0 &&
+                            merchantInfo && (
+                                <Text
+                                    variant="body.md"
+                                    color={FOUNDATION_THEME.colors.gray[400]}
+                                    fontWeight={400}
+                                >
+                                    /
+                                </Text>
+                            )}
+
+                        {merchantInfo && (
+                            <SingleSelect
+                                placeholder="Select Merchant"
+                                variant={SelectMenuVariant.NO_CONTAINER}
+                                items={[
+                                    {
+                                        items: merchantInfo.items.map(
+                                            (merchant) => ({
+                                                label: merchant.label,
+                                                value: merchant.value,
+                                                slot1: merchant.icon || (
+                                                    <UserIcon
+                                                        style={{
+                                                            width: '16px',
+                                                            height: '16px',
+                                                        }}
+                                                    />
+                                                ),
+                                            })
+                                        ),
+                                    },
+                                ]}
+                                selected={merchantInfo.selected}
+                                onSelect={merchantInfo.onSelect}
+                            />
+                        )}
+                    </Block>
+                )
             }
 
             return (
@@ -100,7 +199,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     display="flex"
                     alignItems="center"
                     gap="12px"
-                    padding="8px 16px"
+                    padding="12px 16px"
                     backgroundColor="hsla(0, 0%, 100%, 0.95)"
                     className={className}
                     style={{

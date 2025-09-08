@@ -66,12 +66,35 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             sidebarTopSlot,
             footer,
             sidebarCollapseKey = '/',
+            merchantInfo,
+            rightActions,
         },
         ref
     ) => {
         const [isExpanded, setIsExpanded] = useState<boolean>(true)
         const [showToggleButton, setShowToggleButton] = useState<boolean>(false)
         const [isHovering, setIsHovering] = useState<boolean>(false)
+
+        const defaultMerchantInfo = {
+            items: [
+                {
+                    label: 'juspay',
+                    value: 'juspay',
+                    icon: (
+                        <UserIcon
+                            style={{
+                                width: '16px',
+                                height: '16px',
+                            }}
+                        />
+                    ),
+                },
+            ],
+            selected: 'juspay',
+            onSelect: (value: string) => {
+                console.log('Selected merchant:', value)
+            },
+        }
 
         useEffect(() => {
             const handleKeyPress = (event: KeyboardEvent) => {
@@ -373,28 +396,23 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                 SelectMenuVariant.NO_CONTAINER
                                             }
                                             size={SelectMenuSize.SMALL}
-                                            items={[
-                                                {
+                                            items={defaultMerchantInfo.items.map(
+                                                (item) => ({
                                                     items: [
                                                         {
-                                                            label: 'zeptomarketplace',
-                                                            value: 'zeptomarketplace',
-                                                            slot1: (
-                                                                <UserIcon
-                                                                    style={{
-                                                                        width: '16px',
-                                                                        height: '16px',
-                                                                    }}
-                                                                />
-                                                            ),
+                                                            label: item.label,
+                                                            value: item.value,
+                                                            slot1: item.icon,
                                                         },
                                                     ],
-                                                },
-                                            ]}
-                                            selected={'zeptomarketplace'}
-                                            onSelect={(value) => {
-                                                console.log(value)
-                                            }}
+                                                })
+                                            )}
+                                            selected={
+                                                defaultMerchantInfo.selected
+                                            }
+                                            onSelect={
+                                                defaultMerchantInfo.onSelect
+                                            }
                                         />
                                     )}
                                     <ToggleButton
@@ -434,6 +452,9 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         showToggleButton={showToggleButton}
                         sidebarTopSlot={sidebarTopSlot}
                         topbar={topbar}
+                        leftPanel={leftPanel}
+                        merchantInfo={merchantInfo || defaultMerchantInfo}
+                        rightActions={rightActions}
                     />
 
                     <Block>{children}</Block>

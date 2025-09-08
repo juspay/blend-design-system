@@ -28,6 +28,8 @@ import {
     DecimalsArrowRightIcon,
     Search,
     Shield,
+    Settings,
+    TrendingUp,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -693,6 +695,15 @@ const SidebarDemo = () => {
                         selected: activeTenant,
                         onSelect: (value) => setActiveTenant(value),
                     }}
+                    merchantInfo={{
+                        items: merchants.map((merchant) => ({
+                            label: merchant.label,
+                            value: merchant.value,
+                            icon: merchant.icon,
+                        })),
+                        selected: activeMerchant,
+                        onSelect: (value) => setActiveMerchant(value),
+                    }}
                     sidebarTopSlot={
                         <SingleSelect
                             placeholder="Select Merchant"
@@ -705,6 +716,28 @@ const SidebarDemo = () => {
                             selected={activeMerchant}
                             onSelect={(value) => setActiveMerchant(value)}
                         />
+                    }
+                    rightActions={
+                        <div className="flex items-center gap-1">
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200">
+                                <BellIcon
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    size={20}
+                                />
+                            </button>
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200">
+                                <TrendingUp
+                                    color={FOUNDATION_THEME.colors.green[600]}
+                                    size={20}
+                                />
+                            </button>
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200">
+                                <Settings
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    size={20}
+                                />
+                            </button>
+                        </div>
                     }
                     data={sampleData}
                     topbar={

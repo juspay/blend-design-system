@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react'
 import type { DirectoryData } from '../Directory/types'
+import type { MerchantInfo } from '../Topbar/types'
 
 export type LeftPanelItem = {
     label: string
@@ -22,4 +23,6 @@ export type SidebarProps = {
     footer?: ReactNode
     sidebarTopSlot?: ReactNode
     sidebarCollapseKey?: string
+    merchantInfo?: MerchantInfo
+    rightActions?: ReactNode
 }

@@ -8,8 +8,14 @@ import {
     Home,
     ShoppingCart,
     TrendingUp,
+    Building2,
+    Store,
 } from 'lucide-react'
-import { Topbar } from '../../../../packages/blend/lib/components/Topbar'
+import {
+    Topbar,
+    type MerchantInfo,
+} from '../../../../packages/blend/lib/components/Topbar'
+import { type LeftPanelInfo } from '../../../../packages/blend/lib/components/Sidebar/types'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import { TextInput } from '../../../../packages/blend/lib/main'
@@ -24,6 +30,87 @@ import { SelectMenuVariant } from '../../../../packages/blend/lib/components/Sel
 const TopbarDemo = () => {
     const [search, setSearch] = useState('')
     const [, setCurrentPage] = useState('Dashboard')
+    const [selectedTenant, setSelectedTenant] = useState('company-a')
+    const [selectedMerchant, setSelectedMerchant] = useState('juspay')
+
+    // Sample tenant data for mobile topbar
+    const leftPanelData: LeftPanelInfo = {
+        items: [
+            {
+                label: 'Company A',
+                value: 'company-a',
+                icon: (
+                    <Building2
+                        size={20}
+                        color={FOUNDATION_THEME.colors.primary[600]}
+                    />
+                ),
+            },
+            {
+                label: 'Company B',
+                value: 'company-b',
+                icon: (
+                    <Building2
+                        size={20}
+                        color={FOUNDATION_THEME.colors.green[600]}
+                    />
+                ),
+            },
+            {
+                label: 'Enterprise Corp',
+                value: 'enterprise-corp',
+                icon: (
+                    <Building2
+                        size={20}
+                        color={FOUNDATION_THEME.colors.purple[600]}
+                    />
+                ),
+            },
+        ],
+        selected: selectedTenant,
+        onSelect: (value: string) => {
+            setSelectedTenant(value)
+            console.log('Selected tenant:', value)
+        },
+    }
+
+    // Sample merchant data for mobile topbar
+    const merchantInfo: MerchantInfo = {
+        items: [
+            {
+                label: 'juspay',
+                value: 'juspay',
+                icon: (
+                    <User size={16} color={FOUNDATION_THEME.colors.gray[600]} />
+                ),
+            },
+            {
+                label: 'zeptomarketplace',
+                value: 'zeptomarketplace',
+                icon: (
+                    <Store
+                        size={16}
+                        color={FOUNDATION_THEME.colors.orange[600]}
+                    />
+                ),
+            },
+            {
+                label: 'bigbasket',
+                value: 'bigbasket',
+                icon: (
+                    <ShoppingCart
+                        size={16}
+                        color={FOUNDATION_THEME.colors.green[600]}
+                    />
+                ),
+            },
+        ],
+        selected: selectedMerchant,
+        onSelect: (value: string) => {
+            setSelectedMerchant(value)
+            console.log('Selected merchant:', value)
+        },
+    }
 
     const ActionButton = ({
         children,
@@ -50,56 +137,21 @@ const TopbarDemo = () => {
                     variant="body.sm"
                     color={FOUNDATION_THEME.colors.gray[600]}
                 >
-                    Responsive topbar components optimized for mobile screens
+                    Responsive topbar with tenant and merchant selection for
+                    mobile screens
                 </Text>
             </div>
             <div className="space-y-0.5">
                 <div className="border-b border-gray-100 last:border-b-0">
                     <div className="p-4">
                         <div className="text-sm font-medium text-gray-700 mb-2">
-                            Mobile Layout with Dropdown
+                            Mobile Layout with Tenant & Merchant Selection
                         </div>
                         <div className="w-full max-w-sm mx-auto border border-gray-300 rounded-lg overflow-hidden">
                             <Topbar
                                 title="Dashboard"
-                                sidebarTopSlot={
-                                    <SingleSelect
-                                        placeholder="Select Merchant"
-                                        variant={SelectMenuVariant.NO_CONTAINER}
-                                        items={[
-                                            {
-                                                items: [
-                                                    {
-                                                        label: 'Default',
-                                                        value: 'default',
-                                                        slot1: (
-                                                            <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                                                                <span className="text-white text-xs font-bold">
-                                                                    D
-                                                                </span>
-                                                            </div>
-                                                        ),
-                                                    },
-                                                    {
-                                                        label: 'Marketplace',
-                                                        value: 'marketplace',
-                                                        slot1: (
-                                                            <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                                                                <span className="text-white text-xs font-bold">
-                                                                    M
-                                                                </span>
-                                                            </div>
-                                                        ),
-                                                    },
-                                                ],
-                                            },
-                                        ]}
-                                        selected={'default'}
-                                        onSelect={(value) =>
-                                            console.log('Selected:', value)
-                                        }
-                                    />
-                                }
+                                leftPanel={leftPanelData}
+                                merchantInfo={merchantInfo}
                                 rightActions={
                                     <div className="flex gap-1">
                                         <ActionButton>
@@ -127,6 +179,10 @@ const TopbarDemo = () => {
                                 }
                             />
                         </div>
+                        <div className="mt-2 text-xs text-gray-500">
+                            Tap the tenant icon to switch organizations. Select
+                            merchants from the dropdown.
+                        </div>
                     </div>
                 </div>
 
@@ -150,6 +206,36 @@ const TopbarDemo = () => {
                                             size={20}
                                         />
                                     </ActionButton>
+                                }
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="border-b border-gray-100 last:border-b-0">
+                    <div className="p-4">
+                        <div className="text-sm font-medium text-gray-700 mb-2">
+                            Only Merchant Selection (No Tenants)
+                        </div>
+                        <div className="w-full max-w-sm mx-auto border border-gray-300 rounded-lg overflow-hidden">
+                            <Topbar
+                                title="Analytics"
+                                merchantInfo={merchantInfo}
+                                rightActions={
+                                    <div className="flex gap-1">
+                                        <ActionButton>
+                                            <Settings
+                                                color={
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[600]
+                                                }
+                                                size={20}
+                                            />
+                                        </ActionButton>
+                                        <ActionButton>
+                                            <div className="w-6 h-6 bg-blue-500 rounded-full" />
+                                        </ActionButton>
+                                    </div>
                                 }
                             />
                         </div>
@@ -378,7 +464,8 @@ const TopbarDemo = () => {
                     color={FOUNDATION_THEME.colors.gray[600]}
                 >
                     Automatically switches between mobile and web layouts based
-                    on screen size
+                    on screen size. Features tenant/merchant selection on
+                    mobile.
                 </Text>
             </div>
             <div className="p-4">
@@ -396,25 +483,17 @@ const TopbarDemo = () => {
                                 variant={SelectMenuVariant.NO_CONTAINER}
                                 items={[
                                     {
-                                        items: [
-                                            {
-                                                label: 'Default',
-                                                value: 'default',
-                                                slot1: (
-                                                    <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                                                        <span className="text-white text-xs font-bold">
-                                                            D
-                                                        </span>
-                                                    </div>
-                                                ),
-                                            },
-                                        ],
+                                        items: merchantInfo.items.map(
+                                            (merchant) => ({
+                                                label: merchant.label,
+                                                value: merchant.value,
+                                                slot1: merchant.icon,
+                                            })
+                                        ),
                                     },
                                 ]}
-                                selected={'default'}
-                                onSelect={(value) =>
-                                    console.log('Selected:', value)
-                                }
+                                selected={merchantInfo.selected}
+                                onSelect={merchantInfo.onSelect}
                             />
                         }
                         topbar={
@@ -447,6 +526,8 @@ const TopbarDemo = () => {
                         }
                         // Mobile props
                         title="Responsive Header"
+                        leftPanel={leftPanelData}
+                        merchantInfo={merchantInfo}
                         rightActions={
                             <div className="flex gap-1">
                                 <ActionButton>
@@ -487,7 +568,7 @@ const TopbarDemo = () => {
                     color={FOUNDATION_THEME.colors.gray[600]}
                 >
                     Flexible topbar component that adapts to both mobile and web
-                    layouts
+                    layouts with tenant and merchant selection
                 </Text>
             </div>
 
@@ -502,8 +583,8 @@ const TopbarDemo = () => {
                 <div className="mt-4 space-y-3">
                     <Text variant="body.md">
                         <strong>Mobile Mode:</strong> Automatically activated on
-                        screens smaller than 1024px. Features centered title,
-                        left/right action buttons, and simplified layout.
+                        screens smaller than 1024px. Features tenant icon
+                        selector, merchant dropdown, and right action buttons.
                     </Text>
                     <Text variant="body.md">
                         <strong>Web Mode:</strong> Full-featured topbar with
@@ -511,9 +592,14 @@ const TopbarDemo = () => {
                         action areas.
                     </Text>
                     <Text variant="body.md">
-                        <strong>Responsive:</strong> The component automatically
-                        switches between mobile and web layouts based on screen
-                        size, using the appropriate props for each mode.
+                        <strong>Tenant Selection:</strong> On mobile, tenants
+                        appear as clickable icons. On desktop, they remain in
+                        the sidebar.
+                    </Text>
+                    <Text variant="body.md">
+                        <strong>Merchant Selection:</strong> Consistent dropdown
+                        behavior across both mobile and web with proper check
+                        icons.
                     </Text>
                 </div>
             </div>
