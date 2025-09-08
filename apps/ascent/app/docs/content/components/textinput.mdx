@@ -1,0 +1,457 @@
+---
+title: TextInput
+description: The TextInput component provides a flexible and accessible text input field with support for labels, hints, error states, slots, and responsive floating labels on mobile devices.
+category: components
+tags:
+    - textinput
+    - component
+    - input
+    - form
+    - text
+    - field
+    - validation
+    - responsive
+RepoFolderName: TextInput
+StorybookLink: components-textinput--docs
+---
+
+<TextInputPreview />
+
+## Usage
+
+```tsx
+import { TextInput } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [value, setValue] = useState('')
+
+    return (
+        <TextInput
+            label="Email Address"
+            placeholder="Enter your email"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            hintText="We'll never share your email"
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Current value of the input field',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback when input value changes',
+            },
+            {
+                content: '(e: ChangeEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Primary label for the input field',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'sublabel',
+                hintText: 'Secondary label or description',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text shown when input is empty',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '"Enter"' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size variant of the input field',
+            },
+            { content: 'TextInputSize', hintText: 'enum' },
+            { content: 'MEDIUM' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'Whether the input is in error state',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'errorMessage',
+                hintText: 'Error message to display when in error state',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hintText',
+                hintText: 'Helper text displayed below the input',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconHintText',
+                hintText: 'Tooltip text for the help icon',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'Whether the input is disabled',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText: 'Whether the input is required',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText: 'Content to display on the left side of input',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText: 'Content to display on the right side of input',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'name',
+                hintText: 'Name attribute for the input field',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFocus',
+                hintText: 'Callback when input receives focus',
+            },
+            {
+                content: '(e: FocusEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onBlur',
+                hintText: 'Callback when input loses focus',
+            },
+            {
+                content: '(e: FocusEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Enums
+
+### TextInputSize
+
+Size variants for the text input:
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'SMALL', hintText: 'Small input size' },
+            { content: '"sm"', hintText: 'value' },
+            { content: 'Compact input for tight layouts' },
+        ],
+        [
+            { content: 'MEDIUM', hintText: 'Medium input size' },
+            { content: '"md"', hintText: 'value' },
+            { content: 'Default size for most use cases' },
+        ],
+        [
+            { content: 'LARGE', hintText: 'Large input size' },
+            { content: '"lg"', hintText: 'value' },
+            { content: 'Prominent input with floating label on mobile' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No sizes available"
+    loadingMessage="Loading sizes..."
+/>
+
+### TextInputState
+
+Internal state variants (for styling):
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'DEFAULT', hintText: 'Default state' },
+            { content: '"default"', hintText: 'value' },
+            { content: 'Normal input appearance' },
+        ],
+        [
+            { content: 'HOVER', hintText: 'Hover state' },
+            { content: '"hover"', hintText: 'value' },
+            { content: 'Enhanced outline on hover' },
+        ],
+        [
+            { content: 'FOCUS', hintText: 'Focus state' },
+            { content: '"focus"', hintText: 'value' },
+            { content: 'Primary outline and shadow when focused' },
+        ],
+        [
+            { content: 'ERROR', hintText: 'Error state' },
+            { content: '"error"', hintText: 'value' },
+            { content: 'Red outline and error styling' },
+        ],
+        [
+            { content: 'DISABLED', hintText: 'Disabled state' },
+            { content: '"disabled"', hintText: 'value' },
+            { content: 'Muted appearance with no interaction' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No states available"
+    loadingMessage="Loading states..."
+/>
+
+## Component Tokens
+
+You can style the TextInput component using the following tokens:
+
+```tsx
+export type TextInputTokensType = {
+    input: {
+        gap: CSSObject['gap']
+        borderRadius?: CSSObject['borderRadius']
+        boxShadow: {
+            [key in TextInputState]: CSSObject['boxShadow']
+        }
+        paddingX: {
+            [key in TextInputSize]: CSSObject['padding']
+        }
+        paddingY: {
+            [key in TextInputSize]: CSSObject['padding']
+        }
+        border: {
+            [key in TextInputState]: CSSObject['border']
+        }
+        color: {
+            [key in TextInputState]: CSSObject['color']
+        }
+        outline: {
+            [key in TextInputState]: CSSObject['outline']
+        }
+        backgroundColor: {
+            [key in TextInputState]: CSSObject['backgroundColor']
+        }
+    }
+}
+
+export type ResponsiveTextInputTokens = {
+    [key in keyof BreakpointType]: TextInputTokensType
+}
+```
+
+The component uses responsive tokens that adapt to different breakpoints:
+
+- **sm**: Mobile-optimized with floating label behavior for large size
+- **lg**: Desktop layout with consistent behavior across all sizes
+
+## Features
+
+- **Responsive Design**: Adaptive layout with floating labels on mobile for large size
+- **Flexible Slots**: Left and right slots for icons, buttons, or custom content
+- **Validation States**: Built-in error styling with custom error messages
+- **Accessibility**: Full keyboard navigation and screen reader support
+- **Form Integration**: Native HTML input attributes and form compatibility
+- **Visual States**: Hover, focus, and disabled states with smooth transitions
+- **Customizable Sizing**: Three size variants for different layout needs
+- **Helper Text**: Support for hints, help icons, and error messages
+- **Dynamic Padding**: Automatic padding adjustment based on slot content
+
+## Usage Examples
+
+### Basic Input
+
+Simple text input with label and hint text:
+
+```tsx
+import { TextInput } from '@juspay/blend-design-system'
+
+const [email, setEmail] = useState('')
+
+<TextInput
+    label="Email Address"
+    placeholder="Enter your email"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    hintText="We'll never share your email with anyone"
+/>
+```
+
+### Input with Error State
+
+Text input showing validation error:
+
+```tsx
+const [password, setPassword] = useState('')
+const hasError = password.length > 0 && password.length < 8
+
+<TextInput
+    label="Password"
+    placeholder="Enter password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    error={hasError}
+    errorMessage="Password must be at least 8 characters long"
+    required
+/>
+```
+
+### Input with Slots
+
+Text input with icon slots for enhanced UX:
+
+```tsx
+import { Search, Eye, EyeOff } from 'lucide-react'
+
+const [searchQuery, setSearchQuery] = useState('')
+const [showPassword, setShowPassword] = useState(false)
+
+// Search input with left icon
+<TextInput
+    placeholder="Search..."
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    leftSlot={<Search size={16} />}
+/>
+
+// Password input with toggle visibility
+<TextInput
+    label="Password"
+    type={showPassword ? 'text' : 'password'}
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    rightSlot={
+        <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+        >
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+        </button>
+    }
+/>
+```
+
+## Behavior
+
+### Responsive Floating Labels
+
+- **Large Size on Mobile**: Automatically shows floating label animation
+- **Label Positioning**: Smooth transition between placeholder and floating states
+- **Touch Optimization**: Enhanced mobile experience with larger touch targets
+
+### Focus Management
+
+- **Focus States**: Visual feedback with outline and shadow changes
+- **Keyboard Navigation**: Full tab navigation support
+- **Focus Callbacks**: Custom onFocus and onBlur handlers
+
+### Dynamic Layout
+
+- **Slot Integration**: Automatic padding adjustment for left/right content
+- **Width Calculation**: Dynamic measurement of slot content for precise spacing
+- **Responsive Tokens**: Breakpoint-aware styling and spacing
+
+### Validation Integration
+
+- **Error Styling**: Automatic error state styling when error prop is true
+- **Message Display**: Error messages shown below input with proper styling
+- **State Consistency**: Visual state matches validation state throughout interaction
+
+## Best Practices
+
+### When to Use TextInput
+
+- **Form Fields**: Primary choice for text-based form inputs
+- **Search Interfaces**: With appropriate left slot icons
+- **Data Entry**: For capturing user information and content
+- **Settings Panels**: For configurable text values
+
+### Label and Hint Guidelines
+
+- **Clear Labels**: Use descriptive labels that explain the expected input
+- **Helpful Hints**: Provide context or format examples in hint text
+- **Error Messages**: Write specific, actionable error messages
+- **Required Indication**: Use required prop and clear visual indicators
+
+### Size Selection
+
+- **Small**: Use in compact forms or secondary inputs
+- **Medium**: Default choice for most form scenarios
+- **Large**: Use for primary inputs or mobile-first experiences
+
+### Slot Usage
+
+- **Left Slots**: Icons, currency symbols, or input prefixes
+- **Right Slots**: Action buttons, validation icons, or suffixes
+- **Interactive Content**: Ensure slot content has proper focus management
+- **Visual Balance**: Keep slot content appropriately sized
+
+### Accessibility Considerations
+
+- **Label Association**: Always provide labels for screen readers
+- **Error Announcement**: Ensure error messages are announced to screen readers
+- **Focus Indicators**: Maintain visible focus indicators for keyboard users
+- **Form Structure**: Use proper form markup and validation patterns
+
+### Form Integration
+
+- **Controlled Components**: Always use controlled inputs with value and onChange
+- **Validation Timing**: Validate on blur for better user experience
+- **Form Libraries**: Compatible with React Hook Form, Formik, and other libraries
+- **Submit Handling**: Integrate with form submission and validation flows

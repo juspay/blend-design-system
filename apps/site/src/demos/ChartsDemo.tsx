@@ -1,4 +1,11 @@
-import { EllipsisVertical, TrendingUp, Users, Activity } from 'lucide-react'
+import {
+    EllipsisVertical,
+    TrendingUp,
+    Users,
+    Activity,
+    LoaderCircle,
+    ChartBar,
+} from 'lucide-react'
 import {
     Charts,
     CoreChart,
@@ -223,48 +230,452 @@ const GranularChartsDemo = () => {
     // Sample data for different chart panels
     const dashboardData: NewNestedDataPoint[] = [
         {
-            name: '4 Aug',
+            name: '1756944000000',
             data: {
-                overall: { primary: { label: 'Overall', val: 90 }, aux: [] },
-                visa: { primary: { label: 'VISA', val: 85 }, aux: [] },
-                unknown: { primary: { label: 'Unknown', val: 95 }, aux: [] },
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 76.47,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 76.47,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+                VISA: {
+                    primary: {
+                        label: 'VISA',
+                        val: 0,
+                    },
+                },
+                AMEX: {
+                    primary: {
+                        label: 'AMEX',
+                        val: 0,
+                    },
+                },
+                DISCOVER: {
+                    primary: {
+                        label: 'DISCOVER',
+                        val: 0,
+                    },
+                },
+                JCB: {
+                    primary: {
+                        label: 'JCB',
+                        val: 0,
+                    },
+                },
+                UNIONPAY: {
+                    primary: {
+                        label: 'UNIONPAY',
+                        val: 0,
+                    },
+                },
+                MAESTRO: {
+                    primary: {
+                        label: 'MAESTRO',
+                        val: 0,
+                    },
+                },
+                DINERS: {
+                    primary: {
+                        label: 'DINERS',
+                        val: 0,
+                    },
+                },
+                RUPAY: {
+                    primary: {
+                        label: 'RUPAY',
+                        val: 0,
+                    },
+                },
+                PAYPAL: {
+                    primary: {
+                        label: 'PAYPAL',
+                        val: 0,
+                    },
+                },
+                APPLE_PAY: {
+                    primary: {
+                        label: 'APPLE_PAY',
+                        val: 0,
+                    },
+                },
+                GOOGLE_PAY: {
+                    primary: {
+                        label: 'GOOGLE_PAY',
+                        val: 0,
+                    },
+                },
+                PHONE_PAY: {
+                    primary: {
+                        label: 'PHONE_PAY',
+                        val: 0,
+                    },
+                },
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 0,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 0,
+                    },
+                },
             },
         },
         {
-            name: '8 Aug',
+            name: '1756947600000',
             data: {
-                overall: { primary: { label: 'Overall', val: 75 }, aux: [] },
-                visa: { primary: { label: 'VISA', val: 70 }, aux: [] },
-                unknown: { primary: { label: 'Unknown', val: 80 }, aux: [] },
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 66.67,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 66.67,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
             },
         },
         {
-            name: '12 Aug',
+            name: '1756954800000',
             data: {
-                overall: { primary: { label: 'Overall', val: 85 }, aux: [] },
-                visa: { primary: { label: 'VISA', val: 80 }, aux: [] },
-                unknown: { primary: { label: 'Unknown', val: 90 }, aux: [] },
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 100,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 100,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
             },
         },
         {
-            name: '16 Aug',
+            name: '1756958400000',
             data: {
-                overall: { primary: { label: 'Overall', val: 100 }, aux: [] },
-                visa: { primary: { label: 'VISA', val: 95 }, aux: [] },
-                unknown: { primary: { label: 'Unknown', val: 100 }, aux: [] },
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 100,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 100,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
             },
         },
         {
-            name: '20 Aug',
+            name: '1756962000000',
             data: {
-                overall: { primary: { label: 'Overall', val: 85 }, aux: [] },
-                visa: { primary: { label: 'VISA', val: 80 }, aux: [] },
-                unknown: { primary: { label: 'Unknown', val: 90 }, aux: [] },
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 0,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756965600000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 0,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756969200000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 40,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 40,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756972800000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 7.14,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 7.14,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756976400000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 49.35,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 49.35,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756980000000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 89.86,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 89.86,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756983600000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 79.15,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 80.29,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756987200000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 70.96,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 71.91,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756990800000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 92.36,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 92.44,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756994400000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 97.1,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 97.1,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756998000000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 90.83,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 90.93,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
             },
         },
     ]
 
-    const chartColors = ['#3b82f6', '#10b981', '#f59e0b'] // Blue, Green, Amber
+    const chartColors = [
+        '#3b82f6',
+        '#10b981',
+        '#f59e0b',
+        '#8b5cf6',
+        '#ec4899',
+        '#f43f5e',
+        '#ef4444',
+        '#ff7300',
+        '#ff0077',
+        '#00d492',
+        '#008236',
+        '#016630',
+        '#0d542b',
+        '#052e16',
+    ] // Blue, Green, Amber, Purple, Pink, Red, Orange, Orange, Red, Green, Green, Green, Green, Green
 
     const [hoveredKey, setHoveredKey] = useState<string | null>(null)
     const [selectedKeys, setSelectedKeys] = useState<string[]>([])
@@ -308,10 +719,12 @@ const GranularChartsDemo = () => {
                     <div className="">
                         {/* Header */}
                         <ChartHeader
-                            slot1={<div>Slot 1</div>}
-                            slot2={<div>Slot 2</div>}
-                            slot3={<div>Slot 3</div>}
-                            chartHeaderSlot={<div>Chart Header Slot</div>}
+                            slot1={<p className="text-xs">Slot 1</p>}
+                            slot2={<p className="text-xs">Slot 2</p>}
+                            slot3={<p className="text-xs">Slot 3</p>}
+                            chartHeaderSlot={
+                                <p className="text-xs">Chart Header Slot</p>
+                            }
                             onFullscreen={() => {}}
                             isExpanded={true}
                             setIsExpanded={() => {}}
@@ -319,7 +732,7 @@ const GranularChartsDemo = () => {
                         />
 
                         {/* Interactive Shared Legends */}
-                        <div className="mb-6 p-3">
+                        <div className="mb-6 p-4">
                             <ChartLegends
                                 chartContainerRef={chartContainerRef}
                                 keys={lineKeys}
@@ -337,7 +750,7 @@ const GranularChartsDemo = () => {
                         {/* Interactive Charts Grid */}
                         <div
                             ref={chartContainerRef}
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-3"
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 "
                         >
                             {[
                                 { title: 'MOTO', type: ChartType.LINE },
@@ -355,15 +768,23 @@ const GranularChartsDemo = () => {
                                     title: 'Additional Metric 2',
                                     type: ChartType.LINE,
                                 },
+                                {
+                                    title: 'Additional Metric 3',
+                                    type: ChartType.LINE,
+                                },
+                                {
+                                    title: 'Additional Metric 4',
+                                    type: ChartType.LINE,
+                                },
                             ].map((panel, index) => (
                                 <div
                                     key={index}
-                                    className="p-4 flex flex-col gap-2 items-center justify-center h-full w-full"
+                                    className="flex flex-col gap-2 items-center justify-center h-full w-full"
                                 >
                                     <h4 className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-4">
                                         {panel.title}
                                     </h4>
-                                    <div className="h-48 w-full">
+                                    <div className="h-68 w-full">
                                         <CoreChart
                                             data={dashboardData}
                                             chartType={panel.type}
@@ -375,6 +796,10 @@ const GranularChartsDemo = () => {
                                             xAxis={{
                                                 show: true,
                                                 showLabel: false,
+                                                type: AxisType.DATE_TIME,
+                                                smart: true,
+                                                interval:
+                                                    AxisIntervalType.PRESERVE_START,
                                             }}
                                             yAxis={{
                                                 show: true,
@@ -2024,7 +2449,6 @@ const [selectedKeys, setSelectedKeys] = useState([])
                             label: 'UTC Formats',
                             show: true,
                             type: AxisType.DATE_TIME,
-                            interval: 0,
                         }}
                         yAxis={{
                             label: 'Requests',
@@ -3705,6 +4129,132 @@ xAxis={{
                     </div>
                     <div>
                         <strong>Data Points:</strong> {getCurrentData().length}
+                    </div>
+                </div>
+
+                {/* Empty State Examples */}
+                <div className="bg-gray-50 p-6 rounded-lg mt-8">
+                    <h2 className="text-xl font-bold mb-4 text-gray-800">
+                        📊 Empty State Examples
+                    </h2>
+                    <p className="text-sm text-gray-600 mb-6">
+                        Demonstrating how charts handle no-data scenarios with
+                        professional empty states
+                    </p>
+
+                    <div className="flex flex-col gap-6">
+                        {/* Empty Line Chart */}
+                        <div className="">
+                            <h3 className="text-lg font-semibold mb-2 text-gray-700">
+                                Empty Line Chart
+                            </h3>
+                            <div className="">
+                                <Charts
+                                    data={[]} // Empty data array
+                                    chartType={ChartType.LINE}
+                                    colors={['#3b82f6', '#10b981', '#f59e0b']}
+                                    chartHeaderSlot={null}
+                                    xAxis={{
+                                        label: 'Time Period',
+                                        show: true,
+                                        type: AxisType.DATE_TIME,
+                                    }}
+                                    yAxis={{
+                                        label: 'Performance (%)',
+                                        show: true,
+                                        type: AxisType.PERCENTAGE,
+                                    }}
+                                    noData={{
+                                        title: 'Empty data',
+                                        subtitle: 'Add data to see it here',
+                                        button: {
+                                            text: 'Add data',
+                                            onClick: () => {},
+                                            leadingIcon: (
+                                                <LoaderCircle className=" text-gray-400" />
+                                            ),
+                                        },
+                                        slot: (
+                                            <ChartBar className="w-8 h-8 text-gray-400" />
+                                        ),
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Empty Bar Chart */}
+                        <div className="">
+                            <h3 className="text-lg font-semibold mb-2 text-gray-700">
+                                Empty Bar Chart
+                            </h3>
+                            <div className="">
+                                <Charts
+                                    data={[]} // Empty data array for cleaner demo
+                                    chartType={ChartType.BAR}
+                                    colors={['#ef4444', '#8b5cf6']}
+                                    chartHeaderSlot={null}
+                                    xAxis={{
+                                        label: 'Categories',
+                                        show: true,
+                                    }}
+                                    yAxis={{
+                                        label: 'Revenue ($)',
+                                        show: true,
+                                        type: AxisType.CURRENCY,
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Empty Pie Chart */}
+                        <div className="">
+                            <h3 className="text-lg font-semibold mb-2 text-gray-700">
+                                Empty Pie Chart
+                            </h3>
+                            <div className="">
+                                <Charts
+                                    data={[]} // Empty data array
+                                    chartType={ChartType.PIE}
+                                    colors={['#f97316', '#06b6d4', '#84cc16']}
+                                    chartHeaderSlot={null}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Code Examples */}
+                    <div className="mt-6 bg-gray-900 text-green-400 p-4 rounded-lg text-sm font-mono">
+                        <div className="text-white mb-2">
+                            💡 <strong>Usage Examples:</strong>
+                        </div>
+                        <div className="space-y-2">
+                            <div>
+                                <span className="text-blue-300">
+                                    // Empty array:
+                                </span>
+                                <div className="text-gray-300">
+                                    {
+                                        '<Charts data={[]} chartType={ChartType.LINE} />'
+                                    }
+                                </div>
+                            </div>
+                            <div>
+                                <span className="text-blue-300">
+                                    // Missing chartHeaderSlot:
+                                </span>
+                                <div className="text-gray-300">
+                                    {'chartHeaderSlot={null}'}
+                                </div>
+                            </div>
+                            <div>
+                                <span className="text-blue-300">
+                                    // Any chart type:
+                                </span>
+                                <div className="text-gray-300">
+                                    {'chartType={ChartType.LINE | BAR | PIE}'}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
