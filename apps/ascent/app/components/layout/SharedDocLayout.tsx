@@ -240,11 +240,13 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                         {showFooter === true && <Footer />}
                     </div>
 
-                    <div className="doc-toc-ctr max-w-[240px] w-full overflow-y-auto">
-                        <div className="sticky top-4">
-                            <TableOfContents items={headings} />
+                    {baseRoute.includes('docs') && (
+                        <div className="doc-toc-ctr max-w-[240px] w-full overflow-y-auto">
+                            <div className="sticky top-4">
+                                <TableOfContents items={headings} />
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </main>
         </GlobalKeyboardNavigationProvider>
