@@ -228,7 +228,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                 {/* Main content area */}
                 <div className="w-screen flex bg-[var(--sidebar-background)] h-[90vh] backdrop-blur-sm overflow-hidden">
                     <div
-                        className={`doc-sidebar backdrop:blur-lg z-40   w-[240px] overflow-hidden fixed left-0 h-full ${theme === 'light' ? 'border-r border-neutral-200' : 'border-r border-neutral-800'} ${showSidebar ? 'visible' : 'hidden'}`}
+                        className={`backdrop:blur-lg z-40 w-[240px] overflow-hidden fixed left-0 h-full ${theme === 'light' ? 'border-r border-neutral-200' : 'border-r border-neutral-800'} ${showSidebar ? 'visible' : 'hidden'}`}
                     >
                         <Sidebar items={sidebarItems} baseRoute={baseRoute} />
                     </div>
