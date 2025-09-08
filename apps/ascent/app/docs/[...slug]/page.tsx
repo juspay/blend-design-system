@@ -4,11 +4,11 @@ import { compileMDX } from 'next-mdx-remote/rsc'
 import { useMDXComponents } from '@/mdx-components'
 import React from 'react'
 import { PageMetadata } from '../utils/getFileContent'
-import { TableOfContents } from '@/app/components'
 import { extractHeadings } from '../utils/toc'
 import { BugIcon } from 'lucide-react'
 import { generateBreadcrumbItems } from '../utils/generateBreadcrumbs'
 import { Metadata } from 'next'
+import { PageClient } from './PageClient'
 
 // Generate static params for all MDX files
 export async function generateStaticParams() {
@@ -138,6 +138,7 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
 
     return (
         <div className="w-full flex-1 flex">
+            <PageClient headings={headings} />
             <div className="flex-1 gap-2">
                 <article className="prose py-10 max-w-[80ch] mx-auto overflow-x-hidden px-4 md:px-2">
                     <PageBreadcrumb items={breadcrumbItems} />
@@ -146,11 +147,6 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
                     {/* <DocArticle content={content} /> */}
                     {content}
                 </article>
-            </div>
-            <div className="doc-toc-ctr max-w-[240px] w-full">
-                <div className="sticky top-4">
-                    <TableOfContents items={headings} />
-                </div>
             </div>
         </div>
     )

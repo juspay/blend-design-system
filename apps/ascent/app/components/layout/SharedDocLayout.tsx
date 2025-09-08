@@ -10,6 +10,7 @@ import {
     ThemeToggle,
     GlobalKeyboardNavigationProvider,
     FloatingShortcutsButton,
+    TableOfContents,
 } from '../index'
 import {
     DocumentIcon,
@@ -23,6 +24,8 @@ import { JuspayLogoTitle } from '@/app/changelog/icons/JuspayLogoTitle'
 import Gradient from '@/app/changelog/icons/Gradient'
 import { ConnectWithUs } from '@/app/landing/components/connect-with-us/ConnectWithUs'
 import { Footer } from '@/app/landing/components/footer/Footer'
+import { useTableOfContents } from '@/app/docs/context/TableOfContentsContext'
+import { TOCItem } from '@/app/components/layout/Navigation/TableOfContents'
 
 export interface SharedDocLayoutProps {
     /** Title displayed in the navigation bar */
@@ -59,6 +62,16 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
     showFooter = false,
     navbarBorderBottom = false,
 }) => {
+    // Get headings from context (will be empty array if context is not available)
+    let headings: TOCItem[] = []
+    try {
+        const { headings: contextHeadings } = useTableOfContents()
+        headings = contextHeadings
+    } catch {
+        // Context not available, use empty array
+        headings = []
+    }
+
     // Theme detection state
     const [theme, setTheme] = useState<'light' | 'dark'>('dark')
     const [mounted, setMounted] = useState(false)
@@ -213,7 +226,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                 {/* Main content area */}
                 <FloatingShortcutsButton />
                 {/* Main content area */}
-                <div className="w-screen flex bg-[var(--sidebar-background)] h-[90vh] backdrop-blur-sm ">
+                <div className="w-screen flex bg-[var(--sidebar-background)] h-[90vh] backdrop-blur-sm overflow-hidden">
                     <div
                         className={`doc-sidebar backdrop:blur-lg z-40   w-[240px] overflow-hidden fixed left-0 h-full ${theme === 'light' ? 'border-r border-neutral-200' : 'border-r border-neutral-800'} ${showSidebar ? 'visible' : 'hidden'}`}
                     >
@@ -225,6 +238,12 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                         {children}
                         {showFooter === true && <ConnectWithUs />}
                         {showFooter === true && <Footer />}
+                    </div>
+
+                    <div className="doc-toc-ctr max-w-[240px] w-full overflow-y-auto">
+                        <div className="sticky top-4">
+                            <TableOfContents items={headings} />
+                        </div>
                     </div>
                 </div>
             </main>
