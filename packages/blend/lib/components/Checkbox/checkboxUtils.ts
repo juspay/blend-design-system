@@ -1,11 +1,13 @@
-import { CheckboxSize } from './types'
+import { CheckboxSize, CheckboxCheckedState } from './types'
 import type { CheckboxTokensType } from './checkbox.token'
 
 export const getCheckboxDataState = (
     checked: boolean | 'indeterminate'
 ): string => {
-    if (checked === 'indeterminate') return 'indeterminate'
-    return checked ? 'checked' : 'unchecked'
+    if (checked === 'indeterminate') return CheckboxCheckedState.INDETERMINATE
+    return checked
+        ? CheckboxCheckedState.CHECKED
+        : CheckboxCheckedState.UNCHECKED
 }
 
 export const extractPixelValue = (
@@ -69,11 +71,11 @@ export const getCheckboxIconColor = (
     disabled: boolean
 ): string => {
     if (disabled) {
-        return currentChecked === 'indeterminate'
+        return currentChecked === CheckboxCheckedState.INDETERMINATE
             ? String(tokens.icon.color.indeterminate?.disabled || '')
             : String(tokens.icon.color.checked?.disabled || '')
     }
-    return currentChecked === 'indeterminate'
+    return currentChecked === CheckboxCheckedState.INDETERMINATE
         ? String(tokens.icon.color.indeterminate?.default || '')
         : String(tokens.icon.color.checked?.default || '')
 }
