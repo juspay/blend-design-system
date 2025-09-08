@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
-import type { CheckboxCheckedState, CheckboxInteractionState } from './types'
+import type { CheckboxInteractionState } from './types'
 import { CheckboxSize } from './types'
 import type { CheckboxTokensType } from './checkbox.token'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -27,7 +27,7 @@ export const StyledCheckboxRoot = styled(CheckboxPrimitive.Root)<{
 
     ${({ size, $isDisabled, $checked, $error }) => {
         const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
-        const currentCheckedState: CheckboxCheckedState =
+        const currentCheckedState: 'checked' | 'unchecked' | 'indeterminate' =
             $checked === 'indeterminate'
                 ? 'indeterminate'
                 : $checked

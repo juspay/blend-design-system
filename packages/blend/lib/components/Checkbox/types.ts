@@ -5,7 +5,6 @@ export enum CheckboxSize {
     MEDIUM = 'md',
 }
 
-export type CheckboxCheckedState = 'checked' | 'unchecked' | 'indeterminate'
 export type CheckboxInteractionState =
     | 'default'
     | 'hover'

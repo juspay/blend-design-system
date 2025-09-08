@@ -1,7 +1,7 @@
 import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { ThemeType } from '../../tokens'
-import type { CheckboxCheckedState, CheckboxInteractionState } from './types'
+import type { CheckboxInteractionState } from './types'
 import { CheckboxSize } from './types'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 
@@ -9,7 +9,7 @@ import type { BreakpointType } from '../../breakpoints/breakPoints'
 // $component: CHECKBOX (implied)
 // $target: e.g., indicator, icon, content.label, content.subtext, required, transition
 // $property: e.g., size, background, border, color, font, spacing, duration
-// [$variant]: Optional. e.g., CheckboxSize (sm, md), CheckboxCheckedState (checked, unchecked, indeterminate)
+// [$variant]: Optional. e.g., CheckboxSize (sm, md), checked state (checked, unchecked, indeterminate)
 // [$type]: Optional. Generally not used explicitly in this component's tokens.
 // [$state]: Optional. e.g., CheckboxInteractionState (default, hover, disabled, error)
 
@@ -31,8 +31,13 @@ export type CheckboxTokensType = {
         }
         // $property: 'background'
         background: {
-            [key in CheckboxCheckedState]?: {
-                // $variant: checked, unchecked, indeterminate
+            checked?: {
+                [key in CheckboxInteractionState]?: CSSObject['backgroundColor'] // $state: default, hover, disabled, error
+            }
+            unchecked?: {
+                [key in CheckboxInteractionState]?: CSSObject['backgroundColor'] // $state: default, hover, disabled, error
+            }
+            indeterminate?: {
                 [key in CheckboxInteractionState]?: CSSObject['backgroundColor'] // $state: default, hover, disabled, error
             }
         }
@@ -42,8 +47,13 @@ export type CheckboxTokensType = {
             width: CSSObject['borderWidth'] // Direct sub-property
             color: {
                 // Sub-property 'color'
-                [key in CheckboxCheckedState]?: {
-                    // $variant: checked, unchecked, indeterminate
+                checked?: {
+                    [key in CheckboxInteractionState]?: CSSObject['borderColor'] // $state: default, hover, disabled, error
+                }
+                unchecked?: {
+                    [key in CheckboxInteractionState]?: CSSObject['borderColor'] // $state: default, hover, disabled, error
+                }
+                indeterminate?: {
                     [key in CheckboxInteractionState]?: CSSObject['borderColor'] // $state: default, hover, disabled, error
                 }
             }
@@ -61,8 +71,14 @@ export type CheckboxTokensType = {
     icon: {
         // $property: 'color'
         color: {
-            [key in Exclude<CheckboxCheckedState, 'unchecked'>]?: {
-                // $variant: checked, indeterminate
+            checked?: {
+                // $state: default, disabled
+                [key in Extract<
+                    CheckboxInteractionState,
+                    'default' | 'disabled'
+                >]?: CSSObject['color']
+            }
+            indeterminate?: {
                 // $state: default, disabled
                 [key in Extract<
                     CheckboxInteractionState,
