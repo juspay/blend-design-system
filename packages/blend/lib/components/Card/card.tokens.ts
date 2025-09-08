@@ -7,11 +7,11 @@ export type CardState = 'default' | 'hover'
 
 export type CardTokenType = {
     maxWidth: CSSObject['maxWidth']
-    border: CSSObject['border']
     borderRadius: CSSObject['borderRadius']
-    backgroundColor: CSSObject['backgroundColor']
     boxShadow: CSSObject['boxShadow']
     padding: CSSObject['padding']
+    border: CSSObject['border']
+    backgroundColor: CSSObject['backgroundColor']
 
     header: {
         backgroundColor: CSSObject['backgroundColor']

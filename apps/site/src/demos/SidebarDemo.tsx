@@ -127,7 +127,7 @@ const SidebarDemo = () => {
         | 'multiValueInput'
         | 'otpInput'
         | 'card'
-    >('card')
+    >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =

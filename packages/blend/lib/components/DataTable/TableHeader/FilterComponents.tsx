@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { ArrowUp, ArrowDown, Search, ChevronRight } from 'lucide-react'
+import { ArrowUp, ArrowDown, Search, ChevronRight, Check } from 'lucide-react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { SearchInput } from '../../Inputs/SearchInput'
-import { Checkbox } from '../../Checkbox'
-import { CheckboxSize } from '../../Checkbox/types'
 import Slider from '../../Slider/Slider'
 import { SliderSize, SliderValueType } from '../../Slider/types'
-import { ColumnDefinition, ColumnType, FilterType } from '../types'
+import {
+    ColumnDefinition,
+    ColumnType,
+    FilterType,
+    SortDirection,
+} from '../types'
 import { getColumnTypeConfig } from '../columnTypes'
 import { TableTokenType } from '../dataTable.tokens'
 import {
@@ -15,6 +18,7 @@ import {
     FilterHandlers,
     FilterState,
     ColumnFilterHandler,
+    SortState,
 } from './handlers'
 import {
     getSelectMenuItems,
@@ -27,6 +31,8 @@ import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import { Popover } from '../../Popover'
 import MobileFilterDrawer from './MobileFilterDrawer'
+import { Checkbox } from '../../Checkbox'
+import { CheckboxSize } from '../../Checkbox/types'
 
 type FilterComponentsProps = {
     column: ColumnDefinition<Record<string, unknown>>
@@ -35,6 +41,7 @@ type FilterComponentsProps = {
     sortHandlers: SortHandlers
     filterHandlers: FilterHandlers
     filterState: FilterState
+    sortState: SortState
     onColumnFilter?: ColumnFilterHandler
     onPopoverClose?: () => void
 }
@@ -43,98 +50,135 @@ export const SortOptions: React.FC<{
     fieldKey: string
     tableToken: TableTokenType
     sortHandlers: SortHandlers
-}> = ({ fieldKey, tableToken, sortHandlers }) => (
-    <Block
-        display="flex"
-        flexDirection="column"
-        paddingBottom={foundationToken.spacing[2]}
-    >
+    sortState: SortState
+}> = ({ fieldKey, tableToken, sortHandlers, sortState }) => {
+    const isCurrentField = sortState.currentSortField === fieldKey
+    const currentDirection = isCurrentField
+        ? sortState.currentSortDirection
+        : SortDirection.NONE
+
+    const isAscendingActive = currentDirection === SortDirection.ASCENDING
+    const isDescendingActive = currentDirection === SortDirection.DESCENDING
+
+    return (
         <Block
             display="flex"
-            alignItems="center"
-            gap={tableToken.dataTable.table.header.filter.itemGap}
-            padding={
-                tableToken.dataTable.table.header.filter.sortOption.padding
-            }
-            borderRadius={
-                tableToken.dataTable.table.header.filter.sortOption.borderRadius
-            }
-            cursor="pointer"
-            backgroundColor="transparent"
-            _hover={{
-                backgroundColor:
-                    tableToken.dataTable.table.header.filter.sortOption
-                        .hoverBackground,
-            }}
-            onClick={() => sortHandlers.handleSortAscending(fieldKey)}
-            _focus={{ outline: 'none' }}
-            _focusVisible={{ outline: 'none' }}
+            flexDirection="column"
+            paddingBottom={foundationToken.spacing[2]}
         >
-            <ArrowUp
-                size={FOUNDATION_THEME.unit[16]}
-                color={
-                    tableToken.dataTable.table.header.filter.sortOption
-                        .iconColor
+            <Block
+                display="flex"
+                alignItems="center"
+                gap={tableToken.dataTable.table.header.filter.itemGap}
+                padding={
+                    tableToken.dataTable.table.header.filter.sortOption.padding
                 }
-            />
-            <PrimitiveText
-                style={{
-                    fontSize:
-                        tableToken.dataTable.table.header.filter.sortOption
-                            .fontSize,
-                    color: tableToken.dataTable.table.header.filter.sortOption
-                        .textColor,
-                    fontWeight:
-                        tableToken.dataTable.table.header.filter.sortOption
-                            .fontWeight,
-                }}
-            >
-                Sort Ascending
-            </PrimitiveText>
-        </Block>
-        <Block
-            display="flex"
-            alignItems="center"
-            gap={tableToken.dataTable.table.header.filter.itemGap}
-            padding={
-                tableToken.dataTable.table.header.filter.sortOption.padding
-            }
-            borderRadius={
-                tableToken.dataTable.table.header.filter.sortOption.borderRadius
-            }
-            cursor="pointer"
-            backgroundColor="transparent"
-            _hover={{
-                backgroundColor:
+                borderRadius={
                     tableToken.dataTable.table.header.filter.sortOption
-                        .hoverBackground,
-            }}
-            onClick={() => sortHandlers.handleSortDescending(fieldKey)}
-        >
-            <ArrowDown
-                size={FOUNDATION_THEME.unit[16]}
-                color={
-                    tableToken.dataTable.table.header.filter.sortOption
-                        .iconColor
+                        .borderRadius
                 }
-            />
-            <PrimitiveText
-                style={{
-                    fontSize:
+                cursor="pointer"
+                backgroundColor={
+                    isAscendingActive
+                        ? tableToken.dataTable.table.header.filter.sortOption
+                              .hoverBackground
+                        : 'transparent'
+                }
+                _hover={{
+                    backgroundColor:
                         tableToken.dataTable.table.header.filter.sortOption
-                            .fontSize,
-                    color: tableToken.dataTable.table.header.filter.sortOption
-                        .textColor,
-                    fontWeight:
-                        tableToken.dataTable.table.header.filter.sortOption
-                            .fontWeight,
+                            .hoverBackground,
                 }}
+                onClick={() => sortHandlers.handleSortAscending(fieldKey)}
+                _focus={{ outline: 'none' }}
+                _focusVisible={{ outline: 'none' }}
             >
-                Sort Descending
-            </PrimitiveText>
+                <ArrowUp
+                    size={FOUNDATION_THEME.unit[16]}
+                    color={
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .iconColor
+                    }
+                />
+                <PrimitiveText
+                    style={{
+                        fontSize:
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .fontSize,
+                        color: tableToken.dataTable.table.header.filter
+                            .sortOption.textColor,
+                        fontWeight:
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .fontWeight,
+                        flexGrow: 1,
+                    }}
+                >
+                    Sort Ascending
+                </PrimitiveText>
+                {isAscendingActive && (
+                    <Check
+                        size={FOUNDATION_THEME.unit[16]}
+                        color={FOUNDATION_THEME.colors.gray[900]}
+                    />
+                )}
+            </Block>
+            <Block
+                display="flex"
+                alignItems="center"
+                gap={tableToken.dataTable.table.header.filter.itemGap}
+                padding={
+                    tableToken.dataTable.table.header.filter.sortOption.padding
+                }
+                borderRadius={
+                    tableToken.dataTable.table.header.filter.sortOption
+                        .borderRadius
+                }
+                cursor="pointer"
+                backgroundColor={
+                    isDescendingActive
+                        ? tableToken.dataTable.table.header.filter.sortOption
+                              .hoverBackground
+                        : 'transparent'
+                }
+                _hover={{
+                    backgroundColor:
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .hoverBackground,
+                }}
+                onClick={() => sortHandlers.handleSortDescending(fieldKey)}
+            >
+                <ArrowDown
+                    size={FOUNDATION_THEME.unit[16]}
+                    color={
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .iconColor
+                    }
+                />
+                <PrimitiveText
+                    style={{
+                        fontSize:
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .fontSize,
+                        color: tableToken.dataTable.table.header.filter
+                            .sortOption.textColor,
+                        fontWeight:
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .fontWeight,
+                        flexGrow: 1,
+                    }}
+                >
+                    Sort Descending
+                </PrimitiveText>
+                {isDescendingActive && (
+                    <Check
+                        size={FOUNDATION_THEME.unit[16]}
+                        color={FOUNDATION_THEME.colors.green[900]}
+                    />
+                )}
+            </Block>
         </Block>
-    </Block>
-)
+    )
+}
 
 export const DropdownSearchSection: React.FC<{
     column: ColumnDefinition<Record<string, unknown>>
@@ -211,29 +255,39 @@ export const SingleSelectItems: React.FC<{
                 ).map((item) => {
                     const selectedValues =
                         filterState.columnSelectedValues[fieldKey]
-                    const isSelected =
-                        Array.isArray(selectedValues) &&
-                        selectedValues[0] === item.value
+                    const currentSelected = Array.isArray(selectedValues)
+                        ? selectedValues[0]
+                        : typeof selectedValues === 'string'
+                          ? selectedValues
+                          : ''
+
+                    const isSelected = currentSelected === item.value
+
                     return (
                         <Block
                             key={item.value}
                             display="flex"
                             alignItems="center"
                             justifyContent="space-between"
-                            padding={`${FOUNDATION_THEME.unit[8]} ${FOUNDATION_THEME.unit[6]}`}
-                            margin={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[6]}`}
-                            borderRadius={FOUNDATION_THEME.border.radius[4]}
+                            padding={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.padding
+                            }
+                            borderRadius={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.borderRadius
+                            }
                             cursor="pointer"
                             backgroundColor={
                                 isSelected
                                     ? tableToken.dataTable.table.header.filter
-                                          .selectedBackground
+                                          .sortOption.hoverBackground
                                     : 'transparent'
                             }
                             _hover={{
                                 backgroundColor:
                                     tableToken.dataTable.table.header.filter
-                                        .hoverBackground,
+                                        .sortOption.hoverBackground,
                             }}
                             onClick={() => {
                                 filterHandlers.handleSelectFilter(
@@ -249,33 +303,21 @@ export const SingleSelectItems: React.FC<{
                                 style={{
                                     fontSize:
                                         tableToken.dataTable.table.header.filter
-                                            .itemFontSize,
-                                    color: isSelected
-                                        ? tableToken.dataTable.table.header
-                                              .filter.selectedTextColor
-                                        : tableToken.dataTable.table.header
-                                              .filter.normalTextColor,
-                                    fontWeight: isSelected
-                                        ? tableToken.dataTable.table.header
-                                              .filter.selectedFontWeight
-                                        : tableToken.dataTable.table.header
-                                              .filter.normalFontWeight,
+                                            .sortOption.fontSize,
+                                    color: tableToken.dataTable.table.header
+                                        .filter.sortOption.textColor,
+                                    fontWeight:
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.fontWeight,
+                                    flexGrow: 1,
                                 }}
                             >
                                 {item.label}
                             </PrimitiveText>
-                            {isSelected && (
-                                <Block
-                                    as="span"
-                                    display="flex"
-                                    alignItems="center"
-                                >
-                                    <Checkbox
-                                        checked={isSelected}
-                                        size={CheckboxSize.SMALL}
-                                    />
-                                </Block>
-                            )}
+                            <Checkbox
+                                checked={isSelected}
+                                size={CheckboxSize.SMALL}
+                            />
                         </Block>
                     )
                 })
@@ -318,70 +360,66 @@ export const MultiSelectItems: React.FC<{
                 ).map((item) => {
                     const selectedValues =
                         filterState.columnSelectedValues[fieldKey]
-                    const isSelected =
-                        Array.isArray(selectedValues) &&
-                        selectedValues.includes(item.value)
+                    const currentSelected = Array.isArray(selectedValues)
+                        ? selectedValues
+                        : []
+
+                    const isSelected = currentSelected.includes(item.value)
+
                     return (
                         <Block
                             key={item.value}
                             display="flex"
                             alignItems="center"
                             justifyContent="space-between"
-                            padding={`${FOUNDATION_THEME.unit[8]} ${FOUNDATION_THEME.unit[6]}`}
-                            margin={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[6]}`}
-                            borderRadius={FOUNDATION_THEME.border.radius[4]}
+                            padding={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.padding
+                            }
+                            borderRadius={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.borderRadius
+                            }
                             cursor="pointer"
                             backgroundColor={
                                 isSelected
                                     ? tableToken.dataTable.table.header.filter
-                                          .selectedBackground
+                                          .sortOption.hoverBackground
                                     : 'transparent'
                             }
                             _hover={{
                                 backgroundColor:
                                     tableToken.dataTable.table.header.filter
-                                        .hoverBackground,
+                                        .sortOption.hoverBackground,
                             }}
-                            onClick={() =>
+                            onClick={() => {
                                 filterHandlers.handleMultiSelectFilter(
                                     column,
                                     fieldKey,
                                     item.value,
                                     onColumnFilter
                                 )
-                            }
+                            }}
                         >
                             <PrimitiveText
                                 style={{
                                     fontSize:
                                         tableToken.dataTable.table.header.filter
-                                            .itemFontSize,
-                                    color: isSelected
-                                        ? tableToken.dataTable.table.header
-                                              .filter.selectedTextColor
-                                        : tableToken.dataTable.table.header
-                                              .filter.normalTextColor,
-                                    fontWeight: isSelected
-                                        ? tableToken.dataTable.table.header
-                                              .filter.selectedFontWeight
-                                        : tableToken.dataTable.table.header
-                                              .filter.normalFontWeight,
+                                            .sortOption.fontSize,
+                                    color: tableToken.dataTable.table.header
+                                        .filter.sortOption.textColor,
+                                    fontWeight:
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.fontWeight,
                                     flexGrow: 1,
                                 }}
                             >
                                 {item.label}
                             </PrimitiveText>
-                            <Block
-                                as="span"
-                                display="flex"
-                                alignItems="center"
-                                flexShrink={0}
-                            >
-                                <Checkbox
-                                    checked={isSelected}
-                                    size={CheckboxSize.SMALL}
-                                />
-                            </Block>
+                            <Checkbox
+                                checked={isSelected}
+                                size={CheckboxSize.SMALL}
+                            />
                         </Block>
                     )
                 })
@@ -647,6 +685,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     sortHandlers,
     filterHandlers,
     filterState,
+    sortState,
     onColumnFilter,
     onPopoverClose,
 }) => {
@@ -667,6 +706,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                 sortHandlers={sortHandlers}
                 filterHandlers={filterHandlers}
                 filterState={filterState}
+                sortState={sortState}
                 onColumnFilter={onColumnFilter}
                 onPopoverClose={onPopoverClose}
             />
@@ -687,6 +727,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     fieldKey={fieldKey}
                     tableToken={tableToken}
                     sortHandlers={sortHandlers}
+                    sortState={sortState}
                 />
             )}
 
