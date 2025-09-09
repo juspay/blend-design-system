@@ -40,7 +40,9 @@ const KeyValuePairDemo = () => {
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Playground</h2>
                 <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div
+                        className={`grid grid-cols-1 md:grid-cols-2 ${playgroundState === KeyValuePairStateType.vertical ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-4`}
+                    >
                         <TextInput
                             label="Key String"
                             value={playgroundKey}
@@ -55,15 +57,17 @@ const KeyValuePairDemo = () => {
                             placeholder="Enter value text"
                         />
 
-                        <SingleSelect
-                            label="Size"
-                            items={[{ items: sizeOptions }]}
-                            selected={playgroundSize}
-                            onSelect={(value) =>
-                                setPlaygroundSize(value as KeyValuePairSize)
-                            }
-                            placeholder="Select size"
-                        />
+                        {playgroundState === KeyValuePairStateType.vertical && (
+                            <SingleSelect
+                                label="Size"
+                                items={[{ items: sizeOptions }]}
+                                selected={playgroundSize}
+                                onSelect={(value) =>
+                                    setPlaygroundSize(value as KeyValuePairSize)
+                                }
+                                placeholder="Select size"
+                            />
+                        )}
 
                         <SingleSelect
                             label="State"
@@ -84,6 +88,14 @@ const KeyValuePairDemo = () => {
                             placeholder="Select state"
                         />
                     </div>
+
+                    {playgroundState === KeyValuePairStateType.horizontal && (
+                        <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg border border-gray-100">
+                            <strong>Note:</strong> Horizontal orientation uses a
+                            fixed 14px font size for the value, regardless of
+                            the size prop.
+                        </div>
+                    )}
 
                     <div className="flex items-center gap-6">
                         <Switch
@@ -153,7 +165,7 @@ const KeyValuePairDemo = () => {
                                               ? '16px'
                                               : '18px'}
                                     </h4>
-                                    <div className="p-4 border rounded-lg bg-gray-50">
+                                    <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                                         <KeyValuePair
                                             keyString="A very long Key"
                                             value="Value"
@@ -181,7 +193,7 @@ const KeyValuePairDemo = () => {
                                     <h4 className="text-sm font-medium capitalize">
                                         {size} - 14px (Fixed)
                                     </h4>
-                                    <div className="p-4 border rounded-lg bg-gray-50">
+                                    <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                                         <KeyValuePair
                                             keyString="A very long Key"
                                             value="Value"
@@ -204,7 +216,7 @@ const KeyValuePairDemo = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-3">
                         <h3 className="text-lg font-semibold">Vertical</h3>
-                        <div className="p-4 border rounded-lg bg-gray-50">
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                             <KeyValuePair
                                 keyString="Status"
                                 value="Active"
@@ -217,7 +229,7 @@ const KeyValuePairDemo = () => {
 
                     <div className="space-y-3">
                         <h3 className="text-lg font-semibold">Horizontal</h3>
-                        <div className="p-4 border rounded-lg bg-gray-50">
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                             <KeyValuePair
                                 keyString="Status"
                                 value="Active"
@@ -236,7 +248,7 @@ const KeyValuePairDemo = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Key Slot Only</h3>
-                        <div className="p-4 border rounded-lg bg-gray-50">
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                             <KeyValuePair
                                 keyString="Information"
                                 value="Important data"
@@ -247,7 +259,7 @@ const KeyValuePairDemo = () => {
 
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Value Left Slot</h3>
-                        <div className="p-4 border rounded-lg bg-gray-50">
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                             <KeyValuePair
                                 keyString="Rating"
                                 value="5.0"
@@ -260,7 +272,7 @@ const KeyValuePairDemo = () => {
                         <h3 className="text-sm font-medium">
                             Value Right Slot
                         </h3>
-                        <div className="p-4 border rounded-lg bg-gray-50">
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                             <KeyValuePair
                                 keyString="Action"
                                 value="Continue"
@@ -271,7 +283,7 @@ const KeyValuePairDemo = () => {
 
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Multiple Slots</h3>
-                        <div className="p-4 border rounded-lg bg-gray-50">
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                             <KeyValuePair
                                 keyString="Settings"
                                 value="Configured"
@@ -286,7 +298,7 @@ const KeyValuePairDemo = () => {
                         <h3 className="text-sm font-medium">
                             Horizontal with Slots
                         </h3>
-                        <div className="p-4 border rounded-lg bg-gray-50">
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                             <KeyValuePair
                                 keyString="Status"
                                 value="Online"
@@ -307,7 +319,7 @@ const KeyValuePairDemo = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">User Profile</h3>
-                        <div className="space-y-3 p-4 border rounded-lg bg-gray-50">
+                        <div className="space-y-3 p-4 border-gray-100 border rounded-lg bg-gray-50">
                             <KeyValuePair
                                 keyString="Name"
                                 value="John Doe"
@@ -331,7 +343,7 @@ const KeyValuePairDemo = () => {
                         <h3 className="text-lg font-semibold">
                             Product Details
                         </h3>
-                        <div className="space-y-3 p-4 border rounded-lg bg-gray-50">
+                        <div className="space-y-3 p-4 border-gray-100 border rounded-lg bg-gray-50">
                             <KeyValuePair
                                 keyString="Price"
                                 value="$99.99"
@@ -353,7 +365,7 @@ const KeyValuePairDemo = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">System Info</h3>
-                        <div className="space-y-3 p-4 border rounded-lg bg-gray-50">
+                        <div className="space-y-3 p-4 border-gray-100 border rounded-lg bg-gray-50">
                             <KeyValuePair
                                 keyString="Status"
                                 value="Online"
@@ -406,7 +418,7 @@ const KeyValuePairDemo = () => {
                                         <h4 className="text-xs font-medium capitalize text-gray-600">
                                             {size} Size
                                         </h4>
-                                        <div className="space-y-2 p-3 border rounded bg-gray-50">
+                                        <div className="space-y-2 p-3 border-gray-100 border rounded bg-gray-50">
                                             <KeyValuePair
                                                 keyString="Simple"
                                                 value="Value"
