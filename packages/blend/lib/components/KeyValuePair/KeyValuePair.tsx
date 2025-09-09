@@ -1,4 +1,5 @@
 import { forwardRef } from 'react'
+import type { CSSObject } from 'styled-components'
 import {
     KeyValuePairPropTypes,
     KeyValuePairSize,
@@ -19,8 +20,8 @@ const TruncatedText = ({
     className,
 }: {
     children: string
-    fontSize: any
-    color: any
+    fontSize: CSSObject['fontSize']
+    color: CSSObject['color']
     className?: string
 }) => {
     // For now, show tooltip for any text longer than 15 characters to test
