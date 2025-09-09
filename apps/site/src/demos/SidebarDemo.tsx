@@ -80,6 +80,7 @@ import {
 } from '../../../../packages/blend/lib/main'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
+import KeyValuePairDemo from './KeyValuePairDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -126,6 +127,7 @@ const SidebarDemo = () => {
         | 'dataRangePicker'
         | 'multiValueInput'
         | 'otpInput'
+        | 'keyValuePair'
         | 'card'
     >('dataTable')
 
@@ -296,6 +298,8 @@ const SidebarDemo = () => {
                 return <PopoverDemo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
+            case 'keyValuePair':
+                return <KeyValuePairDemo />
             case 'card':
                 return <CardDemo />
             default:
@@ -408,6 +412,10 @@ const SidebarDemo = () => {
                         <ListFilter style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('multiValueInput'),
+                },
+                {
+                    label: 'Key Value Pair',
+                    onClick: () => setActiveComponent('keyValuePair'),
                 },
             ],
         },
