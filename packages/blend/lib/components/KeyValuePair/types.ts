@@ -5,6 +5,7 @@ export enum KeyValuePairStateType {
 
 export enum KeyValuePairSize {
     SMALL = 'sm',
+    MEDIUM = 'md',
     LARGE = 'lg',
 }
 

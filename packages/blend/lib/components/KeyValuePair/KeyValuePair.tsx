@@ -64,7 +64,11 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                             </Block>
                         )}
                         <PrimitiveText
-                            fontSize={keyValuePairTokens.valueFontSize}
+                            fontSize={
+                                keyValuePairTokens.valueFontSize[size][
+                                    keyValuePairState
+                                ]
+                            }
                             color={keyValuePairTokens.valueColor}
                         >
                             {value}
