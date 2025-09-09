@@ -9,7 +9,7 @@ const CodeBlock = ({ code, props }: { code: React.ReactNode; props: any }) => {
     const [isCopied, setIsCopied] = useState(false)
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(codeHTML)
+        navigator.clipboard.writeText(code as string)
         setIsCopied(true)
         setTimeout(() => {
             setIsCopied(false)
