@@ -13,7 +13,7 @@ export type KeyValuePairTokensType = {
             [key in KeyValuePairStateType]: CSSObject['fontSize']
         }
     }
-    maxWidth: CSSObject['maxWidth']
+    // maxWidth: CSSObject['maxWidth']
 }
 
 export type ResponsiveKeyValuePairTokens = {
@@ -43,7 +43,7 @@ export const getKeyValuePairTokens = (
                     [KeyValuePairStateType.horizontal]: '14px',
                 },
             },
-            maxWidth: '200px',
+            // maxWidth: '200px',
         },
         lg: {
             gap: foundationToken.unit[4],
@@ -64,7 +64,7 @@ export const getKeyValuePairTokens = (
                     [KeyValuePairStateType.horizontal]: '14px',
                 },
             },
-            maxWidth: '300px',
+            // maxWidth: '300px',
         },
     }
 }

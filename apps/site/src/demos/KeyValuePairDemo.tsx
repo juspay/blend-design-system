@@ -24,9 +24,9 @@ const KeyValuePairDemo = () => {
 
     // Options for selects
     const sizeOptions = [
-        { value: KeyValuePairSize.SMALL as string, label: 'Small (14px)' },
-        { value: KeyValuePairSize.MEDIUM as string, label: 'Medium (16px)' },
-        { value: KeyValuePairSize.LARGE as string, label: 'Large (18px)' },
+        { value: KeyValuePairSize.SMALL as string, label: 'Small' },
+        { value: KeyValuePairSize.MEDIUM as string, label: 'Medium' },
+        { value: KeyValuePairSize.LARGE as string, label: 'Large' },
     ]
 
     const stateOptions = [
@@ -92,8 +92,8 @@ const KeyValuePairDemo = () => {
                     {playgroundState === KeyValuePairStateType.horizontal && (
                         <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg border border-gray-100">
                             <strong>Note:</strong> Horizontal orientation uses a
-                            fixed 14px font size for the value, regardless of
-                            the size prop.
+                            fixed font size for the value, regardless of the
+                            size prop.
                         </div>
                     )}
 
@@ -158,12 +158,7 @@ const KeyValuePairDemo = () => {
                             {Object.values(KeyValuePairSize).map((size) => (
                                 <div key={size} className="space-y-3">
                                     <h4 className="text-sm font-medium capitalize">
-                                        {size} -{' '}
-                                        {size === KeyValuePairSize.SMALL
-                                            ? '14px'
-                                            : size === KeyValuePairSize.MEDIUM
-                                              ? '16px'
-                                              : '18px'}
+                                        {size}
                                     </h4>
                                     <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                                         <KeyValuePair
@@ -185,13 +180,12 @@ const KeyValuePairDemo = () => {
                         <h3 className="text-lg font-semibold">Horizontal</h3>
                         <p className="text-sm text-gray-600">
                             Horizontal Key Value Pair that's only have one size
-                            (14px)
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {Object.values(KeyValuePairSize).map((size) => (
                                 <div key={size} className="space-y-3">
                                     <h4 className="text-sm font-medium capitalize">
-                                        {size} - 14px (Fixed)
+                                        {size} (Fixed)
                                     </h4>
                                     <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                                         <KeyValuePair
@@ -307,6 +301,98 @@ const KeyValuePairDemo = () => {
                                 keyValuePairState={
                                     KeyValuePairStateType.horizontal
                                 }
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Text Truncation Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Text Truncation with Tooltips
+                </h2>
+                <p className="text-sm text-gray-600">
+                    When text exceeds the container width, it gets truncated and
+                    shows a tooltip on hover.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">Long Key Text</h3>
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
+                            <KeyValuePair
+                                keyString="This is a very long key that should definitely be truncated"
+                                value="Short Value"
+                                size={KeyValuePairSize.MEDIUM}
+                                maxWidth="150px"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">Long Value Text</h3>
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
+                            <KeyValuePair
+                                keyString="Status"
+                                value="This is a very long value text that should be truncated and show tooltip"
+                                size={KeyValuePairSize.MEDIUM}
+                                maxWidth="150px"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">Both Long Texts</h3>
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
+                            <KeyValuePair
+                                keyString="Very Long Configuration Setting Name"
+                                value="This is an extremely long configuration value that definitely needs truncation"
+                                size={KeyValuePairSize.MEDIUM}
+                                maxWidth="150px"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">
+                            Horizontal Long Text
+                        </h3>
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
+                            <KeyValuePair
+                                keyString="Configuration Name"
+                                value="Very long configuration value text"
+                                keyValuePairState={
+                                    KeyValuePairStateType.horizontal
+                                }
+                                maxWidth="180px"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">
+                            With Slots + Long Text
+                        </h3>
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
+                            <KeyValuePair
+                                keyString="System Configuration Settings"
+                                value="Advanced system configuration with multiple parameters"
+                                size={KeyValuePairSize.MEDIUM}
+                                keySlot={<Settings size={16} />}
+                                valueRightSlot={<ArrowRight size={16} />}
+                                maxWidth="150px"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">Email Example</h3>
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
+                            <KeyValuePair
+                                keyString="Email Address"
+                                value="user@verylongdomainname.example.com"
+                                size={KeyValuePairSize.SMALL}
+                                maxWidth="120px"
                             />
                         </div>
                     </div>

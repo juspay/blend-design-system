@@ -17,4 +17,5 @@ export type KeyValuePairPropTypes = {
     valueLeftSlot?: React.ReactNode
     valueRightSlot?: React.ReactNode
     keyValuePairState?: KeyValuePairStateType
+    maxWidth?: string
 }
