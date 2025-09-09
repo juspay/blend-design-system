@@ -12,6 +12,7 @@ import {
     FloatingShortcutsButton,
     TableOfContents,
 } from '../index'
+import { Snackbar } from '@juspay/blend-design-system'
 import {
     DocumentIcon,
     BlogIcon,
@@ -249,6 +250,8 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                     )}
                 </div>
             </main>
+            {/* Global Snackbar for all doc pages */}
+            <Snackbar />
         </GlobalKeyboardNavigationProvider>
     )
 }
