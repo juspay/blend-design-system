@@ -43,6 +43,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
     variant,
     onClose,
     actionButton,
+    toastId,
 }) => {
     const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
 
@@ -116,7 +117,15 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                 snackbarTokens.container.content.actionButton
                                     .color
                             }
-                            onClick={actionButton.onClick}
+                            onClick={() => {
+                                actionButton.onClick()
+                                if (
+                                    actionButton.autoDismiss !== false &&
+                                    toastId
+                                ) {
+                                    sonnerToast.dismiss(toastId)
+                                }
+                            }}
                         >
                             <Text
                                 color={
@@ -175,6 +184,7 @@ export const addSnackbar = ({
                     onClose?.()
                 }}
                 actionButton={actionButton}
+                toastId={t}
             />
         ),
         {
