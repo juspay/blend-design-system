@@ -1,8 +1,8 @@
 import { ChartLegendPosition, ChartsProps, ChartType } from './types'
 import { ResponsiveContainer } from 'recharts'
 import { DEFAULT_COLORS } from './utils'
-import { ChartHeader } from './ChartHeader'
-import { ChartLegends } from './ChartLegend'
+import ChartHeader from './ChartHeader'
+import ChartLegends from './ChartLegend'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { renderChart } from './renderChart'
 import { transformNestedData } from './ChartUtils'
@@ -30,6 +30,7 @@ const Charts: React.FC<ChartsProps> = ({
     barsize,
     xAxis,
     yAxis,
+    noData,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -228,9 +229,7 @@ const Charts: React.FC<ChartsProps> = ({
                 {showHorizontallyStackedLegends()
                     ? isExpanded && (
                           <Block
-                              padding={chartTokens.content.padding.lg}
-                              paddingLeft={chartTokens.content.paddingX.lg}
-                              paddingRight={chartTokens.content.paddingX.lg}
+                              padding={chartTokens.content.padding}
                               display="flex"
                               flexDirection="column"
                               gap={chartTokens.content.gap.lg}
@@ -283,6 +282,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   ? false
                                                   : mergedYAxis.showLabel,
                                           },
+                                          noData,
                                       })}
                                   </ResponsiveContainer>
                               </Block>
@@ -290,9 +290,7 @@ const Charts: React.FC<ChartsProps> = ({
                       )
                     : isExpanded && (
                           <Block
-                              padding={chartTokens.content.padding.lg}
-                              paddingLeft={chartTokens.content.paddingX.lg}
-                              paddingRight={chartTokens.content.paddingX.lg}
+                              padding={chartTokens.content.padding}
                               display="flex"
                               gap={chartTokens.content.gap.lg}
                           >
@@ -324,6 +322,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   ? false
                                                   : mergedYAxis.showLabel,
                                           },
+                                          noData,
                                       })}
                                   </ResponsiveContainer>
                               </Block>
@@ -412,21 +411,7 @@ const Charts: React.FC<ChartsProps> = ({
                 {showHorizontallyStackedLegends()
                     ? isExpanded && (
                           <Block
-                              padding={
-                                  chartTokens.content.padding[
-                                      isSmallScreen ? 'sm' : 'lg'
-                                  ]
-                              }
-                              paddingLeft={
-                                  chartTokens.content.paddingX[
-                                      isSmallScreen ? 'sm' : 'lg'
-                                  ]
-                              }
-                              paddingRight={
-                                  chartTokens.content.paddingX[
-                                      isSmallScreen ? 'sm' : 'lg'
-                                  ]
-                              }
+                              padding={chartTokens.content.padding}
                               display="flex"
                               flexDirection="column"
                               gap={
@@ -484,6 +469,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   ? false
                                                   : mergedYAxis.showLabel,
                                           },
+                                          noData,
                                       })}
                                   </ResponsiveContainer>
                                   {isSmallScreen && (
@@ -574,21 +560,7 @@ const Charts: React.FC<ChartsProps> = ({
                       )
                     : isExpanded && (
                           <Block
-                              padding={
-                                  chartTokens.content.padding[
-                                      isSmallScreen ? 'sm' : 'lg'
-                                  ]
-                              }
-                              paddingLeft={
-                                  chartTokens.content.paddingX[
-                                      isSmallScreen ? 'sm' : 'lg'
-                                  ]
-                              }
-                              paddingRight={
-                                  chartTokens.content.paddingX[
-                                      isSmallScreen ? 'sm' : 'lg'
-                                  ]
-                              }
+                              padding={chartTokens.content.padding}
                               display="flex"
                               gap={
                                   chartTokens.content.gap[
@@ -624,6 +596,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   ? false
                                                   : mergedYAxis.showLabel,
                                           },
+                                          noData,
                                       })}
                                   </ResponsiveContainer>
                               </Block>

@@ -4,6 +4,7 @@ import {
     NameType,
     ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
+import { ButtonV2Props } from '../Button'
 
 export type DataPoint = {
     primary: {
@@ -56,6 +57,13 @@ export type TickProps = {
     [key: string]: unknown
 }
 
+export type NoDataProps = {
+    title?: string
+    subtitle?: string
+    slot?: ReactNode
+    button?: ButtonV2Props
+}
+
 export type AxisConfig = {
     label?: string
     showLabel?: boolean
@@ -66,6 +74,8 @@ export type AxisConfig = {
     customTick?: React.ComponentType<TickProps>
     dateOnly?: boolean
     smart?: boolean
+    timeZone?: string
+    hour12?: boolean
 }
 
 export type XAxisConfig = AxisConfig
@@ -97,6 +107,25 @@ export type RenderChartProps = {
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    noData?: NoDataProps
+}
+
+export type CoreChartProps = {
+    chartType?: ChartType
+    data: NewNestedDataPoint[]
+    colors?: string[]
+    barsize?: number
+    xAxis?: XAxisConfig
+    yAxis?: YAxisConfig
+    height?: number | string
+    width?: number | string
+    isSmallScreen?: boolean
+
+    hoveredKey?: string | null
+    onHoveredKeyChange?: (key: string | null) => void
+    selectedKeys?: string[]
+
+    enableHover?: boolean
 }
 
 export type ChartsProps = {
@@ -113,6 +142,7 @@ export type ChartsProps = {
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    noData?: NoDataProps
 }
 
 export type FlattenedDataPoint = {

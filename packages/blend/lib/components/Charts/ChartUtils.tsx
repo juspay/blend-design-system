@@ -1,4 +1,9 @@
-import { NewNestedDataPoint, FlattenedDataPoint, AxisType } from './types'
+import {
+    NewNestedDataPoint,
+    FlattenedDataPoint,
+    AxisType,
+    XAxisConfig,
+} from './types'
 
 export function transformNestedData(
     data: NewNestedDataPoint[],
@@ -130,9 +135,10 @@ export const capitaliseCamelCase = (text: string): string => {
         .join(' ')
 }
 
-export const createSmartDateTimeFormatter = (): ((
-    value: string | number
-) => string) => {
+export const createSmartDateTimeFormatter = (
+    timeZone?: string,
+    hour12?: boolean
+): ((value: string | number) => string) => {
     let previousDate: string | null = null
 
     return (value: string | number) => {
@@ -148,40 +154,49 @@ export const createSmartDateTimeFormatter = (): ((
             }
         }
 
-        const currentDate = date.toLocaleDateString('en-US', {
+        const dateOptions: Intl.DateTimeFormatOptions = {
             month: 'short',
             day: 'numeric',
             year: 'numeric',
-        })
+            timeZone: timeZone || 'UTC',
+        }
+
+        const currentDate = date.toLocaleDateString('en-US', dateOptions)
 
         if (previousDate === null || previousDate !== currentDate) {
             previousDate = currentDate
-            return date.toLocaleString('en-US', {
+            const fullOptions: Intl.DateTimeFormatOptions = {
                 month: 'short',
                 day: 'numeric',
                 year: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
-                hour12: true,
-            })
+                hour12: hour12 || false,
+                timeZone: timeZone || 'UTC',
+            }
+            return date.toLocaleString('en-US', fullOptions)
         }
 
-        return date.toLocaleTimeString('en-US', {
+        const timeOptions: Intl.DateTimeFormatOptions = {
             hour: '2-digit',
             minute: '2-digit',
-            hour12: true,
-        })
+            hour12: hour12 || false,
+            timeZone: timeZone || 'UTC',
+        }
+        return date.toLocaleTimeString('en-US', timeOptions)
     }
 }
 
 export const getAxisFormatterWithConfig = (
     axisType: AxisType,
     dateOnly?: boolean,
-    smart?: boolean
+    smart?: boolean,
+    timeZone?: string,
+    hour12?: boolean
 ): ((value: string | number) => string) => {
     if (axisType === AxisType.DATE_TIME) {
         if (smart) {
-            return createSmartDateTimeFormatter()
+            return createSmartDateTimeFormatter(timeZone, hour12)
         } else if (dateOnly) {
             return (value: string | number) => {
                 const date = new Date(value)
@@ -197,17 +212,21 @@ export const getAxisFormatterWithConfig = (
                     if (isNaN(timestampDate.getTime())) {
                         return value.toString()
                     }
-                    return timestampDate.toLocaleDateString('en-US', {
+                    const options: Intl.DateTimeFormatOptions = {
                         month: 'short',
                         day: 'numeric',
                         year: 'numeric',
-                    })
+                        timeZone: timeZone || 'UTC',
+                    }
+                    return timestampDate.toLocaleDateString('en-US', options)
                 }
-                return date.toLocaleDateString('en-US', {
+                const options: Intl.DateTimeFormatOptions = {
                     month: 'short',
                     day: 'numeric',
                     year: 'numeric',
-                })
+                    timeZone: timeZone || 'UTC',
+                }
+                return date.toLocaleDateString('en-US', options)
             }
         } else {
             return (value: string | number) => {
@@ -224,32 +243,135 @@ export const getAxisFormatterWithConfig = (
                     if (isNaN(timestampDate.getTime())) {
                         return value.toString()
                     }
-                    return timestampDate.toLocaleString('en-US', {
+                    const options: Intl.DateTimeFormatOptions = {
                         month: 'short',
                         day: 'numeric',
                         year: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit',
-                        hour12: true,
-                    })
+                        hour12: hour12 || false,
+                    }
+                    options.timeZone = timeZone || 'UTC'
+                    return timestampDate.toLocaleString('en-US', options)
                 }
+                const options: Intl.DateTimeFormatOptions = {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: hour12 || false,
+                }
+                options.timeZone = timeZone || 'UTC'
+                return date.toLocaleString('en-US', options)
+            }
+        }
+    }
+
+    return getAxisFormatter(axisType, timeZone, hour12)
+}
+// Have to revisit from optimizaion POV.
+export const createStableSmartFormatter = (
+    xAxisConfig: XAxisConfig,
+    flattenedData: FlattenedDataPoint[]
+): ((value: string | number) => string) | undefined => {
+    if (xAxisConfig?.customTick) return undefined
+    if (xAxisConfig?.tickFormatter) return xAxisConfig.tickFormatter
+    if (
+        xAxisConfig?.type &&
+        xAxisConfig.type === AxisType.DATE_TIME &&
+        xAxisConfig?.smart
+    ) {
+        const isPreserveStartEnd =
+            xAxisConfig?.interval === 'preserveStartEnd' ||
+            xAxisConfig?.interval === 'preserveStart' ||
+            xAxisConfig?.interval === 'preserveEnd'
+
+        const dataValues = flattenedData.map((d) => d.name)
+        const dateMap = new Set<string>()
+        const showFullDateForValue = new Map<string, boolean>()
+
+        dataValues.forEach((value) => {
+            let date = new Date(value)
+            if (isNaN(date.getTime())) {
+                let timestamp =
+                    typeof value === 'string' ? parseInt(value) : value
+                if (timestamp < 946684800000) {
+                    timestamp = timestamp * 1000
+                }
+                date = new Date(timestamp)
+            }
+
+            if (!isNaN(date.getTime())) {
+                const dateString = date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    timeZone: xAxisConfig?.timeZone || 'UTC',
+                })
+
+                const shouldShowFull = isPreserveStartEnd
+                    ? false
+                    : !dateMap.has(dateString)
+                dateMap.add(dateString)
+                showFullDateForValue.set(value.toString(), shouldShowFull)
+            }
+        })
+
+        return (value: string | number) => {
+            let date = new Date(value)
+            if (isNaN(date.getTime())) {
+                let timestamp =
+                    typeof value === 'string' ? parseInt(value) : value
+                if (timestamp < 946684800000) {
+                    timestamp = timestamp * 1000
+                }
+                date = new Date(timestamp)
+                if (isNaN(date.getTime())) {
+                    return value.toString()
+                }
+            }
+
+            const shouldShowFullDate = showFullDateForValue.get(
+                value.toString()
+            )
+
+            if (shouldShowFullDate) {
                 return date.toLocaleString('en-US', {
                     month: 'short',
                     day: 'numeric',
                     year: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit',
-                    hour12: true,
+                    hour12: xAxisConfig?.hour12 ?? false,
+                    timeZone: xAxisConfig?.timeZone || 'UTC',
+                })
+            } else {
+                return date.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: xAxisConfig?.hour12 ?? false,
+                    timeZone: xAxisConfig?.timeZone || 'UTC',
                 })
             }
         }
     }
-
-    return getAxisFormatter(axisType)
+    if (xAxisConfig?.type) {
+        return getAxisFormatterWithConfig(
+            xAxisConfig.type,
+            xAxisConfig.dateOnly,
+            xAxisConfig?.smart ?? false,
+            xAxisConfig.timeZone,
+            xAxisConfig.hour12
+        )
+    }
+    return undefined
 }
 
 export const getAxisFormatter = (
-    axisType: AxisType
+    axisType: AxisType,
+    timeZone?: string,
+    hour12?: boolean
 ): ((value: string | number) => string) => {
     switch (axisType) {
         case AxisType.DATE_TIME:
@@ -267,23 +389,27 @@ export const getAxisFormatter = (
                     if (isNaN(timestampDate.getTime())) {
                         return value.toString()
                     }
-                    return timestampDate.toLocaleString('en-US', {
+                    const options: Intl.DateTimeFormatOptions = {
                         month: 'short',
                         day: 'numeric',
                         year: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit',
-                        hour12: true,
-                    })
+                        hour12: hour12 || false,
+                    }
+                    options.timeZone = timeZone || 'UTC'
+                    return timestampDate.toLocaleString('en-US', options)
                 }
-                return date.toLocaleString('en-US', {
+                const options: Intl.DateTimeFormatOptions = {
                     month: 'short',
                     day: 'numeric',
                     year: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit',
-                    hour12: true,
-                })
+                    hour12: hour12 || false,
+                }
+                options.timeZone = timeZone || 'UTC'
+                return date.toLocaleString('en-US', options)
             }
 
         case AxisType.CURRENCY:

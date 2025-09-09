@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 
-interface VersionHeaderProps {
+type VersionHeaderProps = {
     version: string
     date: string
     status: 'stable' | 'beta' | 'alpha'
@@ -43,7 +43,7 @@ export const VersionHeader = ({
     )
 }
 
-interface ChangelogCardProps {
+type ChangelogCardProps = {
     summary: string
     children: React.ReactNode
     defaultExpanded?: boolean
@@ -163,7 +163,7 @@ export const ChangelogCard = ({
     )
 }
 
-interface ChangelogEntryProps {
+type ChangelogEntryProps = {
     type:
         | 'feat'
         | 'fix'

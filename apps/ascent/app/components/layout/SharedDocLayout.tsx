@@ -10,6 +10,7 @@ import {
     ThemeToggle,
     GlobalKeyboardNavigationProvider,
     FloatingShortcutsButton,
+    TableOfContents,
 } from '../index'
 import {
     DocumentIcon,
@@ -23,6 +24,8 @@ import { JuspayLogoTitle } from '@/app/changelog/icons/JuspayLogoTitle'
 import Gradient from '@/app/changelog/icons/Gradient'
 import { ConnectWithUs } from '@/app/landing/components/connect-with-us/ConnectWithUs'
 import { Footer } from '@/app/landing/components/footer/Footer'
+import { useTableOfContents } from '@/app/docs/context/TableOfContentsContext'
+import { TOCItem } from '@/app/components/layout/Navigation/TableOfContents'
 
 export interface SharedDocLayoutProps {
     /** Title displayed in the navigation bar */
@@ -43,6 +46,8 @@ export interface SharedDocLayoutProps {
     showSidebar?: boolean
 
     showFooter?: boolean
+
+    navbarBorderBottom?: boolean
 }
 
 const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
@@ -55,7 +60,18 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
     showThemeToggle = true,
     showSidebar = true,
     showFooter = false,
+    navbarBorderBottom = false,
 }) => {
+    // Get headings from context (will be empty array if context is not available)
+    let headings: TOCItem[] = []
+    try {
+        const { headings: contextHeadings } = useTableOfContents()
+        headings = contextHeadings
+    } catch {
+        // Context not available, use empty array
+        headings = []
+    }
+
     // Theme detection state
     const [theme, setTheme] = useState<'light' | 'dark'>('dark')
     const [mounted, setMounted] = useState(false)
@@ -105,11 +121,13 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
             <main className={`min-h-screen w-full ${className}`}>
                 <Gradient className="absolute right-0" />
                 {/* Navigation Bar */}
-                <nav className="xl:h-25 lg:h-20 md:h-16 sm:h-14 h-12 flex items-center justify-between xl:px-6 lg:px-5 md:px-4 sm:px-3 px-2 sticky top-0 z-50 backdrop-blur-md">
+                <nav
+                    className={`xl:h-25 lg:h-20 md:h-16 sm:h-14 h-12 flex items-center justify-between xl:px-6 lg:px-5 md:px-4 sm:px-3 px-2 sticky top-0 z-50 backdrop-blur-md ${navbarBorderBottom ? (theme === 'light' ? 'border-b border-neutral-200' : 'border-b border-neutral-800') : 'border-none'} `}
+                >
                     {/* Left side - Title and drawer */}
                     <div className="flex items-center xl:gap-4 lg:gap-3 md:gap-2 gap-1">
                         <div
-                            className={`sidebar-drawer-trigger ${showSidebar ? 'visible' : '!hidden'}`}
+                            className={`sidebar-drawer-trigger z-[50]  ${showSidebar ? 'visible' : '!hidden'}`}
                         >
                             <SidebarDrawer
                                 items={sidebarItems}
@@ -208,12 +226,12 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                 {/* Main content area */}
                 <FloatingShortcutsButton />
                 {/* Main content area */}
-                <div className="w-screen flex bg-[var(--sidebar-background)] h-[90vh] backdrop-blur-sm ">
-                    <aside
-                        className={`doc-sidebar w-[240px]  overflow-hidden fixed left-0  z-40 ${showSidebar ? 'visible' : 'hidden'}`}
+                <div className="w-screen flex bg-[var(--sidebar-background)] h-[90vh] backdrop-blur-sm overflow-hidden">
+                    <div
+                        className={`backdrop:blur-lg z-40 w-[240px] overflow-hidden left-0 h-full ${theme === 'light' ? 'border-r border-neutral-200' : 'border-r border-neutral-800'} ${showSidebar ? 'visible' : 'hidden'}`}
                     >
                         <Sidebar items={sidebarItems} baseRoute={baseRoute} />
-                    </aside>
+                    </div>
 
                     {/* Main content */}
                     <div className=" overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full lg:rounded-[var(--rounded-100)] md:rounded-[var(--rounded-80)] sm:rounded-[var(--rounded-60)] rounded-[var(--rounded-50)] ">
@@ -221,6 +239,14 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                         {showFooter === true && <ConnectWithUs />}
                         {showFooter === true && <Footer />}
                     </div>
+
+                    {baseRoute.includes('docs') && (
+                        <div className="doc-toc-ctr max-w-[240px] w-full overflow-y-auto">
+                            <div className="sticky top-4">
+                                <TableOfContents items={headings} />
+                            </div>
+                        </div>
+                    )}
                 </div>
             </main>
         </GlobalKeyboardNavigationProvider>

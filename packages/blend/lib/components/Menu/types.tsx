@@ -1,3 +1,5 @@
+import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
+
 export enum MenuAlignment {
     START = 'start',
     CENTER = 'center',
@@ -56,6 +58,15 @@ export type MenuItemV2Type = {
     disabled?: boolean
     onClick?: () => void
     subMenu?: MenuItemV2Type[]
+    tooltip?: string | React.ReactNode
+    tooltipProps?: {
+        side?: TooltipSide
+        align?: TooltipAlign
+        size?: TooltipSize
+        showArrow?: boolean
+        delayDuration?: number
+        offset?: number
+    }
 }
 
 export type MenuV2GroupType = {
