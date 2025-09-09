@@ -55,11 +55,11 @@ export const FooterLinksData: FooterLinksDataType[] = [
                 name: 'Component Documentation',
             },
             {
-                link: 'https://github.com/juspay/blend-design-system/wiki/Theme-Provider-&-Token-Architecture',
+                link: 'https://juspay.design/blog/theme-provider-token-architecture/',
                 name: 'Design System Tokeniser',
             },
             {
-                link: 'https://github.com/juspay/blend-design-system/wiki/Blend-MCP-Server-Documentation',
+                link: 'https://juspay.design/blog/blend-mcp-server-documentation/',
                 name: 'Blend MCP Server',
             },
             {
