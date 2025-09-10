@@ -224,12 +224,12 @@ const SidebarDemo = () => {
     const merchants = [
         {
             label: 'Design System',
-            icon: <UserIcon style={{ width: '16px', height: '16px' }} />,
+            icon: <UserIcon style={{ width: '14px', height: '14px' }} />,
             value: 'design-system',
         },
         {
             label: 'Design System 2',
-            icon: <UserIcon style={{ width: '16px', height: '16px' }} />,
+            icon: <UserIcon style={{ width: '14px', height: '14px' }} />,
             value: 'design-system-2',
         },
     ]

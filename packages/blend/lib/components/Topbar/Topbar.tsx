@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { PanelsTopLeft, ArrowLeft, UserIcon } from 'lucide-react'
+import { PanelsTopLeft, ArrowLeft, UserIcon, ChevronDown } from 'lucide-react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
@@ -64,6 +64,19 @@ const TenantIconButton = styled.button`
     &:active {
         background-color: ${FOUNDATION_THEME.colors.gray[150]};
     }
+`
+
+const MerchantSelectTrigger = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    gap: ${FOUNDATION_THEME.unit[6]};
+    padding: 0;
+    width: 100%;
+    overflow: hidden;
 `
 
 const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
@@ -185,6 +198,33 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                 ]}
                                 selected={merchantInfo.selected}
                                 onSelect={merchantInfo.onSelect}
+                                customTrigger={
+                                    <MerchantSelectTrigger>
+                                        <Block display="flex" alignItems="center" gap={FOUNDATION_THEME.unit[6]}>
+                                            {merchantInfo.items.find(
+                                                (merchant) => merchant.value === merchantInfo.selected
+                                            )?.icon}
+                                            <Text
+                                                variant="body.md"
+                                                color={FOUNDATION_THEME.colors.gray[800]}
+                                                fontWeight={500}
+                                                style={{
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    whiteSpace: 'nowrap',
+                                                }}
+                                            >
+                                                {merchantInfo.items.find(
+                                                    (merchant) => merchant.value === merchantInfo.selected
+                                                )?.label || 'Select Merchant'}
+                                            </Text>
+                                        </Block>
+                                        <ChevronDown
+                                            size={FOUNDATION_THEME.unit[14]}
+                                            color={FOUNDATION_THEME.colors.gray[800]}
+                                        />
+                                    </MerchantSelectTrigger>
+                                }
                             />
                         )}
                     </Block>
