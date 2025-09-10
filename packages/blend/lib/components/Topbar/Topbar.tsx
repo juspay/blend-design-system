@@ -7,8 +7,8 @@ import type { TopbarProps } from './types'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { SingleSelect } from '../SingleSelect'
 import { SelectMenuVariant } from '../Select/types'
-import { getTopbarToken } from './topbar.tokens'
-import { FOUNDATION_THEME } from '../../tokens'
+import { useComponentToken } from '../../context/useComponentToken'
+import type { ResponsiveTopbarTokens } from './topbar.tokens'
 
 const ToggleButton = styled.button<{ isMobile: boolean }>`
     display: flex;
@@ -17,20 +17,20 @@ const ToggleButton = styled.button<{ isMobile: boolean }>`
     border: none;
     background-color: transparent;
     border-radius: ${({ isMobile }) => {
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         return isMobile
             ? tokens.sm.toggleButton.borderRadius
             : tokens.lg.toggleButton.borderRadius
     }};
     cursor: pointer;
     padding: ${({ isMobile }) => {
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         return isMobile
             ? tokens.sm.toggleButton.padding
             : tokens.lg.toggleButton.padding
     }};
     transition: ${({ isMobile }) => {
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         return isMobile
             ? tokens.sm.toggleButton.transition
             : tokens.lg.toggleButton.transition
@@ -38,7 +38,7 @@ const ToggleButton = styled.button<{ isMobile: boolean }>`
 
     &:hover {
         background-color: ${({ isMobile }) => {
-            const tokens = getTopbarToken(FOUNDATION_THEME)
+            const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
             return isMobile
                 ? tokens.sm.toggleButton.backgroundColor.hover
                 : tokens.lg.toggleButton.backgroundColor.hover
@@ -53,32 +53,32 @@ const ActionButton = styled.button<{ isMobile: boolean }>`
     border: none;
     background-color: transparent;
     border-radius: ${({ isMobile }) => {
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         return isMobile
             ? tokens.sm.actionButton.borderRadius
             : tokens.lg.actionButton.borderRadius
     }};
     cursor: pointer;
     padding: ${({ isMobile }) => {
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         return isMobile
             ? tokens.sm.actionButton.padding
             : tokens.lg.actionButton.padding
     }};
     transition: ${({ isMobile }) => {
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         return isMobile
             ? tokens.sm.actionButton.transition
             : tokens.lg.actionButton.transition
     }};
     min-width: ${({ isMobile }) => {
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         return isMobile
             ? tokens.sm.actionButton.minWidth
             : tokens.lg.actionButton.minWidth
     }};
     height: ${({ isMobile }) => {
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         return isMobile
             ? tokens.sm.actionButton.height
             : tokens.lg.actionButton.height
@@ -86,7 +86,7 @@ const ActionButton = styled.button<{ isMobile: boolean }>`
 
     &:hover {
         background-color: ${({ isMobile }) => {
-            const tokens = getTopbarToken(FOUNDATION_THEME)
+            const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
             return isMobile
                 ? tokens.sm.actionButton.backgroundColor.hover
                 : tokens.lg.actionButton.backgroundColor.hover
@@ -95,7 +95,7 @@ const ActionButton = styled.button<{ isMobile: boolean }>`
 
     &:active {
         background-color: ${({ isMobile }) => {
-            const tokens = getTopbarToken(FOUNDATION_THEME)
+            const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
             return isMobile
                 ? tokens.sm.actionButton.backgroundColor.active
                 : tokens.lg.actionButton.backgroundColor.active
@@ -110,20 +110,20 @@ const TenantIconButton = styled.button<{ isMobile: boolean }>`
     border: none;
     background-color: transparent;
     border-radius: ${({ isMobile }) => {
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         return isMobile
             ? tokens.sm.tenantIconButton.borderRadius
             : tokens.lg.tenantIconButton.borderRadius
     }};
     cursor: pointer;
     min-height: ${({ isMobile }) => {
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         return isMobile
             ? tokens.sm.tenantIconButton.minHeight
             : tokens.lg.tenantIconButton.minHeight
     }};
     transition: ${({ isMobile }) => {
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         return isMobile
             ? tokens.sm.tenantIconButton.transition
             : tokens.lg.tenantIconButton.transition
@@ -131,7 +131,7 @@ const TenantIconButton = styled.button<{ isMobile: boolean }>`
 
     &:hover {
         background-color: ${({ isMobile }) => {
-            const tokens = getTopbarToken(FOUNDATION_THEME)
+            const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
             return isMobile
                 ? tokens.sm.tenantIconButton.backgroundColor.hover
                 : tokens.lg.tenantIconButton.backgroundColor.hover
@@ -140,7 +140,7 @@ const TenantIconButton = styled.button<{ isMobile: boolean }>`
 
     &:active {
         background-color: ${({ isMobile }) => {
-            const tokens = getTopbarToken(FOUNDATION_THEME)
+            const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
             return isMobile
                 ? tokens.sm.tenantIconButton.backgroundColor.active
                 : tokens.lg.tenantIconButton.backgroundColor.active
@@ -156,7 +156,7 @@ const MerchantSelectTrigger = styled.button<{ isMobile: boolean }>`
     background-color: transparent;
     cursor: pointer;
     gap: ${({ isMobile }) => {
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         return isMobile
             ? tokens.sm.merchantSelectTrigger.gap
             : tokens.lg.merchantSelectTrigger.gap
@@ -187,7 +187,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
     ) => {
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
-        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         const topBarToken = isMobile ? tokens.sm : tokens.lg
 
         if (isMobile) {
@@ -200,8 +200,8 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     return (
                         <ActionButton isMobile={isMobile} onClick={onBackClick}>
                             <ArrowLeft
-                                color={topBarToken.actionButton.iconColor}
-                                size={topBarToken.actionButton.iconSize}
+                                color={topBarToken.actionButton.icon.color}
+                                size={topBarToken.actionButton.icon.size}
                             />
                         </ActionButton>
                     )
@@ -280,10 +280,10 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                                         style={{
                                                             width: topBarToken
                                                                 .merchantSelectTrigger
-                                                                .iconSize,
+                                                                .icon.size,
                                                             height: topBarToken
                                                                 .merchantSelectTrigger
-                                                                .iconSize,
+                                                                .icon.size,
                                                         }}
                                                     />
                                                 ),
@@ -338,13 +338,13 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                         <ChevronDown
                                             size={
                                                 topBarToken
-                                                    .merchantSelectTrigger
-                                                    .iconSize
+                                                    .merchantSelectTrigger.icon
+                                                    .size
                                             }
                                             color={
                                                 topBarToken
-                                                    .merchantSelectTrigger
-                                                    .iconColor
+                                                    .merchantSelectTrigger.icon
+                                                    .color
                                             }
                                         />
                                     </MerchantSelectTrigger>
@@ -452,8 +452,8 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                 onClick={onToggleExpansion}
                             >
                                 <PanelsTopLeft
-                                    color={topBarToken.toggleButton.iconColor}
-                                    size={topBarToken.toggleButton.iconSize}
+                                    color={topBarToken.toggleButton.icon.color}
+                                    size={topBarToken.toggleButton.icon.size}
                                 />
                             </ToggleButton>
                         )}

@@ -4,7 +4,7 @@ import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type TopbarState = 'default' | 'hover' | 'active'
 
-export type TopbarTokenType = {
+export type TopbarTokensType = {
     height: CSSObject['height']
     position: CSSObject['position']
     top: CSSObject['top']
@@ -12,7 +12,6 @@ export type TopbarTokenType = {
     borderBottom: CSSObject['borderBottom']
     backgroundColor: CSSObject['backgroundColor']
     backdropFilter: CSSObject['backdropFilter']
-    opacity: CSSObject['opacity']
     padding: CSSObject['padding']
     gap: CSSObject['gap']
 
@@ -20,11 +19,13 @@ export type TopbarTokenType = {
         borderRadius: CSSObject['borderRadius']
         padding: CSSObject['padding']
         backgroundColor: {
-            [key in TopbarState]?: CSSObject['backgroundColor']
+            [key in TopbarState]: CSSObject['backgroundColor']
         }
         transition: CSSObject['transition']
-        iconSize: CSSObject['width']
-        iconColor: CSSObject['color']
+        icon: {
+            size: CSSObject['width']
+            color: CSSObject['color']
+        }
     }
 
     actionButton: {
@@ -33,26 +34,30 @@ export type TopbarTokenType = {
         minWidth: CSSObject['minWidth']
         height: CSSObject['height']
         backgroundColor: {
-            [key in TopbarState]?: CSSObject['backgroundColor']
+            [key in TopbarState]: CSSObject['backgroundColor']
         }
         transition: CSSObject['transition']
-        iconSize: CSSObject['width']
-        iconColor: CSSObject['color']
+        icon: {
+            size: CSSObject['width']
+            color: CSSObject['color']
+        }
     }
 
     tenantIconButton: {
         borderRadius: CSSObject['borderRadius']
         minHeight: CSSObject['minHeight']
         backgroundColor: {
-            [key in TopbarState]?: CSSObject['backgroundColor']
+            [key in TopbarState]: CSSObject['backgroundColor']
         }
         transition: CSSObject['transition']
     }
 
     merchantSelectTrigger: {
         gap: CSSObject['gap']
-        iconSize: CSSObject['width']
-        iconColor: CSSObject['color']
+        icon: {
+            size: CSSObject['width']
+            color: CSSObject['color']
+        }
         text: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
@@ -87,10 +92,10 @@ export type TopbarTokenType = {
 }
 
 export type ResponsiveTopbarTokens = {
-    [key in keyof BreakpointType]: TopbarTokenType
+    [key in keyof BreakpointType]: TopbarTokensType
 }
 
-export const getTopbarToken = (
+export const getTopbarTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveTopbarTokens => {
     return {
@@ -102,7 +107,6 @@ export const getTopbarToken = (
             borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             backgroundColor: 'hsla(0, 0%, 100%, 0.95)',
             backdropFilter: 'blur(10px)',
-            opacity: 1,
             padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
             gap: foundationToken.unit[12],
 
@@ -112,10 +116,13 @@ export const getTopbarToken = (
                 backgroundColor: {
                     default: 'transparent',
                     hover: foundationToken.colors.gray[100],
+                    active: foundationToken.colors.gray[150],
                 },
                 transition: 'background-color 0.15s ease',
-                iconSize: foundationToken.unit[14],
-                iconColor: foundationToken.colors.gray[600],
+                icon: {
+                    size: foundationToken.unit[14],
+                    color: foundationToken.colors.gray[600],
+                },
             },
 
             actionButton: {
@@ -129,8 +136,10 @@ export const getTopbarToken = (
                     active: foundationToken.colors.gray[150],
                 },
                 transition: 'background-color 0.15s ease',
-                iconSize: foundationToken.unit[20],
-                iconColor: foundationToken.colors.gray[600],
+                icon: {
+                    size: foundationToken.unit[20],
+                    color: foundationToken.colors.gray[600],
+                },
             },
 
             tenantIconButton: {
@@ -146,8 +155,10 @@ export const getTopbarToken = (
 
             merchantSelectTrigger: {
                 gap: foundationToken.unit[6],
-                iconSize: foundationToken.unit[14],
-                iconColor: foundationToken.colors.gray[800],
+                icon: {
+                    size: foundationToken.unit[14],
+                    color: foundationToken.colors.gray[800],
+                },
                 text: {
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
@@ -189,7 +200,6 @@ export const getTopbarToken = (
             borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             backgroundColor: 'hsla(0, 0%, 100%, 0.8)',
             backdropFilter: 'blur(10px)',
-            opacity: 1,
             padding: `${foundationToken.unit[16]} ${foundationToken.unit[32]}`,
             gap: foundationToken.unit[16],
 
@@ -199,10 +209,13 @@ export const getTopbarToken = (
                 backgroundColor: {
                     default: 'transparent',
                     hover: foundationToken.colors.gray[100],
+                    active: foundationToken.colors.gray[150],
                 },
                 transition: 'background-color 0.15s ease',
-                iconSize: foundationToken.unit[14],
-                iconColor: foundationToken.colors.gray[600],
+                icon: {
+                    size: foundationToken.unit[14],
+                    color: foundationToken.colors.gray[600],
+                },
             },
 
             actionButton: {
@@ -216,8 +229,10 @@ export const getTopbarToken = (
                     active: foundationToken.colors.gray[150],
                 },
                 transition: 'background-color 0.15s ease',
-                iconSize: foundationToken.unit[20],
-                iconColor: foundationToken.colors.gray[600],
+                icon: {
+                    size: foundationToken.unit[20],
+                    color: foundationToken.colors.gray[600],
+                },
             },
 
             tenantIconButton: {
@@ -233,8 +248,10 @@ export const getTopbarToken = (
 
             merchantSelectTrigger: {
                 gap: foundationToken.unit[6],
-                iconSize: foundationToken.unit[14],
-                iconColor: foundationToken.colors.gray[800],
+                icon: {
+                    size: foundationToken.unit[14],
+                    color: foundationToken.colors.gray[800],
+                },
                 text: {
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],

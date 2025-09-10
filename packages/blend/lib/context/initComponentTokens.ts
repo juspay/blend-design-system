@@ -32,6 +32,7 @@ import { getChartTokens } from '../components/Charts/chart.tokens'
 import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { getCardTokens } from '../components/Card/card.tokens'
+import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -97,6 +98,7 @@ const initTokens = (
         SNACKBAR:
             componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
         CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
+        TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
     }
 }
 
