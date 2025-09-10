@@ -15,9 +15,9 @@ const ToggleButton = styled.button`
     justify-content: center;
     border: none;
     background-color: transparent;
-    border-radius: 10px;
+    border-radius: ${FOUNDATION_THEME.border.radius[10]};
     cursor: pointer;
-    padding: 9px;
+    padding: ${FOUNDATION_THEME.unit[9]};
     transition: background-color 0.15s ease;
 
     &:hover {
@@ -31,12 +31,12 @@ const ActionButton = styled.button`
     justify-content: center;
     border: none;
     background-color: transparent;
-    border-radius: 8px;
+    border-radius: ${FOUNDATION_THEME.border.radius[8]};
     cursor: pointer;
-    padding: 8px;
+    padding: ${FOUNDATION_THEME.unit[8]};
     transition: background-color 0.15s ease;
-    min-width: 40px;
-    height: 40px;
+    min-width: ${FOUNDATION_THEME.unit[40]};
+    height: ${FOUNDATION_THEME.unit[40]};
 
     &:hover {
         background-color: ${FOUNDATION_THEME.colors.gray[100]};
@@ -53,9 +53,8 @@ const TenantIconButton = styled.button`
     justify-content: center;
     border: none;
     background-color: transparent;
-    border-radius: 8px;
+    border-radius: ${FOUNDATION_THEME.border.radius[8]};
     cursor: pointer;
-    min-height: 36px;
     transition: background-color 0.15s ease;
 
     &:hover {
@@ -101,14 +100,18 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                         <ActionButton onClick={onBackClick}>
                             <ArrowLeft
                                 color={FOUNDATION_THEME.colors.gray[600]}
-                                size={20}
+                                size={FOUNDATION_THEME.unit[20]}
                             />
                         </ActionButton>
                     )
                 }
 
                 return (
-                    <Block display="flex" alignItems="center" gap="6px">
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        gap={FOUNDATION_THEME.unit[6]}
+                    >
                         {leftPanel &&
                             leftPanel.items &&
                             leftPanel.items.length > 0 && (
@@ -169,8 +172,10 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                                 slot1: merchant.icon || (
                                                     <UserIcon
                                                         style={{
-                                                            width: '16px',
-                                                            height: '16px',
+                                                            width: FOUNDATION_THEME
+                                                                .unit[16],
+                                                            height: FOUNDATION_THEME
+                                                                .unit[16],
                                                         }}
                                                     />
                                                 ),
@@ -190,15 +195,14 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                 <Block
                     ref={ref}
                     width="100%"
-                    height="56px"
                     position="sticky"
                     top="0"
                     zIndex="10"
-                    borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                    borderBottom={`${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`}
                     display="flex"
                     alignItems="center"
-                    gap="12px"
-                    padding="12px 16px"
+                    gap={FOUNDATION_THEME.unit[12]}
+                    padding={`${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]}`}
                     backgroundColor="hsla(0, 0%, 100%, 0.95)"
                     style={{
                         backdropFilter: 'blur(10px)',
@@ -236,7 +240,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     <Block
                         display="flex"
                         alignItems="center"
-                        gap="8px"
+                        gap={FOUNDATION_THEME.unit[8]}
                         width="fit-content"
                         flexShrink={0}
                     >
@@ -250,15 +254,15 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             <Block
                 ref={ref}
                 width="100%"
-                height="68px"
+                height={FOUNDATION_THEME.unit[68]}
                 position="sticky"
                 top="0"
                 zIndex="10"
-                borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                borderBottom={`${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`}
                 display="flex"
                 alignItems="center"
-                gap="16px"
-                padding="16px 32px"
+                gap={FOUNDATION_THEME.unit[16]}
+                padding={`${FOUNDATION_THEME.unit[16]} ${FOUNDATION_THEME.unit[32]}`}
                 backgroundColor="hsla(0, 0%, 100%, 0.8)"
                 style={{
                     backdropFilter: 'blur(10px)',
@@ -268,7 +272,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     <Block
                         display="flex"
                         alignItems="center"
-                        gap="16px"
+                        gap={FOUNDATION_THEME.unit[16]}
                         width="fit-content"
                         flexShrink={0}
                     >
@@ -276,7 +280,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                             <ToggleButton onClick={onToggleExpansion}>
                                 <PanelsTopLeft
                                     color={FOUNDATION_THEME.colors.gray[600]}
-                                    size={14}
+                                    size={FOUNDATION_THEME.unit[14]}
                                 />
                             </ToggleButton>
                         )}
