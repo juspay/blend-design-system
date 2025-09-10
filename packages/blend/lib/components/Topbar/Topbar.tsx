@@ -4,76 +4,163 @@ import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import type { TopbarProps } from './types'
-import { FOUNDATION_THEME } from '../../tokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { SingleSelect } from '../SingleSelect'
 import { SelectMenuVariant } from '../Select/types'
+import { getTopbarToken } from './topbar.tokens'
+import { FOUNDATION_THEME } from '../../tokens'
 
-const ToggleButton = styled.button`
+const ToggleButton = styled.button<{ isMobile: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
     border: none;
     background-color: transparent;
-    border-radius: ${FOUNDATION_THEME.border.radius[10]};
+    border-radius: ${({ isMobile }) => {
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        return isMobile
+            ? tokens.sm.toggleButton.borderRadius
+            : tokens.lg.toggleButton.borderRadius
+    }};
     cursor: pointer;
-    padding: ${FOUNDATION_THEME.unit[9]};
-    transition: background-color 0.15s ease;
+    padding: ${({ isMobile }) => {
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        return isMobile
+            ? tokens.sm.toggleButton.padding
+            : tokens.lg.toggleButton.padding
+    }};
+    transition: ${({ isMobile }) => {
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        return isMobile
+            ? tokens.sm.toggleButton.transition
+            : tokens.lg.toggleButton.transition
+    }};
 
     &:hover {
-        background-color: ${FOUNDATION_THEME.colors.gray[100]};
+        background-color: ${({ isMobile }) => {
+            const tokens = getTopbarToken(FOUNDATION_THEME)
+            return isMobile
+                ? tokens.sm.toggleButton.backgroundColor.hover
+                : tokens.lg.toggleButton.backgroundColor.hover
+        }};
     }
 `
 
-const ActionButton = styled.button`
+const ActionButton = styled.button<{ isMobile: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
     border: none;
     background-color: transparent;
-    border-radius: ${FOUNDATION_THEME.border.radius[8]};
+    border-radius: ${({ isMobile }) => {
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        return isMobile
+            ? tokens.sm.actionButton.borderRadius
+            : tokens.lg.actionButton.borderRadius
+    }};
     cursor: pointer;
-    padding: ${FOUNDATION_THEME.unit[8]};
-    transition: background-color 0.15s ease;
-    min-width: ${FOUNDATION_THEME.unit[40]};
-    height: ${FOUNDATION_THEME.unit[40]};
+    padding: ${({ isMobile }) => {
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        return isMobile
+            ? tokens.sm.actionButton.padding
+            : tokens.lg.actionButton.padding
+    }};
+    transition: ${({ isMobile }) => {
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        return isMobile
+            ? tokens.sm.actionButton.transition
+            : tokens.lg.actionButton.transition
+    }};
+    min-width: ${({ isMobile }) => {
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        return isMobile
+            ? tokens.sm.actionButton.minWidth
+            : tokens.lg.actionButton.minWidth
+    }};
+    height: ${({ isMobile }) => {
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        return isMobile
+            ? tokens.sm.actionButton.height
+            : tokens.lg.actionButton.height
+    }};
 
     &:hover {
-        background-color: ${FOUNDATION_THEME.colors.gray[100]};
+        background-color: ${({ isMobile }) => {
+            const tokens = getTopbarToken(FOUNDATION_THEME)
+            return isMobile
+                ? tokens.sm.actionButton.backgroundColor.hover
+                : tokens.lg.actionButton.backgroundColor.hover
+        }};
     }
 
     &:active {
-        background-color: ${FOUNDATION_THEME.colors.gray[150]};
+        background-color: ${({ isMobile }) => {
+            const tokens = getTopbarToken(FOUNDATION_THEME)
+            return isMobile
+                ? tokens.sm.actionButton.backgroundColor.active
+                : tokens.lg.actionButton.backgroundColor.active
+        }};
     }
 `
 
-const TenantIconButton = styled.button`
+const TenantIconButton = styled.button<{ isMobile: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
     border: none;
     background-color: transparent;
-    border-radius: ${FOUNDATION_THEME.border.radius[8]};
+    border-radius: ${({ isMobile }) => {
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        return isMobile
+            ? tokens.sm.tenantIconButton.borderRadius
+            : tokens.lg.tenantIconButton.borderRadius
+    }};
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    min-height: ${({ isMobile }) => {
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        return isMobile
+            ? tokens.sm.tenantIconButton.minHeight
+            : tokens.lg.tenantIconButton.minHeight
+    }};
+    transition: ${({ isMobile }) => {
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        return isMobile
+            ? tokens.sm.tenantIconButton.transition
+            : tokens.lg.tenantIconButton.transition
+    }};
 
     &:hover {
-        background-color: ${FOUNDATION_THEME.colors.gray[100]};
+        background-color: ${({ isMobile }) => {
+            const tokens = getTopbarToken(FOUNDATION_THEME)
+            return isMobile
+                ? tokens.sm.tenantIconButton.backgroundColor.hover
+                : tokens.lg.tenantIconButton.backgroundColor.hover
+        }};
     }
 
     &:active {
-        background-color: ${FOUNDATION_THEME.colors.gray[150]};
+        background-color: ${({ isMobile }) => {
+            const tokens = getTopbarToken(FOUNDATION_THEME)
+            return isMobile
+                ? tokens.sm.tenantIconButton.backgroundColor.active
+                : tokens.lg.tenantIconButton.backgroundColor.active
+        }};
     }
 `
 
-const MerchantSelectTrigger = styled.button`
+const MerchantSelectTrigger = styled.button<{ isMobile: boolean }>`
     display: flex;
     align-items: center;
     justify-content: space-between;
     border: none;
     background-color: transparent;
     cursor: pointer;
-    gap: ${FOUNDATION_THEME.unit[6]};
+    gap: ${({ isMobile }) => {
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        return isMobile
+            ? tokens.sm.merchantSelectTrigger.gap
+            : tokens.lg.merchantSelectTrigger.gap
+    }};
     padding: 0;
     width: 100%;
     overflow: hidden;
@@ -88,7 +175,6 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             showToggleButton,
             sidebarTopSlot,
             topbar,
-
             title,
             leftAction,
             rightActions,
@@ -101,6 +187,8 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
     ) => {
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
+        const tokens = getTopbarToken(FOUNDATION_THEME)
+        const topBarToken = isMobile ? tokens.sm : tokens.lg
 
         if (isMobile) {
             const renderLeftSection = () => {
@@ -110,10 +198,10 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
 
                 if (showBackButton) {
                     return (
-                        <ActionButton onClick={onBackClick}>
+                        <ActionButton isMobile={isMobile} onClick={onBackClick}>
                             <ArrowLeft
-                                color={FOUNDATION_THEME.colors.gray[600]}
-                                size={FOUNDATION_THEME.unit[20]}
+                                color={topBarToken.actionButton.iconColor}
+                                size={topBarToken.actionButton.iconSize}
                             />
                         </ActionButton>
                     )
@@ -123,7 +211,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     <Block
                         display="flex"
                         alignItems="center"
-                        gap={FOUNDATION_THEME.unit[6]}
+                        gap={topBarToken.leftSection.gap}
                     >
                         {leftPanel &&
                             leftPanel.items &&
@@ -147,7 +235,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                     selected={leftPanel.selected}
                                     onSelect={leftPanel.onSelect}
                                     customTrigger={
-                                        <TenantIconButton>
+                                        <TenantIconButton isMobile={isMobile}>
                                             {leftPanel.items.find(
                                                 (item) =>
                                                     (item.value ||
@@ -165,8 +253,13 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                             merchantInfo && (
                                 <Text
                                     variant="body.md"
-                                    color={FOUNDATION_THEME.colors.gray[400]}
-                                    fontWeight={400}
+                                    color={
+                                        topBarToken.leftSection.divider.color
+                                    }
+                                    fontWeight={
+                                        topBarToken.leftSection.divider
+                                            .fontWeight
+                                    }
                                 >
                                     /
                                 </Text>
@@ -185,10 +278,12 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                                 slot1: merchant.icon || (
                                                     <UserIcon
                                                         style={{
-                                                            width: FOUNDATION_THEME
-                                                                .unit[16],
-                                                            height: FOUNDATION_THEME
-                                                                .unit[16],
+                                                            width: topBarToken
+                                                                .merchantSelectTrigger
+                                                                .iconSize,
+                                                            height: topBarToken
+                                                                .merchantSelectTrigger
+                                                                .iconSize,
                                                         }}
                                                     />
                                                 ),
@@ -199,15 +294,34 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                 selected={merchantInfo.selected}
                                 onSelect={merchantInfo.onSelect}
                                 customTrigger={
-                                    <MerchantSelectTrigger>
-                                        <Block display="flex" alignItems="center" gap={FOUNDATION_THEME.unit[6]}>
-                                            {merchantInfo.items.find(
-                                                (merchant) => merchant.value === merchantInfo.selected
-                                            )?.icon}
+                                    <MerchantSelectTrigger isMobile={isMobile}>
+                                        <Block
+                                            display="flex"
+                                            alignItems="center"
+                                            gap={
+                                                topBarToken
+                                                    .merchantSelectTrigger.gap
+                                            }
+                                        >
+                                            {
+                                                merchantInfo.items.find(
+                                                    (merchant) =>
+                                                        merchant.value ===
+                                                        merchantInfo.selected
+                                                )?.icon
+                                            }
                                             <Text
                                                 variant="body.md"
-                                                color={FOUNDATION_THEME.colors.gray[800]}
-                                                fontWeight={500}
+                                                color={
+                                                    topBarToken
+                                                        .merchantSelectTrigger
+                                                        .text.color
+                                                }
+                                                fontWeight={
+                                                    topBarToken
+                                                        .merchantSelectTrigger
+                                                        .text.fontWeight
+                                                }
                                                 style={{
                                                     overflow: 'hidden',
                                                     textOverflow: 'ellipsis',
@@ -215,13 +329,23 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                                 }}
                                             >
                                                 {merchantInfo.items.find(
-                                                    (merchant) => merchant.value === merchantInfo.selected
+                                                    (merchant) =>
+                                                        merchant.value ===
+                                                        merchantInfo.selected
                                                 )?.label || 'Select Merchant'}
                                             </Text>
                                         </Block>
                                         <ChevronDown
-                                            size={FOUNDATION_THEME.unit[14]}
-                                            color={FOUNDATION_THEME.colors.gray[800]}
+                                            size={
+                                                topBarToken
+                                                    .merchantSelectTrigger
+                                                    .iconSize
+                                            }
+                                            color={
+                                                topBarToken
+                                                    .merchantSelectTrigger
+                                                    .iconColor
+                                            }
                                         />
                                     </MerchantSelectTrigger>
                                 }
@@ -235,17 +359,18 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                 <Block
                     ref={ref}
                     width="100%"
-                    position="sticky"
-                    top="0"
-                    zIndex="10"
-                    borderBottom={`${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                    height={topBarToken.height}
+                    position={topBarToken.position}
+                    top={topBarToken.top}
+                    zIndex={topBarToken.zIndex}
+                    borderBottom={topBarToken.borderBottom}
                     display="flex"
                     alignItems="center"
-                    gap={FOUNDATION_THEME.unit[12]}
-                    padding={`${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]}`}
-                    backgroundColor="hsla(0, 0%, 100%, 0.95)"
+                    gap={topBarToken.gap}
+                    padding={topBarToken.padding}
+                    backgroundColor={topBarToken.backgroundColor}
                     style={{
-                        backdropFilter: 'blur(10px)',
+                        backdropFilter: topBarToken.backdropFilter,
                     }}
                 >
                     <Block
@@ -268,8 +393,13 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                             (title && (
                                 <Text
                                     variant="body.lg"
-                                    fontWeight={600}
-                                    color={FOUNDATION_THEME.colors.gray[800]}
+                                    fontWeight={
+                                        topBarToken.centerSection.title
+                                            .fontWeight
+                                    }
+                                    color={
+                                        topBarToken.centerSection.title.color
+                                    }
                                     truncate
                                 >
                                     {title}
@@ -280,7 +410,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     <Block
                         display="flex"
                         alignItems="center"
-                        gap={FOUNDATION_THEME.unit[8]}
+                        gap={topBarToken.rightSection.gap}
                         width="fit-content"
                         flexShrink={0}
                     >
@@ -294,33 +424,36 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             <Block
                 ref={ref}
                 width="100%"
-                height={FOUNDATION_THEME.unit[68]}
-                position="sticky"
-                top="0"
-                zIndex="10"
-                borderBottom={`${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                height={topBarToken.height}
+                position={topBarToken.position}
+                top={topBarToken.top}
+                zIndex={topBarToken.zIndex}
+                borderBottom={topBarToken.borderBottom}
                 display="flex"
                 alignItems="center"
-                gap={FOUNDATION_THEME.unit[16]}
-                padding={`${FOUNDATION_THEME.unit[16]} ${FOUNDATION_THEME.unit[32]}`}
-                backgroundColor="hsla(0, 0%, 100%, 0.8)"
+                gap={topBarToken.gap}
+                padding={topBarToken.padding}
+                backgroundColor={topBarToken.backgroundColor}
                 style={{
-                    backdropFilter: 'blur(10px)',
+                    backdropFilter: topBarToken.backdropFilter,
                 }}
             >
                 {!isExpanded && (
                     <Block
                         display="flex"
                         alignItems="center"
-                        gap={FOUNDATION_THEME.unit[16]}
+                        gap={topBarToken.sidebarSection.gap}
                         width="fit-content"
                         flexShrink={0}
                     >
                         {showToggleButton && (
-                            <ToggleButton onClick={onToggleExpansion}>
+                            <ToggleButton
+                                isMobile={isMobile}
+                                onClick={onToggleExpansion}
+                            >
                                 <PanelsTopLeft
-                                    color={FOUNDATION_THEME.colors.gray[600]}
-                                    size={FOUNDATION_THEME.unit[14]}
+                                    color={topBarToken.toggleButton.iconColor}
+                                    size={topBarToken.toggleButton.iconSize}
                                 />
                             </ToggleButton>
                         )}
