@@ -79,6 +79,7 @@ import {
 } from '../../../../packages/blend/lib/main'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
+import StepperDemo from './StepperDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -125,6 +126,7 @@ const SidebarDemo = () => {
         | 'dataRangePicker'
         | 'multiValueInput'
         | 'otpInput'
+        | 'stepper'
     >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -294,6 +296,8 @@ const SidebarDemo = () => {
                 return <PopoverDemo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
+            case 'stepper':
+                return <StepperDemo />
             default:
                 return <div>No component selected</div>
         }
@@ -491,6 +495,13 @@ const SidebarDemo = () => {
                         <List style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('accordion'),
+                },
+                {
+                    label: 'Stepper',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('stepper'),
                 },
             ],
         },
