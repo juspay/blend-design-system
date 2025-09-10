@@ -14,10 +14,6 @@ export type MerchantInfo = {
 export type TopbarProps = {
     children?: ReactNode
 
-    className?: string
-
-    style?: React.CSSProperties
-
     isExpanded?: boolean
 
     onToggleExpansion?: () => void
@@ -25,9 +21,7 @@ export type TopbarProps = {
     showToggleButton?: boolean
 
     sidebarTopSlot?: ReactNode
-
     topbar?: ReactNode
-
     title?: string
 
     leftAction?: ReactNode
@@ -38,7 +32,6 @@ export type TopbarProps = {
 
     onBackClick?: () => void
 
-    // Mobile-specific props
     leftPanel?: LeftPanelInfo
 
     merchantInfo?: MerchantInfo

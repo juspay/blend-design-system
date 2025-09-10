@@ -71,13 +71,12 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
     (
         {
             children,
-            className,
-            style,
             isExpanded,
             onToggleExpansion,
             showToggleButton,
             sidebarTopSlot,
             topbar,
+
             title,
             leftAction,
             rightActions,
@@ -201,10 +200,8 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     gap="12px"
                     padding="12px 16px"
                     backgroundColor="hsla(0, 0%, 100%, 0.95)"
-                    className={className}
                     style={{
                         backdropFilter: 'blur(10px)',
-                        ...style,
                     }}
                 >
                     <Block
@@ -263,10 +260,8 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                 gap="16px"
                 padding="16px 32px"
                 backgroundColor="hsla(0, 0%, 100%, 0.8)"
-                className={className}
                 style={{
                     backdropFilter: 'blur(10px)',
-                    ...style,
                 }}
             >
                 {!isExpanded && (
