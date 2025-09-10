@@ -7,7 +7,6 @@ import type { ButtonTokensType } from './button.tokens'
 import Text from '../Text/Text'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { SkeletonButton } from '../Skeleton'
 
 const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
     (
@@ -21,8 +20,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
             disabled,
             onClick,
             loading,
-            skeletonLoading,
-            skeletonVariant = 'pulse',
             buttonGroupPosition,
             fullWidth,
             justifyContent = 'center',
@@ -42,25 +39,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                 return `0 ${variantBorderRadius} ${variantBorderRadius} 0`
             }
             return `0px 0px 0px 0px`
-        }
-
-        // If skeleton loading is enabled, render skeleton with exact props
-        if (skeletonLoading) {
-            return (
-                <SkeletonButton
-                    buttonType={buttonType}
-                    size={size}
-                    subType={subType}
-                    fullWidth={fullWidth}
-                    buttonGroupPosition={buttonGroupPosition}
-                    text={text}
-                    hasLeadingIcon={!!leadingIcon}
-                    hasTrailingIcon={!!trailingIcon}
-                    loading={true}
-                    variant={skeletonVariant}
-                    data-testid="button-skeleton"
-                />
-            )
         }
 
         return (
