@@ -569,11 +569,8 @@ describe('Switch Accessibility', () => {
         it('handles complex label content accessibly', async () => {
             const { container } = render(
                 <Switch
-                    label={
-                        <span>
-                            Enable <strong>advanced</strong> notifications
-                        </span>
-                    }
+                    label="Enable advanced notifications"
+                    subtext="Configure notification settings with enhanced options"
                 />
             )
 

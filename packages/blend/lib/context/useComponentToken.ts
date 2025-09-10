@@ -29,6 +29,7 @@ import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
 import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
 import { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
+import { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { ResponsiveCardTokens } from '../components/Card/card.tokens'
 
 export const useComponentToken = (
@@ -64,6 +65,7 @@ export const useComponentToken = (
     | DrawerTokensType
     | ResponsiveChartTokens
     | ResponsiveSnackbarTokens
+    | ResponsiveKeyValuePairTokens
     | ResponsiveCardTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -128,6 +130,8 @@ export const useComponentToken = (
             return componentTokens.CHARTS
         case 'SNACKBAR':
             return componentTokens.SNACKBAR
+        case 'KEYVALUEPAIR':
+            return componentTokens.KEYVALUEPAIR
         case 'CARD':
             return componentTokens.CARD
         default:

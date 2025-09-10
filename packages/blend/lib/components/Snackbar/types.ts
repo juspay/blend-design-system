@@ -13,6 +13,7 @@ export type AddToastOptions = {
     actionButton?: {
         label: string
         onClick: () => void
+        autoDismiss?: boolean
     }
     duration?: number
 }
@@ -25,5 +26,7 @@ export type CustomToastProps = {
     actionButton?: {
         label: string
         onClick: () => void
+        autoDismiss?: boolean
     }
+    toastId?: string | number
 }
