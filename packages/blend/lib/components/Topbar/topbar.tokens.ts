@@ -67,6 +67,7 @@ export type TopbarTokensType = {
 
     leftSection: {
         gap: CSSObject['gap']
+        maxHeight: CSSObject['maxHeight']
         divider: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
@@ -157,17 +158,18 @@ export const getTopbarTokens = (
                 gap: foundationToken.unit[6],
                 icon: {
                     size: foundationToken.unit[14],
-                    color: foundationToken.colors.gray[800],
+                    color: foundationToken.colors.gray[600],
                 },
                 text: {
                     fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[500],
+                    fontWeight: foundationToken.font.weight[600],
                     color: foundationToken.colors.gray[800],
                 },
             },
 
             leftSection: {
                 gap: foundationToken.unit[6],
+                maxHeight: '26px',
                 divider: {
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[400],
@@ -250,17 +252,18 @@ export const getTopbarTokens = (
                 gap: foundationToken.unit[6],
                 icon: {
                     size: foundationToken.unit[14],
-                    color: foundationToken.colors.gray[800],
+                    color: foundationToken.colors.gray[600],
                 },
                 text: {
                     fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[500],
+                    fontWeight: foundationToken.font.weight[600],
                     color: foundationToken.colors.gray[800],
                 },
             },
 
             leftSection: {
                 gap: foundationToken.unit[6],
+                maxHeight: '26px',
                 divider: {
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[400],

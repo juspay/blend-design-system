@@ -213,6 +213,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                         display="flex"
                         alignItems="center"
                         gap={topBarToken.leftSection.gap}
+                        maxHeight={topBarToken.leftSection.maxHeight}
                     >
                         {leftPanel &&
                             leftPanel.items &&
@@ -253,7 +254,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                             leftPanel.items.length > 0 &&
                             merchantInfo && (
                                 <Text
-                                    variant="body.md"
+                                    variant="heading.md"
                                     color={
                                         topBarToken.leftSection.divider.color
                                     }

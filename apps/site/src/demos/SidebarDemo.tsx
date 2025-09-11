@@ -145,7 +145,7 @@ const SidebarDemo = () => {
             label: 'Juspay',
             icon: (
                 <IndianRupee
-                    style={{ width: '16px', height: '16px' }}
+                    style={{ width: '24px', height: '24px' }}
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
@@ -155,7 +155,7 @@ const SidebarDemo = () => {
             label: 'Razorpay',
             icon: (
                 <UserIcon
-                    style={{ width: '16px', height: '16px' }}
+                    style={{ width: '24px', height: '24px' }}
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
@@ -165,7 +165,7 @@ const SidebarDemo = () => {
             label: 'Stripe',
             icon: (
                 <IndianRupee
-                    style={{ width: '16px', height: '16px' }}
+                    style={{ width: '24px', height: '24px' }}
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
