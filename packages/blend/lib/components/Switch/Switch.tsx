@@ -111,7 +111,7 @@ const SwitchContent: React.FC<{
     error: boolean
     required: boolean
     size: SwitchSize
-    label?: React.ReactNode
+    label?: string
     tokens: SwitchTokensType
 }> = ({ uniqueId, disabled, error, required, size, label, tokens }) => {
     if (!label) return null

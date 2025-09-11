@@ -14,7 +14,7 @@ export type SwitchProps = {
     required?: boolean
     error?: boolean
     size?: SwitchSize
-    label?: ReactNode
+    label?: string
     subtext?: ReactNode
     slot?: ReactNode
     name?: string

@@ -121,9 +121,11 @@ import {
     ResponsiveSnackbarTokens,
 } from '../components/Snackbar/snackbar.tokens'
 import {
-    getCardTokens,
-    ResponsiveCardTokens,
-} from '../components/Card/card.tokens'
+    getKeyValuePairTokens,
+    ResponsiveKeyValuePairTokens,
+} from '../components/KeyValuePair/KeyValuePair.tokens'
+import { ResponsiveCardTokens } from '../components/Card/card.tokens'
+import { getCardTokens } from '../components/Card/card.tokens'
 import {
     getSkeletonTokens,
     ResponsiveSkeletonTokens,
@@ -160,6 +162,7 @@ export type ComponentTokenType = {
     DRAWER?: DrawerTokensType
     CHARTS?: ResponsiveChartTokens
     SNACKBAR?: ResponsiveSnackbarTokens
+    KEYVALUEPAIR?: ResponsiveKeyValuePairTokens
     CARD?: ResponsiveCardTokens
     SKELETON?: ResponsiveSkeletonTokens
 }
@@ -203,6 +206,7 @@ const ThemeContext = createContext<ThemeContextType>({
         DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
         CHARTS: getChartTokens(FOUNDATION_THEME),
         SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
+        KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
         CARD: getCardTokens(FOUNDATION_THEME),
         SKELETON: getSkeletonTokens(FOUNDATION_THEME),
     },
