@@ -149,6 +149,9 @@ const ButtonDemo = () => {
                                     header: 'Button clicked!',
                                 })
                             }}
+                            onKeyDown={(e) => {
+                                console.log('onKeyDown', e)
+                            }}
                         />
                     </div>
                 </div>

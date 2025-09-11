@@ -60,9 +60,37 @@ const OTPInput = ({
     const handleChange = (index: number, val: string) => {
         if (disabled) return
 
+        if (val.length === 0) {
+            const newOtp = [...otp]
+            newOtp[index] = ''
+            setOtp(newOtp)
+            onChange?.(newOtp.join(''))
+
+            if (index > 0) {
+                setTimeout(() => {
+                    inputRefs.current[index - 1]?.focus()
+                }, 50)
+            }
+            return
+        }
+
         const newVal = val.slice(-1)
 
         if (newVal && !/^\d$/.test(newVal)) return
+
+        if (otp[index] && newVal !== otp[index]) {
+            for (let i = index + 1; i < length; i++) {
+                if (!otp[i]) {
+                    const newOtp = [...otp]
+                    newOtp[i] = newVal
+                    setOtp(newOtp)
+                    onChange?.(newOtp.join(''))
+                    inputRefs.current[i]?.focus()
+                    return
+                }
+            }
+            return
+        }
 
         const newOtp = [...otp]
         newOtp[index] = newVal
@@ -84,15 +112,12 @@ const OTPInput = ({
         if (e.key === 'Backspace') {
             if (!otp[index] && index > 0) {
                 inputRefs.current[index - 1]?.focus()
-            } else {
-                const newOtp = [...otp]
-                newOtp[index] = ''
-                setOtp(newOtp)
-                onChange?.(newOtp.join(''))
             }
         } else if (e.key === 'ArrowLeft' && index > 0) {
+            e.preventDefault()
             inputRefs.current[index - 1]?.focus()
         } else if (e.key === 'ArrowRight' && index < length - 1) {
+            e.preventDefault()
             inputRefs.current[index + 1]?.focus()
         }
     }
@@ -209,10 +234,14 @@ const OTPInput = ({
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange(index, e.target.value)
                         }
+                        maxLength={1}
                         onKeyDown={(e: KeyboardEvent<HTMLInputElement>) =>
                             handleKeyDown(index, e)
                         }
-                        onFocus={() => setActiveIndex(index)}
+                        onFocus={(e) => {
+                            e.target.select()
+                            setActiveIndex(index)
+                        }}
                         onBlur={() => setActiveIndex(-1)}
                         onPaste={index === 0 ? handlePaste : undefined}
                         {...rest}

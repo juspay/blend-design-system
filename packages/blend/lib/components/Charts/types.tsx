@@ -14,6 +14,11 @@ export type DataPoint = {
     aux?: {
         label: string
         val: number
+        type?: AxisType
+        dateOnly?: boolean
+        smart?: boolean
+        timeZone?: string
+        hour12?: boolean
     }[]
 }
 
