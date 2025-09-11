@@ -1,6 +1,5 @@
 import { forwardRef } from 'react'
 import Skeleton from './Skeleton'
-import SkeletonText from './SkeletonText'
 import SkeletonAvatar from './SkeletonAvatar'
 import SkeletonButton from './SkeletonButton'
 import SkeletonCard from './SkeletonCard'
@@ -25,11 +24,6 @@ const SkeletonCompound = Object.assign(
         <Skeleton {...props} ref={ref} />
     )),
     {
-        /**
-         * Text skeleton with support for multiple lines and various font sizes
-         */
-        Text: SkeletonText,
-
         /**
          * Avatar skeleton with circular or square shapes and multiple sizes
          */
@@ -67,7 +61,6 @@ const SkeletonCompound = Object.assign(
 
 // Display names for better debugging
 SkeletonCompound.displayName = 'Skeleton'
-SkeletonCompound.Text.displayName = 'Skeleton.Text'
 SkeletonCompound.Avatar.displayName = 'Skeleton.Avatar'
 SkeletonCompound.Button.displayName = 'Skeleton.Button'
 SkeletonCompound.Card.displayName = 'Skeleton.Card'

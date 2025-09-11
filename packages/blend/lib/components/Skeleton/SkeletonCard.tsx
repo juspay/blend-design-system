@@ -1,12 +1,12 @@
 import { forwardRef } from 'react'
 import Block from '../Primitives/Block/Block'
 import Skeleton from './Skeleton'
-import SkeletonText from './SkeletonText'
 import SkeletonAvatar from './SkeletonAvatar'
 import SkeletonButton from './SkeletonButton'
 import type { SkeletonCardProps } from './types'
 import { ButtonSize } from '../Button/types'
 import { useSkeletonBase } from './hooks/useSkeletonBase'
+import FOUNDATION_THEME from '../../tokens/theme.token'
 
 const SkeletonCard = forwardRef<HTMLDivElement, SkeletonCardProps>(
     (
@@ -42,27 +42,48 @@ const SkeletonCard = forwardRef<HTMLDivElement, SkeletonCardProps>(
                         loading={loading}
                     />
                     <Block flexGrow={1}>
-                        <SkeletonText
+                        <Skeleton
                             variant={variant}
                             loading={loading}
                             width="60%"
+                            height="16px"
+                            shape="rounded"
                         />
-                        <SkeletonText
+                        <Skeleton
                             variant={variant}
                             loading={loading}
                             width="40%"
-                            fontSize="sm"
+                            height="14px"
+                            shape="rounded"
+                            marginTop="4px"
                         />
                     </Block>
                 </Block>
 
                 {/* Content area */}
                 <Block marginTop="16px">
-                    <SkeletonText
+                    <Skeleton
                         variant={variant}
                         loading={loading}
-                        lines={3}
-                        width={['100%', '90%', '75%']}
+                        width="100%"
+                        height="16px"
+                        shape="rounded"
+                        marginBottom="8px"
+                    />
+                    <Skeleton
+                        variant={variant}
+                        loading={loading}
+                        width="90%"
+                        height="16px"
+                        shape="rounded"
+                        marginBottom="8px"
+                    />
+                    <Skeleton
+                        variant={variant}
+                        loading={loading}
+                        width="75%"
+                        height="16px"
+                        shape="rounded"
                     />
                 </Block>
 
@@ -98,7 +119,7 @@ const SkeletonCard = forwardRef<HTMLDivElement, SkeletonCardProps>(
                 padding={padding}
                 border="1px solid #e5e7eb"
                 backgroundColor="white"
-                boxShadow="0 1px 3px rgba(0, 0, 0, 0.1)"
+                boxShadow={FOUNDATION_THEME.shadows.sm}
                 data-testid="skeleton-card"
                 {...rest}
             >

@@ -7,7 +7,6 @@ export { default as Skeleton } from './SkeletonCompound'
 
 // Individual components (for backward compatibility and tree-shaking)
 export { default as SkeletonBase } from './Skeleton'
-export { default as SkeletonText } from './SkeletonText'
 export { default as SkeletonAvatar } from './SkeletonAvatar'
 export { default as SkeletonButton } from './SkeletonButton'
 export { default as SkeletonCard } from './SkeletonCard'
@@ -18,7 +17,6 @@ export { useSkeletonBase } from './hooks/useSkeletonBase'
 // Types (tree-shakable type-only exports)
 export type {
     SkeletonProps,
-    SkeletonTextProps,
     SkeletonAvatarProps,
     SkeletonButtonProps,
     SkeletonCardProps,
