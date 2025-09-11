@@ -14,6 +14,8 @@ import { SelectMenuSize, SingleSelect } from '../SingleSelect'
 import { Avatar, AvatarShape, AvatarSize } from '../Avatar'
 import Text from '../Text/Text'
 import { Topbar } from '../Topbar'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 
 const DirectoryContainer = styled(Block)`
     flex: 1;
@@ -74,6 +76,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const [isExpanded, setIsExpanded] = useState<boolean>(true)
         const [showToggleButton, setShowToggleButton] = useState<boolean>(false)
         const [isHovering, setIsHovering] = useState<boolean>(false)
+        const { innerWidth } = useBreakpoints()
+        const isMobile = innerWidth < BREAKPOINTS.lg
 
         const defaultMerchantInfo = {
             items: [
@@ -98,7 +102,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
         useEffect(() => {
             const handleKeyPress = (event: KeyboardEvent) => {
-                if (event.key === sidebarCollapseKey) {
+                if (event.key === sidebarCollapseKey && !isMobile) {
                     event.preventDefault()
                     setIsExpanded(!isExpanded)
                 }
@@ -109,19 +113,24 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             return () => {
                 document.removeEventListener('keydown', handleKeyPress)
             }
-        }, [isExpanded])
+        }, [isExpanded, isMobile, sidebarCollapseKey])
 
         useEffect(() => {
-            if (!isExpanded) {
+            if (isMobile && isExpanded) {
+                setIsExpanded(false)
+                setIsHovering(false)
+                return
+            }
+
+            if (!isExpanded && !isMobile) {
                 const timer = setTimeout(() => {
                     setShowToggleButton(true)
                 }, 50)
-
                 return () => clearTimeout(timer)
             } else {
                 setShowToggleButton(false)
             }
-        }, [isExpanded])
+        }, [isExpanded, isMobile])
 
         return (
             <Block
@@ -132,7 +141,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 backgroundColor={FOUNDATION_THEME.colors.gray[25]}
                 position="relative"
             >
-                {!isExpanded && (
+                {!isExpanded && !isMobile && (
                     <Block
                         position="absolute"
                         left="0"
@@ -162,7 +171,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
                             : 'none'
                     }
-                    display="flex"
+                    display={isMobile ? 'none' : 'flex'}
                     position={!isExpanded ? 'absolute' : 'relative'}
                     zIndex={!isExpanded ? '20' : 'auto'}
                     height="100%"
@@ -173,7 +182,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     }}
                     onMouseLeave={() => setIsHovering(false)}
                 >
-                    {(isExpanded || isHovering) && (
+                    {(isExpanded || isHovering) && !isMobile && (
                         <>
                             {/* TENANTS SIDE BAR _ SECONDARY SIDE BAR */}
                             {leftPanel &&

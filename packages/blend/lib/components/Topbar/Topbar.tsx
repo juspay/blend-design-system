@@ -9,6 +9,7 @@ import { SingleSelect } from '../SingleSelect'
 import { SelectMenuVariant } from '../Select/types'
 import { useComponentToken } from '../../context/useComponentToken'
 import type { ResponsiveTopbarTokens } from './topbar.tokens'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 
 const ToggleButton = styled.button<{ isMobile: boolean }>`
     display: flex;
@@ -186,7 +187,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
         ref
     ) => {
         const { innerWidth } = useBreakpoints()
-        const isMobile = innerWidth < 1024
+        const isMobile = innerWidth < BREAKPOINTS.lg
         const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         const topBarToken = isMobile ? tokens.sm : tokens.lg
 

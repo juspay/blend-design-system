@@ -105,7 +105,7 @@ export const getTopbarTokens = (
             top: '0',
             zIndex: '10',
             borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
-            backgroundColor: 'hsla(0, 0%, 100%, 0.95)',
+            backgroundColor: 'hsla(0, 0%, 100%, 0.8)',
             backdropFilter: 'blur(10px)',
             padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
             gap: foundationToken.unit[12],
