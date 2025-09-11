@@ -33,6 +33,7 @@ import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { getCardTokens } from '../components/Card/card.tokens'
 import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
+import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -100,6 +101,7 @@ const initTokens = (
         CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
         SKELETON:
             componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
+        TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
     }
 }
 
