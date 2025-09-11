@@ -1,4 +1,5 @@
 import {
+    AxisType,
     ChartType,
     CustomTooltipProps,
     NewNestedDataPoint,
@@ -23,6 +24,11 @@ import { FOUNDATION_THEME } from '../../tokens'
 interface AuxItem {
     label: string
     val: string | number
+    type?: AxisType
+    dateOnly?: boolean
+    smart?: boolean
+    timeZone?: string
+    hour12?: boolean
 }
 
 const formatTooltipLabel = (
@@ -67,6 +73,23 @@ const formatTooltipValue = (
             yAxis.smart,
             yAxis.timeZone,
             yAxis.hour12
+        )(value)
+    }
+
+    return typeof value === 'number' ? formatNumber(value) : String(value)
+}
+
+const formatAuxTooltipValue = (
+    value: string | number,
+    auxItem: AuxItem
+): string => {
+    if (auxItem.type) {
+        return getAxisFormatterWithConfig(
+            auxItem.type,
+            auxItem.dateOnly,
+            auxItem.smart,
+            auxItem.timeZone,
+            auxItem.hour12
         )(value)
     }
 
@@ -374,7 +397,7 @@ const LineChartTooltip = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={FOUNDATION_THEME.colors.gray[700]}
                             >
-                                {formatTooltipValue(auxItem.val, yAxis)}
+                                {formatAuxTooltipValue(auxItem.val, auxItem)}
                             </Text>
                         </Block>
                     ))}
@@ -498,7 +521,7 @@ const PieChartTooltip = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={FOUNDATION_THEME.colors.gray[700]}
                             >
-                                {formatTooltipValue(auxItem.val, yAxis)}
+                                {formatAuxTooltipValue(auxItem.val, auxItem)}
                             </Text>
                         </Block>
                     ))}

@@ -17,6 +17,6 @@ export const DocumentationCardData: DocumentationCardType[] = [
         heading: 'Blend MCP Server',
         content:
             'The Blend MCP Server connects AI assistants with the Blend design system to generate React components, scaffold UI patterns, and access live documentation. It accelerates UI development while ensuring consistency, standardization, and AI-assisted learning.',
-        link: 'https://juspay.design/blend-mcp-server-documentation/',
+        link: 'https://juspay.design/blog/blend-mcp-server-documentation/',
     },
 ]

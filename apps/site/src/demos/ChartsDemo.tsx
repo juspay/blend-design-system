@@ -39,7 +39,12 @@ const TimezoneDemo = () => {
             data: {
                 activity: {
                     primary: { label: 'User Activity', val: 150 },
-                    aux: [{ label: 'Sessions', val: 45 }],
+                    aux: [
+                        {
+                            label: 'Sessions',
+                            val: 45000,
+                        },
+                    ],
                 },
             },
         },
@@ -48,7 +53,13 @@ const TimezoneDemo = () => {
             data: {
                 activity: {
                     primary: { label: 'User Activity', val: 180 },
-                    aux: [{ label: 'Sessions', val: 52 }],
+                    aux: [
+                        {
+                            label: 'Sessions',
+                            val: 52,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
                 },
             },
         },
@@ -151,7 +162,7 @@ const TimezoneDemo = () => {
                 }}
                 yAxis={{
                     label: 'Activity Level',
-                    type: AxisType.NUMBER,
+                    type: AxisType.PERCENTAGE,
                 }}
                 chartHeaderSlot={
                     <div className="chart-header">

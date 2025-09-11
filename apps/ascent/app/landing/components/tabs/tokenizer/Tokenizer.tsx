@@ -20,7 +20,7 @@ export const TokenizerComp = () => {
             <div className="-mt-40 flex flex-col items-center justify-center">
                 <InfoBtn
                     text="Learn more"
-                    href="https://github.com/juspay/blend-design-system/wiki/Theme-Provider-&-Token-Architecture"
+                    href="https://juspay.design/blog/theme-provider-token-architecture/"
                 />
             </div>
         </div>

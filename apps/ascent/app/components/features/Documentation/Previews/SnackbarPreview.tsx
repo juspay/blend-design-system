@@ -1,6 +1,5 @@
 'use client'
 import {
-    Snackbar,
     addSnackbar,
     SnackbarVariant,
     Button,
@@ -10,7 +9,7 @@ import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const SnackbarPreview = () => {
-    const tsCode = `import { Snackbar, addSnackbar, SnackbarVariant, Button, ButtonType } from "@juspay/blend-design-system";
+    const tsCode = `import { addSnackbar, SnackbarVariant, Button, ButtonType } from "@juspay/blend-design-system";
 
 function MyComponent() {
   const showSuccessSnackbar = () => {
@@ -27,17 +26,15 @@ function MyComponent() {
   };
 
   return (
-    <div>
-      <Button 
-        buttonType={ButtonType.SUCCESS}
-        onClick={showSuccessSnackbar}
-      >
-        Show Success Notification
-      </Button>
-      <Snackbar />
-    </div>
+    <Button 
+      buttonType={ButtonType.SUCCESS}
+      onClick={showSuccessSnackbar}
+      text="Show Success Notification"
+    />
   );
-}`
+}
+
+// Note: <Snackbar /> should be placed at your app root level for global notifications`
 
     const reCode = `type snackbarVariant = [#info | #success | #warning | #error]
 
@@ -52,6 +49,7 @@ let addSnackbar = (
   ~variant: option<snackbarVariant>=?,
   ~onClose: option<unit => unit>=?,
   ~actionButton: option<{label: string, onClick: unit => unit}>=?,
+  ~duration: option<int>=?
 ) => {
   AddSnackbarBinding.addSnackbar(
     ~header,
@@ -59,6 +57,7 @@ let addSnackbar = (
     ?variant,
     ?onClose,
     ?actionButton,
+    ?duration
   )
 }`
 
@@ -72,6 +71,7 @@ external addSnackbar: (
   ~variant: [#info | #success | #warning | #error]=?,
   ~onClose: unit => unit=?,
   ~actionButton: {label: string, onClick: unit => unit}=?,
+  ~duration: int=?
 ) => unit = "addSnackbar"`
 
     const showSuccessSnackbar = () => {
@@ -100,9 +100,6 @@ external addSnackbar: (
                     text="Show Success Notification"
                 ></Button>
             </div>
-
-            {/* Snackbar component - must be rendered for the preview to work */}
-            <Snackbar />
         </ComponentPreview>
     )
 }

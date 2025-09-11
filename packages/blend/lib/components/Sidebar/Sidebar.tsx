@@ -13,6 +13,9 @@ import {
 import { SelectMenuSize, SingleSelect } from '../SingleSelect'
 import { Avatar, AvatarShape, AvatarSize } from '../Avatar'
 import Text from '../Text/Text'
+import { Topbar } from '../Topbar'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 
 const DirectoryContainer = styled(Block)`
     flex: 1;
@@ -65,16 +68,41 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             sidebarTopSlot,
             footer,
             sidebarCollapseKey = '/',
+            merchantInfo,
+            rightActions,
         },
         ref
     ) => {
         const [isExpanded, setIsExpanded] = useState<boolean>(true)
         const [showToggleButton, setShowToggleButton] = useState<boolean>(false)
         const [isHovering, setIsHovering] = useState<boolean>(false)
+        const { innerWidth } = useBreakpoints()
+        const isMobile = innerWidth < BREAKPOINTS.lg
+
+        const defaultMerchantInfo = {
+            items: [
+                {
+                    label: 'juspay',
+                    value: 'juspay',
+                    icon: (
+                        <UserIcon
+                            style={{
+                                width: '16px',
+                                height: '16px',
+                            }}
+                        />
+                    ),
+                },
+            ],
+            selected: 'juspay',
+            onSelect: (value: string) => {
+                console.log('Selected merchant:', value)
+            },
+        }
 
         useEffect(() => {
             const handleKeyPress = (event: KeyboardEvent) => {
-                if (event.key === sidebarCollapseKey) {
+                if (event.key === sidebarCollapseKey && !isMobile) {
                     event.preventDefault()
                     setIsExpanded(!isExpanded)
                 }
@@ -85,19 +113,24 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             return () => {
                 document.removeEventListener('keydown', handleKeyPress)
             }
-        }, [isExpanded])
+        }, [isExpanded, isMobile, sidebarCollapseKey])
 
         useEffect(() => {
-            if (!isExpanded) {
+            if (isMobile && isExpanded) {
+                setIsExpanded(false)
+                setIsHovering(false)
+                return
+            }
+
+            if (!isExpanded && !isMobile) {
                 const timer = setTimeout(() => {
                     setShowToggleButton(true)
                 }, 50)
-
                 return () => clearTimeout(timer)
             } else {
                 setShowToggleButton(false)
             }
-        }, [isExpanded])
+        }, [isExpanded, isMobile])
 
         return (
             <Block
@@ -108,7 +141,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 backgroundColor={FOUNDATION_THEME.colors.gray[25]}
                 position="relative"
             >
-                {!isExpanded && (
+                {!isExpanded && !isMobile && (
                     <Block
                         position="absolute"
                         left="0"
@@ -138,7 +171,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
                             : 'none'
                     }
-                    display="flex"
+                    display={isMobile ? 'none' : 'flex'}
                     position={!isExpanded ? 'absolute' : 'relative'}
                     zIndex={!isExpanded ? '20' : 'auto'}
                     height="100%"
@@ -149,7 +182,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     }}
                     onMouseLeave={() => setIsHovering(false)}
                 >
-                    {(isExpanded || isHovering) && (
+                    {(isExpanded || isHovering) && !isMobile && (
                         <>
                             {/* TENANTS SIDE BAR _ SECONDARY SIDE BAR */}
                             {leftPanel &&
@@ -372,28 +405,23 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                 SelectMenuVariant.NO_CONTAINER
                                             }
                                             size={SelectMenuSize.SMALL}
-                                            items={[
-                                                {
+                                            items={defaultMerchantInfo.items.map(
+                                                (item) => ({
                                                     items: [
                                                         {
-                                                            label: 'zeptomarketplace',
-                                                            value: 'zeptomarketplace',
-                                                            slot1: (
-                                                                <UserIcon
-                                                                    style={{
-                                                                        width: '16px',
-                                                                        height: '16px',
-                                                                    }}
-                                                                />
-                                                            ),
+                                                            label: item.label,
+                                                            value: item.value,
+                                                            slot1: item.icon,
                                                         },
                                                     ],
-                                                },
-                                            ]}
-                                            selected={'zeptomarketplace'}
-                                            onSelect={(value) => {
-                                                console.log(value)
-                                            }}
+                                                })
+                                            )}
+                                            selected={
+                                                defaultMerchantInfo.selected
+                                            }
+                                            onSelect={
+                                                defaultMerchantInfo.onSelect
+                                            }
                                         />
                                     )}
                                     <ToggleButton
@@ -427,81 +455,16 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 </Block>
 
                 <MainContentContainer>
-                    {/* TOPBAR  */}
-                    <Block
-                        width="100%"
-                        height="68px"
-                        position="sticky"
-                        top="0"
-                        zIndex="10"
-                        borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                        // backgroundColor={FOUNDATION_THEME.colors.gray[0]}
-                        display="flex"
-                        alignItems="center"
-                        gap="16px"
-                        padding="16px 32px"
-                        backgroundColor="hsla(0, 0%, 100%, 0.8)"
-                        style={{
-                            backdropFilter: 'blur(10px)',
-                        }}
-                    >
-                        {isExpanded === false && (
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                gap="16px"
-                                width="fit-content"
-                                flexShrink={0}
-                            >
-                                {showToggleButton && (
-                                    <ToggleButton
-                                        onClick={() =>
-                                            setIsExpanded(!isExpanded)
-                                        }
-                                    >
-                                        <PanelsTopLeft
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[600]
-                                            }
-                                            size={14}
-                                        />
-                                    </ToggleButton>
-                                )}
-                                {sidebarTopSlot ? (
-                                    sidebarTopSlot
-                                ) : (
-                                    <SingleSelect
-                                        placeholder="Select Merchant"
-                                        variant={SelectMenuVariant.NO_CONTAINER}
-                                        items={[
-                                            {
-                                                items: [
-                                                    {
-                                                        label: 'zeptomarketplace',
-                                                        value: 'zeptomarketplace',
-                                                        slot1: (
-                                                            <UserIcon
-                                                                style={{
-                                                                    width: '16px',
-                                                                    height: '16px',
-                                                                }}
-                                                            />
-                                                        ),
-                                                    },
-                                                ],
-                                            },
-                                        ]}
-                                        selected={'zeptomarketplace'}
-                                        onSelect={(value) => {
-                                            console.log(value)
-                                        }}
-                                    />
-                                )}
-                            </Block>
-                        )}
-                        <Block flexGrow={1}>{topbar}</Block>
-                    </Block>
+                    <Topbar
+                        isExpanded={isExpanded}
+                        onToggleExpansion={() => setIsExpanded(!isExpanded)}
+                        showToggleButton={showToggleButton}
+                        sidebarTopSlot={sidebarTopSlot}
+                        topbar={topbar}
+                        leftPanel={leftPanel}
+                        merchantInfo={merchantInfo || defaultMerchantInfo}
+                        rightActions={rightActions}
+                    />
 
                     <Block>{children}</Block>
                 </MainContentContainer>
