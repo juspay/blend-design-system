@@ -1,4 +1,4 @@
-import { Hash, X, Plus, Download, Upload, Settings } from 'lucide-react'
+import { Hash, X } from 'lucide-react'
 import { useState } from 'react'
 import {
     Button,
