@@ -22,8 +22,8 @@ export type SkeletonProps = BaseSkeletonProps &
 
 export type SkeletonAvatarProps = BaseSkeletonProps &
     Omit<BlockProps, 'children'> & {
-        size?: SkeletonSize
-        shape?: 'circle' | 'square'
+        size?: import('../Avatar/types').AvatarSize
+        shape?: import('../Avatar/types').AvatarShape
     }
 
 export type SkeletonButtonProps = BaseSkeletonProps &

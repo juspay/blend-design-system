@@ -2,6 +2,7 @@ import { forwardRef } from 'react'
 import Block from '../Primitives/Block/Block'
 import Skeleton from './Skeleton'
 import SkeletonAvatar from './SkeletonAvatar'
+import { AvatarSize } from '../Avatar/types'
 import SkeletonButton from './SkeletonButton'
 import type { SkeletonCardProps } from './types'
 import { ButtonSize } from '../Button/types'
@@ -38,7 +39,7 @@ const SkeletonCard = forwardRef<HTMLDivElement, SkeletonCardProps>(
                 >
                     <SkeletonAvatar
                         variant={variant}
-                        size="md"
+                        size={AvatarSize.MD}
                         loading={loading}
                     />
                     <Block flexGrow={1}>

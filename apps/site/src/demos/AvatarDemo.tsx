@@ -3,7 +3,8 @@ import {
     AvatarSize,
     AvatarShape,
 } from '../../../../packages/blend/lib/components/Avatar'
-
+import { SkeletonAvatar } from '../../../../packages/blend/lib/components/Skeleton'
+import type { SkeletonVariant } from '../../../../packages/blend/lib/components/Skeleton/skeleton.tokens'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
@@ -13,6 +14,7 @@ import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { AvatarGroup } from '../../../../packages/blend/lib/components/AvatarGroup'
 
 const AvatarDemo = () => {
+    // Pure Avatar Playground State
     const [playgroundSrc, setPlaygroundSrc] = useState('')
     const [playgroundAlt, setPlaygroundAlt] = useState('John Doe')
     const [playgroundSize, setPlaygroundSize] = useState<AvatarSize>(
@@ -25,6 +27,14 @@ const AvatarDemo = () => {
     const [showLeadingSlot, setShowLeadingSlot] = useState(false)
     const [showTrailingSlot, setShowTrailingSlot] = useState(false)
 
+    // SkeletonAvatar Playground State
+    const [skeletonSize, setSkeletonSize] = useState<AvatarSize>(AvatarSize.MD)
+    const [skeletonShape, setSkeletonShape] = useState<AvatarShape>(
+        AvatarShape.CIRCULAR
+    )
+    const [skeletonVariant, setSkeletonVariant] =
+        useState<SkeletonVariant>('pulse')
+
     // Options for selects
     const sizeOptions = [
         { value: AvatarSize.SM, label: 'Small' },
@@ -36,6 +46,12 @@ const AvatarDemo = () => {
     const shapeOptions = [
         { value: AvatarShape.CIRCULAR, label: 'Circular' },
         { value: AvatarShape.ROUNDED, label: 'Rounded' },
+    ]
+
+    const skeletonVariantOptions = [
+        { value: 'pulse' as SkeletonVariant, label: 'Pulse' },
+        { value: 'wave' as SkeletonVariant, label: 'Wave' },
+        { value: 'shimmer' as SkeletonVariant, label: 'Shimmer' },
     ]
 
     // Sample avatar data for AvatarGroup
@@ -86,9 +102,26 @@ const AvatarDemo = () => {
 
     return (
         <div className="p-8 space-y-12">
-            {/* Playground Section */}
+            {/* Header */}
+            <div className="space-y-4">
+                <h1 className="text-3xl font-bold">Avatar Component Demo</h1>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p className="text-blue-800">
+                        <strong>Hybrid Approach:</strong> Avatar is now pure (no
+                        skeleton logic). SkeletonAvatar handles loading states
+                        with perfect token mirroring.
+                    </p>
+                </div>
+            </div>
+
+            {/* Pure Avatar Playground */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Playground</h2>
+                <h2 className="text-2xl font-bold">
+                    ✅ Pure Avatar Playground
+                </h2>
+                <p className="text-gray-600">
+                    Test the pure Avatar component focused only on UI rendering
+                </p>
                 <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <TextInput
@@ -172,6 +205,119 @@ const AvatarDemo = () => {
                             }}
                         />
                     </div>
+                </div>
+            </div>
+
+            {/* SkeletonAvatar Playground */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    🔄 SkeletonAvatar Playground
+                </h2>
+                <p className="text-gray-600">
+                    Test SkeletonAvatar with perfect token mirroring - should
+                    match Avatar dimensions exactly
+                </p>
+
+                {/* Controls */}
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <SingleSelect
+                            label="Size"
+                            items={[{ items: sizeOptions }]}
+                            selected={skeletonSize}
+                            onSelect={(value) =>
+                                setSkeletonSize(value as AvatarSize)
+                            }
+                            placeholder="Select size"
+                        />
+
+                        <SingleSelect
+                            label="Shape"
+                            items={[{ items: shapeOptions }]}
+                            selected={skeletonShape}
+                            onSelect={(value) =>
+                                setSkeletonShape(value as AvatarShape)
+                            }
+                            placeholder="Select shape"
+                        />
+
+                        <SingleSelect
+                            label="Variant"
+                            items={[{ items: skeletonVariantOptions }]}
+                            selected={skeletonVariant}
+                            onSelect={(value) =>
+                                setSkeletonVariant(value as SkeletonVariant)
+                            }
+                            placeholder="Select variant"
+                        />
+                    </div>
+
+                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-white">
+                        <SkeletonAvatar
+                            size={skeletonSize}
+                            shape={skeletonShape}
+                            variant={skeletonVariant}
+                            loading={true}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Token Mirroring Comparison */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    🎯 Token Mirroring Comparison
+                </h2>
+                <p className="text-gray-600">
+                    Side-by-side comparison showing perfect dimensional matching
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {Object.values(AvatarSize).map((size) => (
+                        <div key={size} className="space-y-4">
+                            <h3 className="text-lg font-semibold capitalize">
+                                {size} Size
+                            </h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-3">
+                                    <h4 className="text-sm font-medium text-gray-600">
+                                        Real Avatar
+                                    </h4>
+                                    <div className="flex gap-3 items-center">
+                                        <Avatar
+                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+                                            alt="John Doe"
+                                            size={size}
+                                            online={true}
+                                        />
+                                        <Avatar
+                                            alt="JS"
+                                            fallback="JS"
+                                            size={size}
+                                            shape={AvatarShape.ROUNDED}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-3">
+                                    <h4 className="text-sm font-medium text-gray-600">
+                                        Skeleton Avatar
+                                    </h4>
+                                    <div className="flex gap-3 items-center">
+                                        <SkeletonAvatar
+                                            size={size}
+                                            shape={AvatarShape.CIRCULAR}
+                                            variant="pulse"
+                                        />
+                                        <SkeletonAvatar
+                                            size={size}
+                                            shape={AvatarShape.ROUNDED}
+                                            variant="pulse"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 
@@ -407,6 +553,19 @@ const AvatarDemo = () => {
                             avatars={sampleAvatars.slice(0, 4)}
                             size={AvatarSize.MD}
                             shape={AvatarShape.CIRCULAR}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            🔄 Loading State (Skeleton)
+                        </h3>
+                        <AvatarGroup
+                            avatars={sampleAvatars.slice(0, 4)}
+                            size={AvatarSize.MD}
+                            shape={AvatarShape.CIRCULAR}
+                            loading={true}
+                            skeletonVariant="pulse"
                         />
                     </div>
 

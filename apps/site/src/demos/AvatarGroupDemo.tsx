@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { AvatarGroup } from '../../../../packages/blend/lib/components/AvatarGroup'
-
+import type { SkeletonVariant } from '../../../../packages/blend/lib/components/Skeleton/skeleton.tokens'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { Settings, User } from 'lucide-react'
 import {
     AvatarShape,
@@ -85,341 +88,358 @@ const manyAvatars = [
 ]
 
 const AvatarGroupDemo = () => {
-    const [selectedAvatars, setSelectedAvatars] = useState<(string | number)[]>(
-        [1, 3]
+    // Pure AvatarGroup Playground State
+    const [playgroundAvatars] = useState(sampleAvatars)
+    const [playgroundMaxCount, setPlaygroundMaxCount] = useState('5')
+    const [playgroundSize, setPlaygroundSize] = useState<AvatarSize>(
+        AvatarSize.MD
     )
+    const [playgroundShape, setPlaygroundShape] = useState<AvatarShape>(
+        AvatarShape.CIRCULAR
+    )
+    const [playgroundSelectable, setPlaygroundSelectable] = useState(true)
+    const [playgroundSelectedIds, setPlaygroundSelectedIds] = useState<
+        (string | number)[]
+    >([1, 3])
+
+    // Skeleton AvatarGroup Playground State
+    const [skeletonMaxCount, setSkeletonMaxCount] = useState('5')
+    const [skeletonSize, setSkeletonSize] = useState<AvatarSize>(AvatarSize.MD)
+    const [skeletonShape, setSkeletonShape] = useState<AvatarShape>(
+        AvatarShape.CIRCULAR
+    )
+    const [skeletonVariant, setSkeletonVariant] =
+        useState<SkeletonVariant>('pulse')
+
+    // Options for selects
+    const sizeOptions = [
+        { value: AvatarSize.SM, label: 'Small' },
+        { value: AvatarSize.MD, label: 'Medium' },
+        { value: AvatarSize.LG, label: 'Large' },
+        { value: AvatarSize.XL, label: 'Extra Large' },
+    ]
+
+    const shapeOptions = [
+        { value: AvatarShape.CIRCULAR, label: 'Circular' },
+        { value: AvatarShape.ROUNDED, label: 'Rounded' },
+    ]
+
+    const maxCountOptions = [
+        { value: '2', label: '2' },
+        { value: '3', label: '3' },
+        { value: '4', label: '4' },
+        { value: '5', label: '5' },
+        { value: '6', label: '6' },
+        { value: '8', label: '8' },
+    ]
+
+    const skeletonVariantOptions = [
+        { value: 'pulse' as SkeletonVariant, label: 'Pulse' },
+        { value: 'wave' as SkeletonVariant, label: 'Wave' },
+        { value: 'shimmer' as SkeletonVariant, label: 'Shimmer' },
+    ]
 
     const handleSelectionChange = (selectedIds: (string | number)[]) => {
-        setSelectedAvatars(selectedIds)
-        console.log('Selected avatar IDs:', selectedIds)
+        setPlaygroundSelectedIds(selectedIds)
+        addSnackbar({
+            header: `Selected ${selectedIds.length} avatars`,
+            description:
+                selectedIds.length > 0
+                    ? `IDs: ${selectedIds.join(', ')}`
+                    : 'None selected',
+        })
     }
 
     return (
-        <div className="flex flex-col gap-8 p-8">
-            <div>
-                <h1 className="text-2xl font-semibold mb-4">
-                    AvatarGroup Component
+        <div className="p-8 space-y-12">
+            {/* Header */}
+            <div className="space-y-4">
+                <h1 className="text-3xl font-bold">
+                    AvatarGroup Component Demo
                 </h1>
-                <p className="text-base text-gray-600 mb-6">
-                    AvatarGroup displays multiple avatars with configurable
-                    overflow handling and selection states.
-                </p>
-            </div>
-
-            {/* Featured Demo */}
-            <div className="p-6 bg-gray-50 rounded-lg">
-                <h2 className="text-lg font-semibold mb-4 text-black">
-                    Featured: Selection with Overflow
-                </h2>
-                <p className="text-sm text-gray-600 mb-6">
-                    AvatarGroup displays a configurable number of avatars, with
-                    an overflow counter for the rest. Users can select avatars
-                    by clicking, with selected state visually indicated.
-                </p>
-                <div className="flex flex-col gap-6">
-                    <AvatarGroup
-                        avatars={sampleAvatars}
-                        maxCount={5}
-                        size={AvatarSize.MD}
-                        selectedAvatarIds={selectedAvatars}
-                        onSelectionChange={handleSelectionChange}
-                    />
-
-                    <p className="text-sm text-gray-600">
-                        Currently selected avatar IDs:{' '}
-                        {selectedAvatars.join(', ') || 'None'}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p className="text-blue-800">
+                        <strong>Molecule Component:</strong> AvatarGroup is a
+                        molecule that handles loading states with skeleton
+                        variants and provides selection functionality.
                     </p>
                 </div>
             </div>
 
-            {/* Different Sizes */}
-            <div>
-                <h2 className="text-lg font-semibold mb-4">
-                    AvatarGroup Sizes
+            {/* Pure AvatarGroup Playground */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    ✅ Pure AvatarGroup Playground
                 </h2>
-                <p className="text-sm text-gray-600 mb-4">
-                    AvatarGroups can be rendered in different sizes to fit
-                    various UI needs.
+                <p className="text-gray-600">
+                    Test the AvatarGroup component with different configurations
                 </p>
-                <div className="flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                        <span className="text-sm text-gray-600">
-                            Small (SM)
-                        </span>
-                        <AvatarGroup
-                            avatars={sampleAvatars}
-                            maxCount={5}
-                            size={AvatarSize.SM}
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <SingleSelect
+                            label="Max Count"
+                            items={[{ items: maxCountOptions }]}
+                            selected={playgroundMaxCount}
+                            onSelect={(value) =>
+                                setPlaygroundMaxCount(value as string)
+                            }
+                            placeholder="Select max count"
+                        />
+
+                        <SingleSelect
+                            label="Size"
+                            items={[{ items: sizeOptions }]}
+                            selected={playgroundSize}
+                            onSelect={(value) =>
+                                setPlaygroundSize(value as AvatarSize)
+                            }
+                            placeholder="Select size"
+                        />
+
+                        <SingleSelect
+                            label="Shape"
+                            items={[{ items: shapeOptions }]}
+                            selected={playgroundShape}
+                            onSelect={(value) =>
+                                setPlaygroundShape(value as AvatarShape)
+                            }
+                            placeholder="Select shape"
                         />
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <span className="text-sm text-gray-600">
-                            Medium (MD)
-                        </span>
-                        <AvatarGroup
-                            avatars={sampleAvatars}
-                            maxCount={5}
-                            size={AvatarSize.MD}
+                    <div className="flex items-center gap-6">
+                        <Switch
+                            label="Selectable"
+                            checked={playgroundSelectable}
+                            onChange={() =>
+                                setPlaygroundSelectable(!playgroundSelectable)
+                            }
                         />
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <span className="text-sm text-gray-600">
-                            Large (LG)
-                        </span>
+                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-white">
                         <AvatarGroup
-                            avatars={sampleAvatars}
-                            maxCount={5}
-                            size={AvatarSize.LG}
+                            avatars={playgroundAvatars}
+                            maxCount={parseInt(playgroundMaxCount)}
+                            size={playgroundSize}
+                            shape={playgroundShape}
+                            selectedAvatarIds={
+                                playgroundSelectable
+                                    ? playgroundSelectedIds
+                                    : undefined
+                            }
+                            onSelectionChange={
+                                playgroundSelectable
+                                    ? handleSelectionChange
+                                    : undefined
+                            }
                         />
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <span className="text-sm text-gray-600">
-                            X-Large (XL)
-                        </span>
+                    {playgroundSelectable && (
+                        <div className="text-sm text-gray-600">
+                            Selected:{' '}
+                            {playgroundSelectedIds.length > 0
+                                ? playgroundSelectedIds.join(', ')
+                                : 'None'}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Skeleton AvatarGroup Playground */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    🔄 Skeleton AvatarGroup Playground
+                </h2>
+                <p className="text-gray-600">
+                    Test the AvatarGroup loading state with different skeleton
+                    variants
+                </p>
+
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <SingleSelect
+                            label="Max Count"
+                            items={[{ items: maxCountOptions }]}
+                            selected={skeletonMaxCount}
+                            onSelect={(value) =>
+                                setSkeletonMaxCount(value as string)
+                            }
+                            placeholder="Select max count"
+                        />
+
+                        <SingleSelect
+                            label="Size"
+                            items={[{ items: sizeOptions }]}
+                            selected={skeletonSize}
+                            onSelect={(value) =>
+                                setSkeletonSize(value as AvatarSize)
+                            }
+                            placeholder="Select size"
+                        />
+
+                        <SingleSelect
+                            label="Shape"
+                            items={[{ items: shapeOptions }]}
+                            selected={skeletonShape}
+                            onSelect={(value) =>
+                                setSkeletonShape(value as AvatarShape)
+                            }
+                            placeholder="Select shape"
+                        />
+
+                        <SingleSelect
+                            label="Variant"
+                            items={[{ items: skeletonVariantOptions }]}
+                            selected={skeletonVariant}
+                            onSelect={(value) =>
+                                setSkeletonVariant(value as SkeletonVariant)
+                            }
+                            placeholder="Select variant"
+                        />
+                    </div>
+
+                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-white">
                         <AvatarGroup
                             avatars={sampleAvatars}
-                            maxCount={5}
-                            size={AvatarSize.XL}
+                            maxCount={parseInt(skeletonMaxCount)}
+                            size={skeletonSize}
+                            shape={skeletonShape}
+                            loading={true}
+                            skeletonVariant={skeletonVariant}
                         />
                     </div>
                 </div>
             </div>
 
-            {/* Different Shapes */}
-            <div>
-                <h2 className="text-lg font-semibold mb-4">
-                    AvatarGroup Shapes
-                </h2>
-                <p className="text-sm text-gray-600 mb-4">
-                    AvatarGroups support different shapes matching the
-                    underlying Avatar components.
-                </p>
-                <div className="flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                        <span className="text-sm text-gray-600">
-                            Circular (Default)
-                        </span>
-                        <AvatarGroup
-                            avatars={sampleAvatars.slice(0, 6)}
-                            maxCount={4}
-                            size={AvatarSize.MD}
-                            shape={AvatarShape.CIRCULAR}
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <span className="text-sm text-gray-600">Rounded</span>
-                        <AvatarGroup
-                            avatars={sampleAvatars.slice(0, 6)}
-                            maxCount={4}
-                            size={AvatarSize.MD}
-                            shape={AvatarShape.ROUNDED}
-                        />
-                    </div>
+            {/* Sizes */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Sizes</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {Object.values(AvatarSize).map((size) => (
+                        <div key={size} className="space-y-3">
+                            <h3 className="text-sm font-medium uppercase">
+                                {size}
+                            </h3>
+                            <AvatarGroup
+                                avatars={sampleAvatars.slice(0, 4)}
+                                maxCount={3}
+                                size={size}
+                                shape={AvatarShape.CIRCULAR}
+                            />
+                        </div>
+                    ))}
                 </div>
             </div>
 
-            {/* Max Count Configuration */}
-            <div>
-                <h2 className="text-lg font-semibold mb-4">
-                    Max Visible Avatars
-                </h2>
-                <p className="text-sm text-gray-600 mb-4">
+            {/* Shapes */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Shapes</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {Object.values(AvatarShape).map((shape) => (
+                        <div key={shape} className="space-y-4">
+                            <h3 className="text-lg font-semibold capitalize">
+                                {shape}
+                            </h3>
+                            <AvatarGroup
+                                avatars={sampleAvatars.slice(0, 6)}
+                                maxCount={4}
+                                size={AvatarSize.MD}
+                                shape={shape}
+                            />
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Max Count Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Max Count Configuration</h2>
+                <p className="text-gray-600">
                     The maxCount prop controls how many avatars are visible
-                    before showing the overflow counter.
+                    before showing the overflow counter
                 </p>
-                <div className="flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                        <span className="text-sm text-gray-600">
-                            Max Count: 3
-                        </span>
-                        <AvatarGroup
-                            avatars={manyAvatars}
-                            maxCount={3}
-                            size={AvatarSize.MD}
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <span className="text-sm text-gray-600">
-                            Max Count: 5
-                        </span>
-                        <AvatarGroup
-                            avatars={manyAvatars}
-                            maxCount={5}
-                            size={AvatarSize.MD}
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <span className="text-sm text-gray-600">
-                            Max Count: 8
-                        </span>
-                        <AvatarGroup
-                            avatars={manyAvatars}
-                            maxCount={8}
-                            size={AvatarSize.MD}
-                        />
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[3, 5, 8].map((maxCount) => (
+                        <div key={maxCount} className="space-y-3">
+                            <h3 className="text-sm font-medium">
+                                Max Count: {maxCount}
+                            </h3>
+                            <AvatarGroup
+                                avatars={manyAvatars}
+                                maxCount={maxCount}
+                                size={AvatarSize.MD}
+                                shape={AvatarShape.CIRCULAR}
+                            />
+                        </div>
+                    ))}
                 </div>
             </div>
 
             {/* Mixed Content Examples */}
-            <div>
-                <h2 className="text-lg font-semibold mb-4">
-                    Mixed Avatar Content
-                </h2>
-                <p className="text-sm text-gray-600 mb-4">
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Mixed Avatar Content</h2>
+                <p className="text-gray-600">
                     AvatarGroups can contain avatars with images, initials, or
-                    icon fallbacks.
+                    icon fallbacks
                 </p>
-                <div>
-                    <AvatarGroup
-                        avatars={[
-                            {
-                                id: 1,
-                                src: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80',
-                                alt: 'User with image',
-                            },
-                            {
-                                id: 2,
-                                alt: 'User with initials',
-                                fallback: 'UI',
-                            },
-                            {
-                                id: 3,
-                                alt: 'Settings account',
-                                fallback: <Settings size={18} />,
-                            },
-                            {
-                                id: 4,
-                                src: 'https://invalid-image-url.jpg',
-                                alt: 'User with invalid image',
-                                fallback: 'II',
-                            },
-                            {
-                                id: 5,
-                                alt: 'Unknown user',
-                                fallback: <User size={18} />,
-                            },
-                        ]}
-                        maxCount={4}
-                        size={AvatarSize.MD}
-                    />
-                </div>
-            </div>
-
-            {/* Plain Avatars Example */}
-            <div>
-                <h2 className="text-lg font-semibold mb-4">
-                    Plain Avatars (Initials Only)
-                </h2>
-                <p className="text-sm text-gray-600 mb-4">
-                    AvatarGroups can be rendered with plain initials for
-                    abstract representations.
-                </p>
-                <div className="flex flex-col gap-6">
-                    <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">
+                            Images, Initials & Icons
+                        </h3>
                         <AvatarGroup
                             avatars={[
-                                { id: 1, alt: 'Plain Heading', fallback: 'PH' },
-                                { id: 2, alt: 'Plain Heading', fallback: 'PH' },
-                                { id: 3, alt: 'Plain Heading', fallback: 'PH' },
-                                { id: 4, alt: 'Plain Heading', fallback: 'PH' },
+                                {
+                                    id: 1,
+                                    src: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80',
+                                    alt: 'User with image',
+                                },
+                                {
+                                    id: 2,
+                                    alt: 'User with initials',
+                                    fallback: 'UI',
+                                },
+                                {
+                                    id: 3,
+                                    alt: 'Settings account',
+                                    fallback: <Settings size={18} />,
+                                },
+                                {
+                                    id: 4,
+                                    alt: 'Unknown user',
+                                    fallback: <User size={18} />,
+                                },
                             ]}
-                            maxCount={4}
-                            size={AvatarSize.LG}
-                            shape={AvatarShape.CIRCULAR}
+                            maxCount={3}
+                            size={AvatarSize.MD}
                         />
                     </div>
-
-                    <div>
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">Plain Initials</h3>
                         <AvatarGroup
-                            avatars={Array.from({ length: 24 }, (_, i) => ({
+                            avatars={Array.from({ length: 12 }, (_, i) => ({
                                 id: i + 1,
                                 alt: 'Plain Heading',
                                 fallback: 'PH',
                             }))}
                             maxCount={3}
-                            size={AvatarSize.LG}
+                            size={AvatarSize.MD}
                             shape={AvatarShape.CIRCULAR}
                         />
                     </div>
                 </div>
             </div>
 
-            {/* Bottom Examples */}
-            <div>
-                <h2 className="text-lg font-semibold mb-4">
-                    Mixed Avatar Examples
-                </h2>
-                <p className="text-sm text-gray-600 mb-4">
-                    Different configurations for various use cases.
+            {/* Interactive Selection Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Interactive Selection</h2>
+                <p className="text-gray-600">
+                    Click on avatars to select/deselect them. Selection state is
+                    visually indicated
                 </p>
-                <div className="flex flex-col gap-6">
-                    <div>
-                        <AvatarGroup
-                            avatars={[
-                                {
-                                    id: 1,
-                                    src: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80',
-                                    alt: 'User 1',
-                                },
-                                {
-                                    id: 2,
-                                    src: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80',
-                                    alt: 'User 2',
-                                },
-                                {
-                                    id: 3,
-                                    src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80',
-                                    alt: 'User 3',
-                                },
-                                {
-                                    id: 4,
-                                    src: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80',
-                                    alt: 'User 4',
-                                },
-                            ]}
-                            maxCount={4}
-                            size={AvatarSize.LG}
-                        />
-                    </div>
-
-                    <div>
-                        <AvatarGroup
-                            avatars={[
-                                { id: 1, alt: 'User 1', fallback: 'PH' },
-                                { id: 2, alt: 'User 2', fallback: 'PH' },
-                                { id: 3, alt: 'User 3', fallback: 'PH' },
-                                {
-                                    id: 4,
-                                    alt: 'User 4',
-                                    fallback: <Settings size={18} />,
-                                },
-                            ]}
-                            maxCount={4}
-                            size={AvatarSize.LG}
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* Interactive Selection Example */}
-            <div>
-                <h2 className="text-lg font-semibold mb-4">
-                    Interactive Selection
-                </h2>
-                <p className="text-sm text-gray-600 mb-4">
-                    Click on avatars to select/deselect them. The selection
-                    state is visually indicated and tracked.
-                </p>
-                <div className="flex flex-col gap-4">
-                    <AvatarGroupWithSelectionDemo />
-                </div>
+                <AvatarGroupWithSelectionDemo />
             </div>
         </div>
     )
@@ -429,38 +449,63 @@ const AvatarGroupDemo = () => {
 const AvatarGroupWithSelectionDemo = () => {
     const [selected, setSelected] = useState<(string | number)[]>([2, 4])
 
+    const handleSelectionChange = (selectedIds: (string | number)[]) => {
+        setSelected(selectedIds)
+        addSnackbar({
+            header: `Selection changed`,
+            description:
+                selectedIds.length > 0
+                    ? `Selected: ${selectedIds.join(', ')}`
+                    : 'All deselected',
+        })
+    }
+
     return (
-        <div className="flex flex-col gap-3">
-            <AvatarGroup
-                avatars={manyAvatars}
-                maxCount={6}
-                size={AvatarSize.LG}
-                selectedAvatarIds={selected}
-                onSelectionChange={setSelected}
-            />
+        <div className="space-y-6">
+            <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-white">
+                <AvatarGroup
+                    avatars={manyAvatars}
+                    maxCount={6}
+                    size={AvatarSize.LG}
+                    selectedAvatarIds={selected}
+                    onSelectionChange={handleSelectionChange}
+                />
+            </div>
 
             <div className="flex gap-2 flex-wrap items-center">
-                <span className="text-sm text-gray-600">Selected:</span>
+                <span className="text-sm font-medium text-gray-600">
+                    Selected:
+                </span>
                 {selected.length > 0 ? (
                     selected.map((id) => (
                         <span
                             key={id}
-                            className="px-2 py-1 bg-gray-200 rounded text-sm"
+                            className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium"
                         >
                             ID: {id}
                         </span>
                     ))
                 ) : (
-                    <span className="text-sm text-gray-600">None selected</span>
+                    <span className="text-sm text-gray-500 italic">
+                        None selected
+                    </span>
                 )}
             </div>
 
-            <div className="mt-2">
+            <div className="flex gap-3">
                 <button
                     onClick={() => setSelected([])}
-                    className="px-4 py-2 bg-gray-700 text-white border-none rounded cursor-pointer hover:bg-gray-800"
+                    className="px-4 py-2 bg-gray-600 text-white border-none rounded-lg cursor-pointer hover:bg-gray-700 transition-colors text-sm font-medium"
                 >
                     Clear Selection
+                </button>
+                <button
+                    onClick={() =>
+                        setSelected(manyAvatars.slice(0, 4).map((a) => a.id))
+                    }
+                    className="px-4 py-2 bg-blue-600 text-white border-none rounded-lg cursor-pointer hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
+                    Select First 4
                 </button>
             </div>
         </div>
