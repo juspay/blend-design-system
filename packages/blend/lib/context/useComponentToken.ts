@@ -31,6 +31,7 @@ import { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
 import { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 import { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { ResponsiveCardTokens } from '../components/Card/card.tokens'
+import { ResponsiveSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
 
 export const useComponentToken = (
@@ -68,6 +69,7 @@ export const useComponentToken = (
     | ResponsiveSnackbarTokens
     | ResponsiveKeyValuePairTokens
     | ResponsiveCardTokens
+    | ResponsiveSkeletonTokens
     | ResponsiveTopbarTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -136,6 +138,8 @@ export const useComponentToken = (
             return componentTokens.KEYVALUEPAIR
         case 'CARD':
             return componentTokens.CARD
+        case 'SKELETON':
+            return componentTokens.SKELETON
         case 'TOPBAR':
             return componentTokens.TOPBAR
         default:
