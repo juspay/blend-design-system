@@ -1,3 +1,4 @@
+import React from 'react'
 import { CardVariant, CardAlignment } from './types'
 import type { CardTokenType } from './card.tokens'
 import { ButtonSubType } from '../Button/types'
@@ -33,7 +34,9 @@ export const isCustomCard = (variant?: CardVariant): boolean => {
 /**
  * Gets header box styles for default card
  */
-export const getHeaderBoxStyles = (cardToken: CardTokenType) => ({
+export const getHeaderBoxStyles = (
+    cardToken: CardTokenType
+): React.CSSProperties => ({
     backgroundColor: cardToken.header.backgroundColor,
     padding: cardToken.header.padding,
     borderBottom: cardToken.header.borderBottom,
@@ -45,7 +48,9 @@ export const getHeaderBoxStyles = (cardToken: CardTokenType) => ({
 /**
  * Gets header title styles
  */
-export const getHeaderTitleStyles = (cardToken: CardTokenType) => ({
+export const getHeaderTitleStyles = (
+    cardToken: CardTokenType
+): React.CSSProperties => ({
     fontSize: cardToken.header.title.fontSize,
     fontWeight: cardToken.header.title.fontWeight,
     color: cardToken.header.title.color,
@@ -54,7 +59,9 @@ export const getHeaderTitleStyles = (cardToken: CardTokenType) => ({
 /**
  * Gets sub header styles
  */
-export const getSubHeaderStyles = (cardToken: CardTokenType) => ({
+export const getSubHeaderStyles = (
+    cardToken: CardTokenType
+): React.CSSProperties => ({
     fontSize: cardToken.header.subHeader.fontSize,
     fontWeight: cardToken.header.subHeader.fontWeight,
     color: cardToken.header.subHeader.color,
@@ -64,7 +71,9 @@ export const getSubHeaderStyles = (cardToken: CardTokenType) => ({
 /**
  * Gets body title styles
  */
-export const getBodyTitleStyles = (cardToken: CardTokenType) => ({
+export const getBodyTitleStyles = (
+    cardToken: CardTokenType
+): React.CSSProperties => ({
     fontSize: cardToken.body.title.fontSize,
     fontWeight: cardToken.body.title.fontWeight,
     color: cardToken.body.title.color,
@@ -73,7 +82,9 @@ export const getBodyTitleStyles = (cardToken: CardTokenType) => ({
 /**
  * Gets body content styles
  */
-export const getBodyContentStyles = (cardToken: CardTokenType) => ({
+export const getBodyContentStyles = (
+    cardToken: CardTokenType
+): React.CSSProperties => ({
     fontSize: cardToken.body.content.fontSize,
     color: cardToken.body.content.color,
 })
@@ -81,7 +92,9 @@ export const getBodyContentStyles = (cardToken: CardTokenType) => ({
 /**
  * Gets body container styles
  */
-export const getBodyStyles = (cardToken: CardTokenType) => ({
+export const getBodyStyles = (
+    cardToken: CardTokenType
+): React.CSSProperties => ({
     padding: cardToken.body.padding,
     display: 'flex',
     flexDirection: 'column' as const,
@@ -167,7 +180,7 @@ export const getAlignmentStyles = (
     alignment: CardAlignment,
     centerAlign: boolean,
     cardToken: CardTokenType
-) => {
+): React.CSSProperties => {
     const alignmentConfig = cardToken.alignment[alignment]
 
     const baseStyles = {
@@ -207,7 +220,9 @@ export const getAlignmentStyles = (
 /**
  * Gets custom card styles (simple wrapper with padding)
  */
-export const getCustomCardStyles = (cardToken: CardTokenType) => ({
+export const getCustomCardStyles = (
+    cardToken: CardTokenType
+): React.CSSProperties => ({
     padding: cardToken.padding,
 })
 
