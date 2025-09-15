@@ -2,7 +2,7 @@ import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled, { type CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 import { type MenuV2Props, MenuAlignment, MenuSide } from './types'
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { filterMenuGroups } from './utils'
 import MenuItem from './MenuItem'
 import Block from '../Primitives/Block/Block'
@@ -46,14 +46,18 @@ const Menu = ({
     onOpenChange,
 }: MenuV2Props) => {
     const [searchText, setSearchText] = useState<string>('')
+    const searchInputRef = useRef<HTMLInputElement>(null)
     const filteredItems = filterMenuGroups(items, searchText)
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value)
+    }
 
     const handleOpenChange = (newOpen: boolean) => {
         if (!newOpen && enableSearch) {
             setSearchText('')
         }
-
         onOpenChange?.(newOpen)
     }
 
@@ -79,6 +83,14 @@ const Menu = ({
                     paddingTop: enableSearch ? 0 : menuTokens.paddingTop,
                     border: menuTokens.border,
                 }}
+                onFocusCapture={(e) => {
+                    if (enableSearch && searchText && searchInputRef.current) {
+                        if (e.target !== searchInputRef.current) {
+                            e.preventDefault()
+                            searchInputRef.current.focus()
+                        }
+                    }
+                }}
             >
                 {enableSearch && (
                     <Block
@@ -91,6 +103,7 @@ const Menu = ({
                         backgroundColor="white"
                     >
                         <SearchInput
+                            ref={searchInputRef}
                             leftSlot={
                                 <Search
                                     color={FOUNDATION_THEME.colors.gray[400]}
@@ -99,7 +112,8 @@ const Menu = ({
                             }
                             placeholder={searchPlaceholder}
                             value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
+                            onChange={handleSearchChange}
+                            autoFocus
                         />
                     </Block>
                 )}

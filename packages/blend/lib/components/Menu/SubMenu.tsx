@@ -16,7 +16,7 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import SearchInput from '../Inputs/SearchInput/SearchInput'
 import { FOUNDATION_THEME } from '../../tokens'
 import { filterMenuItem } from './utils'
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -155,6 +155,7 @@ export const SubMenu = ({
 }) => {
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
     const [searchText, setSearchText] = useState<string>('')
+    const searchInputRef = useRef<HTMLInputElement>(null)
 
     const filteredSubMenuItems = React.useMemo(() => {
         if (!item.subMenu) return []
@@ -165,6 +166,10 @@ export const SubMenu = ({
             .map((subItem) => filterMenuItem(subItem, lower))
             .filter(Boolean) as MenuItemV2Type[]
     }, [item.subMenu, searchText, item.enableSubMenuSearch])
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value)
+    }
 
     return (
         <RadixMenu.Sub key={idx}>
@@ -268,6 +273,18 @@ export const SubMenu = ({
                         overflowY: 'auto',
                     }}
                     avoidCollisions
+                    onFocusCapture={(e) => {
+                        if (
+                            item.enableSubMenuSearch &&
+                            searchText &&
+                            searchInputRef.current
+                        ) {
+                            if (e.target !== searchInputRef.current) {
+                                e.preventDefault()
+                                searchInputRef.current.focus()
+                            }
+                        }
+                    }}
                 >
                     {item.enableSubMenuSearch && (
                         <Block
@@ -280,6 +297,7 @@ export const SubMenu = ({
                             backgroundColor="white"
                         >
                             <SearchInput
+                                ref={searchInputRef}
                                 leftSlot={
                                     <Search
                                         color={
@@ -292,7 +310,8 @@ export const SubMenu = ({
                                     item.subMenuSearchPlaceholder || 'Search...'
                                 }
                                 value={searchText}
-                                onChange={(e) => setSearchText(e.target.value)}
+                                onChange={handleSearchChange}
+                                autoFocus
                             />
                         </Block>
                     )}
