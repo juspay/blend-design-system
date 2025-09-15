@@ -83,12 +83,12 @@ const Menu = ({
                 {enableSearch && (
                     <Block
                         width="100%"
-                        marginLeft="-6px"
                         position="sticky"
                         top={0}
                         left={0}
                         right={0}
                         zIndex={1000}
+                        backgroundColor="white"
                     >
                         <SearchInput
                             leftSlot={
@@ -127,6 +127,7 @@ const Menu = ({
                                     key={`${groupId}-${itemIndex}`}
                                     item={item}
                                     idx={itemIndex}
+                                    maxHeight={maxHeight}
                                 />
                             ))}
                             {groupId !== filteredItems.length - 1 &&
