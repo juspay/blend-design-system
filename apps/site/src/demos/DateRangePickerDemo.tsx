@@ -139,6 +139,47 @@ const DateRangePickerDemo = () => {
         endDate: new Date(),
     })
 
+    // Console logging functions for date changes
+    const handlePlaygroundRangeChange = (range: DateRange) => {
+        console.log('Playground Range Changed:', {
+            startDate: range.startDate.toISOString(),
+            endDate: range.endDate.toISOString(),
+            formattedStart: range.startDate.toLocaleString(),
+            formattedEnd: range.endDate.toLocaleString(),
+        })
+        setPlaygroundRange(range)
+    }
+
+    const handleBasicRangeChange = (range: DateRange) => {
+        console.log('Basic Range Changed:', {
+            startDate: range.startDate.toISOString(),
+            endDate: range.endDate.toISOString(),
+            formattedStart: range.startDate.toLocaleString(),
+            formattedEnd: range.endDate.toLocaleString(),
+        })
+        setBasicRange(range)
+    }
+
+    const handleFormatRangeChange = (range: DateRange) => {
+        console.log('Format Range Changed:', {
+            startDate: range.startDate.toISOString(),
+            endDate: range.endDate.toISOString(),
+            formattedStart: range.startDate.toLocaleString(),
+            formattedEnd: range.endDate.toLocaleString(),
+        })
+        setFormatRange(range)
+    }
+
+    const handleCustomRangeChange = (range: DateRange) => {
+        console.log('Custom Range Changed:', {
+            startDate: range.startDate.toISOString(),
+            endDate: range.endDate.toISOString(),
+            formattedStart: range.startDate.toLocaleString(),
+            formattedEnd: range.endDate.toLocaleString(),
+        })
+        setCustomRange(range)
+    }
+
     // Handle configuration changes
     const handleCheckboxChange =
         (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -526,7 +567,7 @@ const DateRangePickerDemo = () => {
                             <div className="overflow-hidden">
                                 <DateRangePicker
                                     value={playgroundRange}
-                                    onChange={setPlaygroundRange}
+                                    onChange={handlePlaygroundRangeChange}
                                     showPresets={config.showPresets}
                                     showDateTimePicker={
                                         config.showDateTimePicker
@@ -589,7 +630,7 @@ const DateRangePickerDemo = () => {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Basic Example */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
@@ -602,7 +643,7 @@ const DateRangePickerDemo = () => {
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={basicRange}
-                                onChange={setBasicRange}
+                                onChange={handleBasicRangeChange}
                                 showPresets={true}
                                 showDateTimePicker={true}
                             />
@@ -620,7 +661,7 @@ const DateRangePickerDemo = () => {
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={formatRange}
-                                onChange={setFormatRange}
+                                onChange={handleFormatRangeChange}
                                 formatConfig={FORMAT_PRESETS.COMPACT_NO_TIME}
                                 showPresets={true}
                             />
@@ -638,7 +679,7 @@ const DateRangePickerDemo = () => {
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={customRange}
-                                onChange={setCustomRange}
+                                onChange={handleCustomRangeChange}
                                 formatConfig={FORMAT_PRESETS.MEDIUM_NO_TIME}
                                 triggerConfig={{
                                     renderTrigger: ({
@@ -674,7 +715,7 @@ const DateRangePickerDemo = () => {
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={customRange}
-                                onChange={setCustomRange}
+                                onChange={handleCustomRangeChange}
                                 formatConfig={CUSTOM_FORMAT_EXAMPLES.RELATIVE}
                                 showPresets={true}
                             />
@@ -692,7 +733,7 @@ const DateRangePickerDemo = () => {
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={customRange}
-                                onChange={setCustomRange}
+                                onChange={handleCustomRangeChange}
                                 disableFutureDates={true}
                                 showPresets={true}
                             />
@@ -710,7 +751,7 @@ const DateRangePickerDemo = () => {
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={basicRange}
-                                onChange={setBasicRange}
+                                onChange={handleBasicRangeChange}
                                 allowSingleDateSelection={true}
                                 showPresets={true}
                             />
@@ -728,7 +769,7 @@ const DateRangePickerDemo = () => {
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={formatRange}
-                                onChange={setFormatRange}
+                                onChange={handleFormatRangeChange}
                                 formatConfig={CUSTOM_FORMAT_EXAMPLES.MINIMAL}
                                 showPresets={true}
                             />
@@ -746,7 +787,7 @@ const DateRangePickerDemo = () => {
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={customRange}
-                                onChange={setCustomRange}
+                                onChange={handleCustomRangeChange}
                                 formatConfig={CUSTOM_FORMAT_EXAMPLES.BUSINESS}
                                 showPresets={true}
                             />
@@ -764,7 +805,7 @@ const DateRangePickerDemo = () => {
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={basicRange}
-                                onChange={setBasicRange}
+                                onChange={handleBasicRangeChange}
                                 isDisabled={true}
                                 showPresets={true}
                             />

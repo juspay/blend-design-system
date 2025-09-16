@@ -5,7 +5,6 @@ import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type CalendarTokenType = {
     quickRange: {
-        // width: CSSObject['width']
         trigger: {
             height: CSSObject['height']
             borderLeft: CSSObject['borderLeft']
@@ -409,7 +408,6 @@ export const getCalendarToken = (
             },
         },
         quickRange: {
-            // width: '8%',
             trigger: {
                 height: foundationToken.unit[40],
                 borderLeft: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
