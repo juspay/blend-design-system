@@ -65,9 +65,11 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
 }) => {
     // Get headings from context (will be empty array if context is not available)
     let headings: TOCItem[] = []
+
+    // Always call the hook, but handle the error gracefully
     try {
-        const { headings: contextHeadings } = useTableOfContents()
-        headings = contextHeadings
+        const tableOfContentsData = useTableOfContents()
+        headings = tableOfContentsData.headings
     } catch {
         // Context not available, use empty array
         headings = []
