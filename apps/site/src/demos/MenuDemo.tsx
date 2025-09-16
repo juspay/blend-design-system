@@ -45,6 +45,12 @@ import {
     Bell,
     Globe,
     Shield,
+    Mail,
+    Phone,
+    Calendar,
+    Archive,
+    Copy,
+    Upload,
 } from 'lucide-react'
 
 // Sample data for comprehensive testing
@@ -210,6 +216,12 @@ const searchableMenuItems: MenuV2GroupType[] = [
                 onClick: () => console.log('Home'),
             },
             {
+                label: 'Dashboard',
+                subLabel: 'View analytics',
+                slot1: <User size={16} />,
+                onClick: () => console.log('Dashboard'),
+            },
+            {
                 label: 'Profile',
                 subLabel: 'View your profile',
                 slot1: <User size={16} />,
@@ -220,6 +232,30 @@ const searchableMenuItems: MenuV2GroupType[] = [
                 subLabel: 'Configure app',
                 slot1: <Settings size={16} />,
                 onClick: () => console.log('Settings'),
+            },
+            {
+                label: 'Notifications',
+                subLabel: 'View alerts',
+                slot1: <Bell size={16} />,
+                onClick: () => console.log('Notifications'),
+            },
+            {
+                label: 'Help Center',
+                subLabel: 'Get support',
+                slot1: <Globe size={16} />,
+                onClick: () => console.log('Help Center'),
+            },
+            {
+                label: 'Documentation',
+                subLabel: 'Read guides',
+                slot1: <FileText size={16} />,
+                onClick: () => console.log('Documentation'),
+            },
+            {
+                label: 'API Reference',
+                subLabel: 'Developer docs',
+                slot1: <FileText size={16} />,
+                onClick: () => console.log('API Reference'),
             },
         ],
         showSeparator: true,
@@ -234,10 +270,34 @@ const searchableMenuItems: MenuV2GroupType[] = [
                 onClick: () => console.log('Create project'),
             },
             {
+                label: 'Create Template',
+                subLabel: 'Reusable structure',
+                slot1: <Plus size={16} />,
+                onClick: () => console.log('Create template'),
+            },
+            {
+                label: 'Create Workspace',
+                subLabel: 'Team collaboration',
+                slot1: <Plus size={16} />,
+                onClick: () => console.log('Create workspace'),
+            },
+            {
                 label: 'Edit Content',
                 subLabel: 'Modify existing',
                 slot1: <Edit size={16} />,
                 onClick: () => console.log('Edit content'),
+            },
+            {
+                label: 'Edit Profile',
+                subLabel: 'Update information',
+                slot1: <Edit size={16} />,
+                onClick: () => console.log('Edit profile'),
+            },
+            {
+                label: 'Edit Settings',
+                subLabel: 'Change preferences',
+                slot1: <Edit size={16} />,
+                onClick: () => console.log('Edit settings'),
             },
             {
                 label: 'Share Items',
@@ -246,10 +306,34 @@ const searchableMenuItems: MenuV2GroupType[] = [
                 onClick: () => console.log('Share items'),
             },
             {
+                label: 'Share Workspace',
+                subLabel: 'Invite team members',
+                slot1: <Share size={16} />,
+                onClick: () => console.log('Share workspace'),
+            },
+            {
+                label: 'Share Link',
+                subLabel: 'Generate public link',
+                slot1: <Share size={16} />,
+                onClick: () => console.log('Share link'),
+            },
+            {
                 label: 'Download Files',
                 subLabel: 'Save locally',
                 slot1: <Download size={16} />,
                 onClick: () => console.log('Download files'),
+            },
+            {
+                label: 'Download Backup',
+                subLabel: 'Export all data',
+                slot1: <Download size={16} />,
+                onClick: () => console.log('Download backup'),
+            },
+            {
+                label: 'Download Report',
+                subLabel: 'Generate analytics',
+                slot1: <Download size={16} />,
+                onClick: () => console.log('Download report'),
             },
         ],
         showSeparator: true,
@@ -264,10 +348,28 @@ const searchableMenuItems: MenuV2GroupType[] = [
                 onClick: () => console.log('Search'),
             },
             {
+                label: 'Advanced Search',
+                subLabel: 'Complex queries',
+                slot1: <Search size={16} />,
+                onClick: () => console.log('Advanced Search'),
+            },
+            {
+                label: 'Global Search',
+                subLabel: 'Search everywhere',
+                slot1: <Search size={16} />,
+                onClick: () => console.log('Global Search'),
+            },
+            {
                 label: 'Filter',
                 subLabel: 'Narrow results',
                 slot1: <Filter size={16} />,
                 onClick: () => console.log('Filter'),
+            },
+            {
+                label: 'Advanced Filter',
+                subLabel: 'Multiple criteria',
+                slot1: <Filter size={16} />,
+                onClick: () => console.log('Advanced Filter'),
             },
             {
                 label: 'Sort',
@@ -276,10 +378,118 @@ const searchableMenuItems: MenuV2GroupType[] = [
                 onClick: () => console.log('Sort'),
             },
             {
+                label: 'Sort by Date',
+                subLabel: 'Chronological order',
+                slot1: <ArrowUpDown size={16} />,
+                onClick: () => console.log('Sort by Date'),
+            },
+            {
+                label: 'Sort by Name',
+                subLabel: 'Alphabetical order',
+                slot1: <ArrowUpDown size={16} />,
+                onClick: () => console.log('Sort by Name'),
+            },
+            {
+                label: 'Sort by Size',
+                subLabel: 'File size order',
+                slot1: <ArrowUpDown size={16} />,
+                onClick: () => console.log('Sort by Size'),
+            },
+            {
                 label: 'Print',
                 subLabel: 'Create hard copy',
                 slot1: <Printer size={16} />,
                 onClick: () => console.log('Print'),
+            },
+            {
+                label: 'Print Preview',
+                subLabel: 'Check before printing',
+                slot1: <Printer size={16} />,
+                onClick: () => console.log('Print Preview'),
+            },
+            {
+                label: 'Print Settings',
+                subLabel: 'Configure printer',
+                slot1: <Printer size={16} />,
+                onClick: () => console.log('Print Settings'),
+            },
+        ],
+        showSeparator: true,
+    },
+    {
+        label: 'Media & Files',
+        items: [
+            {
+                label: 'Upload Image',
+                subLabel: 'Add photos',
+                slot1: <Image size={16} />,
+                onClick: () => console.log('Upload Image'),
+            },
+            {
+                label: 'Upload Video',
+                subLabel: 'Add videos',
+                slot1: <Video size={16} />,
+                onClick: () => console.log('Upload Video'),
+            },
+            {
+                label: 'Upload Audio',
+                subLabel: 'Add music',
+                slot1: <Music size={16} />,
+                onClick: () => console.log('Upload Audio'),
+            },
+            {
+                label: 'Upload Document',
+                subLabel: 'Add files',
+                slot1: <FileText size={16} />,
+                onClick: () => console.log('Upload Document'),
+            },
+            {
+                label: 'Manage Gallery',
+                subLabel: 'Organize media',
+                slot1: <Camera size={16} />,
+                onClick: () => console.log('Manage Gallery'),
+            },
+            {
+                label: 'Media Library',
+                subLabel: 'Browse all media',
+                slot1: <Folder size={16} />,
+                onClick: () => console.log('Media Library'),
+            },
+        ],
+        showSeparator: true,
+    },
+    {
+        label: 'Security & Privacy',
+        items: [
+            {
+                label: 'Security Settings',
+                subLabel: 'Manage security',
+                slot1: <Shield size={16} />,
+                onClick: () => console.log('Security Settings'),
+            },
+            {
+                label: 'Privacy Controls',
+                subLabel: 'Data protection',
+                slot1: <Lock size={16} />,
+                onClick: () => console.log('Privacy Controls'),
+            },
+            {
+                label: 'Two-Factor Auth',
+                subLabel: 'Extra security',
+                slot1: <Shield size={16} />,
+                onClick: () => console.log('Two-Factor Auth'),
+            },
+            {
+                label: 'Password Manager',
+                subLabel: 'Secure passwords',
+                slot1: <Lock size={16} />,
+                onClick: () => console.log('Password Manager'),
+            },
+            {
+                label: 'Activity Log',
+                subLabel: 'View login history',
+                slot1: <FileText size={16} />,
+                onClick: () => console.log('Activity Log'),
             },
         ],
     },
@@ -1001,6 +1211,854 @@ export const MenuDemo: React.FC = () => {
                         searchPlaceholder="Find what you need..."
                         maxHeight={350}
                     />
+                </Block>
+            </Block>
+
+            {/* 5.1. MaxHeight Scrolling Demo */}
+            <Block marginBottom="48px">
+                <Block marginBottom="16px">
+                    <Text fontSize={28} fontWeight="semibold">
+                        🆕 5.1. MaxHeight Scrolling Demonstration
+                    </Text>
+                </Block>
+                <Block marginBottom="24px">
+                    <Text fontSize={14} color="gray.600">
+                        Demonstrating scrollable content that exceeds maxHeight
+                        limits with extensive menu data
+                    </Text>
+                </Block>
+
+                <Block display="flex" gap="16px" flexWrap="wrap">
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                text="📜 Scrollable Menu (200px)"
+                            />
+                        }
+                        items={[
+                            {
+                                items: [
+                                    {
+                                        label: 'Extensive Submenu',
+                                        slot1: <Folder size={16} />,
+                                        enableSubMenuSearch: true,
+                                        subMenuSearchPlaceholder:
+                                            'Search 50+ items...',
+                                        subMenu: [
+                                            {
+                                                label: 'Item 01 - First Entry',
+                                                subLabel: 'Beginning of list',
+                                                slot1: <FileText size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 01'),
+                                            },
+                                            {
+                                                label: 'Item 02 - Second Entry',
+                                                subLabel: 'Early in list',
+                                                slot1: <FileText size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 02'),
+                                            },
+                                            {
+                                                label: 'Item 03 - Third Entry',
+                                                subLabel: 'Still near top',
+                                                slot1: <Edit size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 03'),
+                                            },
+                                            {
+                                                label: 'Item 04 - Fourth Entry',
+                                                subLabel: 'Getting longer',
+                                                slot1: <Share size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 04'),
+                                            },
+                                            {
+                                                label: 'Item 05 - Fifth Entry',
+                                                subLabel: 'More content',
+                                                slot1: <Download size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 05'),
+                                            },
+                                            {
+                                                label: 'Item 06 - Sixth Entry',
+                                                subLabel: 'Keep scrolling',
+                                                slot1: <Upload size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 06'),
+                                            },
+                                            {
+                                                label: 'Item 07 - Seventh Entry',
+                                                subLabel: 'More items below',
+                                                slot1: <Save size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 07'),
+                                            },
+                                            {
+                                                label: 'Item 08 - Eighth Entry',
+                                                subLabel: 'Scroll to see more',
+                                                slot1: <Copy size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 08'),
+                                            },
+                                            {
+                                                label: 'Item 09 - Ninth Entry',
+                                                subLabel: 'Many more items',
+                                                slot1: <Archive size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 09'),
+                                            },
+                                            {
+                                                label: 'Item 10 - Tenth Entry',
+                                                subLabel: 'Double digits now',
+                                                slot1: <Trash2 size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 10'),
+                                            },
+                                            {
+                                                label: 'Item 11 - Eleventh Entry',
+                                                subLabel: 'Getting quite long',
+                                                slot1: <Settings size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 11'),
+                                            },
+                                            {
+                                                label: 'Item 12 - Twelfth Entry',
+                                                subLabel: 'Scroll is working',
+                                                slot1: <User size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 12'),
+                                            },
+                                            {
+                                                label: 'Item 13 - Thirteenth Entry',
+                                                subLabel: 'Lucky number 13',
+                                                slot1: <Star size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 13'),
+                                            },
+                                            {
+                                                label: 'Item 14 - Fourteenth Entry',
+                                                subLabel: 'Keep going down',
+                                                slot1: <Heart size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 14'),
+                                            },
+                                            {
+                                                label: 'Item 15 - Fifteenth Entry',
+                                                subLabel: 'Halfway to 30',
+                                                slot1: <Bell size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 15'),
+                                            },
+                                            {
+                                                label: 'Item 16 - Sixteenth Entry',
+                                                subLabel: 'More scrolling',
+                                                slot1: <Globe size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 16'),
+                                            },
+                                            {
+                                                label: 'Item 17 - Seventeenth Entry',
+                                                subLabel: 'Still more content',
+                                                slot1: <Shield size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 17'),
+                                            },
+                                            {
+                                                label: 'Item 18 - Eighteenth Entry',
+                                                subLabel: 'Lots of items',
+                                                slot1: <Lock size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 18'),
+                                            },
+                                            {
+                                                label: 'Item 19 - Nineteenth Entry',
+                                                subLabel: 'Almost at 20',
+                                                slot1: <Camera size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 19'),
+                                            },
+                                            {
+                                                label: 'Item 20 - Twentieth Entry',
+                                                subLabel: 'Round number!',
+                                                slot1: <Video size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 20'),
+                                            },
+                                            {
+                                                label: 'Item 21 - Twenty-first Entry',
+                                                subLabel: 'Past 20 now',
+                                                slot1: <Music size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 21'),
+                                            },
+                                            {
+                                                label: 'Item 22 - Twenty-second Entry',
+                                                subLabel: 'More and more',
+                                                slot1: <Image size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 22'),
+                                            },
+                                            {
+                                                label: 'Item 23 - Twenty-third Entry',
+                                                subLabel: 'Keep scrolling',
+                                                slot1: <Folder size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 23'),
+                                            },
+                                            {
+                                                label: 'Item 24 - Twenty-fourth Entry',
+                                                subLabel: 'Getting close to 25',
+                                                slot1: <FileText size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 24'),
+                                            },
+                                            {
+                                                label: 'Item 25 - Twenty-fifth Entry',
+                                                subLabel: 'Quarter century!',
+                                                slot1: <Edit size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 25'),
+                                            },
+                                            {
+                                                label: 'Item 26 - Twenty-sixth Entry',
+                                                subLabel: 'Past 25 now',
+                                                slot1: <Share size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 26'),
+                                            },
+                                            {
+                                                label: 'Item 27 - Twenty-seventh Entry',
+                                                subLabel: 'Almost at 30',
+                                                slot1: <Download size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 27'),
+                                            },
+                                            {
+                                                label: 'Item 28 - Twenty-eighth Entry',
+                                                subLabel: 'Two more to 30',
+                                                slot1: <Upload size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 28'),
+                                            },
+                                            {
+                                                label: 'Item 29 - Twenty-ninth Entry',
+                                                subLabel: 'One more to 30',
+                                                slot1: <Save size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 29'),
+                                            },
+                                            {
+                                                label: 'Item 30 - Thirtieth Entry',
+                                                subLabel: 'Thirty items!',
+                                                slot1: <Copy size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 30'),
+                                            },
+                                            {
+                                                label: 'Item 31 - Thirty-first Entry',
+                                                subLabel: 'Beyond 30',
+                                                slot1: <Archive size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 31'),
+                                            },
+                                            {
+                                                label: 'Item 32 - Thirty-second Entry',
+                                                subLabel: 'Still going',
+                                                slot1: <Trash2 size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 32'),
+                                            },
+                                            {
+                                                label: 'Item 33 - Thirty-third Entry',
+                                                subLabel: 'More content',
+                                                slot1: <Settings size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 33'),
+                                            },
+                                            {
+                                                label: 'Item 34 - Thirty-fourth Entry',
+                                                subLabel: 'Keep scrolling',
+                                                slot1: <User size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 34'),
+                                            },
+                                            {
+                                                label: 'Item 35 - Thirty-fifth Entry',
+                                                subLabel: 'Lots of data',
+                                                slot1: <Star size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 35'),
+                                            },
+                                            {
+                                                label: 'Item 36 - Thirty-sixth Entry',
+                                                subLabel: 'More items',
+                                                slot1: <Heart size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 36'),
+                                            },
+                                            {
+                                                label: 'Item 37 - Thirty-seventh Entry',
+                                                subLabel: 'Still more',
+                                                slot1: <Bell size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 37'),
+                                            },
+                                            {
+                                                label: 'Item 38 - Thirty-eighth Entry',
+                                                subLabel: 'Almost 40',
+                                                slot1: <Globe size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 38'),
+                                            },
+                                            {
+                                                label: 'Item 39 - Thirty-ninth Entry',
+                                                subLabel: 'One more to 40',
+                                                slot1: <Shield size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 39'),
+                                            },
+                                            {
+                                                label: 'Item 40 - Fortieth Entry',
+                                                subLabel: 'Forty items!',
+                                                slot1: <Lock size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 40'),
+                                            },
+                                            {
+                                                label: 'Item 41 - Forty-first Entry',
+                                                subLabel: 'Beyond 40',
+                                                slot1: <Camera size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 41'),
+                                            },
+                                            {
+                                                label: 'Item 42 - Forty-second Entry',
+                                                subLabel:
+                                                    'Answer to everything',
+                                                slot1: <Video size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 42'),
+                                            },
+                                            {
+                                                label: 'Item 43 - Forty-third Entry',
+                                                subLabel: 'More content',
+                                                slot1: <Music size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 43'),
+                                            },
+                                            {
+                                                label: 'Item 44 - Forty-fourth Entry',
+                                                subLabel: 'Keep going',
+                                                slot1: <Image size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 44'),
+                                            },
+                                            {
+                                                label: 'Item 45 - Forty-fifth Entry',
+                                                subLabel: 'Almost 50',
+                                                slot1: <Folder size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 45'),
+                                            },
+                                            {
+                                                label: 'Item 46 - Forty-sixth Entry',
+                                                subLabel: 'Getting close',
+                                                slot1: <FileText size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 46'),
+                                            },
+                                            {
+                                                label: 'Item 47 - Forty-seventh Entry',
+                                                subLabel: 'Three more',
+                                                slot1: <Edit size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 47'),
+                                            },
+                                            {
+                                                label: 'Item 48 - Forty-eighth Entry',
+                                                subLabel: 'Two more',
+                                                slot1: <Share size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 48'),
+                                            },
+                                            {
+                                                label: 'Item 49 - Forty-ninth Entry',
+                                                subLabel: 'One more to 50',
+                                                slot1: <Download size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 49'),
+                                            },
+                                            {
+                                                label: 'Item 50 - Fiftieth Entry',
+                                                subLabel: 'Half a hundred!',
+                                                slot1: <Upload size={16} />,
+                                                onClick: () =>
+                                                    console.log('Item 50'),
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                        ]}
+                        maxHeight={200}
+                        maxWidth={350}
+                    />
+
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                text="📋 Medium Scroll (300px)"
+                            />
+                        }
+                        items={searchableMenuItems}
+                        enableSearch={true}
+                        searchPlaceholder="Search extensive list..."
+                        maxHeight={300}
+                        minWidth={320}
+                    />
+
+                    <Menu
+                        trigger={<Button text="📄 Large Scroll (150px)" />}
+                        items={[
+                            ...searchableMenuItems,
+                            ...actionMenuItems,
+                            ...disabledMenuItems,
+                        ]}
+                        enableSearch={true}
+                        searchPlaceholder="Search all items..."
+                        maxHeight={150}
+                        minWidth={280}
+                    />
+                </Block>
+
+                <Block
+                    marginTop="16px"
+                    padding="16px"
+                    backgroundColor="orange.50"
+                    borderRadius="8px"
+                >
+                    <Block marginBottom="8px">
+                        <Text
+                            fontSize={14}
+                            fontWeight="medium"
+                            color="orange.700"
+                        >
+                            🎯 MaxHeight Scrolling Test:
+                        </Text>
+                    </Block>
+                    <Text fontSize={12} color="orange.600" lineHeight="1.6">
+                        1. Click "📜 Scrollable Menu (200px)" to see 50+ items
+                        in a submenu with 200px height limit
+                        <br />
+                        2. Notice the scroll behavior - content scrolls smoothly
+                        within the constrained height
+                        <br />
+                        3. Try the search functionality to filter through the
+                        extensive list
+                        <br />
+                        4. Test different maxHeight values (150px, 200px, 300px)
+                        to see the difference
+                        <br />
+                        5. Both main menus and submenus respect the same
+                        maxHeight prop inheritance
+                        <br />
+                        6. Scroll works with mouse wheel, keyboard arrows, and
+                        touch gestures
+                    </Text>
+                </Block>
+
+                <Block
+                    marginTop="16px"
+                    padding="16px"
+                    backgroundColor="purple.50"
+                    borderRadius="8px"
+                >
+                    <Block marginBottom="8px">
+                        <Text
+                            fontSize={14}
+                            fontWeight="medium"
+                            color="purple.700"
+                        >
+                            ⚙️ MaxHeight Implementation:
+                        </Text>
+                    </Block>
+                    <Text fontSize={12} color="purple.600" lineHeight="1.6">
+                        • <strong>Prop Threading:</strong> maxHeight flows from
+                        Menu → MenuItem → SubMenu
+                        <br />• <strong>Consistent Behavior:</strong> Same
+                        scrolling logic for main menus and submenus
+                        <br />• <strong>Default Fallback:</strong> Uses
+                        'var(--radix-popper-available-height)' when no maxHeight
+                        specified
+                        <br />• <strong>Clean Architecture:</strong> No
+                        hardcoded values, all prop-driven
+                        <br />• <strong>Search Integration:</strong> Search
+                        input stays sticky at top during scroll
+                        <br />• <strong>Responsive Design:</strong> Adapts to
+                        different screen sizes and constraints
+                    </Text>
+                </Block>
+            </Block>
+
+            <Block marginBottom="48px">
+                <Block marginBottom="16px">
+                    <Text fontSize={28} fontWeight="semibold">
+                        🆕 5.5. Submenu Search Functionality
+                    </Text>
+                </Block>
+                <Block marginBottom="24px">
+                    <Text fontSize={14} color="gray.600">
+                        NEW FEATURE: Search functionality within individual
+                        submenus for better navigation
+                    </Text>
+                </Block>
+
+                <Block display="flex" gap="16px" flexWrap="wrap">
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                text="🔍 Searchable Submenus"
+                            />
+                        }
+                        items={[
+                            {
+                                items: [
+                                    {
+                                        label: 'Documents',
+                                        slot1: <FileText size={16} />,
+                                        enableSubMenuSearch: true,
+                                        subMenuSearchPlaceholder:
+                                            'Search documents...',
+                                        subMenu: [
+                                            {
+                                                label: 'Recent Documents',
+                                                subLabel: 'Last 7 days',
+                                                slot1: <FileText size={16} />,
+                                                onClick: () =>
+                                                    console.log(
+                                                        'Recent documents'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'All Documents',
+                                                subLabel: 'Complete library',
+                                                slot1: <FileText size={16} />,
+                                                onClick: () =>
+                                                    console.log(
+                                                        'All documents'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'Shared Documents',
+                                                subLabel: 'Team collaboration',
+                                                slot1: <Share size={16} />,
+                                                onClick: () =>
+                                                    console.log(
+                                                        'Shared documents'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'Draft Documents',
+                                                subLabel: 'Work in progress',
+                                                slot1: <Edit size={16} />,
+                                                onClick: () =>
+                                                    console.log(
+                                                        'Draft documents'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'Archived Documents',
+                                                subLabel: 'Old files',
+                                                slot1: <Archive size={16} />,
+                                                onClick: () =>
+                                                    console.log(
+                                                        'Archived documents'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'Template Documents',
+                                                subLabel: 'Reusable templates',
+                                                slot1: <Copy size={16} />,
+                                                onClick: () =>
+                                                    console.log(
+                                                        'Template documents'
+                                                    ),
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        label: 'Communication',
+                                        slot1: <Mail size={16} />,
+                                        enableSubMenuSearch: true,
+                                        subMenuSearchPlaceholder:
+                                            'Search communication...',
+                                        subMenu: [
+                                            {
+                                                label: 'Email',
+                                                subLabel: 'Send messages',
+                                                slot1: <Mail size={16} />,
+                                                onClick: () =>
+                                                    console.log('Email'),
+                                            },
+                                            {
+                                                label: 'Phone',
+                                                subLabel: 'Voice calls',
+                                                slot1: <Phone size={16} />,
+                                                onClick: () =>
+                                                    console.log('Phone'),
+                                            },
+                                            {
+                                                label: 'Calendar',
+                                                subLabel: 'Schedule meetings',
+                                                slot1: <Calendar size={16} />,
+                                                enableSubMenuSearch: true,
+                                                subMenuSearchPlaceholder:
+                                                    'Search calendar...',
+                                                subMenu: [
+                                                    {
+                                                        label: 'Today',
+                                                        subLabel:
+                                                            'Current day events',
+                                                        onClick: () =>
+                                                            console.log(
+                                                                'Today'
+                                                            ),
+                                                    },
+                                                    {
+                                                        label: 'This Week',
+                                                        subLabel:
+                                                            'Weekly schedule',
+                                                        onClick: () =>
+                                                            console.log(
+                                                                'This week'
+                                                            ),
+                                                    },
+                                                    {
+                                                        label: 'This Month',
+                                                        subLabel:
+                                                            'Monthly overview',
+                                                        onClick: () =>
+                                                            console.log(
+                                                                'This month'
+                                                            ),
+                                                    },
+                                                    {
+                                                        label: 'Next Month',
+                                                        subLabel:
+                                                            'Future planning',
+                                                        onClick: () =>
+                                                            console.log(
+                                                                'Next month'
+                                                            ),
+                                                    },
+                                                    {
+                                                        label: 'Recurring Events',
+                                                        subLabel:
+                                                            'Repeated meetings',
+                                                        onClick: () =>
+                                                            console.log(
+                                                                'Recurring events'
+                                                            ),
+                                                    },
+                                                    {
+                                                        label: 'Meeting Templates',
+                                                        subLabel:
+                                                            'Predefined formats',
+                                                        onClick: () =>
+                                                            console.log(
+                                                                'Meeting templates'
+                                                            ),
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                label: 'Video Conference',
+                                                subLabel: 'Online meetings',
+                                                slot1: <Video size={16} />,
+                                                onClick: () =>
+                                                    console.log(
+                                                        'Video conference'
+                                                    ),
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        label: 'Media Library',
+                                        slot1: <Camera size={16} />,
+                                        enableSubMenuSearch: true,
+                                        subMenuSearchPlaceholder:
+                                            'Search media...',
+                                        subMenu: [
+                                            {
+                                                label: 'Photos',
+                                                subLabel: 'Image files',
+                                                slot1: <Image size={16} />,
+                                                onClick: () =>
+                                                    console.log('Photos'),
+                                            },
+                                            {
+                                                label: 'Videos',
+                                                subLabel: 'Video files',
+                                                slot1: <Video size={16} />,
+                                                onClick: () =>
+                                                    console.log('Videos'),
+                                            },
+                                            {
+                                                label: 'Audio',
+                                                subLabel: 'Sound files',
+                                                slot1: <Music size={16} />,
+                                                onClick: () =>
+                                                    console.log('Audio'),
+                                            },
+                                            {
+                                                label: 'Graphics',
+                                                subLabel: 'Design assets',
+                                                slot1: <Star size={16} />,
+                                                onClick: () =>
+                                                    console.log('Graphics'),
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                        ]}
+                        maxWidth={300}
+                    />
+
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                text="Mixed Search Types"
+                            />
+                        }
+                        items={[
+                            {
+                                items: [
+                                    {
+                                        label: 'Searchable Submenu',
+                                        slot1: <Search size={16} />,
+                                        enableSubMenuSearch: true,
+                                        subMenuSearchPlaceholder:
+                                            'Type to search...',
+                                        subMenu: [
+                                            {
+                                                label: 'Apple',
+                                                subLabel: 'Fruit',
+                                                onClick: () =>
+                                                    console.log('Apple'),
+                                            },
+                                            {
+                                                label: 'Banana',
+                                                subLabel: 'Fruit',
+                                                onClick: () =>
+                                                    console.log('Banana'),
+                                            },
+                                            {
+                                                label: 'Carrot',
+                                                subLabel: 'Vegetable',
+                                                onClick: () =>
+                                                    console.log('Carrot'),
+                                            },
+                                            {
+                                                label: 'Date',
+                                                subLabel: 'Fruit',
+                                                onClick: () =>
+                                                    console.log('Date'),
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        label: 'Regular Submenu',
+                                        slot1: <Folder size={16} />,
+                                        subMenu: [
+                                            {
+                                                label: 'No Search Here',
+                                                onClick: () =>
+                                                    console.log('No search'),
+                                            },
+                                            {
+                                                label: 'Regular Item',
+                                                onClick: () =>
+                                                    console.log('Regular'),
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                        ]}
+                    />
+                </Block>
+
+                <Block
+                    marginTop="16px"
+                    padding="16px"
+                    backgroundColor="green.50"
+                    borderRadius="8px"
+                >
+                    <Block marginBottom="8px">
+                        <Text
+                            fontSize={14}
+                            fontWeight="medium"
+                            color="green.700"
+                        >
+                            🎯 How to test submenu search:
+                        </Text>
+                    </Block>
+                    <Text fontSize={12} color="green.600" lineHeight="1.6">
+                        1. Click "🔍 Searchable Submenus" above
+                        <br />
+                        2. Hover over "Documents", "Communication", or "Media
+                        Library"
+                        <br />
+                        3. Notice the search input at the top of each submenu
+                        <br />
+                        4. Type to filter items in real-time (try "recent",
+                        "draft", "video")
+                        <br />
+                        5. Search works on both labels and sublabels
+                        <br />
+                        6. Try nested search in Calendar submenu (hover
+                        Communication → Calendar)
+                        <br />
+                        7. Each submenu has independent search state with max
+                        height scrolling
+                    </Text>
+                </Block>
+
+                <Block
+                    marginTop="16px"
+                    padding="16px"
+                    backgroundColor="blue.50"
+                    borderRadius="8px"
+                >
+                    <Block marginBottom="8px">
+                        <Text
+                            fontSize={14}
+                            fontWeight="medium"
+                            color="blue.700"
+                        >
+                            ⚙️ Implementation Details:
+                        </Text>
+                    </Block>
+                    <Text fontSize={12} color="blue.600" lineHeight="1.6">
+                        • <strong>enableSubMenuSearch: true</strong> - Enables
+                        search in submenu
+                        <br />• <strong>subMenuSearchPlaceholder</strong> -
+                        Custom placeholder text
+                        <br />• <strong>maxHeight: 400px</strong> - Automatic
+                        scrolling for long lists
+                        <br />• <strong>Independent state</strong> - Each
+                        submenu has its own search
+                        <br />• <strong>Recursive filtering</strong> - Works
+                        with unlimited nesting depth
+                        <br />• <strong>Real-time updates</strong> - Instant
+                        filtering as you type
+                    </Text>
                 </Block>
             </Block>
 
