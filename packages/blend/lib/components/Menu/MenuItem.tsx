@@ -90,10 +90,18 @@ const getColor = (
     }
 }
 
-const MenuItem = ({ item, idx }: { item: MenuItemV2Type; idx: number }) => {
+const MenuItem = ({
+    item,
+    idx,
+    maxHeight,
+}: {
+    item: MenuItemV2Type
+    idx: number
+    maxHeight?: number
+}) => {
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
     if (item.subMenu) {
-        return <SubMenu item={item} idx={idx} />
+        return <SubMenu item={item} idx={idx} maxHeight={maxHeight} />
     }
     if (item.variant === undefined) {
         item.variant = MenuItemV2Variant.DEFAULT
