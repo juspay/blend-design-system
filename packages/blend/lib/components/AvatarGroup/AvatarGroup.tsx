@@ -8,6 +8,7 @@ import React, {
 import type { RefObject } from 'react'
 import { Avatar } from '../Avatar'
 import { AvatarShape, AvatarSize } from '../Avatar/types'
+import { SkeletonAvatar } from '../Skeleton'
 import type { AvatarGroupProps } from './types'
 import {
     StyledAvatarGroupContainer,
@@ -118,6 +119,8 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
             shape = AvatarShape.CIRCULAR,
             selectedAvatarIds,
             onSelectionChange,
+            loading = false,
+            skeletonVariant = 'pulse',
             ...props
         },
         ref
@@ -138,8 +141,10 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
         const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
         // Determine visible avatars and overflow count
-        const visibleAvatars = avatars.slice(0, safeMaxCount)
-        const overflowCount = Math.max(0, avatars.length - safeMaxCount)
+        const visibleAvatars = loading ? [] : avatars.slice(0, safeMaxCount)
+        const overflowCount = loading
+            ? 0
+            : Math.max(0, avatars.length - safeMaxCount)
 
         // Position menu when it opens
         useEffect(() => {
@@ -277,43 +282,73 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
             Avatar
         )
 
+        // Render skeleton avatars when loading
+        const renderSkeletonAvatars = () => {
+            return Array.from({ length: safeMaxCount }, (_, index) => (
+                <StyledAvatarWrapper
+                    key={`skeleton-${index}`}
+                    $index={index}
+                    $total={safeMaxCount}
+                    $isSelected={false}
+                    $size={size}
+                >
+                    <SkeletonAvatar
+                        size={size}
+                        shape={shape}
+                        variant={skeletonVariant}
+                        loading={true}
+                    />
+                </StyledAvatarWrapper>
+            ))
+        }
+
         return (
             <StyledAvatarGroupContainer
                 ref={ref}
                 role="group"
-                aria-label={`Group of ${avatars.length} avatars, ${internalSelectedIds.length} selected`}
+                aria-label={
+                    loading
+                        ? `Loading ${safeMaxCount} avatars`
+                        : `Group of ${avatars.length} avatars, ${internalSelectedIds.length} selected`
+                }
                 {...props}
             >
-                {visibleAvatars.map((avatar, index) => (
-                    <StyledAvatarWrapper
-                        key={avatar.id}
-                        $index={index}
-                        $total={visibleAvatars.length}
-                        $isSelected={internalSelectedIds.includes(avatar.id)}
-                        $size={size}
-                        role="button"
-                        tabIndex={0}
-                        aria-pressed={internalSelectedIds.includes(avatar.id)}
-                        aria-label={`Select avatar ${avatar.alt || (typeof avatar.fallback === 'string' ? avatar.fallback : avatar.id)}`}
-                        onClick={() => handleSelect(avatar.id)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault()
-                                handleSelect(avatar.id)
-                            }
-                        }}
-                    >
-                        <Avatar
-                            src={avatar.src}
-                            alt={avatar.alt}
-                            fallback={avatar.fallback}
-                            size={size}
-                            shape={shape}
-                        />
-                    </StyledAvatarWrapper>
-                ))}
+                {loading
+                    ? renderSkeletonAvatars()
+                    : visibleAvatars.map((avatar, index) => (
+                          <StyledAvatarWrapper
+                              key={avatar.id}
+                              $index={index}
+                              $total={visibleAvatars.length}
+                              $isSelected={internalSelectedIds.includes(
+                                  avatar.id
+                              )}
+                              $size={size}
+                              role="button"
+                              tabIndex={0}
+                              aria-pressed={internalSelectedIds.includes(
+                                  avatar.id
+                              )}
+                              aria-label={`Select avatar ${avatar.alt || (typeof avatar.fallback === 'string' ? avatar.fallback : avatar.id)}`}
+                              onClick={() => handleSelect(avatar.id)}
+                              onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                      e.preventDefault()
+                                      handleSelect(avatar.id)
+                                  }
+                              }}
+                          >
+                              <Avatar
+                                  src={avatar.src}
+                                  alt={avatar.alt}
+                                  fallback={avatar.fallback}
+                                  size={size}
+                                  shape={shape}
+                              />
+                          </StyledAvatarWrapper>
+                      ))}
 
-                {overflowCount > 0 && (
+                {!loading && overflowCount > 0 && (
                     <StyledOverflowCounter
                         ref={overflowCounterRef}
                         type="button"
@@ -336,7 +371,7 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                 )}
 
                 {/* Menu displayed when overflow counter is clicked */}
-                {overflowCount > 0 && isMenuOpen && (
+                {!loading && overflowCount > 0 && isMenuOpen && (
                     <StyledMenuContainer
                         ref={menuRef}
                         id="avatar-group-overflow-menu"
@@ -357,7 +392,7 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                 )}
 
                 {/* Hidden text for screen readers to announce the overflow */}
-                {overflowCount > 0 && !isMenuOpen && (
+                {!loading && overflowCount > 0 && !isMenuOpen && (
                     <VisuallyHidden>
                         And {overflowCount} more{' '}
                         {overflowCount === 1 ? 'avatar' : 'avatars'}

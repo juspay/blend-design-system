@@ -1,295 +1,234 @@
-# 🎯 Skeleton Implementation Guide
-
-_Comprehensive Developer & Team Reference_
+# Skeleton Implementation Approach
 
 ## Overview
 
-### Philosophy: Perfect Component Mirroring
+Our skeleton implementation creates **pixel-perfect component replicas** by importing and using the exact same tokens as their real component counterparts.
 
-Unlike traditional skeleton libraries that use generic shapes, our implementation creates **exact component replicas** using actual component tokens for pixel-perfect matching.
+## SkeletonButton Implementation
 
-```typescript
-// ❌ Traditional approach (Material-UI, Ant Design)
-<Skeleton variant="rectangular" width={200} height={40} />
-
-// ✅ Our approach - Perfect component mirroring
-<Skeleton.Button text="Download File" hasLeadingIcon={true} />
-```
-
----
-
-## Architecture
-
-### Three-Layer System
-
-1. **Token Layer** (`skeleton.tokens.ts`) - Animation, colors, responsive sizing
-2. **Base Component** (`Skeleton.tsx`) - Core animation and styling logic
-3. **Specialized Components** - Component-specific token mirroring
-
-### Key Innovation: Token Mirroring
+### 1. Token Mirroring
 
 ```typescript
-// SkeletonButton mirrors actual Button tokens exactly
-const getMirroredButtonStyles = () => ({
-    padding: buttonTokens.padding[size][subType], // ✅ Exact match
-    borderRadius: buttonTokens.borderRadius[buttonType][subType], // ✅ Exact match
-    gap: buttonTokens.gap, // ✅ Exact match
-})
-```
+import type { ButtonTokensType } from '../Button/button.tokens'
+import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
 
----
+const SkeletonButton = forwardRef<HTMLDivElement, SkeletonButtonProps>(
+    ({
+        buttonType = ButtonType.PRIMARY,
+        size = ButtonSize.MEDIUM,
+        subType = ButtonSubType.DEFAULT,
+        ...props
+    }) => {
+        // Import exact Button component tokens
+        const buttonTokens = useResponsiveTokens<ButtonTokensType>('BUTTON')
 
-## Usage Patterns
-
-### Modern Compound API (Recommended)
-
-```typescript
-import { Skeleton } from '@blend/components'
-
-// Wrapper pattern
-<Skeleton loading={isLoading}>
-    <Skeleton.Avatar size="md" />
-    <Skeleton.Text lines={2} />
-    <Skeleton.Button />
-</Skeleton>
-
-// Individual components with perfect sizing
-<Skeleton.Button
-    text="Download File"        // Dynamic width calculation
-    hasLeadingIcon={true}       // +24px width (icon + gap)
-    size="large"               // Character scaling: 9px per char
-    buttonType="primary"       // Exact token mirroring
-    loading={isLoading}
-/>
-
-// Convenience shapes
-<Skeleton.Circle width="40px" height="40px" />
-<Skeleton.Rectangle width="100%" height="20px" />
-```
-
-### Traditional API (Tree-shaking optimized)
-
-```typescript
-import { SkeletonButton, SkeletonText } from '@blend/components'
-
-<SkeletonButton loading={isLoading} text="Submit" />
-<SkeletonText loading={isLoading} lines={3} />
-```
-
----
-
-## Key Features
-
-### 🎯 Content-Aware Dynamic Sizing
-
-```typescript
-// Width adapts to text length + icons
-<Skeleton.Button text="Save" />                    // ~60px (minimum)
-<Skeleton.Button text="Download File" />           // ~120px
-<Skeleton.Button text="Export to Excel" />         // ~180px
-
-// Height = padding + content + padding (exact calculation)
-// Small: 6px + 20px + 6px = 32px
-// Medium: 8px + 20px + 8px = 36px
-// Large: 14px + 20px + 14px = 48px
-```
-
-### ⚡ Performance Optimizations
-
-- **80% Code Duplication Eliminated**: Shared `useSkeletonBase` hook
-- **Tree-Shaking Optimized**: Import only what you need
-- **Motion Preferences**: Respects `prefers-reduced-motion` accessibility setting
-- **GPU Acceleration**: Optimized animations with `will-change`
-
-### ♿ Accessibility First
-
-- Automatic motion preference detection
-- Proper ARIA attributes (`role="progressbar"`, `aria-busy="true"`)
-- Screen reader optimizations
-
----
-
-## Component Reference
-
-### Available Components
-
-```typescript
-<Skeleton.Button />     // Perfect Button token mirroring
-<Skeleton.Text />       // Multi-line text with font size variants
-<Skeleton.Avatar />     // Circle/square avatars with size variants
-<Skeleton.Card />       // Complete card layouts with default content
-<Skeleton.Base />       // Raw skeleton for custom shapes
-```
-
-### Specialized Props
-
-```typescript
-// SkeletonButton - mirrors Button exactly
-interface SkeletonButtonProps {
-    text?: string // For dynamic width calculation
-    hasLeadingIcon?: boolean // For width + spacing calculation
-    hasTrailingIcon?: boolean // For width + spacing calculation
-    buttonType?: ButtonType // Token mirroring: padding, radius, etc.
-    size?: ButtonSize // Character width scaling (7px/8px/9px)
-    subType?: ButtonSubType // default | iconOnly | inline
-    buttonGroupPosition?: string // Border radius adjustments
-    fullWidth?: boolean // 100% width override
-}
-```
-
----
-
-## Implementation Details
-
-### Shared Hook (`useSkeletonBase`)
-
-Eliminates code duplication across all skeleton components:
-
-```typescript
-export const useSkeletonBase = (loading: boolean) => {
-    const tokens = useResponsiveTokens<SkeletonTokensType>('SKELETON')
-    const prefersReducedMotion = window.matchMedia(
-        '(prefers-reduced-motion: reduce)'
-    ).matches
-
-    if (!loading) return { shouldRender: false, tokens: null }
-    return { shouldRender: true, tokens, prefersReducedMotion }
-}
-
-// Usage in all skeleton components:
-const { shouldRender, tokens, prefersReducedMotion } = useSkeletonBase(loading)
-if (!shouldRender) return null
-```
-
-### Dynamic Calculations
-
-```typescript
-// Width calculation (SkeletonButton)
-const estimatedWidth = text.length * getCharacterWidth(size)
-if (hasLeadingIcon) estimatedWidth += 24 // 16px icon + 8px gap
-if (hasTrailingIcon) estimatedWidth += 24
-return Math.max(estimatedWidth + 16, 60) + 'px' // buffer + minimum
-
-// Height calculation
-const verticalPadding = parseInt(
-    buttonTokens.padding[size][subType].split(' ')[0]
-)
-const contentHeight = subType === 'iconOnly' ? 16 : 20
-return `${verticalPadding * 2 + contentHeight}px`
-```
-
----
-
-## Best Practices
-
-### ✅ When to Use
-
-- Data loading >200ms
-- Initial page loads with async content
-- Form submissions with loading states
-- Infinite scroll/pagination
-
-### ✅ Implementation Guidelines
-
-```typescript
-// 1. Use specialized skeletons when available
-<Skeleton.Button text="Download" hasLeadingIcon={true} />
-
-// 2. Provide actual content dimensions
-<Skeleton.Text lines={3} fontSize="lg" />
-
-// 3. Match real component props exactly
-const ButtonWithLoading = ({ loading, ...props }) => {
-    if (loading) return <Skeleton.Button {...props} loading={true} />
-    return <Button {...props} />
-}
-```
-
-### ❌ Avoid
-
-- Loading <100ms (too fast to perceive)
-- Generic fixed dimensions instead of content-aware sizing
-- Error states (use error components)
-- Empty states (use empty state components)
-
----
-
-## File Structure
-
-```
-/components/Skeleton/
-├── Skeleton.tsx                    # Base component with animations
-├── SkeletonButton.tsx             # Button-specific token mirroring
-├── SkeletonText.tsx               # Multi-line text handling
-├── SkeletonAvatar.tsx             # Profile picture skeletons
-├── SkeletonCard.tsx               # Complete card layouts
-├── SkeletonCompound.tsx           # Modern compound component API
-├── hooks/useSkeletonBase.ts       # Shared logic (eliminates duplication)
-├── skeleton.tokens.ts             # Animation, color, sizing tokens
-├── types.ts                       # TypeScript interfaces
-└── index.ts                       # Optimized exports for tree-shaking
-```
-
----
-
-## Adding New Skeleton Components
-
-### Template
-
-```typescript
-const SkeletonNewComponent = forwardRef<HTMLDivElement, SkeletonNewComponentProps>(
-    ({ loading, ...props }, ref) => {
-        const { shouldRender, tokens } = useSkeletonBase(loading)
-        if (!shouldRender) return null
-
-        // Get component tokens for perfect mirroring
-        const componentTokens = useResponsiveTokens<NewComponentTokensType>('NEW_COMPONENT')
-
-        // Mirror component styling exactly
-        const mirroredStyles = {
-            padding: componentTokens.padding,
-            borderRadius: componentTokens.borderRadius,
-            // ... other properties
-        }
-
-        return <Skeleton {...props} {...mirroredStyles} ref={ref} />
+        // Mirror exact Button styling
+        const getMirroredButtonStyles = () => ({
+            padding: buttonTokens.padding[size][subType], // ✅ Exact match
+            borderRadius:
+                buttonTokens.borderRadius[buttonType][subType].default, // ✅ Exact match
+            gap: buttonTokens.gap, // ✅ Exact match
+        })
     }
 )
 ```
 
-### Integration Steps
+### 2. Dynamic Width Calculation
 
-1. Create specialized skeleton with token mirroring
-2. Add to `SkeletonCompound.tsx`
-3. Export from `index.ts`
-4. Update TypeScript types
+Content-aware sizing that matches real Button behavior:
 
----
+```typescript
+const calculateDynamicWidth = () => {
+    if (fullWidth) return '100%'
+    if (width) return width
+    if (subType === ButtonSubType.ICON_ONLY || !text) return 'fit-content'
 
-## Industry Comparison
+    // Character width scaling by button size
+    const getCharacterWidth = () => {
+        switch (size) {
+            case ButtonSize.SMALL:
+                return 7 // ~7px per character
+            case ButtonSize.MEDIUM:
+                return 8 // ~8px per character
+            case ButtonSize.LARGE:
+                return 9 // ~9px per character
+        }
+    }
 
-| Feature               | Material-UI   | Ant Design  | React Loading Skeleton | **Our Implementation**     |
-| --------------------- | ------------- | ----------- | ---------------------- | -------------------------- |
-| **Token Integration** | Basic theming | Theme-based | None                   | ✅ **Perfect mirroring**   |
-| **Dynamic Sizing**    | Static        | Static      | Fixed                  | ✅ **Content-aware**       |
-| **Modern API**        | ❌            | ❌          | ❌                     | ✅ **Compound components** |
-| **Zero Duplication**  | ❌            | ❌          | ❌                     | ✅ **Shared hooks**        |
-| **Accessibility**     | Basic         | Basic       | None                   | ✅ **Motion preferences**  |
+    let estimatedWidth = text.length * getCharacterWidth()
 
----
+    // Add icon widths (16px icon + 8px gap)
+    if (hasLeadingIcon) estimatedWidth += 24
+    if (hasTrailingIcon) estimatedWidth += 24
 
-## Summary
+    return Math.max(estimatedWidth + 16, 60) + 'px' // buffer + minimum
+}
+```
 
-**Our skeleton implementation sets the new industry standard** with:
+### 3. Dynamic Height Calculation
 
-- 🎯 **Perfect Component Mirroring**: Exact dimensional matching using actual component tokens
-- ⚡ **Content-Aware Sizing**: Dynamic width/height based on actual content
-- 🔧 **Zero Code Duplication**: Shared patterns eliminate repetition
-- 🎨 **Modern React Patterns**: Compound components, shared hooks, TypeScript-first
-- ♿ **Accessibility First**: Motion detection, ARIA attributes, screen reader support
+Height calculation that mirrors Button component logic:
 
-**Result**: Pixel-perfect skeleton loading that exceeds Material-UI, Ant Design, and React Loading Skeleton in every measurable category.
+```typescript
+const getMinimumHeight = () => {
+    if (subType === ButtonSubType.INLINE) return 'fit-content'
 
----
+    // Extract vertical padding from Button tokens
+    const verticalPadding = parseInt(
+        buttonStyles.padding.split(' ')[0].replace('px', '')
+    )
 
-_For questions or contributions, contact the design system team._
+    // Content height based on button content
+    const contentHeight = subType === ButtonSubType.ICON_ONLY ? 16 : 20
+
+    // Total: top padding + content + bottom padding
+    return `${verticalPadding * 2 + contentHeight}px`
+}
+```
+
+### 4. ButtonGroup Support
+
+Handles border radius adjustments for button groups:
+
+```typescript
+const getBorderRadius = () => {
+    if (buttonGroupPosition === undefined) return borderRadius
+    if (buttonGroupPosition === 'left')
+        return `${borderRadius} 0 0 ${borderRadius}`
+    if (buttonGroupPosition === 'right')
+        return `0 ${borderRadius} ${borderRadius} 0`
+    return '0px 0px 0px 0px' // center
+}
+```
+
+## Implementation Template
+
+```typescript
+const SkeletonComponent = forwardRef<HTMLDivElement, SkeletonComponentProps>(
+    ({ loading = true, ...props }, ref) => {
+        if (!loading) return null
+
+        // 1. Import target component tokens
+        const componentTokens = useResponsiveTokens<ComponentTokensType>('COMPONENT')
+
+        // 2. Mirror exact styling
+        const getMirroredStyles = () => ({
+            padding: componentTokens.padding[size][variant],
+            borderRadius: componentTokens.borderRadius[type][variant],
+        })
+
+        // 3. Calculate dynamic dimensions (if needed)
+        const dynamicWidth = calculateWidth()
+        const dynamicHeight = calculateHeight()
+
+        return (
+            <Skeleton
+                {...props}
+                {...getMirroredStyles()}
+                width={dynamicWidth}
+                height={dynamicHeight}
+                ref={ref}
+            />
+        )
+    }
+)
+```
+
+## Key Principles
+
+1. **Direct Token Import**: Import exact component tokens using `useResponsiveTokens`
+2. **Perfect Mirroring**: Use exact token values for padding, border radius, gap, etc.
+3. **Content-Aware Sizing**: Calculate dynamic width/height based on actual content
+4. **Conditional Logic**: Mirror component behavior for special cases (icon-only, inline, groups)
+5. **Loading State**: Return `null` when `loading={false}`
+
+## Atomic Design Architecture
+
+### Atoms vs Molecules Approach
+
+Our skeleton implementation follows strict atomic design principles:
+
+#### **Atom: `Skeleton.tsx` (Pure)**
+
+The base Skeleton component is a **pure atom** that only handles:
+
+- Animation rendering (pulse, wave, shimmer)
+- Shape styling (circle, rectangle, rounded)
+- Basic layout properties (width, height, padding)
+
+```typescript
+// Pure atom - no business logic, only visual rendering
+const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
+    ({ variant, animate, width, height, shape, ...rest }, ref) => {
+        // Only handles loading state and animation
+        const { shouldRender, tokens, prefersReducedMotion } = useSkeletonBase(loading)
+
+        if (!shouldRender) return children ? <>{children}</> : null
+
+        return (
+            <StyledSkeleton
+                $variant={variant}
+                $shape={shape}
+                $animate={animate && !prefersReducedMotion}
+                width={width}
+                height={height}
+                {...rest}
+            />
+        )
+    }
+)
+```
+
+#### **Molecule: `SkeletonButton.tsx` (Business Logic)**
+
+SkeletonButton is a **molecule** that contains:
+
+- Component-specific token imports
+- Business logic for sizing calculations
+- Component behavior mirroring
+
+```typescript
+// Molecule - contains business logic and token mirroring
+const SkeletonButton = forwardRef<HTMLDivElement, SkeletonButtonProps>(
+    ({ buttonType, size, subType, text, hasLeadingIcon, ...props }, ref) => {
+        // Business logic: Import Button tokens
+        const buttonTokens = useResponsiveTokens<ButtonTokensType>('BUTTON')
+
+        // Business logic: Calculate dimensions
+        const dynamicWidth = calculateDynamicWidth()
+        const dynamicHeight = getMinimumHeight()
+
+        // Business logic: Mirror exact Button styles
+        const mirroredStyles = getMirroredButtonStyles()
+
+        // Compose with pure atom
+        return (
+            <Skeleton
+                {...props}
+                {...mirroredStyles}
+                width={dynamicWidth}
+                height={dynamicHeight}
+                ref={ref}
+            />
+        )
+    }
+)
+```
+
+### Separation of Concerns
+
+| Layer                         | Responsibility        | Contains                                        |
+| ----------------------------- | --------------------- | ----------------------------------------------- |
+| **Atom (Skeleton)**           | Visual rendering only | Animation, shapes, basic styling                |
+| **Molecule (SkeletonButton)** | Business logic        | Token imports, calculations, component behavior |
+| **Hook (useSkeletonBase)**    | Shared logic          | Loading states, accessibility, token fetching   |
+
+### Benefits of This Architecture
+
+1. **Pure Atoms**: Base Skeleton component has zero business logic, making it highly reusable
+2. **Composability**: Molecules compose atoms with specific business logic
+3. **Maintainability**: Each layer has a single responsibility
+4. **Testability**: Pure atoms can be tested independently of business logic
+5. **Consistency**: All skeleton molecules use the same pure atom foundation
+
+This approach ensures skeleton components are visually identical to their real counterparts while maintaining clean architectural boundaries.

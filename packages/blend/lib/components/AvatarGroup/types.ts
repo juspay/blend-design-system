@@ -15,6 +15,8 @@ export type AvatarGroupProps = {
     shape?: AvatarShape
     selectedAvatarIds?: (string | number)[]
     onSelectionChange?: (selectedIds: (string | number)[]) => void
+    loading?: boolean
+    skeletonVariant?: import('../Skeleton/skeleton.tokens').SkeletonVariant
 } & Omit<HTMLAttributes<HTMLDivElement>, 'children'>
 
 export type StyledAvatarGroupContainerProps = {
