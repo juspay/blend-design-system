@@ -433,7 +433,7 @@ const DataTableWithActions: React.FC = () => {
                     buttonType={ButtonType.PRIMARY}
                     size={ButtonSize.SMALL}
                     text="Add User"
-                    leadingIcon={Plus}
+                    leadingIcon={<Plus />}
                 />
             }
             headerSlot3={
@@ -442,13 +442,13 @@ const DataTableWithActions: React.FC = () => {
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
                         text="Export"
-                        leadingIcon={Download}
+                        leadingIcon={<Download />}
                     />
                     <Button
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
                         text="Filter"
-                        leadingIcon={Filter}
+                        leadingIcon={<Filter />}
                     />
                 </div>
             }
@@ -467,7 +467,7 @@ const DataTableWithActions: React.FC = () => {
                             buttonType={ButtonType.DANGER}
                             size={ButtonSize.SMALL}
                             text="Delete"
-                            leadingIcon={Trash2}
+                            leadingIcon={<Trash2 />}
                         />
                     </div>
                 ) : undefined
@@ -661,21 +661,21 @@ const ComplexDataTable: React.FC = () => {
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
                         text=""
-                        leadingIcon={Eye}
+                        leadingIcon={<Eye />}
                         onClick={() => console.log('View:', row)}
                     />
                     <Button
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
                         text=""
-                        leadingIcon={Edit}
+                        leadingIcon={<Edit />}
                         onClick={() => console.log('Edit:', row)}
                     />
                     <Button
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
                         text=""
-                        leadingIcon={MoreVertical}
+                        leadingIcon={<MoreVertical />}
                         onClick={() => console.log('More:', row)}
                     />
                 </div>
@@ -710,7 +710,7 @@ const ComplexDataTable: React.FC = () => {
                     buttonType={ButtonType.PRIMARY}
                     size={ButtonSize.SMALL}
                     text="Add User"
-                    leadingIcon={Plus}
+                    leadingIcon={<Plus />}
                 />
             }
             headerSlot3={
@@ -719,13 +719,13 @@ const ComplexDataTable: React.FC = () => {
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
                         text="Import"
-                        leadingIcon={Download}
+                        leadingIcon={<Download />}
                     />
                     <Button
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
                         text="Export"
-                        leadingIcon={Download}
+                        leadingIcon={<Download />}
                     />
                 </div>
             }
@@ -756,7 +756,7 @@ const ComplexDataTable: React.FC = () => {
                             buttonType={ButtonType.DANGER}
                             size={ButtonSize.SMALL}
                             text="Delete"
-                            leadingIcon={Trash2}
+                            leadingIcon={<Trash2 />}
                         />
                     </div>
                 ) : undefined
@@ -918,6 +918,248 @@ export const ComplexExample: Story = {
         docs: {
             description: {
                 story: 'Comprehensive DataTable example with all features enabled: search, filtering, sorting, pagination, inline editing, row expansion, column management, and custom actions.',
+            },
+        },
+    },
+}
+
+const SortingControlDataTable: React.FC = () => {
+    const sortingControlColumns: ColumnDefinition<Record<string, unknown>>[] = [
+        {
+            field: 'avatar',
+            header: 'User (Sortable)',
+            type: ColumnType.AVATAR,
+            minWidth: '200px',
+            isSortable: true,
+        },
+        {
+            field: 'email',
+            header: 'Email (Sortable)',
+            type: ColumnType.TEXT,
+            minWidth: '200px',
+            isSortable: true,
+        },
+        {
+            field: 'role',
+            header: 'Role (Non-Sortable)',
+            type: ColumnType.SELECT,
+            minWidth: '150px',
+            isSortable: false,
+            filterType: FilterType.SELECT,
+            filterOptions: [
+                { id: 'manager', label: 'Manager', value: 'Manager' },
+                { id: 'developer', label: 'Developer', value: 'Developer' },
+                { id: 'designer', label: 'Designer', value: 'Designer' },
+                { id: 'analyst', label: 'Analyst', value: 'Analyst' },
+                {
+                    id: 'coordinator',
+                    label: 'Coordinator',
+                    value: 'Coordinator',
+                },
+            ],
+        },
+        {
+            field: 'department',
+            header: 'Department (Default Sortable)',
+            type: ColumnType.SELECT,
+            minWidth: '150px',
+            filterType: FilterType.SELECT,
+            filterOptions: [
+                {
+                    id: 'engineering',
+                    label: 'Engineering',
+                    value: 'Engineering',
+                },
+                { id: 'sales', label: 'Sales', value: 'Sales' },
+                { id: 'marketing', label: 'Marketing', value: 'Marketing' },
+                { id: 'hr', label: 'HR', value: 'HR' },
+                { id: 'finance', label: 'Finance', value: 'Finance' },
+            ],
+        },
+        {
+            field: 'status',
+            header: 'Status (Non-Sortable)',
+            type: ColumnType.TAG,
+            minWidth: '120px',
+            isSortable: false,
+            filterType: FilterType.SELECT,
+            filterOptions: [
+                { id: 'active', label: 'Active', value: 'Active' },
+                { id: 'inactive', label: 'Inactive', value: 'Inactive' },
+                { id: 'pending', label: 'Pending', value: 'Pending' },
+                { id: 'onleave', label: 'On Leave', value: 'On Leave' },
+            ],
+        },
+        {
+            field: 'joinDate',
+            header: 'Join Date (Sortable)',
+            type: ColumnType.DATE,
+            minWidth: '150px',
+            isSortable: true,
+            renderCell: (value) => {
+                const date = value as unknown as Date
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                })
+            },
+        },
+        {
+            field: 'salary',
+            header: 'Salary (Non-Sortable)',
+            type: ColumnType.NUMBER,
+            minWidth: '120px',
+            isSortable: false,
+            renderCell: (value) => {
+                const salary = value as number
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                }).format(salary)
+            },
+        },
+        {
+            field: 'skills',
+            header: 'Skills (Auto Non-Sortable)',
+            type: ColumnType.MULTISELECT,
+            minWidth: '200px',
+            isSortable: false,
+            filterType: FilterType.MULTISELECT,
+            renderCell: (value) => {
+                const skills = value as string[]
+                return skills.join(', ')
+            },
+        },
+    ]
+
+    return (
+        <div>
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f9fafb',
+                    borderRadius: '8px',
+                }}
+            >
+                <h4 style={{ marginBottom: '12px', color: '#374151' }}>
+                    Column Sorting Control Demo
+                </h4>
+                <p
+                    style={{
+                        marginBottom: '8px',
+                        color: '#6b7280',
+                        fontSize: '14px',
+                    }}
+                >
+                    This example demonstrates how to control sorting at the
+                    column level:
+                </p>
+                <ul
+                    style={{
+                        marginLeft: '20px',
+                        color: '#6b7280',
+                        fontSize: '14px',
+                    }}
+                >
+                    <li>
+                        <strong>Sortable columns:</strong> User, Email, Join
+                        Date - have sort icons and respond to clicks
+                    </li>
+                    <li>
+                        <strong>Non-sortable columns:</strong> Role, Status,
+                        Salary, Skills - no sort icons, clicks are ignored
+                    </li>
+                    <li>
+                        <strong>Default behavior:</strong> Department column
+                        (isSortable not specified) - defaults to sortable
+                    </li>
+                </ul>
+                <p
+                    style={{
+                        marginTop: '12px',
+                        color: '#6b7280',
+                        fontSize: '14px',
+                    }}
+                >
+                    <strong>Usage:</strong> Set <code>isSortable: false</code>{' '}
+                    on column definitions to disable sorting. When not
+                    specified, columns default to sortable (isSortable: true).
+                </p>
+            </div>
+            <DataTable
+                data={sampleUsers.slice(0, 15) as any[]}
+                columns={sortingControlColumns as any[]}
+                idField="id"
+                title="Column Sorting Control Example"
+                description="Demonstrates sortable vs non-sortable columns"
+                enableSearch={true}
+                enableFiltering={true}
+                defaultSort={{
+                    field: 'joinDate',
+                    direction: SortDirection.DESCENDING,
+                }}
+                pagination={{
+                    currentPage: 1,
+                    pageSize: 10,
+                    totalRows: 15,
+                    pageSizeOptions: [10, 15],
+                }}
+            />
+        </div>
+    )
+}
+
+export const ColumnSortingControl: Story = {
+    render: () => <SortingControlDataTable />,
+    parameters: {
+        docs: {
+            description: {
+                story: `
+**Column-Level Sorting Control**
+
+This story demonstrates how to enable or disable sorting at the column level using the \`isSortable\` property:
+
+- **\`isSortable: true\`** - Column is sortable (shows sort icons, responds to clicks)
+- **\`isSortable: false\`** - Column is not sortable (no sort icons, clicks ignored)  
+- **\`isSortable\` not specified** - Defaults to sortable behavior
+
+**Key Features:**
+- Sortable columns display sort indicators in the header
+- Non-sortable columns have no sort indicators and don't respond to header clicks
+- Filtering can still be enabled independently of sorting
+- Default sorting can be applied to any sortable column
+
+**Use Cases:**
+- Disable sorting for complex data types (arrays, objects)
+- Prevent sorting on calculated or derived fields
+- Control user interaction for specific business requirements
+- Maintain consistent UX by clearly indicating sortable vs non-sortable columns
+
+\`\`\`tsx
+const columns: ColumnDefinition<User>[] = [
+  {
+    field: 'name',
+    header: 'Name',
+    type: ColumnType.TEXT,
+    isSortable: true  // Explicitly sortable
+  },
+  {
+    field: 'tags',
+    header: 'Tags', 
+    type: ColumnType.MULTISELECT,
+    isSortable: false // Explicitly non-sortable
+  },
+  {
+    field: 'department',
+    header: 'Department',
+    type: ColumnType.SELECT
+    // isSortable defaults to true when not specified
+  }
+];
+\`\`\`
+            `,
             },
         },
     },

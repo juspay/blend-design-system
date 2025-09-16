@@ -472,7 +472,8 @@ const TableHeader = forwardRef<
                                         )}
                                     </Block>
 
-                                    {(columnConfig.supportsSorting ||
+                                    {((columnConfig.supportsSorting &&
+                                        column.isSortable !== false) ||
                                         columnConfig.supportsFiltering) && (
                                         <Block
                                             display="flex"
