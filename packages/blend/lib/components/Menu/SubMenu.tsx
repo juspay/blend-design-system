@@ -9,10 +9,14 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { contentBaseStyle } from './Menu'
 import MenuItem from './MenuItem'
-import { ChevronRightIcon } from 'lucide-react'
+import { ChevronRightIcon, Search } from 'lucide-react'
 import { type MenuItemStates, type MenuTokensType } from './menu.tokens'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import SearchInput from '../Inputs/SearchInput/SearchInput'
+import { FOUNDATION_THEME } from '../../tokens'
+import { filterMenuItem } from './utils'
+import React, { useState, useRef } from 'react'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -143,11 +147,29 @@ const getSubLabelColor = (
 export const SubMenu = ({
     item,
     idx,
+    maxHeight,
 }: {
     item: MenuItemV2Type
     idx: number
+    maxHeight?: number
 }) => {
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
+    const [searchText, setSearchText] = useState<string>('')
+    const searchInputRef = useRef<HTMLInputElement>(null)
+
+    const filteredSubMenuItems = React.useMemo(() => {
+        if (!item.subMenu) return []
+        if (!searchText || !item.enableSubMenuSearch) return item.subMenu
+
+        const lower = searchText.toLowerCase()
+        return item.subMenu
+            .map((subItem) => filterMenuItem(subItem, lower))
+            .filter(Boolean) as MenuItemV2Type[]
+    }, [item.subMenu, searchText, item.enableSubMenuSearch])
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value)
+    }
 
     return (
         <RadixMenu.Sub key={idx}>
@@ -238,20 +260,64 @@ export const SubMenu = ({
             <RadixMenu.Portal>
                 <SubContent
                     style={{
-                        paddingTop: menuTokens.paddingTop,
+                        paddingTop: item.enableSubMenuSearch
+                            ? 0
+                            : menuTokens.paddingTop,
                         paddingBottom: menuTokens.paddingBottom,
                         borderRadius: menuTokens.borderRadius,
+                        minWidth: '200px',
+                        maxWidth: '280px',
+                        maxHeight: maxHeight
+                            ? `${maxHeight}px`
+                            : 'var(--radix-popper-available-height)',
+                        overflowY: 'auto',
                     }}
                     avoidCollisions
+                    onFocusCapture={(e) => {
+                        if (
+                            item.enableSubMenuSearch &&
+                            searchText &&
+                            searchInputRef.current
+                        ) {
+                            if (e.target !== searchInputRef.current) {
+                                e.preventDefault()
+                                searchInputRef.current.focus()
+                            }
+                        }
+                    }}
                 >
-                    {item.subMenu &&
-                        item.subMenu.map((subItem, subIdx) => (
-                            <MenuItem
-                                key={subIdx}
-                                item={subItem}
-                                idx={subIdx}
+                    {item.enableSubMenuSearch && (
+                        <Block
+                            width="100%"
+                            position="sticky"
+                            top={0}
+                            left={0}
+                            right={0}
+                            zIndex={1000}
+                            backgroundColor="white"
+                        >
+                            <SearchInput
+                                ref={searchInputRef}
+                                leftSlot={
+                                    <Search
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[400]
+                                        }
+                                        size={16}
+                                    />
+                                }
+                                placeholder={
+                                    item.subMenuSearchPlaceholder || 'Search...'
+                                }
+                                value={searchText}
+                                onChange={handleSearchChange}
+                                autoFocus
                             />
-                        ))}
+                        </Block>
+                    )}
+                    {filteredSubMenuItems.map((subItem, subIdx) => (
+                        <MenuItem key={subIdx} item={subItem} idx={subIdx} />
+                    ))}
                 </SubContent>
             </RadixMenu.Portal>
         </RadixMenu.Sub>
