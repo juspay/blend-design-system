@@ -3,51 +3,62 @@ import { FOUNDATION_THEME, type ThemeType } from '../../tokens'
 import { TagColor, TagShape, TagSize, TagVariant } from './types'
 import { type BreakpointType } from '../../breakpoints/breakPoints'
 
+// TagTokens following pattern: CSSProperty.[size].[variant].[subType].[state]
+// - CSSProperty: backgroundColor, color, borderColor, borderRadius, borderWidth, fontSize, fontWeight, gap, padding, height
+// - size: xs, sm, md, lg (optional - not all properties need size variants)
+// - variant: noFill, attentive, subtle (optional - some properties like fontSize don't have variants)
+// - subType: neutral, primary, success, error, warning, purple (for colors) | squarical, rounded (for shapes)
+// - state: default (can be extended for hover, focus, etc.)
 export type TagTokensType = Readonly<{
-    background: {
+    // CSS Property: backgroundColor - follows pattern backgroundColor.[variant].[subType]
+    backgroundColor: {
         [key in TagVariant]: {
-            [key in TagColor]: CSSObject['color']
+            [key in TagColor]: CSSObject['backgroundColor']
         }
     }
+    // CSS Property: color - follows pattern color.[variant].[subType]
     color: {
         [key in TagVariant]: {
             [key in TagColor]: CSSObject['color']
         }
     }
+    // CSS Property: borderColor - follows pattern borderColor.[variant].[subType]
     borderColor: {
         [key in TagVariant]: {
-            [key in TagColor]: CSSObject['color']
+            [key in TagColor]: CSSObject['borderColor']
         }
     }
+    // CSS Property: borderRadius - follows pattern borderRadius.[subType].[size] (shape as subType)
     borderRadius: {
         [key in TagShape]: {
             [key in TagSize]: CSSObject['borderRadius']
         }
     }
+    // CSS Property: borderWidth - follows pattern borderWidth.[variant].[subType]
     borderWidth: {
         [key in TagVariant]: {
             [key in TagColor]: CSSObject['borderWidth']
         }
     }
-    font: {
-        [key in TagSize]: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-        }
+    // CSS Property: fontSize - follows pattern fontSize.[size]
+    fontSize: {
+        [key in TagSize]: CSSObject['fontSize']
     }
+    // CSS Property: fontWeight - follows pattern fontWeight.[size]
+    fontWeight: {
+        [key in TagSize]: CSSObject['fontWeight']
+    }
+    // CSS Property: gap - follows pattern gap.[size]
     gap: {
         [key in TagSize]: CSSObject['gap']
     }
+    // CSS Property: padding - follows pattern padding.[size]
     padding: {
         [key in TagSize]: CSSObject['padding']
     }
+    // CSS Property: height - follows pattern height.[size]
     height: {
         [key in TagSize]: CSSObject['height']
-    }
-    slot: {
-        size: {
-            [key in TagSize]: CSSObject['width']
-        }
     }
 }>
 
@@ -56,7 +67,7 @@ export type ResponsiveTagTokens = {
 }
 
 const tagTokens: TagTokensType = {
-    background: {
+    backgroundColor: {
         noFill: {
             neutral: FOUNDATION_THEME.colors.gray[0],
             primary: FOUNDATION_THEME.colors.gray[0],
@@ -174,23 +185,17 @@ const tagTokens: TagTokensType = {
             purple: 1,
         },
     },
-    font: {
-        xs: {
-            fontSize: FOUNDATION_THEME.font.size.body.sm.fontSize,
-            fontWeight: FOUNDATION_THEME.font.weight[600],
-        },
-        sm: {
-            fontSize: FOUNDATION_THEME.font.size.body.sm.fontSize,
-            fontWeight: FOUNDATION_THEME.font.weight[600],
-        },
-        md: {
-            fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-            fontWeight: FOUNDATION_THEME.font.weight[600],
-        },
-        lg: {
-            fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-            fontWeight: FOUNDATION_THEME.font.weight[600],
-        },
+    fontSize: {
+        xs: FOUNDATION_THEME.font.size.body.sm.fontSize,
+        sm: FOUNDATION_THEME.font.size.body.sm.fontSize,
+        md: FOUNDATION_THEME.font.size.body.md.fontSize,
+        lg: FOUNDATION_THEME.font.size.body.md.fontSize,
+    },
+    fontWeight: {
+        xs: FOUNDATION_THEME.font.weight[600],
+        sm: FOUNDATION_THEME.font.weight[600],
+        md: FOUNDATION_THEME.font.weight[600],
+        lg: FOUNDATION_THEME.font.weight[600],
     },
     gap: {
         xs: FOUNDATION_THEME.unit[6],
@@ -210,111 +215,103 @@ const tagTokens: TagTokensType = {
         md: FOUNDATION_THEME.unit[24],
         lg: FOUNDATION_THEME.unit[28],
     },
-    slot: {
-        size: {
-            xs: FOUNDATION_THEME.unit[12],
-            sm: FOUNDATION_THEME.unit[12],
-            md: FOUNDATION_THEME.unit[12],
-            lg: FOUNDATION_THEME.unit[12],
-        },
-    },
 }
 
 export const getTagTokens = (
-    foundationToken: ThemeType
+    FOUNDATION_THEME: ThemeType
 ): ResponsiveTagTokens => {
     return {
         sm: {
-            background: {
+            backgroundColor: {
                 noFill: {
-                    neutral: foundationToken.colors.gray[0],
-                    primary: foundationToken.colors.gray[0],
-                    success: foundationToken.colors.gray[0],
-                    error: foundationToken.colors.gray[0],
-                    warning: foundationToken.colors.gray[0],
-                    purple: foundationToken.colors.gray[0],
+                    neutral: FOUNDATION_THEME.colors.gray[0],
+                    primary: FOUNDATION_THEME.colors.gray[0],
+                    success: FOUNDATION_THEME.colors.gray[0],
+                    error: FOUNDATION_THEME.colors.gray[0],
+                    warning: FOUNDATION_THEME.colors.gray[0],
+                    purple: FOUNDATION_THEME.colors.gray[0],
                 },
                 attentive: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
+                    neutral: FOUNDATION_THEME.colors.gray[950],
+                    primary: FOUNDATION_THEME.colors.primary[600],
+                    success: FOUNDATION_THEME.colors.green[600],
+                    error: FOUNDATION_THEME.colors.red[600],
+                    warning: FOUNDATION_THEME.colors.orange[500],
+                    purple: FOUNDATION_THEME.colors.purple[500],
                 },
                 subtle: {
-                    neutral: foundationToken.colors.gray[50],
-                    primary: foundationToken.colors.primary[50],
-                    success: foundationToken.colors.green[50],
-                    error: foundationToken.colors.red[50],
-                    warning: foundationToken.colors.orange[50],
-                    purple: foundationToken.colors.purple[50],
+                    neutral: FOUNDATION_THEME.colors.gray[50],
+                    primary: FOUNDATION_THEME.colors.primary[50],
+                    success: FOUNDATION_THEME.colors.green[50],
+                    error: FOUNDATION_THEME.colors.red[50],
+                    warning: FOUNDATION_THEME.colors.orange[50],
+                    purple: FOUNDATION_THEME.colors.purple[50],
                 },
             },
             color: {
                 noFill: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[800],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
+                    neutral: FOUNDATION_THEME.colors.gray[950],
+                    primary: FOUNDATION_THEME.colors.primary[800],
+                    success: FOUNDATION_THEME.colors.green[600],
+                    error: FOUNDATION_THEME.colors.red[600],
+                    warning: FOUNDATION_THEME.colors.orange[500],
+                    purple: FOUNDATION_THEME.colors.purple[500],
                 },
                 attentive: {
-                    neutral: foundationToken.colors.gray[0],
-                    primary: foundationToken.colors.gray[0],
-                    success: foundationToken.colors.gray[0],
-                    error: foundationToken.colors.gray[0],
-                    warning: foundationToken.colors.gray[0],
-                    purple: foundationToken.colors.gray[0],
+                    neutral: FOUNDATION_THEME.colors.gray[0],
+                    primary: FOUNDATION_THEME.colors.gray[0],
+                    success: FOUNDATION_THEME.colors.gray[0],
+                    error: FOUNDATION_THEME.colors.gray[0],
+                    warning: FOUNDATION_THEME.colors.gray[0],
+                    purple: FOUNDATION_THEME.colors.gray[0],
                 },
                 subtle: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[600],
-                    purple: foundationToken.colors.purple[600],
+                    neutral: FOUNDATION_THEME.colors.gray[950],
+                    primary: FOUNDATION_THEME.colors.primary[600],
+                    success: FOUNDATION_THEME.colors.green[600],
+                    error: FOUNDATION_THEME.colors.red[600],
+                    warning: FOUNDATION_THEME.colors.orange[600],
+                    purple: FOUNDATION_THEME.colors.purple[600],
                 },
             },
             borderColor: {
                 noFill: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
+                    neutral: FOUNDATION_THEME.colors.gray[950],
+                    primary: FOUNDATION_THEME.colors.primary[600],
+                    success: FOUNDATION_THEME.colors.green[600],
+                    error: FOUNDATION_THEME.colors.red[600],
+                    warning: FOUNDATION_THEME.colors.orange[500],
+                    purple: FOUNDATION_THEME.colors.purple[500],
                 },
                 subtle: {
-                    neutral: foundationToken.colors.gray[200],
-                    primary: foundationToken.colors.primary[100],
-                    success: foundationToken.colors.green[100],
-                    error: foundationToken.colors.red[100],
-                    warning: foundationToken.colors.orange[100],
-                    purple: foundationToken.colors.purple[100],
+                    neutral: FOUNDATION_THEME.colors.gray[200],
+                    primary: FOUNDATION_THEME.colors.primary[100],
+                    success: FOUNDATION_THEME.colors.green[100],
+                    error: FOUNDATION_THEME.colors.red[100],
+                    warning: FOUNDATION_THEME.colors.orange[100],
+                    purple: FOUNDATION_THEME.colors.purple[100],
                 },
                 attentive: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
+                    neutral: FOUNDATION_THEME.colors.gray[950],
+                    primary: FOUNDATION_THEME.colors.primary[600],
+                    success: FOUNDATION_THEME.colors.green[600],
+                    error: FOUNDATION_THEME.colors.red[600],
+                    warning: FOUNDATION_THEME.colors.orange[500],
+                    purple: FOUNDATION_THEME.colors.purple[500],
                 },
             },
             borderRadius: {
                 squarical: {
-                    xs: foundationToken.border.radius[6],
-                    sm: foundationToken.border.radius[6],
-                    md: foundationToken.border.radius[6],
-                    lg: foundationToken.border.radius[8],
+                    xs: FOUNDATION_THEME.border.radius[6],
+                    sm: FOUNDATION_THEME.border.radius[6],
+                    md: FOUNDATION_THEME.border.radius[6],
+                    lg: FOUNDATION_THEME.border.radius[8],
                 },
                 rounded: {
-                    xs: foundationToken.border.radius.full,
-                    sm: foundationToken.border.radius.full,
-                    md: foundationToken.border.radius.full,
-                    lg: foundationToken.border.radius.full,
+                    xs: FOUNDATION_THEME.border.radius.full,
+                    sm: FOUNDATION_THEME.border.radius.full,
+                    md: FOUNDATION_THEME.border.radius.full,
+                    lg: FOUNDATION_THEME.border.radius.full,
                 },
             },
             borderWidth: {
@@ -343,142 +340,128 @@ export const getTagTokens = (
                     purple: 1,
                 },
             },
-            font: {
-                xs: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                },
-                sm: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                },
-                md: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                },
-                lg: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                },
+            fontSize: {
+                xs: FOUNDATION_THEME.font.size.body.sm.fontSize,
+                sm: FOUNDATION_THEME.font.size.body.sm.fontSize,
+                md: FOUNDATION_THEME.font.size.body.md.fontSize,
+                lg: FOUNDATION_THEME.font.size.body.md.fontSize,
+            },
+            fontWeight: {
+                xs: FOUNDATION_THEME.font.weight[600],
+                sm: FOUNDATION_THEME.font.weight[600],
+                md: FOUNDATION_THEME.font.weight[600],
+                lg: FOUNDATION_THEME.font.weight[600],
             },
             gap: {
-                xs: foundationToken.unit[6],
-                sm: foundationToken.unit[6],
-                md: foundationToken.unit[6],
-                lg: foundationToken.unit[6],
+                xs: FOUNDATION_THEME.unit[6],
+                sm: FOUNDATION_THEME.unit[6],
+                md: FOUNDATION_THEME.unit[6],
+                lg: FOUNDATION_THEME.unit[6],
             },
             padding: {
-                xs: `${foundationToken.unit[2]} ${foundationToken.unit[6]}`,
-                sm: `${foundationToken.unit[3]} ${foundationToken.unit[8]}`,
-                md: `${foundationToken.unit[4]} ${foundationToken.unit[10]}`,
-                lg: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
+                xs: `${FOUNDATION_THEME.unit[2]} ${FOUNDATION_THEME.unit[6]}`,
+                sm: `${FOUNDATION_THEME.unit[3]} ${FOUNDATION_THEME.unit[8]}`,
+                md: `${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[10]}`,
+                lg: `${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[12]}`,
             },
             height: {
-                xs: foundationToken.unit[20],
-                sm: foundationToken.unit[22],
-                md: foundationToken.unit[24],
-                lg: foundationToken.unit[28],
-            },
-            slot: {
-                size: {
-                    xs: foundationToken.unit[12],
-                    sm: foundationToken.unit[12],
-                    md: foundationToken.unit[12],
-                    lg: foundationToken.unit[12],
-                },
+                xs: FOUNDATION_THEME.unit[20],
+                sm: FOUNDATION_THEME.unit[22],
+                md: FOUNDATION_THEME.unit[24],
+                lg: FOUNDATION_THEME.unit[28],
             },
         },
         lg: {
-            background: {
+            backgroundColor: {
                 noFill: {
-                    neutral: foundationToken.colors.gray[0],
-                    primary: foundationToken.colors.gray[0],
-                    success: foundationToken.colors.gray[0],
-                    error: foundationToken.colors.gray[0],
-                    warning: foundationToken.colors.gray[0],
-                    purple: foundationToken.colors.gray[0],
+                    neutral: FOUNDATION_THEME.colors.gray[0],
+                    primary: FOUNDATION_THEME.colors.gray[0],
+                    success: FOUNDATION_THEME.colors.gray[0],
+                    error: FOUNDATION_THEME.colors.gray[0],
+                    warning: FOUNDATION_THEME.colors.gray[0],
+                    purple: FOUNDATION_THEME.colors.gray[0],
                 },
                 attentive: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
+                    neutral: FOUNDATION_THEME.colors.gray[950],
+                    primary: FOUNDATION_THEME.colors.primary[600],
+                    success: FOUNDATION_THEME.colors.green[600],
+                    error: FOUNDATION_THEME.colors.red[600],
+                    warning: FOUNDATION_THEME.colors.orange[500],
+                    purple: FOUNDATION_THEME.colors.purple[500],
                 },
                 subtle: {
-                    neutral: foundationToken.colors.gray[50],
-                    primary: foundationToken.colors.primary[50],
-                    success: foundationToken.colors.green[50],
-                    error: foundationToken.colors.red[50],
-                    warning: foundationToken.colors.orange[50],
-                    purple: foundationToken.colors.purple[50],
+                    neutral: FOUNDATION_THEME.colors.gray[50],
+                    primary: FOUNDATION_THEME.colors.primary[50],
+                    success: FOUNDATION_THEME.colors.green[50],
+                    error: FOUNDATION_THEME.colors.red[50],
+                    warning: FOUNDATION_THEME.colors.orange[50],
+                    purple: FOUNDATION_THEME.colors.purple[50],
                 },
             },
             color: {
                 noFill: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[800],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
+                    neutral: FOUNDATION_THEME.colors.gray[950],
+                    primary: FOUNDATION_THEME.colors.primary[800],
+                    success: FOUNDATION_THEME.colors.green[600],
+                    error: FOUNDATION_THEME.colors.red[600],
+                    warning: FOUNDATION_THEME.colors.orange[500],
+                    purple: FOUNDATION_THEME.colors.purple[500],
                 },
                 attentive: {
-                    neutral: foundationToken.colors.gray[0],
-                    primary: foundationToken.colors.gray[0],
-                    success: foundationToken.colors.gray[0],
-                    error: foundationToken.colors.gray[0],
-                    warning: foundationToken.colors.gray[0],
-                    purple: foundationToken.colors.gray[0],
+                    neutral: FOUNDATION_THEME.colors.gray[0],
+                    primary: FOUNDATION_THEME.colors.gray[0],
+                    success: FOUNDATION_THEME.colors.gray[0],
+                    error: FOUNDATION_THEME.colors.gray[0],
+                    warning: FOUNDATION_THEME.colors.gray[0],
+                    purple: FOUNDATION_THEME.colors.gray[0],
                 },
                 subtle: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[600],
-                    purple: foundationToken.colors.purple[600],
+                    neutral: FOUNDATION_THEME.colors.gray[950],
+                    primary: FOUNDATION_THEME.colors.primary[600],
+                    success: FOUNDATION_THEME.colors.green[600],
+                    error: FOUNDATION_THEME.colors.red[600],
+                    warning: FOUNDATION_THEME.colors.orange[600],
+                    purple: FOUNDATION_THEME.colors.purple[600],
                 },
             },
             borderColor: {
                 noFill: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
+                    neutral: FOUNDATION_THEME.colors.gray[950],
+                    primary: FOUNDATION_THEME.colors.primary[600],
+                    success: FOUNDATION_THEME.colors.green[600],
+                    error: FOUNDATION_THEME.colors.red[600],
+                    warning: FOUNDATION_THEME.colors.orange[500],
+                    purple: FOUNDATION_THEME.colors.purple[500],
                 },
                 subtle: {
-                    neutral: foundationToken.colors.gray[200],
-                    primary: foundationToken.colors.primary[100],
-                    success: foundationToken.colors.green[100],
-                    error: foundationToken.colors.red[100],
-                    warning: foundationToken.colors.orange[100],
-                    purple: foundationToken.colors.purple[100],
+                    neutral: FOUNDATION_THEME.colors.gray[200],
+                    primary: FOUNDATION_THEME.colors.primary[100],
+                    success: FOUNDATION_THEME.colors.green[100],
+                    error: FOUNDATION_THEME.colors.red[100],
+                    warning: FOUNDATION_THEME.colors.orange[100],
+                    purple: FOUNDATION_THEME.colors.purple[100],
                 },
                 attentive: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
+                    neutral: FOUNDATION_THEME.colors.gray[950],
+                    primary: FOUNDATION_THEME.colors.primary[600],
+                    success: FOUNDATION_THEME.colors.green[600],
+                    error: FOUNDATION_THEME.colors.red[600],
+                    warning: FOUNDATION_THEME.colors.orange[500],
+                    purple: FOUNDATION_THEME.colors.purple[500],
                 },
             },
             borderRadius: {
                 squarical: {
-                    xs: foundationToken.border.radius[6],
-                    sm: foundationToken.border.radius[6],
-                    md: foundationToken.border.radius[6],
-                    lg: foundationToken.border.radius[8],
+                    xs: FOUNDATION_THEME.border.radius[6],
+                    sm: FOUNDATION_THEME.border.radius[6],
+                    md: FOUNDATION_THEME.border.radius[6],
+                    lg: FOUNDATION_THEME.border.radius[8],
                 },
                 rounded: {
-                    xs: foundationToken.border.radius.full,
-                    sm: foundationToken.border.radius.full,
-                    md: foundationToken.border.radius.full,
-                    lg: foundationToken.border.radius.full,
+                    xs: FOUNDATION_THEME.border.radius.full,
+                    sm: FOUNDATION_THEME.border.radius.full,
+                    md: FOUNDATION_THEME.border.radius.full,
+                    lg: FOUNDATION_THEME.border.radius.full,
                 },
             },
             borderWidth: {
@@ -507,49 +490,35 @@ export const getTagTokens = (
                     purple: 1,
                 },
             },
-            font: {
-                xs: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                },
-                sm: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                },
-                md: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                },
-                lg: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                },
+            fontSize: {
+                xs: FOUNDATION_THEME.font.size.body.sm.fontSize,
+                sm: FOUNDATION_THEME.font.size.body.sm.fontSize,
+                md: FOUNDATION_THEME.font.size.body.md.fontSize,
+                lg: FOUNDATION_THEME.font.size.body.md.fontSize,
+            },
+            fontWeight: {
+                xs: FOUNDATION_THEME.font.weight[600],
+                sm: FOUNDATION_THEME.font.weight[600],
+                md: FOUNDATION_THEME.font.weight[600],
+                lg: FOUNDATION_THEME.font.weight[600],
             },
             gap: {
-                xs: foundationToken.unit[6],
-                sm: foundationToken.unit[6],
-                md: foundationToken.unit[6],
-                lg: foundationToken.unit[6],
+                xs: FOUNDATION_THEME.unit[6],
+                sm: FOUNDATION_THEME.unit[6],
+                md: FOUNDATION_THEME.unit[6],
+                lg: FOUNDATION_THEME.unit[6],
             },
             padding: {
-                xs: `${foundationToken.unit[2]} ${foundationToken.unit[6]}`,
-                sm: `${foundationToken.unit[3]} ${foundationToken.unit[8]}`,
-                md: `${foundationToken.unit[4]} ${foundationToken.unit[10]}`,
-                lg: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
+                xs: `${FOUNDATION_THEME.unit[2]} ${FOUNDATION_THEME.unit[6]}`,
+                sm: `${FOUNDATION_THEME.unit[3]} ${FOUNDATION_THEME.unit[8]}`,
+                md: `${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[10]}`,
+                lg: `${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[12]}`,
             },
             height: {
-                xs: foundationToken.unit[20],
-                sm: foundationToken.unit[22],
-                md: foundationToken.unit[24],
-                lg: foundationToken.unit[28],
-            },
-            slot: {
-                size: {
-                    xs: foundationToken.unit[12],
-                    sm: foundationToken.unit[12],
-                    md: foundationToken.unit[12],
-                    lg: foundationToken.unit[12],
-                },
+                xs: FOUNDATION_THEME.unit[20],
+                sm: FOUNDATION_THEME.unit[22],
+                md: FOUNDATION_THEME.unit[24],
+                lg: FOUNDATION_THEME.unit[28],
             },
         },
     }

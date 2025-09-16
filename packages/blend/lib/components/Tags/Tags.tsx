@@ -45,7 +45,7 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
                 gap={tagTokens.gap[size]}
                 height={tagTokens.height[size]}
                 padding={tagTokens.padding[size]}
-                backgroundColor={tagTokens.background[variant][color]}
+                backgroundColor={tagTokens.backgroundColor[variant][color]}
                 color={tagTokens.color[variant][color]}
                 border={`${tagTokens.borderWidth[variant][color]}px solid ${tagTokens.borderColor[variant][color]}`}
                 borderRadius={borderRadius}
@@ -54,8 +54,8 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
             >
                 {leftSlot && <Block contentCentered>{leftSlot}</Block>}
                 <Text
-                    fontSize={tagTokens.font[size].fontSize}
-                    fontWeight={tagTokens.font[size].fontWeight}
+                    fontSize={tagTokens.fontSize[size]}
+                    fontWeight={tagTokens.fontWeight[size]}
                 >
                     {text}
                 </Text>
