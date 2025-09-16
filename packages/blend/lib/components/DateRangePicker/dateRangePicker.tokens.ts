@@ -5,7 +5,6 @@ import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type CalendarTokenType = {
     quickRange: {
-        width: CSSObject['width']
         trigger: {
             height: CSSObject['height']
             borderLeft: CSSObject['borderLeft']
@@ -22,10 +21,12 @@ export type CalendarTokenType = {
             backgroundColor: CSSObject['backgroundColor']
             iconSize: CSSObject['iconSize']
             text: CSSObject
+            gap: CSSObject['gap']
         }
         content: {
             padding: CSSObject['padding']
             width: CSSObject['width']
+            maxHeight: CSSObject['maxHeight']
             zIndex: CSSObject['zIndex']
             backgroundColor: CSSObject['backgroundColor']
             borderRadius: CSSObject['borderRadius']
@@ -407,7 +408,6 @@ export const getCalendarToken = (
             },
         },
         quickRange: {
-            width: '136px',
             trigger: {
                 height: foundationToken.unit[40],
                 borderLeft: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
@@ -415,7 +415,7 @@ export const getCalendarToken = (
                 borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
                 borderTopLeftRadius: foundationToken.border.radius[8],
                 borderBottomLeftRadius: foundationToken.border.radius[8],
-                padding: `${foundationToken.unit[10]} ${foundationToken.unit[12]}`,
+                padding: `${foundationToken.unit[10]} ${foundationToken.unit[14]}`,
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -428,10 +428,12 @@ export const getCalendarToken = (
                     fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
                     fontWeight: foundationToken.font.weight[500],
                 },
+                gap: foundationToken.unit[8],
             },
             content: {
                 padding: FOUNDATION_THEME.unit[4],
                 width: '100%',
+                maxHeight: '200px',
                 zIndex: 1000,
                 backgroundColor: FOUNDATION_THEME.colors.gray[0],
                 borderRadius: FOUNDATION_THEME.border.radius[6],
