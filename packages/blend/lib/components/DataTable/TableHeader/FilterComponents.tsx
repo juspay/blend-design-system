@@ -696,6 +696,8 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     const [nestedFilterOpen, setNestedFilterOpen] = useState(false)
     const hasFiltering = columnConfig.supportsFiltering
 
+    const isSortingEnabled =
+        columnConfig.supportsSorting && column.isSortable !== false
     // Use mobile component for small screens
     if (isMobile) {
         return (
@@ -722,7 +724,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
             _focus={{ outline: 'none' }}
             _focusVisible={{ outline: 'none' }}
         >
-            {columnConfig.supportsSorting && (
+            {isSortingEnabled && (
                 <SortOptions
                     fieldKey={fieldKey}
                     tableToken={tableToken}
@@ -731,7 +733,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                 />
             )}
 
-            {columnConfig.supportsSorting && hasFiltering && (
+            {isSortingEnabled && hasFiltering && (
                 <Separator tableToken={tableToken} />
             )}
 
