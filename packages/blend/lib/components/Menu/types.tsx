@@ -58,6 +58,8 @@ export type MenuItemV2Type = {
     disabled?: boolean
     onClick?: () => void
     subMenu?: MenuItemV2Type[]
+    enableSubMenuSearch?: boolean
+    subMenuSearchPlaceholder?: string
     tooltip?: string | React.ReactNode
     tooltipProps?: {
         side?: TooltipSide

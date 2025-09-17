@@ -28,6 +28,8 @@ import {
     DecimalsArrowRightIcon,
     Search,
     Shield,
+    Settings,
+    TrendingUp,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -70,6 +72,7 @@ import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
 import PopoverDemo from './PopoverDemo'
 import MultiValueInputDemo from './MultiValueInputDemo'
+import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
 import {
@@ -80,6 +83,7 @@ import {
 } from '../../../../packages/blend/lib/main'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
+import KeyValuePairDemo from './KeyValuePairDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -125,9 +129,12 @@ const SidebarDemo = () => {
         | 'dropdownInput'
         | 'dataRangePicker'
         | 'multiValueInput'
+        | 'topbar'
         | 'otpInput'
+        | 'keyValuePair'
         | 'card'
-    >('dataTable')
+        | 'dataRangePicker'
+    >('dataRangePicker')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -139,7 +146,7 @@ const SidebarDemo = () => {
             label: 'Juspay',
             icon: (
                 <IndianRupee
-                    style={{ width: '16px', height: '16px' }}
+                    style={{ width: '24px', height: '24px' }}
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
@@ -149,7 +156,7 @@ const SidebarDemo = () => {
             label: 'Razorpay',
             icon: (
                 <UserIcon
-                    style={{ width: '16px', height: '16px' }}
+                    style={{ width: '24px', height: '24px' }}
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
@@ -159,7 +166,7 @@ const SidebarDemo = () => {
             label: 'Stripe',
             icon: (
                 <IndianRupee
-                    style={{ width: '16px', height: '16px' }}
+                    style={{ width: '24px', height: '24px' }}
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
@@ -220,12 +227,12 @@ const SidebarDemo = () => {
     const merchants = [
         {
             label: 'Design System',
-            icon: <UserIcon style={{ width: '16px', height: '16px' }} />,
+            icon: <UserIcon style={{ width: '14px', height: '14px' }} />,
             value: 'design-system',
         },
         {
             label: 'Design System 2',
-            icon: <UserIcon style={{ width: '16px', height: '16px' }} />,
+            icon: <UserIcon style={{ width: '14px', height: '14px' }} />,
             value: 'design-system-2',
         },
     ]
@@ -296,6 +303,10 @@ const SidebarDemo = () => {
                 return <PopoverDemo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
+            case 'topbar':
+                return <TopbarDemo />
+            case 'keyValuePair':
+                return <KeyValuePairDemo />
             case 'card':
                 return <CardDemo />
             default:
@@ -409,11 +420,22 @@ const SidebarDemo = () => {
                     ),
                     onClick: () => setActiveComponent('multiValueInput'),
                 },
+                {
+                    label: 'Key Value Pair',
+                    onClick: () => setActiveComponent('keyValuePair'),
+                },
             ],
         },
         {
             label: 'Navigation',
             items: [
+                {
+                    label: 'Topbar',
+                    leftSlot: (
+                        <Layout style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('topbar'),
+                },
                 {
                     label: 'Menu',
                     leftSlot: (
@@ -682,6 +704,15 @@ const SidebarDemo = () => {
                         selected: activeTenant,
                         onSelect: (value) => setActiveTenant(value),
                     }}
+                    merchantInfo={{
+                        items: merchants.map((merchant) => ({
+                            label: merchant.label,
+                            value: merchant.value,
+                            icon: merchant.icon,
+                        })),
+                        selected: activeMerchant,
+                        onSelect: (value) => setActiveMerchant(value),
+                    }}
                     sidebarTopSlot={
                         <SingleSelect
                             placeholder="Select Merchant"
@@ -694,6 +725,28 @@ const SidebarDemo = () => {
                             selected={activeMerchant}
                             onSelect={(value) => setActiveMerchant(value)}
                         />
+                    }
+                    rightActions={
+                        <div className="flex items-center gap-1">
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200">
+                                <BellIcon
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    size={20}
+                                />
+                            </button>
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200">
+                                <TrendingUp
+                                    color={FOUNDATION_THEME.colors.green[600]}
+                                    size={20}
+                                />
+                            </button>
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200">
+                                <Settings
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    size={20}
+                                />
+                            </button>
+                        </div>
                     }
                     data={sampleData}
                     topbar={

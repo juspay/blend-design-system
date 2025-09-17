@@ -43,6 +43,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
     variant,
     onClose,
     actionButton,
+    toastId,
 }) => {
     const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
 
@@ -116,7 +117,15 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                 snackbarTokens.container.content.actionButton
                                     .color
                             }
-                            onClick={actionButton.onClick}
+                            onClick={() => {
+                                actionButton.onClick()
+                                if (
+                                    actionButton.autoDismiss !== false &&
+                                    toastId
+                                ) {
+                                    sonnerToast.dismiss(toastId)
+                                }
+                            }}
                         >
                             <Text
                                 color={
@@ -162,19 +171,26 @@ export const addSnackbar = ({
     variant = SnackbarVariant.INFO,
     onClose,
     actionButton,
+    duration,
 }: AddToastOptions) => {
-    return sonnerToast.custom((t) => (
-        <StyledToast
-            header={header}
-            description={description}
-            variant={variant}
-            onClose={() => {
-                sonnerToast.dismiss(t)
-                onClose?.()
-            }}
-            actionButton={actionButton}
-        />
-    ))
+    return sonnerToast.custom(
+        (t) => (
+            <StyledToast
+                header={header}
+                description={description}
+                variant={variant}
+                onClose={() => {
+                    sonnerToast.dismiss(t)
+                    onClose?.()
+                }}
+                actionButton={actionButton}
+                toastId={t}
+            />
+        ),
+        {
+            duration,
+        }
+    )
 }
 
 // Export the Toaster component
