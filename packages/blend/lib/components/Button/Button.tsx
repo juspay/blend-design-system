@@ -31,7 +31,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
 
         const getBorderRadius = () => {
             const variantBorderRadius =
-                buttonTokens.container.borderRadius[buttonType][subType].default
+                buttonTokens.borderRadius[size][buttonType][subType].default
             if (buttonGroupPosition === undefined) return variantBorderRadius
             if (buttonGroupPosition === 'left') {
                 return `${variantBorderRadius} 0 0 ${variantBorderRadius}`
@@ -54,62 +54,45 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                 }
                 gap={buttonTokens.gap}
                 background={
-                    buttonTokens.container.backgroundColor[buttonType][subType]
-                        .default
+                    buttonTokens.backgroundColor[buttonType][subType].default
                 }
                 disabled={disabled}
                 color={buttonTokens.text.color[buttonType][subType].default}
                 borderRadius={getBorderRadius()}
-                padding={buttonTokens.container.padding[size][subType]}
-                border={
-                    buttonTokens.container.border[buttonType][subType].default
-                }
-                outline={
-                    buttonTokens.container.outline[buttonType][subType].default
-                }
+                padding={buttonTokens.padding[size][buttonType][subType]}
+                border={buttonTokens.border[buttonType][subType].default}
+                outline={buttonTokens.outline[buttonType][subType].default}
                 _active={
                     !disabled
                         ? {
                               background:
-                                  buttonTokens.container.backgroundColor[
-                                      buttonType
-                                  ][subType].active,
-                              border: buttonTokens.container.border[buttonType][
-                                  subType
-                              ].active,
-                              boxShadow:
-                                  buttonTokens.container.shadow[buttonType][
+                                  buttonTokens.backgroundColor[buttonType][
                                       subType
                                   ].active,
+                              border: buttonTokens.border[buttonType][subType]
+                                  .active,
+                              boxShadow:
+                                  buttonTokens.shadow[buttonType][subType]
+                                      .active,
                           }
                         : undefined
                 }
                 _hover={{
-                    border: buttonTokens.container.border[buttonType][subType]
-                        .hover,
+                    border: buttonTokens.border[buttonType][subType].hover,
                     background:
-                        buttonTokens.container.backgroundColor[buttonType][
-                            subType
-                        ].hover,
-                    outline:
-                        buttonTokens.container.outline[buttonType][subType]
-                            .hover,
+                        buttonTokens.backgroundColor[buttonType][subType].hover,
+                    outline: buttonTokens.outline[buttonType][subType].hover,
                     color: buttonTokens.text.color[buttonType][subType].hover,
                 }}
                 _focusVisible={{
-                    border: buttonTokens.container.border[buttonType][subType]
-                        .default,
-                    outline:
-                        buttonTokens.container.outline[buttonType][subType]
-                            .active,
+                    border: buttonTokens.border[buttonType][subType].default,
+                    outline: buttonTokens.outline[buttonType][subType].active,
                 }}
                 _disabled={{
                     background:
-                        buttonTokens.container.backgroundColor[buttonType][
-                            subType
-                        ].disabled,
-                    border: buttonTokens.container.border[buttonType][subType]
-                        .disabled,
+                        buttonTokens.backgroundColor[buttonType][subType]
+                            .disabled,
+                    border: buttonTokens.border[buttonType][subType].disabled,
                     color: buttonTokens.text.color[buttonType][subType]
                         .disabled,
                     cursor: 'not-allowed',
