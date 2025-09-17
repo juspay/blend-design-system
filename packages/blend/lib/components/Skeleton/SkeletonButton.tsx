@@ -33,11 +33,11 @@ const SkeletonButton = forwardRef<HTMLDivElement, SkeletonButtonProps>(
         // Perfect token mirroring - use exact button token values
         const getMirroredButtonStyles = () => {
             // Get exact padding from button tokens
-            const padding = buttonTokens.padding[size][subType]
+            const padding = buttonTokens.container.padding[size][subType]
 
             // Get exact border radius from button tokens
             const borderRadius =
-                buttonTokens.borderRadius[buttonType][subType].default
+                buttonTokens.container.borderRadius[buttonType][subType].default
 
             // Calculate border radius for button groups (mirror Button.tsx logic)
             const getBorderRadius = () => {
