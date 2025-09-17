@@ -1,14 +1,14 @@
 import { forwardRef } from 'react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
-import type { ButtonV2Props } from './types'
-import { ButtonSize, ButtonSubType, ButtonType } from './types'
+import type { ButtonProps } from './types'
+import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
 import type { ButtonTokensType } from './button.tokens'
 import Text from '../Text/Text'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
-const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
         {
             buttonType = ButtonType.PRIMARY,
@@ -23,10 +23,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
             buttonGroupPosition,
             fullWidth,
             justifyContent = 'center',
+            state = ButtonState.DEFAULT,
             ...htmlProps
         },
         ref
     ) => {
+        console.log('Button state:', state)
         const buttonTokens = useResponsiveTokens<ButtonTokensType>('BUTTON')
 
         const getBorderRadius = () => {
@@ -93,8 +95,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                         buttonTokens.backgroundColor[buttonType][subType]
                             .disabled,
                     border: buttonTokens.border[buttonType][subType].disabled,
-                    color: buttonTokens.text.color[buttonType][subType]
-                        .disabled,
                     cursor: 'not-allowed',
                 }}
                 {...htmlProps}
@@ -122,12 +122,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                         )}
                         {text && (
                             <Text
-                                variant="body.md"
-                                style={{
-                                    fontWeight: 500,
-                                }}
+                                fontSize={buttonTokens.text.fontSize[size]}
+                                fontWeight={buttonTokens.text.fontWeight[size]}
                                 as="span"
-                                color="inherit"
+                                color={
+                                    buttonTokens.text.color[buttonType][
+                                        subType
+                                    ][state]
+                                }
                                 data-button-text={text}
                             >
                                 {text}

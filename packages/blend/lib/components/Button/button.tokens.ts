@@ -1,10 +1,8 @@
 import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
-import { ButtonSize, ButtonSubType, ButtonType } from './types'
+import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
-
-export type ButtonState = 'default' | 'hover' | 'active' | 'disabled'
 
 /**
  * Button Tokens following the pattern: [target].CSSProp.[size].[variant].[subType].[state]
@@ -80,6 +78,14 @@ export type ButtonTokensType = {
                     [key in ButtonState]: CSSObject['color']
                 }
             }
+        }
+        // Pattern: text.fontSize.[size] (size-dependent)
+        fontSize: {
+            [key in ButtonSize]: CSSObject['fontSize']
+        }
+        // Pattern: text.fontWeight.[size] (size-dependent)
+        fontWeight: {
+            [key in ButtonSize]: CSSObject['fontWeight']
         }
     }
 }
@@ -835,6 +841,18 @@ export const getButtonTokens = (
                         },
                     },
                 },
+                // Pattern: text.fontSize.[size] (size-dependent)
+                fontSize: {
+                    sm: foundationToken.font.size.body.md.fontSize,
+                    md: foundationToken.font.size.body.md.fontSize,
+                    lg: foundationToken.font.size.body.md.fontSize,
+                },
+                // Pattern: text.fontWeight.[size] (size-dependent)
+                fontWeight: {
+                    sm: foundationToken.font.weight[600],
+                    md: foundationToken.font.weight[600],
+                    lg: foundationToken.font.weight[600],
+                },
             },
         },
         lg: {
@@ -1577,6 +1595,18 @@ export const getButtonTokens = (
                             disabled: foundationToken.colors.green[400],
                         },
                     },
+                },
+                // Pattern: text.fontSize.[size] (size-dependent)
+                fontSize: {
+                    sm: foundationToken.font.size.body.md.fontSize,
+                    md: foundationToken.font.size.body.md.fontSize,
+                    lg: foundationToken.font.size.body.md.fontSize,
+                },
+                // Pattern: text.fontWeight.[size] (size-dependent)
+                fontWeight: {
+                    sm: foundationToken.font.weight[600],
+                    md: foundationToken.font.weight[600],
+                    lg: foundationToken.font.weight[600],
                 },
             },
         },
