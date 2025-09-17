@@ -1,4 +1,4 @@
-import { Hash, X, Plus, Download, Upload, Settings } from 'lucide-react'
+import { Hash, X } from 'lucide-react'
 import { useState } from 'react'
 import {
     Button,
@@ -6,20 +6,19 @@ import {
     ButtonSize,
     ButtonSubType,
 } from '../../../../packages/blend/lib/components/Button'
+import { SkeletonButton } from '../../../../packages/blend/lib/components/Skeleton'
+import type { SkeletonVariant } from '../../../../packages/blend/lib/components/Skeleton/skeleton.tokens'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 
 const ButtonDemo = () => {
-    const [playgroundText, setPlaygroundText] = useState('Click me')
-    const [playgroundType, setPlaygroundType] = useState<ButtonType>(
-        ButtonType.PRIMARY
-    )
-    const [playgroundSize, setPlaygroundSize] = useState<ButtonSize>(
-        ButtonSize.MEDIUM
-    )
-    const [playgroundSubType, setPlaygroundSubType] = useState<ButtonSubType>(
+    // Pure Button Playground State
+    const [buttonText, setButtonText] = useState('Click me')
+    const [buttonType, setButtonType] = useState<ButtonType>(ButtonType.PRIMARY)
+    const [buttonSize, setButtonSize] = useState<ButtonSize>(ButtonSize.MEDIUM)
+    const [buttonSubType, setButtonSubType] = useState<ButtonSubType>(
         ButtonSubType.DEFAULT
     )
     const [showLeadingIcon, setShowLeadingIcon] = useState(false)
@@ -27,6 +26,23 @@ const ButtonDemo = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [isDisabled, setIsDisabled] = useState(false)
     const [fullWidth, setFullWidth] = useState(false)
+
+    // SkeletonButton Playground State
+    const [skeletonText, setSkeletonText] = useState('Loading...')
+    const [skeletonType, setSkeletonType] = useState<ButtonType>(
+        ButtonType.PRIMARY
+    )
+    const [skeletonSize, setSkeletonSize] = useState<ButtonSize>(
+        ButtonSize.MEDIUM
+    )
+    const [skeletonSubType, setSkeletonSubType] = useState<ButtonSubType>(
+        ButtonSubType.DEFAULT
+    )
+    const [skeletonLeadingIcon, setSkeletonLeadingIcon] = useState(false)
+    const [skeletonTrailingIcon, setSkeletonTrailingIcon] = useState(false)
+    const [skeletonVariant, setSkeletonVariant] =
+        useState<SkeletonVariant>('pulse')
+    const [skeletonFullWidth, setSkeletonFullWidth] = useState(false)
 
     // Options for selects
     const typeOptions = [
@@ -48,26 +64,51 @@ const ButtonDemo = () => {
         { value: ButtonSubType.INLINE, label: 'Inline' },
     ]
 
+    const skeletonVariantOptions = [
+        { value: 'pulse' as SkeletonVariant, label: 'Pulse' },
+        { value: 'wave' as SkeletonVariant, label: 'Wave' },
+        { value: 'shimmer' as SkeletonVariant, label: 'Shimmer' },
+    ]
+
     return (
         <div className="p-8 space-y-12">
-            {/* Playground Section */}
+            {/* Header */}
+            <div className="space-y-4">
+                <h1 className="text-3xl font-bold">Button Component Demo</h1>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p className="text-blue-800">
+                        <strong>Hybrid Approach:</strong> Button is now pure (no
+                        skeleton logic). SkeletonButton handles loading states
+                        with perfect token mirroring.
+                    </p>
+                </div>
+            </div>
+
+            {/* Pure Button Playground */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Playground</h2>
+                <h2 className="text-2xl font-bold">
+                    ✅ Pure Button Playground
+                </h2>
+                <p className="text-gray-600">
+                    Test the pure Button component focused only on UI rendering
+                </p>
+
+                {/* Controls */}
                 <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <TextInput
                             label="Text"
-                            value={playgroundText}
-                            onChange={(e) => setPlaygroundText(e.target.value)}
+                            value={buttonText}
+                            onChange={(e) => setButtonText(e.target.value)}
                             placeholder="Enter button text"
                         />
 
                         <SingleSelect
                             label="Type"
                             items={[{ items: typeOptions }]}
-                            selected={playgroundType}
+                            selected={buttonType}
                             onSelect={(value) =>
-                                setPlaygroundType(value as ButtonType)
+                                setButtonType(value as ButtonType)
                             }
                             placeholder="Select type"
                         />
@@ -75,9 +116,9 @@ const ButtonDemo = () => {
                         <SingleSelect
                             label="Size"
                             items={[{ items: sizeOptions }]}
-                            selected={playgroundSize}
+                            selected={buttonSize}
                             onSelect={(value) =>
-                                setPlaygroundSize(value as ButtonSize)
+                                setButtonSize(value as ButtonSize)
                             }
                             placeholder="Select size"
                         />
@@ -85,15 +126,15 @@ const ButtonDemo = () => {
                         <SingleSelect
                             label="Sub Type"
                             items={[{ items: subTypeOptions }]}
-                            selected={playgroundSubType}
+                            selected={buttonSubType}
                             onSelect={(value) =>
-                                setPlaygroundSubType(value as ButtonSubType)
+                                setButtonSubType(value as ButtonSubType)
                             }
                             placeholder="Select sub type"
                         />
                     </div>
 
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-6 flex-wrap">
                         <Switch
                             label="Leading Icon"
                             checked={showLeadingIcon}
@@ -124,365 +165,164 @@ const ButtonDemo = () => {
                             onChange={() => setFullWidth(!fullWidth)}
                         />
                     </div>
+                </div>
 
-                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
-                        <Button
-                            text={
-                                playgroundSubType === ButtonSubType.ICON_ONLY
-                                    ? undefined
-                                    : playgroundText
+                {/* Pure Button Demo */}
+                <div className="min-h-40 rounded-2xl w-full flex justify-center items-center border-2 border-dashed border-gray-200 bg-gray-50">
+                    <Button
+                        text={
+                            buttonSubType === ButtonSubType.ICON_ONLY
+                                ? undefined
+                                : buttonText
+                        }
+                        buttonType={buttonType}
+                        size={buttonSize}
+                        subType={buttonSubType}
+                        leadingIcon={
+                            showLeadingIcon ? <Hash size={16} /> : undefined
+                        }
+                        trailingIcon={
+                            showTrailingIcon ? <X size={16} /> : undefined
+                        }
+                        loading={isLoading}
+                        disabled={isDisabled}
+                        fullWidth={fullWidth}
+                        onClick={() => {
+                            addSnackbar({
+                                header: 'Pure Button clicked!',
+                                description: `${buttonType} ${buttonSize} button`,
+                            })
+                        }}
+                    />
+                </div>
+            </div>
+
+            {/* SkeletonButton Playground */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    🔄 SkeletonButton Playground
+                </h2>
+                <p className="text-gray-600">
+                    Test SkeletonButton with perfect token mirroring - should
+                    match Button dimensions exactly
+                </p>
+
+                {/* Controls */}
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <TextInput
+                            label="Text (for sizing)"
+                            value={skeletonText}
+                            onChange={(e) => setSkeletonText(e.target.value)}
+                            placeholder="Enter text for sizing"
+                        />
+
+                        <SingleSelect
+                            label="Type"
+                            items={[{ items: typeOptions }]}
+                            selected={skeletonType}
+                            onSelect={(value) =>
+                                setSkeletonType(value as ButtonType)
                             }
-                            buttonType={playgroundType}
-                            size={playgroundSize}
-                            subType={playgroundSubType}
-                            leadingIcon={
-                                showLeadingIcon ? <Hash size={16} /> : undefined
+                            placeholder="Select type"
+                        />
+
+                        <SingleSelect
+                            label="Size"
+                            items={[{ items: sizeOptions }]}
+                            selected={skeletonSize}
+                            onSelect={(value) =>
+                                setSkeletonSize(value as ButtonSize)
                             }
-                            trailingIcon={
-                                showTrailingIcon ? <X size={16} /> : undefined
+                            placeholder="Select size"
+                        />
+
+                        <SingleSelect
+                            label="Sub Type"
+                            items={[{ items: subTypeOptions }]}
+                            selected={skeletonSubType}
+                            onSelect={(value) =>
+                                setSkeletonSubType(value as ButtonSubType)
                             }
-                            loading={isLoading}
-                            disabled={isDisabled}
-                            fullWidth={fullWidth}
-                            onClick={() => {
-                                addSnackbar({
-                                    header: 'Button clicked!',
-                                })
-                            }}
-                            onKeyDown={(e) => {
-                                console.log('onKeyDown', e)
-                            }}
+                            placeholder="Select sub type"
+                        />
+                    </div>
+
+                    <div className="flex items-center gap-6 flex-wrap">
+                        <Switch
+                            label="Has Leading Icon"
+                            checked={skeletonLeadingIcon}
+                            onChange={() =>
+                                setSkeletonLeadingIcon(!skeletonLeadingIcon)
+                            }
+                        />
+                        <Switch
+                            label="Has Trailing Icon"
+                            checked={skeletonTrailingIcon}
+                            onChange={() =>
+                                setSkeletonTrailingIcon(!skeletonTrailingIcon)
+                            }
+                        />
+                        <Switch
+                            label="Full Width"
+                            checked={skeletonFullWidth}
+                            onChange={() =>
+                                setSkeletonFullWidth(!skeletonFullWidth)
+                            }
+                        />
+
+                        <SingleSelect
+                            label="Animation Variant"
+                            items={[{ items: skeletonVariantOptions }]}
+                            selected={skeletonVariant}
+                            onSelect={(value) =>
+                                setSkeletonVariant(value as SkeletonVariant)
+                            }
+                            placeholder="Select animation"
                         />
                     </div>
                 </div>
-            </div>
 
-            {/* Button Types */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Button Types</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {Object.values(ButtonType).map((type) => (
-                        <div key={type} className="space-y-3">
-                            <h3 className="text-sm font-medium capitalize">
-                                {type}
-                            </h3>
-                            <div className="space-y-2">
-                                <Button
-                                    text="Button"
-                                    buttonType={type}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: `${type} button clicked!`,
-                                        })
-                                    }}
-                                />
-                                <Button
-                                    text="With Icon"
-                                    buttonType={type}
-                                    leadingIcon={<Plus size={16} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: `${type} button with icon clicked!`,
-                                        })
-                                    }}
-                                />
-                                <Button
-                                    buttonType={type}
-                                    leadingIcon={<Settings size={16} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: `${type} icon button clicked!`,
-                                        })
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    ))}
+                {/* SkeletonButton Demo */}
+                <div className="min-h-40 rounded-2xl w-full flex justify-center items-center border-2 border-dashed border-gray-200 bg-gray-50">
+                    <SkeletonButton
+                        text={
+                            skeletonSubType === ButtonSubType.ICON_ONLY
+                                ? undefined
+                                : skeletonText
+                        }
+                        buttonType={skeletonType}
+                        size={skeletonSize}
+                        subType={skeletonSubType}
+                        hasLeadingIcon={skeletonLeadingIcon}
+                        hasTrailingIcon={skeletonTrailingIcon}
+                        fullWidth={skeletonFullWidth}
+                        loading={true}
+                        variant={skeletonVariant}
+                    />
                 </div>
             </div>
 
-            {/* Sizes */}
+            {/* Animation Variants Showcase */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Sizes</h2>
+                <h2 className="text-2xl font-bold">✨ Animation Variants</h2>
+                <p className="text-gray-600">
+                    Different skeleton animation options
+                </p>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {Object.values(ButtonSize).map((size) => (
-                        <div key={size} className="space-y-3">
-                            <h3 className="text-sm font-medium capitalize">
-                                {size}
-                            </h3>
-                            <div className="space-y-2">
-                                <Button
-                                    text="Button"
-                                    size={size}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: `${size} button clicked!`,
-                                        })
-                                    }}
-                                />
-                                <Button
-                                    text="With Icon"
-                                    size={size}
-                                    leadingIcon={
-                                        <Download
-                                            size={
-                                                size === ButtonSize.SMALL
-                                                    ? 14
-                                                    : size === ButtonSize.MEDIUM
-                                                      ? 16
-                                                      : 18
-                                            }
-                                        />
-                                    }
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: `${size} button with icon clicked!`,
-                                        })
-                                    }}
-                                />
-                                <Button
-                                    size={size}
-                                    leadingIcon={
-                                        <Upload
-                                            size={
-                                                size === ButtonSize.SMALL
-                                                    ? 14
-                                                    : size === ButtonSize.MEDIUM
-                                                      ? 16
-                                                      : 18
-                                            }
-                                        />
-                                    }
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: `${size} icon button clicked!`,
-                                        })
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Sub Types */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Sub Types</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {Object.values(ButtonSubType).map((subType) => (
-                        <div key={subType} className="space-y-3">
-                            <h3 className="text-sm font-medium capitalize">
-                                {subType.replace(/([A-Z])/g, ' $1').trim()}
-                            </h3>
-                            <div className="space-y-2">
-                                <Button
-                                    text={
-                                        subType === ButtonSubType.ICON_ONLY
-                                            ? undefined
-                                            : 'Button'
-                                    }
-                                    subType={subType}
-                                    leadingIcon={
-                                        subType === ButtonSubType.ICON_ONLY ? (
-                                            <Settings size={16} />
-                                        ) : (
-                                            <Plus size={16} />
-                                        )
-                                    }
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: `${subType} button clicked!`,
-                                        })
-                                    }}
-                                />
-                                <Button
-                                    text={
-                                        subType === ButtonSubType.ICON_ONLY
-                                            ? undefined
-                                            : 'Danger'
-                                    }
-                                    buttonType={ButtonType.DANGER}
-                                    subType={subType}
-                                    leadingIcon={
-                                        subType === ButtonSubType.ICON_ONLY ? (
-                                            <X size={16} />
-                                        ) : (
-                                            <X size={16} />
-                                        )
-                                    }
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: `${subType} danger button clicked!`,
-                                        })
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* States */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">States</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div className="space-y-3">
-                        <h3 className="text-sm font-medium">Default</h3>
-                        <Button
-                            text="Button"
-                            onClick={() => {
-                                addSnackbar({
-                                    header: 'Default button clicked!',
-                                })
-                            }}
-                        />
-                    </div>
-
-                    <div className="space-y-3">
-                        <h3 className="text-sm font-medium">Loading</h3>
-                        <Button text="Loading" loading={true} />
-                    </div>
-
-                    <div className="space-y-3">
-                        <h3 className="text-sm font-medium">Disabled</h3>
-                        <Button text="Disabled" disabled={true} />
-                    </div>
-
-                    <div className="space-y-3">
-                        <h3 className="text-sm font-medium">Full Width</h3>
-                        <Button
-                            text="Full Width"
-                            fullWidth={true}
-                            onClick={() => {
-                                addSnackbar({
-                                    header: 'Full width button clicked!',
-                                })
-                            }}
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* Interactive Examples */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Interactive Examples</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <Button
-                        text="Download"
-                        leadingIcon={<Download size={16} />}
-                        onClick={() => {
-                            addSnackbar({
-                                header: 'Download started!',
-                            })
-                        }}
-                    />
-                    <Button
-                        text="Upload"
-                        trailingIcon={<Upload size={16} />}
-                        onClick={() => {
-                            addSnackbar({
-                                header: 'Upload started!',
-                            })
-                        }}
-                    />
-                    <Button
-                        text="Settings"
-                        buttonType={ButtonType.SECONDARY}
-                        leadingIcon={<Settings size={16} />}
-                        onClick={() => {
-                            addSnackbar({
-                                header: 'Settings opened!',
-                            })
-                        }}
-                    />
-                    <Button
-                        text="Delete"
-                        buttonType={ButtonType.DANGER}
-                        leadingIcon={<X size={16} />}
-                        onClick={() => {
-                            addSnackbar({
-                                header: 'Delete confirmed!',
-                            })
-                        }}
-                    />
-                </div>
-            </div>
-
-            {/* All Combinations */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">All Combinations</h2>
-                <div className="space-y-8">
-                    {Object.values(ButtonType).map((type) => (
-                        <div key={type} className="space-y-4">
-                            <h3 className="text-lg font-semibold capitalize">
-                                {type} Type
-                            </h3>
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                {Object.values(ButtonSize).map((size) => (
-                                    <div key={size} className="space-y-2">
-                                        <h4 className="text-xs font-medium capitalize text-gray-600">
-                                            {size}
-                                        </h4>
-                                        <div className="space-y-1">
-                                            <Button
-                                                text="S"
-                                                buttonType={type}
-                                                size={size}
-                                                onClick={() => {
-                                                    addSnackbar({
-                                                        header: `${type} ${size} button clicked!`,
-                                                    })
-                                                }}
-                                            />
-                                            <Button
-                                                text="M"
-                                                buttonType={type}
-                                                size={size}
-                                                leadingIcon={
-                                                    <Plus
-                                                        size={
-                                                            size ===
-                                                            ButtonSize.SMALL
-                                                                ? 14
-                                                                : size ===
-                                                                    ButtonSize.MEDIUM
-                                                                  ? 16
-                                                                  : 18
-                                                        }
-                                                    />
-                                                }
-                                                onClick={() => {
-                                                    addSnackbar({
-                                                        header: `${type} ${size} button with icon clicked!`,
-                                                    })
-                                                }}
-                                            />
-                                            <Button
-                                                buttonType={type}
-                                                size={size}
-                                                leadingIcon={
-                                                    <Settings
-                                                        size={
-                                                            size ===
-                                                            ButtonSize.SMALL
-                                                                ? 14
-                                                                : size ===
-                                                                    ButtonSize.MEDIUM
-                                                                  ? 16
-                                                                  : 18
-                                                        }
-                                                    />
-                                                }
-                                                onClick={() => {
-                                                    addSnackbar({
-                                                        header: `${type} ${size} icon button clicked!`,
-                                                    })
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                    {skeletonVariantOptions.map(({ value, label }) => (
+                        <div
+                            key={value}
+                            className="space-y-3 p-4 border rounded-lg bg-white"
+                        >
+                            <h3 className="text-lg font-semibold">{label}</h3>
+                            <SkeletonButton
+                                text="Loading Button"
+                                buttonType={ButtonType.PRIMARY}
+                                loading={true}
+                                variant={value}
+                            />
                         </div>
                     ))}
                 </div>

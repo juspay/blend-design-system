@@ -46,7 +46,7 @@ export const Footer = () => {
                                     {data.links.map((link, ind) =>
                                         link.name == 'Contact' ? (
                                             <p
-                                                className="cursor-pointer"
+                                                className="cursor-pointer hover:text-white transition-colors duration-200"
                                                 onClick={handleOpenModal}
                                                 key={ind}
                                             >
@@ -59,7 +59,7 @@ export const Footer = () => {
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >
-                                                <p className="cursor-pointer">
+                                                <p className="cursor-pointer hover:text-white transition-colors duration-200">
                                                     {link.name}
                                                 </p>
                                             </Link>
@@ -94,7 +94,9 @@ export const Footer = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <p className="cursor-pointer">Privacy Policy</p>
+                        <p className="cursor-pointer hover:text-white transition-colors duration-200">
+                            Privacy Policy
+                        </p>
                     </Link>
                     <div className="w-1 h-1 bg-[var(--footer-circle-separator-color)] rounded-full"></div>
                     <Link
@@ -102,7 +104,9 @@ export const Footer = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <p className="cursor-pointer">Terms of Service</p>
+                        <p className="cursor-pointer hover:text-white transition-colors duration-200">
+                            Terms of Service
+                        </p>
                     </Link>
                 </div>
                 <div className="flex items-center gap-[14px] text-white">
