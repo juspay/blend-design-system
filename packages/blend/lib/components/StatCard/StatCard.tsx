@@ -406,7 +406,7 @@ const StatCard = ({
                                 variant={SelectMenuVariant.NO_CONTAINER}
                                 size={SelectMenuSize.SMALL}
                                 inline={true}
-                                minWidth={100}
+                                minMenuWidth={100}
                             />
                         )}
                     </Block>
@@ -594,7 +594,7 @@ const StatCard = ({
                                     variant={SelectMenuVariant.NO_CONTAINER}
                                     size={SelectMenuSize.SMALL}
                                     inline={true}
-                                    minWidth={100}
+                                    minMenuWidth={100}
                                 />
                             )}
                         </Block>
@@ -778,7 +778,7 @@ const StatCard = ({
                                 variant={SelectMenuVariant.NO_CONTAINER}
                                 size={SelectMenuSize.SMALL}
                                 inline={true}
-                                minWidth={100}
+                                minMenuWidth={100}
                             />
                         )}
                     </Block>
