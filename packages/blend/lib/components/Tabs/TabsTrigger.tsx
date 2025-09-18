@@ -66,7 +66,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                 {leftSlot && (
                     <IconContainer
                         $tabsToken={tabsToken}
-                        style={{ marginRight: tabsToken.trigger.iconGap }}
+                        style={{ marginRight: tabsToken.trigger.gap }}
                     >
                         {leftSlot}
                     </IconContainer>
@@ -77,7 +77,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                 {effectiveRightSlot && (
                     <IconContainer
                         $tabsToken={tabsToken}
-                        style={{ marginLeft: tabsToken.trigger.iconGap }}
+                        style={{ marginLeft: tabsToken.trigger.gap }}
                     >
                         {effectiveRightSlot}
                     </IconContainer>

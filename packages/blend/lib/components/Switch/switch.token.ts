@@ -4,50 +4,73 @@ import { SwitchSize } from './types'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type SwitchState = 'default' | 'hover' | 'disabled' | 'error'
-export type SwitchIndicatorState = 'active' | 'inactive'
 
+/**
+ * Switch Tokens following the pattern: [target].CSSProp.[size].[variant].[subType].[state]
+ *
+ * Structure:
+ * - target: container | thumb | text (defines what element the token applies to)
+ * - CSSProp: backgroundColor | borderRadius | padding | border | color | fontSize | fontWeight | gap | height | width
+ * - size: sm | md (only for size-dependent properties like height, width, fontSize)
+ * - variant: active | inactive (switch state variant)
+ * - subType: N/A for switch (no sub-types needed)
+ * - state: default | hover | disabled (interaction state)
+ *
+ * Size-independent properties: backgroundColor, border, color
+ * Size-dependent properties: height, width, fontSize, fontWeight, borderRadius
+ */
 export type SwitchTokensType = {
-    // Base spacing
     gap: CSSObject['gap']
-    slotGap: CSSObject['gap']
-    contentGap: CSSObject['gap']
+    marginTop: CSSObject['marginTop']
 
-    // Core dimensions
-    height: {
-        [key in SwitchSize]: CSSObject['height']
-    }
-    width: {
-        [key in SwitchSize]: CSSObject['width']
-    }
-
-    // Border radius
-    borderRadius: {
-        base: CSSObject['borderRadius']
-        thumb: CSSObject['borderRadius']
-    }
-
-    // Indicator (main switch)
-    indicator: {
-        [key in SwitchIndicatorState]: {
-            background: {
-                [key in Exclude<
-                    SwitchState,
-                    'error'
-                >]: CSSObject['backgroundColor']
-            }
-            border: {
-                [key in Exclude<SwitchState, 'error'>]: CSSObject['borderColor']
-            }
+    // Pattern: backgroundColor.[variant].[state]
+    backgroundColor: {
+        active: {
+            [key in Exclude<SwitchState, 'error'>]: CSSObject['backgroundColor']
+        }
+        inactive: {
+            [key in Exclude<SwitchState, 'error'>]: CSSObject['backgroundColor']
         }
     }
 
-    // Thumb (moving circle)
+    // Pattern: borderRadius.[size] (size-dependent)
+    borderRadius: {
+        [key in SwitchSize]: {
+            container: CSSObject['borderRadius']
+            thumb: CSSObject['borderRadius']
+        }
+    }
+
+    // Pattern: border.[variant].[state]
+    border: {
+        active: {
+            [key in Exclude<SwitchState, 'error'>]: CSSObject['border']
+        }
+        inactive: {
+            [key in Exclude<SwitchState, 'error'>]: CSSObject['border']
+        }
+    }
+
+    container: {
+        // Pattern: container.height.[size] (size-dependent)
+        height: {
+            [key in SwitchSize]: CSSObject['height']
+        }
+        // Pattern: container.width.[size] (size-dependent)
+        width: {
+            [key in SwitchSize]: CSSObject['width']
+        }
+    }
+
     thumb: {
-        background: CSSObject['backgroundColor']
+        // Pattern: thumb.backgroundColor
+        backgroundColor: CSSObject['backgroundColor']
+        // Pattern: thumb.border
         border: {
             color: CSSObject['borderColor']
             width: CSSObject['borderWidth']
         }
+        // Pattern: thumb.size.[size] (size-dependent)
         size: {
             [key in SwitchSize]: {
                 width: CSSObject['width']
@@ -62,47 +85,45 @@ export type SwitchTokensType = {
         }
     }
 
-    // Content styling
-    content: {
-        label: {
-            color: {
-                [key in SwitchState]: CSSObject['color']
-            }
-            font: {
-                [key in SwitchSize]: {
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                }
-            }
+    text: {
+        // Pattern: text.color.[state]
+        color: {
+            [key in SwitchState]: CSSObject['color']
         }
-        sublabel: {
-            color: {
-                [key in SwitchState]: CSSObject['color']
-            }
-            font: {
-                [key in SwitchSize]: {
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                }
-            }
-            spacing: {
-                left: {
-                    [key in SwitchSize]: CSSObject['marginLeft']
-                }
+        // Pattern: text.fontSize.[size] (size-dependent)
+        fontSize: {
+            [key in SwitchSize]: CSSObject['fontSize']
+        }
+        // Pattern: text.fontWeight.[size] (size-dependent)
+        fontWeight: {
+            [key in SwitchSize]: CSSObject['fontWeight']
+        }
+    }
+
+    subtext: {
+        // Pattern: subtext.color.[state]
+        color: {
+            [key in SwitchState]: CSSObject['color']
+        }
+        // Pattern: subtext.fontSize.[size] (size-dependent)
+        fontSize: {
+            [key in SwitchSize]: CSSObject['fontSize']
+        }
+        // Pattern: subtext.fontWeight.[size] (size-dependent)
+        fontWeight: {
+            [key in SwitchSize]: CSSObject['fontWeight']
+        }
+        // Pattern: subtext.spacing.[size] (size-dependent)
+        spacing: {
+            [key in SwitchSize]: {
+                left: CSSObject['marginLeft']
                 top: CSSObject['marginTop']
             }
         }
     }
 
-    // Border properties
-    borderWidth: {
-        [key in SwitchIndicatorState]: {
-            [key in Exclude<SwitchState, 'error'>]: number
-        }
-    }
-
-    // Focus state
     focus: {
+        // Pattern: focus.outline
         outline: {
             width: CSSObject['borderWidth']
             color: CSSObject['borderColor']
@@ -110,23 +131,26 @@ export type SwitchTokensType = {
         }
     }
 
-    // Slot (additional content)
     slot: {
+        // Pattern: slot.size.[size] (size-dependent)
         size: {
             [key in SwitchSize]: CSSObject['width']
         }
+        // Pattern: slot.spacing
         spacing: CSSObject['margin']
     }
 
-    // Required indicator
     required: {
+        // Pattern: required.color
         color: CSSObject['color']
+        // Pattern: required.spacing
         spacing: CSSObject['margin']
     }
 
-    // Animation
     transition: {
+        // Pattern: transition.duration
         duration: CSSObject['transitionDuration']
+        // Pattern: transition.easing
         easing: CSSObject['transitionTimingFunction']
     }
 }
@@ -141,55 +165,76 @@ export const getSwitchTokens = (
     return {
         sm: {
             gap: foundationToken.unit[8],
-            slotGap: foundationToken.unit[6],
-            contentGap: foundationToken.unit[4],
-            height: {
-                sm: foundationToken.unit[18],
-                md: foundationToken.unit[20],
-            },
-            width: {
-                sm: foundationToken.unit[32],
-                md: foundationToken.unit[36],
-            },
+            marginTop: foundationToken.unit[4], // 3px margin-top to fix alignment
 
-            borderRadius: {
-                base: foundationToken.border.radius.full,
-                thumb: foundationToken.border.radius.full,
-            },
-
-            indicator: {
+            // Pattern: backgroundColor.[variant].[state]
+            // Example: backgroundColor.active.hover
+            backgroundColor: {
                 active: {
-                    background: {
-                        default: foundationToken.colors.primary[500],
-                        hover: foundationToken.colors.primary[600],
-                        disabled: foundationToken.colors.primary[200],
-                    },
-                    border: {
-                        default: foundationToken.colors.primary[500],
-                        hover: foundationToken.colors.primary[600],
-                        disabled: foundationToken.colors.primary[300],
-                    },
+                    default: foundationToken.colors.primary[500],
+                    hover: foundationToken.colors.primary[600],
+                    disabled: foundationToken.colors.primary[200],
                 },
                 inactive: {
-                    background: {
-                        default: foundationToken.colors.gray[200],
-                        hover: foundationToken.colors.gray[200],
-                        disabled: foundationToken.colors.gray[100],
-                    },
-                    border: {
-                        default: foundationToken.colors.gray[150],
-                        hover: foundationToken.colors.gray[200],
-                        disabled: foundationToken.colors.gray[100],
-                    },
+                    default: foundationToken.colors.gray[200],
+                    hover: foundationToken.colors.gray[200],
+                    disabled: foundationToken.colors.gray[100],
+                },
+            },
+
+            // Pattern: borderRadius.[size]
+            // Example: borderRadius.md.container
+            borderRadius: {
+                sm: {
+                    container: foundationToken.border.radius.full,
+                    thumb: foundationToken.border.radius.full,
+                },
+                md: {
+                    container: foundationToken.border.radius.full,
+                    thumb: foundationToken.border.radius.full,
+                },
+            },
+
+            // Pattern: border.[variant].[state]
+            // Example: border.inactive.disabled
+            border: {
+                active: {
+                    default: `2px solid ${foundationToken.colors.primary[500]}`,
+                    hover: `2px solid ${foundationToken.colors.primary[600]}`,
+                    disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                },
+                inactive: {
+                    default: `1px solid ${foundationToken.colors.gray[150]}`,
+                    hover: `1px solid ${foundationToken.colors.gray[200]}`,
+                    disabled: `1px solid ${foundationToken.colors.gray[100]}`,
+                },
+            },
+
+            container: {
+                // Pattern: container.height.[size]
+                // Example: container.height.md
+                height: {
+                    sm: foundationToken.unit[18],
+                    md: foundationToken.unit[20],
+                },
+                // Pattern: container.width.[size]
+                // Example: container.width.sm
+                width: {
+                    sm: foundationToken.unit[32],
+                    md: foundationToken.unit[36],
                 },
             },
 
             thumb: {
-                background: foundationToken.colors.gray[0],
+                // Pattern: thumb.backgroundColor
+                backgroundColor: foundationToken.colors.gray[0],
+                // Pattern: thumb.border
                 border: {
                     color: foundationToken.colors.gray[200],
                     width: '0.5px',
                 },
+                // Pattern: thumb.size.[size]
+                // Example: thumb.size.md
                 size: {
                     sm: {
                         width: foundationToken.unit[14],
@@ -214,66 +259,66 @@ export const getSwitchTokens = (
                 },
             },
 
-            content: {
-                label: {
-                    color: {
-                        default: foundationToken.colors.gray[700],
-                        hover: foundationToken.colors.gray[800],
-                        disabled: foundationToken.colors.gray[300],
-                        error: foundationToken.colors.red[600],
-                    },
-                    font: {
-                        sm: {
-                            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[500],
-                        },
-                        md: {
-                            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[500],
-                        },
-                    },
+            text: {
+                // Pattern: text.color.[state]
+                // Example: text.color.error
+                color: {
+                    default: foundationToken.colors.gray[700],
+                    hover: foundationToken.colors.gray[800],
+                    disabled: foundationToken.colors.gray[300],
+                    error: foundationToken.colors.red[600],
                 },
-                sublabel: {
-                    color: {
-                        default: foundationToken.colors.gray[400],
-                        hover: foundationToken.colors.gray[500],
-                        disabled: foundationToken.colors.gray[200],
-                        error: foundationToken.colors.red[600],
+                // Pattern: text.fontSize.[size]
+                // Example: text.fontSize.md
+                fontSize: {
+                    sm: foundationToken.font.size.body.md.fontSize,
+                    md: foundationToken.font.size.body.md.fontSize,
+                },
+                // Pattern: text.fontWeight.[size]
+                // Example: text.fontWeight.sm
+                fontWeight: {
+                    sm: foundationToken.font.weight[500],
+                    md: foundationToken.font.weight[500],
+                },
+            },
+
+            subtext: {
+                // Pattern: subtext.color.[state]
+                // Example: subtext.color.disabled
+                color: {
+                    default: foundationToken.colors.gray[400],
+                    hover: foundationToken.colors.gray[500],
+                    disabled: foundationToken.colors.gray[200],
+                    error: foundationToken.colors.red[600],
+                },
+                // Pattern: subtext.fontSize.[size]
+                // Example: subtext.fontSize.sm
+                fontSize: {
+                    sm: foundationToken.font.size.body.sm.fontSize,
+                    md: foundationToken.font.size.body.sm.fontSize,
+                },
+                // Pattern: subtext.fontWeight.[size]
+                // Example: subtext.fontWeight.md
+                fontWeight: {
+                    sm: foundationToken.font.weight[400],
+                    md: foundationToken.font.weight[400],
+                },
+                // Pattern: subtext.spacing.[size]
+                // Example: subtext.spacing.md.left
+                spacing: {
+                    sm: {
+                        left: foundationToken.unit[32],
+                        top: foundationToken.unit[4],
                     },
-                    font: {
-                        sm: {
-                            fontSize: `${foundationToken.font.size.body.sm.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[400],
-                        },
-                        md: {
-                            fontSize: `${foundationToken.font.size.body.sm.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[400],
-                        },
-                    },
-                    spacing: {
-                        left: {
-                            sm: foundationToken.unit[32],
-                            md: foundationToken.unit[36],
-                        },
+                    md: {
+                        left: foundationToken.unit[36],
                         top: foundationToken.unit[4],
                     },
                 },
             },
 
-            borderWidth: {
-                inactive: {
-                    default: 1,
-                    hover: 1,
-                    disabled: 1,
-                },
-                active: {
-                    default: 2,
-                    hover: 2,
-                    disabled: 1,
-                },
-            },
-
             focus: {
+                // Pattern: focus.outline
                 outline: {
                     width: foundationToken.border.width[2],
                     color: foundationToken.colors.primary[200],
@@ -282,74 +327,102 @@ export const getSwitchTokens = (
             },
 
             slot: {
+                // Pattern: slot.size.[size]
+                // Example: slot.size.md
                 size: {
                     sm: foundationToken.unit[12],
                     md: foundationToken.unit[12],
                 },
+                // Pattern: slot.spacing
                 spacing: foundationToken.unit[6],
             },
 
             required: {
+                // Pattern: required.color
                 color: foundationToken.colors.red[600],
+                // Pattern: required.spacing
                 spacing: foundationToken.unit[2],
             },
 
             transition: {
+                // Pattern: transition.duration
                 duration: '300ms',
+                // Pattern: transition.easing
                 easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
             },
         },
         lg: {
             gap: foundationToken.unit[8],
-            slotGap: foundationToken.unit[6],
-            contentGap: foundationToken.unit[4],
-            height: {
-                sm: foundationToken.unit[12],
-                md: foundationToken.unit[16],
-            },
-            width: {
-                sm: foundationToken.unit[24],
-                md: foundationToken.unit[32],
-            },
+            marginTop: foundationToken.unit[4], // 3px margin-top to fix alignment
 
-            borderRadius: {
-                base: foundationToken.border.radius.full,
-                thumb: foundationToken.border.radius.full,
-            },
-
-            indicator: {
+            // Pattern: backgroundColor.[variant].[state]
+            // Example: backgroundColor.inactive.hover
+            backgroundColor: {
                 active: {
-                    background: {
-                        default: foundationToken.colors.primary[500],
-                        hover: foundationToken.colors.primary[600],
-                        disabled: foundationToken.colors.primary[200],
-                    },
-                    border: {
-                        default: foundationToken.colors.primary[500],
-                        hover: foundationToken.colors.primary[600],
-                        disabled: foundationToken.colors.primary[300],
-                    },
+                    default: foundationToken.colors.primary[500],
+                    hover: foundationToken.colors.primary[600],
+                    disabled: foundationToken.colors.primary[200],
                 },
                 inactive: {
-                    background: {
-                        default: foundationToken.colors.gray[200],
-                        hover: foundationToken.colors.gray[200],
-                        disabled: foundationToken.colors.gray[100],
-                    },
-                    border: {
-                        default: foundationToken.colors.gray[150],
-                        hover: foundationToken.colors.gray[200],
-                        disabled: foundationToken.colors.gray[100],
-                    },
+                    default: foundationToken.colors.gray[200],
+                    hover: foundationToken.colors.gray[200],
+                    disabled: foundationToken.colors.gray[100],
+                },
+            },
+
+            // Pattern: borderRadius.[size]
+            // Example: borderRadius.sm.thumb
+            borderRadius: {
+                sm: {
+                    container: foundationToken.border.radius.full,
+                    thumb: foundationToken.border.radius.full,
+                },
+                md: {
+                    container: foundationToken.border.radius.full,
+                    thumb: foundationToken.border.radius.full,
+                },
+            },
+
+            // Pattern: border.[variant].[state]
+            // Example: border.active.default
+            border: {
+                active: {
+                    default: `2px solid ${foundationToken.colors.primary[500]}`,
+                    hover: `2px solid ${foundationToken.colors.primary[600]}`,
+                    disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                },
+                inactive: {
+                    default: `1px solid ${foundationToken.colors.gray[150]}`,
+                    hover: `1px solid ${foundationToken.colors.gray[200]}`,
+                    disabled: `1px solid ${foundationToken.colors.gray[100]}`,
+                },
+            },
+
+            container: {
+                // Pattern: container.height.[size]
+                // Example: container.height.sm
+                height: {
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[16],
+                },
+                // Pattern: container.width.[size]
+                // Example: container.width.md
+                width: {
+                    sm: foundationToken.unit[24],
+                    md: foundationToken.unit[32],
                 },
             },
 
             thumb: {
-                background: foundationToken.colors.gray[0],
+                // Pattern: thumb.backgroundColor
+                backgroundColor: foundationToken.colors.gray[0],
+                // Pattern: thumb.border
                 border: {
                     color: foundationToken.colors.gray[200],
                     width: '0.5px',
                 },
+                // Pattern: thumb.size.[size]
+                // Example: thumb.size.sm
                 size: {
                     sm: {
                         width: foundationToken.unit[10],
@@ -374,66 +447,66 @@ export const getSwitchTokens = (
                 },
             },
 
-            content: {
-                label: {
-                    color: {
-                        default: foundationToken.colors.gray[700],
-                        hover: foundationToken.colors.gray[800],
-                        disabled: foundationToken.colors.gray[300],
-                        error: foundationToken.colors.red[600],
-                    },
-                    font: {
-                        sm: {
-                            fontSize: `${foundationToken.font.size.body.sm.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[500],
-                        },
-                        md: {
-                            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[500],
-                        },
-                    },
+            text: {
+                // Pattern: text.color.[state]
+                // Example: text.color.hover
+                color: {
+                    default: foundationToken.colors.gray[700],
+                    hover: foundationToken.colors.gray[800],
+                    disabled: foundationToken.colors.gray[300],
+                    error: foundationToken.colors.red[600],
                 },
-                sublabel: {
-                    color: {
-                        default: foundationToken.colors.gray[400],
-                        hover: foundationToken.colors.gray[500],
-                        disabled: foundationToken.colors.gray[200],
-                        error: foundationToken.colors.red[600],
+                // Pattern: text.fontSize.[size]
+                // Example: text.fontSize.lg
+                fontSize: {
+                    sm: foundationToken.font.size.body.sm.fontSize,
+                    md: foundationToken.font.size.body.md.fontSize,
+                },
+                // Pattern: text.fontWeight.[size]
+                // Example: text.fontWeight.md
+                fontWeight: {
+                    sm: foundationToken.font.weight[500],
+                    md: foundationToken.font.weight[500],
+                },
+            },
+
+            subtext: {
+                // Pattern: subtext.color.[state]
+                // Example: subtext.color.default
+                color: {
+                    default: foundationToken.colors.gray[400],
+                    hover: foundationToken.colors.gray[500],
+                    disabled: foundationToken.colors.gray[200],
+                    error: foundationToken.colors.red[600],
+                },
+                // Pattern: subtext.fontSize.[size]
+                // Example: subtext.fontSize.lg
+                fontSize: {
+                    sm: foundationToken.font.size.body.sm.fontSize,
+                    md: foundationToken.font.size.body.md.fontSize,
+                },
+                // Pattern: subtext.fontWeight.[size]
+                // Example: subtext.fontWeight.sm
+                fontWeight: {
+                    sm: foundationToken.font.weight[400],
+                    md: foundationToken.font.weight[400],
+                },
+                // Pattern: subtext.spacing.[size]
+                // Example: subtext.spacing.sm.top
+                spacing: {
+                    sm: {
+                        left: foundationToken.unit[32],
+                        top: foundationToken.unit[4],
                     },
-                    font: {
-                        sm: {
-                            fontSize: `${foundationToken.font.size.body.sm.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[400],
-                        },
-                        md: {
-                            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[400],
-                        },
-                    },
-                    spacing: {
-                        left: {
-                            sm: foundationToken.unit[32],
-                            md: foundationToken.unit[36],
-                        },
+                    md: {
+                        left: foundationToken.unit[36],
                         top: foundationToken.unit[4],
                     },
                 },
             },
 
-            borderWidth: {
-                inactive: {
-                    default: 1,
-                    hover: 1,
-                    disabled: 1,
-                },
-                active: {
-                    default: 2,
-                    hover: 2,
-                    disabled: 1,
-                },
-            },
-
             focus: {
+                // Pattern: focus.outline
                 outline: {
                     width: foundationToken.border.width[2],
                     color: foundationToken.colors.primary[200],
@@ -442,20 +515,27 @@ export const getSwitchTokens = (
             },
 
             slot: {
+                // Pattern: slot.size.[size]
+                // Example: slot.size.sm
                 size: {
                     sm: foundationToken.unit[12],
                     md: foundationToken.unit[12],
                 },
+                // Pattern: slot.spacing
                 spacing: foundationToken.unit[6],
             },
 
             required: {
+                // Pattern: required.color
                 color: foundationToken.colors.red[600],
+                // Pattern: required.spacing
                 spacing: foundationToken.unit[2],
             },
 
             transition: {
+                // Pattern: transition.duration
                 duration: '300ms',
+                // Pattern: transition.easing
                 easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
             },
         },
