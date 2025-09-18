@@ -7,11 +7,25 @@ export enum StepState {
     DISABLED = 'disabled',
 }
 
+export enum StepperType {
+    HORIZONTAL = 'horizontal',
+    VERTICAL = 'vertical',
+}
+
 export type StepperProps = {
     steps: Step[]
     currentStep: number
     onStepChange?: (stepIndex: number) => void
     clickable?: boolean
+    stepperType?: StepperType
+    currentSubsteps?: Record<string, number>
+}
+
+export type SubStep = {
+    id: string
+    title: string
+    status?: StepState
+    disabled?: boolean
 }
 
 export type Step = {
@@ -19,8 +33,11 @@ export type Step = {
     title: string
     status?: StepState
     disabled?: boolean
-    tooltipContent?: string
+    description?: string
     icon?: ReactNode
+    substeps?: SubStep[]
+    isExpandable?: boolean
+    isExpanded?: boolean
 }
 
 export type StepProps = {
@@ -32,4 +49,5 @@ export type StepProps = {
     isFirst: boolean
     onClick?: (stepIndex: number) => void
     clickable?: boolean
+    currentSubsteps?: Record<string, number>
 }

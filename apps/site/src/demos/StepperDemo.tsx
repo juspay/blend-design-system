@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import {
     Stepper,
+    StepperType,
     StepState,
+    Step,
 } from '../../../../packages/blend/lib/components/Stepper'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
@@ -12,15 +14,23 @@ const StepperDemo = () => {
     // Playground state
     const [playgroundCurrentStep, setPlaygroundCurrentStep] = useState(1)
     const [playgroundClickable, setPlaygroundClickable] = useState(false)
-    const [playgroundStepCount, setPlaygroundStepCount] = useState('4')
+    const [playgroundStepCount, setPlaygroundStepCount] = useState('5')
+    const [playgroundStepperType, setPlaygroundStepperType] = useState(
+        StepperType.HORIZONTAL
+    )
     const [playgroundStepTitle, setPlaygroundStepTitle] = useState('Step Title')
     const [playgroundHasTooltips, setPlaygroundHasTooltips] = useState(true)
     const [playgroundHasIcons, setPlaygroundHasIcons] = useState(false)
+    const stepperTypeOptions = [
+        { value: StepperType.HORIZONTAL, label: 'Horizontal' },
+        { value: StepperType.VERTICAL, label: 'Vertical' },
+    ]
 
     // Example states
     const [orderStep, setOrderStep] = useState(2)
     const [accountStep, setAccountStep] = useState(0)
     const [projectStep, setProjectStep] = useState(3)
+    const [verticalSubstepStep, setVerticalSubstepStep] = useState(3)
 
     // Step count options
     const stepCountOptions = [
@@ -28,6 +38,64 @@ const StepperDemo = () => {
         { value: '4', label: '4 Steps' },
         { value: '5', label: '5 Steps' },
         { value: '6', label: '6 Steps' },
+    ]
+
+    // Steps with substeps example
+    const stepsWithSubsteps: Step[] = [
+        {
+            id: '1',
+            title: 'Stepper Title',
+            status: StepState.COMPLETED,
+        },
+        {
+            id: '2',
+            title: 'Stepper Title',
+            status: StepState.COMPLETED,
+        },
+        {
+            id: '3',
+            title: 'Stepper Title',
+            status: StepState.COMPLETED,
+        },
+        {
+            id: '4',
+            title: 'Stepper Title',
+            status: StepState.CURRENT,
+            isExpandable: true,
+            isExpanded: true,
+            substeps: [
+                {
+                    id: '4-1',
+                    title: 'Substep 1',
+                    status: StepState.CURRENT,
+                },
+                {
+                    id: '4-2',
+                    title: 'Substep 2',
+                    status: StepState.PENDING,
+                },
+            ],
+        },
+        {
+            id: '5',
+            title: 'Stepper Title',
+            status: StepState.PENDING,
+        },
+        {
+            id: '6',
+            title: 'Stepper Title',
+            status: StepState.PENDING,
+        },
+        {
+            id: '7',
+            title: 'Stepper Title',
+            status: StepState.PENDING,
+        },
+        {
+            id: '8',
+            title: 'Stepper Title',
+            status: StepState.PENDING,
+        },
     ]
 
     // Generate playground steps
@@ -42,15 +110,51 @@ const StepperDemo = () => {
             <Check size={16} />,
         ]
 
-        return Array.from({ length: count }, (_, index) => ({
+        const steps: Step[] = Array.from({ length: count }, (_, index) => ({
             id: `${index + 1}`,
             title: `${playgroundStepTitle} ${index + 1}`,
             icon: playgroundHasIcons ? icons[index % icons.length] : undefined,
-            tooltipContent: playgroundHasTooltips
+            description: playgroundHasTooltips
                 ? `This is ${playgroundStepTitle} ${index + 1} with additional information`
                 : undefined,
             disabled: false,
         }))
+
+        // Add sample substeps to step 2 if available
+        if (steps.length >= 2) {
+            steps[1] = {
+                ...steps[1],
+                isExpandable: true,
+                isExpanded: true,
+                substeps: [
+                    { id: '2-1', title: 'Substep A' },
+                    { id: '2-2', title: 'Substep B' },
+                    { id: '2-3', title: 'Substep C' },
+                ],
+            }
+            steps[2] = {
+                ...steps[2],
+                isExpandable: true,
+                isExpanded: true,
+                substeps: [
+                    { id: '3-1', title: 'Substep A' },
+                    { id: '3-2', title: 'Substep B' },
+                    { id: '3-3', title: 'Substep C' },
+                ],
+            }
+            steps[4] = {
+                ...steps[3],
+                isExpandable: true,
+                isExpanded: true,
+                substeps: [
+                    { id: '4-1', title: 'Substep A' },
+                    { id: '4-2', title: 'Substep B' },
+                    { id: '4-3', title: 'Substep C' },
+                ],
+            }
+        }
+
+        return steps
     }
 
     // Predefined step sets
@@ -59,25 +163,32 @@ const StepperDemo = () => {
             id: '1',
             title: 'Cart Review',
             icon: <Package size={16} />,
-            tooltipContent: 'Review your cart items and quantities',
+            description: 'Review your cart items and quantities',
         },
         {
             id: '2',
             title: 'Shipping Info',
             icon: <Truck size={16} />,
-            tooltipContent: 'Enter shipping address and delivery preferences',
+            description: 'Enter shipping address and delivery preferences',
+            isExpandable: true,
+            isExpanded: true,
+            substeps: [
+                { id: '2-1', title: 'Address Details' },
+                { id: '2-2', title: 'Delivery Options' },
+                { id: '2-3', title: 'Contact Preferences' },
+            ],
         },
         {
             id: '3',
             title: 'Payment',
             icon: <CreditCard size={16} />,
-            tooltipContent: 'Choose payment method and billing information',
+            description: 'Choose payment method and billing information',
         },
         {
             id: '4',
             title: 'Confirmation',
             icon: <Check size={16} />,
-            tooltipContent: 'Review and confirm your order',
+            description: 'Review and confirm your order',
         },
     ]
 
@@ -86,18 +197,18 @@ const StepperDemo = () => {
             id: '1',
             title: 'Personal Info',
             icon: <User size={16} />,
-            tooltipContent: 'Enter your basic personal information',
+            description: 'Enter your basic personal information',
         },
         {
             id: '2',
             title: 'Account Setup',
             icon: <Settings size={16} />,
-            tooltipContent: 'Set up your account preferences and security',
+            description: 'Set up your account preferences and security',
         },
         {
             id: '3',
             title: 'Verification',
-            tooltipContent: 'Verify your email and phone number',
+            description: 'Verify your email and phone number',
         },
     ]
 
@@ -105,31 +216,78 @@ const StepperDemo = () => {
         {
             id: '1',
             title: 'Project Details',
-            tooltipContent: 'Define project scope and requirements',
+            description: 'Define project scope and requirements',
         },
         {
             id: '2',
             title: 'Team Setup',
-            tooltipContent: 'Add team members and assign roles',
+            description: 'Add team members and assign roles',
         },
         {
             id: '3',
             title: 'Configuration',
-            tooltipContent: 'Configure project settings and preferences',
+            description: 'Configure project settings and preferences',
         },
         {
             id: '4',
             title: 'Review',
             status: StepState.DISABLED,
-            tooltipContent: 'Review all settings before launching',
+            description: 'Review all settings before launching',
         },
         {
             id: '5',
             title: 'Launch',
             status: StepState.DISABLED,
-            tooltipContent: 'Launch your project and start collaborating',
+            description: 'Launch your project and start collaborating',
         },
     ]
+
+    // Simple linear progression with substeps (controller)
+    const [linearStep, setLinearStep] = useState(0)
+    const [linearSubs, setLinearSubs] = useState<Record<string, number>>({})
+    const linearSteps = [
+        { id: '1', title: 'Step 1' },
+        {
+            id: '2',
+            title: 'Step 2',
+            isExpandable: true,
+            isExpanded: true,
+            substeps: [
+                { id: '2-1', title: 'Substep 2.1' },
+                { id: '2-2', title: 'Substep 2.2' },
+                { id: '2-3', title: 'Substep 2.3' },
+            ],
+        },
+        { id: '3', title: 'Step 3' },
+        { id: '4', title: 'Step 4' },
+    ] as Step[]
+
+    const handleNext = () => {
+        const step = linearSteps[linearStep]
+        const subs = step?.substeps || []
+        if (subs.length > 0) {
+            const curr = linearSubs[step.id] ?? 0
+            const last = subs.length - 1
+            if (curr < last) {
+                setLinearSubs((prev) => ({ ...prev, [step.id]: curr + 1 }))
+                return
+            }
+        }
+        setLinearStep((s) => Math.min(s + 1, linearSteps.length - 1))
+    }
+
+    const handlePrev = () => {
+        const step = linearSteps[linearStep]
+        const subs = step?.substeps || []
+        if (subs.length > 0) {
+            const curr = linearSubs[step.id] ?? 0
+            if (curr > 0) {
+                setLinearSubs((prev) => ({ ...prev, [step.id]: curr - 1 }))
+                return
+            }
+        }
+        setLinearStep((s) => Math.max(s - 1, 0))
+    }
 
     return (
         <div className="p-8 space-y-12">
@@ -155,6 +313,15 @@ const StepperDemo = () => {
                                 setPlaygroundCurrentStep(0) // Reset to first step
                             }}
                             placeholder="Select step count"
+                        />
+                        <SingleSelect
+                            label="Stepper Type"
+                            items={[{ items: stepperTypeOptions }]}
+                            selected={playgroundStepperType}
+                            onSelect={(value) => {
+                                setPlaygroundStepperType(value as StepperType)
+                            }}
+                            placeholder="Select stepper type"
                         />
                     </div>
 
@@ -183,16 +350,15 @@ const StepperDemo = () => {
                     </div>
 
                     <div className="min-h-32 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
-                        <div className="w-full max-w-2xl">
-                            <Stepper
-                                steps={generatePlaygroundSteps()}
-                                currentStep={playgroundCurrentStep}
-                                onStepChange={(index) =>
-                                    setPlaygroundCurrentStep(index)
-                                }
-                                clickable={playgroundClickable}
-                            />
-                        </div>
+                        <Stepper
+                            stepperType={playgroundStepperType}
+                            steps={generatePlaygroundSteps()}
+                            currentStep={playgroundCurrentStep}
+                            onStepChange={(index) =>
+                                setPlaygroundCurrentStep(index)
+                            }
+                            clickable={playgroundClickable}
+                        />
                     </div>
 
                     <div className="flex justify-center space-x-4">
@@ -212,13 +378,13 @@ const StepperDemo = () => {
                                 setPlaygroundCurrentStep((s) =>
                                     Math.min(
                                         s + 1,
-                                        parseInt(playgroundStepCount) - 1
+                                        parseInt(playgroundStepCount)
                                     )
                                 )
                             }
                             disabled={
                                 playgroundCurrentStep ===
-                                parseInt(playgroundStepCount) - 1
+                                parseInt(playgroundStepCount)
                             }
                             className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
                         >
@@ -240,6 +406,41 @@ const StepperDemo = () => {
                 <div className="grid grid-cols-1 gap-8">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
+                            Simple linear progression (substeps first){' '}
+                            {JSON.stringify(linearSubs)}
+                        </h3>
+                        <div className="p-6 border border-gray-200 rounded-lg">
+                            <Stepper
+                                stepperType={StepperType.VERTICAL}
+                                steps={linearSteps}
+                                currentStep={linearStep}
+                                currentSubsteps={linearSubs}
+                                clickable={true}
+                                onStepChange={(next) => setLinearStep(next)}
+                            />
+                            <div className="mt-6 flex gap-3">
+                                <button
+                                    onClick={handlePrev}
+                                    className="px-3 py-2 bg-gray-200 rounded disabled:opacity-50"
+                                    disabled={
+                                        linearStep === 0 &&
+                                        (linearSubs[linearSteps[0].id] ?? 0) ===
+                                            0
+                                    }
+                                >
+                                    Prev
+                                </button>
+                                <button
+                                    onClick={handleNext}
+                                    className="px-3 py-2 bg-blue-600 text-white rounded"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
                             E-commerce Order Flow
                         </h3>
                         <div className="p-6 border border-gray-200 rounded-lg">
@@ -248,6 +449,7 @@ const StepperDemo = () => {
                                 currentStep={orderStep}
                                 onStepChange={(index) => setOrderStep(index)}
                                 clickable={true}
+                                stepperType={StepperType.VERTICAL}
                             />
                             <div className="mt-6 flex space-x-4">
                                 <button
@@ -376,24 +578,22 @@ const StepperDemo = () => {
                                     {
                                         id: '1',
                                         title: 'Setup',
-                                        tooltipContent:
-                                            'Initial setup completed',
+                                        description: 'Initial setup completed',
                                     },
                                     {
                                         id: '2',
                                         title: 'Configuration',
-                                        tooltipContent:
-                                            'Configuration completed',
+                                        description: 'Configuration completed',
                                     },
                                     {
                                         id: '3',
                                         title: 'Testing',
-                                        tooltipContent: 'Testing completed',
+                                        description: 'Testing completed',
                                     },
                                     {
                                         id: '4',
                                         title: 'Launch',
-                                        tooltipContent: 'Successfully launched',
+                                        description: 'Successfully launched',
                                     },
                                 ]}
                                 currentStep={4}
@@ -423,6 +623,74 @@ const StepperDemo = () => {
                                 currentStep={1}
                                 clickable={false}
                             />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Vertical Stepper with Substeps */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Vertical Stepper with Substeps
+                </h2>
+                <div className="border border-gray-200 rounded-lg p-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 className="font-medium mb-3">Example</h4>
+                            <Stepper
+                                steps={stepsWithSubsteps}
+                                currentStep={verticalSubstepStep}
+                                onStepChange={setVerticalSubstepStep}
+                                clickable={false}
+                                stepperType={StepperType.VERTICAL}
+                            />
+                        </div>
+                        <div>
+                            <h4 className="font-medium mb-3">Data Structure</h4>
+                            <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-96">
+                                {`const stepsWithSubsteps: Step[] = [
+  {
+    id: "1",
+    title: "Stepper Title",
+    status: StepState.COMPLETED
+  },
+  {
+    id: "2", 
+    title: "Stepper Title",
+    status: StepState.COMPLETED
+  },
+  {
+    id: "3",
+    title: "Stepper Title", 
+    status: StepState.COMPLETED
+  },
+  {
+    id: "4",
+    title: "Stepper Title",
+    status: StepState.CURRENT,
+    isExpandable: true,
+    isExpanded: true,
+    substeps: [
+      {
+        id: "4-1",
+        title: "Substep 1",
+        status: StepState.CURRENT
+      },
+      {
+        id: "4-2", 
+        title: "Substep 2",
+        status: StepState.PENDING
+      }
+    ]
+  },
+  {
+    id: "5",
+    title: "Stepper Title",
+    status: StepState.PENDING
+  }
+  // ... more steps
+]`}
+                            </pre>
                         </div>
                     </div>
                 </div>

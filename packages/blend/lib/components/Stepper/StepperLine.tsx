@@ -1,21 +1,19 @@
+import HorizonatlLine from './HorizonatlLine'
+import { StepperType } from './types'
+import VerticalLine from './VerticalLine'
+
 const StepperLine = ({
+    stepperType = StepperType.HORIZONTAL,
     color = '#CACFD8',
-    strokeWidth = '1.2',
 }: {
+    stepperType?: StepperType
     color?: string
-    strokeWidth?: string
 }) => {
-    return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="100%"
-            height="2"
-            viewBox="0 0 111 2"
-            fill="none"
-        >
-            <path d="M0 1H110.708" stroke={color} strokeWidth={strokeWidth} />
-        </svg>
-    )
+    if (stepperType === StepperType.VERTICAL) {
+        return <VerticalLine color={color} />
+    }
+
+    return <HorizonatlLine color={color} />
 }
 
 export default StepperLine
