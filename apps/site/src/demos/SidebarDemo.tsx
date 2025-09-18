@@ -831,7 +831,7 @@ const SidebarDemo = () => {
                                 <SingleSelect
                                     label="Theme"
                                     placeholder="Select Theme"
-                                    minWidth={200}
+                                    minMenuWidth={200}
                                     alignment={SelectMenuAlignment.END}
                                     selected={theme}
                                     onSelect={(value) =>
