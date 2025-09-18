@@ -139,7 +139,7 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                     justifyContent="flex-start"
                     gap="8px"
                 >
-                    {item.leftSlot && (
+                    {item.leftSlot && React.isValidElement(item.leftSlot) && (
                         <Block aria-hidden="true">{item.leftSlot}</Block>
                     )}
                     <Text
@@ -149,7 +149,7 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                     >
                         {item.label}
                     </Text>
-                    {item.rightSlot && (
+                    {item.rightSlot && React.isValidElement(item.rightSlot) && (
                         <Block aria-hidden="true">{item.rightSlot}</Block>
                     )}
                 </Block>
