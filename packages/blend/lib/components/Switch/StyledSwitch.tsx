@@ -16,29 +16,29 @@ export const StyledSwitchRoot = styled.button<{
 
         return css`
             position: relative;
-            border-radius: ${tokens.borderRadius.base};
+            border-radius: ${tokens.borderRadius[size].container};
             border: none;
             outline: none;
             cursor: ${$isDisabled ? 'not-allowed' : 'pointer'};
             transition: background-color ${tokens.transition.duration}
                 ${tokens.transition.easing};
 
-            margin: 0;
+            margin-top: ${tokens.marginTop};
             padding: 0;
             display: inline-flex;
             align-items: center;
             justify-content: flex-start;
 
-            width: ${tokens.width[size]};
-            height: ${tokens.height[size]};
+            width: ${tokens.container.width[size]};
+            height: ${tokens.container.height[size]};
 
             background-color: ${$isDisabled
                 ? $isChecked
-                    ? tokens.indicator.active.background.disabled
-                    : tokens.indicator.inactive.background.disabled
+                    ? tokens.backgroundColor.active.disabled
+                    : tokens.backgroundColor.inactive.disabled
                 : $isChecked
-                  ? tokens.indicator.active.background.default
-                  : tokens.indicator.inactive.background.default};
+                  ? tokens.backgroundColor.active.default
+                  : tokens.backgroundColor.inactive.default};
 
             /* Improved focus styles for better accessibility */
             &:focus-visible {
@@ -74,8 +74,8 @@ export const StyledSwitchThumb = styled.div<{
             position: absolute;
             top: ${tokens.thumb.size[size].top};
             left: ${$isChecked ? `${tokens.thumb.size[size].left}` : '-1px'};
-            border-radius: ${tokens.borderRadius.thumb};
-            background-color: ${tokens.thumb.background};
+            border-radius: ${tokens.borderRadius[size].thumb};
+            background-color: ${tokens.thumb.backgroundColor};
             border: ${tokens.thumb.border.width} solid
                 ${tokens.thumb.border.color};
             transition: all ${tokens.transition.duration}
