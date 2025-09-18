@@ -21,9 +21,9 @@ type SingleSelectMenuProps = {
     selected: string
     onSelect: (value: string) => void
     trigger: React.ReactNode
-    minWidth?: number
-    maxWidth?: number
-    maxHeight?: number
+    minMenuWidth?: number
+    maxMenuWidth?: number
+    maxMenuHeight?: number
     enableSearch?: boolean
     searchPlaceholder?: string
     disabled?: boolean
@@ -245,19 +245,16 @@ const SingleSelectMenu = ({
     selected,
     onSelect,
     trigger,
-    minWidth,
-    maxWidth,
-    maxHeight,
+    minMenuWidth,
+    maxMenuWidth,
+    maxMenuHeight,
     enableSearch,
     searchPlaceholder = 'Search options...',
     disabled,
-    // alignment
     alignment = SelectMenuAlignment.CENTER,
     side = SelectMenuSide.BOTTOM,
     sideOffset = 8,
     alignOffset = 0,
-
-    // open
     open,
     onOpenChange,
 }: SingleSelectMenuProps) => {
@@ -287,13 +284,10 @@ const SingleSelectMenu = ({
                 alignOffset={alignOffset}
                 side={side}
                 style={{
-                    minWidth: minWidth || 250,
-                    width:
-                        minWidth || maxWidth
-                            ? 'auto'
-                            : 'max(var(--radix-dropdown-menu-trigger-width), 250px)',
-                    maxWidth: maxWidth || 400,
-                    maxHeight,
+                    maxHeight: maxMenuHeight,
+                    minWidth: minMenuWidth,
+                    width: 'max(var(--radix-dropdown-menu-trigger-width))',
+                    maxWidth: maxMenuWidth,
                 }}
             >
                 {enableSearch && (

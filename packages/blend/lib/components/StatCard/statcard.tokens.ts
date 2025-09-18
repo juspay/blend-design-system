@@ -357,7 +357,7 @@ export const getStatCardToken = (
         },
         lg: {
             maxWidth: foundationToken.unit[350],
-            height: foundationToken.unit[190],
+            height: 'auto',
             border: {
                 default: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             },
