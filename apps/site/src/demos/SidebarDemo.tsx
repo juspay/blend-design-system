@@ -310,7 +310,52 @@ const SidebarDemo = () => {
             case 'card':
                 return <CardDemo />
             default:
-                return <div>No component selected</div>
+                return (
+                    <div className="p-8">
+                        <h2 className="text-2xl font-bold mb-6">
+                            TextInput Cursor Demo
+                        </h2>
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Normal Text Input (cursor: text)
+                                </h3>
+                                <TextInput
+                                    placeholder="Type here - shows text cursor"
+                                    value=""
+                                    onChange={() => {}}
+                                    cursor="text"
+                                />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Clickable Input (cursor: pointer)
+                                </h3>
+                                <TextInput
+                                    placeholder="Click to open modal/page - shows pointer cursor"
+                                    value=""
+                                    onChange={() => {}}
+                                    cursor="pointer"
+                                    onClick={() =>
+                                        alert(
+                                            'This would open a modal or navigate to a page'
+                                        )
+                                    }
+                                />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Search Input in Topbar (cursor: pointer)
+                                </h3>
+                                <p className="text-gray-600">
+                                    The search input in the topbar above now
+                                    uses cursor: pointer to indicate it opens a
+                                    search modal when clicked.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )
         }
     }
 
@@ -756,6 +801,7 @@ const SidebarDemo = () => {
                                     placeholder="Search"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
+                                    cursor="pointer"
                                     leftSlot={
                                         <Search
                                             style={{
