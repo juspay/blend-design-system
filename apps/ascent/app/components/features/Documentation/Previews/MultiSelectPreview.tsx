@@ -209,7 +209,7 @@ external make: (
                     selectionTagType={MultiSelectSelectionTagType.COUNT}
                     required={true}
                     helpIconHintText="Select all technologies you have experience with"
-                    maxHeight={250}
+                    height={250}
                 />
             </div>
         </ComponentPreview>
