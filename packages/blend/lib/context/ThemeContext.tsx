@@ -17,7 +17,7 @@ import type { ResponsiveTabsTokens } from '../components/Tabs/tabs.token'
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
 import type { ModalTokensType } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
-import type { PopoverTokenType } from '../components/Popover/popover.tokens'
+import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
@@ -92,7 +92,7 @@ export type ComponentTokenType = {
     BUTTON?: ResponsiveButtonTokens
     MODAL?: ModalTokensType
     BREADCRUMB?: ResponsiveBreadcrumbTokens
-    POPOVER?: PopoverTokenType
+    POPOVER?: ResponsivePopoverTokens
     MENU?: ResponsiveMenuTokensType
     MULTI_SELECT?: ResponsiveMultiSelectTokens
     SINGLE_SELECT?: ResponsiveSingleSelectTokens

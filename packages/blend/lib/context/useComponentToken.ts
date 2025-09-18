@@ -17,7 +17,7 @@ import type { ResponsiveDropdownInputTokens } from '../components/Inputs/Dropdow
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
 import type { ModalTokensType } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
-import type { PopoverTokenType } from '../components/Popover/popover.tokens'
+import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
@@ -55,7 +55,7 @@ export const useComponentToken = (
     | ResponsiveButtonTokens
     | ModalTokensType
     | ResponsiveBreadcrumbTokens
-    | PopoverTokenType
+    | ResponsivePopoverTokens
     | ResponsiveMenuTokensType
     | ResponsiveMultiSelectTokens
     | ResponsiveSingleSelectTokens
