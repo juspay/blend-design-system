@@ -31,6 +31,7 @@ export enum ChartType {
     LINE = 'line',
     BAR = 'bar',
     PIE = 'pie',
+    SCATTER = 'scatter',
 }
 
 export enum LegendsChangeType {
