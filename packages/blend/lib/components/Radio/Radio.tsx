@@ -14,6 +14,7 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import type { RadioTokensType } from './radio.token'
 
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { FOUNDATION_THEME } from '../../tokens'
 
 export const Radio = ({
     id,
@@ -41,42 +42,40 @@ export const Radio = ({
     const handleChange = createRadioChangeHandler(disabled, onChange)
 
     return (
-        <Block display="flex" flexDirection="column" gap={radioTokens.gap}>
-            <Block
-                display="flex"
-                alignItems={subtext ? 'flex-start' : 'center'}
-                gap={radioTokens.slotGap}
-            >
-                <StyledRadioInput
-                    type="radio"
-                    id={uniqueId}
-                    name={name}
-                    value={value}
-                    {...inputProps}
-                    disabled={disabled}
-                    required={required}
-                    onChange={handleChange}
-                    data-state={getRadioDataState(currentChecked)}
-                    aria-checked={currentChecked}
-                    size={size}
-                    $isDisabled={disabled}
-                    $isChecked={currentChecked}
-                    $error={error}
-                    {...rest}
-                />
+        <Block
+            display="flex"
+            alignItems={subtext ? 'flex-start' : 'center'}
+            gap={radioTokens.gap}
+        >
+            <StyledRadioInput
+                type="radio"
+                id={uniqueId}
+                name={name}
+                value={value}
+                {...inputProps}
+                disabled={disabled}
+                required={required}
+                onChange={handleChange}
+                data-state={getRadioDataState(currentChecked)}
+                aria-checked={currentChecked}
+                size={size}
+                $isDisabled={disabled}
+                $isChecked={currentChecked}
+                $error={error}
+                {...rest}
+            />
 
-                <RadioContent
-                    uniqueId={uniqueId}
-                    disabled={disabled}
-                    error={error}
-                    required={required}
-                    size={size}
-                    children={children}
-                    subtext={subtext}
-                    radioTokens={radioTokens}
-                    slot={slot}
-                />
-            </Block>
+            <RadioContent
+                uniqueId={uniqueId}
+                disabled={disabled}
+                error={error}
+                required={required}
+                size={size}
+                children={children}
+                subtext={subtext}
+                radioTokens={radioTokens}
+                slot={slot}
+            />
         </Block>
     )
 }
@@ -118,7 +117,7 @@ const RadioContent: React.FC<{
                 <Block
                     display="flex"
                     alignItems="center"
-                    gap={radioTokens.slotGap}
+                    gap={radioTokens.content.label.gap}
                 >
                     <label htmlFor={uniqueId} style={labelStyles}>
                         <PrimitiveText
@@ -133,8 +132,7 @@ const RadioContent: React.FC<{
                                     as="span"
                                     color={radioTokens.required.color}
                                     style={{
-                                        marginLeft:
-                                            radioTokens.required.spacing,
+                                        marginLeft: FOUNDATION_THEME.unit[2],
                                     }}
                                 >
                                     *
@@ -143,7 +141,7 @@ const RadioContent: React.FC<{
                         </PrimitiveText>
                     </label>
                     {slot && (
-                        <Block as="span" width={radioTokens.slot.size[size]}>
+                        <Block as="span" width={radioTokens.slot[size]}>
                             {slot}
                         </Block>
                     )}

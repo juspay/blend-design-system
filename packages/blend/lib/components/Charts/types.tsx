@@ -4,7 +4,7 @@ import {
     NameType,
     ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
-import { ButtonV2Props } from '../Button'
+import { ButtonProps } from '../Button'
 
 export type DataPoint = {
     primary: {
@@ -66,7 +66,7 @@ export type NoDataProps = {
     title?: string
     subtitle?: string
     slot?: ReactNode
-    button?: ButtonV2Props
+    button?: ButtonProps
 }
 
 export type AxisConfig = {
