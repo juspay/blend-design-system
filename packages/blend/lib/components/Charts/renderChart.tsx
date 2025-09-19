@@ -483,15 +483,17 @@ export const renderChart = ({
             const scatterData = transformScatterData(originalData, selectedKeys)
 
             // Group scatter points by series
-            const seriesByKey: { [key: string]: Array<{ x: number; y: number; name: string }> } = {}
-            scatterData.forEach(point => {
+            const seriesByKey: {
+                [key: string]: Array<{ x: number; y: number; name: string }>
+            } = {}
+            scatterData.forEach((point) => {
                 if (!seriesByKey[point.seriesKey]) {
                     seriesByKey[point.seriesKey] = []
                 }
                 seriesByKey[point.seriesKey].push({
                     x: point.x,
                     y: point.y,
-                    name: point.name
+                    name: point.name,
                 })
             })
 
@@ -500,8 +502,14 @@ export const renderChart = ({
                     margin={{
                         top: 10,
                         right: 30,
-                        left: finalYAxis.label && finalYAxis.showLabel ? 30 : 10,
-                        bottom: finalXAxis.label && finalXAxis.showLabel && finalXAxis.show ? 50 : 30,
+                        left:
+                            finalYAxis.label && finalYAxis.showLabel ? 30 : 10,
+                        bottom:
+                            finalXAxis.label &&
+                            finalXAxis.showLabel &&
+                            finalXAxis.show
+                                ? 50
+                                : 30,
                     }}
                     onMouseLeave={() => setHoveredKey(null)}
                 >
@@ -535,18 +543,22 @@ export const renderChart = ({
                                   : {
                                         fill: FOUNDATION_THEME.colors.gray[400],
                                         fontSize: 12,
-                                        fontWeight: FOUNDATION_THEME.font.weight[500],
+                                        fontWeight:
+                                            FOUNDATION_THEME.font.weight[500],
                                     }) as TickProps
                         }
                         label={
-                            finalXAxis.label && finalXAxis.showLabel && finalXAxis.show
+                            finalXAxis.label &&
+                            finalXAxis.showLabel &&
+                            finalXAxis.show
                                 ? {
                                       value: finalXAxis.label,
                                       position: 'insideBottom',
                                       offset: -15,
                                       fill: FOUNDATION_THEME.colors.gray[400],
                                       fontSize: 12,
-                                      fontWeight: FOUNDATION_THEME.font.weight[500],
+                                      fontWeight:
+                                          FOUNDATION_THEME.font.weight[500],
                                   }
                                 : undefined
                         }
@@ -581,9 +593,11 @@ export const renderChart = ({
                                 (finalYAxis.customTick
                                     ? finalYAxis.customTick
                                     : {
-                                          fill: FOUNDATION_THEME.colors.gray[400],
+                                          fill: FOUNDATION_THEME.colors
+                                              .gray[400],
                                           fontSize: 12,
-                                          fontWeight: FOUNDATION_THEME.font.weight[500],
+                                          fontWeight:
+                                              FOUNDATION_THEME.font.weight[500],
                                       }) as TickProps
                             }
                             label={
@@ -594,9 +608,11 @@ export const renderChart = ({
                                           position: 'insideLeft',
                                           style: { textAnchor: 'middle' },
                                           offset: -15,
-                                          fill: FOUNDATION_THEME.colors.gray[400],
+                                          fill: FOUNDATION_THEME.colors
+                                              .gray[400],
                                           fontSize: 12,
-                                          fontWeight: FOUNDATION_THEME.font.weight[500],
+                                          fontWeight:
+                                              FOUNDATION_THEME.font.weight[500],
                                       }
                                     : undefined
                             }

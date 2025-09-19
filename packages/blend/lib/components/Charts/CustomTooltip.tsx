@@ -542,7 +542,6 @@ const PieChartTooltip = ({
     )
 }
 
-
 const ScatterChartTooltip = ({
     originalData,
     hoveredKey,
@@ -566,12 +565,20 @@ const ScatterChartTooltip = ({
 
     // Get the scatter point data from payload
     const point = payload[0]?.payload
-    if (!point || typeof point.x === "undefined" || typeof point.y === "undefined") {
+    if (
+        !point ||
+        typeof point.x === 'undefined' ||
+        typeof point.y === 'undefined'
+    ) {
         return null
     }
 
     // Find the series key from the payload or use first available key
-    const seriesKey = hoveredKey || (selectedKeys.length > 0 ? selectedKeys[0] : Object.keys(originalData[0]?.data || {})[0])
+    const seriesKey =
+        hoveredKey ||
+        (selectedKeys.length > 0
+            ? selectedKeys[0]
+            : Object.keys(originalData[0]?.data || {})[0])
 
     if (!seriesKey) {
         return null
@@ -581,7 +588,7 @@ const ScatterChartTooltip = ({
         <>
             <Block position="relative" paddingLeft={8}>
                 <Block
-                    backgroundColor={point.fill || "#AD46FF"}
+                    backgroundColor={point.fill || '#AD46FF'}
                     position="absolute"
                     top={FOUNDATION_THEME.unit[2]}
                     left={0}
@@ -603,13 +610,22 @@ const ScatterChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[500]}
                         color={FOUNDATION_THEME.colors.gray[400]}
                     >
-                        {point.name || "Data Point"}
+                        {point.name || 'Data Point'}
                     </Text>
                 </Block>
             </Block>
 
-            <Block display="flex" flexDirection="column" paddingLeft={8} gap={4}>
-                <Block display="flex" justifyContent="space-between" alignItems="center">
+            <Block
+                display="flex"
+                flexDirection="column"
+                paddingLeft={8}
+                gap={4}
+            >
+                <Block
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                >
                     <Text
                         fontSize={12}
                         fontWeight={FOUNDATION_THEME.font.weight[500]}
@@ -626,7 +642,11 @@ const ScatterChartTooltip = ({
                         {formatTooltipValue(point.x, xAxis)}
                     </Text>
                 </Block>
-                <Block display="flex" justifyContent="space-between" alignItems="center">
+                <Block
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                >
                     <Text
                         fontSize={12}
                         fontWeight={FOUNDATION_THEME.font.weight[500]}
