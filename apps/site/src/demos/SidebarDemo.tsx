@@ -222,6 +222,77 @@ const SidebarDemo = () => {
             ),
             value: 'worldpay',
         },
+        // Additional tenants to demonstrate the three dot menu
+        {
+            label: 'Klarna',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'klarna',
+        },
+        {
+            label: 'Affirm',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'affirm',
+        },
+        {
+            label: 'Afterpay',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'afterpay',
+        },
+        {
+            label: 'Sezzle',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'sezzle',
+        },
+        {
+            label: 'Zip',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'zip',
+        },
+        {
+            label: 'Paymi',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'paymi',
+        },
+        {
+            label: 'Mollie',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'mollie',
+        },
     ]
 
     const merchants = [

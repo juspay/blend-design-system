@@ -5,7 +5,6 @@ import { BreakpointType } from '../../breakpoints/breakPoints'
 export type TopbarState = 'default' | 'hover' | 'active'
 
 export type TopbarTokensType = {
-    height: CSSObject['height']
     position: CSSObject['position']
     top: CSSObject['top']
     zIndex: CSSObject['zIndex']
@@ -101,7 +100,6 @@ export const getTopbarTokens = (
 ): ResponsiveTopbarTokens => {
     return {
         sm: {
-            height: foundationToken.unit[56],
             position: 'sticky',
             top: '0',
             zIndex: '10',
@@ -195,14 +193,13 @@ export const getTopbarTokens = (
         },
 
         lg: {
-            height: foundationToken.unit[68] || '68px',
             position: 'sticky',
             top: '0',
             zIndex: '10',
             borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             backgroundColor: 'hsla(0, 0%, 100%, 0.8)',
             backdropFilter: 'blur(10px)',
-            padding: `${foundationToken.unit[16]} ${foundationToken.unit[32]}`,
+            padding: `${foundationToken.unit[12]} ${foundationToken.unit[32]}`,
             gap: foundationToken.unit[16],
 
             toggleButton: {

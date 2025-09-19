@@ -1,19 +1,14 @@
-import React, { forwardRef, useState, useEffect } from 'react'
-import { PanelsTopLeft, UserIcon, MoreHorizontal } from 'lucide-react'
+import { forwardRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
 import type { SidebarProps } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
-import {
-    SelectMenuVariant,
-    SelectMenuAlignment,
-    SelectMenuSide,
-} from '../Select/types'
-import { SelectMenuSize, SingleSelect } from '../SingleSelect'
-import { Avatar, AvatarShape, AvatarSize } from '../Avatar'
-import Text from '../Text/Text'
 import { Topbar } from '../Topbar'
+import TenantPanel from './TenantPanel'
+import SidebarHeader from './SidebarHeader'
+import SidebarFooter from './SidebarFooter'
+
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 
@@ -42,22 +37,6 @@ const MainContentContainer = styled(Block)`
     scrollbar-width: none;
 `
 
-const ToggleButton = styled.button`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background-color: transparent;
-    border-radius: 10px;
-    cursor: pointer;
-    padding: 9px;
-    transition: background-color 0.15s ease;
-
-    &:hover {
-        background-color: ${FOUNDATION_THEME.colors.gray[100]};
-    }
-`
-
 const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
     (
         {
@@ -76,30 +55,12 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const [isExpanded, setIsExpanded] = useState<boolean>(true)
         const [showToggleButton, setShowToggleButton] = useState<boolean>(false)
         const [isHovering, setIsHovering] = useState<boolean>(false)
+        const [isScrolled, setIsScrolled] = useState<boolean>(false)
+
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < BREAKPOINTS.lg
 
-        const defaultMerchantInfo = {
-            items: [
-                {
-                    label: 'juspay',
-                    value: 'juspay',
-                    icon: (
-                        <UserIcon
-                            style={{
-                                width: '16px',
-                                height: '16px',
-                            }}
-                        />
-                    ),
-                },
-            ],
-            selected: 'juspay',
-            onSelect: (value: string) => {
-                console.log('Selected merchant:', value)
-            },
-        }
-
+        // Handle keyboard shortcut for sidebar toggle
         useEffect(() => {
             const handleKeyPress = (event: KeyboardEvent) => {
                 if (event.key === sidebarCollapseKey && !isMobile) {
@@ -109,7 +70,6 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             }
 
             document.addEventListener('keydown', handleKeyPress)
-
             return () => {
                 document.removeEventListener('keydown', handleKeyPress)
             }
@@ -132,6 +92,44 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             }
         }, [isExpanded, isMobile])
 
+        useEffect(() => {
+            const directoryContainer = document.querySelector(
+                '[data-directory-container]'
+            )
+            if (!directoryContainer) return
+
+            const handleScroll = () => {
+                setIsScrolled(directoryContainer.scrollTop > 0)
+            }
+
+            directoryContainer.addEventListener('scroll', handleScroll)
+            return () =>
+                directoryContainer.removeEventListener('scroll', handleScroll)
+        }, [])
+
+        const toggleSidebar = () => {
+            setIsExpanded(!isExpanded)
+            setIsHovering(false)
+        }
+
+        const handleMouseEnter = () => setIsHovering(true)
+        const handleMouseLeave = () => setIsHovering(false)
+
+        const defaultMerchantInfo = {
+            items: [
+                {
+                    label: 'juspay',
+                    value: 'juspay',
+                    icon: null,
+                },
+            ],
+            selected: 'juspay',
+            onSelect: (value: string) => {
+                console.log('Selected merchant:', value)
+            },
+        }
+        const hasLeftPanel = Boolean(leftPanel?.items?.length)
+
         return (
             <Block
                 ref={ref}
@@ -149,7 +147,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         width="20px"
                         height="100%"
                         zIndex="30"
-                        onMouseEnter={() => setIsHovering(true)}
+                        onMouseEnter={handleMouseEnter}
                         style={{
                             backgroundColor: 'transparent',
                         }}
@@ -160,7 +158,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     backgroundColor={FOUNDATION_THEME.colors.gray[25]}
                     maxWidth={
                         isExpanded || isHovering
-                            ? leftPanel
+                            ? hasLeftPanel
                                 ? '300px'
                                 : '250px'
                             : '0'
@@ -180,200 +178,19 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         transitionDuration: '150ms',
                         animation: 'slide-in-from-left 0.3s ease-out',
                     }}
-                    onMouseLeave={() => setIsHovering(false)}
+                    onMouseLeave={handleMouseLeave}
                 >
                     {(isExpanded || isHovering) && !isMobile && (
                         <>
-                            {/* TENANTS SIDE BAR _ SECONDARY SIDE BAR */}
-                            {leftPanel &&
-                                leftPanel.items &&
-                                leftPanel.items.length > 0 && (
-                                    <Block
-                                        width="fit-content"
-                                        height="100%"
-                                        borderRight={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                                        backgroundColor={
-                                            FOUNDATION_THEME.colors.gray[25]
-                                        }
-                                        display="flex"
-                                        flexDirection="column"
-                                        gap={FOUNDATION_THEME.unit[16]}
-                                        alignItems="center"
-                                        padding="10px"
-                                    >
-                                        {(() => {
-                                            const maxVisible =
-                                                leftPanel.maxVisibleItems || 5
-                                            const visibleTenants =
-                                                leftPanel.items.slice(
-                                                    0,
-                                                    maxVisible
-                                                )
-                                            const hiddenTenants =
-                                                leftPanel.items.slice(
-                                                    maxVisible
-                                                )
-                                            const hasMoreTenants =
-                                                hiddenTenants.length > 0
+                            {hasLeftPanel && leftPanel && (
+                                <TenantPanel
+                                    items={leftPanel.items}
+                                    selected={leftPanel.selected}
+                                    onSelect={leftPanel.onSelect}
+                                    maxVisibleItems={leftPanel.maxVisibleItems}
+                                />
+                            )}
 
-                                            return (
-                                                <>
-                                                    {visibleTenants.map(
-                                                        (tenant, index) => (
-                                                            <Block
-                                                                border="none"
-                                                                backgroundColor="transparent"
-                                                                width={
-                                                                    FOUNDATION_THEME
-                                                                        .unit[32]
-                                                                }
-                                                                height={
-                                                                    FOUNDATION_THEME
-                                                                        .unit[32]
-                                                                }
-                                                                borderRadius={
-                                                                    FOUNDATION_THEME
-                                                                        .border
-                                                                        .radius[4]
-                                                                }
-                                                                display="flex"
-                                                                alignItems="center"
-                                                                justifyContent="center"
-                                                                cursor="pointer"
-                                                                style={{
-                                                                    outline: `1px solid ${
-                                                                        leftPanel.selected ===
-                                                                        tenant.label
-                                                                            ? FOUNDATION_THEME
-                                                                                  .colors
-                                                                                  .primary[500]
-                                                                            : FOUNDATION_THEME
-                                                                                  .colors
-                                                                                  .gray[150]
-                                                                    }`,
-                                                                    transitionDuration:
-                                                                        '75ms',
-                                                                }}
-                                                                onClick={() =>
-                                                                    leftPanel.onSelect(
-                                                                        tenant.label
-                                                                    )
-                                                                }
-                                                                key={index}
-                                                            >
-                                                                {tenant.icon}
-                                                            </Block>
-                                                        )
-                                                    )}
-
-                                                    {hasMoreTenants && (
-                                                        <Block position="relative">
-                                                            <SingleSelect
-                                                                placeholder=""
-                                                                variant={
-                                                                    SelectMenuVariant.NO_CONTAINER
-                                                                }
-                                                                side={
-                                                                    SelectMenuSide.RIGHT
-                                                                }
-                                                                alignment={
-                                                                    SelectMenuAlignment.START
-                                                                }
-                                                                sideOffset={4}
-                                                                items={[
-                                                                    {
-                                                                        items: hiddenTenants.map(
-                                                                            (
-                                                                                tenant
-                                                                            ) => ({
-                                                                                label: tenant.label,
-                                                                                value:
-                                                                                    tenant.value ||
-                                                                                    tenant.label,
-                                                                                slot1: tenant.icon,
-                                                                            })
-                                                                        ),
-                                                                    },
-                                                                ]}
-                                                                selected=""
-                                                                onSelect={(
-                                                                    value
-                                                                ) => {
-                                                                    const selectedTenant =
-                                                                        hiddenTenants.find(
-                                                                            (
-                                                                                t
-                                                                            ) =>
-                                                                                (t.value ||
-                                                                                    t.label) ===
-                                                                                value
-                                                                        )
-                                                                    if (
-                                                                        selectedTenant
-                                                                    ) {
-                                                                        leftPanel.onSelect(
-                                                                            selectedTenant.label
-                                                                        )
-                                                                    }
-                                                                }}
-                                                                customTrigger={
-                                                                    <Block
-                                                                        border="none"
-                                                                        backgroundColor="transparent"
-                                                                        width={
-                                                                            FOUNDATION_THEME
-                                                                                .unit[32]
-                                                                        }
-                                                                        height={
-                                                                            FOUNDATION_THEME
-                                                                                .unit[32]
-                                                                        }
-                                                                        borderRadius={
-                                                                            FOUNDATION_THEME
-                                                                                .border
-                                                                                .radius[4]
-                                                                        }
-                                                                        display="flex"
-                                                                        alignItems="center"
-                                                                        justifyContent="center"
-                                                                        cursor="pointer"
-                                                                        style={{
-                                                                            outline: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
-                                                                            transitionDuration:
-                                                                                '75ms',
-                                                                        }}
-                                                                        _hover={{
-                                                                            backgroundColor:
-                                                                                FOUNDATION_THEME
-                                                                                    .colors
-                                                                                    .gray[50],
-                                                                        }}
-                                                                    >
-                                                                        <MoreHorizontal
-                                                                            style={{
-                                                                                width: FOUNDATION_THEME
-                                                                                    .unit[16],
-                                                                                height: FOUNDATION_THEME
-                                                                                    .unit[16],
-                                                                            }}
-                                                                            color={
-                                                                                FOUNDATION_THEME
-                                                                                    .colors
-                                                                                    .gray[600]
-                                                                            }
-                                                                        />
-                                                                    </Block>
-                                                                }
-                                                            />
-                                                        </Block>
-                                                    )}
-                                                </>
-                                            )
-                                        })()}
-                                    </Block>
-                                )}
-
-                            {/* PRIMARY SIDE BAR */}
                             <Block
                                 width="100%"
                                 height="100%"
@@ -381,67 +198,16 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                 flexDirection="column"
                                 position="relative"
                             >
-                                {/* MERCHANT SWITCHER  */}
-                                <Block
-                                    width="100%"
-                                    zIndex="10"
-                                    backgroundColor={
-                                        FOUNDATION_THEME.colors.gray[25]
-                                    }
-                                    display="flex"
-                                    alignItems="center"
-                                    justifyContent="space-between"
-                                    gap="12px"
-                                    padding="12px 8px"
-                                >
-                                    {sidebarTopSlot ? (
-                                        sidebarTopSlot
-                                    ) : (
-                                        <SingleSelect
-                                            helpIconText=""
-                                            required={false}
-                                            placeholder="Select Merchant"
-                                            variant={
-                                                SelectMenuVariant.NO_CONTAINER
-                                            }
-                                            size={SelectMenuSize.SMALL}
-                                            items={defaultMerchantInfo.items.map(
-                                                (item) => ({
-                                                    items: [
-                                                        {
-                                                            label: item.label,
-                                                            value: item.value,
-                                                            slot1: item.icon,
-                                                        },
-                                                    ],
-                                                })
-                                            )}
-                                            selected={
-                                                defaultMerchantInfo.selected
-                                            }
-                                            onSelect={
-                                                defaultMerchantInfo.onSelect
-                                            }
-                                        />
-                                    )}
-                                    <ToggleButton
-                                        onClick={() => {
-                                            setIsExpanded(!isExpanded)
-                                            setIsHovering(false)
-                                        }}
-                                    >
-                                        <PanelsTopLeft
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[600]
-                                            }
-                                            size={14}
-                                        />
-                                    </ToggleButton>
-                                </Block>
+                                <SidebarHeader
+                                    sidebarTopSlot={sidebarTopSlot}
+                                    merchantInfo={merchantInfo}
+                                    isExpanded={isExpanded}
+                                    isScrolled={isScrolled}
+                                    sidebarCollapseKey={sidebarCollapseKey}
+                                    onToggle={toggleSidebar}
+                                />
 
-                                {/* DIRECTORY */}
-                                <DirectoryContainer>
+                                <DirectoryContainer data-directory-container>
                                     <Directory
                                         directoryData={data}
                                         className="pb-20"
@@ -457,7 +223,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 <MainContentContainer>
                     <Topbar
                         isExpanded={isExpanded}
-                        onToggleExpansion={() => setIsExpanded(!isExpanded)}
+                        onToggleExpansion={toggleSidebar}
                         showToggleButton={showToggleButton}
                         sidebarTopSlot={sidebarTopSlot}
                         topbar={topbar}
@@ -472,47 +238,6 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         )
     }
 )
-
-const SidebarFooter = ({ footer }: { footer: React.ReactNode }) => {
-    return (
-        <Block
-            width="100%"
-            backgroundColor={FOUNDATION_THEME.colors.gray[25]}
-            height="64px"
-            position="sticky"
-            bottom="0"
-            zIndex="10"
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            gap="12px"
-            padding="12px 8px"
-            borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-        >
-            {footer ? (
-                footer
-            ) : (
-                <Block width="100%">
-                    <div className="flex items-center gap-2">
-                        <Avatar
-                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-                            alt="John Doe"
-                            size={AvatarSize.SM}
-                            shape={AvatarShape.ROUNDED}
-                        />
-                        <Text
-                            variant="body.md"
-                            fontWeight={500}
-                            color={FOUNDATION_THEME.colors.gray[600]}
-                        >
-                            indira.sajeev96@gmail.com
-                        </Text>
-                    </div>
-                </Block>
-            )}
-        </Block>
-    )
-}
 
 Sidebar.displayName = 'Sidebar'
 
