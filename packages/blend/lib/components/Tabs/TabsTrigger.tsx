@@ -64,10 +64,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                 {...props}
             >
                 {leftSlot && (
-                    <IconContainer
-                        $tabsToken={tabsToken}
-                        style={{ marginRight: tabsToken.trigger.gap }}
-                    >
+                    <IconContainer $tabsToken={tabsToken}>
                         {leftSlot}
                     </IconContainer>
                 )}
@@ -75,10 +72,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                 <span style={{ flexGrow: 1 }}>{children}</span>
 
                 {effectiveRightSlot && (
-                    <IconContainer
-                        $tabsToken={tabsToken}
-                        style={{ marginLeft: tabsToken.trigger.gap }}
-                    >
+                    <IconContainer $tabsToken={tabsToken}>
                         {effectiveRightSlot}
                     </IconContainer>
                 )}
