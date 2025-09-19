@@ -499,17 +499,22 @@ export const renderChart = ({
 
             return (
                 <ScatterChart
+                    data={scatterData}
                     margin={{
-                        top: 10,
+                        top: 20,
                         right: 30,
-                        left:
-                            finalYAxis.label && finalYAxis.showLabel ? 30 : 10,
-                        bottom:
-                            finalXAxis.label &&
-                            finalXAxis.showLabel &&
-                            finalXAxis.show
-                                ? 50
-                                : 30,
+                        left: isSmallScreen
+                            ? 20
+                            : finalYAxis.label && finalYAxis.showLabel
+                              ? 30
+                              : 10,
+                        bottom: isSmallScreen
+                            ? 40
+                            : finalXAxis.label &&
+                                finalXAxis.showLabel &&
+                                finalXAxis.show
+                              ? 50
+                              : 30,
                     }}
                     onMouseLeave={() => setHoveredKey(null)}
                 >
@@ -550,11 +555,12 @@ export const renderChart = ({
                         label={
                             finalXAxis.label &&
                             finalXAxis.showLabel &&
-                            finalXAxis.show
+                            finalXAxis.show &&
+                            !isSmallScreen
                                 ? {
                                       value: finalXAxis.label,
-                                      position: 'insideBottom',
-                                      offset: -15,
+                                      position: 'bottom',
+                                      offset: 35,
                                       fill: FOUNDATION_THEME.colors.gray[400],
                                       fontSize: 12,
                                       fontWeight:
@@ -567,57 +573,56 @@ export const renderChart = ({
                         vertical={false}
                         stroke={chartConfig.gridStroke}
                     />
-                    {!isSmallScreen && finalYAxis.show && (
-                        <YAxis
-                            type="number"
-                            dataKey="y"
-                            axisLine={false}
-                            tickLine={false}
-                            interval={finalYAxis.interval}
-                            tickFormatter={
-                                finalYAxis.customTick
-                                    ? undefined
-                                    : finalYAxis.tickFormatter
-                                      ? finalYAxis.tickFormatter
-                                      : finalYAxis.type
-                                        ? getAxisFormatterWithConfig(
-                                              finalYAxis.type,
-                                              finalYAxis.dateOnly,
-                                              finalYAxis.smart,
-                                              finalYAxis.timeZone,
-                                              finalYAxis.hour12
-                                          )
-                                        : (value) => formatNumber(value)
-                            }
-                            tick={
-                                (finalYAxis.customTick
-                                    ? finalYAxis.customTick
-                                    : {
-                                          fill: FOUNDATION_THEME.colors
-                                              .gray[400],
-                                          fontSize: 12,
-                                          fontWeight:
-                                              FOUNDATION_THEME.font.weight[500],
-                                      }) as TickProps
-                            }
-                            label={
-                                finalYAxis.label && finalYAxis.showLabel
-                                    ? {
-                                          value: finalYAxis.label,
-                                          angle: -90,
-                                          position: 'insideLeft',
-                                          style: { textAnchor: 'middle' },
-                                          offset: -15,
-                                          fill: FOUNDATION_THEME.colors
-                                              .gray[400],
-                                          fontSize: 12,
-                                          fontWeight:
-                                              FOUNDATION_THEME.font.weight[500],
-                                      }
-                                    : undefined
-                            }
-                        />
-                    )}
+                    <YAxis
+                        type="number"
+                        dataKey="y"
+                        axisLine={false}
+                        tickLine={false}
+                        interval={finalYAxis.interval}
+                        hide={isSmallScreen}
+                        tickFormatter={
+                            finalYAxis.customTick
+                                ? undefined
+                                : finalYAxis.tickFormatter
+                                  ? finalYAxis.tickFormatter
+                                  : finalYAxis.type
+                                    ? getAxisFormatterWithConfig(
+                                          finalYAxis.type,
+                                          finalYAxis.dateOnly,
+                                          finalYAxis.smart,
+                                          finalYAxis.timeZone,
+                                          finalYAxis.hour12
+                                      )
+                                    : (value) => formatNumber(value)
+                        }
+                        tick={
+                            (finalYAxis.customTick
+                                ? finalYAxis.customTick
+                                : {
+                                      fill: FOUNDATION_THEME.colors.gray[400],
+                                      fontSize: 12,
+                                      fontWeight:
+                                          FOUNDATION_THEME.font.weight[500],
+                                  }) as TickProps
+                        }
+                        label={
+                            finalYAxis.label &&
+                            finalYAxis.showLabel &&
+                            !isSmallScreen
+                                ? {
+                                      value: finalYAxis.label,
+                                      angle: -90,
+                                      position: 'insideLeft',
+                                      style: { textAnchor: 'middle' },
+                                      offset: -15,
+                                      fill: FOUNDATION_THEME.colors.gray[400],
+                                      fontSize: 12,
+                                      fontWeight:
+                                          FOUNDATION_THEME.font.weight[500],
+                                  }
+                                : undefined
+                        }
+                    />
                     <Tooltip
                         cursor={{
                             strokeDasharray: '6 5',
