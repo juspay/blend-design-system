@@ -5,6 +5,7 @@ import {
     DateFormatPreset,
     DateFormatConfig,
     TriggerConfig,
+    DateRangePickerSize,
 } from '../../../../packages/blend/lib/components/DateRangePicker/types'
 import {
     FORMAT_PRESETS,
@@ -116,6 +117,7 @@ const DateRangePickerDemo = () => {
         includeTime: false,
         includeYear: true,
         timeFormat: '12h' as '12h' | '24h',
+        size: DateRangePickerSize.MEDIUM,
         triggerType: 'default' as
             | 'default'
             | 'custom-button'
@@ -400,7 +402,7 @@ const DateRangePickerDemo = () => {
                                 <h4 className="text-lg font-medium text-gray-700 mb-3">
                                     Format Settings
                                 </h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
                                         <label className="block mb-2 font-medium text-gray-700">
                                             Format Preset
@@ -466,6 +468,41 @@ const DateRangePickerDemo = () => {
                                                 12 Hour (AM/PM)
                                             </option>
                                             <option value="24h">24 Hour</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block mb-2 font-medium text-gray-700">
+                                            Size
+                                        </label>
+                                        <select
+                                            value={config.size}
+                                            onChange={handleSelectChange(
+                                                'size'
+                                            )}
+                                            className="w-full px-3 py-2 rounded border border-gray-300 text-sm bg-white focus:border-blue-500 focus:outline-none"
+                                        >
+                                            <option
+                                                value={
+                                                    DateRangePickerSize.SMALL
+                                                }
+                                            >
+                                                Small
+                                            </option>
+                                            <option
+                                                value={
+                                                    DateRangePickerSize.MEDIUM
+                                                }
+                                            >
+                                                Medium
+                                            </option>
+                                            <option
+                                                value={
+                                                    DateRangePickerSize.LARGE
+                                                }
+                                            >
+                                                Large
+                                            </option>
                                         </select>
                                     </div>
 
@@ -584,6 +621,7 @@ const DateRangePickerDemo = () => {
                                     }
                                     disablePastDates={config.disablePastDates}
                                     isDisabled={config.isDisabled}
+                                    size={config.size}
                                     formatConfig={getFormatConfig()}
                                     triggerConfig={getTriggerConfig()}
                                 />
@@ -794,6 +832,85 @@ const DateRangePickerDemo = () => {
                         </div>
                     </div>
 
+                    {/* Calendar Only Mode */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Calendar Only Mode
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Only calendar appears - no quick filter dropdown
+                            (showPresets=false)
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={basicRange}
+                                onChange={handleBasicRangeChange}
+                                showPresets={false}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Custom Trigger with Calendar Only */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Custom Trigger + Calendar Only
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Custom card trigger with calendar-only mode
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                showPresets={false}
+                                showDateTimePicker={false}
+                                triggerConfig={{
+                                    renderTrigger: ({
+                                        onClick,
+                                        formattedValue,
+                                        isOpen,
+                                    }) => (
+                                        <div
+                                            onClick={onClick}
+                                            style={{
+                                                padding: '12px 16px',
+                                                border: '2px solid #007bff',
+                                                borderRadius: '8px',
+                                                backgroundColor: isOpen
+                                                    ? '#e3f2fd'
+                                                    : 'white',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.2s ease',
+                                                minWidth: '200px',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    fontSize: '12px',
+                                                    color: '#007bff',
+                                                    marginBottom: '4px',
+                                                }}
+                                            >
+                                                📅 Date Range
+                                            </div>
+                                            <div
+                                                style={{
+                                                    fontSize: '14px',
+                                                    fontWeight: '600',
+                                                    color: '#333',
+                                                }}
+                                            >
+                                                {formattedValue ||
+                                                    'Click to select'}
+                                            </div>
+                                        </div>
+                                    ),
+                                }}
+                            />
+                        </div>
+                    </div>
+
                     {/* Disabled State */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
@@ -812,6 +929,88 @@ const DateRangePickerDemo = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Size Variants Section */}
+                <div className="mt-8">
+                    <h3 className="text-xl font-semibold text-gray-700 mb-4">
+                        Size Variants
+                    </h3>
+                    <p className="text-base text-gray-600 mb-6">
+                        DateRangePicker supports three sizes: Small, Medium
+                        (default), and Large
+                    </p>
+
+                    <div className="grid grid-cols-1 gap-6">
+                        {/* Small Size */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg">
+                            <div className="flex items-center justify-between mb-4">
+                                <div>
+                                    <h4 className="text-lg font-semibold text-gray-700">
+                                        Small Size
+                                    </h4>
+                                    <p className="text-sm text-gray-600">
+                                        Padding: 7px 14px, Font: body.sm
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="overflow-hidden">
+                                <DateRangePicker
+                                    value={basicRange}
+                                    onChange={handleBasicRangeChange}
+                                    size={DateRangePickerSize.SMALL}
+                                    showPresets={true}
+                                    showDateTimePicker={true}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Medium Size */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg">
+                            <div className="flex items-center justify-between mb-4">
+                                <div>
+                                    <h4 className="text-lg font-semibold text-gray-700">
+                                        Medium Size (Default)
+                                    </h4>
+                                    <p className="text-sm text-gray-600">
+                                        Padding: 8px 14px, Font: body.md
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="overflow-hidden">
+                                <DateRangePicker
+                                    value={formatRange}
+                                    onChange={handleFormatRangeChange}
+                                    size={DateRangePickerSize.MEDIUM}
+                                    showPresets={true}
+                                    showDateTimePicker={true}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Large Size */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg">
+                            <div className="flex items-center justify-between mb-4">
+                                <div>
+                                    <h4 className="text-lg font-semibold text-gray-700">
+                                        Large Size
+                                    </h4>
+                                    <p className="text-sm text-gray-600">
+                                        Padding: 10px 14px, Font: body.md
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="overflow-hidden">
+                                <DateRangePicker
+                                    value={customRange}
+                                    onChange={handleCustomRangeChange}
+                                    size={DateRangePickerSize.LARGE}
+                                    showPresets={true}
+                                    showDateTimePicker={true}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Usage Instructions */}
@@ -823,12 +1022,18 @@ const DateRangePickerDemo = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <h4 className="font-semibold text-blue-700 mb-2">
-                            ✨ New Features
+                            ✨ Key Features
                         </h4>
                         <ul className="text-blue-700 text-sm space-y-1">
                             <li>
-                                • <strong>Different background colors:</strong>{' '}
-                                Quick selector (gray) vs trigger (white)
+                                • <strong>Calendar-only mode:</strong> Use
+                                showPresets=false to hide preset dropdown and
+                                show only calendar
+                            </li>
+                            <li>
+                                • <strong>Enhanced custom triggers:</strong>{' '}
+                                Full control over trigger appearance and
+                                behavior
                             </li>
                             <li>
                                 • <strong>Auto-hide presets:</strong> Custom
@@ -850,6 +1055,10 @@ const DateRangePickerDemo = () => {
                             🎯 Best Practices
                         </h4>
                         <ul className="text-blue-700 text-sm space-y-1">
+                            <li>
+                                • Choose appropriate size (sm/md/lg) for your
+                                design context
+                            </li>
                             <li>
                                 • Use FORMAT_PRESETS for common formatting needs
                             </li>

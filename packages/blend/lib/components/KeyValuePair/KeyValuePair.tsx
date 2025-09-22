@@ -18,17 +18,19 @@ const TruncatedText = ({
     fontSize,
     color,
     className,
+    fontWeight,
 }: {
     children: string
     fontSize: CSSObject['fontSize']
     color: CSSObject['color']
     className?: string
+    fontWeight?: CSSObject['fontWeight']
 }) => {
     // For now, show tooltip for any text longer than 15 characters to test
     const shouldShowTooltip = children.length > 15
 
     const textElement = (
-        <div
+        <Block
             className={`${className || ''}`}
             style={{
                 overflow: 'hidden',
@@ -40,6 +42,7 @@ const TruncatedText = ({
             <PrimitiveText
                 fontSize={fontSize}
                 color={color}
+                fontWeight={fontWeight}
                 style={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -49,13 +52,13 @@ const TruncatedText = ({
             >
                 {children}
             </PrimitiveText>
-        </div>
+        </Block>
     )
 
     if (shouldShowTooltip) {
         return (
             <Tooltip content={children} side={TooltipSide.TOP}>
-                <div style={{ width: '100%' }}>{textElement}</div>
+                <Block style={{ width: '100%' }}>{textElement}</Block>
             </Tooltip>
         )
     }
@@ -73,24 +76,45 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
             valueLeftSlot,
             valueRightSlot,
             keyValuePairState = KeyValuePairStateType.vertical,
-            maxWidth = '200px',
+            maxWidth = '220px',
         },
         ref
     ) => {
         const keyValuePairTokens =
             useResponsiveTokens<KeyValuePairTokensType>('KEYVALUEPAIR')
+
         return (
             <Block
                 ref={ref}
-                className={`flex ${keyValuePairState === KeyValuePairStateType.vertical ? `flex-col gap-2` : 'flex-row justify-between gap-1'}`}
-                width={maxWidth}
-                // maxWidth={keyValuePairTokens.maxWidth}
+                style={{
+                    display: 'flex',
+                    flexDirection:
+                        keyValuePairState === KeyValuePairStateType.vertical
+                            ? 'column'
+                            : 'row',
+                    justifyContent:
+                        keyValuePairState === KeyValuePairStateType.horizontal
+                            ? 'space-between'
+                            : 'flex-start',
+                    gap:
+                        keyValuePairState === KeyValuePairStateType.vertical
+                            ? keyValuePairTokens.gap.vertical
+                            : keyValuePairTokens.gap.horizontal,
+                    width: maxWidth,
+                }}
             >
-                <div className="flex gap-2 items-center">
+                <Block
+                    style={{
+                        display: 'flex',
+                        gap: keyValuePairTokens.key.gap,
+                        alignItems: 'center',
+                    }}
+                >
                     <TruncatedText
                         className="flex-1 min-w-0"
-                        fontSize={keyValuePairTokens.keyFontSize}
-                        color={keyValuePairTokens.keyColor}
+                        fontSize={keyValuePairTokens.key.fontSize}
+                        color={keyValuePairTokens.key.color}
+                        fontWeight={keyValuePairTokens.key.fontWeight}
                     >
                         {keyString}
                     </TruncatedText>
@@ -104,8 +128,14 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                             {keySlot}
                         </Block>
                     )}
-                </div>
-                <div className="flex gap-2 items-center">
+                </Block>
+                <Block
+                    style={{
+                        display: 'flex',
+                        gap: keyValuePairTokens.value.gap,
+                        alignItems: 'center',
+                    }}
+                >
                     {valueLeftSlot && (
                         <Block
                             flexShrink={0}
@@ -118,12 +148,9 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                     )}
                     <TruncatedText
                         className="flex-1 min-w-0"
-                        fontSize={
-                            keyValuePairTokens.valueFontSize[size][
-                                keyValuePairState
-                            ]
-                        }
-                        color={keyValuePairTokens.valueColor}
+                        fontSize={keyValuePairTokens.value.fontSize[size]}
+                        color={keyValuePairTokens.value.color}
+                        fontWeight={keyValuePairTokens.value.fontWeight}
                     >
                         {value || ''}
                     </TruncatedText>
@@ -137,7 +164,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                             {valueRightSlot}
                         </Block>
                     )}
-                </div>
+                </Block>
             </Block>
         )
     }

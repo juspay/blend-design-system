@@ -15,6 +15,22 @@ export type LeftPanelInfo = {
     maxVisibleItems?: number
 }
 
+export type TenantItem = {
+    label: string
+    value?: string
+    icon: ReactNode
+}
+
+export type SidebarMerchantInfo = {
+    items: Array<{
+        label: string
+        value: string
+        icon?: ReactNode
+    }>
+    selected: string
+    onSelect: (value: string) => void
+}
+
 export type SidebarProps = {
     children: ReactNode
     data: DirectoryData[]
@@ -25,4 +41,5 @@ export type SidebarProps = {
     sidebarCollapseKey?: string
     merchantInfo?: MerchantInfo
     rightActions?: ReactNode
+    enableTopbarAutoHide?: boolean
 }

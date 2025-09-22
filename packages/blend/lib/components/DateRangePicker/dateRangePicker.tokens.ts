@@ -6,13 +6,11 @@ import { BreakpointType } from '../../breakpoints/breakPoints'
 export type CalendarTokenType = {
     quickRange: {
         trigger: {
-            height: CSSObject['height']
             borderLeft: CSSObject['borderLeft']
             borderTop: CSSObject['borderTop']
             borderBottom: CSSObject['borderBottom']
             borderTopLeftRadius: CSSObject['borderTopLeftRadius']
             borderBottomLeftRadius: CSSObject['borderBottomLeftRadius']
-            padding: CSSObject['padding']
             display: CSSObject['display']
             justifyContent: CSSObject['justifyContent']
             alignItems: CSSObject['alignItems']
@@ -22,6 +20,16 @@ export type CalendarTokenType = {
             iconSize: CSSObject['iconSize']
             text: CSSObject
             gap: CSSObject['gap']
+            padding: {
+                sm: CSSObject['padding']
+                md: CSSObject['padding']
+                lg: CSSObject['padding']
+            }
+            fontSize: {
+                sm: CSSObject['fontSize']
+                md: CSSObject['fontSize']
+                lg: CSSObject['fontSize']
+            }
         }
         content: {
             padding: CSSObject['padding']
@@ -146,16 +154,13 @@ export type CalendarTokenType = {
         }
     }
     trigger: {
-        height: CSSObject['height']
         display: CSSObject['display']
         alignItems: CSSObject['alignItems']
         justifyContent: CSSObject['justifyContent']
-        padding: CSSObject['padding']
         border: CSSObject['border']
         borderRadius: CSSObject['borderRadius']
         boxShadow: CSSObject['boxShadow']
         backgroundColor: CSSObject['backgroundColor']
-        fontSize: CSSObject['fontSize']
         color: CSSObject['color']
         cursor: CSSObject['cursor']
         disabled: {
@@ -164,6 +169,16 @@ export type CalendarTokenType = {
         }
         borderRadiusWithPresets: CSSObject['borderRadius']
         borderRadiusWithoutPresets: CSSObject['borderRadius']
+        padding: {
+            sm: CSSObject['padding']
+            md: CSSObject['padding']
+            lg: CSSObject['padding']
+        }
+        fontSize: {
+            sm: CSSObject['fontSize']
+            md: CSSObject['fontSize']
+            lg: CSSObject['fontSize']
+        }
     }
     calendar: {
         minWidth: CSSObject['minWidth']
@@ -409,13 +424,11 @@ export const getCalendarToken = (
         },
         quickRange: {
             trigger: {
-                height: foundationToken.unit[40],
                 borderLeft: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
                 borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
                 borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
                 borderTopLeftRadius: foundationToken.border.radius[8],
                 borderBottomLeftRadius: foundationToken.border.radius[8],
-                padding: `${foundationToken.unit[10]} ${foundationToken.unit[14]}`,
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -425,10 +438,19 @@ export const getCalendarToken = (
                 iconSize: foundationToken.unit[16],
                 text: {
                     color: foundationToken.colors.gray[600],
-                    fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
                     fontWeight: foundationToken.font.weight[500],
                 },
                 gap: foundationToken.unit[8],
+                padding: {
+                    sm: `${foundationToken.unit[6]} ${foundationToken.unit[14]}`,
+                    md: `6.5px ${foundationToken.unit[14]}`,
+                    lg: `8.5px ${foundationToken.unit[14]}`,
+                },
+                fontSize: {
+                    sm: `${foundationToken.font.size.body.sm.fontSize}px`,
+                    md: `${foundationToken.font.size.body.md.fontSize}px`,
+                    lg: `${foundationToken.font.size.body.md.fontSize}px`,
+                },
             },
             content: {
                 padding: FOUNDATION_THEME.unit[4],
@@ -474,16 +496,13 @@ export const getCalendarToken = (
             },
         },
         trigger: {
-            height: foundationToken.unit[40],
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: `${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
             border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
             borderRadius: foundationToken.border.radius[8],
             boxShadow: foundationToken.shadows.sm,
             backgroundColor: foundationToken.colors.gray[0],
-            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
             color: foundationToken.colors.gray[700],
             cursor: 'pointer',
             disabled: {
@@ -492,6 +511,16 @@ export const getCalendarToken = (
             },
             borderRadiusWithPresets: '0 8px 8px 0',
             borderRadiusWithoutPresets: foundationToken.border.radius[8],
+            padding: {
+                sm: `${foundationToken.unit[5]} ${foundationToken.unit[14]}`,
+                md: `4.5px ${foundationToken.unit[14]}`,
+                lg: `8.5px ${foundationToken.unit[14]}`,
+            },
+            fontSize: {
+                sm: `${foundationToken.font.size.body.sm.fontSize}px`,
+                md: `${foundationToken.font.size.body.md.fontSize}px`,
+                lg: `${foundationToken.font.size.body.md.fontSize}px`,
+            },
         },
         calendar: {
             minWidth: '320px',

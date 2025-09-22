@@ -744,10 +744,19 @@ export const getDayNames = (): string[] => {
 
 /**
  * Calculates the height of a single month in the calendar
+ * @param year The year of the month
+ * @param month The month (0-based)
  * @returns Height in pixels
  */
-export const getMonthHeight = (): number => {
-    return 10 + 6 * 40
+export const getMonthHeight = (year?: number, month?: number): number => {
+    if (year !== undefined && month !== undefined) {
+        const weeks = generateMonthWeeks(year, month)
+        const numberOfWeeks = weeks.length
+        // Month header height (32px) + consistent margin (16px) + actual weeks * 40px per week + bottom padding (16px)
+        return 32 + 16 + numberOfWeeks * 40 + 16
+    }
+    // Default fallback for when year/month not provided (6 weeks max)
+    return 32 + 16 + 6 * 40 + 16
 }
 
 /**
