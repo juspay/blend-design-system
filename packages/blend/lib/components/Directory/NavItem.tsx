@@ -18,10 +18,14 @@ const StyledElement = styled(Block)<{ $isLink?: boolean; $isActive?: boolean }>`
     gap: 12px;
     padding: 6px 12px;
     color: ${({ $isActive }) =>
-        $isActive ? FOUNDATION_THEME.colors.gray[1000] : FOUNDATION_THEME.colors.gray[600]};
+        $isActive
+            ? FOUNDATION_THEME.colors.gray[1000]
+            : FOUNDATION_THEME.colors.gray[600]};
     font-weight: 500;
     border-radius: ${FOUNDATION_THEME.border.radius[4]};
-    transition: background-color 0.2s, color 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s;
     user-select: none;
     cursor: pointer;
 
@@ -143,15 +147,24 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                 >
                     {item.leftSlot && React.isValidElement(item.leftSlot) && (
                         <Block aria-hidden="true">
-                            {React.cloneElement(item.leftSlot as React.ReactElement<any>, {
-                                color: isActive ? FOUNDATION_THEME.colors.gray[1000] : FOUNDATION_THEME.colors.gray[600],
-                            })}
+                            {React.cloneElement(
+                                item.leftSlot as React.ReactElement<any>,
+                                {
+                                    color: isActive
+                                        ? FOUNDATION_THEME.colors.gray[1000]
+                                        : FOUNDATION_THEME.colors.gray[600],
+                                }
+                            )}
                         </Block>
                     )}
                     <Text
                         as="span"
                         variant="body.md"
-                        color={isActive ? FOUNDATION_THEME.colors.gray[1000] : FOUNDATION_THEME.colors.gray[600]}
+                        color={
+                            isActive
+                                ? FOUNDATION_THEME.colors.gray[1000]
+                                : FOUNDATION_THEME.colors.gray[600]
+                        }
                     >
                         {item.label}
                     </Text>
@@ -162,7 +175,11 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                 {hasChildren && (
                     <ChevronWrapper $isExpanded={isExpanded} aria-hidden="true">
                         <ChevronDown
-                            color={isActive ? FOUNDATION_THEME.colors.gray[1000] : FOUNDATION_THEME.colors.gray[600]}
+                            color={
+                                isActive
+                                    ? FOUNDATION_THEME.colors.gray[1000]
+                                    : FOUNDATION_THEME.colors.gray[600]
+                            }
                         />
                     </ChevronWrapper>
                 )}
