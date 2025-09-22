@@ -11,7 +11,7 @@ export const PlaygroundComp = () => {
                 classes="w-fit text-center"
                 tracking="tracking-[var(--tracking-double)]"
             />
-            <div className="lg:mt-40 md:mt-36 sm:mt-30 xs:mt-16 mt-12 flex lg:flex-row flex-col items-center">
+            <div className="lg:mt-40 md:mt-36 sm:mt-30 xs:mt-16 mt-12 flex lg:flex-row flex-col ">
                 <div className="w-full flex flex-col lg:gap-25 md:gap-20 sm:gap-16 gap-12">
                     <p className="text-wrap lg:text-4xl md:text-3xl sm:text-2xl xs:text-xl text-lg font-light text-[var(--gray-text)]">
                         Interactive space to test and tweak component props in

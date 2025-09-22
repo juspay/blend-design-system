@@ -157,8 +157,8 @@ const TableCell = forwardRef<
                                             )
                                         }
                                     }}
-                                    minWidth={150}
-                                    maxWidth={250}
+                                    minMenuWidth={150}
+                                    maxMenuWidth={250}
                                 />
                             </div>
                         )
@@ -227,8 +227,8 @@ const TableCell = forwardRef<
                                         onFieldChange(updatedDropdownData)
                                     }
                                 }}
-                                minWidth={150}
-                                maxWidth={250}
+                                minMenuWidth={150}
+                                maxMenuWidth={250}
                             />
                         </div>
                     )

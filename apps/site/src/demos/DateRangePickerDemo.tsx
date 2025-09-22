@@ -832,6 +832,85 @@ const DateRangePickerDemo = () => {
                         </div>
                     </div>
 
+                    {/* Calendar Only Mode */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Calendar Only Mode
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Only calendar appears - no quick filter dropdown
+                            (showPresets=false)
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={basicRange}
+                                onChange={handleBasicRangeChange}
+                                showPresets={false}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Custom Trigger with Calendar Only */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Custom Trigger + Calendar Only
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Custom card trigger with calendar-only mode
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                showPresets={false}
+                                showDateTimePicker={false}
+                                triggerConfig={{
+                                    renderTrigger: ({
+                                        onClick,
+                                        formattedValue,
+                                        isOpen,
+                                    }) => (
+                                        <div
+                                            onClick={onClick}
+                                            style={{
+                                                padding: '12px 16px',
+                                                border: '2px solid #007bff',
+                                                borderRadius: '8px',
+                                                backgroundColor: isOpen
+                                                    ? '#e3f2fd'
+                                                    : 'white',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.2s ease',
+                                                minWidth: '200px',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    fontSize: '12px',
+                                                    color: '#007bff',
+                                                    marginBottom: '4px',
+                                                }}
+                                            >
+                                                📅 Date Range
+                                            </div>
+                                            <div
+                                                style={{
+                                                    fontSize: '14px',
+                                                    fontWeight: '600',
+                                                    color: '#333',
+                                                }}
+                                            >
+                                                {formattedValue ||
+                                                    'Click to select'}
+                                            </div>
+                                        </div>
+                                    ),
+                                }}
+                            />
+                        </div>
+                    </div>
+
                     {/* Disabled State */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
@@ -943,16 +1022,18 @@ const DateRangePickerDemo = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <h4 className="font-semibold text-blue-700 mb-2">
-                            ✨ New Features
+                            ✨ Key Features
                         </h4>
                         <ul className="text-blue-700 text-sm space-y-1">
                             <li>
-                                • <strong>Size variants:</strong> Small, Medium
-                                (default), and Large sizes available
+                                • <strong>Calendar-only mode:</strong> Use
+                                showPresets=false to hide preset dropdown and
+                                show only calendar
                             </li>
                             <li>
-                                • <strong>Different background colors:</strong>{' '}
-                                Quick selector (gray) vs trigger (white)
+                                • <strong>Enhanced custom triggers:</strong>{' '}
+                                Full control over trigger appearance and
+                                behavior
                             </li>
                             <li>
                                 • <strong>Auto-hide presets:</strong> Custom

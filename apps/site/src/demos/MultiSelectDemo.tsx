@@ -863,6 +863,8 @@ const MultiSelectDemo = () => {
                             style={{ width: '400px' }}
                         >
                             <MultiSelect
+                                fullWidth={true}
+                                minMenuWidth={400}
                                 error={playgroundError}
                                 errorMessage={playgroundErrorMessage}
                                 onBlur={() => {
@@ -897,7 +899,6 @@ const MultiSelectDemo = () => {
                                         <User size={16} />
                                     ) : undefined
                                 }
-                                minWidth={300}
                             />
                             {playgroundSelected.length > 0 && (
                                 <div className="mt-4 p-3 bg-blue-50 rounded-lg">
@@ -1802,7 +1803,6 @@ const MultiSelectDemo = () => {
                             enableSelectAll={true}
                             searchPlaceholder="Search through 30+ options..."
                             selectionTagType={MultiSelectSelectionTagType.COUNT}
-                            maxHeight={300}
                         />
                         {searchLargeDatasetSelected.length > 0 && (
                             <div className="p-3 bg-orange-50 rounded-lg">
@@ -2002,7 +2002,6 @@ const MultiSelectDemo = () => {
                             showItemDividers={true}
                             enableSearch={true}
                             selectionTagType={MultiSelectSelectionTagType.COUNT}
-                            maxHeight={300}
                         />
                         {dividersComparisonSelected.length > 0 && (
                             <div className="p-3 bg-orange-50 rounded-lg">
@@ -3171,7 +3170,6 @@ const MultiSelectDemo = () => {
                             )}
                             placeholder="Select items with long text..."
                             selectionTagType={MultiSelectSelectionTagType.COUNT}
-                            maxWidth={300} // Constrain width to force truncation
                             useDrawerOnMobile={false}
                         />
                         {truncationBasicSelected.length > 0 && (
@@ -3210,7 +3208,6 @@ const MultiSelectDemo = () => {
                             )}
                             placeholder="Select enhanced options..."
                             selectionTagType={MultiSelectSelectionTagType.COUNT}
-                            maxWidth={320}
                             useDrawerOnMobile={false}
                         />
                         {truncationCustomSelected.length > 0 && (
@@ -3245,7 +3242,6 @@ const MultiSelectDemo = () => {
                             )}
                             placeholder="Select mixed content..."
                             selectionTagType={MultiSelectSelectionTagType.TEXT}
-                            maxWidth={300}
                             useDrawerOnMobile={false}
                         />
                         {truncationMixedSelected.length > 0 && (

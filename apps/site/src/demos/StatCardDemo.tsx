@@ -270,6 +270,7 @@ const StatCardDemo = () => {
                             Number Variant
                         </h3>
                         <StatCard
+                            height="190px"
                             title="Total Revenue"
                             value="$12,345"
                             subtitle="vs last month"
@@ -301,6 +302,7 @@ const StatCardDemo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Line Chart</h3>
                         <StatCard
+                            height="190px"
                             dropdownProps={{
                                 label: 'Currency',
                                 placeholder: 'Currency',
@@ -333,6 +335,7 @@ const StatCardDemo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Bar Chart</h3>
                         <StatCard
+                            height="190px"
                             dropdownProps={{
                                 label: 'Currency',
                                 placeholder: 'Currency',
@@ -365,6 +368,7 @@ const StatCardDemo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Progress Bar</h3>
                         <StatCard
+                            height="190px"
                             dropdownProps={{
                                 label: 'Currency',
                                 placeholder: 'Currency',
