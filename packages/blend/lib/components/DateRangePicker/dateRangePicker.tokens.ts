@@ -442,8 +442,8 @@ export const getCalendarToken = (
                 },
                 gap: foundationToken.unit[8],
                 padding: {
-                    sm: `${foundationToken.unit[5]} ${foundationToken.unit[14]}`,
-                    md: `4.5px ${foundationToken.unit[14]}`,
+                    sm: `${foundationToken.unit[6]} ${foundationToken.unit[14]}`,
+                    md: `6.5px ${foundationToken.unit[14]}`,
                     lg: `8.5px ${foundationToken.unit[14]}`,
                 },
                 fontSize: {
