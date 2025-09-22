@@ -126,11 +126,8 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                             style={{
                                 ...(() => {
                                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                    const {
-                                        padding: _,
-                                        fontSize: __,
-                                        ...rest
-                                    } = calendarToken.quickRange.trigger
+                                    const { padding, fontSize, ...rest } =
+                                        calendarToken.quickRange.trigger
                                     return rest
                                 })(),
                                 padding:
