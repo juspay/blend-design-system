@@ -384,13 +384,19 @@ const SidebarDemo = () => {
                 return (
                     <div className="p-8">
                         <h2 className="text-2xl font-bold mb-6">
-                            TextInput Cursor Demo
+                            Sidebar Auto-Hide Topbar Demo
                         </h2>
                         <div className="space-y-6">
                             <div>
                                 <h3 className="text-lg font-semibold mb-2">
-                                    Normal Text Input (cursor: text)
+                                    Scroll Test
                                 </h3>
+                                <p className="text-gray-600 mb-4">
+                                    Scroll down to see the topbar hide
+                                    automatically. Scroll back up to see it
+                                    reappear. The feature is controlled by the
+                                    `enableTopbarAutoHide` prop.
+                                </p>
                                 <TextInput
                                     placeholder="Type here - shows text cursor"
                                     value=""
@@ -398,32 +404,31 @@ const SidebarDemo = () => {
                                     cursor="text"
                                 />
                             </div>
-                            <div>
-                                <h3 className="text-lg font-semibold mb-2">
-                                    Clickable Input (cursor: pointer)
-                                </h3>
-                                <TextInput
-                                    placeholder="Click to open modal/page - shows pointer cursor"
-                                    value=""
-                                    onChange={() => {}}
-                                    cursor="pointer"
-                                    onClick={() =>
-                                        alert(
-                                            'This would open a modal or navigate to a page'
-                                        )
-                                    }
-                                />
-                            </div>
-                            <div>
-                                <h3 className="text-lg font-semibold mb-2">
-                                    Search Input in Topbar (cursor: pointer)
-                                </h3>
-                                <p className="text-gray-600">
-                                    The search input in the topbar above now
-                                    uses cursor: pointer to indicate it opens a
-                                    search modal when clicked.
-                                </p>
-                            </div>
+                            {/* Add lots of content to make it scrollable */}
+                            {Array.from({ length: 50 }, (_, i) => (
+                                <div
+                                    key={i}
+                                    className="p-4 border border-gray-200 rounded-lg"
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Content Block {i + 1}
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        This is content block {i + 1}. Keep
+                                        scrolling to test the topbar auto-hide
+                                        functionality. The topbar should
+                                        disappear when scrolling down and
+                                        reappear when scrolling up.
+                                    </p>
+                                    <div className="mt-2">
+                                        <TextInput
+                                            placeholder={`Input field ${i + 1}`}
+                                            value=""
+                                            onChange={() => {}}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 )
@@ -815,6 +820,7 @@ const SidebarDemo = () => {
         <div className="w-screen h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
+                    enableTopbarAutoHide={true}
                     leftPanel={{
                         items: tenants,
                         selected: activeTenant,

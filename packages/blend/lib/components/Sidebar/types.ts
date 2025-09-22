@@ -41,4 +41,5 @@ export type SidebarProps = {
     sidebarCollapseKey?: string
     merchantInfo?: MerchantInfo
     rightActions?: ReactNode
+    enableTopbarAutoHide?: boolean
 }
