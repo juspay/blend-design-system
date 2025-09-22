@@ -28,6 +28,8 @@ import {
     DecimalsArrowRightIcon,
     Search,
     Shield,
+    Settings,
+    TrendingUp,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -70,6 +72,7 @@ import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
 import PopoverDemo from './PopoverDemo'
 import MultiValueInputDemo from './MultiValueInputDemo'
+import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
 import {
@@ -126,10 +129,12 @@ const SidebarDemo = () => {
         | 'dropdownInput'
         | 'dataRangePicker'
         | 'multiValueInput'
+        | 'topbar'
         | 'otpInput'
         | 'keyValuePair'
         | 'card'
-    >('dataTable')
+        | 'dataRangePicker'
+    >('dataRangePicker')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -141,7 +146,7 @@ const SidebarDemo = () => {
             label: 'Juspay',
             icon: (
                 <IndianRupee
-                    style={{ width: '16px', height: '16px' }}
+                    style={{ width: '24px', height: '24px' }}
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
@@ -151,7 +156,7 @@ const SidebarDemo = () => {
             label: 'Razorpay',
             icon: (
                 <UserIcon
-                    style={{ width: '16px', height: '16px' }}
+                    style={{ width: '24px', height: '24px' }}
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
@@ -161,7 +166,7 @@ const SidebarDemo = () => {
             label: 'Stripe',
             icon: (
                 <IndianRupee
-                    style={{ width: '16px', height: '16px' }}
+                    style={{ width: '24px', height: '24px' }}
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
@@ -222,12 +227,12 @@ const SidebarDemo = () => {
     const merchants = [
         {
             label: 'Design System',
-            icon: <UserIcon style={{ width: '16px', height: '16px' }} />,
+            icon: <UserIcon style={{ width: '14px', height: '14px' }} />,
             value: 'design-system',
         },
         {
             label: 'Design System 2',
-            icon: <UserIcon style={{ width: '16px', height: '16px' }} />,
+            icon: <UserIcon style={{ width: '14px', height: '14px' }} />,
             value: 'design-system-2',
         },
     ]
@@ -298,12 +303,59 @@ const SidebarDemo = () => {
                 return <PopoverDemo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
+            case 'topbar':
+                return <TopbarDemo />
             case 'keyValuePair':
                 return <KeyValuePairDemo />
             case 'card':
                 return <CardDemo />
             default:
-                return <div>No component selected</div>
+                return (
+                    <div className="p-8">
+                        <h2 className="text-2xl font-bold mb-6">
+                            TextInput Cursor Demo
+                        </h2>
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Normal Text Input (cursor: text)
+                                </h3>
+                                <TextInput
+                                    placeholder="Type here - shows text cursor"
+                                    value=""
+                                    onChange={() => {}}
+                                    cursor="text"
+                                />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Clickable Input (cursor: pointer)
+                                </h3>
+                                <TextInput
+                                    placeholder="Click to open modal/page - shows pointer cursor"
+                                    value=""
+                                    onChange={() => {}}
+                                    cursor="pointer"
+                                    onClick={() =>
+                                        alert(
+                                            'This would open a modal or navigate to a page'
+                                        )
+                                    }
+                                />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Search Input in Topbar (cursor: pointer)
+                                </h3>
+                                <p className="text-gray-600">
+                                    The search input in the topbar above now
+                                    uses cursor: pointer to indicate it opens a
+                                    search modal when clicked.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )
         }
     }
 
@@ -422,6 +474,13 @@ const SidebarDemo = () => {
         {
             label: 'Navigation',
             items: [
+                {
+                    label: 'Topbar',
+                    leftSlot: (
+                        <Layout style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('topbar'),
+                },
                 {
                     label: 'Menu',
                     leftSlot: (
@@ -690,6 +749,15 @@ const SidebarDemo = () => {
                         selected: activeTenant,
                         onSelect: (value) => setActiveTenant(value),
                     }}
+                    merchantInfo={{
+                        items: merchants.map((merchant) => ({
+                            label: merchant.label,
+                            value: merchant.value,
+                            icon: merchant.icon,
+                        })),
+                        selected: activeMerchant,
+                        onSelect: (value) => setActiveMerchant(value),
+                    }}
                     sidebarTopSlot={
                         <SingleSelect
                             placeholder="Select Merchant"
@@ -703,6 +771,28 @@ const SidebarDemo = () => {
                             onSelect={(value) => setActiveMerchant(value)}
                         />
                     }
+                    rightActions={
+                        <div className="flex items-center gap-1">
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200">
+                                <BellIcon
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    size={20}
+                                />
+                            </button>
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200">
+                                <TrendingUp
+                                    color={FOUNDATION_THEME.colors.green[600]}
+                                    size={20}
+                                />
+                            </button>
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200">
+                                <Settings
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    size={20}
+                                />
+                            </button>
+                        </div>
+                    }
                     data={sampleData}
                     topbar={
                         <div className="flex items-center justify-between gap-2">
@@ -711,6 +801,7 @@ const SidebarDemo = () => {
                                     placeholder="Search"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
+                                    cursor="pointer"
                                     leftSlot={
                                         <Search
                                             style={{
@@ -740,7 +831,7 @@ const SidebarDemo = () => {
                                 <SingleSelect
                                     label="Theme"
                                     placeholder="Select Theme"
-                                    minWidth={200}
+                                    minMenuWidth={200}
                                     alignment={SelectMenuAlignment.END}
                                     selected={theme}
                                     onSelect={(value) =>

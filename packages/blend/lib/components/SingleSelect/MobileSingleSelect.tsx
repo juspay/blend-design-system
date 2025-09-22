@@ -5,8 +5,6 @@ import {
     DrawerPortal,
     DrawerOverlay,
     DrawerContent,
-    DrawerHeader,
-    DrawerTitle,
     DrawerBody,
 } from '../Drawer'
 import Block from '../Primitives/Block/Block'
@@ -26,10 +24,9 @@ import {
     SelectMenuVariant,
 } from '../Select'
 import SingleSelectTrigger from './SingleSelectTrigger'
-import { Checkbox } from '../Checkbox'
-import { CheckboxSize } from '../Checkbox/types'
 import { TextInput } from '../Inputs/TextInput'
 import { TextInputSize } from '../Inputs/TextInput/types'
+import { Check } from 'lucide-react'
 
 type MobileSingleSelectProps = SingleSelectProps
 
@@ -72,6 +69,9 @@ const SingleSelectItem = ({
             margin={`0 ${FOUNDATION_THEME.unit[8]}`}
             borderRadius={4}
             cursor={item.disabled ? 'not-allowed' : 'pointer'}
+            backgroundColor={
+                isSelected ? FOUNDATION_THEME.colors.gray[50] : 'transparent'
+            }
             _hover={{
                 backgroundColor: FOUNDATION_THEME.colors.gray[50],
             }}
@@ -108,20 +108,34 @@ const SingleSelectItem = ({
                     </Text>
                 </Block>
                 <Block
-                    onClick={(e: React.MouseEvent) => {
-                        e.stopPropagation()
-                    }}
+                    display="flex"
+                    alignItems="center"
+                    gap={4}
+                    flexShrink={0}
                 >
-                    <Checkbox
-                        size={CheckboxSize.SMALL}
-                        checked={isSelected}
-                        disabled={item.disabled}
-                        onCheckedChange={() => {
-                            if (!item.disabled) {
-                                onSelect(item.value)
-                            }
-                        }}
-                    />
+                    {item.slot2 && (
+                        <Block flexShrink={0} height="auto" contentCentered>
+                            {item.slot2}
+                        </Block>
+                    )}
+                    {item.slot3 && (
+                        <Block flexShrink={0} height="auto" contentCentered>
+                            {item.slot3}
+                        </Block>
+                    )}
+                    {item.slot4 && (
+                        <Block flexShrink={0} height="auto" contentCentered>
+                            {item.slot4}
+                        </Block>
+                    )}
+                    {isSelected && (
+                        <Block flexShrink={0} height="auto" contentCentered>
+                            <Check
+                                size={16}
+                                color={FOUNDATION_THEME.colors.gray[600]}
+                            />
+                        </Block>
+                    )}
                 </Block>
             </Block>
             {item.subLabel && (
@@ -217,7 +231,7 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
         isSmallScreen && size === SelectMenuSize.LARGE
 
     return (
-        <Block width="100%" display="flex" flexDirection="column" gap={8}>
+        <Block display="flex" flexDirection="column" gap={8}>
             {variant === SelectMenuVariant.CONTAINER &&
                 (!isSmallScreen || size !== SelectMenuSize.LARGE) && (
                     <InputLabels
@@ -269,25 +283,6 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                 <DrawerPortal>
                     <DrawerOverlay />
                     <DrawerContent contentDriven={true}>
-                        <DrawerHeader>
-                            <Block
-                                display="flex"
-                                justifyContent="center"
-                                alignItems="center"
-                                paddingX={
-                                    singleSelectTokens.drawer.header.paddingX
-                                }
-                                paddingBottom={
-                                    singleSelectTokens.drawer.header
-                                        .paddingBottom
-                                }
-                            >
-                                <DrawerTitle>
-                                    {label || 'Select Option'}
-                                </DrawerTitle>
-                            </Block>
-                        </DrawerHeader>
-
                         <DrawerBody noPadding={true}>
                             <Block
                                 display="flex"

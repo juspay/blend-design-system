@@ -150,6 +150,9 @@ const OTPInputDemo = () => {
                                 helpIconHintText={playgroundHelpText}
                                 required={isRequired}
                                 name="playground-otp"
+                                onKeyDown={(e) => {
+                                    console.log('onKeyDown', e)
+                                }}
                             />
                         </div>
                     </div>

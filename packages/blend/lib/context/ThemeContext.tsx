@@ -1,131 +1,77 @@
 import { createContext, useContext } from 'react'
+import type { SearchInputTokensType } from '../components/Inputs/SearchInput/searchInput.tokens'
+import type { ResponsiveTagTokens } from '../components/Tags/tag.tokens'
+import type { ResponsiveTextAreaTokens } from '../components/Inputs/TextArea/textarea.token'
+import type { ResponsiveRadioTokens } from '../components/Radio/radio.token'
+import type { ResponsiveSwitchTokens } from '../components/Switch/switch.token'
+import type { ResponsiveTextInputTokens } from '../components/Inputs/TextInput/textInput.tokens'
+import type { ResponsiveNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
+import type { ResponsiveAlertTokens } from '../components/Alert/alert.tokens'
+import type { ResponsiveOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
+import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.tokens'
+import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
+import type { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
+import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
+import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
+import type { ResponsiveTabsTokens } from '../components/Tabs/tabs.token'
+import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
+import type { ModalTokensType } from '../components/Modal/modal.tokens'
+import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
+import type { PopoverTokenType } from '../components/Popover/popover.tokens'
+import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
+import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
+import type { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
+import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
+import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
+import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
+import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
+import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
+import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
+import type { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
+import type { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
+import type { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
+import type { ResponsiveCardTokens } from '../components/Card/card.tokens'
+import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
+
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
-import {
-    type ResponsiveTagTokens,
-    getTagTokens,
-} from '../components/Tags/tag.tokens'
-import {
-    getSearchInputTokens,
-    type SearchInputTokensType,
-} from '../components/Inputs/SearchInput/searchInput.tokens'
-import {
-    getTextAreaTokens,
-    type ResponsiveTextAreaTokens,
-} from '../components/Inputs/TextArea/textarea.token'
-import {
-    type ResponsiveRadioTokens,
-    getRadioTokens,
-} from '../components/Radio/radio.token'
-import {
-    type ResponsiveSwitchTokens,
-    getSwitchTokens,
-} from '../components/Switch/switch.token'
-import {
-    getTextInputTokens,
-    type ResponsiveTextInputTokens,
-} from '../components/Inputs/TextInput/textInput.tokens'
-import {
-    getNumberInputTokens,
-    type ResponsiveNumberInputTokens,
-} from '../components/Inputs/NumberInput/numberInput.tokens'
-import {
-    getAlertTokens,
-    type ResponsiveAlertTokens,
-} from '../components/Alert/alert.tokens'
-import {
-    getOTPInputTokens,
-    type ResponsiveOTPInputTokens,
-} from '../components/Inputs/OTPInput/otpInput.tokens'
-import {
-    getTooltipTokens,
-    type ResponsiveTooltipTokens,
-} from '../components/Tooltip/tooltip.tokens'
-import {
-    getUnitInputTokens,
-    type ResponsiveUnitInputTokens,
-} from '../components/Inputs/UnitInput/unitInput.tokens'
-import {
-    getMultiValueInputTokens,
-    type MultiValueInputTokensType,
-} from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
-import {
-    getDropdownInputTokens,
-    type ResponsiveDropdownInputTokens,
-} from '../components/Inputs/DropdownInput/dropdownInput.tokens'
-import {
-    getCheckboxTokens,
-    type ResponsiveCheckboxTokens,
-} from '../components/Checkbox/checkbox.token'
-import {
-    ResponsiveTabsTokens,
-    getTabsTokens,
-} from '../components/Tabs/tabs.token' // Added TABS
-import {
-    type ResponsiveButtonTokens,
-    getButtonTokens,
-} from '../components/Button/button.tokens'
-import {
-    getModalComponentTokens,
-    type ModalTokensType,
-} from '../components/Modal/modal.tokens'
-import {
-    getBreadcrumbTokens,
-    type ResponsiveBreadcrumbTokens,
-} from '../components/Breadcrumb/breadcrumb.tokens'
-import {
-    getPopoverTokens,
-    type PopoverTokenType,
-} from '../components/Popover/popover.tokens'
-import {
-    getMenuTokens,
-    type ResponsiveMenuTokensType,
-} from '../components/Menu/menu.tokens'
-import {
-    getMultiSelectTokens,
-    type ResponsiveMultiSelectTokens,
-} from '../components/MultiSelect/multiSelect.tokens'
-import {
-    getTableToken,
-    type ResponsiveTableTokens,
-} from '../components/DataTable/dataTable.tokens'
-import {
-    type ResponsiveCalendarTokens,
-    getCalendarToken,
-} from '../components/DateRangePicker/dateRangePicker.tokens'
-import {
-    getAccordionToken,
-    type ResponsiveAccordionTokens,
-} from '../components/Accordion/accordion.tokens'
-import {
-    getStatCardToken,
-    type ResponsiveStatCardTokens,
-} from '../components/StatCard/statcard.tokens'
-import progressBarTokens, {
-    type ProgressBarTokenType,
-} from '../components/ProgressBar/progressbar.tokens'
-import {
-    getDrawerComponentTokens,
-    type DrawerTokensType,
-} from '../components/Drawer/drawer.tokens'
-import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
-import {
-    getSingleSelectTokens,
-    ResponsiveSingleSelectTokens,
-} from '../components/SingleSelect/singleSelect.tokens'
-import {
-    getChartTokens,
-    ResponsiveChartTokens,
-} from '../components/Charts/chart.tokens'
-import {
-    getSnackbarTokens,
-    ResponsiveSnackbarTokens,
-} from '../components/Snackbar/snackbar.tokens'
-import {
-    getKeyValuePairTokens,
-    ResponsiveKeyValuePairTokens,
-} from '../components/KeyValuePair/KeyValuePair.tokens'
-import { ResponsiveCardTokens } from '../components/Card/card.tokens'
+import { BREAKPOINTS } from '../breakpoints/breakPoints'
+import { getTagTokens } from '../components/Tags/tag.tokens'
+import { getSearchInputTokens } from '../components/Inputs/SearchInput/searchInput.tokens'
+import { getTextAreaTokens } from '../components/Inputs/TextArea/textarea.token'
+import { getRadioTokens } from '../components/Radio/radio.token'
+import { getSwitchTokens } from '../components/Switch/switch.token'
+import { getTextInputTokens } from '../components/Inputs/TextInput/textInput.tokens'
+import { getNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
+import { getAlertTokens } from '../components/Alert/alert.tokens'
+import { getOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
+import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
+import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
+import { getMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
+import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
+import { getCheckboxTokens } from '../components/Checkbox/checkbox.token'
+import { getTabsTokens } from '../components/Tabs/tabs.token'
+import { getButtonTokens } from '../components/Button/button.tokens'
+import { getModalComponentTokens } from '../components/Modal/modal.tokens'
+import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
+import { getPopoverTokens } from '../components/Popover/popover.tokens'
+import { getMenuTokens } from '../components/Menu/menu.tokens'
+import { getMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
+import { getSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
+import { getTableToken } from '../components/DataTable/dataTable.tokens'
+import { getCalendarToken } from '../components/DateRangePicker/dateRangePicker.tokens'
+import { getAccordionToken } from '../components/Accordion/accordion.tokens'
+import { getStatCardToken } from '../components/StatCard/statcard.tokens'
+import progressBarTokens from '../components/ProgressBar/progressbar.tokens'
+import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
+import { getChartTokens } from '../components/Charts/chart.tokens'
+import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
+import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { getCardTokens } from '../components/Card/card.tokens'
+import {
+    getSkeletonTokens,
+    ResponsiveSkeletonTokens,
+} from '../components/Skeleton/skeleton.tokens'
+import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -160,12 +106,14 @@ export type ComponentTokenType = {
     SNACKBAR?: ResponsiveSnackbarTokens
     KEYVALUEPAIR?: ResponsiveKeyValuePairTokens
     CARD?: ResponsiveCardTokens
+    SKELETON?: ResponsiveSkeletonTokens
+    TOPBAR?: ResponsiveTopbarTokens
 }
 
 type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>
-    breakpoints: BreakpointType
+    breakpoints: typeof BREAKPOINTS
 }
 
 const ThemeContext = createContext<ThemeContextType>({
@@ -203,6 +151,8 @@ const ThemeContext = createContext<ThemeContextType>({
         SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
         KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
         CARD: getCardTokens(FOUNDATION_THEME),
+        SKELETON: getSkeletonTokens(FOUNDATION_THEME),
+        TOPBAR: getTopbarTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

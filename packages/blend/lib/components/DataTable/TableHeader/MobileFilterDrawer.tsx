@@ -69,7 +69,9 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
     const columnConfig = getColumnTypeConfig(column.type || ColumnType.TEXT)
     const fieldKey = String(column.field)
 
-    // Check if this column is currently sorted
+    const isSortingEnabled =
+        columnConfig.supportsSorting && column.isSortable !== false
+
     const isCurrentField = sortState.currentSortField === fieldKey
     const currentDirection = isCurrentField
         ? sortState.currentSortDirection
@@ -370,7 +372,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
     return (
         <>
             <Block display="flex" flexDirection="column" paddingBottom="20px">
-                {columnConfig.supportsSorting && (
+                {isSortingEnabled && (
                     <>
                         {renderSortItem(
                             <ArrowUp
@@ -399,13 +401,12 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                     </>
                 )}
 
-                {columnConfig.supportsSorting &&
-                    columnConfig.supportsFiltering && (
-                        <Block
-                            height="1px"
-                            backgroundColor={FOUNDATION_THEME.colors.gray[200]}
-                        />
-                    )}
+                {isSortingEnabled && columnConfig.supportsFiltering && (
+                    <Block
+                        height="1px"
+                        backgroundColor={FOUNDATION_THEME.colors.gray[200]}
+                    />
+                )}
 
                 {columnConfig.supportsFiltering && (
                     <Block
