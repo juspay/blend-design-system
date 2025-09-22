@@ -124,15 +124,31 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                     <DropdownMenu.Trigger asChild>
                         <PrimitiveButton
                             style={{
-                                ...(() => {
-                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                    const {
-                                        padding: _,
-                                        fontSize: __,
-                                        ...rest
-                                    } = calendarToken.quickRange.trigger
-                                    return rest
-                                })(),
+                                borderLeft:
+                                    calendarToken.quickRange.trigger.borderLeft,
+                                borderTop:
+                                    calendarToken.quickRange.trigger.borderTop,
+                                borderBottom:
+                                    calendarToken.quickRange.trigger
+                                        .borderBottom,
+                                borderTopLeftRadius:
+                                    calendarToken.quickRange.trigger
+                                        .borderTopLeftRadius,
+                                borderBottomLeftRadius:
+                                    calendarToken.quickRange.trigger
+                                        .borderBottomLeftRadius,
+                                display:
+                                    calendarToken.quickRange.trigger.display,
+                                justifyContent:
+                                    calendarToken.quickRange.trigger
+                                        .justifyContent,
+                                alignItems:
+                                    calendarToken.quickRange.trigger.alignItems,
+                                cursor: calendarToken.quickRange.trigger.cursor,
+                                width: calendarToken.quickRange.trigger.width,
+                                backgroundColor:
+                                    calendarToken.quickRange.trigger
+                                        .backgroundColor,
                                 padding:
                                     calendarToken.quickRange.trigger.padding[
                                         size
