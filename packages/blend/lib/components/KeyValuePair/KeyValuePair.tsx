@@ -76,7 +76,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
             valueLeftSlot,
             valueRightSlot,
             keyValuePairState = KeyValuePairStateType.vertical,
-            maxWidth = '200px',
+            maxWidth = '220px',
         },
         ref
     ) => {
@@ -97,16 +97,16 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                             ? 'space-between'
                             : 'flex-start',
                     gap:
-                        keyValuePairState === KeyValuePairStateType.horizontal
-                            ? keyValuePairTokens.horizontalGap
-                            : keyValuePairTokens.gap,
+                        keyValuePairState === KeyValuePairStateType.vertical
+                            ? keyValuePairTokens.gap.vertical
+                            : keyValuePairTokens.gap.horizontal,
                     width: maxWidth,
                 }}
             >
                 <Block
                     style={{
                         display: 'flex',
-                        gap: keyValuePairTokens.gap,
+                        gap: keyValuePairTokens.key.gap,
                         alignItems: 'center',
                     }}
                 >
@@ -114,6 +114,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         className="flex-1 min-w-0"
                         fontSize={keyValuePairTokens.key.fontSize}
                         color={keyValuePairTokens.key.color}
+                        fontWeight={keyValuePairTokens.key.fontWeight}
                     >
                         {keyString}
                     </TruncatedText>
@@ -131,7 +132,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                 <Block
                     style={{
                         display: 'flex',
-                        gap: keyValuePairTokens.gap,
+                        gap: keyValuePairTokens.value.gap,
                         alignItems: 'center',
                     }}
                 >

@@ -6,7 +6,7 @@ import type { BreakpointType } from '../../breakpoints/breakPoints'
 
 /**
  * KeyValuePair Tokens following the pattern: [target].CSSProp.[size].[state]
- *
+ * component.CSSProp.[size].[variant].[subType].[state].value
  * Structure:
  * - target: container | key | value (defines what element the token applies to)
  * - CSSProp: gap | color | fontSize
@@ -17,14 +17,18 @@ import type { BreakpointType } from '../../breakpoints/breakPoints'
  * Size-dependent properties: value fontSize
  */
 export type KeyValuePairTokensType = {
-    gap: CSSObject['gap']
-    // Pattern: horizontalGap (size-independent) - gap between key and value in horizontal layout
-    horizontalGap: CSSObject['gap']
-    // Pattern: key.color (size-independent)
+    // gap: CSSObject['gap']
+    // // Pattern: key.color (size-independent)
+    gap: {
+        [key in 'vertical' | 'horizontal']: CSSObject['gap']
+    }
+
     key: {
         color: CSSObject['color']
         // Pattern: key.fontSize (size-independent)
         fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        gap: CSSObject['gap']
     }
     // Pattern: value.color (size-independent)
     // Pattern: value.fontSize.[size] (size-dependent)
@@ -35,6 +39,7 @@ export type KeyValuePairTokensType = {
             [key in KeyValuePairSize]: CSSObject['fontSize']
         }
         fontWeight: CSSObject['fontWeight']
+        gap: CSSObject['gap']
     }
 }
 
@@ -47,13 +52,17 @@ export const getKeyValuePairTokens = (
 ): ResponsiveKeyValuePairTokens => {
     return {
         sm: {
-            gap: FOUNDATION_THEME.unit[4], // 4px
-            horizontalGap: '42px', // 42px gap between key and value in horizontal layout
+            gap: {
+                vertical: FOUNDATION_THEME.unit[4], // 4px
+                horizontal: FOUNDATION_THEME.unit[0], // 0px
+            },
             // Pattern: key.color (size-independent)
             key: {
                 color: foundationToken.colors.gray[500],
                 // Pattern: key.fontSize (size-independent)
                 fontSize: foundationToken.font.size.body.md.fontSize, // 14px
+                fontWeight: foundationToken.font.weight[400], // 400
+                gap: FOUNDATION_THEME.unit[4], // 4px
             },
             // Pattern: value.color (size-independent)
             // Pattern: value.fontSize.[size].[state] (size-dependent)
@@ -67,16 +76,21 @@ export const getKeyValuePairTokens = (
                     [KeyValuePairSize.LARGE]: 18, // 18px
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
+                gap: FOUNDATION_THEME.unit[4], // 4px
             },
         },
         lg: {
-            gap: FOUNDATION_THEME.unit[4], // 4px
-            horizontalGap: '42px', // 42px gap between key and value in horizontal layout
+            gap: {
+                vertical: FOUNDATION_THEME.unit[4], // 4px
+                horizontal: FOUNDATION_THEME.unit[0], // 0px
+            },
             // Pattern: key.color (size-independent)
             key: {
                 color: foundationToken.colors.gray[500],
                 // Pattern: key.fontSize (size-independent) - Fixed to 14px instead of 16px
                 fontSize: foundationToken.font.size.body.md.fontSize, // 14px (was lg.fontSize which is 16px)
+                fontWeight: foundationToken.font.weight[400], // 400
+                gap: FOUNDATION_THEME.unit[4], // 4px
             },
             // Pattern: value.color (size-independent)
             // Pattern: value.fontSize.[size].[state] (size-dependent)
@@ -91,6 +105,7 @@ export const getKeyValuePairTokens = (
                         foundationToken.font.size.heading.sm.fontSize, // 18px
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
+                gap: FOUNDATION_THEME.unit[4], // 4px
             },
         },
     }
