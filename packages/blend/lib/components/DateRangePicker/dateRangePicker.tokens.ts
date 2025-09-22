@@ -442,9 +442,9 @@ export const getCalendarToken = (
                 },
                 gap: foundationToken.unit[8],
                 padding: {
-                    sm: `${foundationToken.unit[7]} ${foundationToken.unit[14]}`,
-                    md: `${foundationToken.unit[8]} ${foundationToken.unit[14]}`,
-                    lg: `${foundationToken.unit[10]} ${foundationToken.unit[14]}`,
+                    sm: `${foundationToken.unit[5]} ${foundationToken.unit[14]}`,
+                    md: `4.5px ${foundationToken.unit[14]}`,
+                    lg: `8.5px ${foundationToken.unit[14]}`,
                 },
                 fontSize: {
                     sm: `${foundationToken.font.size.body.sm.fontSize}px`,
@@ -512,9 +512,9 @@ export const getCalendarToken = (
             borderRadiusWithPresets: '0 8px 8px 0',
             borderRadiusWithoutPresets: foundationToken.border.radius[8],
             padding: {
-                sm: `${foundationToken.unit[7]} ${foundationToken.unit[14]}`,
-                md: `${foundationToken.unit[8]} ${foundationToken.unit[14]}`,
-                lg: `${foundationToken.unit[10]} ${foundationToken.unit[14]}`,
+                sm: `${foundationToken.unit[5]} ${foundationToken.unit[14]}`,
+                md: `4.5px ${foundationToken.unit[14]}`,
+                lg: `8.5px ${foundationToken.unit[14]}`,
             },
             fontSize: {
                 sm: `${foundationToken.font.size.body.sm.fontSize}px`,
