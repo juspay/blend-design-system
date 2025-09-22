@@ -538,8 +538,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             const {
                 borderRadiusWithPresets,
                 borderRadiusWithoutPresets,
-                padding,
-                fontSize,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                padding: _,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                fontSize: __,
                 ...triggerProps
             } = calendarToken.trigger
 

@@ -125,8 +125,12 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                         <PrimitiveButton
                             style={{
                                 ...(() => {
-                                    const { padding, fontSize, ...rest } =
-                                        calendarToken.quickRange.trigger
+                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                    const {
+                                        padding: _,
+                                        fontSize: __,
+                                        ...rest
+                                    } = calendarToken.quickRange.trigger
                                     return rest
                                 })(),
                                 padding:
