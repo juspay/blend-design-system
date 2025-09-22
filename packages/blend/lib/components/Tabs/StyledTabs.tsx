@@ -59,8 +59,7 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
     fontWeight: props.$tabsToken.text.fontWeight[props.$size],
     color: props.$tabsToken.text.color[props.$variant].default,
     backgroundColor: props.$tabsToken.backgroundColor[props.$variant].default,
-    borderRadius:
-    props.$tabsToken.borderRadius[props.$size][props.$variant],
+    borderRadius: props.$tabsToken.borderRadius[props.$size][props.$variant],
     border: props.$tabsToken.border[props.$variant],
     transition: 'all 0.2s ease-in-out',
     outline: 'none',
