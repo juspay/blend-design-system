@@ -96,7 +96,10 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         keyValuePairState === KeyValuePairStateType.horizontal
                             ? 'space-between'
                             : 'flex-start',
-                    gap: keyValuePairTokens.gap,
+                    gap:
+                        keyValuePairState === KeyValuePairStateType.horizontal
+                            ? keyValuePairTokens.horizontalGap
+                            : keyValuePairTokens.gap,
                     width: maxWidth,
                 }}
             >

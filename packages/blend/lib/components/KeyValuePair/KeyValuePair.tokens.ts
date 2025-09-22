@@ -18,6 +18,8 @@ import type { BreakpointType } from '../../breakpoints/breakPoints'
  */
 export type KeyValuePairTokensType = {
     gap: CSSObject['gap']
+    // Pattern: horizontalGap (size-independent) - gap between key and value in horizontal layout
+    horizontalGap: CSSObject['gap']
     // Pattern: key.color (size-independent)
     key: {
         color: CSSObject['color']
@@ -47,7 +49,8 @@ export const getKeyValuePairTokens = (
 ): ResponsiveKeyValuePairTokens => {
     return {
         sm: {
-            gap: FOUNDATION_THEME.unit[4],
+            gap: FOUNDATION_THEME.unit[4], // 4px
+            horizontalGap: '42px', // 42px gap between key and value in horizontal layout
             // Pattern: key.color (size-independent)
             key: {
                 color: foundationToken.colors.gray[500],
@@ -83,6 +86,7 @@ export const getKeyValuePairTokens = (
         },
         lg: {
             gap: FOUNDATION_THEME.unit[4], // 4px
+            horizontalGap: '42px', // 42px gap between key and value in horizontal layout
             // Pattern: key.color (size-independent)
             key: {
                 color: foundationToken.colors.gray[500],
