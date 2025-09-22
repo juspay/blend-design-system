@@ -17,11 +17,13 @@ const TruncatedText = ({
     children,
     fontSize,
     color,
+    fontWeight,
     className,
 }: {
     children: string
     fontSize: CSSObject['fontSize']
     color: CSSObject['color']
+    fontWeight?: string
     className?: string
 }) => {
     // For now, show tooltip for any text longer than 15 characters to test
@@ -45,6 +47,7 @@ const TruncatedText = ({
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                     display: 'block',
+                    fontWeight: fontWeight,
                 }}
             >
                 {children}
@@ -124,6 +127,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                             ]
                         }
                         color={keyValuePairTokens.valueColor}
+                        fontWeight="600"
                     >
                         {value || ''}
                     </TruncatedText>

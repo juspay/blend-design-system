@@ -26,8 +26,8 @@ export const getKeyValuePairTokens = (
     return {
         sm: {
             gap: foundationToken.unit[4],
-            keyColor: foundationToken.colors.gray[800],
-            valueColor: foundationToken.colors.gray[600],
+            keyColor: foundationToken.colors.gray[500],
+            valueColor: foundationToken.colors.gray[700],
             keyFontSize: foundationToken.font.size.body.md.fontSize,
             valueFontSize: {
                 [KeyValuePairSize.SMALL]: {
@@ -47,8 +47,8 @@ export const getKeyValuePairTokens = (
         },
         lg: {
             gap: foundationToken.unit[4],
-            keyColor: foundationToken.colors.gray[800],
-            valueColor: foundationToken.colors.gray[600],
+            keyColor: foundationToken.colors.gray[500],
+            valueColor: foundationToken.colors.gray[700],
             keyFontSize: foundationToken.font.size.body.lg.fontSize,
             valueFontSize: {
                 [KeyValuePairSize.SMALL]: {
