@@ -1,3 +1,6 @@
+echo "Running code formatting..."
+pnpm format
+
 echo "Checking code formatting..."
 pnpm format:check
 

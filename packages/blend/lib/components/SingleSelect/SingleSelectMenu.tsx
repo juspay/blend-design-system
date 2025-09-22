@@ -262,10 +262,14 @@ const SingleSelectMenu = ({
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
 
     const [searchText, setSearchText] = useState('')
+    const searchInputRef = React.useRef<HTMLInputElement>(null)
     const filteredItems = filterMenuGroups(items, searchText)
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled) return
+        if (!newOpen && enableSearch) {
+            setSearchText('')
+        }
         onOpenChange(newOpen)
     }
 
@@ -289,6 +293,30 @@ const SingleSelectMenu = ({
                     width: 'max(var(--radix-dropdown-menu-trigger-width))',
                     maxWidth: maxMenuWidth,
                 }}
+                onFocusCapture={(e) => {
+                    if (enableSearch && searchInputRef.current) {
+                        if (
+                            e.target !== searchInputRef.current &&
+                            !searchInputRef.current.contains(e.target as Node)
+                        ) {
+                            e.preventDefault()
+                            searchInputRef.current.focus()
+                        }
+                    }
+                }}
+                onKeyDown={(e) => {
+                    if (enableSearch && searchInputRef.current) {
+                        if (
+                            e.target !== searchInputRef.current &&
+                            !searchInputRef.current.contains(
+                                e.target as Node
+                            ) &&
+                            e.key.length === 1
+                        ) {
+                            searchInputRef.current.focus()
+                        }
+                    }
+                }}
             >
                 {enableSearch && (
                     <Block
@@ -298,10 +326,10 @@ const SingleSelectMenu = ({
                         right={0}
                         zIndex={1000}
                         backgroundColor={FOUNDATION_THEME.colors.gray[0]}
-                        padding={FOUNDATION_THEME.unit[6]}
                     >
                         <Block marginBottom={FOUNDATION_THEME.unit[6]}>
                             <SearchInput
+                                ref={searchInputRef}
                                 placeholder={searchPlaceholder}
                                 value={searchText}
                                 onChange={(
@@ -311,6 +339,7 @@ const SingleSelectMenu = ({
                                     e.stopPropagation()
                                     setSearchText(e.target.value)
                                 }}
+                                autoFocus
                             />
                         </Block>
                     </Block>
