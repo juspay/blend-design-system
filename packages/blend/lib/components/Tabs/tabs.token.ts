@@ -64,7 +64,7 @@ export type TabsTokensType = {
         // Pattern: trigger.gap
         gap: CSSObject['gap']
         // Active indicator
-        underline: {
+        activeIndicator: {
             height: CSSObject['height']
             color: CSSObject['color']
         }
@@ -212,7 +212,7 @@ export const getTabsTokens = (
                 // Pattern: trigger.gap
                 gap: foundationToken.unit[8],
                 // Pattern: trigger.underline (for underline variant)
-                underline: {
+                activeIndicator: {
                     height: foundationToken.border.width[2],
                     color: foundationToken.colors.gray[700],
                 },
@@ -379,7 +379,7 @@ export const getTabsTokens = (
                 // Pattern: trigger.gap
                 gap: foundationToken.unit[8],
                 // Pattern: trigger.underline (for underline variant)
-                underline: {
+                activeIndicator: {
                     height: foundationToken.border.width[2],
                     color: foundationToken.colors.gray[700],
                 },
