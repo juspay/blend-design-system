@@ -74,7 +74,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
             alignItems="center"
             justifyContent="space-between"
             gap="12px"
-            padding="12px 8px"
+            padding="12.5px 8px"
             position="relative"
         >
             {isScrolled && (
