@@ -75,7 +75,7 @@ const TenantItem: React.FC<{
     >
         <Block
             border="none"
-            backgroundColor="transparent"
+            backgroundColor={isSelected ? FOUNDATION_THEME.colors.gray[150] : "transparent"}
             width={FOUNDATION_THEME.unit[32]}
             height={FOUNDATION_THEME.unit[32]}
             borderRadius={FOUNDATION_THEME.border.radius[4]}
@@ -84,24 +84,28 @@ const TenantItem: React.FC<{
             justifyContent="center"
             cursor="pointer"
             style={{
-                outline: `1px solid ${
-                    isSelected
-                        ? FOUNDATION_THEME.colors.primary[500]
-                        : FOUNDATION_THEME.colors.gray[150]
-                }`,
+                outline: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
                 transitionDuration: '75ms',
+                color: isSelected ? FOUNDATION_THEME.colors.gray[1000] : FOUNDATION_THEME.colors.gray[600],
             }}
             _hover={{
                 backgroundColor: FOUNDATION_THEME.colors.gray[50],
-                outline: `1px solid ${
-                    isSelected
-                        ? FOUNDATION_THEME.colors.primary[600]
-                        : FOUNDATION_THEME.colors.gray[200]
-                }`,
+                color: FOUNDATION_THEME.colors.gray[600],
             }}
             onClick={onSelect}
         >
-            {tenant.icon}
+            <Block
+                style={{
+                    color: isSelected ? FOUNDATION_THEME.colors.gray[1000] : FOUNDATION_THEME.colors.gray[600],
+                }}
+            >
+                {React.isValidElement(tenant.icon) 
+                    ? React.cloneElement(tenant.icon as React.ReactElement<any>, {
+                        color: isSelected ? FOUNDATION_THEME.colors.gray[1000] : FOUNDATION_THEME.colors.gray[600],
+                    })
+                    : tenant.icon
+                }
+            </Block>
         </Block>
     </Tooltip>
 )
@@ -161,7 +165,6 @@ const TenantOverflowMenu: React.FC<{
                         }}
                         _hover={{
                             backgroundColor: FOUNDATION_THEME.colors.gray[50],
-                            outline: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
                         }}
                     >
                         <MoreHorizontal
