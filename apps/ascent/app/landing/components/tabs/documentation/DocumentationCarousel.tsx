@@ -20,6 +20,10 @@ export const DocumentationCarousel = () => {
         setActiveIndex((prevIndex) => (prevIndex - 1 + totalCards) % totalCards)
     }
 
+    const handleCardClick = (index: number) => {
+        setActiveIndex(index)
+    }
+
     // Function to get current card width based on screen size
     const getCurrentCardWidth = () => {
         if (typeof window === 'undefined') return 500 // SSR fallback
@@ -121,6 +125,9 @@ export const DocumentationCarousel = () => {
                         >
                             <DocumentationCard
                                 card={data}
+                                index={index}
+                                isActive={index === activeIndex}
+                                onClick={handleCardClick}
                                 style={
                                     index === activeIndex
                                         ? 'scale-110 opacity-100 rounded-[var(--documentation-card-border-radius)] bg-gradient-to-b from-[var(--documentation-card-gradient-from)] to-[var(--documentation-card-gradient-to)]'
