@@ -1,6 +1,6 @@
 import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
-import { KeyValuePairSize, KeyValuePairStateType } from './types'
+import { KeyValuePairSize } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 
@@ -27,14 +27,12 @@ export type KeyValuePairTokensType = {
         fontSize: CSSObject['fontSize']
     }
     // Pattern: value.color (size-independent)
-    // Pattern: value.fontSize.[size].[state] (size-dependent)
+    // Pattern: value.fontSize.[size] (size-dependent)
     // Pattern: value.fontWeight (size-independent)
     value: {
         color: CSSObject['color']
         fontSize: {
-            [key in KeyValuePairSize]: {
-                [key in KeyValuePairStateType]: CSSObject['fontSize']
-            }
+            [key in KeyValuePairSize]: CSSObject['fontSize']
         }
         fontWeight: CSSObject['fontWeight']
     }
@@ -62,24 +60,9 @@ export const getKeyValuePairTokens = (
             value: {
                 color: foundationToken.colors.gray[700],
                 fontSize: {
-                    [KeyValuePairSize.SMALL]: {
-                        [KeyValuePairStateType.vertical]:
-                            foundationToken.font.size.body.md.fontSize, // 14px
-                        [KeyValuePairStateType.horizontal]:
-                            foundationToken.font.size.body.md.fontSize, // 14px
-                    },
-                    [KeyValuePairSize.MEDIUM]: {
-                        [KeyValuePairStateType.vertical]:
-                            foundationToken.font.size.body.lg.fontSize, // 16px
-                        [KeyValuePairStateType.horizontal]:
-                            foundationToken.font.size.body.md.fontSize, // 14px
-                    },
-                    [KeyValuePairSize.LARGE]: {
-                        [KeyValuePairStateType.vertical]:
-                            foundationToken.font.size.heading.sm.fontSize, // 18px
-                        [KeyValuePairStateType.horizontal]:
-                            foundationToken.font.size.body.md.fontSize, // 14px
-                    },
+                    [KeyValuePairSize.SMALL]: foundationToken.font.size.body.md.fontSize, // 14px
+                    [KeyValuePairSize.MEDIUM]: foundationToken.font.size.body.lg.fontSize, // 16px
+                    [KeyValuePairSize.LARGE]: 18, // 18px
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
             },
@@ -98,24 +81,9 @@ export const getKeyValuePairTokens = (
             value: {
                 color: foundationToken.colors.gray[700],
                 fontSize: {
-                    [KeyValuePairSize.SMALL]: {
-                        [KeyValuePairStateType.vertical]:
-                            foundationToken.font.size.body.md.fontSize, // 14px
-                        [KeyValuePairStateType.horizontal]:
-                            foundationToken.font.size.body.md.fontSize, // 14px
-                    },
-                    [KeyValuePairSize.MEDIUM]: {
-                        [KeyValuePairStateType.vertical]:
-                            foundationToken.font.size.body.lg.fontSize, // 16px
-                        [KeyValuePairStateType.horizontal]:
-                            foundationToken.font.size.body.md.fontSize, // 14px
-                    },
-                    [KeyValuePairSize.LARGE]: {
-                        [KeyValuePairStateType.vertical]:
-                            foundationToken.font.size.heading.sm.fontSize, // 18px
-                        [KeyValuePairStateType.horizontal]:
-                            foundationToken.font.size.body.md.fontSize, // 14px
-                    },
+                    [KeyValuePairSize.SMALL]: foundationToken.font.size.body.md.fontSize, // 14px
+                    [KeyValuePairSize.MEDIUM]: foundationToken.font.size.body.lg.fontSize, // 16px
+                    [KeyValuePairSize.LARGE]: foundationToken.font.size.heading.sm.fontSize, // 18px
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
             },

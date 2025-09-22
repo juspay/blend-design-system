@@ -147,11 +147,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                     )}
                     <TruncatedText
                         className="flex-1 min-w-0"
-                        fontSize={
-                            keyValuePairTokens.value.fontSize[size][
-                                keyValuePairState
-                            ]
-                        }
+                        fontSize={keyValuePairTokens.value.fontSize[size]}
                         color={keyValuePairTokens.value.color}
                         fontWeight={keyValuePairTokens.value.fontWeight}
                     >
