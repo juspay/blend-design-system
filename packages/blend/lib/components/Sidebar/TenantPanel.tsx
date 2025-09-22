@@ -10,6 +10,8 @@ import {
 import { FOUNDATION_THEME } from '../../tokens'
 import { arrangeTenants } from './utils'
 import type { TenantItem } from './types'
+import { Tooltip } from '../Tooltip'
+import { TooltipSide } from '../Tooltip/types'
 
 type TenantPanelProps = {
     items: TenantItem[]
@@ -66,93 +68,114 @@ const TenantItem: React.FC<{
     isSelected: boolean
     onSelect: () => void
 }> = ({ tenant, isSelected, onSelect }) => (
-    <Block
-        border="none"
-        backgroundColor="transparent"
-        width={FOUNDATION_THEME.unit[32]}
-        height={FOUNDATION_THEME.unit[32]}
-        borderRadius={FOUNDATION_THEME.border.radius[4]}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        cursor="pointer"
-        style={{
-            outline: `1px solid ${
-                isSelected
-                    ? FOUNDATION_THEME.colors.primary[500]
-                    : FOUNDATION_THEME.colors.gray[150]
-            }`,
-            transitionDuration: '75ms',
-        }}
-        onClick={onSelect}
+    <Tooltip
+        content={tenant.label}
+        side={TooltipSide.RIGHT}
+        delayDuration={500}
     >
-        {tenant.icon}
-    </Block>
+        <Block
+            border="none"
+            backgroundColor="transparent"
+            width={FOUNDATION_THEME.unit[32]}
+            height={FOUNDATION_THEME.unit[32]}
+            borderRadius={FOUNDATION_THEME.border.radius[4]}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            cursor="pointer"
+            style={{
+                outline: `1px solid ${
+                    isSelected
+                        ? FOUNDATION_THEME.colors.primary[500]
+                        : FOUNDATION_THEME.colors.gray[150]
+                }`,
+                transitionDuration: '75ms',
+            }}
+            _hover={{
+                backgroundColor: FOUNDATION_THEME.colors.gray[50],
+                outline: `1px solid ${
+                    isSelected
+                        ? FOUNDATION_THEME.colors.primary[600]
+                        : FOUNDATION_THEME.colors.gray[200]
+                }`,
+            }}
+            onClick={onSelect}
+        >
+            {tenant.icon}
+        </Block>
+    </Tooltip>
 )
 
 const TenantOverflowMenu: React.FC<{
     hiddenTenants: TenantItem[]
     onSelect: (label: string) => void
 }> = ({ hiddenTenants, onSelect }) => (
-    <Block position="relative">
-        <SingleSelect
-            placeholder=""
-            variant={SelectMenuVariant.NO_CONTAINER}
-            side={SelectMenuSide.RIGHT}
-            alignment={SelectMenuAlignment.START}
-            sideOffset={4}
-            maxMenuHeight={300}
-            minMenuWidth={200}
-            enableSearch={true}
-            searchPlaceholder="Search tenants..."
-            items={[
-                {
-                    items: hiddenTenants.map((tenant) => ({
-                        label: tenant.label,
-                        value: tenant.value || tenant.label,
-                        slot1: tenant.icon,
-                    })),
-                },
-            ]}
-            selected=""
-            onSelect={(value) => {
-                const selectedTenant = hiddenTenants.find(
-                    (t) => (t.value || t.label) === value
-                )
-                if (selectedTenant) {
-                    onSelect(selectedTenant.label)
-                }
-            }}
-            customTrigger={
-                <Block
-                    border="none"
-                    backgroundColor="transparent"
-                    width={FOUNDATION_THEME.unit[32]}
-                    height={FOUNDATION_THEME.unit[32]}
-                    borderRadius={FOUNDATION_THEME.border.radius[4]}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    cursor="pointer"
-                    style={{
-                        outline: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
-                        transitionDuration: '75ms',
-                    }}
-                    _hover={{
-                        backgroundColor: FOUNDATION_THEME.colors.gray[50],
-                    }}
-                >
-                    <MoreHorizontal
+    <Tooltip
+        content="More tenants"
+        side={TooltipSide.RIGHT}
+        delayDuration={500}
+    >
+        <Block position="relative">
+            <SingleSelect
+                placeholder=""
+                variant={SelectMenuVariant.NO_CONTAINER}
+                side={SelectMenuSide.RIGHT}
+                alignment={SelectMenuAlignment.START}
+                sideOffset={4}
+                maxMenuHeight={300}
+                minMenuWidth={200}
+                enableSearch={true}
+                searchPlaceholder="Search tenants..."
+                items={[
+                    {
+                        items: hiddenTenants.map((tenant) => ({
+                            label: tenant.label,
+                            value: tenant.value || tenant.label,
+                            slot1: tenant.icon,
+                        })),
+                    },
+                ]}
+                selected=""
+                onSelect={(value) => {
+                    const selectedTenant = hiddenTenants.find(
+                        (t) => (t.value || t.label) === value
+                    )
+                    if (selectedTenant) {
+                        onSelect(selectedTenant.label)
+                    }
+                }}
+                customTrigger={
+                    <Block
+                        border="none"
+                        backgroundColor="transparent"
+                        width={FOUNDATION_THEME.unit[32]}
+                        height={FOUNDATION_THEME.unit[32]}
+                        borderRadius={FOUNDATION_THEME.border.radius[4]}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        cursor="pointer"
                         style={{
-                            width: FOUNDATION_THEME.unit[16],
-                            height: FOUNDATION_THEME.unit[16],
+                            outline: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
+                            transitionDuration: '75ms',
                         }}
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                    />
-                </Block>
-            }
-        />
-    </Block>
+                        _hover={{
+                            backgroundColor: FOUNDATION_THEME.colors.gray[50],
+                            outline: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                        }}
+                    >
+                        <MoreHorizontal
+                            style={{
+                                width: FOUNDATION_THEME.unit[16],
+                                height: FOUNDATION_THEME.unit[16],
+                            }}
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                        />
+                    </Block>
+                }
+            />
+        </Block>
+    </Tooltip>
 )
 
 export default TenantPanel
