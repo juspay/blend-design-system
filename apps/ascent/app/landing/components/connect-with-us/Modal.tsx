@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { FormField } from './FormField'
 
@@ -55,7 +56,7 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
         onClose() // Close the modal after submission
     }
 
-    return (
+    const modalContent = (
         // The overlay to dim the background and handle clicks
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
@@ -192,4 +193,9 @@ export const Modal = ({ onClose }: { onClose: () => void }) => {
             </div>
         </div>
     )
+
+    // Use portal to render modal at document body level to avoid layout constraints
+    return typeof document !== 'undefined'
+        ? createPortal(modalContent, document.body)
+        : null
 }
