@@ -17,6 +17,12 @@ export enum DateRangePreset {
     NEXT_12_MONTHS = 'next12Months',
 }
 
+export enum DateRangePickerSize {
+    SMALL = 'sm',
+    MEDIUM = 'md',
+    LARGE = 'lg',
+}
+
 export type DateRange = {
     startDate: Date
     endDate: Date
@@ -100,9 +106,8 @@ export type DateRangePickerProps = {
     triggerElement?: ReactNode
     useDrawerOnMobile?: boolean
     skipQuickFiltersOnMobile?: boolean
-
+    size?: DateRangePickerSize
     formatConfig?: DateFormatConfig
-
     triggerConfig?: TriggerConfig
 }
 
