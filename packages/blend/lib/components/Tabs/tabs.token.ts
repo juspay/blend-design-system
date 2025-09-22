@@ -26,12 +26,10 @@ export type TabsTokensType = {
             [key in TabsState]: CSSObject['backgroundColor']
         }
     }
-    // Pattern: borderRadius.[size].[variant].[state]
+    // Pattern: borderRadius.[size].[variant]
     borderRadius: {
         [key in TabsSize]: {
-            [key in TabsVariant]: {
-                [key in TabsState]: CSSObject['borderRadius']
-            }
+            [key in TabsVariant]: CSSObject['borderRadius']
         }
     }
     // Pattern: padding.[size].[variant] (size-dependent)
@@ -40,11 +38,9 @@ export type TabsTokensType = {
             [key in TabsVariant]: CSSObject['padding']
         }
     }
-    // Pattern: border.[variant].[state]
+    // Pattern: border.[variant]
     border: {
-        [key in TabsVariant]: {
-            [key in TabsState]: CSSObject['border']
-        }
+        [key in TabsVariant]: CSSObject['border']
     }
     container: {
         // Pattern: container.backgroundColor.[variant]
@@ -59,7 +55,6 @@ export type TabsTokensType = {
         padding: {
             [key in TabsVariant]: CSSObject['padding']
         }
-        // Pattern: container.border.[variant]
     }
     trigger: {
         // Pattern: trigger.gap
@@ -125,60 +120,20 @@ export const getTabsTokens = (
                     disabled: 'transparent',
                 },
             },
-            // Pattern: borderRadius.[size].[variant].[state]
-            // Example: borderRadius.lg.pills.hover
+            // Pattern: borderRadius.[size].[variant]
+            // Example: borderRadius.lg.pills
             borderRadius: {
                 [TabsSize.MD]: {
-                    [TabsVariant.UNDERLINE]: {
-                        default: '0',
-                        hover: '0',
-                        active: '0',
-                        disabled: '0',
-                    },
-                    [TabsVariant.BOXED]: {
-                        default: foundationToken.border.radius[8],
-                        hover: foundationToken.border.radius[8],
-                        active: foundationToken.border.radius[8],
-                        disabled: foundationToken.border.radius[8],
-                    },
-                    [TabsVariant.FLOATING]: {
-                        default: foundationToken.border.radius[8],
-                        hover: foundationToken.border.radius[8],
-                        active: foundationToken.border.radius[8],
-                        disabled: foundationToken.border.radius[8],
-                    },
-                    [TabsVariant.PILLS]: {
-                        default: foundationToken.border.radius[28],
-                        hover: foundationToken.border.radius[28],
-                        active: foundationToken.border.radius[28],
-                        disabled: foundationToken.border.radius[28],
-                    },
+                    [TabsVariant.UNDERLINE]: '0',
+                    [TabsVariant.BOXED]: foundationToken.border.radius[8],
+                    [TabsVariant.FLOATING]: foundationToken.border.radius[8],
+                    [TabsVariant.PILLS]: foundationToken.border.radius[28],
                 },
                 [TabsSize.LG]: {
-                    [TabsVariant.UNDERLINE]: {
-                        default: '0',
-                        hover: '0',
-                        active: '0',
-                        disabled: '0',
-                    },
-                    [TabsVariant.BOXED]: {
-                        default: foundationToken.border.radius[8],
-                        hover: foundationToken.border.radius[8],
-                        active: foundationToken.border.radius[8],
-                        disabled: foundationToken.border.radius[8],
-                    },
-                    [TabsVariant.FLOATING]: {
-                        default: foundationToken.border.radius[8],
-                        hover: foundationToken.border.radius[8],
-                        active: foundationToken.border.radius[8],
-                        disabled: foundationToken.border.radius[8],
-                    },
-                    [TabsVariant.PILLS]: {
-                        default: foundationToken.border.radius[28],
-                        hover: foundationToken.border.radius[28],
-                        active: foundationToken.border.radius[28],
-                        disabled: foundationToken.border.radius[28],
-                    },
+                    [TabsVariant.UNDERLINE]: '0',
+                    [TabsVariant.BOXED]: foundationToken.border.radius[8],
+                    [TabsVariant.FLOATING]: foundationToken.border.radius[8],
+                    [TabsVariant.PILLS]: foundationToken.border.radius[28],
                 },
             },
             // Pattern: padding.[size].[variant]
@@ -197,33 +152,13 @@ export const getTabsTokens = (
                     [TabsVariant.PILLS]: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
                 },
             },
-            // Pattern: border.[variant].[state]
-            // Example: border.pills.disabled
+            // Pattern: border.[variant]
+            // Example: border.pills
             border: {
-                [TabsVariant.UNDERLINE]: {
-                    default: 'none',
-                    hover: 'none',
-                    active: 'none',
-                    disabled: 'none',
-                },
-                [TabsVariant.BOXED]: {
-                    default: 'none',
-                    hover: 'none',
-                    active: 'none',
-                    disabled: 'none',
-                },
-                [TabsVariant.FLOATING]: {
-                    default: 'none',
-                    hover: 'none',
-                    active: 'none',
-                    disabled: 'none',
-                },
-                [TabsVariant.PILLS]: {
-                    default: `1px solid ${foundationToken.colors.gray[200]}`,
-                    hover: `1px solid ${foundationToken.colors.gray[200]}`,
-                    active: `1px solid ${foundationToken.colors.gray[200]}`,
-                    disabled: `1px solid ${foundationToken.colors.gray[200]}`,
-                },
+                [TabsVariant.UNDERLINE]: 'none',
+                [TabsVariant.BOXED]: 'none',
+                [TabsVariant.FLOATING]: 'none',
+                [TabsVariant.PILLS]: `1px solid ${foundationToken.colors.gray[200]}`,
             },
             container: {
                 // Pattern: container.backgroundColor.[variant]
@@ -333,60 +268,20 @@ export const getTabsTokens = (
                     disabled: 'transparent',
                 },
             },
-            // Pattern: borderRadius.[size].[variant].[state]
-            // Example: borderRadius.lg.pills.hover
+            // Pattern: borderRadius.[size].[variant]
+            // Example: borderRadius.lg.pills
             borderRadius: {
                 [TabsSize.MD]: {
-                    [TabsVariant.UNDERLINE]: {
-                        default: '0',
-                        hover: '0',
-                        active: '0',
-                        disabled: '0',
-                    },
-                    [TabsVariant.BOXED]: {
-                        default: foundationToken.border.radius[8],
-                        hover: foundationToken.border.radius[8],
-                        active: foundationToken.border.radius[8],
-                        disabled: foundationToken.border.radius[8],
-                    },
-                    [TabsVariant.FLOATING]: {
-                        default: foundationToken.border.radius[8],
-                        hover: foundationToken.border.radius[8],
-                        active: foundationToken.border.radius[8],
-                        disabled: foundationToken.border.radius[8],
-                    },
-                    [TabsVariant.PILLS]: {
-                        default: foundationToken.border.radius[28],
-                        hover: foundationToken.border.radius[28],
-                        active: foundationToken.border.radius[28],
-                        disabled: foundationToken.border.radius[28],
-                    },
+                    [TabsVariant.UNDERLINE]: '0',
+                    [TabsVariant.BOXED]: foundationToken.border.radius[8],
+                    [TabsVariant.FLOATING]: foundationToken.border.radius[8],
+                    [TabsVariant.PILLS]: foundationToken.border.radius[28],
                 },
                 [TabsSize.LG]: {
-                    [TabsVariant.UNDERLINE]: {
-                        default: '0',
-                        hover: '0',
-                        active: '0',
-                        disabled: '0',
-                    },
-                    [TabsVariant.BOXED]: {
-                        default: foundationToken.border.radius[8],
-                        hover: foundationToken.border.radius[8],
-                        active: foundationToken.border.radius[8],
-                        disabled: foundationToken.border.radius[8],
-                    },
-                    [TabsVariant.FLOATING]: {
-                        default: foundationToken.border.radius[8],
-                        hover: foundationToken.border.radius[8],
-                        active: foundationToken.border.radius[8],
-                        disabled: foundationToken.border.radius[8],
-                    },
-                    [TabsVariant.PILLS]: {
-                        default: foundationToken.border.radius[28],
-                        hover: foundationToken.border.radius[28],
-                        active: foundationToken.border.radius[28],
-                        disabled: foundationToken.border.radius[28],
-                    },
+                    [TabsVariant.UNDERLINE]: '0',
+                    [TabsVariant.BOXED]: foundationToken.border.radius[8],
+                    [TabsVariant.FLOATING]: foundationToken.border.radius[8],
+                    [TabsVariant.PILLS]: foundationToken.border.radius[28],
                 },
             },
             // Pattern: padding.[size].[variant]
@@ -405,33 +300,13 @@ export const getTabsTokens = (
                     [TabsVariant.PILLS]: `${foundationToken.unit[10]} ${foundationToken.unit[12]}`,
                 },
             },
-            // Pattern: border.[variant].[state]
-            // Example: border.underline.disabled
+            // Pattern: border.[variant]
+            // Example: border.pills
             border: {
-                [TabsVariant.UNDERLINE]: {
-                    default: 'none',
-                    hover: 'none',
-                    active: 'none',
-                    disabled: 'none',
-                },
-                [TabsVariant.BOXED]: {
-                    default: 'none',
-                    hover: 'none',
-                    active: 'none',
-                    disabled: 'none',
-                },
-                [TabsVariant.FLOATING]: {
-                    default: 'none',
-                    hover: 'none',
-                    active: 'none',
-                    disabled: 'none',
-                },
-                [TabsVariant.PILLS]: {
-                    default: `1px solid ${foundationToken.colors.gray[200]}`,
-                    hover: `1px solid ${foundationToken.colors.gray[200]}`,
-                    active: `1px solid ${foundationToken.colors.gray[200]}`,
-                    disabled: `1px solid ${foundationToken.colors.gray[200]}`,
-                },
+                [TabsVariant.UNDERLINE]: 'none',
+                [TabsVariant.BOXED]: 'none',
+                [TabsVariant.FLOATING]: 'none',
+                [TabsVariant.PILLS]: `1px solid ${foundationToken.colors.gray[200]}`,
             },
             container: {
                 // Pattern: container.backgroundColor.[variant]
