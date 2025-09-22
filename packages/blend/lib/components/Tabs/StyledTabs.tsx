@@ -30,9 +30,10 @@ export const StyledTabsList = styled(TabsPrimitive.List)<{
     gap: props.$tabsToken.gap,
     border: 'none',
     position: 'relative',
-    padding: props.$tabsToken.container.padding[props.$variant],
+    padding: props.$tabsToken.container.padding[props.$size][props.$variant],
     backgroundColor: props.$tabsToken.container.backgroundColor[props.$variant],
-    borderRadius: props.$tabsToken.container.borderRadius[props.$variant],
+    borderRadius:
+        props.$tabsToken.container.borderRadius[props.$size][props.$variant],
 
     ...(props.$expanded &&
         !props.$fitContent && {
@@ -55,9 +56,9 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
     justifyContent: 'center',
     whiteSpace: 'nowrap',
     padding: props.$tabsToken.padding[props.$size][props.$variant],
-    fontSize: props.$tabsToken.text.fontSize[props.$size],
-    fontWeight: props.$tabsToken.text.fontWeight[props.$size],
-    color: props.$tabsToken.text.color[props.$variant].default,
+    fontSize: props.$tabsToken.trigger.text.fontSize[props.$size],
+    fontWeight: props.$tabsToken.trigger.text.fontWeight[props.$size],
+    color: props.$tabsToken.trigger.text.color[props.$variant].default,
     backgroundColor: props.$tabsToken.backgroundColor[props.$variant].default,
     borderRadius: props.$tabsToken.borderRadius[props.$size][props.$variant],
     border: props.$tabsToken.border[props.$variant],
@@ -67,15 +68,15 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
     cursor: 'pointer',
 
     "&:hover:not([data-state='active']):not(:disabled)": {
-        color: props.$tabsToken.text.color[props.$variant].hover,
+        color: props.$tabsToken.trigger.text.color[props.$variant].hover,
         backgroundColor: props.$tabsToken.backgroundColor[props.$variant].hover,
     },
 
     "&[data-state='active']": {
-        color: props.$tabsToken.text.color[props.$variant].active,
+        color: props.$tabsToken.trigger.text.color[props.$variant].active,
         backgroundColor:
             props.$tabsToken.backgroundColor[props.$variant].active,
-        fontWeight: props.$tabsToken.text.fontWeight[props.$size],
+        fontWeight: props.$tabsToken.trigger.text.fontWeight[props.$size],
         zIndex: 1,
 
         ...(props.$variant === TabsVariant.UNDERLINE && {
@@ -97,7 +98,7 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
     },
 
     '&:disabled': {
-        color: props.$tabsToken.text.color[props.$variant].disabled,
+        color: props.$tabsToken.trigger.text.color[props.$variant].disabled,
         opacity: foundationToken.opacity[50],
         pointerEvents: 'none',
         cursor: 'not-allowed',

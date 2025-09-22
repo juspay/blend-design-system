@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import type { ButtonV2Props } from '../Button'
+import type { ButtonProps } from '../Button'
 
-type ModalButtonAction = Omit<ButtonV2Props, 'buttonGroupPosition'>
+type ModalButtonAction = Omit<ButtonProps, 'buttonGroupPosition'>
 
 export type ModalProps = {
     isOpen: boolean

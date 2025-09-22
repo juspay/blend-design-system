@@ -47,37 +47,43 @@ export type TabsTokensType = {
         backgroundColor: {
             [key in TabsVariant]: CSSObject['backgroundColor']
         }
-        // Pattern: container.borderRadius.[variant]
+        // Pattern: container.borderRadius.[size].[variant]
         borderRadius: {
-            [key in TabsVariant]: CSSObject['borderRadius']
+            [key in TabsSize]: {
+                [key in TabsVariant]: CSSObject['borderRadius']
+            }
         }
-        // Pattern: container.padding.[variant]
+        // Pattern: container.padding.[size].[variant]
         padding: {
-            [key in TabsVariant]: CSSObject['padding']
+            [key in TabsSize]: {
+                [key in TabsVariant]: CSSObject['padding']
+            }
         }
     }
     trigger: {
         // Pattern: trigger.gap
         gap: CSSObject['gap']
+        // Active indicator
         underline: {
             height: CSSObject['height']
             color: CSSObject['color']
         }
-    }
-    text: {
-        // Pattern: text.color.[variant].[state]
-        color: {
-            [key in TabsVariant]: {
-                [key in TabsState]: CSSObject['color']
+        // Text inside trigger
+        text: {
+            // Pattern: trigger.text.color.[variant].[state]
+            color: {
+                [key in TabsVariant]: {
+                    [key in TabsState]: CSSObject['color']
+                }
             }
-        }
-        // Pattern: text.fontSize.[size] (size-dependent)
-        fontSize: {
-            [key in TabsSize]: CSSObject['fontSize']
-        }
-        // Pattern: text.fontWeight.[size] (size-dependent)
-        fontWeight: {
-            [key in TabsSize]: CSSObject['fontWeight']
+            // Pattern: trigger.text.fontSize.[size] (size-dependent)
+            fontSize: {
+                [key in TabsSize]: CSSObject['fontSize']
+            }
+            // Pattern: trigger.text.fontWeight.[size] (size-dependent)
+            fontWeight: {
+                [key in TabsSize]: CSSObject['fontWeight']
+            }
         }
     }
 }
@@ -169,21 +175,37 @@ export const getTabsTokens = (
                     [TabsVariant.FLOATING]: 'transparent',
                     [TabsVariant.PILLS]: 'transparent',
                 },
-                // Pattern: container.borderRadius.[variant]
-                // Example: container.borderRadius.floating
+                // Pattern: container.borderRadius.[size].[variant]
+                // Example: container.borderRadius.md.floating
                 borderRadius: {
-                    [TabsVariant.UNDERLINE]: '0',
-                    [TabsVariant.BOXED]: foundationToken.border.radius[8],
-                    [TabsVariant.FLOATING]: '0',
-                    [TabsVariant.PILLS]: '0',
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: '0',
+                        [TabsVariant.BOXED]: foundationToken.border.radius[8],
+                        [TabsVariant.FLOATING]: '0',
+                        [TabsVariant.PILLS]: '0',
+                    },
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: '0',
+                        [TabsVariant.BOXED]: foundationToken.border.radius[8],
+                        [TabsVariant.FLOATING]: '0',
+                        [TabsVariant.PILLS]: '0',
+                    },
                 },
-                // Pattern: container.padding.[variant]
-                // Example: container.padding.underline
+                // Pattern: container.padding.[size].[variant]
+                // Example: container.padding.md.underline
                 padding: {
-                    [TabsVariant.UNDERLINE]: `${foundationToken.unit[8]} 0 0 0`,
-                    [TabsVariant.BOXED]: foundationToken.unit[4],
-                    [TabsVariant.FLOATING]: foundationToken.unit[4],
-                    [TabsVariant.PILLS]: foundationToken.unit[4],
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: `${foundationToken.unit[8]} 0 0 0`,
+                        [TabsVariant.BOXED]: foundationToken.unit[4],
+                        [TabsVariant.FLOATING]: foundationToken.unit[4],
+                        [TabsVariant.PILLS]: foundationToken.unit[4],
+                    },
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: `${foundationToken.unit[8]} 0 0 0`,
+                        [TabsVariant.BOXED]: foundationToken.unit[4],
+                        [TabsVariant.FLOATING]: foundationToken.unit[4],
+                        [TabsVariant.PILLS]: foundationToken.unit[4],
+                    },
                 },
             },
             trigger: {
@@ -194,47 +216,50 @@ export const getTabsTokens = (
                     height: foundationToken.border.width[2],
                     color: foundationToken.colors.gray[700],
                 },
-            },
-            text: {
-                // Pattern: text.color.[variant].[state]
-                // Example: text.color.pills.hover
-                color: {
-                    [TabsVariant.UNDERLINE]: {
-                        default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[500],
-                        active: foundationToken.colors.gray[700],
-                        disabled: foundationToken.colors.gray[400],
+                // Text inside trigger
+                text: {
+                    // Pattern: trigger.text.color.[variant].[state]
+                    // Example: trigger.text.color.pills.hover
+                    color: {
+                        [TabsVariant.UNDERLINE]: {
+                            default: foundationToken.colors.gray[500],
+                            hover: foundationToken.colors.gray[500],
+                            active: foundationToken.colors.gray[700],
+                            disabled: foundationToken.colors.gray[400],
+                        },
+                        [TabsVariant.BOXED]: {
+                            default: foundationToken.colors.gray[500],
+                            hover: foundationToken.colors.gray[500],
+                            active: foundationToken.colors.gray[700],
+                            disabled: foundationToken.colors.gray[400],
+                        },
+                        [TabsVariant.FLOATING]: {
+                            default: foundationToken.colors.gray[500],
+                            hover: foundationToken.colors.gray[700],
+                            active: foundationToken.colors.gray[700],
+                            disabled: foundationToken.colors.gray[400],
+                        },
+                        [TabsVariant.PILLS]: {
+                            default: foundationToken.colors.gray[500],
+                            hover: foundationToken.colors.gray[700],
+                            active: foundationToken.colors.gray[700],
+                            disabled: foundationToken.colors.gray[400],
+                        },
                     },
-                    [TabsVariant.BOXED]: {
-                        default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[500],
-                        active: foundationToken.colors.gray[700],
-                        disabled: foundationToken.colors.gray[400],
+                    // Pattern: trigger.text.fontSize.[size]
+                    // Example: trigger.text.fontSize.md
+                    fontSize: {
+                        [TabsSize.MD]:
+                            foundationToken.font.size.body.md.fontSize,
+                        [TabsSize.LG]:
+                            foundationToken.font.size.body.md.fontSize,
                     },
-                    [TabsVariant.FLOATING]: {
-                        default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[700],
-                        active: foundationToken.colors.gray[700],
-                        disabled: foundationToken.colors.gray[400],
+                    // Pattern: trigger.text.fontWeight.[size]
+                    // Example: trigger.text.fontWeight.lg
+                    fontWeight: {
+                        [TabsSize.MD]: foundationToken.font.weight[500],
+                        [TabsSize.LG]: foundationToken.font.weight[500],
                     },
-                    [TabsVariant.PILLS]: {
-                        default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[700],
-                        active: foundationToken.colors.gray[700],
-                        disabled: foundationToken.colors.gray[400],
-                    },
-                },
-                // Pattern: text.fontSize.[size]
-                // Example: text.fontSize.md
-                fontSize: {
-                    [TabsSize.MD]: foundationToken.font.size.body.md.fontSize,
-                    [TabsSize.LG]: foundationToken.font.size.body.md.fontSize,
-                },
-                // Pattern: text.fontWeight.[size]
-                // Example: text.fontWeight.lg
-                fontWeight: {
-                    [TabsSize.MD]: foundationToken.font.weight[500],
-                    [TabsSize.LG]: foundationToken.font.weight[500],
                 },
             },
         },
@@ -317,21 +342,37 @@ export const getTabsTokens = (
                     [TabsVariant.FLOATING]: 'transparent',
                     [TabsVariant.PILLS]: 'transparent',
                 },
-                // Pattern: container.borderRadius.[variant]
-                // Example: container.borderRadius.boxed
+                // Pattern: container.borderRadius.[size].[variant]
+                // Example: container.borderRadius.lg.boxed
                 borderRadius: {
-                    [TabsVariant.UNDERLINE]: '0',
-                    [TabsVariant.BOXED]: foundationToken.border.radius[8],
-                    [TabsVariant.FLOATING]: '0',
-                    [TabsVariant.PILLS]: '0',
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: '0',
+                        [TabsVariant.BOXED]: foundationToken.border.radius[8],
+                        [TabsVariant.FLOATING]: '0',
+                        [TabsVariant.PILLS]: '0',
+                    },
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: '0',
+                        [TabsVariant.BOXED]: foundationToken.border.radius[8],
+                        [TabsVariant.FLOATING]: '0',
+                        [TabsVariant.PILLS]: '0',
+                    },
                 },
-                // Pattern: container.padding.[variant]
-                // Example: container.padding.floating
+                // Pattern: container.padding.[size].[variant]
+                // Example: container.padding.lg.floating
                 padding: {
-                    [TabsVariant.UNDERLINE]: `${foundationToken.unit[8]} 0 0 0`,
-                    [TabsVariant.BOXED]: foundationToken.unit[4],
-                    [TabsVariant.FLOATING]: foundationToken.unit[4],
-                    [TabsVariant.PILLS]: foundationToken.unit[4],
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: `${foundationToken.unit[8]} 0 0 0`,
+                        [TabsVariant.BOXED]: foundationToken.unit[4],
+                        [TabsVariant.FLOATING]: foundationToken.unit[4],
+                        [TabsVariant.PILLS]: foundationToken.unit[4],
+                    },
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: `${foundationToken.unit[8]} 0 0 0`,
+                        [TabsVariant.BOXED]: foundationToken.unit[4],
+                        [TabsVariant.FLOATING]: foundationToken.unit[4],
+                        [TabsVariant.PILLS]: foundationToken.unit[4],
+                    },
                 },
             },
             trigger: {
@@ -342,47 +383,50 @@ export const getTabsTokens = (
                     height: foundationToken.border.width[2],
                     color: foundationToken.colors.gray[700],
                 },
-            },
-            text: {
-                // Pattern: text.color.[variant].[state]
-                // Example: text.color.underline.disabled
-                color: {
-                    [TabsVariant.UNDERLINE]: {
-                        default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[500],
-                        active: foundationToken.colors.gray[700],
-                        disabled: foundationToken.colors.gray[400],
+                // Text inside trigger
+                text: {
+                    // Pattern: trigger.text.color.[variant].[state]
+                    // Example: trigger.text.color.underline.disabled
+                    color: {
+                        [TabsVariant.UNDERLINE]: {
+                            default: foundationToken.colors.gray[500],
+                            hover: foundationToken.colors.gray[500],
+                            active: foundationToken.colors.gray[700],
+                            disabled: foundationToken.colors.gray[400],
+                        },
+                        [TabsVariant.BOXED]: {
+                            default: foundationToken.colors.gray[500],
+                            hover: foundationToken.colors.gray[500],
+                            active: foundationToken.colors.gray[700],
+                            disabled: foundationToken.colors.gray[400],
+                        },
+                        [TabsVariant.FLOATING]: {
+                            default: foundationToken.colors.gray[500],
+                            hover: foundationToken.colors.gray[700],
+                            active: foundationToken.colors.gray[700],
+                            disabled: foundationToken.colors.gray[400],
+                        },
+                        [TabsVariant.PILLS]: {
+                            default: foundationToken.colors.gray[500],
+                            hover: foundationToken.colors.gray[700],
+                            active: foundationToken.colors.gray[700],
+                            disabled: foundationToken.colors.gray[400],
+                        },
                     },
-                    [TabsVariant.BOXED]: {
-                        default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[500],
-                        active: foundationToken.colors.gray[700],
-                        disabled: foundationToken.colors.gray[400],
+                    // Pattern: trigger.text.fontSize.[size]
+                    // Example: trigger.text.fontSize.lg
+                    fontSize: {
+                        [TabsSize.MD]:
+                            foundationToken.font.size.body.md.fontSize,
+                        [TabsSize.LG]:
+                            foundationToken.font.size.body.md.fontSize,
                     },
-                    [TabsVariant.FLOATING]: {
-                        default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[700],
-                        active: foundationToken.colors.gray[700],
-                        disabled: foundationToken.colors.gray[400],
+                    // Pattern: trigger.text.fontWeight.[size]
+                    // Example: trigger.text.fontWeight.md
+                    fontWeight: {
+                        [TabsSize.MD]: foundationToken.font.weight[500],
+                        [TabsSize.LG]: foundationToken.font.weight[500],
                     },
-                    [TabsVariant.PILLS]: {
-                        default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[700],
-                        active: foundationToken.colors.gray[700],
-                        disabled: foundationToken.colors.gray[400],
-                    },
-                },
-                // Pattern: text.fontSize.[size]
-                // Example: text.fontSize.lg
-                fontSize: {
-                    [TabsSize.MD]: foundationToken.font.size.body.md.fontSize,
-                    [TabsSize.LG]: foundationToken.font.size.body.md.fontSize,
-                },
-                // Pattern: text.fontWeight.[size]
-                // Example: text.fontWeight.md
-                fontWeight: {
-                    [TabsSize.MD]: foundationToken.font.weight[500],
-                    [TabsSize.LG]: foundationToken.font.weight[500],
                 },
             },
         },
