@@ -60,8 +60,10 @@ export const getKeyValuePairTokens = (
             value: {
                 color: foundationToken.colors.gray[700],
                 fontSize: {
-                    [KeyValuePairSize.SMALL]: foundationToken.font.size.body.md.fontSize, // 14px
-                    [KeyValuePairSize.MEDIUM]: foundationToken.font.size.body.lg.fontSize, // 16px
+                    [KeyValuePairSize.SMALL]:
+                        foundationToken.font.size.body.md.fontSize, // 14px
+                    [KeyValuePairSize.MEDIUM]:
+                        foundationToken.font.size.body.lg.fontSize, // 16px
                     [KeyValuePairSize.LARGE]: 18, // 18px
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
@@ -81,9 +83,12 @@ export const getKeyValuePairTokens = (
             value: {
                 color: foundationToken.colors.gray[700],
                 fontSize: {
-                    [KeyValuePairSize.SMALL]: foundationToken.font.size.body.md.fontSize, // 14px
-                    [KeyValuePairSize.MEDIUM]: foundationToken.font.size.body.lg.fontSize, // 16px
-                    [KeyValuePairSize.LARGE]: foundationToken.font.size.heading.sm.fontSize, // 18px
+                    [KeyValuePairSize.SMALL]:
+                        foundationToken.font.size.body.md.fontSize, // 14px
+                    [KeyValuePairSize.MEDIUM]:
+                        foundationToken.font.size.body.lg.fontSize, // 16px
+                    [KeyValuePairSize.LARGE]:
+                        foundationToken.font.size.heading.sm.fontSize, // 18px
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
             },
