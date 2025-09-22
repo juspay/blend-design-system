@@ -148,7 +148,9 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                     {item.leftSlot && React.isValidElement(item.leftSlot) && (
                         <Block aria-hidden="true">
                             {React.cloneElement(
-                                item.leftSlot as React.ReactElement<any>,
+                                item.leftSlot as React.ReactElement<
+                                    React.SVGProps<SVGSVGElement>
+                                >,
                                 {
                                     color: isActive
                                         ? FOUNDATION_THEME.colors.gray[1000]
