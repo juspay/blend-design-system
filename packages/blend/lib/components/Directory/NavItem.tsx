@@ -9,7 +9,7 @@ import { handleKeyDown } from './utils'
 
 const StyledElement = styled(Block)<{ $isLink?: boolean; $isActive?: boolean }>`
     background-color: ${({ $isActive }) =>
-        $isActive ? FOUNDATION_THEME.colors.gray[100] : 'inherit'};
+        $isActive ? FOUNDATION_THEME.colors.gray[150] : 'inherit'};
     border: none;
     width: 100%;
     display: flex;
@@ -17,16 +17,22 @@ const StyledElement = styled(Block)<{ $isLink?: boolean; $isActive?: boolean }>`
     justify-content: flex-start;
     gap: 12px;
     padding: 6px 12px;
-    color: ${FOUNDATION_THEME.colors.gray[600]};
+    color: ${({ $isActive }) =>
+        $isActive
+            ? FOUNDATION_THEME.colors.gray[1000]
+            : FOUNDATION_THEME.colors.gray[600]};
     font-weight: 500;
     border-radius: ${FOUNDATION_THEME.border.radius[4]};
-    transition: background-color 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s;
     user-select: none;
     cursor: pointer;
 
     &:hover,
     &:focus {
-        background-color: ${FOUNDATION_THEME.colors.gray[100]};
+        background-color: ${FOUNDATION_THEME.colors.gray[50]};
+        color: ${FOUNDATION_THEME.colors.gray[600]};
         outline: none;
         ring: 0;
     }
@@ -140,12 +146,27 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                     gap="8px"
                 >
                     {item.leftSlot && React.isValidElement(item.leftSlot) && (
-                        <Block aria-hidden="true">{item.leftSlot}</Block>
+                        <Block aria-hidden="true">
+                            {React.cloneElement(
+                                item.leftSlot as React.ReactElement<
+                                    React.SVGProps<SVGSVGElement>
+                                >,
+                                {
+                                    color: isActive
+                                        ? FOUNDATION_THEME.colors.gray[1000]
+                                        : FOUNDATION_THEME.colors.gray[600],
+                                }
+                            )}
+                        </Block>
                     )}
                     <Text
                         as="span"
                         variant="body.md"
-                        color={FOUNDATION_THEME.colors.gray[600]}
+                        color={
+                            isActive
+                                ? FOUNDATION_THEME.colors.gray[1000]
+                                : FOUNDATION_THEME.colors.gray[600]
+                        }
                     >
                         {item.label}
                     </Text>
@@ -156,7 +177,11 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                 {hasChildren && (
                     <ChevronWrapper $isExpanded={isExpanded} aria-hidden="true">
                         <ChevronDown
-                            color={FOUNDATION_THEME.colors.gray[600]}
+                            color={
+                                isActive
+                                    ? FOUNDATION_THEME.colors.gray[1000]
+                                    : FOUNDATION_THEME.colors.gray[600]
+                            }
                         />
                     </ChevronWrapper>
                 )}
