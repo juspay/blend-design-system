@@ -1,40 +1,46 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { RefObject, useEffect } from 'react'
 import { BlendBorderHeading } from '../../BlendBorderHeading'
 import { InfoBtn } from '../../InfoBtn'
-import { useRive } from '@rive-app/react-canvas'
+import { useRive, useStateMachineInput } from '@rive-app/react-canvas'
 
-export const TokenizerComp = () => {
-    const containerRef = useRef<HTMLDivElement>(null)
-    const [activeAnim, setActiveAnim] = useState('CLOSED VERSION')
+const STATE_MACHINE = 'State Machine 1' // must match Rive file
+const SCROLL_INPUT = 'scroll' // must match input in Rive file
 
+export const TokenizerComp = ({
+    reference,
+}: {
+    reference: RefObject<HTMLDivElement | null>
+}) => {
     const { RiveComponent, rive } = useRive({
-        src: '/design_system_website_V4.riv',
-        animations: activeAnim,
+        src: '/tokenizer2.riv',
+        stateMachines: STATE_MACHINE,
         autoplay: true,
     })
 
+    const scrollInput = useStateMachineInput(rive, STATE_MACHINE, SCROLL_INPUT)
+
     useEffect(() => {
-        if (!containerRef.current) return
+        if (!reference.current) return
 
         let isVisible = false
 
         const observer = new IntersectionObserver(
             ([entry]) => {
                 isVisible = entry.isIntersecting
+                console.log('Visible?', isVisible)
             },
             { threshold: 0.3 }
         )
 
-        observer.observe(containerRef.current)
+        observer.observe(reference.current)
 
         const handleScroll = () => {
-            if (!isVisible || !containerRef.current) return
+            if (!isVisible || !reference.current || !scrollInput) return
 
-            const rect = containerRef.current.getBoundingClientRect()
+            const rect = reference.current.getBoundingClientRect()
             const windowHeight = window.innerHeight
 
-            // calculate scroll percentage (0 → 1)
-            const scrollProgress = Math.min(
+            const progress = Math.min(
                 Math.max(
                     0,
                     (windowHeight - rect.top) / (rect.height + windowHeight)
@@ -42,46 +48,28 @@ export const TokenizerComp = () => {
                 1
             )
 
-            // map progress to animations
-            if (scrollProgress < 0.15) {
-                setActiveAnim('CLOSED VERSION')
-            } else if (scrollProgress < 0.3) {
-                setActiveAnim('open version')
-            } else if (scrollProgress < 0.45) {
-                setActiveAnim('card 1')
-            } else if (scrollProgress < 0.6) {
-                setActiveAnim('card 2')
-            } else if (scrollProgress < 0.75) {
-                // Play card 3 first
-                setActiveAnim('card 3')
-
-                // then trigger LOOP + COLOURED VERSION after delays
-                setTimeout(() => rive?.play('LOOP'), 1000)
-                setTimeout(() => rive?.play('COLOURED VERSION'), 2000)
-            }
+            console.log('Scroll progress:', progress)
+            scrollInput.value = progress * 100
         }
 
         window.addEventListener('scroll', handleScroll)
+
         return () => {
             observer.disconnect()
             window.removeEventListener('scroll', handleScroll)
         }
+    }, [scrollInput, reference])
+
+    useEffect(() => {
+        if (rive) {
+            console.log('Rive loaded:', rive)
+        }
     }, [rive])
 
-    // Play when activeAnim changes
-    useEffect(() => {
-        if (rive && activeAnim) {
-            rive.play(activeAnim)
-        }
-    }, [rive, activeAnim])
-
     return (
-        <div
-            ref={containerRef}
-            className="lg:mt-50 mt-25 flex flex-col items-center"
-            style={{ height: '2000px' }}
-        >
+        <div className="lg:mt-50 mt-25 flex flex-col items-center relative">
             <BlendBorderHeading text="Tokenizer" />
+
             <div className="mt-25 text-[var(--intro-text-color)] 2xl:text-4xl xl:text-3xl lg:text-2xl md:text-lg sm:text-xs text-[length:var(--text-xxs)] font-light text-center opacity-80">
                 <p>
                     The Tokeniser lets you apply your brand’s styles—like
@@ -89,18 +77,23 @@ export const TokenizerComp = () => {
                 </p>
                 <p>across our app effortlessly.</p>
             </div>
+
             <div className="w-full flex flex-col">
                 <div
                     style={{
                         position: 'sticky',
-                        top: 100,
                         width: '100%',
-                        height: 600, // increased size
+                        top: '150px',
+                        height: '800px',
+                        zIndex: 10,
                     }}
                 >
                     <RiveComponent style={{ width: '100%', height: '100%' }} />
                 </div>
+                {/* Add spacer to ensure container has enough height for scrolling */}
+                <div style={{ height: '100vh' }} />
             </div>
+
             <div className="flex flex-col items-center justify-center">
                 <InfoBtn
                     text="Learn more"
