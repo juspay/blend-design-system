@@ -98,6 +98,9 @@ importers:
             '@radix-ui/react-tooltip':
                 specifier: ^1.2.7
                 version: 1.2.8(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+            '@rive-app/react-canvas':
+                specifier: ^4.23.3
+                version: 4.23.3(react@19.1.0)
             '@types/mdx':
                 specifier: ^2.0.13
                 version: 2.0.13
@@ -3507,6 +3510,20 @@ packages:
                 integrity: sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==,
             }
 
+    '@rive-app/canvas@2.31.5':
+        resolution:
+            {
+                integrity: sha512-rVWN1RHM7nflvmJCOhrN/Q3d2Sasf8/J8EhArxB7/rFvby/96AREwkXlmKAMxgar8PzN9hyCKyanY5TmPAPd9A==,
+            }
+
+    '@rive-app/react-canvas@4.23.3':
+        resolution:
+            {
+                integrity: sha512-qvy896Joes4w1yTMo8BPdF2JfPKZ5rawGy0JEX2UXFM5VjMHc/NG46BIbdnBrk9ozX/HQ2uRWTp4hNkybJzgSQ==,
+            }
+        peerDependencies:
+            react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
+
     '@rolldown/pluginutils@1.0.0-beta.27':
         resolution:
             {
@@ -5458,6 +5475,7 @@ packages:
             {
                 integrity: sha512-JDgQhtu9PTNmKmEClGoZf5frTd0jZdxYb9F2nKVN6ijo4iCWY6vVxGVH6lwHN3Z9IonfcfUdgz8Mdp9+KbSWbw==,
             }
+        deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
     boxen@5.1.1:
         resolution:
@@ -14132,6 +14150,13 @@ snapshots:
 
     '@radix-ui/rect@1.1.1': {}
 
+    '@rive-app/canvas@2.31.5': {}
+
+    '@rive-app/react-canvas@4.23.3(react@19.1.0)':
+        dependencies:
+            '@rive-app/canvas': 2.31.5
+            react: 19.1.0
+
     '@rolldown/pluginutils@1.0.0-beta.27': {}
 
     '@rollup/pluginutils@5.2.0(rollup@4.46.4)':
@@ -16074,7 +16099,7 @@ snapshots:
             eslint: 9.33.0(jiti@2.5.1)
             eslint-import-resolver-node: 0.3.9
             eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint@9.33.0(jiti@2.5.1)))(eslint@9.33.0(jiti@2.5.1))
-            eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint@9.33.0(jiti@2.5.1)))(eslint@9.33.0(jiti@2.5.1)))(eslint@9.33.0(jiti@2.5.1))
+            eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.33.0(jiti@2.5.1))
             eslint-plugin-jsx-a11y: 6.10.2(eslint@9.33.0(jiti@2.5.1))
             eslint-plugin-react: 7.37.5(eslint@9.33.0(jiti@2.5.1))
             eslint-plugin-react-hooks: 5.2.0(eslint@9.33.0(jiti@2.5.1))
@@ -16104,7 +16129,7 @@ snapshots:
             tinyglobby: 0.2.14
             unrs-resolver: 1.11.1
         optionalDependencies:
-            eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint@9.33.0(jiti@2.5.1)))(eslint@9.33.0(jiti@2.5.1)))(eslint@9.33.0(jiti@2.5.1))
+            eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.33.0(jiti@2.5.1))
         transitivePeerDependencies:
             - supports-color
 
@@ -16119,7 +16144,7 @@ snapshots:
         transitivePeerDependencies:
             - supports-color
 
-    eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint@9.33.0(jiti@2.5.1)))(eslint@9.33.0(jiti@2.5.1)))(eslint@9.33.0(jiti@2.5.1)):
+    eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.33.0(jiti@2.5.1)):
         dependencies:
             '@rtsao/scc': 1.1.0
             array-includes: 3.1.9
