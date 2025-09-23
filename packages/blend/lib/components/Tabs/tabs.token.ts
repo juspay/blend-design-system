@@ -32,10 +32,27 @@ export type TabsTokensType = {
             [key in TabsVariant]: CSSObject['borderRadius']
         }
     }
-    // Pattern: padding.[size].[variant] (size-dependent)
+    // Pattern: padding.[side].[size].[variant] (size-dependent)
     padding: {
-        [key in TabsSize]: {
-            [key in TabsVariant]: CSSObject['padding']
+        top: {
+            [key in TabsSize]: {
+                [key in TabsVariant]: CSSObject['paddingTop']
+            }
+        }
+        right: {
+            [key in TabsSize]: {
+                [key in TabsVariant]: CSSObject['paddingRight']
+            }
+        }
+        bottom: {
+            [key in TabsSize]: {
+                [key in TabsVariant]: CSSObject['paddingBottom']
+            }
+        }
+        left: {
+            [key in TabsSize]: {
+                [key in TabsVariant]: CSSObject['paddingLeft']
+            }
         }
     }
     // Pattern: border.[variant]
@@ -53,10 +70,27 @@ export type TabsTokensType = {
                 [key in TabsVariant]: CSSObject['borderRadius']
             }
         }
-        // Pattern: container.padding.[size].[variant]
+        // Pattern: container.padding.[side].[size].[variant]
         padding: {
-            [key in TabsSize]: {
-                [key in TabsVariant]: CSSObject['padding']
+            top: {
+                [key in TabsSize]: {
+                    [key in TabsVariant]: CSSObject['paddingTop']
+                }
+            }
+            right: {
+                [key in TabsSize]: {
+                    [key in TabsVariant]: CSSObject['paddingRight']
+                }
+            }
+            bottom: {
+                [key in TabsSize]: {
+                    [key in TabsVariant]: CSSObject['paddingBottom']
+                }
+            }
+            left: {
+                [key in TabsSize]: {
+                    [key in TabsVariant]: CSSObject['paddingLeft']
+                }
             }
         }
     }
@@ -142,20 +176,64 @@ export const getTabsTokens = (
                     [TabsVariant.PILLS]: foundationToken.border.radius[28],
                 },
             },
-            // Pattern: padding.[size].[variant]
-            // Example: padding.md.underline
+            // Pattern: padding.[side].[size].[variant]
+            // Example: padding.top.md.underline
             padding: {
-                [TabsSize.MD]: {
-                    [TabsVariant.UNDERLINE]: `${foundationToken.unit[2]} ${foundationToken.unit[8]} ${foundationToken.unit[6]}`,
-                    [TabsVariant.BOXED]: `${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
-                    [TabsVariant.FLOATING]: `${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
-                    [TabsVariant.PILLS]: `${foundationToken.unit[4]} ${foundationToken.unit[12]}`,
+                top: {
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[2],
+                        [TabsVariant.BOXED]: foundationToken.unit[8],
+                        [TabsVariant.FLOATING]: foundationToken.unit[8],
+                        [TabsVariant.PILLS]: foundationToken.unit[4],
+                    },
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[6],
+                        [TabsVariant.BOXED]: foundationToken.unit[10],
+                        [TabsVariant.FLOATING]: foundationToken.unit[10],
+                        [TabsVariant.PILLS]: foundationToken.unit[6],
+                    },
                 },
-                [TabsSize.LG]: {
-                    [TabsVariant.UNDERLINE]: `${foundationToken.unit[6]} ${foundationToken.unit[8]} ${foundationToken.unit[6]}`,
-                    [TabsVariant.BOXED]: `${foundationToken.unit[10]} ${foundationToken.unit[12]}`,
-                    [TabsVariant.FLOATING]: `${foundationToken.unit[10]} ${foundationToken.unit[12]}`,
-                    [TabsVariant.PILLS]: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
+                right: {
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
+                        [TabsVariant.BOXED]: foundationToken.unit[12],
+                        [TabsVariant.FLOATING]: foundationToken.unit[12],
+                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    },
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
+                        [TabsVariant.BOXED]: foundationToken.unit[12],
+                        [TabsVariant.FLOATING]: foundationToken.unit[12],
+                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    },
+                },
+                bottom: {
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[6],
+                        [TabsVariant.BOXED]: foundationToken.unit[8],
+                        [TabsVariant.FLOATING]: foundationToken.unit[8],
+                        [TabsVariant.PILLS]: foundationToken.unit[4],
+                    },
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[6],
+                        [TabsVariant.BOXED]: foundationToken.unit[10],
+                        [TabsVariant.FLOATING]: foundationToken.unit[10],
+                        [TabsVariant.PILLS]: foundationToken.unit[6],
+                    },
+                },
+                left: {
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
+                        [TabsVariant.BOXED]: foundationToken.unit[12],
+                        [TabsVariant.FLOATING]: foundationToken.unit[12],
+                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    },
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
+                        [TabsVariant.BOXED]: foundationToken.unit[12],
+                        [TabsVariant.FLOATING]: foundationToken.unit[12],
+                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    },
                 },
             },
             // Pattern: border.[variant]
@@ -191,20 +269,64 @@ export const getTabsTokens = (
                         [TabsVariant.PILLS]: '0',
                     },
                 },
-                // Pattern: container.padding.[size].[variant]
-                // Example: container.padding.md.underline
+                // Pattern: container.padding.[side].[size].[variant]
+                // Example: container.padding.top.md.underline
                 padding: {
-                    [TabsSize.MD]: {
-                        [TabsVariant.UNDERLINE]: `${foundationToken.unit[8]} 0 0 0`,
-                        [TabsVariant.BOXED]: foundationToken.unit[4],
-                        [TabsVariant.FLOATING]: foundationToken.unit[4],
-                        [TabsVariant.PILLS]: foundationToken.unit[4],
+                    top: {
+                        [TabsSize.MD]: {
+                            [TabsVariant.UNDERLINE]: foundationToken.unit[8],
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
+                        [TabsSize.LG]: {
+                            [TabsVariant.UNDERLINE]: foundationToken.unit[8],
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
                     },
-                    [TabsSize.LG]: {
-                        [TabsVariant.UNDERLINE]: `${foundationToken.unit[8]} 0 0 0`,
-                        [TabsVariant.BOXED]: foundationToken.unit[4],
-                        [TabsVariant.FLOATING]: foundationToken.unit[4],
-                        [TabsVariant.PILLS]: foundationToken.unit[4],
+                    right: {
+                        [TabsSize.MD]: {
+                            [TabsVariant.UNDERLINE]: '0',
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
+                        [TabsSize.LG]: {
+                            [TabsVariant.UNDERLINE]: '0',
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
+                    },
+                    bottom: {
+                        [TabsSize.MD]: {
+                            [TabsVariant.UNDERLINE]: '0',
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
+                        [TabsSize.LG]: {
+                            [TabsVariant.UNDERLINE]: '0',
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
+                    },
+                    left: {
+                        [TabsSize.MD]: {
+                            [TabsVariant.UNDERLINE]: '0',
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
+                        [TabsSize.LG]: {
+                            [TabsVariant.UNDERLINE]: '0',
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
                     },
                 },
             },
@@ -309,20 +431,64 @@ export const getTabsTokens = (
                     [TabsVariant.PILLS]: foundationToken.border.radius[28],
                 },
             },
-            // Pattern: padding.[size].[variant]
-            // Example: padding.lg.boxed
+            // Pattern: padding.[side].[size].[variant]
+            // Example: padding.top.lg.boxed
             padding: {
-                [TabsSize.MD]: {
-                    [TabsVariant.UNDERLINE]: `${foundationToken.unit[2]} ${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
-                    [TabsVariant.BOXED]: `${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
-                    [TabsVariant.FLOATING]: `${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
-                    [TabsVariant.PILLS]: `${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
+                top: {
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[2],
+                        [TabsVariant.BOXED]: foundationToken.unit[8],
+                        [TabsVariant.FLOATING]: foundationToken.unit[8],
+                        [TabsVariant.PILLS]: foundationToken.unit[8],
+                    },
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[6],
+                        [TabsVariant.BOXED]: foundationToken.unit[10],
+                        [TabsVariant.FLOATING]: foundationToken.unit[10],
+                        [TabsVariant.PILLS]: foundationToken.unit[10],
+                    },
                 },
-                [TabsSize.LG]: {
-                    [TabsVariant.UNDERLINE]: `${foundationToken.unit[6]} ${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
-                    [TabsVariant.BOXED]: `${foundationToken.unit[10]} ${foundationToken.unit[12]}`,
-                    [TabsVariant.FLOATING]: `${foundationToken.unit[10]} ${foundationToken.unit[12]}`,
-                    [TabsVariant.PILLS]: `${foundationToken.unit[10]} ${foundationToken.unit[12]}`,
+                right: {
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
+                        [TabsVariant.BOXED]: foundationToken.unit[12],
+                        [TabsVariant.FLOATING]: foundationToken.unit[12],
+                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    },
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
+                        [TabsVariant.BOXED]: foundationToken.unit[12],
+                        [TabsVariant.FLOATING]: foundationToken.unit[12],
+                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    },
+                },
+                bottom: {
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[12],
+                        [TabsVariant.BOXED]: foundationToken.unit[8],
+                        [TabsVariant.FLOATING]: foundationToken.unit[8],
+                        [TabsVariant.PILLS]: foundationToken.unit[8],
+                    },
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[12],
+                        [TabsVariant.BOXED]: foundationToken.unit[10],
+                        [TabsVariant.FLOATING]: foundationToken.unit[10],
+                        [TabsVariant.PILLS]: foundationToken.unit[10],
+                    },
+                },
+                left: {
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
+                        [TabsVariant.BOXED]: foundationToken.unit[12],
+                        [TabsVariant.FLOATING]: foundationToken.unit[12],
+                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    },
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
+                        [TabsVariant.BOXED]: foundationToken.unit[12],
+                        [TabsVariant.FLOATING]: foundationToken.unit[12],
+                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    },
                 },
             },
             // Pattern: border.[variant]
@@ -358,20 +524,64 @@ export const getTabsTokens = (
                         [TabsVariant.PILLS]: '0',
                     },
                 },
-                // Pattern: container.padding.[size].[variant]
-                // Example: container.padding.lg.floating
+                // Pattern: container.padding.[side].[size].[variant]
+                // Example: container.padding.top.lg.floating
                 padding: {
-                    [TabsSize.MD]: {
-                        [TabsVariant.UNDERLINE]: `${foundationToken.unit[8]} 0 0 0`,
-                        [TabsVariant.BOXED]: foundationToken.unit[4],
-                        [TabsVariant.FLOATING]: foundationToken.unit[4],
-                        [TabsVariant.PILLS]: foundationToken.unit[4],
+                    top: {
+                        [TabsSize.MD]: {
+                            [TabsVariant.UNDERLINE]: foundationToken.unit[8],
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
+                        [TabsSize.LG]: {
+                            [TabsVariant.UNDERLINE]: foundationToken.unit[8],
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
                     },
-                    [TabsSize.LG]: {
-                        [TabsVariant.UNDERLINE]: `${foundationToken.unit[8]} 0 0 0`,
-                        [TabsVariant.BOXED]: foundationToken.unit[4],
-                        [TabsVariant.FLOATING]: foundationToken.unit[4],
-                        [TabsVariant.PILLS]: foundationToken.unit[4],
+                    right: {
+                        [TabsSize.MD]: {
+                            [TabsVariant.UNDERLINE]: '0',
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
+                        [TabsSize.LG]: {
+                            [TabsVariant.UNDERLINE]: '0',
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
+                    },
+                    bottom: {
+                        [TabsSize.MD]: {
+                            [TabsVariant.UNDERLINE]: '0',
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
+                        [TabsSize.LG]: {
+                            [TabsVariant.UNDERLINE]: '0',
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
+                    },
+                    left: {
+                        [TabsSize.MD]: {
+                            [TabsVariant.UNDERLINE]: '0',
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
+                        [TabsSize.LG]: {
+                            [TabsVariant.UNDERLINE]: '0',
+                            [TabsVariant.BOXED]: foundationToken.unit[4],
+                            [TabsVariant.FLOATING]: foundationToken.unit[4],
+                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        },
                     },
                 },
             },

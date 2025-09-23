@@ -30,7 +30,14 @@ export const StyledTabsList = styled(TabsPrimitive.List)<{
     gap: props.$tabsToken.gap,
     border: 'none',
     position: 'relative',
-    padding: props.$tabsToken.container.padding[props.$size][props.$variant],
+    paddingTop:
+        props.$tabsToken.container.padding.top[props.$size][props.$variant],
+    paddingRight:
+        props.$tabsToken.container.padding.right[props.$size][props.$variant],
+    paddingBottom:
+        props.$tabsToken.container.padding.bottom[props.$size][props.$variant],
+    paddingLeft:
+        props.$tabsToken.container.padding.left[props.$size][props.$variant],
     backgroundColor: props.$tabsToken.container.backgroundColor[props.$variant],
     borderRadius:
         props.$tabsToken.container.borderRadius[props.$size][props.$variant],
@@ -55,7 +62,10 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
     alignItems: 'center',
     justifyContent: 'center',
     whiteSpace: 'nowrap',
-    padding: props.$tabsToken.padding[props.$size][props.$variant],
+    paddingTop: props.$tabsToken.padding.top[props.$size][props.$variant],
+    paddingRight: props.$tabsToken.padding.right[props.$size][props.$variant],
+    paddingBottom: props.$tabsToken.padding.bottom[props.$size][props.$variant],
+    paddingLeft: props.$tabsToken.padding.left[props.$size][props.$variant],
     fontSize: props.$tabsToken.trigger.text.fontSize[props.$size],
     fontWeight: props.$tabsToken.trigger.text.fontWeight[props.$size],
     color: props.$tabsToken.trigger.text.color[props.$variant].default,
