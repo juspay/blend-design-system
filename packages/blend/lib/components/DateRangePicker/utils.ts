@@ -1,4 +1,11 @@
-import { DateRange, DateRangePreset } from './types'
+import {
+    DateRange,
+    DateRangePreset,
+    DateFormatPreset,
+    DateFormatConfig,
+    CustomFormatFunction,
+    HapticFeedbackType,
+} from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 
 /**
@@ -737,10 +744,19 @@ export const getDayNames = (): string[] => {
 
 /**
  * Calculates the height of a single month in the calendar
+ * @param year The year of the month
+ * @param month The month (0-based)
  * @returns Height in pixels
  */
-export const getMonthHeight = (): number => {
-    return 10 + 6 * 40
+export const getMonthHeight = (year?: number, month?: number): number => {
+    if (year !== undefined && month !== undefined) {
+        const weeks = generateMonthWeeks(year, month)
+        const numberOfWeeks = weeks.length
+        // Month header height (32px) + consistent margin (16px) + actual weeks * 40px per week + bottom padding (16px)
+        return 32 + 16 + numberOfWeeks * 40 + 16
+    }
+    // Default fallback for when year/month not provided (6 weeks max)
+    return 32 + 16 + 6 * 40 + 16
 }
 
 /**
@@ -1462,47 +1478,6 @@ export const calculateDayCellProps = (
         showTodayIndicator: shouldShowTodayIndicator(dateStates),
     }
 }
-/**
- * Constants for mobile date picker
- */
-export const MOBILE_PICKER_CONSTANTS = {
-    ITEM_HEIGHT: 44,
-    VISIBLE_ITEMS: 3,
-    SCROLL_DEBOUNCE: 50,
-} as const
-
-/**
- * Validates time input - only allows numbers and colon
- * @param input The input string to validate
- * @returns True if input is valid
- */
-export const isValidTimeInput = (input: string): boolean => {
-    return /^[0-9:]*$/.test(input)
-}
-
-/**
- * Formats time input as HH:MM
- * @param input The input string to format
- * @returns Formatted time string
- */
-export const formatTimeInput = (input: string): string => {
-    const cleaned = input.replace(/[^0-9:]/g, '')
-
-    if (cleaned.length <= 2) {
-        return cleaned
-    } else if (cleaned.length === 3 && !cleaned.includes(':')) {
-        return cleaned.slice(0, 2) + ':' + cleaned.slice(2)
-    } else if (cleaned.length >= 4) {
-        const parts = cleaned.split(':')
-        if (parts.length >= 2) {
-            const hours = parts[0].slice(0, 2)
-            const minutes = parts[1].slice(0, 2)
-            return hours + ':' + minutes
-        }
-    }
-
-    return cleaned
-}
 
 /**
  * Generates picker data for date/time selection
@@ -1666,4 +1641,720 @@ export const getPresetDisplayLabel = (preset: DateRangePreset): string => {
         default:
             return getPresetLabel(preset)
     }
+}
+
+/**
+ * Enhanced date range formatting with preset patterns
+ * @param range The date range to format
+ * @param config Format configuration
+ * @returns Formatted date range string
+ */
+export const formatDateRangeWithConfig = (
+    range: DateRange,
+    config: DateFormatConfig = {}
+): string => {
+    if (!range.startDate) {
+        return ''
+    }
+
+    const {
+        preset = DateFormatPreset.MEDIUM_RANGE,
+        customFormat,
+        includeTime = false,
+        includeYear = true,
+        separator = ' - ',
+        locale = 'en-US',
+        timeFormat = '12h',
+    } = config
+
+    if (preset === DateFormatPreset.CUSTOM && customFormat) {
+        return customFormat(range, {
+            includeTime,
+            includeYear,
+            separator,
+            locale,
+        })
+    }
+
+    const startDate = range.startDate
+    const endDate = range.endDate || range.startDate
+    const isSameDate = isSameDay(startDate, endDate)
+
+    // Helper function to format time
+    const formatTimeString = (date: Date): string => {
+        if (!includeTime) return ''
+
+        if (timeFormat === '12h') {
+            return formatTimeIn12Hour(date)
+        } else {
+            return formatDate(date, 'HH:mm')
+        }
+    }
+
+    // Helper function to get month abbreviation
+    const getMonthAbbr = (date: Date): string => {
+        return date.toLocaleDateString(locale, { month: 'short' })
+    }
+
+    // Helper function to get full month name
+    const getMonthFull = (date: Date): string => {
+        return date.toLocaleDateString(locale, { month: 'long' })
+    }
+
+    // Helper function to get ordinal suffix
+    const getOrdinalSuffix = (day: number): string => {
+        if (day > 3 && day < 21) return 'th'
+        switch (day % 10) {
+            case 1:
+                return 'st'
+            case 2:
+                return 'nd'
+            case 3:
+                return 'rd'
+            default:
+                return 'th'
+        }
+    }
+
+    switch (preset) {
+        case DateFormatPreset.SHORT_RANGE: {
+            const startMonth = getMonthAbbr(startDate)
+            const startDay = startDate.getDate()
+            const endDay = endDate.getDate()
+            const year = includeYear ? ` ${startDate.getFullYear()}` : ''
+
+            if (isSameDate) {
+                const timeStr = includeTime
+                    ? `, ${formatTimeString(startDate)}`
+                    : ''
+                return `${startMonth} ${startDay}${year}${timeStr}`
+            }
+
+            if (
+                startDate.getMonth() === endDate.getMonth() &&
+                startDate.getFullYear() === endDate.getFullYear()
+            ) {
+                const timeStr = includeTime
+                    ? `, ${formatTimeString(startDate)} - ${formatTimeString(endDate)}`
+                    : ''
+                return `${startMonth} ${startDay}-${endDay}${year}${timeStr}`
+            }
+
+            const endMonth = getMonthAbbr(endDate)
+            const endYear =
+                includeYear && endDate.getFullYear() !== startDate.getFullYear()
+                    ? ` ${endDate.getFullYear()}`
+                    : ''
+            const timeStr = includeTime
+                ? `, ${formatTimeString(startDate)} - ${formatTimeString(endDate)}`
+                : ''
+            return `${startMonth} ${startDay}${year} - ${endMonth} ${endDay}${endYear}${timeStr}`
+        }
+
+        case DateFormatPreset.MEDIUM_RANGE: {
+            const startMonth = getMonthAbbr(startDate)
+            const startDay = startDate.getDate()
+            const year = includeYear ? ` ${startDate.getFullYear()}` : ''
+
+            if (isSameDate) {
+                const timeStr = includeTime
+                    ? `, ${formatTimeString(startDate)}`
+                    : ''
+                return `${startMonth} ${startDay}${year}${timeStr}`
+            }
+
+            const endMonth = getMonthAbbr(endDate)
+            const endDay = endDate.getDate()
+            const endYear =
+                includeYear && endDate.getFullYear() !== startDate.getFullYear()
+                    ? ` ${endDate.getFullYear()}`
+                    : ''
+            const timeStr = includeTime
+                ? `, ${formatTimeString(startDate)} - ${formatTimeString(endDate)}`
+                : ''
+            return `${startMonth} ${startDay}${separator}${endMonth} ${endDay}${endYear || year}${timeStr}`
+        }
+
+        case DateFormatPreset.LONG_RANGE: {
+            const startMonth = getMonthAbbr(startDate)
+            const startDay = startDate.getDate()
+            const startYear = includeYear ? ` ${startDate.getFullYear()}` : ''
+
+            if (isSameDate) {
+                const timeStr = includeTime
+                    ? `, ${formatTimeString(startDate)}`
+                    : ''
+                return `${startMonth} ${startDay}${startYear}${timeStr}`
+            }
+
+            const endMonth = getMonthAbbr(endDate)
+            const endDay = endDate.getDate()
+            const endYear = includeYear ? ` ${endDate.getFullYear()}` : ''
+            const timeStr = includeTime
+                ? `, ${formatTimeString(startDate)} - ${formatTimeString(endDate)}`
+                : ''
+            return `${startMonth} ${startDay}${startYear}${separator}${endMonth} ${endDay}${endYear}${timeStr}`
+        }
+
+        case DateFormatPreset.SHORT_SINGLE: {
+            const month = getMonthAbbr(startDate)
+            const day = startDate.getDate()
+            const year = includeYear ? ` ${startDate.getFullYear()}` : ''
+            const timeStr = includeTime
+                ? `, ${formatTimeString(startDate)}`
+                : ''
+            return `${month} ${day}${year}${timeStr}`
+        }
+
+        case DateFormatPreset.MEDIUM_SINGLE: {
+            const month = getMonthFull(startDate)
+            const day = startDate.getDate()
+            const year = includeYear ? `, ${startDate.getFullYear()}` : ''
+            const timeStr = includeTime
+                ? `, ${formatTimeString(startDate)}`
+                : ''
+            return `${month} ${day}${year}${timeStr}`
+        }
+
+        case DateFormatPreset.LONG_SINGLE: {
+            const month = getMonthFull(startDate)
+            const day = startDate.getDate()
+            const ordinal = getOrdinalSuffix(day)
+            const year = includeYear ? `, ${startDate.getFullYear()}` : ''
+            const timeStr = includeTime
+                ? `, ${formatTimeString(startDate)}`
+                : ''
+            return `${month} ${day}${ordinal}${year}${timeStr}`
+        }
+
+        case DateFormatPreset.ISO_RANGE: {
+            const startISO = startDate.toISOString().split('T')[0]
+
+            if (isSameDate) {
+                const timeStr = includeTime
+                    ? ` ${formatDate(startDate, 'HH:mm')}`
+                    : ''
+                return `${startISO}${timeStr}`
+            }
+
+            const endISO = endDate.toISOString().split('T')[0]
+            const timeStr = includeTime
+                ? ` ${formatDate(startDate, 'HH:mm')} - ${formatDate(endDate, 'HH:mm')}`
+                : ''
+            return `${startISO}${separator}${endISO}${timeStr}`
+        }
+
+        case DateFormatPreset.US_RANGE: {
+            const startUS = formatDate(startDate, 'MM/dd/yyyy')
+
+            if (isSameDate) {
+                const timeStr = includeTime
+                    ? ` ${formatTimeString(startDate)}`
+                    : ''
+                return `${startUS}${timeStr}`
+            }
+
+            const endUS = formatDate(endDate, 'MM/dd/yyyy')
+            const timeStr = includeTime
+                ? ` ${formatTimeString(startDate)} - ${formatTimeString(endDate)}`
+                : ''
+            return `${startUS}${separator}${endUS}${timeStr}`
+        }
+
+        default:
+            return formatDateRange(range, includeTime)
+    }
+}
+
+/**
+ * Creates a custom trigger element with enhanced formatting
+ * @param range Current selected date range
+ * @param config Format configuration
+ * @param placeholder Placeholder text when no range is selected
+ * @returns Formatted display string for trigger
+ */
+export const formatTriggerDisplay = (
+    range: DateRange | undefined,
+    config: DateFormatConfig = {},
+    placeholder: string = 'Select date range'
+): string => {
+    if (!range || !range.startDate) {
+        return placeholder
+    }
+
+    return formatDateRangeWithConfig(range, config)
+}
+
+/**
+ * Predefined format configurations for common use cases
+ */
+export const FORMAT_PRESETS = {
+    COMPACT_NO_TIME: {
+        preset: DateFormatPreset.SHORT_RANGE,
+        includeTime: false,
+        includeYear: true,
+    } as DateFormatConfig,
+
+    COMPACT_NO_YEAR: {
+        preset: DateFormatPreset.SHORT_RANGE,
+        includeTime: false,
+        includeYear: false,
+    } as DateFormatConfig,
+
+    MEDIUM_NO_TIME: {
+        preset: DateFormatPreset.MEDIUM_RANGE,
+        includeTime: false,
+        includeYear: true,
+    } as DateFormatConfig,
+
+    MEDIUM_WITH_TIME: {
+        preset: DateFormatPreset.MEDIUM_RANGE,
+        includeTime: true,
+        includeYear: true,
+        timeFormat: '12h' as const,
+    } as DateFormatConfig,
+
+    VERBOSE_NO_TIME: {
+        preset: DateFormatPreset.LONG_RANGE,
+        includeTime: false,
+        includeYear: true,
+    } as DateFormatConfig,
+
+    VERBOSE_WITH_TIME: {
+        preset: DateFormatPreset.LONG_RANGE,
+        includeTime: true,
+        includeYear: true,
+        timeFormat: '12h' as const,
+    } as DateFormatConfig,
+
+    ISO_FORMAT: {
+        preset: DateFormatPreset.ISO_RANGE,
+        includeTime: false,
+        includeYear: true,
+    } as DateFormatConfig,
+
+    ISO_WITH_TIME: {
+        preset: DateFormatPreset.ISO_RANGE,
+        includeTime: true,
+        includeYear: true,
+        timeFormat: '24h' as const,
+    } as DateFormatConfig,
+
+    US_FORMAT: {
+        preset: DateFormatPreset.US_RANGE,
+        includeTime: false,
+        includeYear: true,
+    } as DateFormatConfig,
+
+    US_WITH_TIME: {
+        preset: DateFormatPreset.US_RANGE,
+        includeTime: true,
+        includeYear: true,
+        timeFormat: '12h' as const,
+    } as DateFormatConfig,
+} as const
+
+/**
+ * Helper function to create custom format functions
+ * @param formatFn Custom formatting function
+ * @returns DateFormatConfig with custom format
+ */
+export const createCustomFormat = (
+    formatFn: CustomFormatFunction
+): DateFormatConfig => ({
+    preset: DateFormatPreset.CUSTOM,
+    customFormat: formatFn,
+})
+
+/**
+ * Example custom format functions
+ */
+export const CUSTOM_FORMAT_EXAMPLES = {
+    RELATIVE: createCustomFormat((range) => {
+        const now = new Date()
+        const startDiff = Math.floor(
+            (now.getTime() - range.startDate.getTime()) / (1000 * 60 * 60 * 24)
+        )
+        const endDiff = Math.floor(
+            (now.getTime() - range.endDate.getTime()) / (1000 * 60 * 60 * 24)
+        )
+
+        const formatRelative = (diff: number): string => {
+            if (diff === 0) return 'today'
+            if (diff === 1) return 'yesterday'
+            if (diff === -1) return 'tomorrow'
+            if (diff > 0) return `${diff} days ago`
+            return `in ${Math.abs(diff)} days`
+        }
+
+        if (isSameDay(range.startDate, range.endDate)) {
+            return formatRelative(startDiff)
+        }
+
+        return `${formatRelative(startDiff)} - ${formatRelative(endDiff)}`
+    }),
+
+    BUSINESS: createCustomFormat((range) => {
+        const startDate = range.startDate
+        const endDate = range.endDate
+
+        const startQuarter = Math.floor(startDate.getMonth() / 3) + 1
+        const endQuarter = Math.floor(endDate.getMonth() / 3) + 1
+
+        if (
+            startQuarter === endQuarter &&
+            startDate.getFullYear() === endDate.getFullYear()
+        ) {
+            return `Q${startQuarter} ${startDate.getFullYear()}`
+        }
+
+        const startMonth = startDate.toLocaleDateString('en-US', {
+            month: 'short',
+        })
+        const endMonth = endDate.toLocaleDateString('en-US', { month: 'short' })
+        const year = startDate.getFullYear()
+
+        return `${startMonth} - ${endMonth} ${year}`
+    }),
+
+    MINIMAL: createCustomFormat((range, options = {}) => {
+        const { separator = '-' } = options
+        const startDate = range.startDate
+        const endDate = range.endDate
+
+        if (isSameDay(startDate, endDate)) {
+            return `${startDate.getDate()} ${startDate.toLocaleDateString('en-US', { month: 'short' })}`
+        }
+
+        const startDay = startDate.getDate()
+        const endDay = endDate.getDate()
+        const month = startDate.toLocaleDateString('en-US', { month: 'short' })
+
+        if (
+            startDate.getMonth() === endDate.getMonth() &&
+            startDate.getFullYear() === endDate.getFullYear()
+        ) {
+            return `${startDay}${separator}${endDay} ${month}`
+        }
+
+        const endMonth = endDate.toLocaleDateString('en-US', { month: 'short' })
+        return `${startDay} ${month} ${separator} ${endDay} ${endMonth}`
+    }),
+}
+
+const HAPTIC_PATTERNS = {
+    selection: [8], // Lighter for scroll selection
+    impact: [15], // Medium for direct selection
+    notification: [25, 40, 25], // Pattern for notifications
+} as const
+
+/**
+ * Enhanced haptic feedback utility with better error handling
+ * @param type The type of haptic feedback to trigger
+ */
+export const triggerHapticFeedback = (
+    type: HapticFeedbackType = HapticFeedbackType.SELECTION
+): void => {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+        return
+    }
+
+    const pattern = HAPTIC_PATTERNS[type] || HAPTIC_PATTERNS.selection
+    let hapticTriggered = false
+
+    // Method 1: Standard Vibration API
+    try {
+        if (navigator.vibrate && typeof navigator.vibrate === 'function') {
+            const success = navigator.vibrate(pattern)
+            if (success) {
+                hapticTriggered = true
+            }
+        }
+    } catch {
+        // Silent fail, continue to next method
+    }
+
+    // Method 2: Vendor-prefixed vibration APIs
+    if (!hapticTriggered) {
+        try {
+            // @ts-expect-error - Vendor prefixed APIs
+            const vibrate = navigator.webkitVibrate || navigator.mozVibrate
+            if (vibrate && typeof vibrate === 'function') {
+                vibrate.call(navigator, pattern)
+                hapticTriggered = true
+            }
+        } catch {
+            // Silent fail
+        }
+    }
+
+    if (!hapticTriggered && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        try {
+            if (
+                window.DeviceMotionEvent &&
+                // @ts-expect-error - iOS 13+ requires permission
+                typeof window.DeviceMotionEvent.requestPermission === 'function'
+            ) {
+                if (navigator.vibrate) {
+                    navigator.vibrate(pattern)
+                    hapticTriggered = true
+                }
+            }
+        } catch {
+            // Silent fail
+        }
+    }
+}
+
+/**
+ * Optimized Apple Calendar-style haptic manager
+ */
+export class AppleCalendarHapticManager {
+    private lastHapticTime = 0
+    private lastHapticIndex = -1
+    private readonly hapticCooldown = 50
+    private isDestroyed = false
+
+    /**
+     * Triggers haptic feedback when scrolling to a new item
+     * @param currentIndex The current selected index
+     */
+    triggerScrollHaptic(currentIndex: number): void {
+        if (this.isDestroyed || !Number.isInteger(currentIndex)) {
+            return
+        }
+
+        const now = performance.now()
+
+        if (
+            currentIndex !== this.lastHapticIndex &&
+            now - this.lastHapticTime >= this.hapticCooldown &&
+            currentIndex >= 0
+        ) {
+            triggerHapticFeedback(HapticFeedbackType.SELECTION)
+            this.lastHapticTime = now
+            this.lastHapticIndex = currentIndex
+        }
+    }
+
+    triggerSelectionHaptic(): void {
+        if (this.isDestroyed) {
+            return
+        }
+
+        triggerHapticFeedback(HapticFeedbackType.IMPACT)
+        this.lastHapticTime = performance.now()
+    }
+
+    reset(): void {
+        this.lastHapticTime = 0
+        this.lastHapticIndex = -1
+    }
+
+    destroy(): void {
+        this.isDestroyed = true
+        this.reset()
+    }
+}
+
+export const APPLE_CALENDAR_CONSTANTS = {
+    // Scroll behavior - optimized for smoothness
+    SNAP_DURATION: 300, // Slightly faster snap
+    MOMENTUM_THRESHOLD: 0.03, // Lower threshold for better responsiveness
+    DECELERATION_RATE: 0.95, // Slightly higher for smoother deceleration
+    MIN_VELOCITY: 0.01, // Higher minimum for better stops
+    MAX_MOMENTUM_DISTANCE: 2, // Allow up to 2 items for natural feel
+    VELOCITY_MULTIPLIER: 0.15, // Slightly higher impact
+    VELOCITY_SMOOTHING: 0.8, // More smoothing
+    SCROLL_RESISTANCE: 0.9, // Less resistance for smoother scrolling
+
+    // Visual feedback - refined values
+    SCALE_SELECTED: 1.02, // More subtle scaling
+    SCALE_UNSELECTED: 0.98, // Gentler unselected scaling
+    OPACITY_SELECTED: 1, // Full opacity for selected
+    OPACITY_UNSELECTED: 0.9, // Better visibility
+
+    TRANSITION_DURATION: '180ms',
+    EASING: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+
+    ANIMATION_FRAME_LIMIT: 60, // Limit animation frames
+    VELOCITY_HISTORY_SIZE: 3, // Smaller history for better performance
+} as const
+
+export const MOBILE_PICKER_CONSTANTS = {
+    ITEM_HEIGHT: 44,
+    VISIBLE_ITEMS: 3,
+    SCROLL_DEBOUNCE: 80,
+} as const
+
+/**
+ * Safely gets an item from an array with comprehensive bounds checking
+ * @param items The array of items
+ * @param index The index to access
+ * @returns The item at the index or empty string if out of bounds
+ */
+export const safeGetPickerItem = (
+    items: (string | number)[],
+    index: number
+): string => {
+    // Comprehensive validation
+    if (!Array.isArray(items) || items.length === 0) {
+        return ''
+    }
+
+    if (!Number.isInteger(index) || index < 0 || index >= items.length) {
+        return ''
+    }
+
+    const item = items[index]
+    if (item === undefined || item === null) {
+        return ''
+    }
+
+    return String(item)
+}
+
+/**
+ * Calculates the visible items for the picker with robust bounds checking
+ * @param items The array of items
+ * @param selectedIndex The currently selected index
+ * @returns Object with top, center, and bottom items plus availability flags
+ */
+export const getPickerVisibleItems = (
+    items: (string | number)[],
+    selectedIndex: number
+) => {
+    if (!Array.isArray(items) || items.length === 0) {
+        return {
+            topItem: '',
+            centerItem: '',
+            bottomItem: '',
+            hasTopItem: false,
+            hasBottomItem: false,
+        }
+    }
+
+    const clampedIndex = clampPickerIndex(selectedIndex, items.length)
+
+    return {
+        topItem: safeGetPickerItem(items, clampedIndex - 1),
+        centerItem: safeGetPickerItem(items, clampedIndex),
+        bottomItem: safeGetPickerItem(items, clampedIndex + 1),
+        hasTopItem: clampedIndex > 0 && items.length > 1,
+        hasBottomItem: clampedIndex < items.length - 1 && items.length > 1,
+    }
+}
+
+/**
+ * Validates and clamps an index to array bounds with safety checks
+ * @param index The index to validate
+ * @param arrayLength The length of the array
+ * @returns Clamped index within bounds
+ */
+export const clampPickerIndex = (
+    index: number,
+    arrayLength: number
+): number => {
+    if (!Number.isInteger(arrayLength) || arrayLength <= 0) {
+        return 0
+    }
+
+    if (!Number.isFinite(index)) {
+        return 0
+    }
+
+    return Math.max(0, Math.min(arrayLength - 1, Math.floor(index)))
+}
+
+/**
+ * Calculates scroll position for a given index with validation
+ * @param index The target index
+ * @param itemHeight Height of each item
+ * @returns Scroll position in pixels
+ */
+export const calculateScrollPosition = (
+    index: number,
+    itemHeight: number
+): number => {
+    if (
+        !Number.isFinite(index) ||
+        !Number.isFinite(itemHeight) ||
+        itemHeight <= 0
+    ) {
+        return 0
+    }
+
+    const clampedIndex = Math.max(0, Math.floor(index))
+    return clampedIndex * itemHeight
+}
+
+/**
+ * Calculates index from scroll position with bounds checking
+ * @param scrollTop Current scroll position
+ * @param itemHeight Height of each item
+ * @returns Calculated index
+ */
+export const calculateIndexFromScroll = (
+    scrollTop: number,
+    itemHeight: number
+): number => {
+    if (
+        !Number.isFinite(scrollTop) ||
+        !Number.isFinite(itemHeight) ||
+        itemHeight <= 0
+    ) {
+        return 0
+    }
+
+    const calculatedIndex = Math.round(Math.max(0, scrollTop) / itemHeight)
+    return Math.max(0, calculatedIndex)
+}
+
+/**
+ * Validates time input with comprehensive checks
+ * @param input The input string to validate
+ * @returns True if input is valid
+ */
+export const isValidTimeInput = (input: string): boolean => {
+    if (typeof input !== 'string') {
+        return false
+    }
+
+    return /^[0-9:.\s]*$/.test(input) && input.length <= 8
+}
+
+/**
+ * Formats time input with better validation
+ * @param input The input string to format
+ * @returns Formatted time string
+ */
+export const formatTimeInput = (input: string): string => {
+    if (!isValidTimeInput(input)) {
+        return ''
+    }
+
+    const cleaned = input.replace(/[^0-9:]/g, '')
+
+    if (cleaned.length === 0) {
+        return ''
+    }
+
+    if (cleaned.length <= 2) {
+        return cleaned
+    }
+
+    if (cleaned.length === 3 && !cleaned.includes(':')) {
+        return cleaned.slice(0, 2) + ':' + cleaned.slice(2)
+    }
+
+    if (cleaned.length >= 4) {
+        const parts = cleaned.split(':')
+        if (parts.length >= 2) {
+            const hours = parts[0].slice(0, 2)
+            const minutes = parts[1].slice(0, 2)
+            return hours + ':' + minutes
+        }
+    }
+
+    return cleaned.slice(0, 5)
 }

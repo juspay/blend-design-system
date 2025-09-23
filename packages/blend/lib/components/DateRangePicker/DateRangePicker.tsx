@@ -1,6 +1,11 @@
 import React, { forwardRef, useState, useEffect, useCallback } from 'react'
 import { Calendar, ChevronDown, ChevronUp } from 'lucide-react'
-import { DateRangePickerProps, DateRangePreset, DateRange } from './types'
+import {
+    DateRangePickerProps,
+    DateRangePreset,
+    DateRange,
+    DateRangePickerSize,
+} from './types'
 import {
     formatDate,
     getPresetDateRange,
@@ -10,6 +15,7 @@ import {
     handleTimeChange,
     handleCalendarDateSelect,
     handlePresetSelection,
+    formatTriggerDisplay,
 } from './utils'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
@@ -251,6 +257,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             triggerElement = null,
             useDrawerOnMobile = true,
             skipQuickFiltersOnMobile = false,
+            size = DateRangePickerSize.MEDIUM,
+            formatConfig,
+            triggerConfig,
         },
         ref
     ) => {
@@ -450,20 +459,48 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         )
 
         const renderTrigger = () => {
-            if (triggerElement) {
+            if (triggerConfig?.renderTrigger) {
+                const formattedValue = formatConfig
+                    ? formatTriggerDisplay(
+                          selectedRange,
+                          formatConfig,
+                          triggerConfig.placeholder
+                      )
+                    : formatDateDisplay(selectedRange, allowSingleDateSelection)
+
+                return triggerConfig.renderTrigger({
+                    selectedRange,
+                    isOpen,
+                    isDisabled,
+                    formattedValue,
+                    onClick: () => setIsOpen(!isOpen),
+                })
+            }
+
+            if (triggerConfig?.element || triggerElement) {
                 return (
                     <Block
                         style={{
                             opacity: isDisabled ? 0.5 : 1,
                             cursor: isDisabled ? 'not-allowed' : 'pointer',
+                            ...triggerConfig?.style,
                         }}
+                        className={triggerConfig?.className}
                     >
-                        {triggerElement}
+                        {triggerConfig?.element || triggerElement}
                     </Block>
                 )
             }
 
             const formatMobileDateRange = (range: DateRange): string => {
+                if (formatConfig) {
+                    return formatTriggerDisplay(
+                        range,
+                        formatConfig,
+                        'Select dates'
+                    )
+                }
+
                 const formatOptions: Intl.DateTimeFormatOptions = {
                     month: 'short',
                     day: 'numeric',
@@ -501,12 +538,30 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             const {
                 borderRadiusWithPresets,
                 borderRadiusWithoutPresets,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                padding: _,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                fontSize: __,
                 ...triggerProps
             } = calendarToken.trigger
+
+            const displayText = formatConfig
+                ? formatTriggerDisplay(
+                      selectedRange,
+                      formatConfig,
+                      triggerConfig?.placeholder || 'Select date range'
+                  )
+                : formatDateDisplay(selectedRange, allowSingleDateSelection)
+
+            const iconElement =
+                triggerConfig?.showIcon === false
+                    ? null
+                    : triggerConfig?.icon || <Calendar size={14} />
 
             return (
                 <PrimitiveButton
                     {...triggerProps}
+                    padding={calendarToken.trigger.padding[size]}
                     borderRadius={
                         showPresets
                             ? borderRadiusWithPresets
@@ -515,6 +570,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     aria-expanded={isOpen}
                     aria-disabled={isDisabled}
                     disabled={isDisabled}
+                    className={triggerConfig?.className}
                 >
                     <Block
                         flexGrow={1}
@@ -524,7 +580,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         style={{
                             color: FOUNDATION_THEME.colors.gray[600],
                             fontWeight: FOUNDATION_THEME.font.weight[500],
-                            fontSize: `${FOUNDATION_THEME.font.size.body.md.fontSize}px`,
+                            fontSize: calendarToken.trigger.fontSize[size],
                         }}
                     >
                         <Block
@@ -532,12 +588,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             alignItems="center"
                             gap={FOUNDATION_THEME.unit[8]}
                         >
-                            <Calendar size={14} />
-                            <span>
-                                {formatDateDisplay(
-                                    selectedRange,
-                                    allowSingleDateSelection
-                                )}
+                            {iconElement}
+                            <span style={{ whiteSpace: 'nowrap' }}>
+                                {displayText}
                             </span>
                         </Block>
                         {isOpen ? (
@@ -600,9 +653,16 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             )
         }
 
+        // Check if custom trigger is being used
+        const hasCustomTrigger = !!(
+            triggerConfig?.renderTrigger ||
+            triggerConfig?.element ||
+            triggerElement
+        )
+
         return (
             <Block ref={ref} display="flex">
-                {showPresets && (
+                {showPresets && !hasCustomTrigger && (
                     <QuickRangeSelector
                         isOpen={isQuickRangeOpen}
                         onToggle={() =>
@@ -614,6 +674,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         excludeCustom={true}
                         disableFutureDates={disableFutureDates}
                         disablePastDates={disablePastDates}
+                        isDisabled={isDisabled}
+                        size={size}
                     />
                 )}
 

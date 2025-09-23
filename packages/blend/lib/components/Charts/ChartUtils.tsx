@@ -27,6 +27,63 @@ export function transformNestedData(
     })
 }
 
+export function transformScatterData(
+    data: NewNestedDataPoint[],
+    selectedKeys: string[] = []
+): Array<{ name: string; x: number; y: number; seriesKey: string }> {
+    const scatterPoints: Array<{
+        name: string
+        x: number
+        y: number
+        seriesKey: string
+    }> = []
+
+    data.forEach((item) => {
+        const keysToInclude =
+            selectedKeys.length > 0
+                ? Object.keys(item.data).filter((key) =>
+                      selectedKeys.includes(key)
+                  )
+                : Object.keys(item.data)
+
+        keysToInclude.forEach((key) => {
+            const dataPoint = item.data[key]
+
+            // Look for x and y coordinates in aux data
+            const auxData = dataPoint.aux || []
+            const xData = auxData.find((aux) => aux.label.toLowerCase() === 'x')
+            const yData = auxData.find((aux) => aux.label.toLowerCase() === 'y')
+
+            if (xData && yData) {
+                scatterPoints.push({
+                    name: item.name,
+                    x:
+                        typeof xData.val === 'number'
+                            ? xData.val
+                            : parseFloat(String(xData.val)),
+                    y:
+                        typeof yData.val === 'number'
+                            ? yData.val
+                            : parseFloat(String(yData.val)),
+                    seriesKey: key,
+                })
+            } else {
+                // Fallback: use name as x and primary.val as y
+                const x = parseFloat(item.name) || 0
+                const y = dataPoint.primary.val
+                scatterPoints.push({
+                    name: item.name,
+                    x,
+                    y,
+                    seriesKey: key,
+                })
+            }
+        })
+    })
+
+    return scatterPoints
+}
+
 export function lightenHexColor(hex: string, amount: number = 0.3): string {
     hex = hex.replace(/^#/, '')
 
