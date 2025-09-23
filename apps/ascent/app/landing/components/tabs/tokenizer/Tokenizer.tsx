@@ -27,7 +27,6 @@ export const TokenizerComp = ({
         const observer = new IntersectionObserver(
             ([entry]) => {
                 isVisible = entry.isIntersecting
-                console.log('Visible?', isVisible)
             },
             { threshold: 0.3 }
         )
@@ -48,7 +47,6 @@ export const TokenizerComp = ({
                 1
             )
 
-            console.log('Scroll progress:', progress)
             scrollInput.value = progress * 100
         }
 
@@ -59,12 +57,6 @@ export const TokenizerComp = ({
             window.removeEventListener('scroll', handleScroll)
         }
     }, [scrollInput, reference])
-
-    useEffect(() => {
-        if (rive) {
-            console.log('Rive loaded:', rive)
-        }
-    }, [rive])
 
     return (
         <div className="lg:mt-50 mt-25 flex flex-col items-center relative">

@@ -26,7 +26,6 @@ import Gradient from '@/app/changelog/icons/Gradient'
 import { ConnectWithUs } from '@/app/landing/components/connect-with-us/ConnectWithUs'
 import { Footer } from '@/app/landing/components/footer/Footer'
 import { useTableOfContents } from '@/app/docs/context/TableOfContentsContext'
-import { TOCItem } from '@/app/components/layout/Navigation/TableOfContents'
 
 export interface SharedDocLayoutProps {
     /** Title displayed in the navigation bar */
@@ -64,14 +63,8 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
     navbarBorderBottom = false,
 }) => {
     // Get headings from context (will be empty array if context is not available)
-    let headings: TOCItem[] = []
-    try {
-        const { headings: contextHeadings } = useTableOfContents()
-        headings = contextHeadings
-    } catch {
-        // Context not available, use empty array
-        headings = []
-    }
+    const { headings: contextHeadings } = useTableOfContents()
+    const headings = contextHeadings || []
 
     // Theme detection state
     const [theme, setTheme] = useState<'light' | 'dark'>('dark')
