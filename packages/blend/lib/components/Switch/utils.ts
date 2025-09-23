@@ -70,9 +70,9 @@ export const getSwitchTextColor = (
     disabled: boolean,
     error: boolean
 ): string => {
-    if (error) return String(tokens.text.color.error || '')
-    if (disabled) return String(tokens.text.color.disabled || '')
-    return String(tokens.text.color.default || '')
+    if (error) return String(tokens.content.label.color.error || '')
+    if (disabled) return String(tokens.content.label.color.disabled || '')
+    return String(tokens.content.label.color.default || '')
 }
 
 /**
@@ -83,9 +83,9 @@ export const getSwitchSubtextColor = (
     disabled: boolean,
     error: boolean
 ): string => {
-    if (disabled) return String(tokens.subtext.color.disabled || '')
-    if (error) return String(tokens.subtext.color.error || '')
-    return String(tokens.subtext.color.default || '')
+    if (disabled) return String(tokens.content.subtext.color.disabled || '')
+    if (error) return String(tokens.content.subtext.color.error || '')
+    return String(tokens.content.subtext.color.default || '')
 }
 
 /**
@@ -101,8 +101,8 @@ export const getSwitchTextProps = (
     fontWeight: string
     color: string
 } => ({
-    fontSize: String(tokens.text.fontSize[size] || ''),
-    fontWeight: String(tokens.text.fontWeight[size] || ''),
+    fontSize: String(tokens.content.label.fontSize[size] || ''),
+    fontWeight: String(tokens.content.label.fontWeight[size] || ''),
     color: getSwitchTextColor(tokens, disabled, error),
 })
 
@@ -118,7 +118,7 @@ export const getSwitchSubtextProps = (
     fontSize: string
     color: string
 } => ({
-    fontSize: String(tokens.subtext.fontSize[size] || ''),
+    fontSize: String(tokens.content.subtext.fontSize[size] || ''),
     color: getSwitchSubtextColor(tokens, disabled, error),
 })
 
