@@ -135,7 +135,7 @@ export function DataTablePagination({
                     size={SelectMenuSize.SMALL}
                     variant={SelectMenuVariant.NO_CONTAINER}
                     placeholder=""
-                    minWidth={80}
+                    minMenuWidth={80}
                 />
 
                 {isLoading && (

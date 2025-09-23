@@ -458,6 +458,11 @@ const DataTable = forwardRef(
         }
 
         const handleSort = (field: keyof T) => {
+            const column = visibleColumns.find((col) => col.field === field)
+            if (!column || column.isSortable === false) {
+                return
+            }
+
             const direction =
                 sortConfig?.field === field
                     ? sortConfig.direction === SortDirection.ASCENDING

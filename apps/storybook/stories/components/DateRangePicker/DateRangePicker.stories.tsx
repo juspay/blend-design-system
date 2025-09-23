@@ -12,6 +12,7 @@ type DateRange = {
     endDate: Date
     showTimePicker?: boolean
 }
+
 import {
     Calendar,
     CalendarDays,
@@ -115,7 +116,7 @@ export const WithTimePicker: Story = {
                 <DateRangePicker
                     value={dateRange}
                     onChange={setDateRange}
-                    showTimePicker={true}
+                    showDateTimePicker={true}
                     showPresets={true}
                     placeholder="Select date and time range"
                     icon={React.createElement(Clock, { size: 16 })}
@@ -154,7 +155,7 @@ export const WithFloatingTabsMobile: Story = {
                 <DateRangePicker
                     value={dateRange}
                     onChange={setDateRange}
-                    showTimePicker={true}
+                    showDateTimePicker={true}
                     useDrawerOnMobile={true}
                     placeholder="Select date range"
                     icon={React.createElement(Calendar, { size: 16 })}
@@ -475,7 +476,7 @@ export const CustomTriggers: Story = {
                             />
                         }
                         showPresets={true}
-                        showTimePicker={true}
+                        showDateTimePicker={true}
                     />
                 </div>
 

@@ -67,6 +67,10 @@ import { getChartTokens } from '../components/Charts/chart.tokens'
 import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { getCardTokens } from '../components/Card/card.tokens'
+import {
+    getSkeletonTokens,
+    ResponsiveSkeletonTokens,
+} from '../components/Skeleton/skeleton.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 
 export type ComponentTokenType = {
@@ -102,6 +106,7 @@ export type ComponentTokenType = {
     SNACKBAR?: ResponsiveSnackbarTokens
     KEYVALUEPAIR?: ResponsiveKeyValuePairTokens
     CARD?: ResponsiveCardTokens
+    SKELETON?: ResponsiveSkeletonTokens
     TOPBAR?: ResponsiveTopbarTokens
 }
 
@@ -146,6 +151,7 @@ const ThemeContext = createContext<ThemeContextType>({
         SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
         KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
         CARD: getCardTokens(FOUNDATION_THEME),
+        SKELETON: getSkeletonTokens(FOUNDATION_THEME),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,

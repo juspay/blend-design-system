@@ -51,4 +51,5 @@ export type StatCardProps = {
     xAxis?: StatCardAxisConfig
     yAxis?: StatCardAxisConfig
     valueFormatter?: AxisType
+    height?: string
 }

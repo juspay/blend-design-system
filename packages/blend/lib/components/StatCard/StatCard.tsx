@@ -49,6 +49,7 @@ const StatCard = ({
     xAxis,
     yAxis,
     valueFormatter,
+    height = 'auto',
 }: StatCardProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -405,7 +406,7 @@ const StatCard = ({
                                 variant={SelectMenuVariant.NO_CONTAINER}
                                 size={SelectMenuSize.SMALL}
                                 inline={true}
-                                minWidth={100}
+                                minMenuWidth={100}
                             />
                         )}
                     </Block>
@@ -416,7 +417,7 @@ const StatCard = ({
 
     return (
         <Block
-            height={statCardToken.height}
+            height={height && !isSmallScreen ? height : statCardToken.height}
             border={statCardToken.border.default}
             borderRadius={statCardToken.borderRadius}
             overflow="hidden"
@@ -593,7 +594,7 @@ const StatCard = ({
                                     variant={SelectMenuVariant.NO_CONTAINER}
                                     size={SelectMenuSize.SMALL}
                                     inline={true}
-                                    minWidth={100}
+                                    minMenuWidth={100}
                                 />
                             )}
                         </Block>
@@ -777,7 +778,7 @@ const StatCard = ({
                                 variant={SelectMenuVariant.NO_CONTAINER}
                                 size={SelectMenuSize.SMALL}
                                 inline={true}
-                                minWidth={100}
+                                minMenuWidth={100}
                             />
                         )}
                     </Block>
