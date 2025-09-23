@@ -34,6 +34,8 @@ import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.t
 import { getCardTokens } from '../components/Card/card.tokens'
 import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
+import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
+import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -102,6 +104,10 @@ const initTokens = (
         SKELETON:
             componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
         TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
+        AVATAR: componentTokens.AVATAR ?? getAvatarTokens(foundationTokens),
+        AVATAR_GROUP:
+            componentTokens.AVATAR_GROUP ??
+            getAvatarGroupTokens(foundationTokens),
     }
 }
 

@@ -33,6 +33,8 @@ import { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValu
 import { ResponsiveCardTokens } from '../components/Card/card.tokens'
 import { ResponsiveSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
+import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
+import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -70,7 +72,9 @@ export const useComponentToken = (
     | ResponsiveKeyValuePairTokens
     | ResponsiveCardTokens
     | ResponsiveSkeletonTokens
-    | ResponsiveTopbarTokens => {
+    | ResponsiveTopbarTokens
+    | ResponsiveAvatarTokens
+    | ResponsiveAvatarGroupTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -142,6 +146,10 @@ export const useComponentToken = (
             return componentTokens.SKELETON
         case 'TOPBAR':
             return componentTokens.TOPBAR
+        case 'AVATAR':
+            return componentTokens.AVATAR
+        case 'AVATAR_GROUP':
+            return componentTokens.AVATAR_GROUP
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

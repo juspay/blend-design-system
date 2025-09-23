@@ -32,6 +32,8 @@ import type { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.t
 import type { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import type { ResponsiveCardTokens } from '../components/Card/card.tokens'
 import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
+import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
+import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import { BREAKPOINTS } from '../breakpoints/breakPoints'
@@ -72,6 +74,8 @@ import {
     ResponsiveSkeletonTokens,
 } from '../components/Skeleton/skeleton.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
+import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
+import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -108,6 +112,8 @@ export type ComponentTokenType = {
     CARD?: ResponsiveCardTokens
     SKELETON?: ResponsiveSkeletonTokens
     TOPBAR?: ResponsiveTopbarTokens
+    AVATAR?: ResponsiveAvatarTokens
+    AVATAR_GROUP?: ResponsiveAvatarGroupTokens
 }
 
 type ThemeContextType = {
@@ -153,6 +159,8 @@ const ThemeContext = createContext<ThemeContextType>({
         CARD: getCardTokens(FOUNDATION_THEME),
         SKELETON: getSkeletonTokens(FOUNDATION_THEME),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
+        AVATAR: getAvatarTokens(FOUNDATION_THEME),
+        AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })
