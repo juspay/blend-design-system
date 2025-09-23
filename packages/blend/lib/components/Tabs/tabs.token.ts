@@ -32,26 +32,14 @@ export type TabsTokensType = {
             [key in TabsVariant]: CSSObject['borderRadius']
         }
     }
-    // Pattern: padding.[side].[size].[variant] (size-dependent)
+    // Pattern: padding.size.variant.top/right/bottom/left.value
     padding: {
-        top: {
-            [key in TabsSize]: {
-                [key in TabsVariant]: CSSObject['paddingTop']
-            }
-        }
-        right: {
-            [key in TabsSize]: {
-                [key in TabsVariant]: CSSObject['paddingRight']
-            }
-        }
-        bottom: {
-            [key in TabsSize]: {
-                [key in TabsVariant]: CSSObject['paddingBottom']
-            }
-        }
-        left: {
-            [key in TabsSize]: {
-                [key in TabsVariant]: CSSObject['paddingLeft']
+        [key in TabsSize]: {
+            [key in TabsVariant]: {
+                top: CSSObject['paddingTop']
+                right: CSSObject['paddingRight']
+                bottom: CSSObject['paddingBottom']
+                left: CSSObject['paddingLeft']
             }
         }
     }
@@ -70,26 +58,14 @@ export type TabsTokensType = {
                 [key in TabsVariant]: CSSObject['borderRadius']
             }
         }
-        // Pattern: container.padding.[side].[size].[variant]
+        // Pattern: container.padding.size.variant.top/right/bottom/left.value
         padding: {
-            top: {
-                [key in TabsSize]: {
-                    [key in TabsVariant]: CSSObject['paddingTop']
-                }
-            }
-            right: {
-                [key in TabsSize]: {
-                    [key in TabsVariant]: CSSObject['paddingRight']
-                }
-            }
-            bottom: {
-                [key in TabsSize]: {
-                    [key in TabsVariant]: CSSObject['paddingBottom']
-                }
-            }
-            left: {
-                [key in TabsSize]: {
-                    [key in TabsVariant]: CSSObject['paddingLeft']
+            [key in TabsSize]: {
+                [key in TabsVariant]: {
+                    top: CSSObject['paddingTop']
+                    right: CSSObject['paddingRight']
+                    bottom: CSSObject['paddingBottom']
+                    left: CSSObject['paddingLeft']
                 }
             }
         }
@@ -176,63 +152,59 @@ export const getTabsTokens = (
                     [TabsVariant.PILLS]: foundationToken.border.radius[28],
                 },
             },
-            // Pattern: padding.[side].[size].[variant]
-            // Example: padding.top.md.underline
+            // Pattern: padding.size.variant.top/right/bottom/left.value
+            // Example: padding.md.underline.top
             padding: {
-                top: {
-                    [TabsSize.MD]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[2],
-                        [TabsVariant.BOXED]: foundationToken.unit[8],
-                        [TabsVariant.FLOATING]: foundationToken.unit[8],
-                        [TabsVariant.PILLS]: foundationToken.unit[4],
+                [TabsSize.MD]: {
+                    [TabsVariant.UNDERLINE]: {
+                        top: foundationToken.unit[2],
+                        right: foundationToken.unit[8],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[8],
                     },
-                    [TabsSize.LG]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[6],
-                        [TabsVariant.BOXED]: foundationToken.unit[10],
-                        [TabsVariant.FLOATING]: foundationToken.unit[10],
-                        [TabsVariant.PILLS]: foundationToken.unit[6],
+                    [TabsVariant.BOXED]: {
+                        top: foundationToken.unit[8],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[12],
                     },
-                },
-                right: {
-                    [TabsSize.MD]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
-                        [TabsVariant.BOXED]: foundationToken.unit[12],
-                        [TabsVariant.FLOATING]: foundationToken.unit[12],
-                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    [TabsVariant.FLOATING]: {
+                        top: foundationToken.unit[8],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[12],
                     },
-                    [TabsSize.LG]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
-                        [TabsVariant.BOXED]: foundationToken.unit[12],
-                        [TabsVariant.FLOATING]: foundationToken.unit[12],
-                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    [TabsVariant.PILLS]: {
+                        top: foundationToken.unit[4],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[4],
+                        left: foundationToken.unit[12],
                     },
                 },
-                bottom: {
-                    [TabsSize.MD]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[6],
-                        [TabsVariant.BOXED]: foundationToken.unit[8],
-                        [TabsVariant.FLOATING]: foundationToken.unit[8],
-                        [TabsVariant.PILLS]: foundationToken.unit[4],
+                [TabsSize.LG]: {
+                    [TabsVariant.UNDERLINE]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[8],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[8],
                     },
-                    [TabsSize.LG]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[6],
-                        [TabsVariant.BOXED]: foundationToken.unit[10],
-                        [TabsVariant.FLOATING]: foundationToken.unit[10],
-                        [TabsVariant.PILLS]: foundationToken.unit[6],
+                    [TabsVariant.BOXED]: {
+                        top: foundationToken.unit[10],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[10],
+                        left: foundationToken.unit[12],
                     },
-                },
-                left: {
-                    [TabsSize.MD]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
-                        [TabsVariant.BOXED]: foundationToken.unit[12],
-                        [TabsVariant.FLOATING]: foundationToken.unit[12],
-                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    [TabsVariant.FLOATING]: {
+                        top: foundationToken.unit[10],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[10],
+                        left: foundationToken.unit[12],
                     },
-                    [TabsSize.LG]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
-                        [TabsVariant.BOXED]: foundationToken.unit[12],
-                        [TabsVariant.FLOATING]: foundationToken.unit[12],
-                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    [TabsVariant.PILLS]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[12],
                     },
                 },
             },
@@ -269,63 +241,59 @@ export const getTabsTokens = (
                         [TabsVariant.PILLS]: '0',
                     },
                 },
-                // Pattern: container.padding.[side].[size].[variant]
-                // Example: container.padding.top.md.underline
+                // Pattern: container.padding.size.variant.top/right/bottom/left.value
+                // Example: container.padding.md.underline.top
                 padding: {
-                    top: {
-                        [TabsSize.MD]: {
-                            [TabsVariant.UNDERLINE]: foundationToken.unit[8],
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: {
+                            top: foundationToken.unit[8],
+                            right: '0',
+                            bottom: '0',
+                            left: '0',
                         },
-                        [TabsSize.LG]: {
-                            [TabsVariant.UNDERLINE]: foundationToken.unit[8],
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        [TabsVariant.BOXED]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[4],
+                            left: foundationToken.unit[4],
                         },
-                    },
-                    right: {
-                        [TabsSize.MD]: {
-                            [TabsVariant.UNDERLINE]: '0',
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        [TabsVariant.FLOATING]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[4],
+                            left: foundationToken.unit[4],
                         },
-                        [TabsSize.LG]: {
-                            [TabsVariant.UNDERLINE]: '0',
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        [TabsVariant.PILLS]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[4],
+                            left: foundationToken.unit[4],
                         },
                     },
-                    bottom: {
-                        [TabsSize.MD]: {
-                            [TabsVariant.UNDERLINE]: '0',
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: {
+                            top: foundationToken.unit[8],
+                            right: '0',
+                            bottom: '0',
+                            left: '0',
                         },
-                        [TabsSize.LG]: {
-                            [TabsVariant.UNDERLINE]: '0',
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        [TabsVariant.BOXED]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[4],
+                            left: foundationToken.unit[4],
                         },
-                    },
-                    left: {
-                        [TabsSize.MD]: {
-                            [TabsVariant.UNDERLINE]: '0',
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        [TabsVariant.FLOATING]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[4],
+                            left: foundationToken.unit[4],
                         },
-                        [TabsSize.LG]: {
-                            [TabsVariant.UNDERLINE]: '0',
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        [TabsVariant.PILLS]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[4],
+                            left: foundationToken.unit[4],
                         },
                     },
                 },
@@ -431,63 +399,59 @@ export const getTabsTokens = (
                     [TabsVariant.PILLS]: foundationToken.border.radius[28],
                 },
             },
-            // Pattern: padding.[side].[size].[variant]
-            // Example: padding.top.lg.boxed
+            // Pattern: padding.size.variant.top/right/bottom/left.value
+            // Example: padding.lg.boxed.top
             padding: {
-                top: {
-                    [TabsSize.MD]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[2],
-                        [TabsVariant.BOXED]: foundationToken.unit[8],
-                        [TabsVariant.FLOATING]: foundationToken.unit[8],
-                        [TabsVariant.PILLS]: foundationToken.unit[8],
+                [TabsSize.MD]: {
+                    [TabsVariant.UNDERLINE]: {
+                        top: foundationToken.unit[2],
+                        right: foundationToken.unit[8],
+                        bottom: foundationToken.unit[12],
+                        left: foundationToken.unit[8],
                     },
-                    [TabsSize.LG]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[6],
-                        [TabsVariant.BOXED]: foundationToken.unit[10],
-                        [TabsVariant.FLOATING]: foundationToken.unit[10],
-                        [TabsVariant.PILLS]: foundationToken.unit[10],
+                    [TabsVariant.BOXED]: {
+                        top: foundationToken.unit[8],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[12],
                     },
-                },
-                right: {
-                    [TabsSize.MD]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
-                        [TabsVariant.BOXED]: foundationToken.unit[12],
-                        [TabsVariant.FLOATING]: foundationToken.unit[12],
-                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    [TabsVariant.FLOATING]: {
+                        top: foundationToken.unit[8],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[12],
                     },
-                    [TabsSize.LG]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
-                        [TabsVariant.BOXED]: foundationToken.unit[12],
-                        [TabsVariant.FLOATING]: foundationToken.unit[12],
-                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    [TabsVariant.PILLS]: {
+                        top: foundationToken.unit[8],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[12],
                     },
                 },
-                bottom: {
-                    [TabsSize.MD]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[12],
-                        [TabsVariant.BOXED]: foundationToken.unit[8],
-                        [TabsVariant.FLOATING]: foundationToken.unit[8],
-                        [TabsVariant.PILLS]: foundationToken.unit[8],
+                [TabsSize.LG]: {
+                    [TabsVariant.UNDERLINE]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[8],
+                        bottom: foundationToken.unit[12],
+                        left: foundationToken.unit[8],
                     },
-                    [TabsSize.LG]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[12],
-                        [TabsVariant.BOXED]: foundationToken.unit[10],
-                        [TabsVariant.FLOATING]: foundationToken.unit[10],
-                        [TabsVariant.PILLS]: foundationToken.unit[10],
+                    [TabsVariant.BOXED]: {
+                        top: foundationToken.unit[10],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[10],
+                        left: foundationToken.unit[12],
                     },
-                },
-                left: {
-                    [TabsSize.MD]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
-                        [TabsVariant.BOXED]: foundationToken.unit[12],
-                        [TabsVariant.FLOATING]: foundationToken.unit[12],
-                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    [TabsVariant.FLOATING]: {
+                        top: foundationToken.unit[10],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[10],
+                        left: foundationToken.unit[12],
                     },
-                    [TabsSize.LG]: {
-                        [TabsVariant.UNDERLINE]: foundationToken.unit[8],
-                        [TabsVariant.BOXED]: foundationToken.unit[12],
-                        [TabsVariant.FLOATING]: foundationToken.unit[12],
-                        [TabsVariant.PILLS]: foundationToken.unit[12],
+                    [TabsVariant.PILLS]: {
+                        top: foundationToken.unit[10],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[10],
+                        left: foundationToken.unit[12],
                     },
                 },
             },
@@ -524,63 +488,59 @@ export const getTabsTokens = (
                         [TabsVariant.PILLS]: '0',
                     },
                 },
-                // Pattern: container.padding.[side].[size].[variant]
-                // Example: container.padding.top.lg.floating
+                // Pattern: container.padding.size.variant.top/right/bottom/left.value
+                // Example: container.padding.lg.floating.top
                 padding: {
-                    top: {
-                        [TabsSize.MD]: {
-                            [TabsVariant.UNDERLINE]: foundationToken.unit[8],
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                    [TabsSize.MD]: {
+                        [TabsVariant.UNDERLINE]: {
+                            top: foundationToken.unit[8],
+                            right: '0',
+                            bottom: '0',
+                            left: '0',
                         },
-                        [TabsSize.LG]: {
-                            [TabsVariant.UNDERLINE]: foundationToken.unit[8],
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        [TabsVariant.BOXED]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[4],
+                            left: foundationToken.unit[4],
                         },
-                    },
-                    right: {
-                        [TabsSize.MD]: {
-                            [TabsVariant.UNDERLINE]: '0',
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        [TabsVariant.FLOATING]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[4],
+                            left: foundationToken.unit[4],
                         },
-                        [TabsSize.LG]: {
-                            [TabsVariant.UNDERLINE]: '0',
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        [TabsVariant.PILLS]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[4],
+                            left: foundationToken.unit[4],
                         },
                     },
-                    bottom: {
-                        [TabsSize.MD]: {
-                            [TabsVariant.UNDERLINE]: '0',
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                    [TabsSize.LG]: {
+                        [TabsVariant.UNDERLINE]: {
+                            top: foundationToken.unit[8],
+                            right: '0',
+                            bottom: '0',
+                            left: '0',
                         },
-                        [TabsSize.LG]: {
-                            [TabsVariant.UNDERLINE]: '0',
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        [TabsVariant.BOXED]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[4],
+                            left: foundationToken.unit[4],
                         },
-                    },
-                    left: {
-                        [TabsSize.MD]: {
-                            [TabsVariant.UNDERLINE]: '0',
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        [TabsVariant.FLOATING]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[4],
+                            left: foundationToken.unit[4],
                         },
-                        [TabsSize.LG]: {
-                            [TabsVariant.UNDERLINE]: '0',
-                            [TabsVariant.BOXED]: foundationToken.unit[4],
-                            [TabsVariant.FLOATING]: foundationToken.unit[4],
-                            [TabsVariant.PILLS]: foundationToken.unit[4],
+                        [TabsVariant.PILLS]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[4],
+                            left: foundationToken.unit[4],
                         },
                     },
                 },
