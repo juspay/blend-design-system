@@ -41,13 +41,26 @@ const formatTooltipLabel = (
         return xAxis.tickFormatter(label)
     }
 
+    if (xAxis.type === AxisType.DATE_TIME) {
+        return getAxisFormatterWithConfig(
+            xAxis.type,
+            false, 
+            false, 
+            xAxis.timeZone,
+            xAxis.hour12,
+            xAxis.showYear,
+            true
+        )(label)
+    }
+
     if (xAxis.type) {
         return getAxisFormatterWithConfig(
             xAxis.type,
             xAxis.dateOnly,
             xAxis.smart,
             xAxis.timeZone,
-            xAxis.hour12
+            xAxis.hour12,
+            xAxis.showYear
         )(label)
     }
 

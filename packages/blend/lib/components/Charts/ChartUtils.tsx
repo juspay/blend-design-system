@@ -194,9 +194,11 @@ export const capitaliseCamelCase = (text: string): string => {
 
 export const createSmartDateTimeFormatter = (
     timeZone?: string,
-    hour12?: boolean
+    hour12?: boolean,
+    showYear?: boolean
 ): ((value: string | number) => string) => {
     let previousDate: string | null = null
+    let isFirstCall = true
 
     return (value: string | number) => {
         let date = new Date(value)
@@ -214,24 +216,26 @@ export const createSmartDateTimeFormatter = (
         const dateOptions: Intl.DateTimeFormatOptions = {
             month: 'short',
             day: 'numeric',
-            year: 'numeric',
             timeZone: timeZone || 'UTC',
+        }
+        if (showYear === true) {
+            dateOptions.year = 'numeric'
         }
 
         const currentDate = date.toLocaleDateString('en-US', dateOptions)
 
-        if (previousDate === null || previousDate !== currentDate) {
+        if (isFirstCall || previousDate !== currentDate) {
+            isFirstCall = false
             previousDate = currentDate
-            const fullOptions: Intl.DateTimeFormatOptions = {
+            const dateOnlyOptions: Intl.DateTimeFormatOptions = {
                 month: 'short',
                 day: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: hour12 || false,
                 timeZone: timeZone || 'UTC',
             }
-            return date.toLocaleString('en-US', fullOptions)
+            if (showYear === true) {
+                dateOnlyOptions.year = 'numeric'
+            }
+            return date.toLocaleDateString('en-US', dateOnlyOptions)
         }
 
         const timeOptions: Intl.DateTimeFormatOptions = {
@@ -249,11 +253,13 @@ export const getAxisFormatterWithConfig = (
     dateOnly?: boolean,
     smart?: boolean,
     timeZone?: string,
-    hour12?: boolean
+    hour12?: boolean,
+    showYear?: boolean,
+    forTooltip?: boolean
 ): ((value: string | number) => string) => {
     if (axisType === AxisType.DATE_TIME) {
         if (smart) {
-            return createSmartDateTimeFormatter(timeZone, hour12)
+            return createSmartDateTimeFormatter(timeZone, hour12, showYear)
         } else if (dateOnly) {
             return (value: string | number) => {
                 const date = new Date(value)
@@ -272,55 +278,69 @@ export const getAxisFormatterWithConfig = (
                     const options: Intl.DateTimeFormatOptions = {
                         month: 'short',
                         day: 'numeric',
-                        year: 'numeric',
                         timeZone: timeZone || 'UTC',
+                    }
+                    if (showYear === true) {
+                        options.year = 'numeric'
                     }
                     return timestampDate.toLocaleDateString('en-US', options)
                 }
                 const options: Intl.DateTimeFormatOptions = {
                     month: 'short',
                     day: 'numeric',
-                    year: 'numeric',
                     timeZone: timeZone || 'UTC',
+                }
+                if (showYear === true) {
+                    options.year = 'numeric'
                 }
                 return date.toLocaleDateString('en-US', options)
             }
         } else {
-            return (value: string | number) => {
-                const date = new Date(value)
-                if (isNaN(date.getTime())) {
-                    let timestamp =
-                        typeof value === 'string' ? parseInt(value) : value
+            // If it's for tooltip, show full date + time
+            // If it's for axis, use smart formatting by default
+            if (forTooltip) {
+                return (value: string | number) => {
+                    const date = new Date(value)
+                    if (isNaN(date.getTime())) {
+                        let timestamp =
+                            typeof value === 'string' ? parseInt(value) : value
 
-                    if (timestamp < 946684800000) {
-                        timestamp = timestamp * 1000
-                    }
+                        if (timestamp < 946684800000) {
+                            timestamp = timestamp * 1000
+                        }
 
-                    const timestampDate = new Date(timestamp)
-                    if (isNaN(timestampDate.getTime())) {
-                        return value.toString()
+                        const timestampDate = new Date(timestamp)
+                        if (isNaN(timestampDate.getTime())) {
+                            return value.toString()
+                        }
+                        const options: Intl.DateTimeFormatOptions = {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: hour12 || false,
+                        }
+                        if (showYear === true) {
+                            options.year = 'numeric'
+                        }
+                        options.timeZone = timeZone || 'UTC'
+                        return timestampDate.toLocaleString('en-US', options)
                     }
                     const options: Intl.DateTimeFormatOptions = {
                         month: 'short',
                         day: 'numeric',
-                        year: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit',
                         hour12: hour12 || false,
                     }
+                    if (showYear === true) {
+                        options.year = 'numeric'
+                    }
                     options.timeZone = timeZone || 'UTC'
-                    return timestampDate.toLocaleString('en-US', options)
+                    return date.toLocaleString('en-US', options)
                 }
-                const options: Intl.DateTimeFormatOptions = {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: hour12 || false,
-                }
-                options.timeZone = timeZone || 'UTC'
-                return date.toLocaleString('en-US', options)
+            } else {
+                return createSmartDateTimeFormatter(timeZone, hour12, showYear)
             }
         }
     }
@@ -360,12 +380,15 @@ export const createStableSmartFormatter = (
             }
 
             if (!isNaN(date.getTime())) {
-                const dateString = date.toLocaleDateString('en-US', {
+                const dateOptions: Intl.DateTimeFormatOptions = {
                     month: 'short',
                     day: 'numeric',
-                    year: 'numeric',
                     timeZone: xAxisConfig?.timeZone || 'UTC',
-                })
+                }
+                if (xAxisConfig?.showYear === true) {
+                    dateOptions.year = 'numeric'
+                }
+                const dateString = date.toLocaleDateString('en-US', dateOptions)
 
                 const shouldShowFull = isPreserveStartEnd
                     ? false
@@ -394,15 +417,15 @@ export const createStableSmartFormatter = (
             )
 
             if (shouldShowFullDate) {
-                return date.toLocaleString('en-US', {
+                const dateOnlyOptions: Intl.DateTimeFormatOptions = {
                     month: 'short',
                     day: 'numeric',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: xAxisConfig?.hour12 ?? false,
                     timeZone: xAxisConfig?.timeZone || 'UTC',
-                })
+                }
+                if (xAxisConfig?.showYear === true) {
+                    dateOnlyOptions.year = 'numeric'
+                }
+                return date.toLocaleDateString('en-US', dateOnlyOptions)
             } else {
                 return date.toLocaleTimeString('en-US', {
                     hour: '2-digit',
@@ -419,7 +442,8 @@ export const createStableSmartFormatter = (
             xAxisConfig.dateOnly,
             xAxisConfig?.smart ?? false,
             xAxisConfig.timeZone,
-            xAxisConfig.hour12
+            xAxisConfig.hour12,
+            xAxisConfig.showYear
         )
     }
     return undefined

@@ -156,7 +156,7 @@ const TimezoneDemo = () => {
                 xAxis={{
                     label: `Time (${timezoneOptions.find((tz) => tz.value === selectedTimezone)?.label})`,
                     type: AxisType.DATE_TIME,
-                    smart: true,
+                    smart: true,    
                     timeZone: selectedTimezone, // 🌍 Dynamic timezone!
                     hour12: use12HourFormat, // 🕐 Dynamic hour format!
                 }}
