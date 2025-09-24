@@ -25,7 +25,10 @@ import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.to
 import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
 import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
-import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
+import {
+    getProgressBarTokens,
+    type ResponsiveProgressBarTokens,
+} from '../components/ProgressBar/progressbar.tokens'
 import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
 import type { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
 import type { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
@@ -63,7 +66,6 @@ import { getTableToken } from '../components/DataTable/dataTable.tokens'
 import { getCalendarToken } from '../components/DateRangePicker/dateRangePicker.tokens'
 import { getAccordionToken } from '../components/Accordion/accordion.tokens'
 import { getStatCardToken } from '../components/StatCard/statcard.tokens'
-import progressBarTokens from '../components/ProgressBar/progressbar.tokens'
 import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
 import { getChartTokens } from '../components/Charts/chart.tokens'
 import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
@@ -104,7 +106,7 @@ export type ComponentTokenType = {
     CALENDAR?: ResponsiveCalendarTokens
     ACCORDION?: ResponsiveAccordionTokens
     STAT_CARD?: ResponsiveStatCardTokens
-    PROGRESS_BAR?: ProgressBarTokenType
+    PROGRESS_BAR?: ResponsiveProgressBarTokens
     DRAWER?: DrawerTokensType
     CHARTS?: ResponsiveChartTokens
     SNACKBAR?: ResponsiveSnackbarTokens
@@ -151,7 +153,7 @@ const ThemeContext = createContext<ThemeContextType>({
         CALENDAR: getCalendarToken(FOUNDATION_THEME),
         ACCORDION: getAccordionToken(FOUNDATION_THEME),
         STAT_CARD: getStatCardToken(FOUNDATION_THEME),
-        PROGRESS_BAR: progressBarTokens,
+        PROGRESS_BAR: getProgressBarTokens(FOUNDATION_THEME),
         DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
         CHARTS: getChartTokens(FOUNDATION_THEME),
         SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),

@@ -23,8 +23,7 @@ import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/mult
 import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
 import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
-import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
-import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
+import type { ResponsiveProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
 import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
 import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
@@ -35,6 +34,7 @@ import { ResponsiveSkeletonTokens } from '../components/Skeleton/skeleton.tokens
 import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
 import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
+import { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -65,7 +65,7 @@ export const useComponentToken = (
     | ResponsiveCalendarTokens
     | ResponsiveAccordionTokens
     | ResponsiveStatCardTokens
-    | ProgressBarTokenType
+    | ResponsiveProgressBarTokens
     | DrawerTokensType
     | ResponsiveChartTokens
     | ResponsiveSnackbarTokens

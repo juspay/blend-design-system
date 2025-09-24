@@ -26,7 +26,6 @@ import { getTableToken } from '../components/DataTable/dataTable.tokens'
 import { getCalendarToken } from '../components/DateRangePicker/dateRangePicker.tokens'
 import { getAccordionToken } from '../components/Accordion/accordion.tokens'
 import { getStatCardToken } from '../components/StatCard/statcard.tokens'
-import progressBarTokens from '../components/ProgressBar/progressbar.tokens'
 import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
 import { getChartTokens } from '../components/Charts/chart.tokens'
 import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
@@ -36,6 +35,7 @@ import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
+import { getProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -93,7 +93,9 @@ const initTokens = (
             componentTokens.ACCORDION ?? getAccordionToken(foundationTokens),
         STAT_CARD:
             componentTokens.STAT_CARD ?? getStatCardToken(foundationTokens),
-        PROGRESS_BAR: componentTokens.PROGRESS_BAR ?? progressBarTokens,
+        PROGRESS_BAR:
+            componentTokens.PROGRESS_BAR ??
+            getProgressBarTokens(foundationTokens),
         DRAWER:
             componentTokens.DRAWER ??
             getDrawerComponentTokens(foundationTokens),
