@@ -73,9 +73,6 @@ const previewComponents = {
     DataTablePreview: dynamic(() => import('./Previews/DataTablePreview'), {
         ssr: false,
     }),
-    ButtonGroupPreview: dynamic(() => import('./Previews/ButtonGroupPreview'), {
-        ssr: false,
-    }),
     DrawerPreview: dynamic(() => import('./Previews/DrawerPreview'), {
         ssr: false,
     }),

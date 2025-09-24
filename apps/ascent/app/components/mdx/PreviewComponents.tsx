@@ -12,7 +12,6 @@ const PREVIEW_COMPONENT_NAMES = [
     'Alert',
     'Tag',
     'ButtonGroup',
-    'ButtonGroup',
     'Tabs',
     'SplitTag',
     'Modal',
@@ -60,7 +59,6 @@ export const PreviewComponents = PREVIEW_COMPONENT_NAMES.reduce(
 export const ButtonPreview = PreviewComponents.ButtonPreview
 export const AlertPreview = PreviewComponents.AlertPreview
 export const TagPreview = PreviewComponents.TagPreview
-export const ButtonGroupPreview = PreviewComponents.ButtonGroupPreview
 export const ButtonGroupPreview = PreviewComponents.ButtonGroupPreview
 export const TabsPreview = PreviewComponents.TabsPreview
 export const SplitTagPreview = PreviewComponents.SplitTagPreview
