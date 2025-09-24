@@ -12,7 +12,6 @@ import {
     getBodyTitleStyles,
     getBodyContentStyles,
     getBodyStyles,
-    getHeaderSlotSpacing,
     getHeaderMarginBottom,
     getSubHeaderMarginBottom,
     getBodySlot1MarginBottom,
@@ -79,7 +78,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                         <Block
                             display="flex"
                             alignItems="flex-start"
-                            style={{ gap: getHeaderSlotSpacing(cardToken) }}
+                            style={{ gap: cardToken.header.text.title.gap }}
                         >
                             {headerSlot1 && <Block>{headerSlot1}</Block>}
 
@@ -99,7 +98,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                                     display="flex"
                                     alignItems="center"
                                     style={{
-                                        gap: getHeaderSlotSpacing(cardToken),
+                                        gap: cardToken.header.text.title.gap,
                                     }}
                                 >
                                     {headerTitle && (
@@ -250,7 +249,7 @@ const CardContent: React.FC<{
                         ),
                         width: centerAlign ? 'auto' : '100%',
                         gap: centerAlign
-                            ? getHeaderSlotSpacing(cardToken)
+                            ? cardToken.header.text.title.gap
                             : undefined,
                     }}
                 >
@@ -260,7 +259,7 @@ const CardContent: React.FC<{
                                 display="flex"
                                 alignItems="center"
                                 style={{
-                                    gap: getHeaderSlotSpacing(cardToken),
+                                    gap: cardToken.header.text.title.gap,
                                 }}
                             >
                                 {headerTitle && (
@@ -340,10 +339,8 @@ const CardContent: React.FC<{
                 <Block
                     style={{
                         marginTop: isInlineButton
-                            ? String(cardToken.spacing.action.inline.marginTop)
-                            : String(
-                                  cardToken.spacing.action.regular.marginTop
-                              ),
+                            ? String(cardToken.action.inline.marginTop)
+                            : String(cardToken.action.regular.marginTop),
                     }}
                 >
                     <Button {...actionButton} />
@@ -368,7 +365,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: centerAlign ? 'center' : 'flex-start',
-                        gap: String(cardToken.spacing.headerSlot.gap),
+                        gap: String(cardToken.header.text.title.gap),
                         padding: cardToken.padding,
                     }}
                 >

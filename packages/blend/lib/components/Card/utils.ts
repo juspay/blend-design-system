@@ -1,5 +1,5 @@
 import React from 'react'
-import { CardVariant, CardAlignment } from './types'
+import { CardVariant } from './types'
 import type { CardTokenType } from './card.tokens'
 import { ButtonSubType } from '../Button/types'
 
@@ -40,7 +40,6 @@ export const getHeaderBoxStyles = (
     backgroundColor: cardToken.header.backgroundColor,
     padding: cardToken.header.padding,
     borderBottom: cardToken.header.borderBottom,
-    borderRadius: cardToken.header.borderRadius,
     display: 'flex',
     flexDirection: 'column' as const,
 })
@@ -51,9 +50,9 @@ export const getHeaderBoxStyles = (
 export const getHeaderTitleStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.header.title.fontSize,
-    fontWeight: cardToken.header.title.fontWeight,
-    color: cardToken.header.title.color,
+    fontSize: cardToken.header.text.title.fontSize,
+    fontWeight: cardToken.header.text.title.fontWeight,
+    color: cardToken.header.text.title.color,
 })
 
 /**
@@ -62,10 +61,9 @@ export const getHeaderTitleStyles = (
 export const getSubHeaderStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.header.subHeader.fontSize,
-    fontWeight: cardToken.header.subHeader.fontWeight,
-    color: cardToken.header.subHeader.color,
-    // marginTop: cardToken.header.subHeader.marginTop,
+    fontSize: cardToken.header.text.subHeader.fontSize,
+    fontWeight: cardToken.header.text.subHeader.fontWeight,
+    color: cardToken.header.text.subHeader.color,
 })
 
 /**
@@ -74,9 +72,9 @@ export const getSubHeaderStyles = (
 export const getBodyTitleStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.body.title.fontSize,
-    fontWeight: cardToken.body.title.fontWeight,
-    color: cardToken.body.title.color,
+    fontSize: cardToken.body.text.title.fontSize,
+    fontWeight: cardToken.body.text.title.fontWeight,
+    color: cardToken.body.text.title.color,
 })
 
 /**
@@ -85,8 +83,8 @@ export const getBodyTitleStyles = (
 export const getBodyContentStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.body.content.fontSize,
-    color: cardToken.body.content.color,
+    fontSize: cardToken.body.text.content.fontSize,
+    color: cardToken.body.text.content.color,
 })
 
 /**
@@ -104,7 +102,7 @@ export const getBodyStyles = (
  * Gets spacing between header slots
  */
 export const getHeaderSlotSpacing = (cardToken: CardTokenType): string => {
-    return String(cardToken.spacing.headerSlot.gap)
+    return String(cardToken.header.slot.gap)
 }
 
 /**
@@ -114,8 +112,7 @@ export const getHeaderMarginBottom = (
     hasSubHeader: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasSubHeader)
-        return String(cardToken.spacing.header.subHeader.marginTop)
+    if (hasSubHeader) return String(cardToken.header.text.subHeader.marginTop)
     return '0'
 }
 
@@ -123,7 +120,7 @@ export const getHeaderMarginBottom = (
  * Gets margin bottom for sub header
  */
 export const getSubHeaderMarginBottom = (cardToken: CardTokenType): string => {
-    return String(cardToken.spacing.body.slot1.marginTop)
+    return String(cardToken.body.slot.slot1.marginTop)
 }
 
 /**
@@ -133,7 +130,7 @@ export const getBodySlot1MarginBottom = (
     hasBodyTitle: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasBodyTitle) return String(cardToken.spacing.body.title.marginTop)
+    if (hasBodyTitle) return String(cardToken.body.text.title.marginTop)
     return '0'
 }
 
@@ -144,7 +141,7 @@ export const getBodyTitleMarginBottom = (
     hasContent: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasContent) return String(cardToken.spacing.body.content.marginTop)
+    if (hasContent) return String(cardToken.body.text.content.marginTop)
     return '0'
 }
 
@@ -155,7 +152,7 @@ export const getContentMarginBottom = (
     hasBodySlot2: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasBodySlot2) return String(cardToken.spacing.body.slot2.marginTop)
+    if (hasBodySlot2) return String(cardToken.body.slot.slot2.marginTop)
     return '0'
 }
 
@@ -169,52 +166,8 @@ export const getBodySlot2MarginBottom = (
 ): string => {
     if (!hasActionButton) return '0'
     return isInlineButton
-        ? String(cardToken.spacing.action.inline.marginTop)
-        : String(cardToken.spacing.action.regular.marginTop)
-}
-
-/**
- * Gets alignment styles for aligned cards
- */
-export const getAlignmentStyles = (
-    alignment: CardAlignment,
-    centerAlign: boolean,
-    cardToken: CardTokenType
-): React.CSSProperties => {
-    const alignmentConfig = cardToken.alignment[alignment]
-
-    const baseStyles = {
-        padding: alignmentConfig.padding,
-        gap: alignmentConfig.gap,
-        minHeight: alignmentConfig.minHeight,
-    }
-
-    if (alignment === CardAlignment.VERTICAL) {
-        return {
-            ...baseStyles,
-            display: 'flex',
-            flexDirection: 'column' as const,
-            ...(centerAlign && {
-                alignItems: 'center',
-                textAlign: 'center' as const,
-                justifyContent: 'center',
-            }),
-        }
-    }
-
-    if (alignment === CardAlignment.HORIZONTAL) {
-        return {
-            ...baseStyles,
-            display: 'flex',
-            flexDirection: 'row' as const,
-            ...(centerAlign && {
-                alignItems: 'center',
-                textAlign: 'center' as const,
-            }),
-        }
-    }
-
-    return baseStyles
+        ? String(cardToken.action.inline.marginTop)
+        : String(cardToken.action.regular.marginTop)
 }
 
 /**
