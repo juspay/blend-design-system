@@ -15,7 +15,7 @@ import type { ResponsiveDropdownInputTokens } from '../components/Inputs/Dropdow
 import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import type { ResponsiveTabsTokens } from '../components/Tabs/tabs.token'
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
-import type { ModalTokensType } from '../components/Modal/modal.tokens'
+import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
@@ -96,7 +96,7 @@ export type ComponentTokenType = {
     CHECKBOX?: ResponsiveCheckboxTokens
     TABS?: ResponsiveTabsTokens
     BUTTON?: ResponsiveButtonTokens
-    MODAL?: ModalTokensType
+    MODAL?: ResponsiveModalTokens
     BREADCRUMB?: ResponsiveBreadcrumbTokens
     POPOVER?: ResponsivePopoverTokens
     MENU?: ResponsiveMenuTokensType

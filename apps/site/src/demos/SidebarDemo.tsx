@@ -134,7 +134,7 @@ const SidebarDemo = () => {
         | 'keyValuePair'
         | 'card'
         | 'dataRangePicker'
-    >('breadcrumb')
+    >('modal')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =

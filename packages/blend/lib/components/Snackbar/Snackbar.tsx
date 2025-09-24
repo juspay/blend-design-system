@@ -59,10 +59,11 @@ export const StyledToast: React.FC<CustomToastProps> = ({
             maxWidth={snackbarTokens.maxWidth}
             boxShadow={snackbarTokens.boxShadow}
         >
+            {' '}
+            <Block>
+                <SnackbarIcon variant={variant} />
+            </Block>
             <Block display="flex" gap={snackbarTokens.gap}>
-                <Block paddingTop={'4px'}>
-                    <SnackbarIcon variant={variant} />
-                </Block>
                 <Block
                     display="flex"
                     flexDirection="column"
@@ -110,7 +111,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                         <PrimitiveButton
                             backgroundColor="transparent"
                             color={
-                                snackbarTokens.content.actionButton.color[
+                                snackbarTokens.actions.primaryAction.color[
                                     variant
                                 ]
                             }
@@ -126,15 +127,16 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                         >
                             <Text
                                 color={
-                                    snackbarTokens.content.actionButton.color[
+                                    snackbarTokens.actions.primaryAction.color[
                                         variant
                                     ]
                                 }
                                 fontSize={
-                                    snackbarTokens.content.actionButton.fontSize
+                                    snackbarTokens.actions.primaryAction
+                                        .fontSize
                                 }
                                 fontWeight={
-                                    snackbarTokens.content.actionButton
+                                    snackbarTokens.actions.primaryAction
                                         .fontWeight
                                 }
                             >
@@ -144,7 +146,6 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                     )}
                 </Block>
             </Block>
-
             <Block>
                 {' '}
                 <PrimitiveButton
@@ -153,8 +154,10 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                     onClick={onClose}
                 >
                     <X
-                        size={snackbarTokens.crossIcon.height}
-                        color={snackbarTokens.crossIcon.color[variant]}
+                        size={snackbarTokens.actions.closeButton.height}
+                        color={
+                            snackbarTokens.actions.closeButton.color[variant]
+                        }
                     />
                 </PrimitiveButton>
             </Block>

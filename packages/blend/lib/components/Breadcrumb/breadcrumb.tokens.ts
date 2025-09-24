@@ -25,9 +25,7 @@ export type BreadcrumbState = 'default' | 'hover' | 'active'
  * - item.background.[state]
  */
 export type BreadcrumbTokenType = {
-    // Pattern: container.height
-    height: CSSObject['height']
-    // Pattern: container.gap
+    // Pattern: gap
     gap: CSSObject['gap']
 
     // Item properties
@@ -60,7 +58,6 @@ export const getBreadcrumbTokens = (
 ): ResponsiveBreadcrumbTokens => {
     return {
         sm: {
-            height: foundationToken.unit[32],
             gap: foundationToken.unit[0],
 
             // Item properties
@@ -70,7 +67,7 @@ export const getBreadcrumbTokens = (
 
                 text: {
                     // Pattern: item.text.fontSize
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
+                    fontSize: foundationToken.font.size.body.md.fontSize,
                     // Pattern: item.text.fontWeight.[state]
                     fontWeight: foundationToken.font.weight[500],
                     // Pattern: item.text.color.[state]
@@ -83,7 +80,6 @@ export const getBreadcrumbTokens = (
             },
         },
         lg: {
-            height: foundationToken.unit[32],
             gap: foundationToken.unit[0],
 
             // Item properties
@@ -93,7 +89,7 @@ export const getBreadcrumbTokens = (
 
                 text: {
                     // Pattern: item.text.fontSize.[state]
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
+                    fontSize: foundationToken.font.size.body.md.fontSize,
                     // Pattern: item.text.fontWeight.[state]
                     fontWeight: foundationToken.font.weight[500],
                     // Pattern: item.text.color.[state]

@@ -85,7 +85,6 @@ const Breadcrumb = ({ items }: { items: BreadcrumbItemType[] }) => {
         <Block
             width={'full'}
             display="flex"
-            height={breadcrumbTokens.height}
             alignItems="center"
             gap={breadcrumbTokens.gap}
         >

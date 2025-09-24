@@ -8,7 +8,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import type { ModalTokensType } from './modal.tokens'
 import Text from '../Text/Text'
 import { ButtonSubType, ButtonType, Button } from '../Button'
-import { useComponentToken } from '../../context/useComponentToken'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobileModal from './MobileModal'
 
@@ -51,7 +51,7 @@ const ModalHeader = ({
     headerRightSlot?: React.ReactNode
     showDivider?: boolean
 }) => {
-    const modalTokens = useComponentToken('MODAL') as ModalTokensType
+    const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
     if (!title && !subtitle) return null
 
     return (
@@ -59,16 +59,12 @@ const ModalHeader = ({
             display="flex"
             justifyContent="space-between"
             alignItems="flex-start"
-            padding={modalTokens.headerContainer.padding}
+            padding={modalTokens.header.padding}
             flexShrink={0}
             overflow="auto"
             maxHeight="20vh"
             gap={FOUNDATION_THEME.unit[16]}
-            borderBottom={
-                showDivider
-                    ? modalTokens.headerContainer.borderBottom
-                    : undefined
-            }
+            borderBottom={showDivider ? modalTokens.header.border : undefined}
         >
             <Block
                 display="flex"
@@ -85,7 +81,7 @@ const ModalHeader = ({
                         <Text
                             variant="heading.sm"
                             fontWeight={600}
-                            color={modalTokens.headerContainer.header.color}
+                            color={modalTokens.header.text.title.color}
                         >
                             {title}
                         </Text>
@@ -95,7 +91,7 @@ const ModalHeader = ({
                 {subtitle && (
                     <Text
                         variant="code.lg"
-                        color={modalTokens.headerContainer.subtitle.color}
+                        color={modalTokens.header.text.subtitle.color}
                         fontWeight={400}
                     >
                         {subtitle}
@@ -124,21 +120,19 @@ const ModalFooter = ({
     secondaryAction?: ModalProps['secondaryAction']
     showDivider?: boolean
 }) => {
-    const modalTokens = useComponentToken('MODAL') as ModalTokensType
+    const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
     if (!primaryAction && !secondaryAction) return null
 
     return (
         <Block
             display="flex"
-            backgroundColor={modalTokens.footerContainer.backgroundColor}
-            justifyContent={modalTokens.footerContainer.alignItems}
-            gap={modalTokens.footerContainer.gap}
-            padding={modalTokens.footerContainer.padding}
+            backgroundColor={modalTokens.footer.backgroundColor}
+            justifyContent={modalTokens.footer.alignItems}
+            gap={modalTokens.footer.gap}
+            padding={modalTokens.footer.padding}
             flexShrink={0}
-            borderTop={
-                showDivider ? modalTokens.footerContainer.borderTop : undefined
-            }
-            borderRadius={modalTokens.footerContainer.borderRadius}
+            borderTop={showDivider ? modalTokens.footer.border : undefined}
+            borderRadius={modalTokens.footer.borderRadius}
         >
             {secondaryAction && (
                 <Button
@@ -192,7 +186,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         },
         ref
     ) => {
-        const modalTokens = useComponentToken('MODAL') as ModalTokensType
+        const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
         const [isMounted, setIsMounted] = useState(false)
@@ -250,7 +244,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                 <Block
                     position="fixed"
                     inset={0}
-                    zIndex={modalTokens.zIndex}
+                    zIndex={99}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
@@ -297,7 +291,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         />
 
                         <Block
-                            padding={modalTokens.bodyContainer.padding}
+                            padding={modalTokens.body.padding}
                             overflow="auto"
                             flexGrow={1}
                         >

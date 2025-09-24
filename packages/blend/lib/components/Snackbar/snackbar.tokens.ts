@@ -78,10 +78,13 @@ export type SnackbarTokens = Readonly<{
         }
 
         // Action button styling
-        actionButton: {
-            // Pattern: content.actionButton.padding
-            // padding: CSSObject['padding']
-            // Pattern: content.actionButton.color
+    }
+
+    actions: {
+        // Pattern: content.actionButton.padding
+        // padding: CSSObject['padding']
+        // Pattern: content.actionButton.color
+        primaryAction: {
             color: {
                 [key in SnackbarVariant]: CSSObject['color']
             }
@@ -90,17 +93,17 @@ export type SnackbarTokens = Readonly<{
             // Pattern: content.actionButton.fontWeight
             fontWeight: CSSObject['fontWeight']
         }
+        closeButton: {
+            // Pattern: crossIcon.size
+            height: CSSObject['height' | 'width']
+            // Pattern: crossIcon.color
+            color: {
+                [key in SnackbarVariant]: CSSObject['color']
+            }
+        }
     }
 
     // Cross icon styling
-    crossIcon: {
-        // Pattern: crossIcon.size
-        height: CSSObject['height' | 'width']
-        // Pattern: crossIcon.color
-        color: {
-            [key in SnackbarVariant]: CSSObject['color']
-        }
-    }
 }>
 
 export type ResponsiveSnackbarTokens = {
@@ -161,8 +164,10 @@ export const getSnackbarTokens = (
                         fontWeight: foundationToken.font.weight[400],
                     },
                 },
+            },
 
-                actionButton: {
+            actions: {
+                primaryAction: {
                     color: {
                         info: foundationToken.colors.primary[400],
                         success: foundationToken.colors.primary[400],
@@ -172,16 +177,14 @@ export const getSnackbarTokens = (
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[600],
                 },
-            },
-
-            // Cross icon styling
-            crossIcon: {
-                height: foundationToken.unit[16],
-                color: {
-                    info: foundationToken.colors.gray[0],
-                    success: foundationToken.colors.gray[0],
-                    warning: foundationToken.colors.gray[0],
-                    error: foundationToken.colors.gray[0],
+                closeButton: {
+                    height: foundationToken.unit[16],
+                    color: {
+                        info: foundationToken.colors.gray[0],
+                        success: foundationToken.colors.gray[0],
+                        warning: foundationToken.colors.gray[0],
+                        error: foundationToken.colors.gray[0],
+                    },
                 },
             },
         },
@@ -235,8 +238,10 @@ export const getSnackbarTokens = (
                         fontWeight: foundationToken.font.weight[400],
                     },
                 },
+            },
 
-                actionButton: {
+            actions: {
+                primaryAction: {
                     color: {
                         info: foundationToken.colors.primary[400],
                         success: foundationToken.colors.primary[400],
@@ -246,16 +251,14 @@ export const getSnackbarTokens = (
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[600],
                 },
-            },
-
-            // Cross icon styling
-            crossIcon: {
-                height: foundationToken.unit[16],
-                color: {
-                    info: foundationToken.colors.gray[0],
-                    success: foundationToken.colors.gray[0],
-                    warning: foundationToken.colors.gray[0],
-                    error: foundationToken.colors.gray[0],
+                closeButton: {
+                    height: foundationToken.unit[16],
+                    color: {
+                        info: foundationToken.colors.gray[0],
+                        success: foundationToken.colors.gray[0],
+                        warning: foundationToken.colors.gray[0],
+                        error: foundationToken.colors.gray[0],
+                    },
                 },
             },
         },
