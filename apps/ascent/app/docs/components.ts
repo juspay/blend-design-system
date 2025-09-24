@@ -66,7 +66,7 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
         slug: 'button-group',
         title: 'Button Group V2',
         description:
-            'The ButtonGroupV2 component is a container that groups multiple Button components together with flexible layout options and automatic positioning.',
+            'The ButtonGroup component is a container that groups multiple Button components together with flexible layout options and automatic positioning.',
         icon: createIcon(
             [],
             [

@@ -13,16 +13,15 @@ export enum MenuSide {
     BOTTOM = 'bottom',
 }
 
-export type MenuV2Props = {
+export type MenuProps = {
     trigger: React.ReactNode
-    items?: MenuV2GroupType[]
+    items?: MenuGroupType[]
 
     maxHeight?: number
     minHeight?: number
     maxWidth?: number
     minWidth?: number
-    // width?: number;
-    // height?: number;
+
     enableSearch?: boolean
     searchPlaceholder?: string
     // Radix Menu Props
@@ -36,28 +35,28 @@ export type MenuV2Props = {
     collisonBoundaryRef?: Element | null | Array<Element | null>
 }
 
-export enum MenuItemV2Variant {
+export enum MenuItemVariant {
     DEFAULT = 'default',
     ACTION = 'action',
 }
 
-export enum MenuItemV2ActionType {
+export enum MenuItemActionType {
     PRIMARY = 'primary',
     DANGER = 'danger',
 }
 
-export type MenuItemV2Type = {
+export type MenuItemType = {
     label: string
     subLabel?: string
     slot1?: React.ReactNode
     slot2?: React.ReactNode
     slot3?: React.ReactNode
     slot4?: React.ReactNode
-    variant?: MenuItemV2Variant
-    actionType?: MenuItemV2ActionType
+    variant?: MenuItemVariant
+    actionType?: MenuItemActionType
     disabled?: boolean
     onClick?: () => void
-    subMenu?: MenuItemV2Type[]
+    subMenu?: MenuItemType[]
     enableSubMenuSearch?: boolean
     subMenuSearchPlaceholder?: string
     tooltip?: string | React.ReactNode
@@ -71,8 +70,8 @@ export type MenuItemV2Type = {
     }
 }
 
-export type MenuV2GroupType = {
+export type MenuGroupType = {
     label?: string
-    items: MenuItemV2Type[]
+    items: MenuItemType[]
     showSeparator?: boolean
 }

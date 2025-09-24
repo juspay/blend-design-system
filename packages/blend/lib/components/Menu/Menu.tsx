@@ -1,7 +1,7 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled, { type CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
-import { type MenuV2Props, MenuAlignment, MenuSide } from './types'
+import { type MenuProps, MenuAlignment, MenuSide } from './types'
 import React, { useState, useRef } from 'react'
 import { filterMenuGroups } from './utils'
 import MenuItem from './MenuItem'
@@ -44,7 +44,7 @@ const Menu = ({
     maxWidth,
     open,
     onOpenChange,
-}: MenuV2Props) => {
+}: MenuProps) => {
     const [searchText, setSearchText] = useState<string>('')
     const searchInputRef = useRef<HTMLInputElement>(null)
     const filteredItems = filterMenuGroups(items, searchText)

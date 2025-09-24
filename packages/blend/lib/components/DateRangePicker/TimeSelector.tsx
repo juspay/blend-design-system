@@ -10,8 +10,8 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
 import Menu from '../Menu/Menu'
 import {
-    MenuItemV2Type,
-    MenuV2GroupType,
+    MenuItemType,
+    MenuGroupType,
     MenuAlignment,
     MenuSide,
 } from '../Menu/types'
@@ -94,8 +94,8 @@ const parseTimeInput = (
 
 const generateTimeOptions = (
     onSelect: (timeValue: string) => void
-): MenuV2GroupType[] => {
-    const options: MenuItemV2Type[] = []
+): MenuGroupType[] => {
+    const options: MenuItemType[] = []
 
     for (let hour = 0; hour < 24; hour++) {
         for (let minute = 0; minute < 60; minute += 15) {
