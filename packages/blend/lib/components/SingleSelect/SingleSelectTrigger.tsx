@@ -50,9 +50,13 @@ const SingleSelectTrigger = ({
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
 
-    const borderRadius = singleSelectTokens.trigger.borderRadius[size]
-    const paddingX = toPixels(singleSelectTokens.trigger.paddingX[size])
-    const paddingY = toPixels(singleSelectTokens.trigger.paddingY[size])
+    const borderRadius = singleSelectTokens.trigger.borderRadius[size][variant]
+    const paddingX = toPixels(
+        singleSelectTokens.trigger.paddingX[size][variant]
+    )
+    const paddingY = toPixels(
+        singleSelectTokens.trigger.paddingY[size][variant]
+    )
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
@@ -79,8 +83,8 @@ const SingleSelectTrigger = ({
                     singleSelectTokens.trigger.backgroundColor[variant][
                         open ? 'open' : 'closed'
                     ],
-                height: singleSelectTokens.trigger.height[size],
-                maxHeight: singleSelectTokens.trigger.height[size],
+                height: singleSelectTokens.trigger.height[size][variant],
+                maxHeight: singleSelectTokens.trigger.height[size][variant],
                 _hover: {
                     outline:
                         singleSelectTokens.trigger.outline[variant][

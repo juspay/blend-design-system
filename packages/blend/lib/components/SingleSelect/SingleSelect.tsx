@@ -91,9 +91,13 @@ const SingleSelect = ({
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === SelectMenuSize.LARGE
 
-    const borderRadius = singleSelectTokens.trigger.borderRadius[size]
-    const paddingX = toPixels(singleSelectTokens.trigger.paddingX[size])
-    const paddingY = toPixels(singleSelectTokens.trigger.paddingY[size])
+    const borderRadius = singleSelectTokens.trigger.borderRadius[size][variant]
+    const paddingX = toPixels(
+        singleSelectTokens.trigger.paddingX[size][variant]
+    )
+    const paddingY = toPixels(
+        singleSelectTokens.trigger.paddingY[size][variant]
+    )
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
@@ -148,8 +152,8 @@ const SingleSelect = ({
             <Block
                 display="flex"
                 {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
-                    height: singleSelectTokens.trigger.height[size],
-                    maxHeight: singleSelectTokens.trigger.height[size],
+                    height: singleSelectTokens.trigger.height[size][variant],
+                    maxHeight: singleSelectTokens.trigger.height[size][variant],
                 })}
             >
                 <Block
@@ -238,7 +242,7 @@ const SingleSelect = ({
                                         maxHeight:
                                             singleSelectTokens.trigger.height[
                                                 size
-                                            ],
+                                            ][variant],
                                         _hover: {
                                             outline:
                                                 singleSelectTokens.trigger
