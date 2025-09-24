@@ -296,8 +296,6 @@ export const getAxisFormatterWithConfig = (
                 return date.toLocaleDateString('en-US', options)
             }
         } else {
-            // If it's for tooltip, show full date + time
-            // If it's for axis, use smart formatting by default
             if (forTooltip) {
                 return (value: string | number) => {
                     const date = new Date(value)
