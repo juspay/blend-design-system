@@ -44,8 +44,8 @@ const formatTooltipLabel = (
     if (xAxis.type === AxisType.DATE_TIME) {
         return getAxisFormatterWithConfig(
             xAxis.type,
-            false, 
-            false, 
+            false,
+            false,
             xAxis.timeZone,
             xAxis.hour12,
             xAxis.showYear,
