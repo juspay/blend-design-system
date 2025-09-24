@@ -22,25 +22,30 @@ export type SingleSelectItemStates =
 export type MultiSelectTokensType = {
     trigger: {
         height: {
-            [key in MultiSelectMenuSize]: CSSObject['height']
+            [key in MultiSelectMenuSize]: {
+                [key in MultiSelectVariant]: CSSObject['height']
+            }
         }
         paddingX: {
-            [key in MultiSelectMenuSize]: CSSObject['padding']
+            [key in MultiSelectMenuSize]: {
+                [key in MultiSelectVariant]: CSSObject['padding']
+            }
         }
         paddingY: {
-            [key in MultiSelectMenuSize]: CSSObject['padding']
+            [key in MultiSelectMenuSize]: {
+                [key in MultiSelectVariant]: CSSObject['padding']
+            }
         }
         borderRadius: {
-            [key in MultiSelectMenuSize]: CSSObject['borderRadius']
+            [key in MultiSelectMenuSize]: {
+                [key in MultiSelectVariant]: CSSObject['borderRadius']
+            }
         }
         boxShadow: {
             [key in MultiSelectVariant]: CSSObject['boxShadow']
         }
         backgroundColor: {
-            container: {
-                [key in TriggerStates]: CSSObject['backgroundColor']
-            }
-            'no-container': {
+            [key in MultiSelectVariant]: {
                 [key in TriggerStates]: CSSObject['backgroundColor']
             }
         }
@@ -50,7 +55,10 @@ export type MultiSelectTokensType = {
             }
         }
         selectionTag: {
-            container: {
+            [key in Exclude<
+                MultiSelectVariant,
+                MultiSelectVariant.NO_CONTAINER
+            >]: {
                 [key in MultiSelectSelectionTagType]: {
                     color: CSSObject['color']
                     backgroundColor: CSSObject['backgroundColor']
@@ -124,24 +132,60 @@ export const getMultiSelectTokens = (
         sm: {
             trigger: {
                 height: {
-                    sm: FOUNDATION_THEME.unit[32],
-                    md: FOUNDATION_THEME.unit[36],
-                    lg: FOUNDATION_THEME.unit[52],
+                    sm: {
+                        container: FOUNDATION_THEME.unit[32],
+                        'no-container': FOUNDATION_THEME.unit[32],
+                    },
+                    md: {
+                        container: FOUNDATION_THEME.unit[36],
+                        'no-container': FOUNDATION_THEME.unit[36],
+                    },
+                    lg: {
+                        container: FOUNDATION_THEME.unit[52],
+                        'no-container': FOUNDATION_THEME.unit[52],
+                    },
                 },
                 paddingX: {
-                    sm: FOUNDATION_THEME.unit[14],
-                    md: FOUNDATION_THEME.unit[14],
-                    lg: FOUNDATION_THEME.unit[12],
+                    sm: {
+                        container: FOUNDATION_THEME.unit[14],
+                        'no-container': FOUNDATION_THEME.unit[14],
+                    },
+                    md: {
+                        container: FOUNDATION_THEME.unit[14],
+                        'no-container': FOUNDATION_THEME.unit[14],
+                    },
+                    lg: {
+                        container: FOUNDATION_THEME.unit[12],
+                        'no-container': FOUNDATION_THEME.unit[12],
+                    },
                 },
                 paddingY: {
-                    sm: FOUNDATION_THEME.unit[7],
-                    md: FOUNDATION_THEME.unit[8],
-                    lg: FOUNDATION_THEME.unit[10],
+                    sm: {
+                        container: FOUNDATION_THEME.unit[7],
+                        'no-container': FOUNDATION_THEME.unit[7],
+                    },
+                    md: {
+                        container: FOUNDATION_THEME.unit[8],
+                        'no-container': FOUNDATION_THEME.unit[8],
+                    },
+                    lg: {
+                        container: FOUNDATION_THEME.unit[10],
+                        'no-container': FOUNDATION_THEME.unit[10],
+                    },
                 },
                 borderRadius: {
-                    sm: foundationToken.unit[10],
-                    md: foundationToken.unit[10],
-                    lg: foundationToken.unit[10],
+                    sm: {
+                        container: foundationToken.unit[10],
+                        'no-container': foundationToken.unit[10],
+                    },
+                    md: {
+                        container: foundationToken.unit[10],
+                        'no-container': foundationToken.unit[10],
+                    },
+                    lg: {
+                        container: foundationToken.unit[10],
+                        'no-container': foundationToken.unit[10],
+                    },
                 },
                 boxShadow: {
                     container: foundationToken.shadows.xs,
@@ -269,24 +313,60 @@ export const getMultiSelectTokens = (
         lg: {
             trigger: {
                 height: {
-                    sm: FOUNDATION_THEME.unit[32],
-                    md: FOUNDATION_THEME.unit[36],
-                    lg: FOUNDATION_THEME.unit[40],
+                    sm: {
+                        container: FOUNDATION_THEME.unit[32],
+                        'no-container': FOUNDATION_THEME.unit[32],
+                    },
+                    md: {
+                        container: FOUNDATION_THEME.unit[36],
+                        'no-container': FOUNDATION_THEME.unit[36],
+                    },
+                    lg: {
+                        container: FOUNDATION_THEME.unit[40],
+                        'no-container': FOUNDATION_THEME.unit[40],
+                    },
                 },
                 paddingX: {
-                    sm: FOUNDATION_THEME.unit[14],
-                    md: FOUNDATION_THEME.unit[14],
-                    lg: FOUNDATION_THEME.unit[12],
+                    sm: {
+                        container: FOUNDATION_THEME.unit[14],
+                        'no-container': FOUNDATION_THEME.unit[14],
+                    },
+                    md: {
+                        container: FOUNDATION_THEME.unit[14],
+                        'no-container': FOUNDATION_THEME.unit[14],
+                    },
+                    lg: {
+                        container: FOUNDATION_THEME.unit[12],
+                        'no-container': FOUNDATION_THEME.unit[12],
+                    },
                 },
                 paddingY: {
-                    sm: FOUNDATION_THEME.unit[7],
-                    md: FOUNDATION_THEME.unit[8],
-                    lg: FOUNDATION_THEME.unit[10],
+                    sm: {
+                        container: FOUNDATION_THEME.unit[7],
+                        'no-container': FOUNDATION_THEME.unit[7],
+                    },
+                    md: {
+                        container: FOUNDATION_THEME.unit[8],
+                        'no-container': FOUNDATION_THEME.unit[8],
+                    },
+                    lg: {
+                        container: FOUNDATION_THEME.unit[10],
+                        'no-container': FOUNDATION_THEME.unit[10],
+                    },
                 },
                 borderRadius: {
-                    sm: foundationToken.unit[10],
-                    md: foundationToken.unit[10],
-                    lg: foundationToken.unit[10],
+                    sm: {
+                        container: foundationToken.unit[10],
+                        'no-container': foundationToken.unit[10],
+                    },
+                    md: {
+                        container: foundationToken.unit[10],
+                        'no-container': foundationToken.unit[10],
+                    },
+                    lg: {
+                        container: foundationToken.unit[10],
+                        'no-container': foundationToken.unit[10],
+                    },
                 },
                 boxShadow: {
                     container: foundationToken.shadows.xs,
