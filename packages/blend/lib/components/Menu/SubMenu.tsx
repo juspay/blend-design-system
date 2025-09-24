@@ -69,7 +69,7 @@ const getLabelColor = (
     menuTokens: MenuTokensType,
     item: MenuItemType
 ) => {
-    const bg = menuTokens.item.label.color
+    const bg = menuTokens.item.text.color
 
     // check for variant
     if (
@@ -107,7 +107,7 @@ const getSubLabelColor = (
     menuTokens: MenuTokensType,
     item: MenuItemType
 ) => {
-    const bg = menuTokens.item.subLabel.color
+    const bg = menuTokens.item.subText.color
 
     // check for variant
     if (
@@ -178,8 +178,10 @@ export const SubMenu = ({
                     flexDirection="column"
                     gap={menuTokens.item.gap}
                     width="calc(100% - 12px)"
-                    padding={menuTokens.item.padding}
-                    margin={menuTokens.item.margin}
+                    paddingX={menuTokens.item.padding.x}
+                    paddingY={menuTokens.item.padding.y}
+                    marginY={menuTokens.item.margin.y}
+                    marginX={menuTokens.item.margin.x}
                     borderRadius={menuTokens.item.borderRadius}
                     color={getLabelColor('default', menuTokens, item)}
                     _hover={{
@@ -244,8 +246,8 @@ export const SubMenu = ({
                                     menuTokens,
                                     item
                                 )}
-                                fontWeight={menuTokens.item.subLabel.fontWeight}
-                                fontSize={menuTokens.item.subLabel.fontSize}
+                                fontWeight={menuTokens.item.subText.fontWeight}
+                                fontSize={menuTokens.item.subText.fontSize}
                             >
                                 {item.subLabel}
                             </PrimitiveText>
@@ -258,8 +260,10 @@ export const SubMenu = ({
                     style={{
                         paddingTop: item.enableSubMenuSearch
                             ? 0
-                            : menuTokens.paddingTop,
-                        paddingBottom: menuTokens.paddingBottom,
+                            : menuTokens.padding.y,
+                        paddingBottom: menuTokens.padding.y,
+                        paddingRight: menuTokens.padding.x,
+                        paddingLeft: menuTokens.padding.x,
                         borderRadius: menuTokens.borderRadius,
                         minWidth: '200px',
                         maxWidth: '280px',

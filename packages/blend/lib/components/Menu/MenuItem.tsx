@@ -1,5 +1,4 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
-import { FOUNDATION_THEME } from '../../tokens'
 import { MenuItemActionType, type MenuItemType, MenuItemVariant } from './types'
 import { SubMenu } from './SubMenu'
 import Block from '../Primitives/Block/Block'
@@ -56,7 +55,7 @@ const getColor = (
     menuTokens: MenuTokensType,
     item: MenuItemType
 ) => {
-    const bg = menuTokens.item.label.color
+    const bg = menuTokens.item.text.color
 
     // check for variant
     if (item.variant === MenuItemVariant.DEFAULT) {
@@ -112,8 +111,10 @@ const MenuItem = ({
             <Block
                 key={idx}
                 display="flex"
-                padding={menuTokens.item.padding}
-                margin={menuTokens.item.margin}
+                paddingX={menuTokens.item.padding.x}
+                paddingY={menuTokens.item.padding.y}
+                marginY={menuTokens.item.margin.y}
+                marginX={menuTokens.item.margin.x}
                 borderRadius={menuTokens.item.borderRadius}
                 onClick={item.disabled ? undefined : item.onClick}
                 cursor={item.disabled ? 'not-allowed' : 'pointer'}
@@ -154,9 +155,9 @@ const MenuItem = ({
                         overflow="hidden"
                     >
                         <Text
-                            variant="body.md"
                             color={getColor('default', menuTokens, item)}
-                            fontWeight={500}
+                            fontWeight={menuTokens.item.text.fontWeight}
+                            fontSize={menuTokens.item.text.fontSize}
                             truncate
                         >
                             {item.label}
@@ -169,9 +170,9 @@ const MenuItem = ({
                 {item.subLabel && (
                     <Block display="flex" alignItems="center" width="100%">
                         <Text
-                            variant="body.sm"
-                            color={FOUNDATION_THEME.colors.gray[400]}
-                            fontWeight={400}
+                            color={getColor('default', menuTokens, item)}
+                            fontWeight={menuTokens.item.subText.fontWeight}
+                            fontSize={menuTokens.item.subText.fontSize}
                         >
                             {item.subLabel}
                         </Text>
