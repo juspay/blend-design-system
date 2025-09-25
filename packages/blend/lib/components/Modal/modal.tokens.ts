@@ -47,8 +47,6 @@ export type ModalTokensType = {
         padding: CSSObject['padding']
         // Pattern: header.border
         border: CSSObject['border']
-        // Pattern: header.borderRadius
-        borderRadius: CSSObject['borderRadius']
         // Pattern: header.backgroundColor
         backgroundColor: CSSObject['backgroundColor']
 
@@ -67,6 +65,8 @@ export type ModalTokensType = {
                 color: CSSObject['color']
                 // Pattern: header.text.subtitle.fontSize
                 fontSize: CSSObject['fontSize']
+                // Pattern: header.text.subtitle.fontWeight
+                fontWeight: CSSObject['fontWeight']
             }
         }
     }
@@ -75,10 +75,6 @@ export type ModalTokensType = {
     body: {
         // Pattern: body.padding
         padding: CSSObject['padding']
-        // Pattern: body.border
-        border: CSSObject['border']
-        // Pattern: body.borderRadius
-        borderRadius: CSSObject['borderRadius']
         // Pattern: body.backgroundColor
         backgroundColor: CSSObject['backgroundColor']
     }
@@ -89,14 +85,15 @@ export type ModalTokensType = {
         padding: CSSObject['padding']
         // Pattern: footer.border
         border: CSSObject['border']
-        // Pattern: footer.borderRadius
-        borderRadius: CSSObject['borderRadius']
         // Pattern: footer.backgroundColor
         backgroundColor: CSSObject['backgroundColor']
         // Pattern: footer.alignItems
         alignItems: CSSObject['alignItems']
         // Pattern: footer.gap
         gap: CSSObject['gap']
+    }
+    closeButton: {
+        color: CSSObject['color'] // add hover and default state
     }
 }
 
@@ -117,7 +114,7 @@ export const getModalComponentTokens = (
             header: {
                 padding: foundationToken.unit[16],
                 border: `1px solid ${foundationToken.colors.gray[200]}`,
-                borderRadius: foundationToken.border.radius[12],
+                // borderRadius: foundationToken.border.radius[12],
                 backgroundColor: foundationToken.colors.gray[0],
 
                 text: {
@@ -129,6 +126,7 @@ export const getModalComponentTokens = (
                     subtitle: {
                         color: foundationToken.colors.gray[600],
                         fontSize: foundationToken.font.size.body.sm.fontSize,
+                        fontWeight: foundationToken.font.weight[400],
                     },
                 },
             },
@@ -136,8 +134,6 @@ export const getModalComponentTokens = (
             // Body properties
             body: {
                 padding: foundationToken.unit[16],
-                border: `1px solid ${foundationToken.colors.gray[200]}`,
-                borderRadius: foundationToken.border.radius[12],
                 backgroundColor: foundationToken.colors.gray[0],
             },
 
@@ -145,10 +141,13 @@ export const getModalComponentTokens = (
             footer: {
                 padding: foundationToken.unit[16],
                 border: `1px solid ${foundationToken.colors.gray[200]}`,
-                borderRadius: `0 0 ${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]}`,
+                // borderRadius: `0 0 ${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]}`,
                 backgroundColor: foundationToken.colors.gray[0],
                 alignItems: 'flex-end',
                 gap: foundationToken.unit[12],
+            },
+            closeButton: {
+                color: foundationToken.colors.gray[500], // default color
             },
         },
         lg: {
@@ -160,7 +159,6 @@ export const getModalComponentTokens = (
             header: {
                 padding: foundationToken.unit[20],
                 border: `1px solid ${foundationToken.colors.gray[200]}`,
-                borderRadius: foundationToken.border.radius[16],
                 backgroundColor: foundationToken.colors.gray[0],
 
                 text: {
@@ -172,6 +170,7 @@ export const getModalComponentTokens = (
                     subtitle: {
                         color: foundationToken.colors.gray[600],
                         fontSize: foundationToken.font.size.body.md.fontSize,
+                        fontWeight: foundationToken.font.weight[400],
                     },
                 },
             },
@@ -179,8 +178,6 @@ export const getModalComponentTokens = (
             // Body properties
             body: {
                 padding: foundationToken.unit[20],
-                border: `1px solid ${foundationToken.colors.gray[200]}`,
-                borderRadius: foundationToken.border.radius[16],
                 backgroundColor: foundationToken.colors.gray[0],
             },
 
@@ -188,10 +185,13 @@ export const getModalComponentTokens = (
             footer: {
                 padding: foundationToken.unit[20],
                 border: `1px solid ${foundationToken.colors.gray[200]}`,
-                borderRadius: `0 0 ${foundationToken.border.radius[16]} ${foundationToken.border.radius[16]}`,
+                // borderRadius: `0 0 ${foundationToken.border.radius[16]} ${foundationToken.border.radius[16]}`,
                 backgroundColor: foundationToken.colors.gray[0],
                 alignItems: 'flex-end',
                 gap: foundationToken.unit[16],
+            },
+            closeButton: {
+                color: foundationToken.colors.gray[500], // default color
             },
         },
     }
