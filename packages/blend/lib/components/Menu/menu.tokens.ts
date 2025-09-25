@@ -52,7 +52,7 @@ export type MenuTokensType = {
             }
         }
         gap: CSSObject['gap']
-        label: {
+        optionsLabel: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: CSSObject['color']
@@ -65,7 +65,7 @@ export type MenuTokensType = {
                 y: CSSObject['margin']
             }
         }
-        text: {
+        option: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: {
@@ -89,7 +89,7 @@ export type MenuTokensType = {
                 }
             }
         }
-        subText: {
+        description: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: {
@@ -211,7 +211,7 @@ export const getMenuTokens = (
                     },
                 },
                 gap: 4,
-                label: {
+                optionsLabel: {
                     fontSize: 12,
                     fontWeight: 400,
                     color: foundationToken.colors.gray[400],
@@ -224,7 +224,7 @@ export const getMenuTokens = (
                         y: foundationToken.unit[0],
                     },
                 },
-                text: {
+                option: {
                     fontSize: 14,
                     fontWeight: 500,
                     color: {
@@ -293,7 +293,7 @@ export const getMenuTokens = (
                         },
                     },
                 },
-                subText: {
+                description: {
                     fontSize: 12,
                     fontWeight: 400,
                     color: {
@@ -452,7 +452,7 @@ export const getMenuTokens = (
                     },
                 },
                 gap: 4,
-                label: {
+                optionsLabel: {
                     fontSize: 12,
                     fontWeight: 400,
                     color: foundationToken.colors.gray[400],
@@ -465,7 +465,7 @@ export const getMenuTokens = (
                         y: foundationToken.unit[0],
                     },
                 },
-                text: {
+                option: {
                     fontSize: 14,
                     fontWeight: 500,
                     color: {
@@ -534,7 +534,7 @@ export const getMenuTokens = (
                         },
                     },
                 },
-                subText: {
+                description: {
                     fontSize: 12,
                     fontWeight: 400,
                     color: {

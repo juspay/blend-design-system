@@ -55,7 +55,7 @@ const getColor = (
     menuTokens: MenuTokensType,
     item: MenuItemType
 ) => {
-    const bg = menuTokens.item.text.color
+    const bg = menuTokens.item.option.color
 
     // check for variant
     if (item.variant === MenuItemVariant.DEFAULT) {
@@ -156,8 +156,8 @@ const MenuItem = ({
                     >
                         <Text
                             color={getColor('default', menuTokens, item)}
-                            fontWeight={menuTokens.item.text.fontWeight}
-                            fontSize={menuTokens.item.text.fontSize}
+                            fontWeight={menuTokens.item.option.fontWeight}
+                            fontSize={menuTokens.item.option.fontSize}
                             truncate
                         >
                             {item.label}
@@ -171,8 +171,8 @@ const MenuItem = ({
                     <Block display="flex" alignItems="center" width="100%">
                         <Text
                             color={getColor('default', menuTokens, item)}
-                            fontWeight={menuTokens.item.subText.fontWeight}
-                            fontSize={menuTokens.item.subText.fontSize}
+                            fontWeight={menuTokens.item.description.fontWeight}
+                            fontSize={menuTokens.item.description.fontSize}
                         >
                             {item.subLabel}
                         </Text>

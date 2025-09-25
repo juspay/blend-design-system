@@ -125,19 +125,30 @@ const Menu = ({
                                 <RadixMenu.Label asChild>
                                     <PrimitiveText
                                         fontSize={
-                                            menuTokens.item.label.fontSize
+                                            menuTokens.item.optionsLabel
+                                                .fontSize
                                         }
                                         paddingY={
-                                            menuTokens.item.label.padding.y
+                                            menuTokens.item.optionsLabel.padding
+                                                .y
                                         }
                                         paddingX={
-                                            menuTokens.item.label.padding.x
+                                            menuTokens.item.optionsLabel.padding
+                                                .x
                                         }
                                         userSelect="none"
-                                        marginY={menuTokens.item.label.margin.y}
-                                        marginX={menuTokens.item.label.margin.x}
+                                        marginY={
+                                            menuTokens.item.optionsLabel.margin
+                                                .y
+                                        }
+                                        marginX={
+                                            menuTokens.item.optionsLabel.margin
+                                                .x
+                                        }
                                         textTransform="uppercase"
-                                        color={menuTokens.item.label.color}
+                                        color={
+                                            menuTokens.item.optionsLabel.color
+                                        }
                                     >
                                         {group.label}
                                     </PrimitiveText>

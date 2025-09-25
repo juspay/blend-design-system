@@ -69,7 +69,7 @@ const getLabelColor = (
     menuTokens: MenuTokensType,
     item: MenuItemType
 ) => {
-    const bg = menuTokens.item.text.color
+    const bg = menuTokens.item.option.color
 
     // check for variant
     if (
@@ -107,7 +107,7 @@ const getSubLabelColor = (
     menuTokens: MenuTokensType,
     item: MenuItemType
 ) => {
-    const bg = menuTokens.item.subText.color
+    const bg = menuTokens.item.description.color
 
     // check for variant
     if (
@@ -218,8 +218,10 @@ export const SubMenu = ({
                         >
                             <Text
                                 variant="body.md"
-                                fontWeight={menuTokens.item.label.fontWeight}
-                                fontSize={menuTokens.item.label.fontSize}
+                                fontWeight={
+                                    menuTokens.item.optionsLabel.fontWeight
+                                }
+                                fontSize={menuTokens.item.optionsLabel.fontSize}
                                 truncate
                                 color={getLabelColor(
                                     'default',
@@ -246,8 +248,10 @@ export const SubMenu = ({
                                     menuTokens,
                                     item
                                 )}
-                                fontWeight={menuTokens.item.subText.fontWeight}
-                                fontSize={menuTokens.item.subText.fontSize}
+                                fontWeight={
+                                    menuTokens.item.description.fontWeight
+                                }
+                                fontSize={menuTokens.item.description.fontSize}
                             >
                                 {item.subLabel}
                             </PrimitiveText>
