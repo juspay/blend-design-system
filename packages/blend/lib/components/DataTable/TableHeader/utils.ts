@@ -155,7 +155,7 @@ export const getFrozenColumnStyles = (
     return {
         position: 'sticky' as const,
         left: `${leftOffset}px`,
-        zIndex: 54,
+        zIndex: 9,
         backgroundColor,
         padding: `0 ${foundationToken.spacing[16]}`,
         ...(isLastFrozenColumn && {
