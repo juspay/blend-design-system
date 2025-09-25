@@ -416,17 +416,24 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         }, [selectedRange, onChange])
 
         const handleCancel = useCallback(() => {
-            const defaultRange = getPresetDateRange(DateRangePreset.TODAY)
-            setSelectedRange(defaultRange)
-            setActivePreset(DateRangePreset.TODAY)
-            setStartDate(formatDate(defaultRange.startDate, dateFormat))
-            setEndDate(formatDate(defaultRange.endDate, dateFormat))
-            setStartTime(formatDate(defaultRange.startDate, 'HH:mm'))
-            setEndTime(formatDate(defaultRange.endDate, 'HH:mm'))
+            const resetRange =
+                value || getPresetDateRange(DateRangePreset.TODAY)
+            setSelectedRange(resetRange)
+            setActivePreset(
+                value ? DateRangePreset.CUSTOM : DateRangePreset.TODAY
+            )
+            setStartDate(formatDate(resetRange.startDate, dateFormat))
+            setEndDate(formatDate(resetRange.endDate, dateFormat))
+            setStartTime(formatDate(resetRange.startDate, 'HH:mm'))
+            setEndTime(formatDate(resetRange.endDate, 'HH:mm'))
 
             setStartDateValidation({ isValid: true, error: 'none' })
             setEndDateValidation({ isValid: true, error: 'none' })
-        }, [dateFormat])
+
+            setIsOpen(false)
+            setDrawerOpen(false)
+            setPopoverKey((prev) => prev + 1)
+        }, [dateFormat, value])
 
         useEffect(() => {
             if (isDisabled) {

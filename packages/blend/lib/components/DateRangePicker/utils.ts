@@ -139,19 +139,19 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
 
     switch (preset) {
         case DateRangePreset.TODAY: {
-            return { startDate: today, endDate: today }
+            return createSingleDateRange(today)
         }
 
         case DateRangePreset.YESTERDAY: {
             const yesterday = new Date(today)
             yesterday.setDate(yesterday.getDate() - 1)
-            return { startDate: yesterday, endDate: yesterday }
+            return createSingleDateRange(yesterday)
         }
 
         case DateRangePreset.TOMORROW: {
             const tomorrow = new Date(today)
             tomorrow.setDate(tomorrow.getDate() + 1)
-            return { startDate: tomorrow, endDate: tomorrow }
+            return createSingleDateRange(tomorrow)
         }
 
         case DateRangePreset.LAST_1_HOUR: {
@@ -412,13 +412,19 @@ export const isStartDate = (date: Date, selectedRange: DateRange): boolean => {
 }
 
 /**
- * Checks if a date is the end date of a range
+ * Checks if a date is the end date of a range (but not if it's the same as start date)
  * @param date The date to check
  * @param selectedRange The selected date range
- * @returns True if the date is the end date
+ * @returns True if the date is the end date and different from start date
  */
 export const isEndDate = (date: Date, selectedRange: DateRange): boolean => {
-    if (!selectedRange.endDate) return false
+    if (!selectedRange.endDate || !selectedRange.startDate) return false
+
+    // Don't show as end date if it's the same day as start date (single date selection)
+    if (isSameDay(selectedRange.startDate, selectedRange.endDate)) {
+        return false
+    }
+
     return (
         date.getDate() === selectedRange.endDate.getDate() &&
         date.getMonth() === selectedRange.endDate.getMonth() &&
@@ -455,7 +461,91 @@ export const isDateToday = (date: Date, today: Date): boolean => {
 }
 
 /**
- * Handles date click logic for calendar
+ * Creates a proper single date range (24-hour selection within the same day)
+ * @param date The date to create a range for
+ * @returns DateRange spanning the entire day (same date, different times)
+ */
+export const createSingleDateRange = (date: Date): DateRange => {
+    // Start of day (00:00:00)
+    const startDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        0,
+        0,
+        0,
+        0
+    )
+
+    // End of day (23:59:59.999) - same date but end of day
+    const endDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        23,
+        59,
+        59,
+        999
+    )
+
+    return { startDate, endDate }
+}
+
+/**
+ * Creates a date at start of day (00:00:00)
+ */
+const createStartOfDay = (date: Date): Date => {
+    return new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        0,
+        0,
+        0,
+        0
+    )
+}
+
+/**
+ * Creates a date at end of day (23:59:59.999 same day)
+ */
+const createEndOfDay = (date: Date): Date => {
+    return new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        23,
+        59,
+        59,
+        999
+    )
+}
+
+/**
+ * Checks if we have a complete range (both start and end dates that are different)
+ */
+const hasCompleteRange = (range: DateRange): boolean => {
+    return !!(
+        range.startDate &&
+        range.endDate &&
+        !isSameDay(range.startDate, range.endDate)
+    )
+}
+
+/**
+ * Checks if we have no selection or only a single date selected
+ */
+const hasNoSelectionOrSingleDate = (range: DateRange): boolean => {
+    return (
+        !range.startDate ||
+        (range.startDate &&
+            range.endDate &&
+            isSameDay(range.startDate, range.endDate))
+    )
+}
+
+/**
+ * Handles date click logic for calendar with clean first click = start, second click = end pattern
  * @param clickedDate The date that was clicked
  * @param selectedRange Current selected range
  * @param allowSingleDateSelection Whether single date selection is allowed
@@ -474,6 +564,7 @@ export const handleCalendarDateClick = (
     disablePastDates: boolean = false,
     isDoubleClick: boolean = false
 ): DateRange | null => {
+    // Validate date is not disabled
     if (
         (disableFutureDates && clickedDate > today) ||
         (disablePastDates && clickedDate < today)
@@ -481,83 +572,66 @@ export const handleCalendarDateClick = (
         return null
     }
 
-    let newRange: DateRange
+    // Create clean date without time components for comparison
+    const clickedDateOnly = new Date(
+        clickedDate.getFullYear(),
+        clickedDate.getMonth(),
+        clickedDate.getDate()
+    )
 
-    if (isDoubleClick) {
-        if (allowSingleDateSelection) {
-            newRange = {
-                startDate: clickedDate,
-                endDate: clickedDate,
-            }
-        } else {
-            newRange = {
-                startDate: clickedDate,
-                endDate: clickedDate,
-            }
-        }
-        return newRange
+    // Handle double click - always create single date range if allowed
+    if (isDoubleClick && allowSingleDateSelection) {
+        return createSingleDateRange(clickedDateOnly)
     }
 
-    if (!selectedRange.startDate || allowSingleDateSelection) {
-        newRange = {
-            startDate: clickedDate,
-            endDate: clickedDate,
-        }
-    } else if (!selectedRange.endDate) {
-        if (clickedDate < selectedRange.startDate) {
-            newRange = {
-                startDate: clickedDate,
-                endDate: clickedDate,
+    // Case 1: No selection - first click sets start date
+    if (!selectedRange.startDate) {
+        const startDate = createStartOfDay(clickedDateOnly)
+        return { startDate, endDate: startDate }
+    }
+
+    // Case 2: We have only start date (same as start date) - second click on same date
+    if (
+        selectedRange.startDate &&
+        selectedRange.endDate &&
+        isSameDay(selectedRange.startDate, selectedRange.endDate)
+    ) {
+        // If clicking the same day as start date
+        if (isSameDay(clickedDateOnly, selectedRange.startDate)) {
+            // If single date selection is allowed, create full day range
+            if (allowSingleDateSelection) {
+                return createSingleDateRange(clickedDateOnly)
             }
-        } else if (
-            clickedDate.getTime() === selectedRange.startDate.getTime()
-        ) {
-            newRange = {
-                startDate: clickedDate,
-                endDate: clickedDate,
-            }
-        } else {
-            newRange = {
+            // Otherwise keep as single point
+            return {
                 startDate: selectedRange.startDate,
-                endDate: clickedDate,
+                endDate: selectedRange.startDate,
             }
         }
-    } else {
-        const startTime = selectedRange.startDate.getTime()
-        const endTime = selectedRange.endDate.getTime()
-        const clickedTime = clickedDate.getTime()
 
-        const distanceToStart = Math.abs(clickedTime - startTime)
-        const distanceToEnd = Math.abs(clickedTime - endTime)
-
-        if (distanceToStart <= distanceToEnd) {
-            if (clickedDate <= selectedRange.endDate) {
-                newRange = {
-                    startDate: clickedDate,
-                    endDate: selectedRange.endDate,
-                }
-            } else {
-                newRange = {
-                    startDate: selectedRange.endDate,
-                    endDate: clickedDate,
-                }
+        // Clicking different date - set as end date
+        if (clickedDateOnly > selectedRange.startDate) {
+            // Normal range: start to end
+            return {
+                startDate: selectedRange.startDate,
+                endDate: createEndOfDay(clickedDateOnly),
             }
         } else {
-            if (clickedDate >= selectedRange.startDate) {
-                newRange = {
-                    startDate: selectedRange.startDate,
-                    endDate: clickedDate,
-                }
-            } else {
-                newRange = {
-                    startDate: clickedDate,
-                    endDate: selectedRange.startDate,
-                }
-            }
+            // Clicked date is before start date - make it the new start
+            const startDate = createStartOfDay(clickedDateOnly)
+            return { startDate, endDate: startDate }
         }
     }
 
-    return newRange
+    // Case 3: We have a complete range - start over with new start date
+    if (hasCompleteRange(selectedRange)) {
+        const startDate = createStartOfDay(clickedDateOnly)
+        return { startDate, endDate: startDate }
+    }
+
+    // Fallback - should not reach here, but handle gracefully
+    const startDate = createStartOfDay(clickedDateOnly)
+    return { startDate, endDate: startDate }
 }
 
 /**
@@ -882,7 +956,14 @@ export const getDateCellStates = (
     const isEnd = isEndDate(date, selectedRange)
     const isRangeDay = isInSelectedRange(date, selectedRange)
     const isTodayDay = isDateToday(date, today)
-    const isSingleDate = isStart && isEnd
+
+    // For single date selection, only show as single date if start and end are the same day
+    const isSingleDate =
+        isStart &&
+        selectedRange.startDate &&
+        selectedRange.endDate &&
+        isSameDay(selectedRange.startDate, selectedRange.endDate)
+
     const isDisabled = Boolean(
         (disableFutureDates && date > today) ||
             (disablePastDates && date < today)
@@ -1216,14 +1297,48 @@ export const handleCalendarDateSelect = (
     formattedStartDate: string
     formattedEndDate: string
 } => {
+    // Check if this is a single date range (same day for start and end)
+    const isSingleDateRange =
+        range.startDate &&
+        range.endDate &&
+        isSameDay(range.startDate, range.endDate)
+
     if (range.startDate) {
-        const [startHour, startMinute] = startTime.split(':').map(Number)
-        range.startDate.setHours(startHour, startMinute)
+        if (isSingleDateRange) {
+            // For single date ranges, preserve the 00:00:00 time for start date
+            // Only override if it's not already set to start of day
+            if (
+                range.startDate.getHours() !== 0 ||
+                range.startDate.getMinutes() !== 0
+            ) {
+                const [startHour, startMinute] = startTime
+                    .split(':')
+                    .map(Number)
+                range.startDate.setHours(startHour, startMinute)
+            }
+        } else {
+            // For range selections, use the time picker values
+            const [startHour, startMinute] = startTime.split(':').map(Number)
+            range.startDate.setHours(startHour, startMinute)
+        }
     }
 
     if (range.endDate) {
-        const [endHour, endMinute] = endTime.split(':').map(Number)
-        range.endDate.setHours(endHour, endMinute)
+        if (isSingleDateRange) {
+            // For single date ranges, preserve the 23:59:59 time for end date
+            // Only override if it's not already set to end of day
+            if (
+                range.endDate.getHours() !== 23 ||
+                range.endDate.getMinutes() !== 59
+            ) {
+                const [endHour, endMinute] = endTime.split(':').map(Number)
+                range.endDate.setHours(endHour, endMinute)
+            }
+        } else {
+            // For range selections, use the time picker values
+            const [endHour, endMinute] = endTime.split(':').map(Number)
+            range.endDate.setHours(endHour, endMinute)
+        }
     }
 
     return {
