@@ -16,6 +16,7 @@ import {
     handleCalendarDateSelect,
     handlePresetSelection,
     formatTriggerDisplay,
+    validateDateTimeRange,
 } from './utils'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
@@ -211,12 +212,14 @@ type FooterControlsProps = {
     onCancel: () => void
     onApply: () => void
     calendarToken: CalendarTokenType
+    isApplyDisabled: boolean
 }
 
 const FooterControls: React.FC<FooterControlsProps> = ({
     onCancel,
     onApply,
     calendarToken,
+    isApplyDisabled,
 }) => (
     <Block
         display="flex"
@@ -237,6 +240,7 @@ const FooterControls: React.FC<FooterControlsProps> = ({
                 size={ButtonSize.SMALL}
                 onClick={onApply}
                 text="Apply"
+                disabled={isApplyDisabled}
             />
         </Block>
     </Block>
@@ -299,6 +303,26 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             useState<DateValidationResult>({ isValid: true, error: 'none' })
 
         const today = new Date()
+
+        // Calculate if apply button should be disabled
+        const isApplyDisabled = React.useMemo(() => {
+            // Check if date inputs are invalid
+            if (!startDateValidation.isValid || !endDateValidation.isValid) {
+                return true
+            }
+
+            // Validate the date/time range
+            const validation = validateDateTimeRange(
+                selectedRange,
+                allowSingleDateSelection
+            )
+            return !validation.isValid
+        }, [
+            selectedRange,
+            startDateValidation,
+            endDateValidation,
+            allowSingleDateSelection,
+        ])
 
         useEffect(() => {
             if (value) {
@@ -466,17 +490,21 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         )
 
         const renderTrigger = () => {
+            // Use the committed value (value prop) for trigger display, not the selectedRange
+            const displayRange =
+                value || getPresetDateRange(DateRangePreset.TODAY)
+
             if (triggerConfig?.renderTrigger) {
                 const formattedValue = formatConfig
                     ? formatTriggerDisplay(
-                          selectedRange,
+                          displayRange,
                           formatConfig,
                           triggerConfig.placeholder
                       )
-                    : formatDateDisplay(selectedRange, allowSingleDateSelection)
+                    : formatDateDisplay(displayRange, allowSingleDateSelection)
 
                 return triggerConfig.renderTrigger({
-                    selectedRange,
+                    selectedRange: displayRange,
                     isOpen,
                     isDisabled,
                     formattedValue,
@@ -535,7 +563,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     <Button
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.MEDIUM}
-                        text={formatMobileDateRange(selectedRange)}
+                        text={formatMobileDateRange(displayRange)}
                         disabled={isDisabled}
                         onClick={() => setDrawerOpen(true)}
                     />
@@ -554,11 +582,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
             const displayText = formatConfig
                 ? formatTriggerDisplay(
-                      selectedRange,
+                      displayRange,
                       formatConfig,
                       triggerConfig?.placeholder || 'Select date range'
                   )
-                : formatDateDisplay(selectedRange, allowSingleDateSelection)
+                : formatDateDisplay(displayRange, allowSingleDateSelection)
 
             const iconElement =
                 triggerConfig?.showIcon === false
@@ -742,6 +770,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             onCancel={handleCancel}
                             onApply={handleApply}
                             calendarToken={calendarToken}
+                            isApplyDisabled={isApplyDisabled}
                         />
                     </Block>
                 </Popover>

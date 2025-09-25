@@ -11,7 +11,7 @@ import { DateRange } from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
 import {
-    handleCalendarDateClick,
+    handleEnhancedCalendarDateClick,
     getDayNames,
     getMonthHeight,
     findCurrentMonthIndex,
@@ -264,7 +264,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 isDoubleClick: boolean = false
             ) => {
                 const clickedDate = new Date(year, month, day)
-                const newRange = handleCalendarDateClick(
+                const newRange = handleEnhancedCalendarDateClick(
                     clickedDate,
                     selectedRange,
                     allowSingleDateSelection,
