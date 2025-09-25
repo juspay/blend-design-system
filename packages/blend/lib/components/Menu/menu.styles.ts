@@ -6,7 +6,7 @@ export const contentBaseStyle: CSSObject = {
     color: 'black',
     borderRadius: 6,
     boxShadow: FOUNDATION_THEME.shadows.lg,
-    zIndex: 9999,
+    zIndex: 49,
     minWidth: 200,
     maxWidth: 280,
     overflowY: 'auto',

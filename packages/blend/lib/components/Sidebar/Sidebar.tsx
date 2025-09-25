@@ -129,6 +129,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 display="flex"
                 backgroundColor={FOUNDATION_THEME.colors.gray[25]}
                 position="relative"
+                zIndex={98}
             >
                 {!isExpanded && !isMobile && (
                     <Block

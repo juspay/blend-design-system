@@ -30,7 +30,7 @@ const Popover = ({
     height,
     minHeight,
     maxHeight,
-    zIndex = 1000,
+    zIndex = 999,
     size = PopoverSize.MEDIUM,
     onClose,
     shadow = 'lg',
@@ -102,7 +102,7 @@ const Popover = ({
                 alignOffset={alignOffset}
             >
                 <Block
-                    zIndex={popoverTokens.zIndex}
+                    zIndex={999}
                     backgroundColor={popoverTokens.background}
                     boxShadow={
                         popoverTokens.shadow?.[shadow] ||

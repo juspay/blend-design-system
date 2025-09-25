@@ -25,7 +25,7 @@ const Content = styled(RadixMenu.Content)(() => ({
     backgroundColor: FOUNDATION_THEME.colors.gray[0],
     borderRadius: FOUNDATION_THEME.border.radius[8],
     boxShadow: FOUNDATION_THEME.shadows.lg,
-    zIndex: 9999,
+    zIndex: 49,
     border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
     display: 'flex',
     flexDirection: 'column',
@@ -37,7 +37,7 @@ const StickyHeader = styled(Block)(() => ({
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 1000,
+    zIndex: 50,
     backgroundColor: FOUNDATION_THEME.colors.gray[0],
 }))
 

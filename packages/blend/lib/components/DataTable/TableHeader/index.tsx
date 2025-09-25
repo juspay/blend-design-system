@@ -568,7 +568,6 @@ const TableHeader = forwardRef<
                                                     }
                                                     maxWidth={220}
                                                     minWidth={220}
-                                                    zIndex={1000}
                                                     side="bottom"
                                                     align={getPopoverAlignment(
                                                         index,

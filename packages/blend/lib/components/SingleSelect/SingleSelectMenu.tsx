@@ -46,7 +46,7 @@ const Content = styled(RadixMenu.Content)(() => ({
     // width: "var(--radix-dropdown-menu-trigger-width)",
     // maxWidth: "var(--radix-dropdown-menu-trigger-width)",
     boxShadow: FOUNDATION_THEME.shadows.lg,
-    zIndex: 9999,
+    zIndex: 49,
     overflowY: 'auto',
     overflowX: 'hidden',
     scrollbarWidth: 'none',
@@ -85,7 +85,7 @@ const SubContent = styled(RadixMenu.SubContent)(() => ({
     borderRadius: 8,
     padding: '8px 0px',
     boxShadow: FOUNDATION_THEME.shadows.lg,
-    zIndex: 9999,
+    zIndex: 49,
 }))
 
 const SubMenu = ({
@@ -324,7 +324,7 @@ const SingleSelectMenu = ({
                         top={0}
                         left={0}
                         right={0}
-                        zIndex={1000}
+                        zIndex={50}
                         backgroundColor={FOUNDATION_THEME.colors.gray[0]}
                     >
                         <Block marginBottom={FOUNDATION_THEME.unit[6]}>
