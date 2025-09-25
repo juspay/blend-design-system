@@ -536,6 +536,8 @@ const SingleSelectDemo = () => {
 
                         <div className="border rounded-lg p-6 bg-gray-50">
                             <SingleSelect
+                                useDrawerOnMobile={false}
+                                inline={true}
                                 error={playgroundError}
                                 errorMessage={playgroundErrorMessage}
                                 onBlur={() => {

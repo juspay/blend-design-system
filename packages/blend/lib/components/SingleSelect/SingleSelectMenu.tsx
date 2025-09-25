@@ -15,6 +15,7 @@ import { SearchInput } from '../Inputs'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
+import { SelectMenuSize, SelectMenuVariant } from './types'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -37,6 +38,10 @@ type SingleSelectMenuProps = {
     // open
     open: boolean
     onOpenChange: (open: boolean) => void
+
+    // size
+    size?: SelectMenuSize
+    variant?: SelectMenuVariant
 }
 
 const Content = styled(RadixMenu.Content)(() => ({
@@ -260,6 +265,8 @@ const SingleSelectMenu = ({
     // open
     open,
     onOpenChange,
+    size = SelectMenuSize.MEDIUM,
+    variant = SelectMenuVariant.CONTAINER,
 }: SingleSelectMenuProps) => {
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
@@ -287,13 +294,13 @@ const SingleSelectMenu = ({
                 alignOffset={alignOffset}
                 side={side}
                 style={{
-                    minWidth: minWidth || 250,
-                    width:
-                        minWidth || maxWidth
-                            ? 'auto'
-                            : 'max(var(--radix-dropdown-menu-trigger-width), 250px)',
-                    maxWidth: maxWidth || 400,
-                    maxHeight,
+                    minWidth:
+                        minWidth || 'var(--radix-dropdown-menu-trigger-width)',
+
+                    maxWidth:
+                        maxWidth || 'var(--radix-dropdown-menu-trigger-width)',
+                    maxHeight:
+                        maxHeight || 'var(--radix-popper-available-height)',
                 }}
             >
                 {enableSearch && (
@@ -322,7 +329,8 @@ const SingleSelectMenu = ({
                     </Block>
                 )}
                 <Block
-                    padding={FOUNDATION_THEME.unit[6]}
+                    paddingX={singleSelectTokens.menu.padding[size][variant].x}
+                    paddingY={singleSelectTokens.menu.padding[size][variant].y}
                     style={{
                         paddingTop: enableSearch ? 0 : FOUNDATION_THEME.unit[6],
                     }}
@@ -351,10 +359,17 @@ const SingleSelectMenu = ({
                                 {group.groupLabel && (
                                     <Label>
                                         <Text
-                                            variant="body.sm"
+                                            fontSize={
+                                                singleSelectTokens.menu.item
+                                                    .optionsLabel.fontSize
+                                            }
                                             color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[400]
+                                                singleSelectTokens.menu.item
+                                                    .optionsLabel.color.default
+                                            }
+                                            fontWeight={
+                                                singleSelectTokens.menu.item
+                                                    .optionsLabel.fontWeight
                                             }
                                         >
                                             {group.groupLabel}
@@ -374,15 +389,15 @@ const SingleSelectMenu = ({
                                         <RadixMenu.Separator asChild>
                                             <Block
                                                 height={
-                                                    singleSelectTokens.dropdown
+                                                    singleSelectTokens.menu.item
                                                         .seperator.height
                                                 }
                                                 backgroundColor={
-                                                    singleSelectTokens.dropdown
+                                                    singleSelectTokens.menu.item
                                                         .seperator.color
                                                 }
                                                 margin={
-                                                    singleSelectTokens.dropdown
+                                                    singleSelectTokens.menu.item
                                                         .seperator.margin
                                                 }
                                             ></Block>

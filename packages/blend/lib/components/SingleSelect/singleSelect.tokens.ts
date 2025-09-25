@@ -16,25 +16,53 @@ export type SingleSelectItemStates =
     | 'selected'
 
 export type SingleSelectTokensType = {
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in SingleSelectItemStates]: CSSObject['color']
+        }
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in SingleSelectItemStates]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in SingleSelectItemStates]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+
     trigger: {
         height: {
             [key in SelectMenuSize]: {
-                [key in SelectMenuVariant]: CSSObject['height']
+                [key in SelectMenuVariant]: CSSObject['height'] // won't depend on variant
             }
         }
-        paddingX: {
+        padding: {
             [key in SelectMenuSize]: {
-                [key in SelectMenuVariant]: CSSObject['padding']
+                [key in SelectMenuVariant]: {
+                    // won't depend on variant
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
             }
         }
-        paddingY: {
-            [key in SelectMenuSize]: {
-                [key in SelectMenuVariant]: CSSObject['padding']
-            }
-        }
+
         borderRadius: {
             [key in SelectMenuSize]: {
-                [key in SelectMenuVariant]: CSSObject['borderRadius']
+                [key in SelectMenuVariant]: CSSObject['borderRadius'] // won't depend on variant
             }
         }
         boxShadow: {
@@ -46,19 +74,24 @@ export type SingleSelectTokensType = {
             }
         }
         outline: {
+            //this acts as a border for the trigger in default state
             [key in SelectMenuVariant]: {
                 [key in TriggerStates]: CSSObject['outline']
             }
         }
     }
-    dropdown: {
-        boxShadow: CSSObject['boxShadow']
+    menu: {
         backgroundColor: CSSObject['backgroundColor']
-        paddingTop: CSSObject['paddingTop']
-        paddingBottom: CSSObject['paddingBottom']
         border: CSSObject['border']
-        outline: CSSObject['outline']
         borderRadius: CSSObject['borderRadius']
+        padding: {
+            [key in SelectMenuSize]: {
+                [key in SelectMenuVariant]: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
+            }
+        }
         item: {
             padding: CSSObject['padding']
             margin: CSSObject['margin']
@@ -67,28 +100,36 @@ export type SingleSelectTokensType = {
             backgroundColor: {
                 [key in SingleSelectItemStates]: CSSObject['backgroundColor']
             }
-            label: {
+            optionsLabel: {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
                 color: {
                     [key in SingleSelectItemStates]: CSSObject['color']
                 }
             }
-            subLabel: {
+            option: {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
                 color: {
                     [key in SingleSelectItemStates]: CSSObject['color']
                 }
             }
-        }
-        seperator: {
-            color: CSSObject['color']
-            height: CSSObject['height']
-            margin: CSSObject['margin']
+            description: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: {
+                    [key in SingleSelectItemStates]: CSSObject['color']
+                }
+            }
+            seperator: {
+                color: CSSObject['color']
+                height: CSSObject['height']
+                margin: CSSObject['margin']
+            }
         }
     }
     drawer: {
+        //needs to be removed
         header: {
             paddingX: CSSObject['padding']
             paddingBottom: CSSObject['padding']
@@ -106,6 +147,51 @@ export const getSingleSelectTokens = (
 ): ResponsiveSingleSelectTokens => {
     return {
         sm: {
+            gap: foundationToken.unit[8],
+            label: {
+                fontSize: foundationToken.font.size.body.md.fontSize,
+                fontWeight: foundationToken.font.weight[500],
+                color: {
+                    default: foundationToken.colors.gray[700],
+                    hover: foundationToken.colors.gray[700],
+                    active: foundationToken.colors.gray[700],
+                    focus: foundationToken.colors.gray[700],
+                    focusVisible: foundationToken.colors.gray[700],
+                    disabled: foundationToken.colors.gray[400],
+                    selected: foundationToken.colors.gray[700],
+                },
+            },
+            subLabel: {
+                fontSize: foundationToken.font.size.body.md.fontSize,
+                fontWeight: foundationToken.font.weight[400],
+                color: {
+                    default: foundationToken.colors.gray[400],
+                    hover: foundationToken.colors.gray[400],
+                    active: foundationToken.colors.gray[400],
+                    focus: foundationToken.colors.gray[400],
+                    focusVisible: foundationToken.colors.gray[400],
+                    disabled: foundationToken.colors.gray[300],
+                    selected: foundationToken.colors.gray[400],
+                },
+            },
+            hintText: {
+                fontSize: foundationToken.font.size.body.md.fontSize,
+                fontWeight: foundationToken.font.weight[400],
+                color: {
+                    default: foundationToken.colors.gray[500],
+                    hover: foundationToken.colors.gray[500],
+                    active: foundationToken.colors.gray[500],
+                    focus: foundationToken.colors.gray[500],
+                    focusVisible: foundationToken.colors.gray[500],
+                    disabled: foundationToken.colors.gray[400],
+                    selected: foundationToken.colors.gray[500],
+                },
+            },
+            errorMessage: {
+                fontSize: foundationToken.font.size.body.md.fontSize,
+                fontWeight: foundationToken.font.weight[500],
+                color: foundationToken.colors.red[600],
+            },
             trigger: {
                 height: {
                     sm: {
@@ -121,32 +207,36 @@ export const getSingleSelectTokens = (
                         'no-container': FOUNDATION_THEME.unit[52],
                     },
                 },
-                paddingX: {
+                padding: {
                     sm: {
-                        container: FOUNDATION_THEME.unit[14],
-                        'no-container': FOUNDATION_THEME.unit[14],
+                        container: {
+                            x: FOUNDATION_THEME.unit[14],
+                            y: FOUNDATION_THEME.unit[7],
+                        },
+                        'no-container': {
+                            x: FOUNDATION_THEME.unit[14],
+                            y: FOUNDATION_THEME.unit[7],
+                        },
                     },
                     md: {
-                        container: FOUNDATION_THEME.unit[14],
-                        'no-container': FOUNDATION_THEME.unit[14],
+                        container: {
+                            x: FOUNDATION_THEME.unit[14],
+                            y: FOUNDATION_THEME.unit[8],
+                        },
+                        'no-container': {
+                            x: FOUNDATION_THEME.unit[14],
+                            y: FOUNDATION_THEME.unit[8],
+                        },
                     },
                     lg: {
-                        container: FOUNDATION_THEME.unit[12],
-                        'no-container': FOUNDATION_THEME.unit[12],
-                    },
-                },
-                paddingY: {
-                    sm: {
-                        container: FOUNDATION_THEME.unit[7],
-                        'no-container': FOUNDATION_THEME.unit[7],
-                    },
-                    md: {
-                        container: FOUNDATION_THEME.unit[8],
-                        'no-container': FOUNDATION_THEME.unit[8],
-                    },
-                    lg: {
-                        container: FOUNDATION_THEME.unit[10],
-                        'no-container': FOUNDATION_THEME.unit[10],
+                        container: {
+                            x: FOUNDATION_THEME.unit[12],
+                            y: FOUNDATION_THEME.unit[10],
+                        },
+                        'no-container': {
+                            x: FOUNDATION_THEME.unit[12],
+                            y: FOUNDATION_THEME.unit[10],
+                        },
                     },
                 },
                 borderRadius: {
@@ -200,13 +290,42 @@ export const getSingleSelectTokens = (
                     },
                 },
             },
-            dropdown: {
-                boxShadow: foundationToken.shadows.sm,
+            menu: {
                 backgroundColor: foundationToken.colors.gray[0],
-                paddingTop: foundationToken.unit[4],
-                paddingBottom: foundationToken.unit[4],
+                padding: {
+                    sm: {
+                        container: {
+                            x: FOUNDATION_THEME.unit[6],
+                            y: FOUNDATION_THEME.unit[6],
+                        },
+                        'no-container': {
+                            x: FOUNDATION_THEME.unit[6],
+                            y: FOUNDATION_THEME.unit[6],
+                        },
+                    },
+                    md: {
+                        container: {
+                            x: FOUNDATION_THEME.unit[6],
+                            y: FOUNDATION_THEME.unit[6],
+                        },
+                        'no-container': {
+                            x: FOUNDATION_THEME.unit[6],
+                            y: FOUNDATION_THEME.unit[6],
+                        },
+                    },
+                    lg: {
+                        container: {
+                            x: FOUNDATION_THEME.unit[6],
+                            y: FOUNDATION_THEME.unit[6],
+                        },
+                        'no-container': {
+                            x: FOUNDATION_THEME.unit[6],
+                            y: FOUNDATION_THEME.unit[6],
+                        },
+                    },
+                },
                 border: foundationToken.colors.gray[200],
-                outline: foundationToken.colors.gray[200],
+                // outline: foundationToken.colors.gray[200],
                 borderRadius: foundationToken.unit[8],
                 item: {
                     padding: FOUNDATION_THEME.unit[8],
@@ -222,7 +341,20 @@ export const getSingleSelectTokens = (
                         disabled: foundationToken.colors.gray[50],
                         selected: foundationToken.colors.gray[50],
                     },
-                    label: {
+                    optionsLabel: {
+                        fontSize: 12,
+                        fontWeight: 400,
+                        color: {
+                            default: foundationToken.colors.gray[400],
+                            hover: foundationToken.colors.gray[400],
+                            active: foundationToken.colors.gray[400],
+                            focus: foundationToken.colors.gray[400],
+                            focusVisible: foundationToken.colors.gray[400],
+                            disabled: foundationToken.colors.gray[400],
+                            selected: foundationToken.colors.gray[400],
+                        },
+                    },
+                    option: {
                         fontSize: 14,
                         fontWeight: 500,
                         color: {
@@ -235,7 +367,7 @@ export const getSingleSelectTokens = (
                             selected: foundationToken.colors.gray[700],
                         },
                     },
-                    subLabel: {
+                    description: {
                         fontSize: 12,
                         fontWeight: 400,
                         color: {
@@ -248,11 +380,11 @@ export const getSingleSelectTokens = (
                             selected: foundationToken.colors.gray[400],
                         },
                     },
-                },
-                seperator: {
-                    color: foundationToken.colors.gray[200],
-                    height: 1,
-                    margin: `${foundationToken.unit[6]} 0`,
+                    seperator: {
+                        color: foundationToken.colors.gray[200],
+                        height: 1,
+                        margin: `${foundationToken.unit[6]} 0`,
+                    },
                 },
             },
             drawer: {
@@ -264,6 +396,52 @@ export const getSingleSelectTokens = (
             },
         },
         lg: {
+            gap: foundationToken.unit[8],
+            label: {
+                fontSize: foundationToken.font.size.body.md.fontSize,
+                fontWeight: foundationToken.font.weight[500],
+                color: {
+                    default: foundationToken.colors.gray[700],
+                    hover: foundationToken.colors.gray[700],
+                    active: foundationToken.colors.gray[700],
+                    focus: foundationToken.colors.gray[700],
+                    focusVisible: foundationToken.colors.gray[700],
+                    disabled: foundationToken.colors.gray[400],
+                    selected: foundationToken.colors.gray[700],
+                },
+            },
+            subLabel: {
+                fontSize: foundationToken.font.size.body.md.fontSize,
+                fontWeight: foundationToken.font.weight[400],
+                color: {
+                    default: foundationToken.colors.gray[400],
+                    hover: foundationToken.colors.gray[400],
+                    active: foundationToken.colors.gray[400],
+                    focus: foundationToken.colors.gray[400],
+                    focusVisible: foundationToken.colors.gray[400],
+                    disabled: foundationToken.colors.gray[300],
+                    selected: foundationToken.colors.gray[400],
+                },
+            },
+            hintText: {
+                fontSize: foundationToken.font.size.body.md.fontSize,
+                fontWeight: foundationToken.font.weight[400],
+                color: {
+                    default: foundationToken.colors.gray[500],
+                    hover: foundationToken.colors.gray[500],
+                    active: foundationToken.colors.gray[500],
+                    focus: foundationToken.colors.gray[500],
+                    focusVisible: foundationToken.colors.gray[500],
+                    disabled: foundationToken.colors.gray[400],
+                    selected: foundationToken.colors.gray[500],
+                },
+            },
+            errorMessage: {
+                fontSize: foundationToken.font.size.body.md.fontSize,
+                fontWeight: foundationToken.font.weight[500],
+                color: foundationToken.colors.red[600],
+            },
+
             trigger: {
                 height: {
                     sm: {
@@ -279,34 +457,39 @@ export const getSingleSelectTokens = (
                         'no-container': FOUNDATION_THEME.unit[40],
                     },
                 },
-                paddingX: {
+                padding: {
                     sm: {
-                        container: FOUNDATION_THEME.unit[14],
-                        'no-container': FOUNDATION_THEME.unit[14],
+                        container: {
+                            x: FOUNDATION_THEME.unit[14],
+                            y: FOUNDATION_THEME.unit[7],
+                        },
+                        'no-container': {
+                            x: FOUNDATION_THEME.unit[14],
+                            y: FOUNDATION_THEME.unit[7],
+                        },
                     },
                     md: {
-                        container: FOUNDATION_THEME.unit[14],
-                        'no-container': FOUNDATION_THEME.unit[14],
+                        container: {
+                            x: FOUNDATION_THEME.unit[14],
+                            y: FOUNDATION_THEME.unit[8],
+                        },
+                        'no-container': {
+                            x: FOUNDATION_THEME.unit[14],
+                            y: FOUNDATION_THEME.unit[8],
+                        },
                     },
                     lg: {
-                        container: FOUNDATION_THEME.unit[12],
-                        'no-container': FOUNDATION_THEME.unit[12],
+                        container: {
+                            x: FOUNDATION_THEME.unit[12],
+                            y: FOUNDATION_THEME.unit[10],
+                        },
+                        'no-container': {
+                            x: FOUNDATION_THEME.unit[12],
+                            y: FOUNDATION_THEME.unit[10],
+                        },
                     },
                 },
-                paddingY: {
-                    sm: {
-                        container: FOUNDATION_THEME.unit[7],
-                        'no-container': FOUNDATION_THEME.unit[7],
-                    },
-                    md: {
-                        container: FOUNDATION_THEME.unit[8],
-                        'no-container': FOUNDATION_THEME.unit[8],
-                    },
-                    lg: {
-                        container: FOUNDATION_THEME.unit[10],
-                        'no-container': FOUNDATION_THEME.unit[10],
-                    },
-                },
+
                 borderRadius: {
                     sm: {
                         container: foundationToken.unit[10],
@@ -358,13 +541,41 @@ export const getSingleSelectTokens = (
                     },
                 },
             },
-            dropdown: {
-                boxShadow: foundationToken.shadows.sm,
+            menu: {
                 backgroundColor: foundationToken.colors.gray[0],
-                paddingTop: foundationToken.unit[4],
-                paddingBottom: foundationToken.unit[4],
+                padding: {
+                    sm: {
+                        container: {
+                            x: FOUNDATION_THEME.unit[6],
+                            y: FOUNDATION_THEME.unit[6],
+                        },
+                        'no-container': {
+                            x: FOUNDATION_THEME.unit[6],
+                            y: FOUNDATION_THEME.unit[6],
+                        },
+                    },
+                    md: {
+                        container: {
+                            x: FOUNDATION_THEME.unit[6],
+                            y: FOUNDATION_THEME.unit[6],
+                        },
+                        'no-container': {
+                            x: FOUNDATION_THEME.unit[6],
+                            y: FOUNDATION_THEME.unit[6],
+                        },
+                    },
+                    lg: {
+                        container: {
+                            x: FOUNDATION_THEME.unit[6],
+                            y: FOUNDATION_THEME.unit[6],
+                        },
+                        'no-container': {
+                            x: FOUNDATION_THEME.unit[6],
+                            y: FOUNDATION_THEME.unit[6],
+                        },
+                    },
+                },
                 border: foundationToken.colors.gray[200],
-                outline: foundationToken.colors.gray[200],
                 borderRadius: foundationToken.unit[8],
                 item: {
                     padding: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
@@ -380,7 +591,20 @@ export const getSingleSelectTokens = (
                         disabled: foundationToken.colors.gray[50],
                         selected: foundationToken.colors.gray[50],
                     },
-                    label: {
+                    optionsLabel: {
+                        fontSize: 12,
+                        fontWeight: 400,
+                        color: {
+                            default: foundationToken.colors.gray[400],
+                            hover: foundationToken.colors.gray[400],
+                            active: foundationToken.colors.gray[400],
+                            focus: foundationToken.colors.gray[400],
+                            focusVisible: foundationToken.colors.gray[400],
+                            disabled: foundationToken.colors.gray[400],
+                            selected: foundationToken.colors.gray[400],
+                        },
+                    },
+                    option: {
                         fontSize: 14,
                         fontWeight: 500,
                         color: {
@@ -393,7 +617,7 @@ export const getSingleSelectTokens = (
                             selected: foundationToken.colors.gray[700],
                         },
                     },
-                    subLabel: {
+                    description: {
                         fontSize: 12,
                         fontWeight: 400,
                         color: {
@@ -406,11 +630,11 @@ export const getSingleSelectTokens = (
                             selected: foundationToken.colors.gray[400],
                         },
                     },
-                },
-                seperator: {
-                    color: foundationToken.colors.gray[200],
-                    height: 1,
-                    margin: `${foundationToken.unit[6]} 0`,
+                    seperator: {
+                        color: foundationToken.colors.gray[200],
+                        height: 1,
+                        margin: `${foundationToken.unit[6]} 0`,
+                    },
                 },
             },
             drawer: {
