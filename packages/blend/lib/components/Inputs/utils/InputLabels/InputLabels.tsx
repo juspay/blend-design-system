@@ -3,6 +3,8 @@ import { FOUNDATION_THEME } from '../../../../tokens'
 import Block from '../../../Primitives/Block/Block'
 import Text from '../../../Text/Text'
 import { Tooltip, TooltipSize } from '../../../Tooltip'
+import { MultiSelectTokensType } from '../../../MultiSelect/multiSelect.tokens'
+import { SingleSelectTokensType } from '../../../SingleSelect/singleSelect.tokens'
 
 type InputLabelsProps = {
     label?: string
@@ -11,6 +13,7 @@ type InputLabelsProps = {
     helpIconHintText?: string
     name?: string
     required?: boolean
+    tokens?: MultiSelectTokensType | SingleSelectTokensType //todo: make it dynamic for all components
 }
 
 /**
@@ -28,19 +31,30 @@ const InputLabels = ({
     helpIconHintText,
     name,
     required,
+    tokens,
 }: InputLabelsProps) => {
+    console.log({ tokens })
     return (
         label && (
             <Block display="flex" alignItems="center" gap={4} width={'100%'}>
                 <Text
                     as="label"
                     htmlFor={name}
-                    variant="body.md"
-                    fontWeight={500}
+                    // variant="body.md"
+                    fontWeight={
+                        tokens?.label?.fontWeight ||
+                        FOUNDATION_THEME.font.weight[500]
+                    }
+                    fontSize={
+                        tokens?.label?.fontSize ||
+                        FOUNDATION_THEME.font.size.body.md.fontSize
+                    }
                     color={
                         disabled
-                            ? FOUNDATION_THEME.colors.gray[400]
-                            : FOUNDATION_THEME.colors.gray[700]
+                            ? tokens?.label?.color?.disabled ||
+                              FOUNDATION_THEME.colors.gray[400]
+                            : tokens?.label?.color?.default ||
+                              FOUNDATION_THEME.colors.gray[700]
                     }
                     style={{ margin: 0, padding: 0 }}
                 >
@@ -53,12 +67,21 @@ const InputLabels = ({
                 )}
                 {sublabel && (
                     <Text
-                        variant="body.md"
-                        fontWeight={400}
+                        // variant="body.md"
+                        fontWeight={
+                            tokens?.subLabel?.fontWeight ||
+                            FOUNDATION_THEME.font.weight[400]
+                        }
+                        fontSize={
+                            tokens?.subLabel?.fontSize ||
+                            FOUNDATION_THEME.font.size.body.md.fontSize
+                        }
                         color={
                             disabled
-                                ? FOUNDATION_THEME.colors.gray[300]
-                                : FOUNDATION_THEME.colors.gray[400]
+                                ? tokens?.subLabel?.color?.disabled ||
+                                  FOUNDATION_THEME.colors.gray[300]
+                                : tokens?.subLabel?.color?.default ||
+                                  FOUNDATION_THEME.colors.gray[400]
                         }
                         margin={0}
                     >
