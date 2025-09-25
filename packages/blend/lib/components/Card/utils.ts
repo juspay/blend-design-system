@@ -61,9 +61,9 @@ export const getHeaderTitleStyles = (
 export const getSubHeaderStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.header.text.subHeader.fontSize,
-    fontWeight: cardToken.header.text.subHeader.fontWeight,
-    color: cardToken.header.text.subHeader.color,
+    fontSize: cardToken.header.text.subTitle.fontSize,
+    fontWeight: cardToken.header.text.subTitle.fontWeight,
+    color: cardToken.header.text.subTitle.color,
 })
 
 /**
@@ -72,9 +72,9 @@ export const getSubHeaderStyles = (
 export const getBodyTitleStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.body.text.title.fontSize,
-    fontWeight: cardToken.body.text.title.fontWeight,
-    color: cardToken.body.text.title.color,
+    fontSize: cardToken.body.content.text.title.fontSize,
+    fontWeight: cardToken.body.content.text.title.fontWeight,
+    color: cardToken.body.content.text.title.color,
 })
 
 /**
@@ -83,8 +83,8 @@ export const getBodyTitleStyles = (
 export const getBodyContentStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.body.text.content.fontSize,
-    color: cardToken.body.text.content.color,
+    fontSize: cardToken.body.content.text.content.fontSize,
+    color: cardToken.body.content.text.content.color,
 })
 
 /**
@@ -99,75 +99,84 @@ export const getBodyStyles = (
 })
 
 /**
- * Gets spacing between header slots
+ * Gets spacing between header elements for a specific variant
  */
-export const getHeaderSlotSpacing = (cardToken: CardTokenType): string => {
-    return String(cardToken.header.slot.gap)
+export const getHeaderSpacing = (
+    cardToken: CardTokenType,
+    variant: CardVariant
+): string => {
+    return String(cardToken.header.gap[variant])
 }
 
 /**
- * Gets margin bottom for header based on what follows
+ * Gets gap for sub header (replaced marginTop with gap)
  */
 export const getHeaderMarginBottom = (
     hasSubHeader: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasSubHeader) return String(cardToken.header.text.subHeader.marginTop)
+    if (hasSubHeader) return String(cardToken.header.titleToSubTitleGap)
     return '0'
 }
 
 /**
- * Gets margin bottom for sub header
+ * Gets gap for elements after sub header (using body elements spacing)
  */
-export const getSubHeaderMarginBottom = (cardToken: CardTokenType): string => {
-    return String(cardToken.body.slot.slot1.marginTop)
+export const getSubHeaderMarginBottom = (
+    cardToken: CardTokenType,
+    variant: CardVariant
+): string => {
+    return String(cardToken.body.gap[variant]) // variant-dependent spacing
 }
 
 /**
- * Gets margin bottom for body slot 1
+ * Gets gap for body elements (using body elements spacing)
  */
 export const getBodySlot1MarginBottom = (
     hasBodyTitle: boolean,
-    cardToken: CardTokenType
+    cardToken: CardTokenType,
+    variant: CardVariant
 ): string => {
-    if (hasBodyTitle) return String(cardToken.body.text.title.marginTop)
+    if (hasBodyTitle) return String(cardToken.body.gap[variant]) // variant-dependent spacing
     return '0'
 }
 
 /**
- * Gets margin bottom for body title
+ * Gets gap between body title and content (using title to content spacing)
  */
 export const getBodyTitleMarginBottom = (
     hasContent: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasContent) return String(cardToken.body.text.content.marginTop)
+    if (hasContent) return String(cardToken.body.titleToContentGap) // 6px for closely related content
     return '0'
 }
 
 /**
- * Gets margin bottom for content
+ * Gets gap after content (using body elements spacing)
  */
 export const getContentMarginBottom = (
     hasBodySlot2: boolean,
-    cardToken: CardTokenType
+    cardToken: CardTokenType,
+    variant: CardVariant
 ): string => {
-    if (hasBodySlot2) return String(cardToken.body.slot.slot2.marginTop)
+    if (hasBodySlot2) return String(cardToken.body.gap[variant]) // variant-dependent spacing
     return '0'
 }
 
 /**
- * Gets margin bottom for body slot 2
+ * Gets gap before action button
  */
 export const getBodySlot2MarginBottom = (
     hasActionButton: boolean,
     isInlineButton: boolean,
-    cardToken: CardTokenType
+    cardToken: CardTokenType,
+    variant: CardVariant
 ): string => {
     if (!hasActionButton) return '0'
     return isInlineButton
-        ? String(cardToken.action.inline.marginTop)
-        : String(cardToken.action.regular.marginTop)
+        ? String(cardToken.body.actions.inlineButtonsGap[variant]) // variant-dependent inline spacing
+        : String(cardToken.body.actions.regularButtonsGap[variant]) // variant-dependent regular spacing
 }
 
 /**
@@ -181,9 +190,17 @@ export const getCustomCardStyles = (
 
 /**
  * Determines if action button is inline type
+ * Center-aligned cards use regular buttons, non-center-aligned use inline buttons
  */
-export const isInlineActionButton = (actionButton?: {
-    subType?: ButtonSubType
-}): boolean => {
-    return actionButton?.subType === ButtonSubType.INLINE
+export const isInlineActionButton = (
+    _actionButton?: {
+        subType?: ButtonSubType
+    },
+    centerAlign?: boolean
+): boolean => {
+    // For center-aligned cards, use regular buttons (not inline)
+    if (centerAlign) return false
+
+    // For all other cases, use inline buttons
+    return true
 }

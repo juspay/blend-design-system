@@ -132,7 +132,7 @@ const ModalFooter = ({
             padding={modalTokens.footer.padding}
             flexShrink={0}
             borderTop={showDivider ? modalTokens.footer.border : undefined}
-            borderRadius={modalTokens.footer.borderRadius}
+            // borderRadius={modalTokens.borderRadius}
         >
             {secondaryAction && (
                 <Button
