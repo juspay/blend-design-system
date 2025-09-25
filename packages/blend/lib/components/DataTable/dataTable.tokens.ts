@@ -476,7 +476,7 @@ export const getTableToken = (
                         position: 'sticky',
                         bottom: 0,
                         backgroundColor: foundationToken.colors.gray[25],
-                        zIndex: 50,
+                        zIndex: 9,
                         flexShrink: 0,
                         pagination: {
                             pageText: {
@@ -728,7 +728,7 @@ export const getTableToken = (
                         position: 'sticky',
                         bottom: 0,
                         backgroundColor: foundationToken.colors.gray[25],
-                        zIndex: 50,
+                        zIndex: 9,
                         flexShrink: 0,
                         pagination: {
                             pageText: {

@@ -129,7 +129,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 display="flex"
                 backgroundColor={FOUNDATION_THEME.colors.gray[25]}
                 position="relative"
-                zIndex={98}
+                zIndex={99}
             >
                 {!isExpanded && !isMobile && (
                     <Block
@@ -138,7 +138,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         top="0"
                         width="20px"
                         height="100%"
-                        zIndex="30"
+                        zIndex="98"
                         onMouseEnter={handleMouseEnter}
                         style={{
                             backgroundColor: 'transparent',
@@ -157,7 +157,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     borderRight={getSidebarBorder(isExpanded, isHovering)}
                     display={isMobile ? 'none' : 'flex'}
                     position={!isExpanded ? 'absolute' : 'relative'}
-                    zIndex={!isExpanded ? '20' : 'auto'}
+                    zIndex={98}
                     height="100%"
                     style={{
                         willChange: 'transform',
@@ -210,7 +210,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     <Block
                         position="sticky"
                         top="0"
-                        zIndex="100"
+                        zIndex="90"
                         style={getTopbarStyles(
                             enableTopbarAutoHide,
                             showTopbar
