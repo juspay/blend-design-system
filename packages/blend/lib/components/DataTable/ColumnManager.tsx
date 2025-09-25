@@ -117,6 +117,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     showHeaderBorder={false}
                     showActionButtons={false}
                     maxSelections={maxSelections}
+                    minMenuWidth={250}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"
@@ -155,6 +156,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     maxMenuHeight={400}
                     showHeaderBorder={false}
                     maxSelections={maxSelections}
+                    minMenuWidth={250}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"
