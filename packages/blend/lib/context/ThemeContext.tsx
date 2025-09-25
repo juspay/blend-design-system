@@ -15,9 +15,9 @@ import type { ResponsiveDropdownInputTokens } from '../components/Inputs/Dropdow
 import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import type { ResponsiveTabsTokens } from '../components/Tabs/tabs.token'
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
-import type { ModalTokensType } from '../components/Modal/modal.tokens'
+import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
-import type { PopoverTokenType } from '../components/Popover/popover.tokens'
+import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
@@ -25,13 +25,18 @@ import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.to
 import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
 import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
-import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
+import {
+    getProgressBarTokens,
+    type ResponsiveProgressBarTokens,
+} from '../components/ProgressBar/progressbar.tokens'
 import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
 import type { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
 import type { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 import type { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import type { ResponsiveCardTokens } from '../components/Card/card.tokens'
 import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
+import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
+import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import { BREAKPOINTS } from '../breakpoints/breakPoints'
@@ -61,7 +66,6 @@ import { getTableToken } from '../components/DataTable/dataTable.tokens'
 import { getCalendarToken } from '../components/DateRangePicker/dateRangePicker.tokens'
 import { getAccordionToken } from '../components/Accordion/accordion.tokens'
 import { getStatCardToken } from '../components/StatCard/statcard.tokens'
-import progressBarTokens from '../components/ProgressBar/progressbar.tokens'
 import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
 import { getChartTokens } from '../components/Charts/chart.tokens'
 import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
@@ -72,6 +76,8 @@ import {
     ResponsiveSkeletonTokens,
 } from '../components/Skeleton/skeleton.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
+import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
+import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -90,9 +96,9 @@ export type ComponentTokenType = {
     CHECKBOX?: ResponsiveCheckboxTokens
     TABS?: ResponsiveTabsTokens
     BUTTON?: ResponsiveButtonTokens
-    MODAL?: ModalTokensType
+    MODAL?: ResponsiveModalTokens
     BREADCRUMB?: ResponsiveBreadcrumbTokens
-    POPOVER?: PopoverTokenType
+    POPOVER?: ResponsivePopoverTokens
     MENU?: ResponsiveMenuTokensType
     MULTI_SELECT?: ResponsiveMultiSelectTokens
     SINGLE_SELECT?: ResponsiveSingleSelectTokens
@@ -100,7 +106,7 @@ export type ComponentTokenType = {
     CALENDAR?: ResponsiveCalendarTokens
     ACCORDION?: ResponsiveAccordionTokens
     STAT_CARD?: ResponsiveStatCardTokens
-    PROGRESS_BAR?: ProgressBarTokenType
+    PROGRESS_BAR?: ResponsiveProgressBarTokens
     DRAWER?: DrawerTokensType
     CHARTS?: ResponsiveChartTokens
     SNACKBAR?: ResponsiveSnackbarTokens
@@ -108,6 +114,8 @@ export type ComponentTokenType = {
     CARD?: ResponsiveCardTokens
     SKELETON?: ResponsiveSkeletonTokens
     TOPBAR?: ResponsiveTopbarTokens
+    AVATAR?: ResponsiveAvatarTokens
+    AVATAR_GROUP?: ResponsiveAvatarGroupTokens
 }
 
 type ThemeContextType = {
@@ -145,7 +153,7 @@ const ThemeContext = createContext<ThemeContextType>({
         CALENDAR: getCalendarToken(FOUNDATION_THEME),
         ACCORDION: getAccordionToken(FOUNDATION_THEME),
         STAT_CARD: getStatCardToken(FOUNDATION_THEME),
-        PROGRESS_BAR: progressBarTokens,
+        PROGRESS_BAR: getProgressBarTokens(FOUNDATION_THEME),
         DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
         CHARTS: getChartTokens(FOUNDATION_THEME),
         SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
@@ -153,6 +161,8 @@ const ThemeContext = createContext<ThemeContextType>({
         CARD: getCardTokens(FOUNDATION_THEME),
         SKELETON: getSkeletonTokens(FOUNDATION_THEME),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
+        AVATAR: getAvatarTokens(FOUNDATION_THEME),
+        AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

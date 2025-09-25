@@ -1,14 +1,15 @@
-import { useComponentToken } from '../../context/useComponentToken'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { ButtonSubType, Button } from '../Button'
 import Block from '../Primitives/Block/Block'
 import { PopoverTokenType } from './popover.tokens'
-import { PopoverProps } from './types'
+import { PopoverProps, PopoverSize } from './types'
 
 const PopoverFooter = ({
     primaryAction,
     secondaryAction,
-}: Pick<PopoverProps, 'primaryAction' | 'secondaryAction'>) => {
-    const popoverTokens = useComponentToken('POPOVER') as PopoverTokenType
+    size = PopoverSize.MEDIUM,
+}: Pick<PopoverProps, 'primaryAction' | 'secondaryAction' | 'size'>) => {
+    const popoverTokens = useResponsiveTokens<PopoverTokenType>('POPOVER')
 
     if (!primaryAction && !secondaryAction) return null
 
@@ -17,8 +18,8 @@ const PopoverFooter = ({
             data-design-system="true"
             display="flex"
             alignItems="center"
-            gap={popoverTokens.footer.gap}
-            justifyContent={popoverTokens.footer.justifyContent}
+            gap={popoverTokens.footer.gap[size]}
+            justifyContent={'flex-end'}
         >
             {primaryAction && (
                 <Button {...primaryAction} subType={ButtonSubType.INLINE} />

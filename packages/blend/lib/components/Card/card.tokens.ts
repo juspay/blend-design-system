@@ -1,89 +1,123 @@
 import type { CSSObject } from 'styled-components'
-import { CardAlignment } from './types'
-import type { FoundationTokenType } from '../../tokens/theme.token'
+import { CardVariant } from './types'
+import FOUNDATION_THEME, {
+    type FoundationTokenType,
+} from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type CardState = 'default' | 'hover'
 
+/**
+ * Card Tokens following the pattern: [target].CSSProp.[variant].[state]
+ *
+ * Structure:
+ * - target: header | body | actions (defines what element the token applies to)
+ * - CSSProp: padding | backgroundColor | border | fontSize | fontWeight | color | gap
+ * - variant: default | aligned (card variant)
+ * - state: default | hover (interaction state)
+ *
+ * Pattern examples:
+ * - maxWidth (no variant dependency)
+ * - borderRadius (no variant dependency)
+ * - boxShadow.[state]
+ * - padding (no variant dependency)
+ * - border (no variant dependency)
+ * - backgroundColor.[state]
+ * - header.backgroundColor (no variant dependency)
+ * - header.padding (no variant dependency)
+ * - header.text.title.fontSize
+ * - header.gap.[variant] (depends on alignment)
+ * - body.gap.[variant] (depends on alignment)
+ */
 export type CardTokenType = {
+    // Base container properties (no variant dependency)
     maxWidth: CSSObject['maxWidth']
     borderRadius: CSSObject['borderRadius']
-    boxShadow: CSSObject['boxShadow']
     padding: CSSObject['padding']
     border: CSSObject['border']
-    backgroundColor: CSSObject['backgroundColor']
 
+    // State-dependent properties
+    boxShadow: {
+        [key in CardState]: CSSObject['boxShadow']
+    }
+    backgroundColor: {
+        [key in CardState]: CSSObject['backgroundColor']
+    }
+
+    // Header section
     header: {
         backgroundColor: CSSObject['backgroundColor']
         padding: CSSObject['padding']
         borderBottom: CSSObject['borderBottom']
-        borderRadius: CSSObject['borderRadius']
-        title: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            color: CSSObject['color']
+
+        // Text styling within header
+        text: {
+            title: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+            subTitle: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
         }
-        tag: {
-            gap: CSSObject['gap']
+
+        // Spacing between header elements (variant-dependent for alignment)
+        gap: {
+            [key in CardVariant]: CSSObject['gap']
         }
-        subHeader: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            color: CSSObject['color']
-        }
+        // Spacing between title and subtitle text
+        titleToSubTitleGap: CSSObject['gap']
     }
 
+    // Body section
     body: {
         padding: CSSObject['padding']
-        title: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            color: CSSObject['color']
+
+        // Spacing between body elements (variant-dependent for alignment)
+        gap: {
+            [key in CardVariant]: CSSObject['gap']
         }
+        // Spacing between title and content text
+        titleToContentGap: CSSObject['gap']
+
+        // Content section within body (for complex content layouts)
         content: {
-            fontSize: CSSObject['fontSize']
-            color: CSSObject['color']
+            text: {
+                title: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color']
+                }
+                subtitle: {
+                    fontSize: CSSObject['fontSize']
+                    color: CSSObject['color']
+                }
+                content: {
+                    fontSize: CSSObject['fontSize']
+                    color: CSSObject['color']
+                }
+            }
+            // Gap between content title and subtitle
+            titleToSubtitleGap: CSSObject['gap']
+            // Gap for content slot positioning (variant-dependent)
+            gap: {
+                [key in CardVariant]: CSSObject['gap']
+            }
         }
-    }
 
-    spacing: {
-        header: {
-            subHeader: {
-                marginTop: CSSObject['marginTop']
+        // Action buttons section (variant-dependent)
+        actions: {
+            // Spacing for inline action buttons (center-aligned) - variant dependent
+            inlineButtonsGap: {
+                [key in CardVariant]: CSSObject['gap']
             }
-        }
-        body: {
-            slot1: {
-                marginTop: CSSObject['marginTop']
+            // Spacing for regular action buttons (default spacing) - variant dependent
+            regularButtonsGap: {
+                [key in CardVariant]: CSSObject['gap']
             }
-            title: {
-                marginTop: CSSObject['marginTop']
-            }
-            content: {
-                marginTop: CSSObject['marginTop']
-            }
-            slot2: {
-                marginTop: CSSObject['marginTop']
-            }
-        }
-        action: {
-            inline: {
-                marginTop: CSSObject['marginTop']
-            }
-            regular: {
-                marginTop: CSSObject['marginTop']
-            }
-        }
-        headerSlot: {
-            gap: CSSObject['gap']
-        }
-    }
-
-    alignment: {
-        [key in CardAlignment]: {
-            padding: CSSObject['padding']
-            gap: CSSObject['gap']
-            minHeight?: CSSObject['minHeight']
         }
     }
 }
@@ -98,173 +132,195 @@ export const getCardTokens = (
     return {
         sm: {
             maxWidth: 'auto',
-            border: `1px solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[12],
-            backgroundColor: foundationToken.colors.gray[0],
-            boxShadow: foundationToken.shadows.sm,
+            boxShadow: {
+                default: foundationToken.shadows.sm,
+                hover: foundationToken.shadows.md,
+            },
             padding: foundationToken.unit[16],
+            border: `1px solid ${foundationToken.colors.gray[200]}`,
+            backgroundColor: {
+                default: foundationToken.colors.gray[0],
+                hover: foundationToken.colors.gray[0],
+            },
 
+            // Header section
             header: {
                 backgroundColor: foundationToken.colors.gray[25],
                 padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                borderRadius: `${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]} 0 0`,
-                title: {
-                    fontSize: foundationToken.font.size.body.lg.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                    color: foundationToken.colors.gray[800],
+
+                text: {
+                    title: {
+                        fontSize: foundationToken.font.size.body.lg.fontSize,
+                        fontWeight: foundationToken.font.weight[600],
+                        color: foundationToken.colors.gray[800],
+                    },
+                    subTitle: {
+                        fontSize: foundationToken.font.size.body.sm.fontSize,
+                        fontWeight: foundationToken.font.weight[400],
+                        color: foundationToken.colors.gray[500],
+                    },
                 },
-                tag: {
-                    gap: foundationToken.unit[8],
+
+                gap: {
+                    [CardVariant.DEFAULT]: foundationToken.unit[8],
+                    [CardVariant.ALIGNED]: foundationToken.unit[12], // More spacing for aligned cards
+                    [CardVariant.CUSTOM]: foundationToken.unit[8],
                 },
-                subHeader: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[400],
-                    color: foundationToken.colors.gray[500],
-                },
+                titleToSubTitleGap: foundationToken.unit[2],
             },
 
+            // Body section
             body: {
                 padding: foundationToken.unit[16],
-                title: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[500],
-                    color: foundationToken.colors.gray[800],
+
+                gap: {
+                    [CardVariant.DEFAULT]: foundationToken.unit[24],
+                    [CardVariant.ALIGNED]: foundationToken.unit[16], // Tighter spacing for aligned layouts
+                    [CardVariant.CUSTOM]: foundationToken.unit[24],
                 },
+                titleToContentGap: foundationToken.unit[6],
+
                 content: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    color: foundationToken.colors.gray[500],
+                    text: {
+                        title: {
+                            fontSize:
+                                foundationToken.font.size.body.md.fontSize,
+                            fontWeight: foundationToken.font.weight[500],
+                            color: foundationToken.colors.gray[800],
+                        },
+                        subtitle: {
+                            fontSize:
+                                foundationToken.font.size.body.sm.fontSize,
+                            color: foundationToken.colors.gray[500],
+                        },
+                        content: {
+                            fontSize:
+                                foundationToken.font.size.body.md.fontSize,
+                            color: foundationToken.colors.gray[500],
+                        },
+                    },
+                    titleToSubtitleGap: foundationToken.unit[4],
+                    gap: {
+                        [CardVariant.DEFAULT]: foundationToken.unit[8],
+                        [CardVariant.ALIGNED]: foundationToken.unit[6], // Tighter for aligned content
+                        [CardVariant.CUSTOM]: foundationToken.unit[8],
+                    },
                 },
-            },
 
-            spacing: {
-                header: {
-                    subHeader: {
-                        marginTop: foundationToken.unit[2],
+                // Action buttons section (variant-dependent)
+                actions: {
+                    inlineButtonsGap: {
+                        [CardVariant.DEFAULT]: foundationToken.unit[14], // Always 14px for inline buttons
+                        [CardVariant.ALIGNED]: foundationToken.unit[14], // Always 14px for inline buttons (except center-aligned uses 24px)
+                        [CardVariant.CUSTOM]: foundationToken.unit[14],
                     },
-                },
-                body: {
-                    slot1: {
-                        marginTop: foundationToken.unit[16],
+                    regularButtonsGap: {
+                        [CardVariant.DEFAULT]: foundationToken.unit[24],
+                        [CardVariant.ALIGNED]: foundationToken.unit[24], // Regular buttons use 24px
+                        [CardVariant.CUSTOM]: foundationToken.unit[24],
                     },
-                    title: {
-                        marginTop: foundationToken.unit[14],
-                    },
-                    content: {
-                        marginTop: foundationToken.unit[6],
-                    },
-                    slot2: {
-                        marginTop: foundationToken.unit[14],
-                    },
-                },
-                action: {
-                    inline: {
-                        marginTop: foundationToken.unit[14],
-                    },
-                    regular: {
-                        marginTop: foundationToken.unit[24],
-                    },
-                },
-                headerSlot: {
-                    gap: foundationToken.unit[8],
-                },
-            },
-
-            alignment: {
-                vertical: {
-                    padding: foundationToken.unit[16],
-                    gap: foundationToken.unit[0],
-                },
-                horizontal: {
-                    padding: foundationToken.unit[16],
-                    gap: foundationToken.unit[16],
                 },
             },
         },
         lg: {
             maxWidth: 'auto',
-            border: `1px solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[12],
-            backgroundColor: foundationToken.colors.gray[0],
-            boxShadow: foundationToken.shadows.sm,
+            boxShadow: {
+                default: foundationToken.shadows.sm,
+                hover: foundationToken.shadows.md,
+            },
             padding: foundationToken.unit[16],
+            border: `1px solid ${foundationToken.colors.gray[200]}`,
+            backgroundColor: {
+                default: foundationToken.colors.gray[0],
+                hover: foundationToken.colors.gray[0],
+            },
 
+            // Header section
             header: {
                 backgroundColor: foundationToken.colors.gray[25],
                 padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                borderRadius: `${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]} 0 0`,
-                title: {
-                    fontSize: foundationToken.font.size.body.lg.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                    color: foundationToken.colors.gray[800],
+
+                text: {
+                    title: {
+                        fontSize: foundationToken.font.size.body.lg.fontSize,
+                        fontWeight: foundationToken.font.weight[600],
+                        color: foundationToken.colors.gray[800],
+                    },
+                    subTitle: {
+                        fontSize: foundationToken.font.size.body.sm.fontSize,
+                        fontWeight: foundationToken.font.weight[400],
+                        color: foundationToken.colors.gray[500],
+                    },
                 },
-                tag: {
-                    gap: foundationToken.unit[8],
+
+                gap: {
+                    [CardVariant.DEFAULT]: foundationToken.unit[8],
+                    [CardVariant.ALIGNED]: foundationToken.unit[16], // More spacing for aligned cards on larger screens
+                    [CardVariant.CUSTOM]: foundationToken.unit[8],
                 },
-                subHeader: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[400],
-                    color: foundationToken.colors.gray[500],
-                },
+                titleToSubTitleGap: foundationToken.unit[2],
             },
 
+            // Body section
             body: {
                 padding: foundationToken.unit[16],
-                title: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[500],
-                    color: foundationToken.colors.gray[800],
+
+                gap: {
+                    [CardVariant.DEFAULT]: foundationToken.unit[24],
+                    [CardVariant.ALIGNED]: foundationToken.unit[20], // Adjusted spacing for aligned layouts
+                    [CardVariant.CUSTOM]: foundationToken.unit[24],
                 },
+                titleToContentGap: foundationToken.unit[6],
+
                 content: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    color: foundationToken.colors.gray[500],
+                    text: {
+                        title: {
+                            fontSize:
+                                foundationToken.font.size.body.md.fontSize,
+                            fontWeight: foundationToken.font.weight[500],
+                            color: foundationToken.colors.gray[800],
+                        },
+                        subtitle: {
+                            fontSize:
+                                foundationToken.font.size.body.sm.fontSize,
+                            color: foundationToken.colors.gray[500],
+                        },
+                        content: {
+                            fontSize:
+                                foundationToken.font.size.body.md.fontSize,
+                            color: foundationToken.colors.gray[500],
+                        },
+                    },
+                    titleToSubtitleGap: foundationToken.unit[4],
+                    gap: {
+                        [CardVariant.DEFAULT]: foundationToken.unit[8],
+                        [CardVariant.ALIGNED]: foundationToken.unit[8], // Consistent for larger screens
+                        [CardVariant.CUSTOM]: foundationToken.unit[8],
+                    },
                 },
-            },
 
-            spacing: {
-                header: {
-                    subHeader: {
-                        marginTop: foundationToken.unit[2],
+                // Action buttons section (variant-dependent)
+                actions: {
+                    inlineButtonsGap: {
+                        [CardVariant.DEFAULT]: foundationToken.unit[14], // Always 14px for inline buttons
+                        [CardVariant.ALIGNED]: foundationToken.unit[14], // Always 14px for inline buttons (except center-aligned uses 24px)
+                        [CardVariant.CUSTOM]: foundationToken.unit[14],
                     },
-                },
-                body: {
-                    slot1: {
-                        marginTop: foundationToken.unit[16],
+                    regularButtonsGap: {
+                        [CardVariant.DEFAULT]: foundationToken.unit[24],
+                        [CardVariant.ALIGNED]: foundationToken.unit[24], // Regular buttons use 24px
+                        [CardVariant.CUSTOM]: foundationToken.unit[24],
                     },
-                    title: {
-                        marginTop: foundationToken.unit[14],
-                    },
-                    content: {
-                        marginTop: foundationToken.unit[6],
-                    },
-                    slot2: {
-                        marginTop: foundationToken.unit[14],
-                    },
-                },
-                action: {
-                    inline: {
-                        marginTop: foundationToken.unit[14],
-                    },
-                    regular: {
-                        marginTop: foundationToken.unit[24],
-                    },
-                },
-                headerSlot: {
-                    gap: foundationToken.unit[8],
-                },
-            },
-
-            alignment: {
-                vertical: {
-                    padding: foundationToken.unit[16],
-                    gap: foundationToken.unit[0],
-                },
-                horizontal: {
-                    padding: foundationToken.unit[20],
-                    gap: foundationToken.unit[20],
                 },
             },
         },
     }
 }
+
+const cardTokens: ResponsiveCardTokens = getCardTokens(FOUNDATION_THEME)
+
+export default cardTokens

@@ -121,13 +121,16 @@ export const getRadioTextProps = (
     fontWeight: string
     color: string
 } => {
-    const fontConfig = isSubtext
-        ? radioTokens.content.sublabel.font[size]
-        : radioTokens.content.label.font[size]
+    const fontSizeConfig = isSubtext
+        ? radioTokens.content.sublabel.fontSize[size]
+        : radioTokens.content.label.fontSize[size]
+    const fontWeightConfig = isSubtext
+        ? radioTokens.content.sublabel.fontWeight[size]
+        : radioTokens.content.label.fontWeight[size]
 
     return {
-        fontSize: String(fontConfig?.fontSize || ''),
-        fontWeight: String(fontConfig?.fontWeight || ''),
+        fontSize: String(fontSizeConfig || ''),
+        fontWeight: String(fontWeightConfig || ''),
         color: getRadioTextColor(radioTokens, isDisabled, error, isSubtext),
     }
 }

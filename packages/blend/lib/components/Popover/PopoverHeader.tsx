@@ -5,7 +5,7 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { PopoverTokenType } from './popover.tokens'
 import { PopoverProps, PopoverSize } from './types'
-import { useComponentToken } from '../../context/useComponentToken'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const PopoverHeader = ({
     heading,
@@ -17,7 +17,7 @@ const PopoverHeader = ({
     PopoverProps,
     'heading' | 'description' | 'showCloseButton' | 'size' | 'onClose'
 >) => {
-    const popoverTokens = useComponentToken('POPOVER') as PopoverTokenType
+    const popoverTokens = useResponsiveTokens<PopoverTokenType>('POPOVER')
 
     if (!heading && !description) return null
 
@@ -28,7 +28,7 @@ const PopoverHeader = ({
                 fontWeight={
                     popoverTokens.headerContainer.heading.fontWeight[size]
                 }
-                color={popoverTokens.headerContainer.heading.color[size]}
+                color={popoverTokens.headerContainer.heading.color}
             >
                 {heading}
             </PrimitiveText>
@@ -41,7 +41,7 @@ const PopoverHeader = ({
                 fontSize={
                     popoverTokens.headerContainer.description.fontSize[size]
                 }
-                color={popoverTokens.headerContainer.description.color[size]}
+                color={popoverTokens.headerContainer.description.color}
                 fontWeight={
                     popoverTokens.headerContainer.description.fontWeight[size]
                 }

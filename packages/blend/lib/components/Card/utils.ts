@@ -1,5 +1,5 @@
 import React from 'react'
-import { CardVariant, CardAlignment } from './types'
+import { CardVariant } from './types'
 import type { CardTokenType } from './card.tokens'
 import { ButtonSubType } from '../Button/types'
 
@@ -40,7 +40,6 @@ export const getHeaderBoxStyles = (
     backgroundColor: cardToken.header.backgroundColor,
     padding: cardToken.header.padding,
     borderBottom: cardToken.header.borderBottom,
-    borderRadius: cardToken.header.borderRadius,
     display: 'flex',
     flexDirection: 'column' as const,
 })
@@ -51,9 +50,9 @@ export const getHeaderBoxStyles = (
 export const getHeaderTitleStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.header.title.fontSize,
-    fontWeight: cardToken.header.title.fontWeight,
-    color: cardToken.header.title.color,
+    fontSize: cardToken.header.text.title.fontSize,
+    fontWeight: cardToken.header.text.title.fontWeight,
+    color: cardToken.header.text.title.color,
 })
 
 /**
@@ -62,10 +61,9 @@ export const getHeaderTitleStyles = (
 export const getSubHeaderStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.header.subHeader.fontSize,
-    fontWeight: cardToken.header.subHeader.fontWeight,
-    color: cardToken.header.subHeader.color,
-    // marginTop: cardToken.header.subHeader.marginTop,
+    fontSize: cardToken.header.text.subTitle.fontSize,
+    fontWeight: cardToken.header.text.subTitle.fontWeight,
+    color: cardToken.header.text.subTitle.color,
 })
 
 /**
@@ -74,9 +72,9 @@ export const getSubHeaderStyles = (
 export const getBodyTitleStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.body.title.fontSize,
-    fontWeight: cardToken.body.title.fontWeight,
-    color: cardToken.body.title.color,
+    fontSize: cardToken.body.content.text.title.fontSize,
+    fontWeight: cardToken.body.content.text.title.fontWeight,
+    color: cardToken.body.content.text.title.color,
 })
 
 /**
@@ -85,8 +83,8 @@ export const getBodyTitleStyles = (
 export const getBodyContentStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.body.content.fontSize,
-    color: cardToken.body.content.color,
+    fontSize: cardToken.body.content.text.content.fontSize,
+    color: cardToken.body.content.text.content.color,
 })
 
 /**
@@ -101,120 +99,84 @@ export const getBodyStyles = (
 })
 
 /**
- * Gets spacing between header slots
+ * Gets spacing between header elements for a specific variant
  */
-export const getHeaderSlotSpacing = (cardToken: CardTokenType): string => {
-    return String(cardToken.spacing.headerSlot.gap)
+export const getHeaderSpacing = (
+    cardToken: CardTokenType,
+    variant: CardVariant
+): string => {
+    return String(cardToken.header.gap[variant])
 }
 
 /**
- * Gets margin bottom for header based on what follows
+ * Gets gap for sub header (replaced marginTop with gap)
  */
 export const getHeaderMarginBottom = (
     hasSubHeader: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasSubHeader)
-        return String(cardToken.spacing.header.subHeader.marginTop)
+    if (hasSubHeader) return String(cardToken.header.titleToSubTitleGap)
     return '0'
 }
 
 /**
- * Gets margin bottom for sub header
+ * Gets gap for elements after sub header (using body elements spacing)
  */
-export const getSubHeaderMarginBottom = (cardToken: CardTokenType): string => {
-    return String(cardToken.spacing.body.slot1.marginTop)
+export const getSubHeaderMarginBottom = (
+    cardToken: CardTokenType,
+    variant: CardVariant
+): string => {
+    return String(cardToken.body.gap[variant]) // variant-dependent spacing
 }
 
 /**
- * Gets margin bottom for body slot 1
+ * Gets gap for body elements (using body elements spacing)
  */
 export const getBodySlot1MarginBottom = (
     hasBodyTitle: boolean,
-    cardToken: CardTokenType
+    cardToken: CardTokenType,
+    variant: CardVariant
 ): string => {
-    if (hasBodyTitle) return String(cardToken.spacing.body.title.marginTop)
+    if (hasBodyTitle) return String(cardToken.body.gap[variant]) // variant-dependent spacing
     return '0'
 }
 
 /**
- * Gets margin bottom for body title
+ * Gets gap between body title and content (using title to content spacing)
  */
 export const getBodyTitleMarginBottom = (
     hasContent: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasContent) return String(cardToken.spacing.body.content.marginTop)
+    if (hasContent) return String(cardToken.body.titleToContentGap) // 6px for closely related content
     return '0'
 }
 
 /**
- * Gets margin bottom for content
+ * Gets gap after content (using body elements spacing)
  */
 export const getContentMarginBottom = (
     hasBodySlot2: boolean,
-    cardToken: CardTokenType
+    cardToken: CardTokenType,
+    variant: CardVariant
 ): string => {
-    if (hasBodySlot2) return String(cardToken.spacing.body.slot2.marginTop)
+    if (hasBodySlot2) return String(cardToken.body.gap[variant]) // variant-dependent spacing
     return '0'
 }
 
 /**
- * Gets margin bottom for body slot 2
+ * Gets gap before action button
  */
 export const getBodySlot2MarginBottom = (
     hasActionButton: boolean,
     isInlineButton: boolean,
-    cardToken: CardTokenType
+    cardToken: CardTokenType,
+    variant: CardVariant
 ): string => {
     if (!hasActionButton) return '0'
     return isInlineButton
-        ? String(cardToken.spacing.action.inline.marginTop)
-        : String(cardToken.spacing.action.regular.marginTop)
-}
-
-/**
- * Gets alignment styles for aligned cards
- */
-export const getAlignmentStyles = (
-    alignment: CardAlignment,
-    centerAlign: boolean,
-    cardToken: CardTokenType
-): React.CSSProperties => {
-    const alignmentConfig = cardToken.alignment[alignment]
-
-    const baseStyles = {
-        padding: alignmentConfig.padding,
-        gap: alignmentConfig.gap,
-        minHeight: alignmentConfig.minHeight,
-    }
-
-    if (alignment === CardAlignment.VERTICAL) {
-        return {
-            ...baseStyles,
-            display: 'flex',
-            flexDirection: 'column' as const,
-            ...(centerAlign && {
-                alignItems: 'center',
-                textAlign: 'center' as const,
-                justifyContent: 'center',
-            }),
-        }
-    }
-
-    if (alignment === CardAlignment.HORIZONTAL) {
-        return {
-            ...baseStyles,
-            display: 'flex',
-            flexDirection: 'row' as const,
-            ...(centerAlign && {
-                alignItems: 'center',
-                textAlign: 'center' as const,
-            }),
-        }
-    }
-
-    return baseStyles
+        ? String(cardToken.body.actions.inlineButtonsGap[variant]) // variant-dependent inline spacing
+        : String(cardToken.body.actions.regularButtonsGap[variant]) // variant-dependent regular spacing
 }
 
 /**
@@ -228,9 +190,17 @@ export const getCustomCardStyles = (
 
 /**
  * Determines if action button is inline type
+ * Center-aligned cards use regular buttons, non-center-aligned use inline buttons
  */
-export const isInlineActionButton = (actionButton?: {
-    subType?: ButtonSubType
-}): boolean => {
-    return actionButton?.subType === ButtonSubType.INLINE
+export const isInlineActionButton = (
+    _actionButton?: {
+        subType?: ButtonSubType
+    },
+    centerAlign?: boolean
+): boolean => {
+    // For center-aligned cards, use regular buttons (not inline)
+    if (centerAlign) return false
+
+    // For all other cases, use inline buttons
+    return true
 }

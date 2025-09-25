@@ -3,7 +3,7 @@ import { Children } from 'react'
 import Block from '../Primitives/Block/Block'
 import type { ButtonGroupProps } from './types'
 
-const ButtonGroupV2: React.FC<ButtonGroupProps> = ({
+const ButtonGroup: React.FC<ButtonGroupProps> = ({
     stacked = false,
     children,
 }) => {
@@ -31,4 +31,4 @@ const ButtonGroupV2: React.FC<ButtonGroupProps> = ({
     )
 }
 
-export default ButtonGroupV2
+export default ButtonGroup

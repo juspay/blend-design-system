@@ -192,6 +192,9 @@ const ALT_FOUNDATION_TOKENS: FoundationTokenType = {
         '52': '52px',
         '56': '56px',
         '64': '64px',
+        '80': '80px',
+        '120': '120px',
+        '144': '144px',
         auto: 'auto',
     },
     colors: {

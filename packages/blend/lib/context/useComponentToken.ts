@@ -15,16 +15,15 @@ import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/u
 import type { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
-import type { ModalTokensType } from '../components/Modal/modal.tokens'
+import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
-import type { PopoverTokenType } from '../components/Popover/popover.tokens'
+import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
 import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
-import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
-import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
+import type { ResponsiveProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
 import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
 import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
@@ -33,6 +32,9 @@ import { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValu
 import { ResponsiveCardTokens } from '../components/Card/card.tokens'
 import { ResponsiveSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
+import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
+import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
+import { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -53,9 +55,9 @@ export const useComponentToken = (
     | ResponsiveTooltipTokens
     | ResponsiveDropdownInputTokens
     | ResponsiveButtonTokens
-    | ModalTokensType
+    | ResponsiveModalTokens
     | ResponsiveBreadcrumbTokens
-    | PopoverTokenType
+    | ResponsivePopoverTokens
     | ResponsiveMenuTokensType
     | ResponsiveMultiSelectTokens
     | ResponsiveSingleSelectTokens
@@ -63,14 +65,16 @@ export const useComponentToken = (
     | ResponsiveCalendarTokens
     | ResponsiveAccordionTokens
     | ResponsiveStatCardTokens
-    | ProgressBarTokenType
+    | ResponsiveProgressBarTokens
     | DrawerTokensType
     | ResponsiveChartTokens
     | ResponsiveSnackbarTokens
     | ResponsiveKeyValuePairTokens
     | ResponsiveCardTokens
     | ResponsiveSkeletonTokens
-    | ResponsiveTopbarTokens => {
+    | ResponsiveTopbarTokens
+    | ResponsiveAvatarTokens
+    | ResponsiveAvatarGroupTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -142,6 +146,10 @@ export const useComponentToken = (
             return componentTokens.SKELETON
         case 'TOPBAR':
             return componentTokens.TOPBAR
+        case 'AVATAR':
+            return componentTokens.AVATAR
+        case 'AVATAR_GROUP':
+            return componentTokens.AVATAR_GROUP
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

@@ -71,7 +71,11 @@ export const Switch = ({
                     $isChecked={currentChecked || false}
                 />
             </StyledSwitchRoot>
-            <Block display="flex" flexDirection="column">
+            <Block
+                display="flex"
+                flexDirection="column"
+                gap={tokens.content.gap}
+            >
                 <Block display="flex" alignItems="center">
                     <SwitchContent
                         uniqueId={uniqueId}
@@ -84,7 +88,7 @@ export const Switch = ({
                     />
 
                     {slot && (
-                        <Block as="span" marginLeft={tokens.slot.spacing}>
+                        <Block as="span" marginLeft={tokens.content.label.gap}>
                             {slot}
                         </Block>
                     )}
@@ -132,7 +136,7 @@ const SwitchContent: React.FC<{
                     <PrimitiveText
                         as="span"
                         color={tokens.required.color}
-                        style={{ marginLeft: tokens.required.spacing }}
+                        style={{ marginLeft: '4px' }}
                     >
                         *
                     </PrimitiveText>

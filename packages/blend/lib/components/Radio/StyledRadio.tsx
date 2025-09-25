@@ -29,9 +29,9 @@ export const StyledRadioInput = styled.input<{
 
         return css`
             background-color: ${radioTokens.indicator[indicatorState]
-                .background[state]};
+                .backgroundColor[state]};
             border: ${radioTokens.borderWidth[indicatorState][state]}px solid
-                ${radioTokens.indicator[indicatorState].border[state]};
+                ${radioTokens.indicator[indicatorState].borderColor[state]};
             width: ${radioTokens.height[size]};
             height: ${radioTokens.height[size]};
 
@@ -41,7 +41,7 @@ export const StyledRadioInput = styled.input<{
                 height: 50%;
                 border-radius: 50%;
                 background-color: ${$isChecked
-                    ? radioTokens.activeIndicator.active.background[state]
+                    ? radioTokens.activeIndicator.active.backgroundColor[state]
                     : 'transparent'};
                 transform: ${$isChecked ? 'scale(1)' : 'scale(0)'};
                 transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -49,15 +49,15 @@ export const StyledRadioInput = styled.input<{
 
             &:focus-visible {
                 outline: 2px solid
-                    ${radioTokens.indicator[indicatorState].border[state]};
+                    ${radioTokens.indicator[indicatorState].borderColor[state]};
                 outline-offset: 2px;
             }
 
             &:not(:disabled):hover {
                 background-color: ${radioTokens.indicator[indicatorState]
-                    .background.hover};
-                border-color: ${radioTokens.indicator[indicatorState].border
-                    .hover};
+                    .backgroundColor.hover};
+                border-color: ${radioTokens.indicator[indicatorState]
+                    .borderColor.hover};
             }
 
             cursor: ${$isDisabled ? 'not-allowed' : 'pointer'};

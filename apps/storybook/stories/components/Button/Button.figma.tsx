@@ -115,8 +115,8 @@ figma.connect(
                 size={size}
                 subType={subType}
                 disabled={disabled}
-                leftIcon={leftIcon}
-                rightIcon={rightIcon}
+                leadingIcon={leftIcon}
+                trailingIcon={rightIcon}
             />
         ),
 
