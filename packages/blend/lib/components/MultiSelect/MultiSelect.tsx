@@ -140,7 +140,15 @@ const MultiSelect = ({
                 error={error}
                 errorMessage={errorMessage}
                 showActionButtons={shouldShowActionButtons}
-                primaryAction={primaryAction}
+                primaryAction={
+                    primaryAction
+                        ? {
+                              ...primaryAction,
+                              onClick: () =>
+                                  primaryAction.onClick(selectedValues),
+                          }
+                        : undefined
+                }
                 secondaryAction={secondaryAction}
                 showItemDividers={showItemDividers}
                 showHeaderBorder={showHeaderBorder}
@@ -207,7 +215,15 @@ const MultiSelect = ({
                     }
                 }}
                 showActionButtons={shouldShowActionButtons}
-                primaryAction={primaryAction}
+                primaryAction={
+                    primaryAction
+                        ? {
+                              ...primaryAction,
+                              onClick: () =>
+                                  primaryAction.onClick(selectedValues),
+                          }
+                        : undefined
+                }
                 secondaryAction={secondaryAction}
                 trigger={
                     customTrigger || (

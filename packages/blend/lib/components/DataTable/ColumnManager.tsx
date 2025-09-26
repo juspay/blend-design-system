@@ -22,6 +22,8 @@ export const ColumnManager = <T extends Record<string, unknown>>({
     onColumnChange,
     maxSelections,
     alwaysSelectedColumns = [],
+    columnManagerPrimaryAction,
+    columnManagerSecondaryAction,
 }: ColumnManagerProps<T>) => {
     const mobileConfig = useMobileDataTable()
     const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
@@ -99,6 +101,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             }
         }
     }
+
     return (
         <Block>
             {mobileConfig.isMobile ? (
@@ -115,7 +118,6 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     enableSelectAll={false}
                     showItemDividers={true}
                     showHeaderBorder={false}
-                    showActionButtons={false}
                     maxSelections={maxSelections}
                     customTrigger={
                         <PrimitiveButton
@@ -136,6 +138,19 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                             />
                         </PrimitiveButton>
                     }
+                    showActionButtons={true}
+                    primaryAction={
+                        columnManagerPrimaryAction
+                            ? {
+                                  ...columnManagerPrimaryAction,
+                                  onClick: () =>
+                                      columnManagerPrimaryAction.onClick(
+                                          selectedColumnValues
+                                      ),
+                              }
+                            : undefined
+                    }
+                    secondaryAction={columnManagerSecondaryAction}
                 />
             ) : (
                 <MultiSelect
@@ -151,7 +166,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     enableSearch={true}
                     enableSelectAll={false}
                     selectAllText="Select All Columns"
-                    showActionButtons={false}
+                    // showActionButtons={false}
                     maxHeight={400}
                     showHeaderBorder={false}
                     maxSelections={maxSelections}
@@ -174,6 +189,19 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                             />
                         </PrimitiveButton>
                     }
+                    showActionButtons={true}
+                    primaryAction={
+                        columnManagerPrimaryAction
+                            ? {
+                                  ...columnManagerPrimaryAction,
+                                  onClick: () =>
+                                      columnManagerPrimaryAction.onClick(
+                                          selectedColumnValues
+                                      ),
+                              }
+                            : undefined
+                    }
+                    secondaryAction={columnManagerSecondaryAction}
                 />
             )}
         </Block>

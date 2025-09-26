@@ -127,7 +127,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     return defaultRadius
             }
         }
-        console.log('tokens---->>', tokens)
 
         const itemContent = (
             <RadixMenu.Item

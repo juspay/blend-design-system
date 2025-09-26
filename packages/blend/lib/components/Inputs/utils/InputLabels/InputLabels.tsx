@@ -33,7 +33,6 @@ const InputLabels = ({
     required,
     tokens,
 }: InputLabelsProps) => {
-    console.log({ tokens })
     return (
         label && (
             <Block display="flex" alignItems="center" gap={4} width={'100%'}>

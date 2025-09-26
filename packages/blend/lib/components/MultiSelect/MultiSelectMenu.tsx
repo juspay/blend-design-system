@@ -200,8 +200,7 @@ const MultiSelectMenu = ({
                 avoidCollisions={false}
                 onKeyDown={handleKeyDown}
                 style={{
-                    minWidth:
-                        minWidth || 'var(--radix-dropdown-menu-trigger-width)',
+                    minWidth: minWidth || 250,
 
                     maxWidth:
                         maxWidth || 'var(--radix-dropdown-menu-trigger-width)',
@@ -341,7 +340,10 @@ const MultiSelectMenu = ({
                                 buttonType={ButtonType.SECONDARY}
                                 size={ButtonSize.SMALL}
                                 text={secondaryAction.text}
-                                onClick={secondaryAction.onClick}
+                                onClick={() => {
+                                    secondaryAction.onClick(selected)
+                                    onOpenChange(false)
+                                }}
                                 disabled={secondaryAction.disabled}
                                 loading={secondaryAction.loading}
                             />
@@ -352,7 +354,7 @@ const MultiSelectMenu = ({
                                 size={ButtonSize.SMALL}
                                 text={primaryAction.text}
                                 onClick={() => {
-                                    primaryAction.onClick()
+                                    primaryAction.onClick(selected)
                                     onOpenChange(false)
                                 }}
                                 disabled={primaryAction.disabled}
