@@ -2,7 +2,7 @@ import { forwardRef } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { styled } from 'styled-components'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import { DateRangePreset } from './types'
+import { DateRangePreset, DateRangePickerSize } from './types'
 import { getPresetLabel } from './utils'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
@@ -19,6 +19,7 @@ type QuickRangeSelectorProps = {
     disableFutureDates?: boolean
     disablePastDates?: boolean
     isDisabled?: boolean
+    size?: DateRangePickerSize
 }
 
 const StyledItem = styled(DropdownMenu.Item)<{
@@ -48,6 +49,7 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
             disableFutureDates = false,
             disablePastDates = false,
             isDisabled = false,
+            size = DateRangePickerSize.MEDIUM,
         },
         ref
     ) => {
@@ -122,7 +124,35 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                     <DropdownMenu.Trigger asChild>
                         <PrimitiveButton
                             style={{
-                                ...calendarToken.quickRange.trigger,
+                                borderLeft:
+                                    calendarToken.quickRange.trigger.borderLeft,
+                                borderTop:
+                                    calendarToken.quickRange.trigger.borderTop,
+                                borderBottom:
+                                    calendarToken.quickRange.trigger
+                                        .borderBottom,
+                                borderTopLeftRadius:
+                                    calendarToken.quickRange.trigger
+                                        .borderTopLeftRadius,
+                                borderBottomLeftRadius:
+                                    calendarToken.quickRange.trigger
+                                        .borderBottomLeftRadius,
+                                display:
+                                    calendarToken.quickRange.trigger.display,
+                                justifyContent:
+                                    calendarToken.quickRange.trigger
+                                        .justifyContent,
+                                alignItems:
+                                    calendarToken.quickRange.trigger.alignItems,
+                                cursor: calendarToken.quickRange.trigger.cursor,
+                                width: calendarToken.quickRange.trigger.width,
+                                backgroundColor:
+                                    calendarToken.quickRange.trigger
+                                        .backgroundColor,
+                                padding:
+                                    calendarToken.quickRange.trigger.padding[
+                                        size
+                                    ],
                             }}
                             disabled={isDisabled}
                             gap={calendarToken.quickRange.trigger.gap}
@@ -133,8 +163,9 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                                     calendarToken.quickRange.trigger.text.color
                                 }
                                 fontSize={
-                                    calendarToken.quickRange.trigger.text
-                                        .fontSize
+                                    calendarToken.quickRange.trigger.fontSize[
+                                        size
+                                    ]
                                 }
                                 fontWeight={
                                     calendarToken.quickRange.trigger.text

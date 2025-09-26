@@ -67,9 +67,9 @@ const MultiSelectMenu = ({
     selected,
     onSelect,
     trigger,
-    minWidth,
-    maxWidth,
-    maxHeight,
+    minMenuWidth,
+    maxMenuWidth,
+    maxMenuHeight,
     disabled = false,
     enableSearch = true,
     searchPlaceholder = 'Search options...',
@@ -200,12 +200,10 @@ const MultiSelectMenu = ({
                 avoidCollisions={false}
                 onKeyDown={handleKeyDown}
                 style={{
-                    minWidth: minWidth || 250,
-
-                    maxWidth:
-                        maxWidth || 'var(--radix-dropdown-menu-trigger-width)',
-                    maxHeight:
-                        maxHeight || 'var(--radix-popper-available-height)',
+                    minWidth: minMenuWidth,
+                    width: 'max(var(--radix-dropdown-menu-trigger-width))',
+                    maxWidth: maxMenuWidth,
+                    maxHeight: maxMenuHeight,
                 }}
             >
                 <StickyHeader>
@@ -239,7 +237,9 @@ const MultiSelectMenu = ({
                 </StickyHeader>
                 <ScrollableContent
                     style={{
-                        maxHeight: maxHeight ? `${maxHeight - 80}px` : '320px',
+                        maxHeight: maxMenuHeight
+                            ? `${maxMenuHeight - 80}px`
+                            : '320px',
                         padding: FOUNDATION_THEME.unit[6],
                     }}
                 >

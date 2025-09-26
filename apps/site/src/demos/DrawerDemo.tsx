@@ -3785,7 +3785,7 @@ export const MobileMultiSelectNoDrawerExample = () => {
                 enableSelectAll={true}
                 selectAllText="Select All Technologies"
                 useDrawerOnMobile={false} // This is the key prop!
-                maxHeight={300}
+                height={300}
             />
         </div>
     )

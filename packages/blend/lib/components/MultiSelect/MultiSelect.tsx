@@ -46,9 +46,9 @@ const MultiSelect = ({
     maxSelections,
     customTrigger,
     useDrawerOnMobile = true,
-    minWidth,
-    maxWidth,
-    maxHeight,
+    minMenuWidth,
+    maxMenuWidth,
+    maxMenuHeight,
     alignment,
     side,
     sideOffset,
@@ -63,6 +63,7 @@ const MultiSelect = ({
     secondaryAction,
     showItemDividers = false,
     showHeaderBorder = false,
+    fullWidth = false,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -158,11 +159,11 @@ const MultiSelect = ({
 
     return (
         <Block
-            width="100%"
+            width={fullWidth ? '100%' : 'fit-content'}
+            maxWidth={fullWidth ? '100%' : 'fit-content'}
             display="flex"
             flexDirection="column"
             gap={multiSelectTokens.gap}
-            maxWidth={'100%'}
         >
             {variant === MultiSelectVariant.CONTAINER &&
                 (!isSmallScreen || size !== MultiSelectMenuSize.LARGE) && (
@@ -198,9 +199,9 @@ const MultiSelect = ({
                               )
                         : undefined
                 }
-                minWidth={minWidth}
-                maxWidth={maxWidth}
-                maxHeight={maxHeight}
+                minMenuWidth={minMenuWidth}
+                maxMenuWidth={maxMenuWidth}
+                maxMenuHeight={maxMenuHeight}
                 alignment={alignment}
                 side={side}
                 sideOffset={sideOffset}
@@ -244,16 +245,8 @@ const MultiSelect = ({
                             })}
                         >
                             <Block
-                                width={
-                                    variant === MultiSelectVariant.CONTAINER
-                                        ? '100%'
-                                        : 'auto'
-                                }
-                                maxWidth={
-                                    variant === MultiSelectVariant.NO_CONTAINER
-                                        ? '100%'
-                                        : 'auto'
-                                }
+                                width={fullWidth ? '100%' : 'fit-content'}
+                                maxWidth={fullWidth ? '100%' : 'fit-content'}
                                 display="flex"
                                 alignItems="center"
                             >
@@ -269,7 +262,9 @@ const MultiSelect = ({
                                     <PrimitiveButton
                                         type="button"
                                         position="relative"
-                                        width={'100%'}
+                                        width={
+                                            fullWidth ? '100%' : 'fit-content'
+                                        }
                                         display="flex"
                                         alignItems="center"
                                         overflow="hidden"
