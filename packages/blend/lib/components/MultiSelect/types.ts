@@ -122,7 +122,7 @@ export type MultiSelectProps = {
     }
     secondaryAction?: {
         text: string
-        onClick: (selectedValues: string[]) => void
+        onClick: () => void
         disabled?: boolean
         loading?: boolean
     }
@@ -169,7 +169,7 @@ export type MultiSelectMenuProps = {
     }
     secondaryAction?: {
         text: string
-        onClick: (selectedValues: string[]) => void
+        onClick: () => void
         disabled?: boolean
         loading?: boolean
     }

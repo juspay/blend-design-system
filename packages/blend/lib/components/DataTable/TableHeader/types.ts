@@ -12,7 +12,7 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     columnManagerAlwaysSelected?: string[]
     columnManagerPrimaryAction?: {
         text: string
-        onClick: () => void
+        onClick: (selectedColumns: string[]) => void
         disabled?: boolean
         loading?: boolean
     }
