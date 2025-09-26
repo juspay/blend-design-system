@@ -377,7 +377,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                             backgroundColor={
                                                 FOUNDATION_THEME.colors.gray[0]
                                             }
-                                            zIndex={1000}
+                                            zIndex={50}
                                         >
                                             <TextInput
                                                 size={TextInputSize.MEDIUM}
