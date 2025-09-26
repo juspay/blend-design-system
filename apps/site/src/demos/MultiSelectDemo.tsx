@@ -865,6 +865,19 @@ const MultiSelectDemo = () => {
                             <MultiSelect
                                 fullWidth={true}
                                 minMenuWidth={400}
+                                showActionButtons={true}
+                                primaryAction={{
+                                    text: 'Apply',
+                                    onClick: (selected) => {
+                                        console.log('Applied', selected)
+                                    },
+                                }}
+                                secondaryAction={{
+                                    text: 'Reset',
+                                    onClick: () => {
+                                        console.log('Reset')
+                                    },
+                                }}
                                 error={playgroundError}
                                 errorMessage={playgroundErrorMessage}
                                 onBlur={() => {

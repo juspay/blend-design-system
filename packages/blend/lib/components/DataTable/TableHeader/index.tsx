@@ -68,6 +68,8 @@ const TableHeader = forwardRef<
             enableColumnManager = true,
             columnManagerMaxSelections,
             columnManagerAlwaysSelected,
+            columnManagerPrimaryAction,
+            columnManagerSecondaryAction,
             enableRowExpansion = false,
             enableRowSelection = true,
             rowActions,
@@ -171,7 +173,7 @@ const TableHeader = forwardRef<
                 style={{
                     position: 'sticky',
                     top: 0,
-                    zIndex: 60,
+                    zIndex: 10,
                     backgroundColor:
                         tableToken.dataTable.table.header.backgroundColor,
                     borderBottom:
@@ -198,7 +200,7 @@ const TableHeader = forwardRef<
                                 ...(columnFreeze > 0 && {
                                     position: 'sticky',
                                     left: '0px',
-                                    zIndex: 55,
+                                    zIndex: 9,
                                     backgroundColor:
                                         tableToken.dataTable.table.header
                                             .backgroundColor,
@@ -227,7 +229,7 @@ const TableHeader = forwardRef<
                                 ...(columnFreeze > 0 && {
                                     position: 'sticky',
                                     left: enableRowExpansion ? '50px' : '0px',
-                                    zIndex: 55,
+                                    zIndex: 9,
                                     backgroundColor:
                                         tableToken.dataTable.table.header
                                             .backgroundColor,
@@ -568,7 +570,6 @@ const TableHeader = forwardRef<
                                                     }
                                                     maxWidth={220}
                                                     minWidth={220}
-                                                    zIndex={1000}
                                                     side="bottom"
                                                     align={getPopoverAlignment(
                                                         index,
@@ -700,6 +701,12 @@ const TableHeader = forwardRef<
                                     maxSelections={columnManagerMaxSelections}
                                     alwaysSelectedColumns={
                                         columnManagerAlwaysSelected
+                                    }
+                                    columnManagerPrimaryAction={
+                                        columnManagerPrimaryAction
+                                    }
+                                    columnManagerSecondaryAction={
+                                        columnManagerSecondaryAction
                                     }
                                 />
                             </Block>

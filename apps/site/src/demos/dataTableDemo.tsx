@@ -748,6 +748,24 @@ const SimpleDataTableExample = () => {
                         Record<string, unknown>
                     >[]
                 }
+                columnManagerPrimaryAction={{
+                    text: 'Applied',
+                    onClick: (selectedColumns) => {
+                        console.log(
+                            'Applied with selected columns:',
+                            selectedColumns
+                        )
+                        alert(
+                            `Applied column changes!\n\nSelected columns: ${selectedColumns.join(', ')}`
+                        )
+                    },
+                }}
+                columnManagerSecondaryAction={{
+                    text: 'Reset',
+                    onClick: () => {
+                        console.log('Reset')
+                    },
+                }}
                 idField="id"
                 title="Product Inventory (Mobile: 2 Columns + Overflow)"
                 description="Simple product management table demonstrating DROPDOWN and DATE column types with smart row actions. On desktop, actions appear in a fixed 200px column with overflow menu when needed. On mobile, actions appear in the overflow drawer footer for better UX."
@@ -2571,6 +2589,24 @@ const DataTableDemo = () => {
                 }
                 idField="id"
                 title="User Management"
+                columnManagerPrimaryAction={{
+                    text: 'Applied',
+                    onClick: (selectedColumns) => {
+                        console.log(
+                            'Applied with selected columns:',
+                            selectedColumns
+                        )
+                        alert(
+                            `Applied column changes!\n\nSelected columns: ${selectedColumns.join(', ')}`
+                        )
+                    },
+                }}
+                columnManagerSecondaryAction={{
+                    text: 'Reset',
+                    onClick: () => {
+                        console.log('Reset')
+                    },
+                }}
                 description={`Complete overview of system users with ${isServerSideMode ? 'server-side' : 'local'} search, filtering, inline editing, expandable rows, clickable rows, dynamic row styling, and intelligent row actions with overflow menu.`}
                 isHoverable
                 enableSearch
@@ -2584,7 +2620,7 @@ const DataTableDemo = () => {
                 enableRowExpansion
                 enableRowSelection={enableRowSelection}
                 enableColumnManager={enableColumnManager}
-                columnManagerMaxSelections={5}
+                columnManagerMaxSelections={9}
                 columnManagerAlwaysSelected={['name', 'email']}
                 showSettings={showSettings}
                 renderExpandedRow={renderExpandedRow}

@@ -325,7 +325,7 @@ export const getTableToken = (
                     top: '70%',
                     left: '50%',
                     transform: 'translateX(-50%)',
-                    zIndex: 1000,
+                    zIndex: 99,
                     backgroundColor: foundationToken.colors.gray[0],
                     color: foundationToken.colors.gray[700],
                     borderRadius: foundationToken.border.radius[12],
@@ -476,7 +476,7 @@ export const getTableToken = (
                         position: 'sticky',
                         bottom: 0,
                         backgroundColor: foundationToken.colors.gray[25],
-                        zIndex: 50,
+                        zIndex: 9,
                         flexShrink: 0,
                         pagination: {
                             pageText: {
@@ -579,7 +579,7 @@ export const getTableToken = (
                     top: '80%',
                     left: '50%',
                     transform: 'translateX(-50%)',
-                    zIndex: 1000,
+                    zIndex: 99,
                     backgroundColor: foundationToken.colors.gray[0],
                     color: foundationToken.colors.gray[700],
                     borderRadius: foundationToken.border.radius[12],
@@ -728,7 +728,7 @@ export const getTableToken = (
                         position: 'sticky',
                         bottom: 0,
                         backgroundColor: foundationToken.colors.gray[25],
-                        zIndex: 50,
+                        zIndex: 9,
                         flexShrink: 0,
                         pagination: {
                             pageText: {

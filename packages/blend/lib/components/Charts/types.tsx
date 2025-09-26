@@ -82,6 +82,7 @@ export type AxisConfig = {
     smart?: boolean
     timeZone?: string
     hour12?: boolean
+    showYear?: boolean
 }
 
 export type XAxisConfig = AxisConfig

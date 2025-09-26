@@ -456,7 +456,7 @@ export const getCalendarToken = (
                 padding: FOUNDATION_THEME.unit[4],
                 width: '100%',
                 maxHeight: '200px',
-                zIndex: 1000,
+                zIndex: 50,
                 backgroundColor: FOUNDATION_THEME.colors.gray[0],
                 borderRadius: FOUNDATION_THEME.border.radius[6],
                 boxShadow: FOUNDATION_THEME.shadows.xs,
@@ -529,7 +529,7 @@ export const getCalendarToken = (
             border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
             boxShadow: foundationToken.shadows.xs,
-            zIndex: 1000,
+            zIndex: 50,
             inputs: {
                 padding: foundationToken.unit[16],
                 dateInput: {

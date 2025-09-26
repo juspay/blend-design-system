@@ -84,6 +84,7 @@ import {
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import KeyValuePairDemo from './KeyValuePairDemo'
+import AllComponentsDemo from './AllComponentsDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -134,7 +135,8 @@ const SidebarDemo = () => {
         | 'keyValuePair'
         | 'card'
         | 'dataRangePicker'
-    >('dataRangePicker')
+        | 'allComponents'
+    >('allComponents')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -380,6 +382,8 @@ const SidebarDemo = () => {
                 return <KeyValuePairDemo />
             case 'card':
                 return <CardDemo />
+            case 'allComponents':
+                return <AllComponentsDemo />
             default:
                 return (
                     <div className="p-8">
@@ -796,6 +800,13 @@ const SidebarDemo = () => {
                     ),
                     onClick: () => setActiveComponent('colorPalette'),
                 },
+                {
+                    label: '🎨 All Components Demo',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('allComponents'),
+                },
             ],
         },
     ]
@@ -820,7 +831,7 @@ const SidebarDemo = () => {
         <div className="w-screen h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
-                    enableTopbarAutoHide={true}
+                    enableTopbarAutoHide={false}
                     leftPanel={{
                         items: tenants,
                         selected: activeTenant,
