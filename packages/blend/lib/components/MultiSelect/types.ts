@@ -116,13 +116,13 @@ export type MultiSelectProps = {
     showActionButtons?: boolean
     primaryAction?: {
         text: string
-        onClick: () => void
+        onClick: (selectedValues: string[]) => void
         disabled?: boolean
         loading?: boolean
     }
     secondaryAction?: {
         text: string
-        onClick: () => void
+        onClick: (selectedValues: string[]) => void
         disabled?: boolean
         loading?: boolean
     }
@@ -163,13 +163,13 @@ export type MultiSelectMenuProps = {
     showActionButtons?: boolean
     primaryAction?: {
         text: string
-        onClick: () => void
+        onClick: (selectedValues: string[]) => void
         disabled?: boolean
         loading?: boolean
     }
     secondaryAction?: {
         text: string
-        onClick: () => void
+        onClick: (selectedValues: string[]) => void
         disabled?: boolean
         loading?: boolean
     }

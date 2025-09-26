@@ -10,6 +10,18 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     enableColumnManager?: boolean
     columnManagerMaxSelections?: number
     columnManagerAlwaysSelected?: string[]
+    columnManagerPrimaryAction?: {
+        text: string
+        onClick: () => void
+        disabled?: boolean
+        loading?: boolean
+    }
+    columnManagerSecondaryAction?: {
+        text: string
+        onClick: () => void
+        disabled?: boolean
+        loading?: boolean
+    }
     enableRowExpansion?: boolean
     enableRowSelection?: boolean
     rowActions?: RowActionsConfig<T>
