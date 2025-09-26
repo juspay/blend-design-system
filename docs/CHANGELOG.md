@@ -1,11 +1,17 @@
-# Changelog for v0.0.17 (Stable)
+# Changelog for v0.0.18-beta (Beta)
 
-This is a stable release. Changes since last stable release:
+This is a beta release from the staging branch. Changes since last tag:
 
-- Merge pull request #409 from juspay/staging (0b0f1a8)
+- Merge pull request #420 from juspay/dev (e7ae718)
+- Fix/z index (#421) (74fb6da)
+- Feat/apply for table an dmultiselect (#419) (38c3cdf)
+- fix: enhance date range reset logic and improve single date handling (#417) (ba6cc1a)
+- Merge pull request #416 from juspay/bug-fix/charts (72a8611)
+- Merge pull request #411 from juspay/dev (249e440)
+- Merge pull request #410 from juspay/release/update-stable-version-0.0.17 (e3ec70d)
+- chore(release): v0.0.17 [STABLE] (4e5f2c8)
 - Merge pull request #407 from juspay/fix/build (#408) (c718358)
 - Merge pull request #407 from juspay/fix/build (f8def11)
-- Merge pull request #406 from juspay/staging (f7a7762)
 - Merge pull request #405 from juspay/dev (5b8c7c1)
 - feat(charts): add scatter chart support with interactive tooltips (#399) (35567f6)
 - Update key value pair component (#403) (286938c)
@@ -15,10 +21,3 @@ This is a stable release. Changes since last stable release:
 - Merge pull request #397 from juspay/dev (4ddff2d)
 - Merge pull request #396 from juspay/release/update-beta-version-0.0.17-beta (aa1d64a)
 - chore(release): v0.0.17-beta [BETA] (2d74de7)
-- Dev to staging (#395) (34f2c11)
-- Bug fix/stats and dropdowns (#394) (6b85a29)
-- Merge pull request #393 from juspay/fix/keyvalue-export (58197fb)
-- Merge pull request #389 from juspay/staging (441e650)
-- Merge pull request #388 from juspay/dev (82fa691)
-- Merge pull request #387 from juspay/release/update-stable-version-0.0.16 (c96148e)
-- chore(release): v0.0.16 [STABLE] (a4bda09)
