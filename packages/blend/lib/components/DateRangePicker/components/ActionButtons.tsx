@@ -1,13 +1,15 @@
 import React from 'react'
 import { FOUNDATION_THEME } from '../../../tokens'
 import Block from '../../Primitives/Block/Block'
-import { ButtonType, ButtonSize, Button } from '../../../main'
+import { ButtonType, ButtonSize, Button, Tooltip } from '../../../main'
 import type { ActionButtonsProps } from '../types'
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
     onCancel,
     onApply,
     isDisabled = false,
+    isApplyDisabled = false,
+    applyDisabledMessage,
 }) => {
     return (
         <Block
@@ -37,14 +39,19 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
                 flexBasis={0}
                 style={{ minWidth: 0 }}
             >
-                <Button
-                    buttonType={ButtonType.PRIMARY}
-                    size={ButtonSize.LARGE}
-                    fullWidth={true}
-                    disabled={isDisabled}
-                    onClick={onApply}
-                    text="Apply Date"
-                />
+                <Tooltip
+                    content={isApplyDisabled ? applyDisabledMessage : undefined}
+                    open={isApplyDisabled ? undefined : false}
+                >
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.LARGE}
+                        fullWidth={true}
+                        disabled={isDisabled || isApplyDisabled}
+                        onClick={onApply}
+                        text="Apply Date"
+                    />
+                </Tooltip>
             </Block>
         </Block>
     )
