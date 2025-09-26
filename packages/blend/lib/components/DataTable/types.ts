@@ -112,7 +112,7 @@ export type ColumnManagerProps<T extends Record<string, unknown>> = {
     }
     columnManagerSecondaryAction?: {
         text: string
-        onClick: (selectedColumns: string[]) => void
+        onClick: () => void
         disabled?: boolean
         loading?: boolean
     }
@@ -307,7 +307,7 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     }
     columnManagerSecondaryAction?: {
         text: string
-        onClick: (selectedColumns: string[]) => void
+        onClick: () => void
         disabled?: boolean
         loading?: boolean
     }

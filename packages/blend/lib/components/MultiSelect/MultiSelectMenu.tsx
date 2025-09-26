@@ -341,7 +341,7 @@ const MultiSelectMenu = ({
                                 size={ButtonSize.SMALL}
                                 text={secondaryAction.text}
                                 onClick={() => {
-                                    secondaryAction.onClick(selected)
+                                    secondaryAction.onClick()
                                     onOpenChange(false)
                                 }}
                                 disabled={secondaryAction.disabled}
