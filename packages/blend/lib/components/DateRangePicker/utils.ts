@@ -2493,8 +2493,7 @@ export const formatTimeInput = (input: string): string => {
  * @returns Validation result with specific error information
  */
 export const validateDateTimeRange = (
-    range: DateRange,
-    allowSingleDateSelection: boolean = false
+    range: DateRange
 ): {
     isValid: boolean
     error:
@@ -2512,24 +2511,23 @@ export const validateDateTimeRange = (
         }
     }
 
-    // Check if it's a single date selection
     const isSingleDate = isSameDay(range.startDate, range.endDate)
 
-    if (isSingleDate) {
-        // For single date selection, allow any time range within the same day
-        // including same start and end times
-        return { isValid: true, error: 'none' }
-    }
-
-    // For range selections, end time should be after or equal to start time
     if (range.endDate.getTime() < range.startDate.getTime()) {
         return {
             isValid: false,
             error: 'invalid-time-order',
-            message: 'End date/time must be after start date/time',
+            message: isSingleDate
+                ? 'End time must be after or equal to start time on the same day'
+                : 'End date/time must be after start date/time',
         }
     }
 
+    if (isSingleDate) {
+        return { isValid: true, error: 'none' }
+    }
+
+    console.log('Validation passed: multi-date range')
     return { isValid: true, error: 'none' }
 }
 
