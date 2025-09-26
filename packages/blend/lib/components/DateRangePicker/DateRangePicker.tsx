@@ -371,12 +371,18 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             }
         }, [value, dateFormat])
 
-        const handleDateSelect = useCallback((range: DateRange) => {
-            // Only update internal selectedRange, don't update input fields until Apply
-            setSelectedRange(range)
-            setActivePreset(DateRangePreset.CUSTOM)
-            console.log('Date selected from calendar:', range)
-        }, [])
+        const handleDateSelect = useCallback(
+            (range: DateRange) => {
+                setSelectedRange(range)
+                setActivePreset(DateRangePreset.CUSTOM)
+
+                setStartDate(formatDate(range.startDate, dateFormat))
+                setEndDate(formatDate(range.endDate, dateFormat))
+
+                console.log('Date selected from calendar:', range)
+            },
+            [dateFormat]
+        )
 
         const handlePresetSelect = useCallback(
             (preset: DateRangePreset) => {
@@ -403,7 +409,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     dateFormat,
                     selectedRange,
                     startTime,
-                    true
+                    true,
+                    disableFutureDates || hideFutureDates,
+                    disablePastDates || hidePastDates
                 )
                 setStartDate(result.formattedValue)
                 setStartDateValidation(result.validation)
@@ -413,7 +421,15 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     setActivePreset(DateRangePreset.CUSTOM)
                 }
             },
-            [selectedRange, startTime, dateFormat]
+            [
+                selectedRange,
+                startTime,
+                dateFormat,
+                disableFutureDates,
+                disablePastDates,
+                hideFutureDates,
+                hidePastDates,
+            ]
         )
 
         const handleEndDateChange = useCallback(
@@ -423,7 +439,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     dateFormat,
                     selectedRange,
                     endTime,
-                    false
+                    false,
+                    disableFutureDates || hideFutureDates,
+                    disablePastDates || hidePastDates
                 )
                 setEndDate(result.formattedValue)
                 setEndDateValidation(result.validation)
@@ -433,7 +451,15 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     setActivePreset(DateRangePreset.CUSTOM)
                 }
             },
-            [selectedRange, endTime, dateFormat]
+            [
+                selectedRange,
+                endTime,
+                dateFormat,
+                disableFutureDates,
+                disablePastDates,
+                hideFutureDates,
+                hidePastDates,
+            ]
         )
 
         const handleStartTimeChange = useCallback(
@@ -726,6 +752,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         }
                         isApplyDisabled={isApplyDisabled}
                         applyDisabledMessage={applyButtonValidation.message}
+                        disableFutureDates={disableFutureDates}
+                        disablePastDates={disablePastDates}
                     />
                 </Block>
             )

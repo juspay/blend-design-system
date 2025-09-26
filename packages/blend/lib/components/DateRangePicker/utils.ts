@@ -177,17 +177,21 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
         }
 
         case DateRangePreset.LAST_7_DAYS: {
-            // Last 7 days should be from 7 days ago at current time to now
-            const sevenDaysAgo = new Date(
-                now.getTime() - 7 * 24 * 60 * 60 * 1000
-            )
+            // Last 7 days: 7 complete days ago to current time today
+            // Day 1-6: 12:00 AM to 11:59 PM, Day 7 (today): 12:00 AM to current time
+            const sevenDaysAgo = new Date(today)
+            sevenDaysAgo.setDate(today.getDate() - 6) // 6 days ago + today = 7 days
+            sevenDaysAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
+
             return { startDate: sevenDaysAgo, endDate: now }
         }
 
         case DateRangePreset.LAST_30_DAYS: {
-            const thirtyDaysAgo = new Date(
-                now.getTime() - 30 * 24 * 60 * 60 * 1000
-            )
+            // Last 30 days: 30 complete days ago to current time today
+            const thirtyDaysAgo = new Date(today)
+            thirtyDaysAgo.setDate(today.getDate() - 29) // 29 days ago + today = 30 days
+            thirtyDaysAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
+
             return { startDate: thirtyDaysAgo, endDate: now }
         }
 
@@ -1035,11 +1039,15 @@ export type DateRangePickerTokens = {
  * Validates date format and date values
  * @param value The input value to validate
  * @param format The expected format (e.g., 'dd/MM/yyyy')
+ * @param disableFutureDates Whether future dates should be disabled
+ * @param disablePastDates Whether past dates should be disabled
  * @returns Validation result with specific error type
  */
 export const validateDateInput = (
     value: string,
-    format: string
+    format: string,
+    disableFutureDates: boolean = false,
+    disablePastDates: boolean = false
 ): DateValidationResult => {
     if (!value || value.length === 0) {
         return { isValid: true, error: 'none' }
@@ -1096,6 +1104,27 @@ export const validateDateInput = (
                 isValid: false,
                 error: 'invalid-date',
                 message: 'Invalid date',
+            }
+        }
+
+        // Check future/past date restrictions
+        const today = new Date()
+        today.setHours(0, 0, 0, 0) // Compare dates only, not times
+        date.setHours(0, 0, 0, 0)
+
+        if (disableFutureDates && date > today) {
+            return {
+                isValid: false,
+                error: 'out-of-range',
+                message: 'Future dates are not allowed',
+            }
+        }
+
+        if (disablePastDates && date < today) {
+            return {
+                isValid: false,
+                error: 'out-of-range',
+                message: 'Past dates are not allowed',
             }
         }
 
@@ -1225,6 +1254,9 @@ export const formatDateDisplay = (
  * @param dateFormat Date format string
  * @param currentRange Current selected range
  * @param timeValue Current time value (HH:mm)
+ * @param isStartDate Whether this is start date or end date
+ * @param disableFutureDates Whether future dates should be disabled
+ * @param disablePastDates Whether past dates should be disabled
  * @returns Object with formatted value, validation result, and updated range
  */
 export const handleDateInputChange = (
@@ -1232,14 +1264,21 @@ export const handleDateInputChange = (
     dateFormat: string,
     currentRange: DateRange,
     timeValue: string,
-    isStartDate: boolean = true
+    isStartDate: boolean = true,
+    disableFutureDates: boolean = false,
+    disablePastDates: boolean = false
 ): {
     formattedValue: string
     validation: DateValidationResult
     updatedRange?: DateRange
 } => {
     const formattedValue = formatDateInput(value, dateFormat)
-    const validation = validateDateInput(formattedValue, dateFormat)
+    const validation = validateDateInput(
+        formattedValue,
+        dateFormat,
+        disableFutureDates,
+        disablePastDates
+    )
 
     let updatedRange: DateRange | undefined
 
@@ -2527,7 +2566,6 @@ export const validateDateTimeRange = (
         return { isValid: true, error: 'none' }
     }
 
-    console.log('Validation passed: multi-date range')
     return { isValid: true, error: 'none' }
 }
 

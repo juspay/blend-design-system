@@ -160,6 +160,8 @@ export type DatePickerComponentProps = {
     setStartDate: (date: string) => void
     setEndDate: (date: string) => void
     isDisabled?: boolean
+    disableFutureDates?: boolean
+    disablePastDates?: boolean
 }
 
 export type MobileDrawerPresetsProps = {
@@ -185,4 +187,6 @@ export type MobileDrawerPresetsProps = {
     isDisabled?: boolean
     isApplyDisabled?: boolean
     applyDisabledMessage?: string
+    disableFutureDates?: boolean
+    disablePastDates?: boolean
 }
