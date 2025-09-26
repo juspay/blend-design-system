@@ -200,10 +200,13 @@ const MultiSelectMenu = ({
                 avoidCollisions={false}
                 onKeyDown={handleKeyDown}
                 style={{
-                    minWidth: minMenuWidth,
+                    minWidth: minMenuWidth || 250,
                     width: 'max(var(--radix-dropdown-menu-trigger-width))',
-                    maxWidth: maxMenuWidth,
-                    maxHeight: maxMenuHeight,
+                    maxWidth:
+                        maxMenuWidth ||
+                        'var(--radix-dropdown-menu-trigger-width)',
+                    maxHeight:
+                        maxMenuHeight || 'var(--radix-popper-available-height)',
                 }}
             >
                 <StickyHeader>
@@ -332,7 +335,10 @@ const MultiSelectMenu = ({
                                 buttonType={ButtonType.SECONDARY}
                                 size={ButtonSize.SMALL}
                                 text={secondaryAction.text}
-                                onClick={secondaryAction.onClick}
+                                onClick={() => {
+                                    secondaryAction.onClick()
+                                    onOpenChange(false)
+                                }}
                                 disabled={secondaryAction.disabled}
                                 loading={secondaryAction.loading}
                             />
@@ -343,7 +349,7 @@ const MultiSelectMenu = ({
                                 size={ButtonSize.SMALL}
                                 text={primaryAction.text}
                                 onClick={() => {
-                                    primaryAction.onClick()
+                                    primaryAction.onClick(selected)
                                     onOpenChange(false)
                                 }}
                                 disabled={primaryAction.disabled}

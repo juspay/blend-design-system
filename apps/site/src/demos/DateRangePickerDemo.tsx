@@ -112,6 +112,8 @@ const DateRangePickerDemo = () => {
         allowSingleDateSelection: false,
         disableFutureDates: false,
         disablePastDates: false,
+        hideFutureDates: false,
+        hidePastDates: false,
         isDisabled: false,
         formatPreset: DateFormatPreset.MEDIUM_RANGE,
         includeTime: false,
@@ -139,6 +141,31 @@ const DateRangePickerDemo = () => {
     const [customRange, setCustomRange] = useState<DateRange>({
         startDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
         endDate: new Date(),
+    })
+
+    // Single date selection state - initialized with a proper single date range
+    const [singleDateRange, setSingleDateRange] = useState<DateRange>(() => {
+        const today = new Date()
+        return {
+            startDate: new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate(),
+                0,
+                0,
+                0,
+                0
+            ),
+            endDate: new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate(),
+                23,
+                59,
+                59,
+                999
+            ),
+        }
     })
 
     // Console logging functions for date changes
@@ -180,6 +207,23 @@ const DateRangePickerDemo = () => {
             formattedEnd: range.endDate.toLocaleString(),
         })
         setCustomRange(range)
+    }
+
+    const handleSingleDateRangeChange = (range: DateRange) => {
+        console.log('Single Date Range Changed:', {
+            startDate: range.startDate.toISOString(),
+            endDate: range.endDate.toISOString(),
+            formattedStart: range.startDate.toLocaleString(),
+            formattedEnd: range.endDate.toLocaleString(),
+            isSingleDay:
+                range.startDate.toDateString() === range.endDate.toDateString(),
+            isFullDay:
+                range.startDate.getHours() === 0 &&
+                range.startDate.getMinutes() === 0 &&
+                range.endDate.getHours() === 23 &&
+                range.endDate.getMinutes() === 59,
+        })
+        setSingleDateRange(range)
     }
 
     // Handle configuration changes
@@ -365,6 +409,30 @@ const DateRangePickerDemo = () => {
                                             className="mr-2 cursor-pointer"
                                         />
                                         <span>Disable Past Dates</span>
+                                    </label>
+
+                                    <label className="flex items-center cursor-pointer text-gray-700">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.hideFutureDates}
+                                            onChange={handleCheckboxChange(
+                                                'hideFutureDates'
+                                            )}
+                                            className="mr-2 cursor-pointer"
+                                        />
+                                        <span>Hide Future Dates</span>
+                                    </label>
+
+                                    <label className="flex items-center cursor-pointer text-gray-700">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.hidePastDates}
+                                            onChange={handleCheckboxChange(
+                                                'hidePastDates'
+                                            )}
+                                            className="mr-2 cursor-pointer"
+                                        />
+                                        <span>Hide Past Dates</span>
                                     </label>
 
                                     <label className="flex items-center cursor-pointer text-gray-700">
@@ -620,6 +688,8 @@ const DateRangePickerDemo = () => {
                                         config.disableFutureDates
                                     }
                                     disablePastDates={config.disablePastDates}
+                                    hideFutureDates={config.hideFutureDates}
+                                    hidePastDates={config.hidePastDates}
                                     isDisabled={config.isDisabled}
                                     size={config.size}
                                     formatConfig={getFormatConfig()}
@@ -763,16 +833,34 @@ const DateRangePickerDemo = () => {
                     {/* Disabled Future Dates */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            Past Dates Only
+                            Past Dates Only (Disabled)
                         </h3>
                         <p className="text-sm text-gray-600 mb-4 flex-grow">
-                            Useful for analytics and reporting
+                            Future dates are disabled but still visible
                         </p>
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={customRange}
                                 onChange={handleCustomRangeChange}
                                 disableFutureDates={true}
+                                showPresets={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Hidden Future Dates */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Past Dates Only (Hidden)
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Future dates are completely hidden from calendar
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                hideFutureDates={true}
                                 showPresets={true}
                             />
                         </div>
@@ -788,8 +876,8 @@ const DateRangePickerDemo = () => {
                         </p>
                         <div className="overflow-hidden">
                             <DateRangePicker
-                                value={basicRange}
-                                onChange={handleBasicRangeChange}
+                                value={singleDateRange}
+                                onChange={handleSingleDateRangeChange}
                                 allowSingleDateSelection={true}
                                 showPresets={true}
                             />

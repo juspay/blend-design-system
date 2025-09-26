@@ -51,41 +51,58 @@ const parseTimeInput = (
 
     const cleanInput = input.replace(/\s+/g, ' ').trim().toUpperCase()
 
-    const timeRegex = /^(\d{1,2})(?::(\d{1,2}))?\s*(AM|PM)?$/i
-    const match = cleanInput.match(timeRegex)
+    const timePatterns = [
+        /^(\d{1,2})(?::(\d{1,2}))?\s*(AM|PM)$/i, // 12:30 PM, 12 PM
+        /^(\d{1,2})(?::(\d{1,2}))$/, // 12:30, 12
+        /^(\d{3,4})$/, // 1230, 130
+    ]
 
-    if (!match) {
-        return { hour: 0, minute: 0, isValid: false, originalInput }
-    }
+    for (const pattern of timePatterns) {
+        const match = cleanInput.match(pattern)
+        if (!match) continue
 
-    let hour = parseInt(match[1], 10)
-    const minute = parseInt(match[2] || '0', 10)
-    const period = match[3]?.toUpperCase()
+        let hour: number
+        let minute: number
+        const period = match[3]?.toUpperCase()
 
-    if (!period) {
-        if (hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59) {
-            return { hour, minute, isValid: true, originalInput }
+        if (pattern === timePatterns[2]) {
+            const digits = match[1]
+            if (digits.length === 3) {
+                hour = parseInt(digits.slice(0, 1), 10)
+                minute = parseInt(digits.slice(1), 10)
+            } else {
+                hour = parseInt(digits.slice(0, 2), 10)
+                minute = parseInt(digits.slice(2), 10)
+            }
+        } else {
+            hour = parseInt(match[1], 10)
+            minute = parseInt(match[2] || '0', 10)
         }
-        if (hour >= 1 && hour <= 12 && minute >= 0 && minute <= 59) {
-            const currentHour = new Date().getHours()
-            const defaultToPM = currentHour >= 12
-            if (defaultToPM && hour !== 12) {
+
+        if (minute < 0 || minute > 59) continue
+
+        if (period) {
+            if (hour < 1 || hour > 12) continue
+            if (period === 'PM' && hour !== 12) {
                 hour += 12
-            } else if (!defaultToPM && hour === 12) {
+            } else if (period === 'AM' && hour === 12) {
                 hour = 0
             }
-            return { hour, minute, isValid: true, originalInput }
-        }
-    } else {
-        if (hour < 1 || hour > 12 || minute < 0 || minute > 59) {
-            return { hour: 0, minute: 0, isValid: false, originalInput }
+        } else {
+            // 24-hour format or ambiguous
+            if (hour > 23) continue
+
+            if (hour >= 1 && hour <= 12) {
+                const currentHour = new Date().getHours()
+                const defaultToPM = currentHour >= 12
+                if (defaultToPM && hour !== 12) {
+                    hour += 12
+                } else if (!defaultToPM && hour === 12) {
+                    hour = 0
+                }
+            }
         }
 
-        if (period === 'PM' && hour !== 12) {
-            hour += 12
-        } else if (period === 'AM' && hour === 12) {
-            hour = 0
-        }
         return { hour, minute, isValid: true, originalInput }
     }
 
@@ -162,10 +179,23 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
         const handleInputChange = useCallback(
             (e: React.ChangeEvent<HTMLInputElement>) => {
                 const newValue = e.target.value
+                const cursorPosition = e.target.selectionStart || 0
+
+                // Allow better typing experience by preserving cursor position
                 setInputValue(newValue)
 
                 const parsed = parseTimeInput(newValue)
                 setIsValidTime(parsed.isValid || newValue.trim() === '')
+
+                // Restore cursor position after state update
+                requestAnimationFrame(() => {
+                    if (inputRef.current) {
+                        inputRef.current.setSelectionRange(
+                            cursorPosition,
+                            cursorPosition
+                        )
+                    }
+                })
             },
             []
         )

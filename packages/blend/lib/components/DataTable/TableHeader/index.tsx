@@ -68,6 +68,8 @@ const TableHeader = forwardRef<
             enableColumnManager = true,
             columnManagerMaxSelections,
             columnManagerAlwaysSelected,
+            columnManagerPrimaryAction,
+            columnManagerSecondaryAction,
             enableRowExpansion = false,
             enableRowSelection = true,
             rowActions,
@@ -699,6 +701,12 @@ const TableHeader = forwardRef<
                                     maxSelections={columnManagerMaxSelections}
                                     alwaysSelectedColumns={
                                         columnManagerAlwaysSelected
+                                    }
+                                    columnManagerPrimaryAction={
+                                        columnManagerPrimaryAction
+                                    }
+                                    columnManagerSecondaryAction={
+                                        columnManagerSecondaryAction
                                     }
                                 />
                             </Block>
