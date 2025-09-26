@@ -20,6 +20,7 @@ import {
     handleCalendarScroll,
     createCalendarMonthData,
     calculateDayCellProps,
+    shouldHideDateFromCalendar,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -31,6 +32,8 @@ type CalendarGridProps = {
     allowSingleDateSelection?: boolean
     disableFutureDates?: boolean
     disablePastDates?: boolean
+    hideFutureDates?: boolean
+    hidePastDates?: boolean
     showDateTimePicker?: boolean
 }
 
@@ -69,6 +72,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             allowSingleDateSelection = false,
             disableFutureDates = false,
             disablePastDates = false,
+            hideFutureDates = false,
+            hidePastDates = false,
             showDateTimePicker = true,
         },
         ref
@@ -94,8 +99,26 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         const dayNames = useMemo(() => getDayNames(), [])
 
         const monthHeights = useMemo(() => {
-            return months.map(({ year, month }) => getMonthHeight(year, month))
-        }, [months])
+            return months.map(({ year, month }) => {
+                // Check if entire month should be hidden
+                const monthData = createCalendarMonthData(year, month, 0, 0)
+                const shouldHideEntireMonth = monthData.weeks.every((week) =>
+                    week.every((day) => {
+                        if (day === null) return true
+                        const date = new Date(year, month, day)
+                        return shouldHideDateFromCalendar(
+                            date,
+                            today,
+                            hideFutureDates,
+                            hidePastDates
+                        )
+                    })
+                )
+
+                // Return 0 height for hidden months
+                return shouldHideEntireMonth ? 0 : getMonthHeight(year, month)
+            })
+        }, [months, today, hideFutureDates, hidePastDates])
 
         const cumulativeHeights = useMemo(() => {
             const heights = [0]
@@ -300,6 +323,24 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                     monthHeight
                 )
 
+                // Check if entire month should be hidden
+                const shouldHideEntireMonth = monthData.weeks.every((week) =>
+                    week.every((day) => {
+                        if (day === null) return true
+                        const date = new Date(year, month, day)
+                        return shouldHideDateFromCalendar(
+                            date,
+                            today,
+                            hideFutureDates,
+                            hidePastDates
+                        )
+                    })
+                )
+
+                if (shouldHideEntireMonth) {
+                    return null
+                }
+
                 return (
                     <Block
                         key={`month-${year}-${month}`}
@@ -374,6 +415,30 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                     month,
                                                     day
                                                 )
+
+                                                // Hide dates if hideFutureDates or hidePastDates is true
+                                                const shouldHide =
+                                                    shouldHideDateFromCalendar(
+                                                        date,
+                                                        today,
+                                                        hideFutureDates,
+                                                        hidePastDates
+                                                    )
+
+                                                if (shouldHide) {
+                                                    return (
+                                                        <Block
+                                                            style={{
+                                                                ...calendarToken
+                                                                    .calendar
+                                                                    .calendarGrid
+                                                                    .day.empty,
+                                                            }}
+                                                            key={dayIndex}
+                                                        />
+                                                    )
+                                                }
+
                                                 const cellProps =
                                                     calculateDayCellProps(
                                                         date,
@@ -467,6 +532,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 today,
                 disableFutureDates,
                 disablePastDates,
+                hideFutureDates,
+                hidePastDates,
                 handleDateClick,
                 calendarToken,
                 cumulativeHeights,

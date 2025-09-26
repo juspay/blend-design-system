@@ -139,7 +139,7 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
 
     switch (preset) {
         case DateRangePreset.TODAY: {
-            // Today should be from 12:00 AM to current time (or 11:59 PM if current time is past)
+            // Today should be from 12:00 AM to current time
             const startDate = new Date(
                 today.getFullYear(),
                 today.getMonth(),
@@ -1113,29 +1113,38 @@ export const validateDateInput = (
  */
 export const formatDateInput = (value: string, format: string): string => {
     if (format === 'dd/MM/yyyy') {
-        const cleaned = value.replace(/\D/g, '')
+        // Allow existing slashes to remain, only add where needed
+        const cleaned = value.replace(/[^\d/]/g, '')
 
-        if (cleaned.length === 0) return ''
-        if (cleaned.length <= 2) return cleaned
-        if (cleaned.length <= 4)
-            return cleaned.slice(0, 2) + '/' + cleaned.slice(2)
-        if (cleaned.length <= 8) {
+        // Remove multiple consecutive slashes
+        const singleSlash = cleaned.replace(/\/+/g, '/')
+
+        // Split by slashes to work with parts
+        const parts = singleSlash.split('/')
+
+        if (parts.length === 1) {
+            // Only day part
+            const day = parts[0]
+            if (day.length === 0) return ''
+            if (day.length <= 2) return day
+            if (day.length <= 4) return day.slice(0, 2) + '/' + day.slice(2)
             return (
-                cleaned.slice(0, 2) +
-                '/' +
-                cleaned.slice(2, 4) +
-                '/' +
-                cleaned.slice(4, 8)
+                day.slice(0, 2) + '/' + day.slice(2, 4) + '/' + day.slice(4, 8)
             )
+        } else if (parts.length === 2) {
+            // Day and month parts
+            const day = parts[0].slice(0, 2)
+            const month = parts[1]
+            if (month.length === 0) return day + '/'
+            if (month.length <= 2) return day + '/' + month
+            return day + '/' + month.slice(0, 2) + '/' + month.slice(2, 6)
+        } else if (parts.length >= 3) {
+            // All parts
+            const day = parts[0].slice(0, 2)
+            const month = parts[1].slice(0, 2)
+            const year = parts[2].slice(0, 4)
+            return day + '/' + month + (year ? '/' + year : '')
         }
-
-        return (
-            cleaned.slice(0, 2) +
-            '/' +
-            cleaned.slice(2, 4) +
-            '/' +
-            cleaned.slice(4, 8)
-        )
     }
 
     return value
@@ -2506,27 +2515,14 @@ export const validateDateTimeRange = (
     // Check if it's a single date selection
     const isSingleDate = isSameDay(range.startDate, range.endDate)
 
-    if (isSingleDate && allowSingleDateSelection) {
-        // For single date selection, start should be 00:00 and end should be 23:59
-        const isValidSingleDate =
-            range.startDate.getHours() === 0 &&
-            range.startDate.getMinutes() === 0 &&
-            range.endDate.getHours() === 23 &&
-            range.endDate.getMinutes() === 59
-
-        if (!isValidSingleDate) {
-            return {
-                isValid: false,
-                error: 'invalid-single-date',
-                message: 'Single date should span the entire day',
-            }
-        }
-
+    if (isSingleDate) {
+        // For single date selection, allow any time range within the same day
+        // including same start and end times
         return { isValid: true, error: 'none' }
     }
 
-    // For range selections, end time should be after start time
-    if (range.endDate.getTime() <= range.startDate.getTime()) {
+    // For range selections, end time should be after or equal to start time
+    if (range.endDate.getTime() < range.startDate.getTime()) {
         return {
             isValid: false,
             error: 'invalid-time-order',

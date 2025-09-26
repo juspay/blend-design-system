@@ -35,6 +35,8 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
     handleApply,
     showCustomDropdownOnly = false,
     isDisabled = false,
+    isApplyDisabled = false,
+    applyDisabledMessage,
 }) => {
     const [isCustomExpanded, setIsCustomExpanded] = useState(
         showCustomDropdownOnly
@@ -76,6 +78,8 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
             }}
             onApply={handleApply}
             isDisabled={isDisabled}
+            isApplyDisabled={isApplyDisabled}
+            applyDisabledMessage={applyDisabledMessage}
         />
     )
 

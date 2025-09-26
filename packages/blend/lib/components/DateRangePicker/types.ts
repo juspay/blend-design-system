@@ -103,6 +103,8 @@ export type DateRangePickerProps = {
     allowSingleDateSelection?: boolean
     disableFutureDates?: boolean
     disablePastDates?: boolean
+    hideFutureDates?: boolean
+    hidePastDates?: boolean
     triggerElement?: ReactNode
     useDrawerOnMobile?: boolean
     skipQuickFiltersOnMobile?: boolean
@@ -134,6 +136,8 @@ export type ActionButtonsProps = {
     onCancel: () => void
     onApply: () => void
     isDisabled?: boolean
+    isApplyDisabled?: boolean
+    applyDisabledMessage?: string
 }
 
 export type ScrollablePickerProps = {
@@ -179,4 +183,6 @@ export type MobileDrawerPresetsProps = {
     handleApply: () => void
     showCustomDropdownOnly?: boolean
     isDisabled?: boolean
+    isApplyDisabled?: boolean
+    applyDisabledMessage?: string
 }
