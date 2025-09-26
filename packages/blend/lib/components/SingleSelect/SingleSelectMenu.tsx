@@ -80,11 +80,16 @@ const SubTrigger = styled(RadixMenu.SubTrigger)(() => ({
     },
 }))
 
-const SubContent = styled(RadixMenu.SubContent)(() => ({
+const SubContent = styled(RadixMenu.SubContent)<{
+    singleSelectTokens?: SingleSelectTokensType
+}>(({ singleSelectTokens }) => ({
     backgroundColor: 'white',
     borderRadius: 8,
     padding: '8px 0px',
     boxShadow: FOUNDATION_THEME.shadows.lg,
+    border:
+        singleSelectTokens?.dropdown.border ||
+        `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
     zIndex: 9999,
 }))
 
@@ -92,10 +97,12 @@ const SubMenu = ({
     item,
     onSelect,
     selected,
+    singleSelectTokens,
 }: {
     item: SelectMenuItemType
     onSelect: (value: string) => void
     selected: string
+    singleSelectTokens: SingleSelectTokensType
 }) => {
     return (
         <StyledSubMenu>
@@ -151,13 +158,18 @@ const SubMenu = ({
                     </Block>
                 </Block>
             </SubTrigger>
-            <SubContent avoidCollisions sideOffset={8}>
+            <SubContent
+                avoidCollisions
+                sideOffset={8}
+                singleSelectTokens={singleSelectTokens}
+            >
                 {item.subMenu?.map((subItem, subIdx) => (
                     <Item
                         key={subIdx}
                         item={subItem}
                         onSelect={onSelect}
                         selected={selected}
+                        singleSelectTokens={singleSelectTokens}
                     />
                 ))}
             </SubContent>
@@ -169,13 +181,22 @@ const Item = ({
     item,
     onSelect,
     selected,
+    singleSelectTokens,
 }: {
     item: SelectMenuItemType
     onSelect: (value: string) => void
     selected: string
+    singleSelectTokens?: SingleSelectTokensType
 }) => {
     if (item.subMenu) {
-        return <SubMenu item={item} onSelect={onSelect} selected={selected} />
+        return (
+            <SubMenu
+                item={item}
+                onSelect={onSelect}
+                selected={selected}
+                singleSelectTokens={singleSelectTokens!}
+            />
+        )
     }
 
     return (
@@ -292,6 +313,7 @@ const SingleSelectMenu = ({
                     minWidth: minMenuWidth,
                     width: 'max(var(--radix-dropdown-menu-trigger-width))',
                     maxWidth: maxMenuWidth,
+                    border: singleSelectTokens.dropdown.border,
                 }}
                 onFocusCapture={(e) => {
                     if (enableSearch && searchInputRef.current) {
@@ -390,6 +412,7 @@ const SingleSelectMenu = ({
                                         selected={selected}
                                         item={item}
                                         onSelect={onSelect}
+                                        singleSelectTokens={singleSelectTokens}
                                     />
                                 ))}
                                 {groupId !== items.length - 1 &&
