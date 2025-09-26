@@ -346,10 +346,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             }
 
             // Validate the date/time range
-            const validation = validateDateTimeRange(
-                selectedRange,
-                allowSingleDateSelection
-            )
+            const validation = validateDateTimeRange(selectedRange)
 
             return {
                 isDisabled: !validation.isValid,
