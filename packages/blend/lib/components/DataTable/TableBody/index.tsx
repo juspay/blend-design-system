@@ -445,6 +445,12 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
             gap={FOUNDATION_THEME.unit[4]}
             width="100%"
             onClick={(e) => e.stopPropagation()}
+            style={{
+                fontSize: 'inherit',
+                fontFamily: 'inherit',
+                fontWeight: 'inherit',
+                lineHeight: 'inherit',
+            }}
         >
             {visibleButtonElements}
 
@@ -857,6 +863,10 @@ const TableBody = forwardRef<
                                                           tableToken.dataTable
                                                               .table.body.cell
                                                               .fontSize,
+                                                      fontWeight:
+                                                          tableToken.dataTable
+                                                              .table.body.cell
+                                                              .fontWeight,
                                                   }}
                                               >
                                                   <ActionsCell

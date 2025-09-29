@@ -24,6 +24,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
     alwaysSelectedColumns = [],
     columnManagerPrimaryAction,
     columnManagerSecondaryAction,
+    multiSelectWidth = 250,
 }: ColumnManagerProps<T>) => {
     const mobileConfig = useMobileDataTable()
     const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
@@ -119,7 +120,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     showItemDividers={true}
                     showHeaderBorder={false}
                     maxSelections={maxSelections}
-                    minMenuWidth={250}
+                    minMenuWidth={multiSelectWidth}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"
@@ -170,7 +171,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     maxMenuHeight={400}
                     showHeaderBorder={false}
                     maxSelections={maxSelections}
-                    minMenuWidth={250}
+                    minMenuWidth={multiSelectWidth}
                     customTrigger={
                         <PrimitiveButton
                             display="flex"
