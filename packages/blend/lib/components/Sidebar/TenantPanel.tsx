@@ -72,7 +72,7 @@ const TenantItem: React.FC<{
         content={tenant.label}
         side={TooltipSide.RIGHT}
         delayDuration={500}
-        size={TooltipSize.LARGE}
+        size={TooltipSize.SMALL}
     >
         <Block
             border="none"
@@ -131,7 +131,7 @@ const TenantOverflowMenu: React.FC<{
                         tooltip: tenant.label,
                         tooltipProps: {
                             side: TooltipSide.RIGHT,
-                            size: TooltipSize.LARGE,
+                            size: TooltipSize.SMALL,
                             delayDuration: 500,
                         },
                     })),

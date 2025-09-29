@@ -84,12 +84,7 @@ const MultiSelectMenu = ({
     open,
     onOpenChange,
     showActionButtons = true,
-    primaryAction = {
-        text: 'Apply',
-        onClick: () => {},
-        disabled: false,
-        loading: false,
-    },
+    primaryAction,
     secondaryAction,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
