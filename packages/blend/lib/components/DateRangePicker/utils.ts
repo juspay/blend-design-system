@@ -7,6 +7,7 @@ import {
     HapticFeedbackType,
 } from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
+import { DATE_RANGE_PICKER_CONSTANTS } from './constants'
 
 /**
  * Formats a date according to the specified format
@@ -2696,4 +2697,254 @@ export const handleEnhancedCalendarDateClick = (
     // Fallback - should not reach here, but handle gracefully
     const startDate = createStartOfDay(clickedDateOnly)
     return { startDate, endDate: startDate }
+}
+
+// =============================================================================
+// PRESET DETECTION UTILITIES
+// =============================================================================
+
+/**
+ * Checks if two dates represent the same calendar day (ignoring time and timezone)
+ */
+export const isSameCalendarDay = (date1: Date, date2: Date): boolean => {
+    // Compare both in local timezone and UTC to handle timezone differences
+    const localSame =
+        date1.getFullYear() === date2.getFullYear() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getDate() === date2.getDate()
+
+    const utcSame =
+        date1.getUTCFullYear() === date2.getUTCFullYear() &&
+        date1.getUTCMonth() === date2.getUTCMonth() &&
+        date1.getUTCDate() === date2.getUTCDate()
+
+    return localSame || utcSame
+}
+
+/**
+ * Checks if a date range represents a full day in any timezone
+ */
+export const isFullDayRange = (startDate: Date, endDate: Date): boolean => {
+    // Check if it's a full day in local timezone
+    const localStartIsStartOfDay =
+        startDate.getHours() === 0 &&
+        startDate.getMinutes() === 0 &&
+        startDate.getSeconds() === 0 &&
+        startDate.getMilliseconds() === 0
+
+    const localEndIsEndOfDay =
+        endDate.getHours() === 23 &&
+        endDate.getMinutes() === 59 &&
+        endDate.getSeconds() === 59 &&
+        endDate.getMilliseconds() === 999
+
+    // Check if it's a full day in UTC
+    const utcStartIsStartOfDay =
+        startDate.getUTCHours() === 0 &&
+        startDate.getUTCMinutes() === 0 &&
+        startDate.getUTCSeconds() === 0 &&
+        startDate.getUTCMilliseconds() === 0
+
+    const utcEndIsEndOfDay =
+        endDate.getUTCHours() === 23 &&
+        endDate.getUTCMinutes() === 59 &&
+        endDate.getUTCSeconds() === 59 &&
+        endDate.getUTCMilliseconds() === 999
+
+    const isLocalFullDay =
+        localStartIsStartOfDay &&
+        localEndIsEndOfDay &&
+        isSameCalendarDay(startDate, endDate)
+    const isUtcFullDay =
+        utcStartIsStartOfDay &&
+        utcEndIsEndOfDay &&
+        isSameCalendarDay(startDate, endDate)
+
+    return isLocalFullDay || isUtcFullDay
+}
+
+/**
+ * Checks if a date range matches "Today" preset
+ */
+export const matchesTodayPreset = (range: DateRange): boolean => {
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+    // Check if start date is today at midnight
+    const startIsToday = isSameCalendarDay(range.startDate, today)
+    const startIsStartOfDay =
+        range.startDate.getHours() === 0 &&
+        range.startDate.getMinutes() === 0 &&
+        range.startDate.getSeconds() === 0 &&
+        range.startDate.getMilliseconds() === 0
+
+    // End date should be sometime today (not necessarily current time)
+    const endIsToday = isSameCalendarDay(range.endDate, today)
+
+    return startIsToday && startIsStartOfDay && endIsToday
+}
+
+/**
+ * Checks if a date range matches "Yesterday" preset
+ */
+export const matchesYesterdayPreset = (range: DateRange): boolean => {
+    const now = new Date()
+    const yesterday = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() - 1
+    )
+
+    // Check if it's a full day range for yesterday
+    const startIsYesterday = isSameCalendarDay(range.startDate, yesterday)
+    const endIsYesterday = isSameCalendarDay(range.endDate, yesterday)
+    const isFullDay = isFullDayRange(range.startDate, range.endDate)
+
+    return startIsYesterday && endIsYesterday && isFullDay
+}
+
+/**
+ * Checks if a date range matches "Tomorrow" preset
+ */
+export const matchesTomorrowPreset = (range: DateRange): boolean => {
+    const now = new Date()
+    const tomorrow = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1
+    )
+
+    // Check if it's a full day range for tomorrow
+    const startIsTomorrow = isSameCalendarDay(range.startDate, tomorrow)
+    const endIsTomorrow = isSameCalendarDay(range.endDate, tomorrow)
+    const isFullDay = isFullDayRange(range.startDate, range.endDate)
+
+    return startIsTomorrow && endIsTomorrow && isFullDay
+}
+
+/**
+ * Robust preset detection that works with both UTC and local timezone dates
+ */
+export const detectPresetFromRange = (range: DateRange): DateRangePreset => {
+    if (!range.startDate || !range.endDate) {
+        return DateRangePreset.CUSTOM
+    }
+
+    // Check specific day presets first
+    if (matchesTodayPreset(range)) {
+        return DateRangePreset.TODAY
+    }
+
+    if (matchesYesterdayPreset(range)) {
+        return DateRangePreset.YESTERDAY
+    }
+
+    if (matchesTomorrowPreset(range)) {
+        return DateRangePreset.TOMORROW
+    }
+
+    // Check time-based presets with tolerance
+    const now = new Date()
+    const timeDiff = Math.abs(range.endDate.getTime() - now.getTime())
+    const tolerance = DATE_RANGE_PICKER_CONSTANTS.PRESET_DETECTION_TOLERANCE_MS
+
+    if (timeDiff <= tolerance) {
+        const durationMs = range.endDate.getTime() - range.startDate.getTime()
+
+        // Check hour-based presets
+        const oneHour = 60 * 60 * 1000
+        const sixHours = 6 * 60 * 60 * 1000
+
+        if (Math.abs(durationMs - oneHour) <= tolerance) {
+            return DateRangePreset.LAST_1_HOUR
+        }
+
+        if (Math.abs(durationMs - sixHours) <= tolerance) {
+            return DateRangePreset.LAST_6_HOURS
+        }
+    }
+
+    // Check multi-day presets
+    const daysDiff = Math.round(
+        (range.endDate.getTime() - range.startDate.getTime()) /
+            (24 * 60 * 60 * 1000)
+    )
+
+    if (daysDiff === 6 || daysDiff === 7) {
+        // Allow for timezone differences
+        // Check if start is 7 days ago at midnight
+        const sevenDaysAgo = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 6,
+            0,
+            0,
+            0,
+            0
+        )
+        if (
+            Math.abs(range.startDate.getTime() - sevenDaysAgo.getTime()) <=
+            DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS *
+                60 *
+                60 *
+                1000
+        ) {
+            return DateRangePreset.LAST_7_DAYS
+        }
+    }
+
+    if (daysDiff >= 29 && daysDiff <= 30) {
+        // Allow for timezone differences
+        // Check if start is 30 days ago at midnight
+        const thirtyDaysAgo = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 29,
+            0,
+            0,
+            0,
+            0
+        )
+        if (
+            Math.abs(range.startDate.getTime() - thirtyDaysAgo.getTime()) <=
+            DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS *
+                60 *
+                60 *
+                1000
+        ) {
+            return DateRangePreset.LAST_30_DAYS
+        }
+    }
+
+    // For future presets, check if start is today and end is appropriate days later
+    const startIsToday = isSameCalendarDay(range.startDate, now)
+
+    if (startIsToday && (daysDiff === 6 || daysDiff === 7)) {
+        return DateRangePreset.NEXT_7_DAYS
+    }
+
+    if (startIsToday && daysDiff >= 29 && daysDiff <= 30) {
+        return DateRangePreset.NEXT_30_DAYS
+    }
+
+    // Check month-based presets (approximate)
+    const monthsDiff = Math.round(daysDiff / 30)
+
+    if (monthsDiff === 3) {
+        return DateRangePreset.LAST_3_MONTHS
+    }
+
+    if (monthsDiff === 12) {
+        return DateRangePreset.LAST_12_MONTHS
+    }
+
+    if (startIsToday && monthsDiff === 3) {
+        return DateRangePreset.NEXT_3_MONTHS
+    }
+
+    if (startIsToday && monthsDiff === 12) {
+        return DateRangePreset.NEXT_12_MONTHS
+    }
+
+    return DateRangePreset.CUSTOM
 }
