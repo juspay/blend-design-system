@@ -1,15 +1,26 @@
 import Block from '../../../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../../../tokens'
 import Text from '../../../Text/Text'
-import { SingleSelectTokensType } from '../../../SingleSelect/singleSelect.tokens'
-import { MultiSelectTokensType } from '../../../MultiSelect/multiSelect.tokens'
+
+type InputFooterTokens = {
+    hintText?: {
+        fontWeight?: number | string
+        fontSize?: number | string
+        color?: { default?: string; disabled?: string }
+    }
+    errorMessage?: {
+        fontWeight?: number | string
+        fontSize?: number | string
+        color?: string
+    }
+}
 
 type InputFooterProps = {
     error?: boolean
     errorMessage?: string
     hintText?: string
     disabled?: boolean
-    tokens?: MultiSelectTokensType | SingleSelectTokensType
+    tokens?: InputFooterTokens
 }
 
 const InputFooter = ({

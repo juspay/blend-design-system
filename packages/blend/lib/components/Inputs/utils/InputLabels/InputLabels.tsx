@@ -3,17 +3,31 @@ import { FOUNDATION_THEME } from '../../../../tokens'
 import Block from '../../../Primitives/Block/Block'
 import Text from '../../../Text/Text'
 import { Tooltip, TooltipSize } from '../../../Tooltip'
-import { MultiSelectTokensType } from '../../../MultiSelect/multiSelect.tokens'
-import { SingleSelectTokensType } from '../../../SingleSelect/singleSelect.tokens'
 
-type InputLabelsProps = {
+type InputLabelTokens = {
+    label?: {
+        fontWeight?: number | string
+        fontSize?: number | string
+        color?: { default?: string; disabled?: string }
+    }
+    subLabel?: {
+        fontWeight?: number | string
+        fontSize?: number | string
+        color?: { default?: string; disabled?: string }
+    }
+    required?: {
+        color?: string
+    }
+}
+
+type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
     label?: string
     sublabel?: string
     disabled?: boolean
     helpIconHintText?: string
     name?: string
     required?: boolean
-    tokens?: MultiSelectTokensType | SingleSelectTokensType //todo: make it dynamic for all components
+    tokens?: Partial<TTokens>
 }
 
 /**
@@ -24,7 +38,7 @@ type InputLabelsProps = {
  * @param {string} helpIconHintText - The hint text for the help icon.
  * @param {boolean} required - Whether the input field is required.
  */
-const InputLabels = ({
+const InputLabels = <TTokens extends InputLabelTokens>({
     label,
     sublabel,
     disabled,
@@ -32,7 +46,7 @@ const InputLabels = ({
     name,
     required,
     tokens,
-}: InputLabelsProps) => {
+}: InputLabelsProps<TTokens>) => {
     console.log({ tokens })
     return (
         label && (
@@ -41,10 +55,7 @@ const InputLabels = ({
                     as="label"
                     htmlFor={name}
                     // variant="body.md"
-                    fontWeight={
-                        tokens?.label?.fontWeight ||
-                        FOUNDATION_THEME.font.weight[500]
-                    }
+                    fontWeight={tokens?.label?.fontWeight}
                     fontSize={
                         tokens?.label?.fontSize ||
                         FOUNDATION_THEME.font.size.body.md.fontSize
@@ -61,7 +72,13 @@ const InputLabels = ({
                     {label}
                 </Text>
                 {required && (
-                    <sup style={{ color: FOUNDATION_THEME.colors.red[500] }}>
+                    <sup
+                        style={{
+                            color:
+                                tokens?.required?.color ||
+                                FOUNDATION_THEME.colors.red[600],
+                        }}
+                    >
                         *
                     </sup>
                 )}
