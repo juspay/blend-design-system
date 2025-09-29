@@ -24,7 +24,7 @@ const Content = styled(RadixMenu.Content)(() => ({
     position: 'relative',
     backgroundColor: FOUNDATION_THEME.colors.gray[0],
     borderRadius: FOUNDATION_THEME.border.radius[8],
-    boxShadow: FOUNDATION_THEME.shadows.lg,
+    boxShadow: FOUNDATION_THEME.shadows.sm,
     zIndex: 49,
     border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
     display: 'flex',
@@ -84,12 +84,7 @@ const MultiSelectMenu = ({
     open,
     onOpenChange,
     showActionButtons = true,
-    primaryAction = {
-        text: 'Apply',
-        onClick: () => {},
-        disabled: false,
-        loading: false,
-    },
+    primaryAction,
     secondaryAction,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =

@@ -281,6 +281,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             size = DateRangePickerSize.MEDIUM,
             formatConfig,
             triggerConfig,
+            maxMenuHeight = 200,
         },
         ref
     ) => {
@@ -797,6 +798,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         disablePastDates={disablePastDates}
                         isDisabled={isDisabled}
                         size={size}
+                        maxMenuHeight={maxMenuHeight}
                     />
                 )}
 
@@ -810,7 +812,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     side="bottom"
                     align="start"
                     sideOffset={4}
-                    shadow="xs"
+                    shadow="sm"
                 >
                     <Block
                         style={{

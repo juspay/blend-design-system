@@ -81,6 +81,7 @@ const DataTable = forwardRef(
             columnManagerAlwaysSelected,
             columnManagerPrimaryAction,
             columnManagerSecondaryAction,
+            columnManagerWidth,
             showToolbar = true,
             showSettings = false,
             enableInlineEdit = false,
@@ -830,6 +831,7 @@ const DataTable = forwardRef(
                                     columnManagerSecondaryAction={
                                         columnManagerSecondaryAction
                                     }
+                                    columnManagerWidth={columnManagerWidth}
                                     enableRowExpansion={enableRowExpansion}
                                     enableRowSelection={enableRowSelection}
                                     rowActions={

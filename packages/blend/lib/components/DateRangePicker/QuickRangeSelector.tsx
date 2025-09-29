@@ -23,6 +23,7 @@ type QuickRangeSelectorProps = {
     disablePastDates?: boolean
     isDisabled?: boolean
     size?: DateRangePickerSize
+    maxMenuHeight?: number
 }
 
 const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
@@ -36,6 +37,7 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
             disablePastDates = false,
             isDisabled = false,
             size = DateRangePickerSize.MEDIUM,
+            maxMenuHeight = 200,
         },
         ref
     ) => {
@@ -198,7 +200,7 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                             />
                         </Block>
                     }
-                    maxMenuHeight={200}
+                    maxMenuHeight={maxMenuHeight}
                     minMenuWidth={150}
                     maxMenuWidth={200}
                 />

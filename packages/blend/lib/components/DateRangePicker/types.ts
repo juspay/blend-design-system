@@ -189,6 +189,7 @@ export type DateRangePickerProps = {
     size?: DateRangePickerSize
     formatConfig?: DateFormatConfig
     triggerConfig?: TriggerConfig
+    maxMenuHeight?: number
 }
 
 export type PresetItemProps = {
