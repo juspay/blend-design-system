@@ -2133,7 +2133,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 ? 'Device Type'
                                 : 'Period',
                         // show: false,
-                        // showLabel: false,
+                        showLabel: true,
                     }}
                     yAxis={{
                         label:
@@ -2141,7 +2141,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 ? 'Amount ($)'
                                 : 'Value',
                         // show: false,
-                        // showLabel: false,
+                        showLabel: true,
                     }}
                     chartHeaderSlot={
                         <SingleSelect
