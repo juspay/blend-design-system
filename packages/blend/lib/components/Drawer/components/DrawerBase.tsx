@@ -22,7 +22,7 @@ const StyledOverlay = styled(VaulDrawer.Overlay)<{ tokens: DrawerTokensType }>`
     position: fixed;
     inset: 0;
     background-color: ${({ tokens }) => tokens.overlay.backgroundColor};
-    z-index:  100};
+    z-index: ${({ tokens }) => tokens.overlay.zIndex};
 `
 
 const StyledContent = styled(VaulDrawer.Content)<{
@@ -39,7 +39,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
         right?: string
     }
 }>`
-    z-index: 101};
+    z-index: ${({ tokens }) => tokens.content.zIndex};
     background-color: ${({ tokens }) => tokens.content.backgroundColor};
     border: ${({ tokens }) => tokens.content.border};
     box-shadow: ${({ tokens }) => tokens.content.boxShadow};

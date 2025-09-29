@@ -51,6 +51,7 @@ export const Tooltip = ({
                             padding={tooltipTokens.padding[size]}
                             borderRadius={tooltipTokens.borderRadius[size]}
                             maxWidth={tooltipTokens.maxWidth[size]}
+                            width="fit-content"
                             gap={tooltipTokens.gap[size]}
                         >
                             {slot &&
@@ -65,6 +66,12 @@ export const Tooltip = ({
                                     fontSize={tooltipTokens.fontSize[size]}
                                     fontWeight={tooltipTokens.fontWeight[size]}
                                     lineHeight={tooltipTokens.lineHeight[size]}
+                                    style={{
+                                        wordWrap: 'break-word',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                    }}
                                 >
                                     {content}
                                 </PrimitiveText>

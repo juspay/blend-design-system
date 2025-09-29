@@ -22,6 +22,7 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
         disabled?: boolean
         loading?: boolean
     }
+    columnManagerWidth?: number
     enableRowExpansion?: boolean
     enableRowSelection?: boolean
     rowActions?: RowActionsConfig<T>

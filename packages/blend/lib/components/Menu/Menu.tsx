@@ -14,7 +14,7 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const contentBaseStyle: CSSObject = {
     backgroundColor: 'white',
-    boxShadow: FOUNDATION_THEME.shadows.lg,
+    boxShadow: FOUNDATION_THEME.shadows.sm,
     zIndex: 49,
     overflowY: 'auto',
     overflowX: 'hidden',

@@ -70,6 +70,7 @@ const TableHeader = forwardRef<
             columnManagerAlwaysSelected,
             columnManagerPrimaryAction,
             columnManagerSecondaryAction,
+            columnManagerWidth,
             enableRowExpansion = false,
             enableRowSelection = true,
             rowActions,
@@ -708,6 +709,7 @@ const TableHeader = forwardRef<
                                     columnManagerSecondaryAction={
                                         columnManagerSecondaryAction
                                     }
+                                    multiSelectWidth={columnManagerWidth}
                                 />
                             </Block>
                         </th>

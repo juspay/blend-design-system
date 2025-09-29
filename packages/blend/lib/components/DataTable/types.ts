@@ -116,6 +116,7 @@ export type ColumnManagerProps<T extends Record<string, unknown>> = {
         disabled?: boolean
         loading?: boolean
     }
+    multiSelectWidth?: number
 }
 
 export type AdvancedFilterProps = {
@@ -311,6 +312,7 @@ export type DataTableProps<T extends Record<string, unknown>> = {
         disabled?: boolean
         loading?: boolean
     }
+    columnManagerWidth?: number
     pagination?: PaginationConfig
     serverSidePagination?: boolean
     onPageChange?: (page: number) => void

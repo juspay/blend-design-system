@@ -111,6 +111,7 @@ export type DateRangePickerProps = {
     size?: DateRangePickerSize
     formatConfig?: DateFormatConfig
     triggerConfig?: TriggerConfig
+    maxMenuHeight?: number
 }
 
 /**
