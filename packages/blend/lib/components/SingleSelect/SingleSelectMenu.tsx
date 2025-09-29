@@ -45,7 +45,7 @@ const Content = styled(RadixMenu.Content)(() => ({
     borderRadius: 8,
     // width: "var(--radix-dropdown-menu-trigger-width)",
     // maxWidth: "var(--radix-dropdown-menu-trigger-width)",
-    boxShadow: FOUNDATION_THEME.shadows.lg,
+    boxShadow: FOUNDATION_THEME.shadows.sm,
     zIndex: 49,
     overflowY: 'auto',
     overflowX: 'hidden',

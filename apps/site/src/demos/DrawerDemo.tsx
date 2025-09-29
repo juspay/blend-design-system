@@ -28,6 +28,8 @@ import {
     MultiSelectSelectionTagType,
     MultiSelectMenuSize,
 } from '../../../../packages/blend/lib/components/MultiSelect'
+import { Tooltip } from '../../../../packages/blend/lib/components/Tooltip'
+import { Popover } from '../../../../packages/blend/lib/components/Popover'
 
 export const BasicDrawerExample = () => {
     return (
@@ -3631,6 +3633,222 @@ export const CustomMobileOffsetExample = () => {
     )
 }
 
+// Z-Index Test Example - Drawer with Tooltip and Popover
+export const ZIndexTestDrawerExample = () => {
+    const [popoverOpen, setPopoverOpen] = useState(false)
+
+    return (
+        <Drawer>
+            <DrawerTrigger>
+                <button
+                    style={{
+                        display: 'flex',
+                        height: '40px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        overflow: 'hidden',
+                        borderRadius: '20px',
+                        backgroundColor: 'white',
+                        padding: '0 16px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                        border: '1px solid #e5e7eb',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Z-Index Test Drawer
+                </button>
+            </DrawerTrigger>
+            <DrawerPortal>
+                <DrawerOverlay />
+                <DrawerContent>
+                    <DrawerHeader>
+                        <DrawerTitle>Z-Index Hierarchy Test</DrawerTitle>
+                        <DrawerDescription>
+                            This drawer tests that tooltips and popovers appear
+                            above the drawer content.
+                        </DrawerDescription>
+                    </DrawerHeader>
+                    <DrawerBody>
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '24px',
+                                padding: '20px 0',
+                            }}
+                        >
+                            <div>
+                                <h4
+                                    style={{
+                                        marginBottom: '16px',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Tooltip Test
+                                </h4>
+                                <p
+                                    style={{
+                                        marginBottom: '16px',
+                                        color: '#6b7280',
+                                    }}
+                                >
+                                    Hover over the button below to see if the
+                                    tooltip appears above the drawer:
+                                </p>
+                                <Tooltip content="This tooltip should appear above the drawer content with z-index 1000">
+                                    <button
+                                        style={{
+                                            padding: '12px 24px',
+                                            backgroundColor: '#3b82f6',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '8px',
+                                            cursor: 'pointer',
+                                            fontSize: '14px',
+                                            fontWeight: '500',
+                                        }}
+                                    >
+                                        Hover for Tooltip
+                                    </button>
+                                </Tooltip>
+                            </div>
+
+                            <div>
+                                <h4
+                                    style={{
+                                        marginBottom: '16px',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Popover Test
+                                </h4>
+                                <p
+                                    style={{
+                                        marginBottom: '16px',
+                                        color: '#6b7280',
+                                    }}
+                                >
+                                    Click the button below to see if the popover
+                                    appears above the drawer:
+                                </p>
+                                <Popover
+                                    open={popoverOpen}
+                                    onOpenChange={setPopoverOpen}
+                                    trigger={
+                                        <button
+                                            style={{
+                                                padding: '12px 24px',
+                                                backgroundColor: '#10b981',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '8px',
+                                                cursor: 'pointer',
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                            }}
+                                        >
+                                            Click for Popover
+                                        </button>
+                                    }
+                                    heading="Popover Test"
+                                    description="This popover should appear above the drawer content with z-index 1000"
+                                    secondaryAction={{
+                                        text: 'Cancel',
+                                        onClick: () => setPopoverOpen(false),
+                                    }}
+                                    primaryAction={{
+                                        text: 'OK',
+                                        onClick: () => setPopoverOpen(false),
+                                    }}
+                                >
+                                    <div style={{ padding: '8px 0' }}>
+                                        <p
+                                            style={{
+                                                margin: 0,
+                                                fontSize: '14px',
+                                                color: '#6b7280',
+                                            }}
+                                        >
+                                            This popover content should be
+                                            visible above the drawer overlay and
+                                            content.
+                                        </p>
+                                    </div>
+                                </Popover>
+                            </div>
+
+                            <div
+                                style={{
+                                    backgroundColor: '#f9fafb',
+                                    padding: '16px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #e5e7eb',
+                                }}
+                            >
+                                <h5
+                                    style={{
+                                        margin: '0 0 8px 0',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Expected Z-Index Hierarchy:
+                                </h5>
+                                <ul
+                                    style={{
+                                        margin: '0',
+                                        paddingLeft: '20px',
+                                        color: '#6b7280',
+                                    }}
+                                >
+                                    <li>Tooltip: z-index 1000 (highest)</li>
+                                    <li>Popover: z-index 1000 (highest)</li>
+                                    <li>
+                                        Drawer Content: z-index 1200 (below
+                                        tooltip/popover)
+                                    </li>
+                                    <li>
+                                        Drawer Overlay: z-index 1100 (below
+                                        content)
+                                    </li>
+                                </ul>
+                                <p
+                                    style={{
+                                        margin: '12px 0 0 0',
+                                        fontSize: '14px',
+                                        color: '#6b7280',
+                                    }}
+                                >
+                                    If you can see the tooltip and popover
+                                    clearly above the drawer, the z-index
+                                    hierarchy is working correctly!
+                                </p>
+                            </div>
+                        </div>
+                    </DrawerBody>
+                    <DrawerFooter>
+                        <DrawerClose>
+                            <button
+                                style={{
+                                    padding: '8px 16px',
+                                    backgroundColor: '#f3f4f6',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Close
+                            </button>
+                        </DrawerClose>
+                    </DrawerFooter>
+                </DrawerContent>
+            </DrawerPortal>
+        </Drawer>
+    )
+}
+
 // Mobile MultiSelect without Drawer Example
 export const MobileMultiSelectNoDrawerExample = () => {
     const [selectedItems, setSelectedItems] = useState<string[]>([
@@ -3811,6 +4029,7 @@ export const DrawerDemo = () => {
                     <ScrollableDrawerExample />
                     <ControlledDrawerExample />
                     <CustomMobileOffsetExample />
+                    <ZIndexTestDrawerExample />
                 </div>
             </div>
 
