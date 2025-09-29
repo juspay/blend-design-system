@@ -31,6 +31,7 @@ const Charts: React.FC<ChartsProps> = ({
     xAxis,
     yAxis,
     noData,
+    height = 400,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -52,17 +53,17 @@ const Charts: React.FC<ChartsProps> = ({
 
     const mergedXAxis = {
         label: xAxis?.label,
-        showLabel: xAxis?.showLabel || true,
+        showLabel: xAxis?.showLabel ?? false,
         interval: xAxis?.interval,
-        show: xAxis?.show || true,
+        show: xAxis?.show ?? true,
         ...xAxis,
     }
 
     const mergedYAxis = {
         label: yAxis?.label,
-        showLabel: yAxis?.showLabel || true,
+        showLabel: yAxis?.showLabel ?? false,
         interval: yAxis?.interval,
-        show: yAxis?.show || true,
+        show: yAxis?.show ?? true,
         ...yAxis,
     }
 
@@ -445,8 +446,11 @@ const Charts: React.FC<ChartsProps> = ({
                                   <ResponsiveContainer
                                       width="100%"
                                       height={
+                                          height ||
                                           chartTokens.content.height.default
                                       }
+                                      //   height="100%"
+                                      //   height={'auto'}
                                   >
                                       {renderChart({
                                           flattenedData,

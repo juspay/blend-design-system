@@ -150,6 +150,7 @@ export type ChartsProps = {
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
     noData?: NoDataProps
+    height?: number
 }
 
 export type FlattenedDataPoint = {

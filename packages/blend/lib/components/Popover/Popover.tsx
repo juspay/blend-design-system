@@ -100,6 +100,7 @@ const Popover = ({
                 side={side}
                 align={align}
                 alignOffset={alignOffset}
+                // avoidCollisions={true}
             >
                 <Block
                     zIndex={999}

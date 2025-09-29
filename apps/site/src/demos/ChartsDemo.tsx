@@ -869,7 +869,7 @@ const ChartDemo = () => {
             name: 'Jan',
             data: {
                 revenue: {
-                    primary: { label: 'Total Revenue', val: 4000 },
+                    primary: { label: 'Total Revenue', val: 40000 },
                     aux: [{ label: 'Growth', val: 12 }],
                 },
                 profit: {
@@ -2360,6 +2360,16 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 </h4>
                             </div>
                         }
+                        xAxis={{
+                            label: 'Performance Metrics',
+                            // show: true,
+                            // showLabel: true,
+                        }}
+                        yAxis={{
+                            label: 'Score',
+                            // show: true,
+                            // showLabel: true,
+                        }}
                     />
 
                     {/* Bar Chart Example */}
