@@ -44,7 +44,7 @@ export const renderChart = ({
 }: RenderChartProps) => {
     const finalXAxis = {
         label: xAxis?.label,
-        showLabel: xAxis?.showLabel ?? true,
+        showLabel: xAxis?.showLabel ?? false,
         interval: xAxis?.interval,
         show: xAxis?.show ?? true,
         ...xAxis,
@@ -52,7 +52,7 @@ export const renderChart = ({
 
     const finalYAxis = {
         label: yAxis?.label,
-        showLabel: yAxis?.showLabel ?? true,
+        showLabel: yAxis?.showLabel ?? false,
         interval: yAxis?.interval,
         show: yAxis?.show ?? true,
         ...yAxis,
@@ -156,14 +156,13 @@ export const renderChart = ({
                     margin={{
                         top: 10,
                         right: 30,
-                        left:
-                            finalYAxis.label && finalYAxis.showLabel ? 30 : 10,
+                        left: finalYAxis.label && finalYAxis.showLabel ? 20 : 0,
                         bottom:
                             finalXAxis.label &&
                             finalXAxis.showLabel &&
                             finalXAxis.show
-                                ? 50
-                                : 30,
+                                ? 40
+                                : 20,
                     }}
                     onMouseLeave={() => setHoveredKey(null)}
                 >
@@ -197,7 +196,7 @@ export const renderChart = ({
                                 ? {
                                       value: finalXAxis.label,
                                       position: 'bottom',
-                                      offset: 35,
+                                      offset: 25,
                                       fill: FOUNDATION_THEME.colors.gray[400],
                                       fontSize: 12,
                                       fontWeight:

@@ -9,7 +9,6 @@ import {
 import {
     formatDate,
     getPresetDateRange,
-    DateValidationResult,
     formatDateDisplay,
     handleDateInputChange,
     handleTimeChange,
@@ -17,6 +16,8 @@ import {
     handlePresetSelection,
     formatTriggerDisplay,
     validateDateTimeRange,
+    DateValidationResult,
+    detectPresetFromRange,
 } from './utils'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
@@ -32,6 +33,7 @@ import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { ButtonType, ButtonSize, Button, Tooltip } from '../../main'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+
 type DateInputsSectionProps = {
     startDate: string
     endDate: string
@@ -279,6 +281,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             size = DateRangePickerSize.MEDIUM,
             formatConfig,
             triggerConfig,
+            maxMenuHeight = 200,
         },
         ref
     ) => {
@@ -368,13 +371,17 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 setEndDate(formatDate(value.endDate, dateFormat))
                 setStartTime(formatDate(value.startDate, 'HH:mm'))
                 setEndTime(formatDate(value.endDate, 'HH:mm'))
+
+                const detectedPreset = detectPresetFromRange(value)
+                setActivePreset(detectedPreset)
             }
         }, [value, dateFormat])
 
         const handleDateSelect = useCallback(
             (range: DateRange) => {
                 setSelectedRange(range)
-                setActivePreset(DateRangePreset.CUSTOM)
+                const detectedPreset = detectPresetFromRange(range)
+                setActivePreset(detectedPreset)
 
                 setStartDate(formatDate(range.startDate, dateFormat))
                 setEndDate(formatDate(range.endDate, dateFormat))
@@ -418,7 +425,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
                 if (result.updatedRange) {
                     setSelectedRange(result.updatedRange)
-                    setActivePreset(DateRangePreset.CUSTOM)
+                    const detectedPreset = detectPresetFromRange(
+                        result.updatedRange
+                    )
+                    setActivePreset(detectedPreset)
                 }
             },
             [
@@ -448,7 +458,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
                 if (result.updatedRange) {
                     setSelectedRange(result.updatedRange)
-                    setActivePreset(DateRangePreset.CUSTOM)
+                    const detectedPreset = detectPresetFromRange(
+                        result.updatedRange
+                    )
+                    setActivePreset(detectedPreset)
                 }
             },
             [
@@ -467,7 +480,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 setStartTime(time)
                 const updatedRange = handleTimeChange(time, selectedRange, true)
                 setSelectedRange(updatedRange)
-                setActivePreset(DateRangePreset.CUSTOM)
+                const detectedPreset = detectPresetFromRange(updatedRange)
+                setActivePreset(detectedPreset)
             },
             [selectedRange]
         )
@@ -481,7 +495,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     false
                 )
                 setSelectedRange(updatedRange)
-                setActivePreset(DateRangePreset.CUSTOM)
+                // Detect preset from time change
+                const detectedPreset = detectPresetFromRange(updatedRange)
+                setActivePreset(detectedPreset)
             },
             [selectedRange]
         )
@@ -782,6 +798,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         disablePastDates={disablePastDates}
                         isDisabled={isDisabled}
                         size={size}
+                        maxMenuHeight={maxMenuHeight}
                     />
                 )}
 
@@ -795,7 +812,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     side="bottom"
                     align="start"
                     sideOffset={4}
-                    shadow="xs"
+                    shadow="sm"
                 >
                     <Block
                         style={{
