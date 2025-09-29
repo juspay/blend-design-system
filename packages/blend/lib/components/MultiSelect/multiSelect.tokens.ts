@@ -46,6 +46,9 @@ export type MultiSelectTokensType = {
         fontWeight: CSSObject['fontWeight']
         color: CSSObject['color']
     }
+    required: {
+        color: CSSObject['color']
+    }
     trigger: {
         height: {
             [key in MultiSelectMenuSize]: {
@@ -206,6 +209,9 @@ export const getMultiSelectTokens = (
             errorMessage: {
                 fontSize: foundationToken.font.size.body.md.fontSize,
                 fontWeight: foundationToken.font.weight[500],
+                color: foundationToken.colors.red[600],
+            },
+            required: {
                 color: foundationToken.colors.red[600],
             },
             trigger: {
@@ -492,6 +498,9 @@ export const getMultiSelectTokens = (
             errorMessage: {
                 fontSize: foundationToken.font.size.body.md.fontSize,
                 fontWeight: foundationToken.font.weight[500],
+                color: foundationToken.colors.red[600],
+            },
+            required: {
                 color: foundationToken.colors.red[600],
             },
 

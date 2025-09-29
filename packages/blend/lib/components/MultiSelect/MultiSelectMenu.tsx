@@ -200,8 +200,7 @@ const MultiSelectMenu = ({
                 avoidCollisions={false}
                 onKeyDown={handleKeyDown}
                 style={{
-                    minWidth:
-                        minWidth || 'var(--radix-dropdown-menu-trigger-width)',
+                    minWidth: minWidth || '250px',
 
                     maxWidth:
                         maxWidth || 'var(--radix-dropdown-menu-trigger-width)',
