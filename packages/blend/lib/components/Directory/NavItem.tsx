@@ -31,8 +31,14 @@ const StyledElement = styled(Block)<{ $isLink?: boolean; $isActive?: boolean }>`
 
     &:hover,
     &:focus {
-        background-color: ${FOUNDATION_THEME.colors.gray[50]};
-        color: ${FOUNDATION_THEME.colors.gray[600]};
+        background-color: ${({ $isActive }) =>
+            $isActive
+                ? FOUNDATION_THEME.colors.gray[150]
+                : FOUNDATION_THEME.colors.gray[50]};
+        color: ${({ $isActive }) =>
+            $isActive
+                ? FOUNDATION_THEME.colors.gray[1000]
+                : FOUNDATION_THEME.colors.gray[600]};
         outline: none;
         ring: 0;
     }

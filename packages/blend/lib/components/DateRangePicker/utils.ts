@@ -7,6 +7,7 @@ import {
     HapticFeedbackType,
 } from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
+import { DATE_RANGE_PICKER_CONSTANTS } from './constants'
 
 /**
  * Formats a date according to the specified format
@@ -139,19 +140,31 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
 
     switch (preset) {
         case DateRangePreset.TODAY: {
-            return { startDate: today, endDate: today }
+            // Today should be from 12:00 AM to current time
+            const startDate = new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate(),
+                0,
+                0,
+                0,
+                0
+            )
+            const endDate = new Date(now) // Current time
+            return { startDate, endDate }
         }
 
         case DateRangePreset.YESTERDAY: {
+            // Yesterday should be from 12:00 AM to 11:59 PM of yesterday
             const yesterday = new Date(today)
             yesterday.setDate(yesterday.getDate() - 1)
-            return { startDate: yesterday, endDate: yesterday }
+            return createSingleDateRange(yesterday)
         }
 
         case DateRangePreset.TOMORROW: {
             const tomorrow = new Date(today)
             tomorrow.setDate(tomorrow.getDate() + 1)
-            return { startDate: tomorrow, endDate: tomorrow }
+            return createSingleDateRange(tomorrow)
         }
 
         case DateRangePreset.LAST_1_HOUR: {
@@ -165,27 +178,34 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
         }
 
         case DateRangePreset.LAST_7_DAYS: {
+            // Last 7 days: 7 complete days ago to current time today
+            // Day 1-6: 12:00 AM to 11:59 PM, Day 7 (today): 12:00 AM to current time
             const sevenDaysAgo = new Date(today)
-            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
-            return { startDate: sevenDaysAgo, endDate: today }
+            sevenDaysAgo.setDate(today.getDate() - 6) // 6 days ago + today = 7 days
+            sevenDaysAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
+
+            return { startDate: sevenDaysAgo, endDate: now }
         }
 
         case DateRangePreset.LAST_30_DAYS: {
+            // Last 30 days: 30 complete days ago to current time today
             const thirtyDaysAgo = new Date(today)
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29)
-            return { startDate: thirtyDaysAgo, endDate: today }
+            thirtyDaysAgo.setDate(today.getDate() - 29) // 29 days ago + today = 30 days
+            thirtyDaysAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
+
+            return { startDate: thirtyDaysAgo, endDate: now }
         }
 
         case DateRangePreset.LAST_3_MONTHS: {
-            const threeMonthsAgo = new Date(today)
+            const threeMonthsAgo = new Date(now)
             threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
-            return { startDate: threeMonthsAgo, endDate: today }
+            return { startDate: threeMonthsAgo, endDate: now }
         }
 
         case DateRangePreset.LAST_12_MONTHS: {
-            const twelveMonthsAgo = new Date(today)
+            const twelveMonthsAgo = new Date(now)
             twelveMonthsAgo.setFullYear(twelveMonthsAgo.getFullYear() - 1)
-            return { startDate: twelveMonthsAgo, endDate: today }
+            return { startDate: twelveMonthsAgo, endDate: now }
         }
 
         case DateRangePreset.NEXT_7_DAYS: {
@@ -412,13 +432,19 @@ export const isStartDate = (date: Date, selectedRange: DateRange): boolean => {
 }
 
 /**
- * Checks if a date is the end date of a range
+ * Checks if a date is the end date of a range (but not if it's the same as start date)
  * @param date The date to check
  * @param selectedRange The selected date range
- * @returns True if the date is the end date
+ * @returns True if the date is the end date and different from start date
  */
 export const isEndDate = (date: Date, selectedRange: DateRange): boolean => {
-    if (!selectedRange.endDate) return false
+    if (!selectedRange.endDate || !selectedRange.startDate) return false
+
+    // Don't show as end date if it's the same day as start date (single date selection)
+    if (isSameDay(selectedRange.startDate, selectedRange.endDate)) {
+        return false
+    }
+
     return (
         date.getDate() === selectedRange.endDate.getDate() &&
         date.getMonth() === selectedRange.endDate.getMonth() &&
@@ -455,7 +481,79 @@ export const isDateToday = (date: Date, today: Date): boolean => {
 }
 
 /**
- * Handles date click logic for calendar
+ * Creates a proper single date range (24-hour selection within the same day)
+ * @param date The date to create a range for
+ * @returns DateRange spanning the entire day (same date, different times)
+ */
+export const createSingleDateRange = (date: Date): DateRange => {
+    // Start of day (00:00:00)
+    const startDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        0,
+        0,
+        0,
+        0
+    )
+
+    // End of day (23:59:59.999) - same date but end of day
+    const endDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        23,
+        59,
+        59,
+        999
+    )
+
+    return { startDate, endDate }
+}
+
+/**
+ * Creates a date at start of day (00:00:00)
+ */
+const createStartOfDay = (date: Date): Date => {
+    return new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        0,
+        0,
+        0,
+        0
+    )
+}
+
+/**
+ * Creates a date at end of day (23:59:59.999 same day)
+ */
+const createEndOfDay = (date: Date): Date => {
+    return new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        23,
+        59,
+        59,
+        999
+    )
+}
+
+/**
+ * Checks if we have a complete range (both start and end dates that are different)
+ */
+const hasCompleteRange = (range: DateRange): boolean => {
+    return !!(
+        range.startDate &&
+        range.endDate &&
+        !isSameDay(range.startDate, range.endDate)
+    )
+}
+
+/**
+ * Handles date click logic for calendar with clean first click = start, second click = end pattern
  * @param clickedDate The date that was clicked
  * @param selectedRange Current selected range
  * @param allowSingleDateSelection Whether single date selection is allowed
@@ -474,6 +572,7 @@ export const handleCalendarDateClick = (
     disablePastDates: boolean = false,
     isDoubleClick: boolean = false
 ): DateRange | null => {
+    // Validate date is not disabled
     if (
         (disableFutureDates && clickedDate > today) ||
         (disablePastDates && clickedDate < today)
@@ -481,83 +580,66 @@ export const handleCalendarDateClick = (
         return null
     }
 
-    let newRange: DateRange
+    // Create clean date without time components for comparison
+    const clickedDateOnly = new Date(
+        clickedDate.getFullYear(),
+        clickedDate.getMonth(),
+        clickedDate.getDate()
+    )
 
-    if (isDoubleClick) {
-        if (allowSingleDateSelection) {
-            newRange = {
-                startDate: clickedDate,
-                endDate: clickedDate,
-            }
-        } else {
-            newRange = {
-                startDate: clickedDate,
-                endDate: clickedDate,
-            }
-        }
-        return newRange
+    // Handle double click - always create single date range if allowed
+    if (isDoubleClick && allowSingleDateSelection) {
+        return createSingleDateRange(clickedDateOnly)
     }
 
-    if (!selectedRange.startDate || allowSingleDateSelection) {
-        newRange = {
-            startDate: clickedDate,
-            endDate: clickedDate,
-        }
-    } else if (!selectedRange.endDate) {
-        if (clickedDate < selectedRange.startDate) {
-            newRange = {
-                startDate: clickedDate,
-                endDate: clickedDate,
+    // Case 1: No selection - first click sets start date
+    if (!selectedRange.startDate) {
+        const startDate = createStartOfDay(clickedDateOnly)
+        return { startDate, endDate: startDate }
+    }
+
+    // Case 2: We have only start date (same as start date) - second click on same date
+    if (
+        selectedRange.startDate &&
+        selectedRange.endDate &&
+        isSameDay(selectedRange.startDate, selectedRange.endDate)
+    ) {
+        // If clicking the same day as start date
+        if (isSameDay(clickedDateOnly, selectedRange.startDate)) {
+            // If single date selection is allowed, create full day range
+            if (allowSingleDateSelection) {
+                return createSingleDateRange(clickedDateOnly)
             }
-        } else if (
-            clickedDate.getTime() === selectedRange.startDate.getTime()
-        ) {
-            newRange = {
-                startDate: clickedDate,
-                endDate: clickedDate,
-            }
-        } else {
-            newRange = {
+            // Otherwise keep as single point
+            return {
                 startDate: selectedRange.startDate,
-                endDate: clickedDate,
+                endDate: selectedRange.startDate,
             }
         }
-    } else {
-        const startTime = selectedRange.startDate.getTime()
-        const endTime = selectedRange.endDate.getTime()
-        const clickedTime = clickedDate.getTime()
 
-        const distanceToStart = Math.abs(clickedTime - startTime)
-        const distanceToEnd = Math.abs(clickedTime - endTime)
-
-        if (distanceToStart <= distanceToEnd) {
-            if (clickedDate <= selectedRange.endDate) {
-                newRange = {
-                    startDate: clickedDate,
-                    endDate: selectedRange.endDate,
-                }
-            } else {
-                newRange = {
-                    startDate: selectedRange.endDate,
-                    endDate: clickedDate,
-                }
+        // Clicking different date - set as end date
+        if (clickedDateOnly > selectedRange.startDate) {
+            // Normal range: start to end
+            return {
+                startDate: selectedRange.startDate,
+                endDate: createEndOfDay(clickedDateOnly),
             }
         } else {
-            if (clickedDate >= selectedRange.startDate) {
-                newRange = {
-                    startDate: selectedRange.startDate,
-                    endDate: clickedDate,
-                }
-            } else {
-                newRange = {
-                    startDate: clickedDate,
-                    endDate: selectedRange.startDate,
-                }
-            }
+            // Clicked date is before start date - make it the new start
+            const startDate = createStartOfDay(clickedDateOnly)
+            return { startDate, endDate: startDate }
         }
     }
 
-    return newRange
+    // Case 3: We have a complete range - start over with new start date
+    if (hasCompleteRange(selectedRange)) {
+        const startDate = createStartOfDay(clickedDateOnly)
+        return { startDate, endDate: startDate }
+    }
+
+    // Fallback - should not reach here, but handle gracefully
+    const startDate = createStartOfDay(clickedDateOnly)
+    return { startDate, endDate: startDate }
 }
 
 /**
@@ -882,7 +964,14 @@ export const getDateCellStates = (
     const isEnd = isEndDate(date, selectedRange)
     const isRangeDay = isInSelectedRange(date, selectedRange)
     const isTodayDay = isDateToday(date, today)
-    const isSingleDate = isStart && isEnd
+
+    // For single date selection, only show as single date if start and end are the same day
+    const isSingleDate =
+        isStart &&
+        selectedRange.startDate &&
+        selectedRange.endDate &&
+        isSameDay(selectedRange.startDate, selectedRange.endDate)
+
     const isDisabled = Boolean(
         (disableFutureDates && date > today) ||
             (disablePastDates && date < today)
@@ -951,11 +1040,15 @@ export type DateRangePickerTokens = {
  * Validates date format and date values
  * @param value The input value to validate
  * @param format The expected format (e.g., 'dd/MM/yyyy')
+ * @param disableFutureDates Whether future dates should be disabled
+ * @param disablePastDates Whether past dates should be disabled
  * @returns Validation result with specific error type
  */
 export const validateDateInput = (
     value: string,
-    format: string
+    format: string,
+    disableFutureDates: boolean = false,
+    disablePastDates: boolean = false
 ): DateValidationResult => {
     if (!value || value.length === 0) {
         return { isValid: true, error: 'none' }
@@ -1015,6 +1108,27 @@ export const validateDateInput = (
             }
         }
 
+        // Check future/past date restrictions
+        const today = new Date()
+        today.setHours(0, 0, 0, 0) // Compare dates only, not times
+        date.setHours(0, 0, 0, 0)
+
+        if (disableFutureDates && date > today) {
+            return {
+                isValid: false,
+                error: 'out-of-range',
+                message: 'Future dates are not allowed',
+            }
+        }
+
+        if (disablePastDates && date < today) {
+            return {
+                isValid: false,
+                error: 'out-of-range',
+                message: 'Past dates are not allowed',
+            }
+        }
+
         return { isValid: true, error: 'none' }
     }
 
@@ -1029,29 +1143,38 @@ export const validateDateInput = (
  */
 export const formatDateInput = (value: string, format: string): string => {
     if (format === 'dd/MM/yyyy') {
-        const cleaned = value.replace(/\D/g, '')
+        // Allow existing slashes to remain, only add where needed
+        const cleaned = value.replace(/[^\d/]/g, '')
 
-        if (cleaned.length === 0) return ''
-        if (cleaned.length <= 2) return cleaned
-        if (cleaned.length <= 4)
-            return cleaned.slice(0, 2) + '/' + cleaned.slice(2)
-        if (cleaned.length <= 8) {
+        // Remove multiple consecutive slashes
+        const singleSlash = cleaned.replace(/\/+/g, '/')
+
+        // Split by slashes to work with parts
+        const parts = singleSlash.split('/')
+
+        if (parts.length === 1) {
+            // Only day part
+            const day = parts[0]
+            if (day.length === 0) return ''
+            if (day.length <= 2) return day
+            if (day.length <= 4) return day.slice(0, 2) + '/' + day.slice(2)
             return (
-                cleaned.slice(0, 2) +
-                '/' +
-                cleaned.slice(2, 4) +
-                '/' +
-                cleaned.slice(4, 8)
+                day.slice(0, 2) + '/' + day.slice(2, 4) + '/' + day.slice(4, 8)
             )
+        } else if (parts.length === 2) {
+            // Day and month parts
+            const day = parts[0].slice(0, 2)
+            const month = parts[1]
+            if (month.length === 0) return day + '/'
+            if (month.length <= 2) return day + '/' + month
+            return day + '/' + month.slice(0, 2) + '/' + month.slice(2, 6)
+        } else if (parts.length >= 3) {
+            // All parts
+            const day = parts[0].slice(0, 2)
+            const month = parts[1].slice(0, 2)
+            const year = parts[2].slice(0, 4)
+            return day + '/' + month + (year ? '/' + year : '')
         }
-
-        return (
-            cleaned.slice(0, 2) +
-            '/' +
-            cleaned.slice(2, 4) +
-            '/' +
-            cleaned.slice(4, 8)
-        )
     }
 
     return value
@@ -1132,6 +1255,9 @@ export const formatDateDisplay = (
  * @param dateFormat Date format string
  * @param currentRange Current selected range
  * @param timeValue Current time value (HH:mm)
+ * @param isStartDate Whether this is start date or end date
+ * @param disableFutureDates Whether future dates should be disabled
+ * @param disablePastDates Whether past dates should be disabled
  * @returns Object with formatted value, validation result, and updated range
  */
 export const handleDateInputChange = (
@@ -1139,14 +1265,21 @@ export const handleDateInputChange = (
     dateFormat: string,
     currentRange: DateRange,
     timeValue: string,
-    isStartDate: boolean = true
+    isStartDate: boolean = true,
+    disableFutureDates: boolean = false,
+    disablePastDates: boolean = false
 ): {
     formattedValue: string
     validation: DateValidationResult
     updatedRange?: DateRange
 } => {
     const formattedValue = formatDateInput(value, dateFormat)
-    const validation = validateDateInput(formattedValue, dateFormat)
+    const validation = validateDateInput(
+        formattedValue,
+        dateFormat,
+        disableFutureDates,
+        disablePastDates
+    )
 
     let updatedRange: DateRange | undefined
 
@@ -1216,14 +1349,48 @@ export const handleCalendarDateSelect = (
     formattedStartDate: string
     formattedEndDate: string
 } => {
+    // Check if this is a single date range (same day for start and end)
+    const isSingleDateRange =
+        range.startDate &&
+        range.endDate &&
+        isSameDay(range.startDate, range.endDate)
+
     if (range.startDate) {
-        const [startHour, startMinute] = startTime.split(':').map(Number)
-        range.startDate.setHours(startHour, startMinute)
+        if (isSingleDateRange) {
+            // For single date ranges, preserve the 00:00:00 time for start date
+            // Only override if it's not already set to start of day
+            if (
+                range.startDate.getHours() !== 0 ||
+                range.startDate.getMinutes() !== 0
+            ) {
+                const [startHour, startMinute] = startTime
+                    .split(':')
+                    .map(Number)
+                range.startDate.setHours(startHour, startMinute)
+            }
+        } else {
+            // For range selections, use the time picker values
+            const [startHour, startMinute] = startTime.split(':').map(Number)
+            range.startDate.setHours(startHour, startMinute)
+        }
     }
 
     if (range.endDate) {
-        const [endHour, endMinute] = endTime.split(':').map(Number)
-        range.endDate.setHours(endHour, endMinute)
+        if (isSingleDateRange) {
+            // For single date ranges, preserve the 23:59:59 time for end date
+            // Only override if it's not already set to end of day
+            if (
+                range.endDate.getHours() !== 23 ||
+                range.endDate.getMinutes() !== 59
+            ) {
+                const [endHour, endMinute] = endTime.split(':').map(Number)
+                range.endDate.setHours(endHour, endMinute)
+            }
+        } else {
+            // For range selections, use the time picker values
+            const [endHour, endMinute] = endTime.split(':').map(Number)
+            range.endDate.setHours(endHour, endMinute)
+        }
     }
 
     return {
@@ -2357,4 +2524,427 @@ export const formatTimeInput = (input: string): string => {
     }
 
     return cleaned.slice(0, 5)
+}
+
+/**
+ * Validates if a date range has valid date/time combinations
+ * @param range The date range to validate
+ * @param allowSingleDateSelection Whether single date selection is allowed
+ * @returns Validation result with specific error information
+ */
+export const validateDateTimeRange = (
+    range: DateRange
+): {
+    isValid: boolean
+    error:
+        | 'none'
+        | 'invalid-time-order'
+        | 'missing-dates'
+        | 'invalid-single-date'
+    message?: string
+} => {
+    if (!range.startDate || !range.endDate) {
+        return {
+            isValid: false,
+            error: 'missing-dates',
+            message: 'Both start and end dates are required',
+        }
+    }
+
+    const isSingleDate = isSameDay(range.startDate, range.endDate)
+
+    if (range.endDate.getTime() < range.startDate.getTime()) {
+        return {
+            isValid: false,
+            error: 'invalid-time-order',
+            message: isSingleDate
+                ? 'End time must be after or equal to start time on the same day'
+                : 'End date/time must be after start date/time',
+        }
+    }
+
+    if (isSingleDate) {
+        return { isValid: true, error: 'none' }
+    }
+
+    return { isValid: true, error: 'none' }
+}
+
+/**
+ * Checks if a date should be hidden from calendar view
+ * @param date The date to check
+ * @param today Today's date
+ * @param disableFutureDates Whether future dates should be hidden
+ * @param disablePastDates Whether past dates should be hidden
+ * @param hideFutureDates Whether to completely hide future dates (not just disable)
+ * @param hidePastDates Whether to completely hide past dates (not just disable)
+ * @returns True if the date should be hidden
+ */
+export const shouldHideDateFromCalendar = (
+    date: Date,
+    today: Date,
+    hideFutureDates: boolean = false,
+    hidePastDates: boolean = false
+): boolean => {
+    const dateOnly = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+    )
+    const todayOnly = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+    )
+
+    if (hideFutureDates && dateOnly > todayOnly) {
+        return true
+    }
+
+    if (hidePastDates && dateOnly < todayOnly) {
+        return true
+    }
+
+    return false
+}
+
+/**
+ * Enhanced calendar date click handler with proper single date selection
+ * @param clickedDate The date that was clicked
+ * @param selectedRange Current selected range
+ * @param allowSingleDateSelection Whether single date selection is allowed
+ * @param today Today's date for validation
+ * @param disableFutureDates Whether future dates are disabled
+ * @param disablePastDates Whether past dates are disabled
+ * @param isDoubleClick Whether this is a double-click event
+ * @returns New date range or null if click should be ignored
+ */
+export const handleEnhancedCalendarDateClick = (
+    clickedDate: Date,
+    selectedRange: DateRange,
+    allowSingleDateSelection: boolean = false,
+    today: Date,
+    disableFutureDates: boolean = false,
+    disablePastDates: boolean = false,
+    isDoubleClick: boolean = false
+): DateRange | null => {
+    // Validate date is not disabled
+    if (
+        (disableFutureDates && clickedDate > today) ||
+        (disablePastDates && clickedDate < today)
+    ) {
+        return null
+    }
+
+    // Create clean date without time components for comparison
+    const clickedDateOnly = new Date(
+        clickedDate.getFullYear(),
+        clickedDate.getMonth(),
+        clickedDate.getDate()
+    )
+
+    // Handle double click - always create single date range if allowed
+    if (isDoubleClick && allowSingleDateSelection) {
+        return createSingleDateRange(clickedDateOnly)
+    }
+
+    // For single date selection mode, always create single date ranges
+    if (allowSingleDateSelection) {
+        return createSingleDateRange(clickedDateOnly)
+    }
+
+    // Regular range selection logic
+    // Case 1: No selection - first click sets start date
+    if (!selectedRange.startDate) {
+        const startDate = createStartOfDay(clickedDateOnly)
+        return { startDate, endDate: startDate }
+    }
+
+    // Case 2: We have only start date (same as start date) - second click on same date
+    if (
+        selectedRange.startDate &&
+        selectedRange.endDate &&
+        isSameDay(selectedRange.startDate, selectedRange.endDate)
+    ) {
+        // If clicking the same day as start date, keep as single point
+        if (isSameDay(clickedDateOnly, selectedRange.startDate)) {
+            return {
+                startDate: selectedRange.startDate,
+                endDate: selectedRange.startDate,
+            }
+        }
+
+        // Clicking different date - set as end date
+        if (clickedDateOnly > selectedRange.startDate) {
+            // Normal range: start to end
+            return {
+                startDate: selectedRange.startDate,
+                endDate: createEndOfDay(clickedDateOnly),
+            }
+        } else {
+            // Clicked date is before start date - make it the new start
+            const startDate = createStartOfDay(clickedDateOnly)
+            return { startDate, endDate: startDate }
+        }
+    }
+
+    // Case 3: We have a complete range - start over with new start date
+    if (hasCompleteRange(selectedRange)) {
+        const startDate = createStartOfDay(clickedDateOnly)
+        return { startDate, endDate: startDate }
+    }
+
+    // Fallback - should not reach here, but handle gracefully
+    const startDate = createStartOfDay(clickedDateOnly)
+    return { startDate, endDate: startDate }
+}
+
+// =============================================================================
+// PRESET DETECTION UTILITIES
+// =============================================================================
+
+/**
+ * Checks if two dates represent the same calendar day (ignoring time and timezone)
+ */
+export const isSameCalendarDay = (date1: Date, date2: Date): boolean => {
+    // Compare both in local timezone and UTC to handle timezone differences
+    const localSame =
+        date1.getFullYear() === date2.getFullYear() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getDate() === date2.getDate()
+
+    const utcSame =
+        date1.getUTCFullYear() === date2.getUTCFullYear() &&
+        date1.getUTCMonth() === date2.getUTCMonth() &&
+        date1.getUTCDate() === date2.getUTCDate()
+
+    return localSame || utcSame
+}
+
+/**
+ * Checks if a date range represents a full day in any timezone
+ */
+export const isFullDayRange = (startDate: Date, endDate: Date): boolean => {
+    // Check if it's a full day in local timezone
+    const localStartIsStartOfDay =
+        startDate.getHours() === 0 &&
+        startDate.getMinutes() === 0 &&
+        startDate.getSeconds() === 0 &&
+        startDate.getMilliseconds() === 0
+
+    const localEndIsEndOfDay =
+        endDate.getHours() === 23 &&
+        endDate.getMinutes() === 59 &&
+        endDate.getSeconds() === 59 &&
+        endDate.getMilliseconds() === 999
+
+    // Check if it's a full day in UTC
+    const utcStartIsStartOfDay =
+        startDate.getUTCHours() === 0 &&
+        startDate.getUTCMinutes() === 0 &&
+        startDate.getUTCSeconds() === 0 &&
+        startDate.getUTCMilliseconds() === 0
+
+    const utcEndIsEndOfDay =
+        endDate.getUTCHours() === 23 &&
+        endDate.getUTCMinutes() === 59 &&
+        endDate.getUTCSeconds() === 59 &&
+        endDate.getUTCMilliseconds() === 999
+
+    const isLocalFullDay =
+        localStartIsStartOfDay &&
+        localEndIsEndOfDay &&
+        isSameCalendarDay(startDate, endDate)
+    const isUtcFullDay =
+        utcStartIsStartOfDay &&
+        utcEndIsEndOfDay &&
+        isSameCalendarDay(startDate, endDate)
+
+    return isLocalFullDay || isUtcFullDay
+}
+
+/**
+ * Checks if a date range matches "Today" preset
+ */
+export const matchesTodayPreset = (range: DateRange): boolean => {
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+    // Check if start date is today at midnight
+    const startIsToday = isSameCalendarDay(range.startDate, today)
+    const startIsStartOfDay =
+        range.startDate.getHours() === 0 &&
+        range.startDate.getMinutes() === 0 &&
+        range.startDate.getSeconds() === 0 &&
+        range.startDate.getMilliseconds() === 0
+
+    // End date should be sometime today (not necessarily current time)
+    const endIsToday = isSameCalendarDay(range.endDate, today)
+
+    return startIsToday && startIsStartOfDay && endIsToday
+}
+
+/**
+ * Checks if a date range matches "Yesterday" preset
+ */
+export const matchesYesterdayPreset = (range: DateRange): boolean => {
+    const now = new Date()
+    const yesterday = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() - 1
+    )
+
+    // Check if it's a full day range for yesterday
+    const startIsYesterday = isSameCalendarDay(range.startDate, yesterday)
+    const endIsYesterday = isSameCalendarDay(range.endDate, yesterday)
+    const isFullDay = isFullDayRange(range.startDate, range.endDate)
+
+    return startIsYesterday && endIsYesterday && isFullDay
+}
+
+/**
+ * Checks if a date range matches "Tomorrow" preset
+ */
+export const matchesTomorrowPreset = (range: DateRange): boolean => {
+    const now = new Date()
+    const tomorrow = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1
+    )
+
+    // Check if it's a full day range for tomorrow
+    const startIsTomorrow = isSameCalendarDay(range.startDate, tomorrow)
+    const endIsTomorrow = isSameCalendarDay(range.endDate, tomorrow)
+    const isFullDay = isFullDayRange(range.startDate, range.endDate)
+
+    return startIsTomorrow && endIsTomorrow && isFullDay
+}
+
+/**
+ * Robust preset detection that works with both UTC and local timezone dates
+ */
+export const detectPresetFromRange = (range: DateRange): DateRangePreset => {
+    if (!range.startDate || !range.endDate) {
+        return DateRangePreset.CUSTOM
+    }
+
+    // Check specific day presets first
+    if (matchesTodayPreset(range)) {
+        return DateRangePreset.TODAY
+    }
+
+    if (matchesYesterdayPreset(range)) {
+        return DateRangePreset.YESTERDAY
+    }
+
+    if (matchesTomorrowPreset(range)) {
+        return DateRangePreset.TOMORROW
+    }
+
+    // Check time-based presets with tolerance
+    const now = new Date()
+    const timeDiff = Math.abs(range.endDate.getTime() - now.getTime())
+    const tolerance = DATE_RANGE_PICKER_CONSTANTS.PRESET_DETECTION_TOLERANCE_MS
+
+    if (timeDiff <= tolerance) {
+        const durationMs = range.endDate.getTime() - range.startDate.getTime()
+
+        // Check hour-based presets
+        const oneHour = 60 * 60 * 1000
+        const sixHours = 6 * 60 * 60 * 1000
+
+        if (Math.abs(durationMs - oneHour) <= tolerance) {
+            return DateRangePreset.LAST_1_HOUR
+        }
+
+        if (Math.abs(durationMs - sixHours) <= tolerance) {
+            return DateRangePreset.LAST_6_HOURS
+        }
+    }
+
+    // Check multi-day presets
+    const daysDiff = Math.round(
+        (range.endDate.getTime() - range.startDate.getTime()) /
+            (24 * 60 * 60 * 1000)
+    )
+
+    if (daysDiff === 6 || daysDiff === 7) {
+        // Allow for timezone differences
+        // Check if start is 7 days ago at midnight
+        const sevenDaysAgo = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 6,
+            0,
+            0,
+            0,
+            0
+        )
+        if (
+            Math.abs(range.startDate.getTime() - sevenDaysAgo.getTime()) <=
+            DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS *
+                60 *
+                60 *
+                1000
+        ) {
+            return DateRangePreset.LAST_7_DAYS
+        }
+    }
+
+    if (daysDiff >= 29 && daysDiff <= 30) {
+        // Allow for timezone differences
+        // Check if start is 30 days ago at midnight
+        const thirtyDaysAgo = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 29,
+            0,
+            0,
+            0,
+            0
+        )
+        if (
+            Math.abs(range.startDate.getTime() - thirtyDaysAgo.getTime()) <=
+            DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS *
+                60 *
+                60 *
+                1000
+        ) {
+            return DateRangePreset.LAST_30_DAYS
+        }
+    }
+
+    // For future presets, check if start is today and end is appropriate days later
+    const startIsToday = isSameCalendarDay(range.startDate, now)
+
+    if (startIsToday && (daysDiff === 6 || daysDiff === 7)) {
+        return DateRangePreset.NEXT_7_DAYS
+    }
+
+    if (startIsToday && daysDiff >= 29 && daysDiff <= 30) {
+        return DateRangePreset.NEXT_30_DAYS
+    }
+
+    // Check month-based presets (approximate)
+    const monthsDiff = Math.round(daysDiff / 30)
+
+    if (monthsDiff === 3) {
+        return DateRangePreset.LAST_3_MONTHS
+    }
+
+    if (monthsDiff === 12) {
+        return DateRangePreset.LAST_12_MONTHS
+    }
+
+    if (startIsToday && monthsDiff === 3) {
+        return DateRangePreset.NEXT_3_MONTHS
+    }
+
+    if (startIsToday && monthsDiff === 12) {
+        return DateRangePreset.NEXT_12_MONTHS
+    }
+
+    return DateRangePreset.CUSTOM
 }

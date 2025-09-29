@@ -1,5 +1,9 @@
 import { ReactNode } from 'react'
 
+// =============================================================================
+// ENUMS
+// =============================================================================
+
 export enum DateRangePreset {
     CUSTOM = 'custom',
     TODAY = 'today',
@@ -23,12 +27,6 @@ export enum DateRangePickerSize {
     LARGE = 'lg',
 }
 
-export type DateRange = {
-    startDate: Date
-    endDate: Date
-    showTimePicker?: boolean
-}
-
 /**
  * Predefined format presets for common date display patterns
  */
@@ -42,6 +40,47 @@ export enum DateFormatPreset {
     ISO_RANGE = 'iso-range', // "2025-09-03 - 2025-09-05"
     US_RANGE = 'us-range', // "09/03/2025 - 09/05/2025"
     CUSTOM = 'custom', // Use custom format function
+}
+
+/**
+ * Haptic feedback types for different interactions
+ */
+export enum HapticFeedbackType {
+    SELECTION = 'selection',
+    IMPACT = 'impact',
+    NOTIFICATION = 'notification',
+}
+
+/**
+ * Validation error types for date inputs
+ */
+export enum DateValidationError {
+    NONE = 'none',
+    INVALID_FORMAT = 'format',
+    INVALID_DATE = 'invalid-date',
+    OUT_OF_RANGE = 'out-of-range',
+    INVALID_TIME_ORDER = 'invalid-time-order',
+    MISSING_DATES = 'missing-dates',
+    FUTURE_DATE_DISABLED = 'future-date-disabled',
+    PAST_DATE_DISABLED = 'past-date-disabled',
+}
+
+/**
+ * Calendar interaction modes
+ */
+export enum CalendarInteractionMode {
+    SINGLE_DATE = 'single-date',
+    DATE_RANGE = 'date-range',
+}
+
+// =============================================================================
+// TYPES
+// =============================================================================
+
+export type DateRange = {
+    startDate: Date
+    endDate: Date
+    showTimePicker?: boolean
 }
 
 /**
@@ -89,6 +128,45 @@ export type TriggerConfig = {
     }) => ReactNode
 }
 
+/**
+ * Date validation result
+ */
+export type DateValidationResult = {
+    isValid: boolean
+    error: DateValidationError
+    message?: string
+}
+
+/**
+ * Date range validation result
+ */
+export type DateRangeValidationResult = {
+    isValid: boolean
+    error: DateValidationError
+    message?: string
+}
+
+/**
+ * Calendar month data structure
+ */
+export type CalendarMonth = {
+    month: number
+    year: number
+    index?: number
+}
+
+/**
+ * Picker column data
+ */
+export type PickerColumnData = {
+    items: (string | number)[]
+    selectedIndex: number
+}
+
+// =============================================================================
+// COMPONENT PROPS
+// =============================================================================
+
 export type DateRangePickerProps = {
     value?: DateRange
     onChange?: (range: DateRange) => void
@@ -103,21 +181,15 @@ export type DateRangePickerProps = {
     allowSingleDateSelection?: boolean
     disableFutureDates?: boolean
     disablePastDates?: boolean
+    hideFutureDates?: boolean
+    hidePastDates?: boolean
     triggerElement?: ReactNode
     useDrawerOnMobile?: boolean
     skipQuickFiltersOnMobile?: boolean
     size?: DateRangePickerSize
     formatConfig?: DateFormatConfig
     triggerConfig?: TriggerConfig
-}
-
-/**
- * Haptic feedback types for different interactions
- */
-export enum HapticFeedbackType {
-    SELECTION = 'selection',
-    IMPACT = 'impact',
-    NOTIFICATION = 'notification',
+    maxMenuHeight?: number
 }
 
 export type PresetItemProps = {
@@ -134,6 +206,8 @@ export type ActionButtonsProps = {
     onCancel: () => void
     onApply: () => void
     isDisabled?: boolean
+    isApplyDisabled?: boolean
+    applyDisabledMessage?: string
 }
 
 export type ScrollablePickerProps = {
@@ -156,6 +230,8 @@ export type DatePickerComponentProps = {
     setStartDate: (date: string) => void
     setEndDate: (date: string) => void
     isDisabled?: boolean
+    disableFutureDates?: boolean
+    disablePastDates?: boolean
 }
 
 export type MobileDrawerPresetsProps = {
@@ -179,4 +255,8 @@ export type MobileDrawerPresetsProps = {
     handleApply: () => void
     showCustomDropdownOnly?: boolean
     isDisabled?: boolean
+    isApplyDisabled?: boolean
+    applyDisabledMessage?: string
+    disableFutureDates?: boolean
+    disablePastDates?: boolean
 }

@@ -396,6 +396,119 @@ export const SingleDateSelection: Story = {
     },
 }
 
+// UTC Timezone Preset Detection Demo
+export const UTCPresetDetection: Story = {
+    render: () => {
+        // Example: UTC dates that should be detected as "Yesterday"
+        const yesterday = new Date()
+        yesterday.setDate(yesterday.getDate() - 1)
+
+        const [localYesterday, setLocalYesterday] = useState<DateRange>({
+            startDate: new Date(
+                yesterday.getFullYear(),
+                yesterday.getMonth(),
+                yesterday.getDate(),
+                0,
+                0,
+                0,
+                0
+            ),
+            endDate: new Date(
+                yesterday.getFullYear(),
+                yesterday.getMonth(),
+                yesterday.getDate(),
+                23,
+                59,
+                59,
+                999
+            ),
+        })
+
+        const [utcYesterday, setUtcYesterday] = useState<DateRange>({
+            startDate: new Date('2025-09-27T18:30:00.000Z'),
+            endDate: new Date('2025-09-28T18:29:59.000Z'),
+        })
+
+        return (
+            <div style={{ width: '500px' }}>
+                <h4
+                    style={{
+                        margin: '0 0 12px 0',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Timezone-Aware Preset Detection
+                </h4>
+
+                <div style={{ marginBottom: '20px' }}>
+                    <p
+                        style={{
+                            fontSize: '12px',
+                            color: '#666',
+                            marginBottom: '8px',
+                        }}
+                    >
+                        Local timezone yesterday (should detect "Yesterday"
+                        preset):
+                    </p>
+                    <DateRangePicker
+                        value={localYesterday}
+                        onChange={setLocalYesterday}
+                        showPresets={true}
+                        placeholder="Yesterday in local timezone"
+                    />
+                </div>
+
+                <div>
+                    <p
+                        style={{
+                            fontSize: '12px',
+                            color: '#666',
+                            marginBottom: '8px',
+                        }}
+                    >
+                        UTC dates (2025-09-27T18:30:00.000Z to
+                        2025-09-28T18:29:59.000Z):
+                        <br />
+                        Should also detect "Yesterday" preset despite being in
+                        UTC
+                    </p>
+                    <DateRangePicker
+                        value={utcYesterday}
+                        onChange={setUtcYesterday}
+                        showPresets={true}
+                        placeholder="UTC yesterday dates"
+                    />
+                </div>
+
+                <div
+                    style={{
+                        marginTop: '16px',
+                        padding: '12px',
+                        backgroundColor: '#f5f5f5',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                    }}
+                >
+                    <strong>✅ Robust Preset Detection:</strong> The component
+                    now correctly identifies presets like "Yesterday" regardless
+                    of whether you pass local timezone or UTC dates. It checks
+                    both timezone formats to ensure reliable detection for
+                    library users worldwide.
+                </div>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates robust preset detection that works with both UTC and local timezone dates. The component correctly identifies presets like "Yesterday" even when dates are provided in UTC format, solving the timezone detection issue.',
+            },
+        },
+    },
+}
+
 // Custom trigger elements
 export const CustomTriggers: Story = {
     render: () => {

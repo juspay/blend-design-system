@@ -82,6 +82,7 @@ export type AxisConfig = {
     smart?: boolean
     timeZone?: string
     hour12?: boolean
+    showYear?: boolean
 }
 
 export type XAxisConfig = AxisConfig
@@ -149,6 +150,7 @@ export type ChartsProps = {
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
     noData?: NoDataProps
+    height?: number
 }
 
 export type FlattenedDataPoint = {

@@ -7,11 +7,6 @@ import {
     TriggerConfig,
     DateRangePickerSize,
 } from '../../../../packages/blend/lib/components/DateRangePicker/types'
-import {
-    FORMAT_PRESETS,
-    CUSTOM_FORMAT_EXAMPLES,
-    formatTriggerDisplay,
-} from '../../../../packages/blend/lib/components/DateRangePicker/utils'
 
 // Custom Button Component for triggers
 const CustomButton = ({
@@ -112,6 +107,8 @@ const DateRangePickerDemo = () => {
         allowSingleDateSelection: false,
         disableFutureDates: false,
         disablePastDates: false,
+        hideFutureDates: false,
+        hidePastDates: false,
         isDisabled: false,
         formatPreset: DateFormatPreset.MEDIUM_RANGE,
         includeTime: false,
@@ -139,6 +136,57 @@ const DateRangePickerDemo = () => {
     const [customRange, setCustomRange] = useState<DateRange>({
         startDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
         endDate: new Date(),
+    })
+
+    // Simple yesterday range - component handles timezone internally
+    const [yesterdayRange, setYesterdayRange] = useState<DateRange>(() => {
+        const yesterday = new Date()
+        yesterday.setDate(yesterday.getDate() - 1)
+        return {
+            startDate: new Date(
+                yesterday.getFullYear(),
+                yesterday.getMonth(),
+                yesterday.getDate(),
+                0,
+                0,
+                0,
+                0
+            ),
+            endDate: new Date(
+                yesterday.getFullYear(),
+                yesterday.getMonth(),
+                yesterday.getDate(),
+                23,
+                59,
+                59,
+                999
+            ),
+        }
+    })
+
+    // Single date selection state - initialized with a proper single date range
+    const [singleDateRange, setSingleDateRange] = useState<DateRange>(() => {
+        const today = new Date()
+        return {
+            startDate: new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate(),
+                0,
+                0,
+                0,
+                0
+            ),
+            endDate: new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate(),
+                23,
+                59,
+                59,
+                999
+            ),
+        }
     })
 
     // Console logging functions for date changes
@@ -180,6 +228,33 @@ const DateRangePickerDemo = () => {
             formattedEnd: range.endDate.toLocaleString(),
         })
         setCustomRange(range)
+    }
+
+    const handleYesterdayRangeChange = (range: DateRange) => {
+        console.log('Yesterday Range Changed:', {
+            startDate: range.startDate.toISOString(),
+            endDate: range.endDate.toISOString(),
+            formattedStart: range.startDate.toLocaleString(),
+            formattedEnd: range.endDate.toLocaleString(),
+        })
+        setYesterdayRange(range)
+    }
+
+    const handleSingleDateRangeChange = (range: DateRange) => {
+        console.log('Single Date Range Changed:', {
+            startDate: range.startDate.toISOString(),
+            endDate: range.endDate.toISOString(),
+            formattedStart: range.startDate.toLocaleString(),
+            formattedEnd: range.endDate.toLocaleString(),
+            isSingleDay:
+                range.startDate.toDateString() === range.endDate.toDateString(),
+            isFullDay:
+                range.startDate.getHours() === 0 &&
+                range.startDate.getMinutes() === 0 &&
+                range.endDate.getHours() === 23 &&
+                range.endDate.getMinutes() === 59,
+        })
+        setSingleDateRange(range)
     }
 
     // Handle configuration changes
@@ -365,6 +440,30 @@ const DateRangePickerDemo = () => {
                                             className="mr-2 cursor-pointer"
                                         />
                                         <span>Disable Past Dates</span>
+                                    </label>
+
+                                    <label className="flex items-center cursor-pointer text-gray-700">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.hideFutureDates}
+                                            onChange={handleCheckboxChange(
+                                                'hideFutureDates'
+                                            )}
+                                            className="mr-2 cursor-pointer"
+                                        />
+                                        <span>Hide Future Dates</span>
+                                    </label>
+
+                                    <label className="flex items-center cursor-pointer text-gray-700">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.hidePastDates}
+                                            onChange={handleCheckboxChange(
+                                                'hidePastDates'
+                                            )}
+                                            className="mr-2 cursor-pointer"
+                                        />
+                                        <span>Hide Past Dates</span>
                                     </label>
 
                                     <label className="flex items-center cursor-pointer text-gray-700">
@@ -576,18 +675,18 @@ const DateRangePickerDemo = () => {
                             {/* Preview */}
                             <div>
                                 <h4 className="text-lg font-medium text-gray-700 mb-3">
-                                    Format Preview
+                                    Current Settings
                                 </h4>
                                 <div className="p-3 bg-white border border-gray-300 rounded-md">
                                     <p className="text-sm text-gray-600 mb-1">
-                                        Current format output:
+                                        Format: {config.formatPreset} | Time:{' '}
+                                        {config.includeTime ? 'Yes' : 'No'} |
+                                        Year:{' '}
+                                        {config.includeYear ? 'Yes' : 'No'}
                                     </p>
-                                    <p className="font-mono text-sm">
-                                        {formatTriggerDisplay(
-                                            playgroundRange,
-                                            getFormatConfig(),
-                                            'Select date range'
-                                        )}
+                                    <p className="text-xs text-gray-500">
+                                        The component will automatically format
+                                        dates based on these settings
                                     </p>
                                 </div>
                             </div>
@@ -620,6 +719,8 @@ const DateRangePickerDemo = () => {
                                         config.disableFutureDates
                                     }
                                     disablePastDates={config.disablePastDates}
+                                    hideFutureDates={config.hideFutureDates}
+                                    hidePastDates={config.hidePastDates}
                                     isDisabled={config.isDisabled}
                                     size={config.size}
                                     formatConfig={getFormatConfig()}
@@ -700,7 +801,11 @@ const DateRangePickerDemo = () => {
                             <DateRangePicker
                                 value={formatRange}
                                 onChange={handleFormatRangeChange}
-                                formatConfig={FORMAT_PRESETS.COMPACT_NO_TIME}
+                                formatConfig={{
+                                    preset: DateFormatPreset.SHORT_RANGE,
+                                    includeTime: false,
+                                    includeYear: true,
+                                }}
                                 showPresets={true}
                             />
                         </div>
@@ -718,7 +823,11 @@ const DateRangePickerDemo = () => {
                             <DateRangePicker
                                 value={customRange}
                                 onChange={handleCustomRangeChange}
-                                formatConfig={FORMAT_PRESETS.MEDIUM_NO_TIME}
+                                formatConfig={{
+                                    preset: DateFormatPreset.MEDIUM_RANGE,
+                                    includeTime: false,
+                                    includeYear: true,
+                                }}
                                 triggerConfig={{
                                     renderTrigger: ({
                                         onClick,
@@ -742,20 +851,45 @@ const DateRangePickerDemo = () => {
                         </div>
                     </div>
 
-                    {/* Relative Format Example */}
+                    {/* ISO Format Example */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            Relative Format
+                            ISO Format
                         </h3>
                         <p className="text-sm text-gray-600 mb-4 flex-grow">
-                            Shows relative dates like "3 days ago - today"
+                            Shows dates in ISO format (YYYY-MM-DD)
                         </p>
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={customRange}
                                 onChange={handleCustomRangeChange}
-                                formatConfig={CUSTOM_FORMAT_EXAMPLES.RELATIVE}
+                                formatConfig={{
+                                    preset: DateFormatPreset.ISO_RANGE,
+                                    includeTime: false,
+                                    includeYear: true,
+                                }}
                                 showPresets={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Simple Preset Detection */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Simple Preset Detection
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            This example is initialized with yesterday's date
+                            range. The component automatically detects and
+                            highlights the "Yesterday" preset. Clean and
+                            predictable!
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={yesterdayRange}
+                                onChange={handleYesterdayRangeChange}
+                                showPresets={true}
+                                showDateTimePicker={true}
                             />
                         </div>
                     </div>
@@ -763,16 +897,34 @@ const DateRangePickerDemo = () => {
                     {/* Disabled Future Dates */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            Past Dates Only
+                            Past Dates Only (Disabled)
                         </h3>
                         <p className="text-sm text-gray-600 mb-4 flex-grow">
-                            Useful for analytics and reporting
+                            Future dates are disabled but still visible
                         </p>
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={customRange}
                                 onChange={handleCustomRangeChange}
                                 disableFutureDates={true}
+                                showPresets={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Hidden Future Dates */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Past Dates Only (Hidden)
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Future dates are completely hidden from calendar
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                hideFutureDates={true}
                                 showPresets={true}
                             />
                         </div>
@@ -788,45 +940,53 @@ const DateRangePickerDemo = () => {
                         </p>
                         <div className="overflow-hidden">
                             <DateRangePicker
-                                value={basicRange}
-                                onChange={handleBasicRangeChange}
+                                value={singleDateRange}
+                                onChange={handleSingleDateRangeChange}
                                 allowSingleDateSelection={true}
                                 showPresets={true}
                             />
                         </div>
                     </div>
 
-                    {/* Minimal Format */}
+                    {/* US Format */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            Minimal Format
+                            US Format
                         </h3>
                         <p className="text-sm text-gray-600 mb-4 flex-grow">
-                            Compact display format "3-5 Sep"
+                            Shows dates in US format (MM/DD/YYYY)
                         </p>
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={formatRange}
                                 onChange={handleFormatRangeChange}
-                                formatConfig={CUSTOM_FORMAT_EXAMPLES.MINIMAL}
+                                formatConfig={{
+                                    preset: DateFormatPreset.US_RANGE,
+                                    includeTime: false,
+                                    includeYear: true,
+                                }}
                                 showPresets={true}
                             />
                         </div>
                     </div>
 
-                    {/* Business Format */}
+                    {/* With Time Format */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            Business Format
+                            With Time Display
                         </h3>
                         <p className="text-sm text-gray-600 mb-4 flex-grow">
-                            Shows quarters and business periods
+                            Shows dates with time included in the display
                         </p>
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={customRange}
                                 onChange={handleCustomRangeChange}
-                                formatConfig={CUSTOM_FORMAT_EXAMPLES.BUSINESS}
+                                formatConfig={{
+                                    preset: DateFormatPreset.MEDIUM_RANGE,
+                                    includeTime: true,
+                                    timeFormat: '12h',
+                                }}
                                 showPresets={true}
                             />
                         </div>
@@ -1013,10 +1173,10 @@ const DateRangePickerDemo = () => {
                 </div>
             </div>
 
-            {/* Usage Instructions */}
+            {/* Usage Guide */}
             <div className="mt-12 p-6 bg-blue-50 border border-blue-200 rounded-lg">
                 <h3 className="text-xl font-semibold text-blue-800 mb-4">
-                    Key Features & Best Practices
+                    How to Use DateRangePicker
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1026,60 +1186,85 @@ const DateRangePickerDemo = () => {
                         </h4>
                         <ul className="text-blue-700 text-sm space-y-1">
                             <li>
-                                • <strong>Calendar-only mode:</strong> Use
-                                showPresets=false to hide preset dropdown and
-                                show only calendar
+                                • <strong>Simple and predictable:</strong>{' '}
+                                Standard JavaScript Date objects, no timezone
+                                complexity
                             </li>
                             <li>
-                                • <strong>Enhanced custom triggers:</strong>{' '}
-                                Full control over trigger appearance and
-                                behavior
+                                • <strong>Exact preset matching:</strong> Clean
+                                detection based on actual date values
                             </li>
                             <li>
-                                • <strong>Auto-hide presets:</strong> Custom
-                                triggers automatically hide quick selectors
+                                • <strong>Flexible formatting:</strong> Built-in
+                                presets like SHORT_RANGE, MEDIUM_RANGE,
+                                ISO_RANGE, US_RANGE
                             </li>
                             <li>
-                                • <strong>Max height dropdown:</strong> Quick
-                                selectors have 200px max height with scroll
+                                • <strong>Custom triggers:</strong> Full control
+                                over trigger appearance
                             </li>
                             <li>
-                                • <strong>Enhanced formatting:</strong> Multiple
-                                preset formats and custom functions
+                                • <strong>Mobile optimized:</strong> Automatic
+                                drawer on mobile devices
+                            </li>
+                            <li>
+                                • <strong>User timezone control:</strong> You
+                                handle timezone conversion, component handles UI
                             </li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="font-semibold text-blue-700 mb-2">
-                            🎯 Best Practices
+                            📝 Simple Usage
                         </h4>
-                        <ul className="text-blue-700 text-sm space-y-1">
-                            <li>
-                                • Choose appropriate size (sm/md/lg) for your
-                                design context
-                            </li>
-                            <li>
-                                • Use FORMAT_PRESETS for common formatting needs
-                            </li>
-                            <li>
-                                • Implement custom triggers for better UX
-                                integration
-                            </li>
-                            <li>
-                                • Consider mobile experience with
-                                useDrawerOnMobile
-                            </li>
-                            <li>
-                                • Test different format presets to match design
-                                requirements
-                            </li>
-                            <li>
-                                • Use custom format functions for complex
-                                business logic
-                            </li>
-                        </ul>
+                        <div className="bg-white p-3 rounded border text-xs font-mono">
+                            <div className="text-gray-600 mb-2">
+                                // Basic usage
+                            </div>
+                            <div>{'<DateRangePicker'}</div>
+                            <div>{'  value={dateRange}'}</div>
+                            <div>{'  onChange={setDateRange}'}</div>
+                            <div>{'/>'}</div>
+
+                            <div className="text-gray-600 mb-2 mt-3">
+                                // With custom format
+                            </div>
+                            <div>{'<DateRangePicker'}</div>
+                            <div>{'  value={range}'}</div>
+                            <div>{'  onChange={setRange}'}</div>
+                            <div>{'  formatConfig={{'}</div>
+                            <div>
+                                {'    preset: DateFormatPreset.ISO_RANGE,'}
+                            </div>
+                            <div>{'    includeTime: true'}</div>
+                            <div>{'  }}'}</div>
+                            <div>{'/>'}</div>
+
+                            <div className="text-gray-600 mb-2 mt-3">
+                                // With restrictions
+                            </div>
+                            <div>{'<DateRangePicker'}</div>
+                            <div>{'  disableFutureDates={true}'}</div>
+                            <div>{'  allowSingleDateSelection={true}'}</div>
+                            <div>{'/>'}</div>
+                        </div>
                     </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-blue-100 rounded-lg">
+                    <h4 className="font-semibold text-blue-700 mb-2">
+                        🚀 Clean & Simple API
+                    </h4>
+                    <p className="text-blue-700 text-sm">
+                        Just import{' '}
+                        <code className="bg-white px-1 rounded">
+                            DateRangePicker
+                        </code>{' '}
+                        and pass standard JavaScript Date objects. The component
+                        handles UI, formatting, and preset detection. You
+                        control timezone conversion in your app logic.
+                    </p>
                 </div>
             </div>
         </div>

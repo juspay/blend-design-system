@@ -24,8 +24,8 @@ const Content = styled(RadixMenu.Content)(() => ({
     position: 'relative',
     backgroundColor: FOUNDATION_THEME.colors.gray[0],
     borderRadius: FOUNDATION_THEME.border.radius[8],
-    boxShadow: FOUNDATION_THEME.shadows.lg,
-    zIndex: 9999,
+    boxShadow: FOUNDATION_THEME.shadows.sm,
+    zIndex: 49,
     border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
     display: 'flex',
     flexDirection: 'column',
@@ -37,7 +37,7 @@ const StickyHeader = styled(Block)(() => ({
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 1000,
+    zIndex: 50,
     backgroundColor: FOUNDATION_THEME.colors.gray[0],
 }))
 
@@ -84,12 +84,7 @@ const MultiSelectMenu = ({
     open,
     onOpenChange,
     showActionButtons = true,
-    primaryAction = {
-        text: 'Apply',
-        onClick: () => {},
-        disabled: false,
-        loading: false,
-    },
+    primaryAction,
     secondaryAction,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
@@ -200,10 +195,13 @@ const MultiSelectMenu = ({
                 avoidCollisions={false}
                 onKeyDown={handleKeyDown}
                 style={{
-                    minWidth: minMenuWidth,
+                    minWidth: minMenuWidth || 250,
                     width: 'max(var(--radix-dropdown-menu-trigger-width))',
-                    maxWidth: maxMenuWidth,
-                    maxHeight: maxMenuHeight,
+                    maxWidth:
+                        maxMenuWidth ||
+                        'var(--radix-dropdown-menu-trigger-width)',
+                    maxHeight:
+                        maxMenuHeight || 'var(--radix-popper-available-height)',
                 }}
             >
                 <StickyHeader>
@@ -332,7 +330,10 @@ const MultiSelectMenu = ({
                                 buttonType={ButtonType.SECONDARY}
                                 size={ButtonSize.SMALL}
                                 text={secondaryAction.text}
-                                onClick={secondaryAction.onClick}
+                                onClick={() => {
+                                    secondaryAction.onClick()
+                                    onOpenChange(false)
+                                }}
                                 disabled={secondaryAction.disabled}
                                 loading={secondaryAction.loading}
                             />
@@ -343,7 +344,7 @@ const MultiSelectMenu = ({
                                 size={ButtonSize.SMALL}
                                 text={primaryAction.text}
                                 onClick={() => {
-                                    primaryAction.onClick()
+                                    primaryAction.onClick(selected)
                                     onOpenChange(false)
                                 }}
                                 disabled={primaryAction.disabled}

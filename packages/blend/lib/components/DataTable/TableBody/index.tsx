@@ -445,6 +445,12 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
             gap={FOUNDATION_THEME.unit[4]}
             width="100%"
             onClick={(e) => e.stopPropagation()}
+            style={{
+                fontSize: 'inherit',
+                fontFamily: 'inherit',
+                fontWeight: 'inherit',
+                lineHeight: 'inherit',
+            }}
         >
             {visibleButtonElements}
 
@@ -586,7 +592,7 @@ const TableBody = forwardRef<
                                                   ...(columnFreeze > 0 && {
                                                       position: 'sticky',
                                                       left: '0px',
-                                                      zIndex: 45,
+                                                      zIndex: 9,
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
                                                           foundationToken.colors
@@ -650,7 +656,7 @@ const TableBody = forwardRef<
                                                       left: enableRowExpansion
                                                           ? '50px'
                                                           : '0px',
-                                                      zIndex: 45,
+                                                      zIndex: 9,
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
                                                           foundationToken.colors
@@ -792,7 +798,7 @@ const TableBody = forwardRef<
                                                           position:
                                                               'sticky' as const,
                                                           left: `${leftOffset}px`,
-                                                          zIndex: 44,
+                                                          zIndex: 8,
                                                           backgroundColor:
                                                               rowStyling.backgroundColor ||
                                                               '#ffffff',
@@ -857,6 +863,10 @@ const TableBody = forwardRef<
                                                           tableToken.dataTable
                                                               .table.body.cell
                                                               .fontSize,
+                                                      fontWeight:
+                                                          tableToken.dataTable
+                                                              .table.body.cell
+                                                              .fontWeight,
                                                   }}
                                               >
                                                   <ActionsCell
