@@ -254,12 +254,4 @@ export const getTextAreaTokens = (
     }
 }
 
-// Legacy export for backward compatibility
-export const textAreaTokens: TextAreaTokensType = getTextAreaTokens({
-    unit: {},
-    colors: {},
-    shadows: {},
-    font: { size: { body: { md: { fontSize: '14px' } } }, weight: {} },
-} as any).sm
-
-export default textAreaTokens
+export default getTextAreaTokens

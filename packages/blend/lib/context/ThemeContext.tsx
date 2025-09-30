@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { SearchInputTokensType } from '../components/Inputs/SearchInput/searchInput.tokens'
+import type { ResponsiveSearchInputTokens } from '../components/Inputs/SearchInput/searchInput.tokens'
 import type { ResponsiveTagTokens } from '../components/Tags/tag.tokens'
 import type { ResponsiveTextAreaTokens } from '../components/Inputs/TextArea/textarea.token'
 import type { ResponsiveRadioTokens } from '../components/Radio/radio.token'
@@ -81,7 +81,7 @@ import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.toke
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
-    SEARCH_INPUT?: SearchInputTokensType
+    SEARCH_INPUT?: ResponsiveSearchInputTokens
     TEXT_AREA?: ResponsiveTextAreaTokens
     RADIO?: ResponsiveRadioTokens
     SWITCH?: ResponsiveSwitchTokens
