@@ -93,9 +93,9 @@ export type MultiSelectProps = {
     useDrawerOnMobile?: boolean
 
     // dim
-    minWidth?: number
-    maxWidth?: number
-    maxHeight?: number
+    minMenuWidth?: number
+    maxMenuWidth?: number
+    maxMenuHeight?: number
 
     // alignment
     alignment?: MultiSelectMenuAlignment
@@ -116,7 +116,7 @@ export type MultiSelectProps = {
     showActionButtons?: boolean
     primaryAction?: {
         text: string
-        onClick: () => void
+        onClick: (selectedValues: string[]) => void
         disabled?: boolean
         loading?: boolean
     }
@@ -128,6 +128,7 @@ export type MultiSelectProps = {
     }
     showItemDividers?: boolean
     showHeaderBorder?: boolean
+    fullWidth?: boolean
 }
 
 // Multi Select Menu Dropdpown
@@ -136,9 +137,9 @@ export type MultiSelectMenuProps = {
     selected: string[]
     onSelect: (value: string) => void
     trigger: React.ReactNode
-    minWidth?: number
-    maxWidth?: number
-    maxHeight?: number
+    minMenuWidth?: number
+    maxMenuWidth?: number
+    maxMenuHeight?: number
     disabled?: boolean
     enableSearch?: boolean
     searchPlaceholder?: string
@@ -162,7 +163,7 @@ export type MultiSelectMenuProps = {
     showActionButtons?: boolean
     primaryAction?: {
         text: string
-        onClick: () => void
+        onClick: (selectedValues: string[]) => void
         disabled?: boolean
         loading?: boolean
     }

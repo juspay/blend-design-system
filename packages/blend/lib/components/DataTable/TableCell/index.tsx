@@ -157,8 +157,8 @@ const TableCell = forwardRef<
                                             )
                                         }
                                     }}
-                                    minWidth={150}
-                                    maxWidth={250}
+                                    minMenuWidth={150}
+                                    maxMenuWidth={250}
                                 />
                             </div>
                         )
@@ -177,8 +177,10 @@ const TableCell = forwardRef<
                             background: 'transparent',
                             outline: 'none',
                             fontSize:
-                                FOUNDATION_THEME.font.size.body.sm.fontSize,
+                                tableToken.dataTable.table.body.cell.fontSize,
                             fontFamily: 'inherit',
+                            fontWeight:
+                                tableToken.dataTable.table.body.cell.fontWeight,
                             color: 'inherit',
                             padding: '4px 0',
                         }}
@@ -227,8 +229,8 @@ const TableCell = forwardRef<
                                         onFieldChange(updatedDropdownData)
                                     }
                                 }}
-                                minWidth={150}
-                                maxWidth={250}
+                                minMenuWidth={150}
+                                maxMenuWidth={250}
                             />
                         </div>
                     )

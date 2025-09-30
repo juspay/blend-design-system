@@ -84,6 +84,7 @@ import {
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import KeyValuePairDemo from './KeyValuePairDemo'
+import AllComponentsDemo from './AllComponentsDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -134,7 +135,8 @@ const SidebarDemo = () => {
         | 'keyValuePair'
         | 'card'
         | 'dataRangePicker'
-    >('card')
+        | 'allComponents'
+    >('allComponents')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -221,6 +223,77 @@ const SidebarDemo = () => {
                 />
             ),
             value: 'worldpay',
+        },
+        // Additional tenants to demonstrate the three dot menu
+        {
+            label: 'Klarna',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'klarna',
+        },
+        {
+            label: 'Affirm',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'affirm',
+        },
+        {
+            label: 'Afterpay',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'afterpay',
+        },
+        {
+            label: 'Sezzle',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'sezzle',
+        },
+        {
+            label: 'Zip',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'zip',
+        },
+        {
+            label: 'Paymi',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'paymi',
+        },
+        {
+            label: 'Mollie',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'mollie',
         },
     ]
 
@@ -309,8 +382,60 @@ const SidebarDemo = () => {
                 return <KeyValuePairDemo />
             case 'card':
                 return <CardDemo />
+            case 'allComponents':
+                return <AllComponentsDemo />
             default:
-                return <div>No component selected</div>
+                return (
+                    <div className="p-8">
+                        <h2 className="text-2xl font-bold mb-6">
+                            Sidebar Auto-Hide Topbar Demo
+                        </h2>
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Scroll Test
+                                </h3>
+                                <p className="text-gray-600 mb-4">
+                                    Scroll down to see the topbar hide
+                                    automatically. Scroll back up to see it
+                                    reappear. The feature is controlled by the
+                                    `enableTopbarAutoHide` prop.
+                                </p>
+                                <TextInput
+                                    placeholder="Type here - shows text cursor"
+                                    value=""
+                                    onChange={() => {}}
+                                    cursor="text"
+                                />
+                            </div>
+                            {/* Add lots of content to make it scrollable */}
+                            {Array.from({ length: 50 }, (_, i) => (
+                                <div
+                                    key={i}
+                                    className="p-4 border border-gray-200 rounded-lg"
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Content Block {i + 1}
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        This is content block {i + 1}. Keep
+                                        scrolling to test the topbar auto-hide
+                                        functionality. The topbar should
+                                        disappear when scrolling down and
+                                        reappear when scrolling up.
+                                    </p>
+                                    <div className="mt-2">
+                                        <TextInput
+                                            placeholder={`Input field ${i + 1}`}
+                                            value=""
+                                            onChange={() => {}}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )
         }
     }
 
@@ -675,6 +800,13 @@ const SidebarDemo = () => {
                     ),
                     onClick: () => setActiveComponent('colorPalette'),
                 },
+                {
+                    label: '🎨 All Components Demo',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('allComponents'),
+                },
             ],
         },
     ]
@@ -699,6 +831,7 @@ const SidebarDemo = () => {
         <div className="w-screen h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
+                    enableTopbarAutoHide={false}
                     leftPanel={{
                         items: tenants,
                         selected: activeTenant,
@@ -756,6 +889,7 @@ const SidebarDemo = () => {
                                     placeholder="Search"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
+                                    cursor="pointer"
                                     leftSlot={
                                         <Search
                                             style={{
@@ -785,7 +919,7 @@ const SidebarDemo = () => {
                                 <SingleSelect
                                     label="Theme"
                                     placeholder="Select Theme"
-                                    minWidth={200}
+                                    minMenuWidth={200}
                                     alignment={SelectMenuAlignment.END}
                                     selected={theme}
                                     onSelect={(value) =>

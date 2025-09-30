@@ -1,16 +1,23 @@
 import React, { forwardRef, useState, useEffect, useCallback } from 'react'
 import { Calendar, ChevronDown, ChevronUp } from 'lucide-react'
-import { DateRangePickerProps, DateRangePreset, DateRange } from './types'
+import {
+    DateRangePickerProps,
+    DateRangePreset,
+    DateRange,
+    DateRangePickerSize,
+} from './types'
 import {
     formatDate,
     getPresetDateRange,
-    DateValidationResult,
     formatDateDisplay,
     handleDateInputChange,
     handleTimeChange,
     handleCalendarDateSelect,
     handlePresetSelection,
     formatTriggerDisplay,
+    validateDateTimeRange,
+    DateValidationResult,
+    detectPresetFromRange,
 } from './utils'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
@@ -23,9 +30,10 @@ import { Popover } from '../Popover'
 import { TextInput, TextInputSize } from '../Inputs/TextInput'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
-import { ButtonType, ButtonSize, Button } from '../../main'
+import { ButtonType, ButtonSize, Button, Tooltip } from '../../main'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+
 type DateInputsSectionProps = {
     startDate: string
     endDate: string
@@ -176,6 +184,8 @@ type CalendarSectionProps = {
     allowSingleDateSelection: boolean
     disableFutureDates: boolean
     disablePastDates: boolean
+    hideFutureDates: boolean
+    hidePastDates: boolean
     onDateSelect: (range: DateRange) => void
     showDateTimePicker: boolean
 }
@@ -186,6 +196,8 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
     allowSingleDateSelection,
     disableFutureDates,
     disablePastDates,
+    hideFutureDates,
+    hidePastDates,
     onDateSelect,
     showDateTimePicker,
 }) => (
@@ -197,6 +209,8 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
             allowSingleDateSelection={allowSingleDateSelection}
             disableFutureDates={disableFutureDates}
             disablePastDates={disablePastDates}
+            hideFutureDates={hideFutureDates}
+            hidePastDates={hidePastDates}
             showDateTimePicker={showDateTimePicker}
         />
     </Block>
@@ -206,12 +220,16 @@ type FooterControlsProps = {
     onCancel: () => void
     onApply: () => void
     calendarToken: CalendarTokenType
+    isApplyDisabled: boolean
+    applyDisabledMessage?: string
 }
 
 const FooterControls: React.FC<FooterControlsProps> = ({
     onCancel,
     onApply,
     calendarToken,
+    isApplyDisabled,
+    applyDisabledMessage,
 }) => (
     <Block
         display="flex"
@@ -227,12 +245,18 @@ const FooterControls: React.FC<FooterControlsProps> = ({
                 onClick={onCancel}
                 text="Cancel"
             />
-            <Button
-                buttonType={ButtonType.PRIMARY}
-                size={ButtonSize.SMALL}
-                onClick={onApply}
-                text="Apply"
-            />
+            <Tooltip
+                content={isApplyDisabled ? applyDisabledMessage : undefined}
+                open={isApplyDisabled ? undefined : false}
+            >
+                <Button
+                    buttonType={ButtonType.PRIMARY}
+                    size={ButtonSize.SMALL}
+                    onClick={onApply}
+                    text="Apply"
+                    disabled={isApplyDisabled}
+                />
+            </Tooltip>
         </Block>
     </Block>
 )
@@ -249,11 +273,15 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             allowSingleDateSelection = false,
             disableFutureDates = false,
             disablePastDates = false,
+            hideFutureDates = false,
+            hidePastDates = false,
             triggerElement = null,
             useDrawerOnMobile = true,
             skipQuickFiltersOnMobile = false,
+            size = DateRangePickerSize.MEDIUM,
             formatConfig,
             triggerConfig,
+            maxMenuHeight = 200,
         },
         ref
     ) => {
@@ -294,6 +322,48 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
         const today = new Date()
 
+        // Calculate if apply button should be disabled and get validation message
+        const applyButtonValidation = React.useMemo(() => {
+            // Check if date inputs are invalid
+            if (!startDateValidation.isValid) {
+                return {
+                    isDisabled: true,
+                    message:
+                        startDateValidation.message || 'Invalid start date',
+                }
+            }
+
+            if (!endDateValidation.isValid) {
+                return {
+                    isDisabled: true,
+                    message: endDateValidation.message || 'Invalid end date',
+                }
+            }
+
+            // Check if we have valid dates
+            if (!selectedRange.startDate || !selectedRange.endDate) {
+                return {
+                    isDisabled: true,
+                    message: 'Please select both start and end dates',
+                }
+            }
+
+            // Validate the date/time range
+            const validation = validateDateTimeRange(selectedRange)
+
+            return {
+                isDisabled: !validation.isValid,
+                message: validation.message || 'Invalid date/time range',
+            }
+        }, [
+            selectedRange,
+            startDateValidation,
+            endDateValidation,
+            allowSingleDateSelection,
+        ])
+
+        const isApplyDisabled = applyButtonValidation.isDisabled
+
         useEffect(() => {
             if (value) {
                 setSelectedRange(value)
@@ -301,24 +371,24 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 setEndDate(formatDate(value.endDate, dateFormat))
                 setStartTime(formatDate(value.startDate, 'HH:mm'))
                 setEndTime(formatDate(value.endDate, 'HH:mm'))
+
+                const detectedPreset = detectPresetFromRange(value)
+                setActivePreset(detectedPreset)
             }
         }, [value, dateFormat])
 
         const handleDateSelect = useCallback(
             (range: DateRange) => {
-                const result = handleCalendarDateSelect(
-                    range,
-                    startTime,
-                    endTime,
-                    dateFormat
-                )
-                setSelectedRange(result.updatedRange)
-                setStartDate(result.formattedStartDate)
-                setEndDate(result.formattedEndDate)
-                setActivePreset(DateRangePreset.CUSTOM)
-                console.log('Date selected from calendar:', result.updatedRange)
+                setSelectedRange(range)
+                const detectedPreset = detectPresetFromRange(range)
+                setActivePreset(detectedPreset)
+
+                setStartDate(formatDate(range.startDate, dateFormat))
+                setEndDate(formatDate(range.endDate, dateFormat))
+
+                console.log('Date selected from calendar:', range)
             },
-            [startTime, endTime, dateFormat]
+            [dateFormat]
         )
 
         const handlePresetSelect = useCallback(
@@ -331,6 +401,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 setStartTime(result.formattedStartTime)
                 setEndTime(result.formattedEndTime)
 
+                // For presets, immediately update the committed value (different from calendar selection)
                 if (preset !== DateRangePreset.CUSTOM) {
                     onChange?.(result.updatedRange)
                 }
@@ -345,17 +416,30 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     dateFormat,
                     selectedRange,
                     startTime,
-                    true
+                    true,
+                    disableFutureDates || hideFutureDates,
+                    disablePastDates || hidePastDates
                 )
                 setStartDate(result.formattedValue)
                 setStartDateValidation(result.validation)
 
                 if (result.updatedRange) {
                     setSelectedRange(result.updatedRange)
-                    setActivePreset(DateRangePreset.CUSTOM)
+                    const detectedPreset = detectPresetFromRange(
+                        result.updatedRange
+                    )
+                    setActivePreset(detectedPreset)
                 }
             },
-            [selectedRange, startTime, dateFormat]
+            [
+                selectedRange,
+                startTime,
+                dateFormat,
+                disableFutureDates,
+                disablePastDates,
+                hideFutureDates,
+                hidePastDates,
+            ]
         )
 
         const handleEndDateChange = useCallback(
@@ -365,17 +449,30 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     dateFormat,
                     selectedRange,
                     endTime,
-                    false
+                    false,
+                    disableFutureDates || hideFutureDates,
+                    disablePastDates || hidePastDates
                 )
                 setEndDate(result.formattedValue)
                 setEndDateValidation(result.validation)
 
                 if (result.updatedRange) {
                     setSelectedRange(result.updatedRange)
-                    setActivePreset(DateRangePreset.CUSTOM)
+                    const detectedPreset = detectPresetFromRange(
+                        result.updatedRange
+                    )
+                    setActivePreset(detectedPreset)
                 }
             },
-            [selectedRange, endTime, dateFormat]
+            [
+                selectedRange,
+                endTime,
+                dateFormat,
+                disableFutureDates,
+                disablePastDates,
+                hideFutureDates,
+                hidePastDates,
+            ]
         )
 
         const handleStartTimeChange = useCallback(
@@ -383,7 +480,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 setStartTime(time)
                 const updatedRange = handleTimeChange(time, selectedRange, true)
                 setSelectedRange(updatedRange)
-                setActivePreset(DateRangePreset.CUSTOM)
+                const detectedPreset = detectPresetFromRange(updatedRange)
+                setActivePreset(detectedPreset)
             },
             [selectedRange]
         )
@@ -397,30 +495,52 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     false
                 )
                 setSelectedRange(updatedRange)
-                setActivePreset(DateRangePreset.CUSTOM)
+                // Detect preset from time change
+                const detectedPreset = detectPresetFromRange(updatedRange)
+                setActivePreset(detectedPreset)
             },
             [selectedRange]
         )
 
         const handleApply = useCallback(() => {
-            onChange?.(selectedRange)
+            // Apply time from time selectors to the selected range
+            const result = handleCalendarDateSelect(
+                selectedRange,
+                startTime,
+                endTime,
+                dateFormat
+            )
+
+            // Update the input fields to match the applied range
+            setStartDate(result.formattedStartDate)
+            setEndDate(result.formattedEndDate)
+
+            // Call onChange with the final range
+            onChange?.(result.updatedRange)
             setIsOpen(false)
             setDrawerOpen(false)
             setPopoverKey((prev) => prev + 1)
-        }, [selectedRange, onChange])
+        }, [selectedRange, startTime, endTime, dateFormat, onChange])
 
         const handleCancel = useCallback(() => {
-            const defaultRange = getPresetDateRange(DateRangePreset.TODAY)
-            setSelectedRange(defaultRange)
-            setActivePreset(DateRangePreset.TODAY)
-            setStartDate(formatDate(defaultRange.startDate, dateFormat))
-            setEndDate(formatDate(defaultRange.endDate, dateFormat))
-            setStartTime(formatDate(defaultRange.startDate, 'HH:mm'))
-            setEndTime(formatDate(defaultRange.endDate, 'HH:mm'))
+            const resetRange =
+                value || getPresetDateRange(DateRangePreset.TODAY)
+            setSelectedRange(resetRange)
+            setActivePreset(
+                value ? DateRangePreset.CUSTOM : DateRangePreset.TODAY
+            )
+            setStartDate(formatDate(resetRange.startDate, dateFormat))
+            setEndDate(formatDate(resetRange.endDate, dateFormat))
+            setStartTime(formatDate(resetRange.startDate, 'HH:mm'))
+            setEndTime(formatDate(resetRange.endDate, 'HH:mm'))
 
             setStartDateValidation({ isValid: true, error: 'none' })
             setEndDateValidation({ isValid: true, error: 'none' })
-        }, [dateFormat])
+
+            setIsOpen(false)
+            setDrawerOpen(false)
+            setPopoverKey((prev) => prev + 1)
+        }, [dateFormat, value])
 
         useEffect(() => {
             if (isDisabled) {
@@ -453,17 +573,21 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         )
 
         const renderTrigger = () => {
+            // Use the committed value (value prop) for trigger display, not the selectedRange
+            const displayRange =
+                value || getPresetDateRange(DateRangePreset.TODAY)
+
             if (triggerConfig?.renderTrigger) {
                 const formattedValue = formatConfig
                     ? formatTriggerDisplay(
-                          selectedRange,
+                          displayRange,
                           formatConfig,
                           triggerConfig.placeholder
                       )
-                    : formatDateDisplay(selectedRange, allowSingleDateSelection)
+                    : formatDateDisplay(displayRange, allowSingleDateSelection)
 
                 return triggerConfig.renderTrigger({
-                    selectedRange,
+                    selectedRange: displayRange,
                     isOpen,
                     isDisabled,
                     formattedValue,
@@ -522,7 +646,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     <Button
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.MEDIUM}
-                        text={formatMobileDateRange(selectedRange)}
+                        text={formatMobileDateRange(displayRange)}
                         disabled={isDisabled}
                         onClick={() => setDrawerOpen(true)}
                     />
@@ -532,16 +656,20 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             const {
                 borderRadiusWithPresets,
                 borderRadiusWithoutPresets,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                padding: _,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                fontSize: __,
                 ...triggerProps
             } = calendarToken.trigger
 
             const displayText = formatConfig
                 ? formatTriggerDisplay(
-                      selectedRange,
+                      displayRange,
                       formatConfig,
                       triggerConfig?.placeholder || 'Select date range'
                   )
-                : formatDateDisplay(selectedRange, allowSingleDateSelection)
+                : formatDateDisplay(displayRange, allowSingleDateSelection)
 
             const iconElement =
                 triggerConfig?.showIcon === false
@@ -551,6 +679,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             return (
                 <PrimitiveButton
                     {...triggerProps}
+                    padding={calendarToken.trigger.padding[size]}
                     borderRadius={
                         showPresets
                             ? borderRadiusWithPresets
@@ -569,7 +698,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         style={{
                             color: FOUNDATION_THEME.colors.gray[600],
                             fontWeight: FOUNDATION_THEME.font.weight[500],
-                            fontSize: `${FOUNDATION_THEME.font.size.body.md.fontSize}px`,
+                            fontSize: calendarToken.trigger.fontSize[size],
                         }}
                     >
                         <Block
@@ -637,6 +766,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         showCustomDropdownOnly={
                             !showPresets || skipQuickFiltersOnMobile
                         }
+                        isApplyDisabled={isApplyDisabled}
+                        applyDisabledMessage={applyButtonValidation.message}
+                        disableFutureDates={disableFutureDates}
+                        disablePastDates={disablePastDates}
                     />
                 </Block>
             )
@@ -664,6 +797,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         disableFutureDates={disableFutureDates}
                         disablePastDates={disablePastDates}
                         isDisabled={isDisabled}
+                        size={size}
+                        maxMenuHeight={maxMenuHeight}
                     />
                 )}
 
@@ -677,7 +812,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     side="bottom"
                     align="start"
                     sideOffset={4}
-                    shadow="xs"
+                    shadow="sm"
                 >
                     <Block
                         style={{
@@ -715,6 +850,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             allowSingleDateSelection={allowSingleDateSelection}
                             disableFutureDates={disableFutureDates}
                             disablePastDates={disablePastDates}
+                            hideFutureDates={hideFutureDates}
+                            hidePastDates={hidePastDates}
                             onDateSelect={handleDateSelectCallback}
                             showDateTimePicker={showDateTimePicker}
                         />
@@ -723,6 +860,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             onCancel={handleCancel}
                             onApply={handleApply}
                             calendarToken={calendarToken}
+                            isApplyDisabled={isApplyDisabled}
+                            applyDisabledMessage={applyButtonValidation.message}
                         />
                     </Block>
                 </Popover>

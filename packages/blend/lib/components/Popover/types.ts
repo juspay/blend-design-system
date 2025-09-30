@@ -36,4 +36,5 @@ export type PopoverProps = {
     onClose?: () => void
     shadow?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
     useDrawerOnMobile?: boolean
+    avoidCollisions?: boolean
 }

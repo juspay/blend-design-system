@@ -20,7 +20,7 @@ const getPortalContainer = (): HTMLElement => {
         portalContainer = document.createElement('div')
         portalContainer.id = PORTAL_ID
         portalContainer.style.position = 'relative'
-        portalContainer.style.zIndex = '1000'
+        portalContainer.style.zIndex = '99'
         document.body.appendChild(portalContainer)
     }
 

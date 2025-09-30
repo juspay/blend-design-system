@@ -377,7 +377,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                             backgroundColor={
                                                 FOUNDATION_THEME.colors.gray[0]
                                             }
-                                            zIndex={1000}
+                                            zIndex={50}
                                         >
                                             <TextInput
                                                 size={TextInputSize.MEDIUM}
@@ -525,9 +525,9 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                     }
                                                     size={ButtonSize.MEDIUM}
                                                     text={secondaryAction.text}
-                                                    onClick={
-                                                        secondaryAction.onClick
-                                                    }
+                                                    onClick={() => {
+                                                        secondaryAction.onClick()
+                                                    }}
                                                     disabled={
                                                         secondaryAction.disabled ||
                                                         selectedValues.length ===
@@ -547,7 +547,9 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                     size={ButtonSize.MEDIUM}
                                                     text={primaryAction.text}
                                                     onClick={() => {
-                                                        primaryAction.onClick()
+                                                        primaryAction.onClick(
+                                                            selectedValues
+                                                        )
                                                         setDrawerOpen(false)
                                                     }}
                                                     disabled={

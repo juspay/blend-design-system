@@ -30,6 +30,7 @@ const TextInput = ({
     required = false,
     onBlur,
     onFocus,
+    cursor = 'text',
     ...rest
 }: TextInputProps) => {
     const textInputTokens =
@@ -133,6 +134,7 @@ const TextInput = ({
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
                     width={'100%'}
                     disabled={disabled}
+                    cursor={disabled ? 'not-allowed' : cursor}
                     //styling props
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}

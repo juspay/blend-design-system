@@ -21,9 +21,9 @@ type SingleSelectMenuProps = {
     selected: string
     onSelect: (value: string) => void
     trigger: React.ReactNode
-    minWidth?: number
-    maxWidth?: number
-    maxHeight?: number
+    minMenuWidth?: number
+    maxMenuWidth?: number
+    maxMenuHeight?: number
     enableSearch?: boolean
     searchPlaceholder?: string
     disabled?: boolean
@@ -45,8 +45,8 @@ const Content = styled(RadixMenu.Content)(() => ({
     borderRadius: 8,
     // width: "var(--radix-dropdown-menu-trigger-width)",
     // maxWidth: "var(--radix-dropdown-menu-trigger-width)",
-    boxShadow: FOUNDATION_THEME.shadows.lg,
-    zIndex: 9999,
+    boxShadow: FOUNDATION_THEME.shadows.sm,
+    zIndex: 49,
     overflowY: 'auto',
     overflowX: 'hidden',
     scrollbarWidth: 'none',
@@ -80,22 +80,29 @@ const SubTrigger = styled(RadixMenu.SubTrigger)(() => ({
     },
 }))
 
-const SubContent = styled(RadixMenu.SubContent)(() => ({
+const SubContent = styled(RadixMenu.SubContent)<{
+    singleSelectTokens?: SingleSelectTokensType
+}>(({ singleSelectTokens }) => ({
     backgroundColor: 'white',
     borderRadius: 8,
     padding: '8px 0px',
     boxShadow: FOUNDATION_THEME.shadows.lg,
-    zIndex: 9999,
+    border:
+        singleSelectTokens?.dropdown.border ||
+        `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+    zIndex: 49,
 }))
 
 const SubMenu = ({
     item,
     onSelect,
     selected,
+    singleSelectTokens,
 }: {
     item: SelectMenuItemType
     onSelect: (value: string) => void
     selected: string
+    singleSelectTokens: SingleSelectTokensType
 }) => {
     return (
         <StyledSubMenu>
@@ -151,13 +158,18 @@ const SubMenu = ({
                     </Block>
                 </Block>
             </SubTrigger>
-            <SubContent avoidCollisions sideOffset={8}>
+            <SubContent
+                avoidCollisions
+                sideOffset={8}
+                singleSelectTokens={singleSelectTokens}
+            >
                 {item.subMenu?.map((subItem, subIdx) => (
                     <Item
                         key={subIdx}
                         item={subItem}
                         onSelect={onSelect}
                         selected={selected}
+                        singleSelectTokens={singleSelectTokens}
                     />
                 ))}
             </SubContent>
@@ -169,13 +181,22 @@ const Item = ({
     item,
     onSelect,
     selected,
+    singleSelectTokens,
 }: {
     item: SelectMenuItemType
     onSelect: (value: string) => void
     selected: string
+    singleSelectTokens?: SingleSelectTokensType
 }) => {
     if (item.subMenu) {
-        return <SubMenu item={item} onSelect={onSelect} selected={selected} />
+        return (
+            <SubMenu
+                item={item}
+                onSelect={onSelect}
+                selected={selected}
+                singleSelectTokens={singleSelectTokens!}
+            />
+        )
     }
 
     return (
@@ -245,19 +266,16 @@ const SingleSelectMenu = ({
     selected,
     onSelect,
     trigger,
-    minWidth,
-    maxWidth,
-    maxHeight,
+    minMenuWidth,
+    maxMenuWidth,
+    maxMenuHeight,
     enableSearch,
     searchPlaceholder = 'Search options...',
     disabled,
-    // alignment
     alignment = SelectMenuAlignment.CENTER,
     side = SelectMenuSide.BOTTOM,
     sideOffset = 8,
     alignOffset = 0,
-
-    // open
     open,
     onOpenChange,
 }: SingleSelectMenuProps) => {
@@ -265,10 +283,14 @@ const SingleSelectMenu = ({
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
 
     const [searchText, setSearchText] = useState('')
+    const searchInputRef = React.useRef<HTMLInputElement>(null)
     const filteredItems = filterMenuGroups(items, searchText)
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled) return
+        if (!newOpen && enableSearch) {
+            setSearchText('')
+        }
         onOpenChange(newOpen)
     }
 
@@ -287,13 +309,35 @@ const SingleSelectMenu = ({
                 alignOffset={alignOffset}
                 side={side}
                 style={{
-                    minWidth: minWidth || 250,
-                    width:
-                        minWidth || maxWidth
-                            ? 'auto'
-                            : 'max(var(--radix-dropdown-menu-trigger-width), 250px)',
-                    maxWidth: maxWidth || 400,
-                    maxHeight,
+                    maxHeight: maxMenuHeight,
+                    minWidth: minMenuWidth,
+                    width: 'max(var(--radix-dropdown-menu-trigger-width))',
+                    maxWidth: maxMenuWidth,
+                    border: singleSelectTokens.dropdown.border,
+                }}
+                onFocusCapture={(e) => {
+                    if (enableSearch && searchInputRef.current) {
+                        if (
+                            e.target !== searchInputRef.current &&
+                            !searchInputRef.current.contains(e.target as Node)
+                        ) {
+                            e.preventDefault()
+                            searchInputRef.current.focus()
+                        }
+                    }
+                }}
+                onKeyDown={(e) => {
+                    if (enableSearch && searchInputRef.current) {
+                        if (
+                            e.target !== searchInputRef.current &&
+                            !searchInputRef.current.contains(
+                                e.target as Node
+                            ) &&
+                            e.key.length === 1
+                        ) {
+                            searchInputRef.current.focus()
+                        }
+                    }
                 }}
             >
                 {enableSearch && (
@@ -302,12 +346,12 @@ const SingleSelectMenu = ({
                         top={0}
                         left={0}
                         right={0}
-                        zIndex={1000}
+                        zIndex={50}
                         backgroundColor={FOUNDATION_THEME.colors.gray[0]}
-                        padding={FOUNDATION_THEME.unit[6]}
                     >
                         <Block marginBottom={FOUNDATION_THEME.unit[6]}>
                             <SearchInput
+                                ref={searchInputRef}
                                 placeholder={searchPlaceholder}
                                 value={searchText}
                                 onChange={(
@@ -317,6 +361,7 @@ const SingleSelectMenu = ({
                                     e.stopPropagation()
                                     setSearchText(e.target.value)
                                 }}
+                                autoFocus
                             />
                         </Block>
                     </Block>
@@ -367,6 +412,7 @@ const SingleSelectMenu = ({
                                         selected={selected}
                                         item={item}
                                         onSelect={onSelect}
+                                        singleSelectTokens={singleSelectTokens}
                                     />
                                 ))}
                                 {groupId !== items.length - 1 &&

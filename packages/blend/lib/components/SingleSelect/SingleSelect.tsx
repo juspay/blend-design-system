@@ -68,12 +68,13 @@ const SingleSelect = ({
     side,
     sideOffset,
     alignOffset,
-    minWidth,
-    maxWidth,
-    maxHeight,
+    minMenuWidth,
+    maxMenuWidth,
+    maxMenuHeight,
     onBlur,
     onFocus,
     inline = false,
+    fullWidth = false,
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -157,16 +158,8 @@ const SingleSelect = ({
                 })}
             >
                 <Block
-                    width={
-                        variant === SelectMenuVariant.CONTAINER
-                            ? '100%'
-                            : 'auto'
-                    }
-                    maxWidth={
-                        variant === SelectMenuVariant.NO_CONTAINER
-                            ? '100%'
-                            : 'auto'
-                    }
+                    width={fullWidth ? '100%' : 'fit-content'}
+                    maxWidth={fullWidth ? '100%' : 'fit-content'}
                     display="flex"
                     alignItems="center"
                 >
@@ -187,9 +180,9 @@ const SingleSelect = ({
                             setOpen(false)
                         }}
                         disabled={disabled}
-                        minWidth={minWidth}
-                        maxWidth={maxWidth}
-                        maxHeight={maxHeight}
+                        minMenuWidth={minMenuWidth}
+                        maxMenuWidth={maxMenuWidth}
+                        maxMenuHeight={maxMenuHeight}
                         alignment={alignment}
                         side={side}
                         sideOffset={sideOffset}
@@ -202,7 +195,7 @@ const SingleSelect = ({
                                     type="button"
                                     name={name}
                                     position="relative"
-                                    width={'100%'}
+                                    width={fullWidth ? '100%' : 'fit-content'}
                                     display="flex"
                                     alignItems="center"
                                     overflow="hidden"

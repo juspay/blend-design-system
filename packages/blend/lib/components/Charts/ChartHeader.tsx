@@ -40,8 +40,16 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                 borderBottom: headerTokens.borderBottom,
             })}
             borderRadius={FOUNDATION_THEME.border.radius[8]}
-            borderBottomLeftRadius={FOUNDATION_THEME.border.radius[0]}
-            borderBottomRightRadius={FOUNDATION_THEME.border.radius[0]}
+            borderBottomLeftRadius={
+                isExpanded
+                    ? FOUNDATION_THEME.border.radius[0]
+                    : FOUNDATION_THEME.border.radius[8]
+            }
+            borderBottomRightRadius={
+                isExpanded
+                    ? FOUNDATION_THEME.border.radius[0]
+                    : FOUNDATION_THEME.border.radius[8]
+            }
         >
             <Block>{chartHeaderSlot}</Block>
             <Block
