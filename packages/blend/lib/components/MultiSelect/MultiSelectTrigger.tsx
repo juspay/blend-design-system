@@ -61,8 +61,12 @@ const MultiSelectTrigger = ({
     const appliedBorderRadius = showCancelButton
         ? `${borderRadius} 0px 0px ${borderRadius}`
         : borderRadius
-    const paddingX = toPixels(multiSelectTokens.trigger.paddingX[size][variant])
-    const paddingY = toPixels(multiSelectTokens.trigger.paddingY[size][variant])
+    const paddingX = toPixels(
+        multiSelectTokens.trigger.padding[size][variant].x
+    )
+    const paddingY = toPixels(
+        multiSelectTokens.trigger.padding[size][variant].y
+    )
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
     return (
@@ -112,8 +116,7 @@ const MultiSelectTrigger = ({
                         maxHeight:
                             multiSelectTokens.trigger.height[size][variant],
 
-                        paddingX:
-                            multiSelectTokens.trigger.paddingX[size][variant],
+                        paddingX: paddingX,
 
                         paddingY: paddingY,
                         backgroundColor:

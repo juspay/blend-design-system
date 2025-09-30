@@ -15,13 +15,14 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 export const contentBaseStyle: CSSObject = {
     backgroundColor: 'white',
     boxShadow: FOUNDATION_THEME.shadows.sm,
-    zIndex: 49,
+    zIndex: 99,
     overflowY: 'auto',
     overflowX: 'hidden',
     scrollbarWidth: 'none',
     scrollbarColor: 'transparent transparent',
     paddingBottom: 6,
     borderRadius: 8,
+    border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
 }
 
 const Content = styled(RadixMenu.Content)(() => ({
@@ -80,7 +81,8 @@ const Menu = ({
                         : 'var(--radix-popper-available-height)',
                     minWidth: minWidth ? `${minWidth}px` : '200px',
                     maxWidth: maxWidth ? `${maxWidth}px` : '280px',
-                    paddingTop: enableSearch ? 0 : menuTokens.paddingTop,
+                    paddingTop: enableSearch ? 0 : menuTokens.padding.y,
+
                     border: menuTokens.border,
                 }}
                 onFocusCapture={(e) => {
@@ -115,7 +117,7 @@ const Menu = ({
                         top={0}
                         left={0}
                         right={0}
-                        zIndex={50}
+                        zIndex={100}
                         backgroundColor="white"
                         padding="0px"
                         // paddingBottom="0px"
@@ -141,13 +143,30 @@ const Menu = ({
                             {group.label && (
                                 <RadixMenu.Label asChild>
                                     <PrimitiveText
-                                        fontSize={12}
-                                        padding="6px 8px"
+                                        fontSize={
+                                            menuTokens.item.optionsLabel
+                                                .fontSize
+                                        }
+                                        paddingY={
+                                            menuTokens.item.optionsLabel.padding
+                                                .y
+                                        }
+                                        paddingX={
+                                            menuTokens.item.optionsLabel.padding
+                                                .x
+                                        }
                                         userSelect="none"
-                                        margin="0px 6px"
+                                        marginY={
+                                            menuTokens.item.optionsLabel.margin
+                                                .y
+                                        }
+                                        marginX={
+                                            menuTokens.item.optionsLabel.margin
+                                                .x
+                                        }
                                         textTransform="uppercase"
                                         color={
-                                            FOUNDATION_THEME.colors.gray[400]
+                                            menuTokens.item.optionsLabel.color
                                         }
                                     >
                                         {group.label}
@@ -166,11 +185,20 @@ const Menu = ({
                                 group.showSeparator && (
                                     <RadixMenu.Separator asChild>
                                         <Block
-                                            height={menuTokens.seperator.height}
-                                            backgroundColor={
-                                                menuTokens.seperator.color
+                                            height={
+                                                menuTokens.item.seperator.height
                                             }
-                                            margin={menuTokens.seperator.margin}
+                                            backgroundColor={
+                                                menuTokens.item.seperator.color
+                                            }
+                                            marginY={
+                                                menuTokens.item.seperator.margin
+                                                    .y
+                                            }
+                                            marginX={
+                                                menuTokens.item.seperator.margin
+                                                    .x
+                                            }
                                         ></Block>
                                     </RadixMenu.Separator>
                                 )}

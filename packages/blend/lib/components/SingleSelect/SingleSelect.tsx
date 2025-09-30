@@ -94,10 +94,10 @@ const SingleSelect = ({
 
     const borderRadius = singleSelectTokens.trigger.borderRadius[size][variant]
     const paddingX = toPixels(
-        singleSelectTokens.trigger.paddingX[size][variant]
+        singleSelectTokens.trigger.padding[size][variant].x
     )
     const paddingY = toPixels(
-        singleSelectTokens.trigger.paddingY[size][variant]
+        singleSelectTokens.trigger.padding[size][variant].y
     )
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
@@ -136,7 +136,7 @@ const SingleSelect = ({
             width="100%"
             display="flex"
             flexDirection="column"
-            gap={8}
+            gap={singleSelectTokens.gap}
             maxWidth={'100%'}
         >
             {variant === SelectMenuVariant.CONTAINER &&
@@ -148,6 +148,7 @@ const SingleSelect = ({
                         helpIconHintText={helpIconText}
                         name={name}
                         required={required}
+                        tokens={singleSelectTokens}
                     />
                 )}
             <Block
@@ -232,6 +233,8 @@ const SingleSelect = ({
                                                       ? 'open'
                                                       : 'closed'
                                             ],
+                                        height: singleSelectTokens.trigger
+                                            .height[size][variant],
                                         maxHeight:
                                             singleSelectTokens.trigger.height[
                                                 size
@@ -396,6 +399,8 @@ const SingleSelect = ({
                                 </PrimitiveButton>
                             )
                         }
+                        size={size}
+                        variant={variant}
                     />
                 </Block>
             </Block>
@@ -404,6 +409,7 @@ const SingleSelect = ({
                     hintText={hintText}
                     error={error}
                     errorMessage={errorMessage}
+                    tokens={singleSelectTokens}
                 />
             )}
         </Block>

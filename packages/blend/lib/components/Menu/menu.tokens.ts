@@ -14,14 +14,22 @@ export type MenuItemStates =
 export type MenuTokensType = {
     boxShadow: CSSObject['boxShadow']
     backgroundColor: CSSObject['backgroundColor']
-    paddingTop: CSSObject['paddingTop']
-    paddingBottom: CSSObject['paddingBottom']
+    padding: {
+        x: CSSObject['padding']
+        y: CSSObject['padding']
+    }
+
     border: CSSObject['border']
-    outline: CSSObject['outline']
     borderRadius: CSSObject['borderRadius']
     item: {
-        padding: CSSObject['padding']
-        margin: CSSObject['margin']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        margin: {
+            x: CSSObject['margin']
+            y: CSSObject['margin']
+        }
         borderRadius: CSSObject['borderRadius']
         backgroundColor: {
             [MenuItemVariant.DEFAULT]: {
@@ -43,9 +51,21 @@ export type MenuTokensType = {
                 }
             }
         }
-        // cursor: CSSObject['cursor']
         gap: CSSObject['gap']
-        label: {
+        optionsLabel: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: CSSObject['color']
+            padding: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
+            margin: {
+                x: CSSObject['margin']
+                y: CSSObject['margin']
+            }
+        }
+        option: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: {
@@ -69,7 +89,7 @@ export type MenuTokensType = {
                 }
             }
         }
-        subLabel: {
+        description: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: {
@@ -93,11 +113,14 @@ export type MenuTokensType = {
                 }
             }
         }
-    }
-    seperator: {
-        color: CSSObject['color']
-        height: CSSObject['height']
-        margin: CSSObject['margin']
+        seperator: {
+            color: CSSObject['color']
+            height: CSSObject['height']
+            margin: {
+                x: CSSObject['margin']
+                y: CSSObject['margin']
+            }
+        }
     }
 }
 
@@ -112,16 +135,22 @@ export const getMenuTokens = (
         sm: {
             boxShadow: foundationToken.shadows.md,
             backgroundColor: foundationToken.colors.gray[0],
-            paddingTop: foundationToken.unit[6],
-            paddingBottom: foundationToken.unit[6],
+            padding: {
+                x: foundationToken.unit[6],
+                y: foundationToken.unit[6],
+            },
             border: `1px solid ${foundationToken.colors.gray[200]}`,
-            outline: 'none',
             borderRadius: foundationToken.unit[8],
             item: {
-                padding: `${foundationToken.unit[8]} ${foundationToken.unit[8]}`,
-                margin: `${foundationToken.unit[0]} ${foundationToken.unit[4]}`,
+                padding: {
+                    x: `${foundationToken.unit[8]}`,
+                    y: `${foundationToken.unit[8]}`,
+                },
+                margin: {
+                    x: foundationToken.unit[4],
+                    y: foundationToken.unit[0],
+                },
                 borderRadius: foundationToken.unit[4],
-                // cursor: 'pointer',
                 backgroundColor: {
                     default: {
                         enabled: {
@@ -182,7 +211,20 @@ export const getMenuTokens = (
                     },
                 },
                 gap: 4,
-                label: {
+                optionsLabel: {
+                    fontSize: 12,
+                    fontWeight: 400,
+                    color: foundationToken.colors.gray[400],
+                    padding: {
+                        x: foundationToken.unit[8],
+                        y: foundationToken.unit[6],
+                    },
+                    margin: {
+                        x: foundationToken.unit[6],
+                        y: foundationToken.unit[0],
+                    },
+                },
+                option: {
                     fontSize: 14,
                     fontWeight: 500,
                     color: {
@@ -251,7 +293,7 @@ export const getMenuTokens = (
                         },
                     },
                 },
-                subLabel: {
+                description: {
                     fontSize: 12,
                     fontWeight: 400,
                     color: {
@@ -320,26 +362,36 @@ export const getMenuTokens = (
                         },
                     },
                 },
-            },
-            seperator: {
-                color: foundationToken.colors.gray[200],
-                height: 1,
-                margin: `${foundationToken.unit[6]} 0`,
+                seperator: {
+                    color: foundationToken.colors.gray[200],
+                    height: 1,
+                    margin: {
+                        x: foundationToken.unit[0],
+                        y: foundationToken.unit[6],
+                    },
+                },
             },
         },
         lg: {
             boxShadow: foundationToken.shadows.md,
             backgroundColor: foundationToken.colors.gray[0],
-            paddingTop: foundationToken.unit[6],
-            paddingBottom: foundationToken.unit[6],
+            padding: {
+                x: foundationToken.unit[6],
+                y: foundationToken.unit[6],
+            },
             border: `1px solid ${foundationToken.colors.gray[200]}`,
-            outline: 'none',
             borderRadius: foundationToken.unit[8],
             item: {
-                padding: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
-                margin: `${foundationToken.unit[0]} ${foundationToken.unit[4]}`,
+                padding: {
+                    x: `${foundationToken.unit[8]}`,
+                    y: `${foundationToken.unit[6]}`,
+                },
+
+                margin: {
+                    x: foundationToken.unit[4],
+                    y: foundationToken.unit[0],
+                },
                 borderRadius: foundationToken.unit[4],
-                // cursor: 'pointer',
                 backgroundColor: {
                     default: {
                         enabled: {
@@ -400,7 +452,20 @@ export const getMenuTokens = (
                     },
                 },
                 gap: 4,
-                label: {
+                optionsLabel: {
+                    fontSize: 12,
+                    fontWeight: 400,
+                    color: foundationToken.colors.gray[400],
+                    padding: {
+                        x: foundationToken.unit[8],
+                        y: foundationToken.unit[6],
+                    },
+                    margin: {
+                        x: foundationToken.unit[6],
+                        y: foundationToken.unit[0],
+                    },
+                },
+                option: {
                     fontSize: 14,
                     fontWeight: 500,
                     color: {
@@ -469,7 +534,7 @@ export const getMenuTokens = (
                         },
                     },
                 },
-                subLabel: {
+                description: {
                     fontSize: 12,
                     fontWeight: 400,
                     color: {
@@ -538,11 +603,14 @@ export const getMenuTokens = (
                         },
                     },
                 },
-            },
-            seperator: {
-                color: foundationToken.colors.gray[200],
-                height: 1,
-                margin: `${foundationToken.unit[6]} 0`,
+                seperator: {
+                    color: foundationToken.colors.gray[200],
+                    height: 1,
+                    margin: {
+                        x: foundationToken.unit[0],
+                        y: foundationToken.unit[6],
+                    },
+                },
             },
         },
     }
