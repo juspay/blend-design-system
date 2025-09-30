@@ -168,7 +168,7 @@ external make: (
                     variant={SelectMenuVariant.CONTAINER}
                     required={true}
                     helpIconText="Choose a team member to assign this task"
-                    maxHeight={250}
+                    maxMenuHeight={250}
                 />
             </div>
         </ComponentPreview>

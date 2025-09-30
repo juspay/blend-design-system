@@ -869,7 +869,7 @@ const ChartDemo = () => {
             name: 'Jan',
             data: {
                 revenue: {
-                    primary: { label: 'Total Revenue', val: 4000 },
+                    primary: { label: 'Total Revenue', val: 40000 },
                     aux: [{ label: 'Growth', val: 12 }],
                 },
                 profit: {
@@ -2133,7 +2133,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 ? 'Device Type'
                                 : 'Period',
                         // show: false,
-                        // showLabel: false,
+                        showLabel: true,
                     }}
                     yAxis={{
                         label:
@@ -2141,7 +2141,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 ? 'Amount ($)'
                                 : 'Value',
                         // show: false,
-                        // showLabel: false,
+                        showLabel: true,
                     }}
                     chartHeaderSlot={
                         <SingleSelect
@@ -2360,6 +2360,16 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 </h4>
                             </div>
                         }
+                        xAxis={{
+                            label: 'Performance Metrics',
+                            // show: true,
+                            // showLabel: true,
+                        }}
+                        yAxis={{
+                            label: 'Score',
+                            // show: true,
+                            // showLabel: true,
+                        }}
                     />
 
                     {/* Bar Chart Example */}
@@ -2393,6 +2403,156 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 <Users size={16} className="text-green-600" />
                                 <h4 style={{ margin: 0, fontSize: '14px' }}>
                                     Pie Chart
+                                </h4>
+                            </div>
+                        }
+                    />
+
+                    {/* Scatter Chart Example */}
+
+                    <Charts
+                        data={[
+                            {
+                                name: 'Dataset 1',
+                                data: {
+                                    revenueSeries: {
+                                        primary: {
+                                            label: 'Revenue vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 10 },
+                                            { label: 'y', val: 20 },
+                                        ],
+                                    },
+                                    profitSeries: {
+                                        primary: {
+                                            label: 'Profit vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 12 },
+                                            { label: 'y', val: 15 },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                name: 'Dataset 2',
+                                data: {
+                                    revenueSeries: {
+                                        primary: {
+                                            label: 'Revenue vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 25 },
+                                            { label: 'y', val: 45 },
+                                        ],
+                                    },
+                                    profitSeries: {
+                                        primary: {
+                                            label: 'Profit vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 27 },
+                                            { label: 'y', val: 35 },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                name: 'Dataset 3',
+                                data: {
+                                    revenueSeries: {
+                                        primary: {
+                                            label: 'Revenue vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 40 },
+                                            { label: 'y', val: 75 },
+                                        ],
+                                    },
+                                    profitSeries: {
+                                        primary: {
+                                            label: 'Profit vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 42 },
+                                            { label: 'y', val: 60 },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                name: 'Dataset 4',
+                                data: {
+                                    revenueSeries: {
+                                        primary: {
+                                            label: 'Revenue vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 50 },
+                                            { label: 'y', val: 85 },
+                                        ],
+                                    },
+                                    profitSeries: {
+                                        primary: {
+                                            label: 'Profit vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 48 },
+                                            { label: 'y', val: 70 },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                name: 'Dataset 5',
+                                data: {
+                                    revenueSeries: {
+                                        primary: {
+                                            label: 'Revenue vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 65 },
+                                            { label: 'y', val: 110 },
+                                        ],
+                                    },
+                                    profitSeries: {
+                                        primary: {
+                                            label: 'Profit vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 62 },
+                                            { label: 'y', val: 90 },
+                                        ],
+                                    },
+                                },
+                            },
+                        ]}
+                        chartType={ChartType.SCATTER}
+                        colors={['#3b82f6', '#10b981']}
+                        xAxis={{
+                            label: 'Marketing Spend ($K)',
+                            type: AxisType.CURRENCY,
+                        }}
+                        yAxis={{
+                            label: 'Revenue ($K)',
+                            type: AxisType.CURRENCY,
+                        }}
+                        chartHeaderSlot={
+                            <div className="chart-header">
+                                <Activity size={16} className="text-blue-600" />
+                                <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                    Scatter Chart
                                 </h4>
                             </div>
                         }

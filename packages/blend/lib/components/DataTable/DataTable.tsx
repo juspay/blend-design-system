@@ -79,6 +79,9 @@ const DataTable = forwardRef(
             enableColumnManager = true,
             columnManagerMaxSelections,
             columnManagerAlwaysSelected,
+            columnManagerPrimaryAction,
+            columnManagerSecondaryAction,
+            columnManagerWidth,
             showToolbar = true,
             showSettings = false,
             enableInlineEdit = false,
@@ -822,6 +825,13 @@ const DataTable = forwardRef(
                                     columnManagerAlwaysSelected={columnManagerAlwaysSelected?.map(
                                         (field) => String(field)
                                     )}
+                                    columnManagerPrimaryAction={
+                                        columnManagerPrimaryAction
+                                    }
+                                    columnManagerSecondaryAction={
+                                        columnManagerSecondaryAction
+                                    }
+                                    columnManagerWidth={columnManagerWidth}
                                     enableRowExpansion={enableRowExpansion}
                                     enableRowSelection={enableRowSelection}
                                     rowActions={

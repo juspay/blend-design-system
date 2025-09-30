@@ -20,7 +20,7 @@ const Content = styled(RadixMenu.Content)(() => ({
     borderRadius: 8,
     padding: '8px 6px',
     boxShadow: FOUNDATION_THEME.shadows.lg,
-    zIndex: 9999,
+    zIndex: 49,
     minWidth: 200,
     width: 'var(--radix-dropdown-menu-trigger-width)',
     scrollbarWidth: 'none',
@@ -69,7 +69,7 @@ const SubContent = styled(RadixMenu.SubContent)(() => ({
     borderRadius: 6,
     padding: '8px 6px',
     boxShadow: FOUNDATION_THEME.shadows.lg,
-    zIndex: 9999,
+    zIndex: 49,
     minWidth: 200,
     maxWidth: 280,
 }))
@@ -468,7 +468,7 @@ const SelectMenu = ({
                         marginLeft="-6px"
                         position="sticky"
                         top={0}
-                        zIndex={1000}
+                        zIndex={50}
                         paddingBottom={10}
                     >
                         <SearchInput

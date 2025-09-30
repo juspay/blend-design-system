@@ -119,7 +119,7 @@ const MultiSelectSubMenu = ({
                     backgroundColor="white"
                     borderRadius={8}
                     padding="8px 0px"
-                    boxShadow={FOUNDATION_THEME.shadows.lg}
+                    boxShadow={FOUNDATION_THEME.shadows.sm}
                     border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
                 >
                     {item.subMenu?.map((subItem, subIdx) => (

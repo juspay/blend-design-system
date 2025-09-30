@@ -6,7 +6,7 @@ import Text from '../Text/Text'
 import type { TopbarProps } from './types'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { SingleSelect } from '../SingleSelect'
-import { SelectMenuVariant } from '../Select/types'
+import { SelectMenuSize, SelectMenuVariant } from '../Select/types'
 import { useComponentToken } from '../../context/useComponentToken'
 import type { ResponsiveTopbarTokens } from './topbar.tokens'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
@@ -221,6 +221,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                 <SingleSelect
                                     placeholder=""
                                     variant={SelectMenuVariant.NO_CONTAINER}
+                                    size={SelectMenuSize.MEDIUM}
                                     items={[
                                         {
                                             items: leftPanel.items.map(
@@ -361,10 +362,8 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                 <Block
                     ref={ref}
                     width="100%"
-                    height={topBarToken.height}
                     position={topBarToken.position}
                     top={topBarToken.top}
-                    zIndex={topBarToken.zIndex}
                     borderBottom={topBarToken.borderBottom}
                     display="flex"
                     alignItems="center"
@@ -426,10 +425,8 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             <Block
                 ref={ref}
                 width="100%"
-                height={topBarToken.height}
                 position={topBarToken.position}
                 top={topBarToken.top}
-                zIndex={topBarToken.zIndex}
                 borderBottom={topBarToken.borderBottom}
                 display="flex"
                 alignItems="center"

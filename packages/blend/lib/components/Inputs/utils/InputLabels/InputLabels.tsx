@@ -47,7 +47,6 @@ const InputLabels = <TTokens extends InputLabelTokens>({
     required,
     tokens,
 }: InputLabelsProps<TTokens>) => {
-    console.log({ tokens })
     return (
         label && (
             <Block display="flex" alignItems="center" gap={4} width={'100%'}>

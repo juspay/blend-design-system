@@ -14,14 +14,15 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const contentBaseStyle: CSSObject = {
     backgroundColor: 'white',
-    boxShadow: FOUNDATION_THEME.shadows.lg,
-    zIndex: 9999,
+    boxShadow: FOUNDATION_THEME.shadows.sm,
+    zIndex: 99,
     overflowY: 'auto',
     overflowX: 'hidden',
     scrollbarWidth: 'none',
     scrollbarColor: 'transparent transparent',
     paddingBottom: 6,
     borderRadius: 8,
+    border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
 }
 
 const Content = styled(RadixMenu.Content)(() => ({
@@ -85,9 +86,25 @@ const Menu = ({
                     border: menuTokens.border,
                 }}
                 onFocusCapture={(e) => {
-                    if (enableSearch && searchText && searchInputRef.current) {
-                        if (e.target !== searchInputRef.current) {
+                    if (enableSearch && searchInputRef.current) {
+                        if (
+                            e.target !== searchInputRef.current &&
+                            !searchInputRef.current.contains(e.target as Node)
+                        ) {
                             e.preventDefault()
+                            searchInputRef.current.focus()
+                        }
+                    }
+                }}
+                onKeyDown={(e) => {
+                    if (enableSearch && searchInputRef.current) {
+                        if (
+                            e.target !== searchInputRef.current &&
+                            !searchInputRef.current.contains(
+                                e.target as Node
+                            ) &&
+                            e.key.length === 1
+                        ) {
                             searchInputRef.current.focus()
                         }
                     }
@@ -100,8 +117,10 @@ const Menu = ({
                         top={0}
                         left={0}
                         right={0}
-                        zIndex={1000}
+                        zIndex={100}
                         backgroundColor="white"
+                        padding="0px"
+                        // paddingBottom="0px"
                     >
                         <SearchInput
                             ref={searchInputRef}
