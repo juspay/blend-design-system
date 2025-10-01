@@ -10,7 +10,7 @@ import type { ResponsiveAlertTokens } from '../components/Alert/alert.tokens'
 import type { ResponsiveOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
 import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
-import type { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
+import type { ResponsiveMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import type { ResponsiveTabsTokens } from '../components/Tabs/tabs.token'
@@ -91,7 +91,7 @@ export type ComponentTokenType = {
     OTP_INPUT?: ResponsiveOTPInputTokens
     TOOLTIP?: ResponsiveTooltipTokens
     UNIT_INPUT?: ResponsiveUnitInputTokens
-    MULTI_VALUE_INPUT?: MultiValueInputTokensType
+    MULTI_VALUE_INPUT?: ResponsiveMultiValueInputTokens
     DROPDOWN_INPUT?: ResponsiveDropdownInputTokens
     CHECKBOX?: ResponsiveCheckboxTokens
     TABS?: ResponsiveTabsTokens

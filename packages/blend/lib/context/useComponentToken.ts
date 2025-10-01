@@ -12,7 +12,7 @@ import type { ResponsiveAlertTokens } from '../components/Alert/alert.tokens'
 import type { ResponsiveOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
 import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
-import type { MultiValueInputTokensType } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
+import type { ResponsiveMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
 import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
@@ -48,7 +48,7 @@ export const useComponentToken = (
     | ResponsiveRadioTokens
     | ResponsiveOTPInputTokens
     | ResponsiveUnitInputTokens
-    | MultiValueInputTokensType
+    | ResponsiveMultiValueInputTokens
     | ResponsiveSwitchTokens
     | ResponsiveCheckboxTokens
     | ResponsiveTabsTokens
