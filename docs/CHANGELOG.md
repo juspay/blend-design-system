@@ -2,6 +2,9 @@
 
 This is a beta release from the staging branch. Changes since last tag:
 
+- Merge pull request #442 from juspay/dev (578256e)
+- Merge pull request #441 from juspay/release/update-beta-version-0.0.19-beta (e741ce4)
+- chore(release): v0.0.19-beta [BETA] (c87e938)
 - Merge pull request #440 from juspay/dev (b0cf0dc)
 - Merge pull request #435 from juspay/fix/submenu (dd54ea8)
 - Merge pull request #437 from juspay/bug-fix/data-display (f581333)
