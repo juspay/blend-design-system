@@ -12,7 +12,6 @@ const PREVIEW_COMPONENT_NAMES = [
     'Alert',
     'Tag',
     'ButtonGroup',
-    'ButtonGroupV2',
     'Tabs',
     'SplitTag',
     'Modal',
@@ -61,7 +60,6 @@ export const ButtonPreview = PreviewComponents.ButtonPreview
 export const AlertPreview = PreviewComponents.AlertPreview
 export const TagPreview = PreviewComponents.TagPreview
 export const ButtonGroupPreview = PreviewComponents.ButtonGroupPreview
-export const ButtonGroupV2Preview = PreviewComponents.ButtonGroupV2Preview
 export const TabsPreview = PreviewComponents.TabsPreview
 export const SplitTagPreview = PreviewComponents.SplitTagPreview
 export const ModalPreview = PreviewComponents.ModalPreview

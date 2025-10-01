@@ -3,8 +3,8 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { ProgressBarSize, ProgressBarVariant, ProgressBarType } from './types'
 import type { ProgressBarProps } from './types'
-import { useComponentToken } from '../../context/useComponentToken'
 import type { ProgressBarTokenType } from './progressbar.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const CircularProgressBar: React.FC<{
     value: number
@@ -109,8 +109,9 @@ const LinearProgressBar: React.FC<{
     tokens: ProgressBarTokenType
     showLabel: boolean
 }> = ({ value, size, variant, tokens, showLabel }) => {
+    console.log({ tokens })
     const clampedValue = Math.min(100, Math.max(0, value))
-    const containerHeight = tokens.height[size]
+    const containerHeight = tokens?.height[size]
     const fillStyles = tokens.fill[variant as keyof typeof tokens.fill]
     const emptyStyles = tokens.empty[variant as keyof typeof tokens.empty]
 
@@ -186,9 +187,8 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     showLabel = false,
     className,
 }) => {
-    const progressBarToken = useComponentToken(
-        'PROGRESS_BAR'
-    ) as ProgressBarTokenType
+    const progressBarToken =
+        useResponsiveTokens<ProgressBarTokenType>('PROGRESS_BAR')
 
     if (variant === ProgressBarVariant.CIRCULAR) {
         return (

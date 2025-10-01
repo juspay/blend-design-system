@@ -4,9 +4,9 @@ import {
     Menu,
     MenuAlignment,
     MenuSide,
-    MenuItemV2Variant,
-    MenuItemV2ActionType,
-    MenuV2GroupType,
+    MenuItemVariant,
+    MenuItemActionType,
+    MenuGroupType,
     Button,
     ButtonType,
     ButtonSize,
@@ -214,8 +214,8 @@ export const Default: Story = {
                     {
                         label: 'Logout',
                         slot1: <LogOut size={16} />,
-                        variant: MenuItemV2Variant.ACTION,
-                        actionType: MenuItemV2ActionType.DANGER,
+                        variant: MenuItemVariant.ACTION,
+                        actionType: MenuItemActionType.DANGER,
                         onClick: () => console.log('Logout clicked'),
                     },
                 ],
@@ -230,7 +230,7 @@ export const Default: Story = {
 // With search
 export const WithSearch: Story = {
     render: () => {
-        const items: MenuV2GroupType[] = [
+        const items: MenuGroupType[] = [
             {
                 label: 'Actions',
                 items: [
@@ -253,8 +253,8 @@ export const WithSearch: Story = {
                     {
                         label: 'Delete',
                         slot1: <Trash2 size={16} />,
-                        variant: MenuItemV2Variant.ACTION,
-                        actionType: MenuItemV2ActionType.DANGER,
+                        variant: MenuItemVariant.ACTION,
+                        actionType: MenuItemActionType.DANGER,
                     },
                 ],
             },
@@ -300,7 +300,7 @@ export const WithSearch: Story = {
 // With sub-labels
 export const WithSubLabels: Story = {
     render: () => {
-        const items: MenuV2GroupType[] = [
+        const items: MenuGroupType[] = [
             {
                 label: 'Subscription Plans',
                 items: [
@@ -385,7 +385,7 @@ export const WithSubLabels: Story = {
 // With multiple slots
 export const WithMultipleSlots: Story = {
     render: () => {
-        const items: MenuV2GroupType[] = [
+        const items: MenuGroupType[] = [
             {
                 label: 'Team Members',
                 items: [
@@ -488,8 +488,8 @@ export const WithMultipleSlots: Story = {
                     {
                         label: 'Invite Team Member',
                         slot1: <Plus size={16} />,
-                        variant: MenuItemV2Variant.ACTION,
-                        actionType: MenuItemV2ActionType.PRIMARY,
+                        variant: MenuItemVariant.ACTION,
+                        actionType: MenuItemActionType.PRIMARY,
                     },
                 ],
             },
@@ -523,15 +523,15 @@ export const WithMultipleSlots: Story = {
 // Action variants
 export const ActionVariants: Story = {
     render: () => {
-        const items: MenuV2GroupType[] = [
+        const items: MenuGroupType[] = [
             {
                 label: 'File Actions',
                 items: [
                     {
                         label: 'Save Changes',
                         slot1: <Save size={16} />,
-                        variant: MenuItemV2Variant.ACTION,
-                        actionType: MenuItemV2ActionType.PRIMARY,
+                        variant: MenuItemVariant.ACTION,
+                        actionType: MenuItemActionType.PRIMARY,
                     },
                     {
                         label: 'Duplicate',
@@ -554,15 +554,15 @@ export const ActionVariants: Story = {
                     {
                         label: 'Delete File',
                         slot1: <Trash2 size={16} />,
-                        variant: MenuItemV2Variant.ACTION,
-                        actionType: MenuItemV2ActionType.DANGER,
+                        variant: MenuItemVariant.ACTION,
+                        actionType: MenuItemActionType.DANGER,
                     },
                     {
                         label: 'Delete Permanently',
                         subLabel: 'This action cannot be undone',
                         slot1: <Trash2 size={16} />,
-                        variant: MenuItemV2Variant.ACTION,
-                        actionType: MenuItemV2ActionType.DANGER,
+                        variant: MenuItemVariant.ACTION,
+                        actionType: MenuItemActionType.DANGER,
                     },
                 ],
             },
@@ -594,7 +594,7 @@ export const ActionVariants: Story = {
 // With disabled items
 export const WithDisabledItems: Story = {
     render: () => {
-        const items: MenuV2GroupType[] = [
+        const items: MenuGroupType[] = [
             {
                 label: 'Edit',
                 items: [
@@ -678,7 +678,7 @@ export const WithDisabledItems: Story = {
 // Positioning examples
 export const PositioningExamples: Story = {
     render: () => {
-        const items: MenuV2GroupType[] = [
+        const items: MenuGroupType[] = [
             {
                 items: [
                     { label: 'Option 1', slot1: <Check size={16} /> },
@@ -777,7 +777,7 @@ export const PositioningExamples: Story = {
 // Settings menu example
 export const SettingsMenuExample: Story = {
     render: () => {
-        const items: MenuV2GroupType[] = [
+        const items: MenuGroupType[] = [
             {
                 label: 'Appearance',
                 items: [
@@ -858,8 +858,8 @@ export const SettingsMenuExample: Story = {
                     {
                         label: 'Sign Out',
                         slot1: <LogOut size={16} />,
-                        variant: MenuItemV2Variant.ACTION,
-                        actionType: MenuItemV2ActionType.DANGER,
+                        variant: MenuItemVariant.ACTION,
+                        actionType: MenuItemActionType.DANGER,
                     },
                 ],
             },
@@ -893,7 +893,7 @@ export const SettingsMenuExample: Story = {
 // File browser menu
 export const FileBrowserMenu: Story = {
     render: () => {
-        const items: MenuV2GroupType[] = [
+        const items: MenuGroupType[] = [
             {
                 items: [
                     {
@@ -1007,7 +1007,7 @@ export const FileBrowserMenu: Story = {
 // Complex example with sub-menus
 export const ComplexExample: Story = {
     render: () => {
-        const items: MenuV2GroupType[] = [
+        const items: MenuGroupType[] = [
             {
                 label: 'Dashboard',
                 items: [
@@ -1199,8 +1199,8 @@ export const ComplexExample: Story = {
                     {
                         label: 'Logout',
                         slot1: <LogOut size={16} />,
-                        variant: MenuItemV2Variant.ACTION,
-                        actionType: MenuItemV2ActionType.DANGER,
+                        variant: MenuItemVariant.ACTION,
+                        actionType: MenuItemActionType.DANGER,
                     },
                 ],
             },

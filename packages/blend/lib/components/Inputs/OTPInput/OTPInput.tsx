@@ -10,9 +10,7 @@ import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 
-import { FOUNDATION_THEME } from '../../../tokens'
 import type { OTPProps } from './types'
-// import otpInputTokens from "./otpInput.tokens";
 import type { OTPInputTokensType } from './otpInput.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
@@ -145,7 +143,12 @@ const OTPInput = ({
     }
 
     return (
-        <Block display="flex" flexDirection="column" gap={8} width={'100%'}>
+        <Block
+            display="flex"
+            flexDirection="column"
+            gap={otpInputTokens.gap}
+            width={'100%'}
+        >
             <InputLabels
                 label={label}
                 sublabel={sublabel}
@@ -153,83 +156,63 @@ const OTPInput = ({
                 disabled={disabled}
                 name={name}
                 required={required}
+                tokens={otpInputTokens}
             />
             <Block
                 display="flex"
-                justifyContent="space-between"
-                gap={otpInputTokens.input.gap}
+                gap={otpInputTokens.inputContainer.gap}
                 width={'100%'}
             >
                 {otp.map((digit, index) => (
                     <PrimitiveInput
                         form={form}
-                        width={42}
-                        height={48}
-                        borderRadius={otpInputTokens.input.borderRadius}
+                        width={otpInputTokens.inputContainer.input.width}
+                        height={otpInputTokens.inputContainer.input.height}
+                        borderRadius={
+                            otpInputTokens.inputContainer.input.borderRadius
+                        }
                         style={{
                             textAlign: 'center',
-                            fontWeight: 600,
-                            fontSize: 20,
-                            color: FOUNDATION_THEME.colors.gray[800],
                         }}
+                        fontSize={otpInputTokens.inputContainer.input.fontSize}
+                        fontWeight={
+                            otpInputTokens.inputContainer.input.fontWeight
+                        }
                         ref={(el: HTMLInputElement) => {
                             inputRefs.current[index] = el
                         }}
                         key={index}
-                        // border={
-                        //   error
-                        //     ? `1px solid ${textInputTokens.input.border.color.error}`
-                        //     : `1px solid ${textInputTokens.input.border.color.default}`
-                        // }
                         border={
-                            otpInputTokens.input.border[
+                            otpInputTokens.inputContainer.input.border[
                                 error ? 'error' : 'default'
                             ]
                         }
                         outline="none"
-                        // _hover={{
-                        //   border: `1px solid ${textInputTokens.input.border.color.hover}`,
-                        // }}
                         _hover={{
-                            border: otpInputTokens.input.border.hover,
+                            border: otpInputTokens.inputContainer.input.border
+                                .hover,
                         }}
                         color={
-                            otpInputTokens.input.color[
+                            otpInputTokens.inputContainer.input.color[
                                 disabled ? 'disabled' : 'default'
                             ]
                         }
-                        // color={
-                        //   disabled
-                        //     ? textInputTokens.input.color.disabled
-                        //     : textInputTokens.input.color.default
-                        // }
-                        // _focus={{
-                        //   border: `1px solid ${textInputTokens.input.border.color.focus} !important`,
-                        //   outline: "none !important",
-                        // }}
-                        // disabled={disabled}
-                        // _disabled={{
-                        //   backgroundColor: textInputTokens.input.backgroundColor.disabled,
-                        //   border: `1px solid ${textInputTokens.input.border.color.disabled}`,
-                        //   cursor: "not-allowed",
-                        // }}
                         _focus={{
-                            border: otpInputTokens.input.border[
+                            border: otpInputTokens.inputContainer.input.border[
                                 error ? 'error' : 'focus'
                             ],
                             boxShadow:
-                                otpInputTokens.input.boxShadow[
-                                    error ? 'error' : 'focus'
-                                ],
+                                otpInputTokens.inputContainer.input.boxShadow,
                         }}
                         disabled={disabled}
                         _disabled={{
                             backgroundColor:
-                                otpInputTokens.input.backgroundColor.disabled,
-                            border: otpInputTokens.input.border.disabled,
+                                otpInputTokens.inputContainer.input
+                                    .backgroundColor.disabled,
+                            border: otpInputTokens.inputContainer.input.border
+                                .disabled,
                             cursor: 'not-allowed',
                         }}
-                        // Handle input change
                         value={digit}
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange(index, e.target.value)
@@ -252,6 +235,7 @@ const OTPInput = ({
                 hintText={hintText}
                 error={error}
                 errorMessage={errorMessage}
+                tokens={otpInputTokens}
             />
         </Block>
     )

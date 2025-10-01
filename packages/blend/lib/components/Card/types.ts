@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { ButtonV2Props } from '../Button/types'
+import type { ButtonProps } from '../Button/types'
 
 export enum CardVariant {
     DEFAULT = 'default',
@@ -24,7 +24,7 @@ export type DefaultCardProps = {
     bodyTitle?: string
     content?: ReactNode
     bodySlot2?: ReactNode
-    actionButton?: ButtonV2Props
+    actionButton?: ButtonProps
 }
 
 export type AlignedCardProps = {
@@ -41,7 +41,7 @@ export type AlignedCardProps = {
     bodySlot1?: ReactNode
     bodyTitle?: string
     content?: ReactNode
-    actionButton?: ButtonV2Props
+    actionButton?: ButtonProps
 }
 
 export type CustomCardProps = {

@@ -1,4 +1,5 @@
-import { FOUNDATION_THEME } from '../../tokens'
+import { BreakpointType } from '../../breakpoints/breakPoints'
+import { FoundationTokenType } from '../../tokens/theme.token'
 import { ProgressBarSize } from './types'
 import type { CSSObject } from 'styled-components'
 
@@ -62,70 +63,151 @@ export type ProgressBarTokenType = {
     transition: string
 }
 
-const progressBarTokens: ProgressBarTokenType = {
-    container: {
-        borderRadius: String(FOUNDATION_THEME.border.radius[8]),
-        overflow: 'hidden',
-    },
-    height: {
-        [ProgressBarSize.SMALL]: FOUNDATION_THEME.unit[12],
-        [ProgressBarSize.MEDIUM]: FOUNDATION_THEME.unit[20],
-        [ProgressBarSize.LARGE]: FOUNDATION_THEME.unit[24],
-    },
-    fill: {
-        solid: {
-            backgroundColor: String(FOUNDATION_THEME.colors.primary[500]),
-            borderRadius: String(FOUNDATION_THEME.border.radius[8]),
-        },
-        segmented: {
-            backgroundColor: String(FOUNDATION_THEME.colors.primary[500]),
-            borderRadius: String(FOUNDATION_THEME.border.radius[2]),
-        },
-    },
-    empty: {
-        solid: {
-            backgroundColor: String(FOUNDATION_THEME.colors.gray[150]),
-        },
-        segmented: {
-            backgroundColor: 'transparent',
-            backgroundImage: `repeating-linear-gradient(
-                to right,
-                ${String(FOUNDATION_THEME.colors.gray[100])},
-                ${String(FOUNDATION_THEME.colors.gray[100])} ${FOUNDATION_THEME.unit[2]},
-                transparent ${FOUNDATION_THEME.unit[2]},
-                transparent ${FOUNDATION_THEME.unit[8]}
-            )`,
-            backgroundSize: `${FOUNDATION_THEME.unit[10]} 100%`,
-        },
-    },
-    circular: {
-        size: {
-            [ProgressBarSize.SMALL]: FOUNDATION_THEME.unit[40],
-            [ProgressBarSize.MEDIUM]: FOUNDATION_THEME.unit[60],
-            [ProgressBarSize.LARGE]: FOUNDATION_THEME.unit[80],
-        },
-        strokeWidth: {
-            [ProgressBarSize.SMALL]: 3,
-            [ProgressBarSize.MEDIUM]: 4,
-            [ProgressBarSize.LARGE]: 6,
-        },
-        solid: {
-            stroke: String(FOUNDATION_THEME.colors.primary[500]),
-            background: String(FOUNDATION_THEME.colors.gray[150]),
-        },
-        segmented: {
-            stroke: String(FOUNDATION_THEME.colors.primary[500]),
-            background: String(FOUNDATION_THEME.colors.gray[150]),
-            dashArray: '4 2',
-            dashOffset: '0',
-        },
-    },
-    label: {
-        fontSize: String(FOUNDATION_THEME.font.size.body.md.fontSize),
-        fontWeight: FOUNDATION_THEME.font.weight[500],
-        color: String(FOUNDATION_THEME.colors.gray[600]),
-    },
-    transition: 'width 0.3s ease-in-out',
+export type ResponsiveProgressBarTokens = {
+    [key in keyof BreakpointType]: ProgressBarTokenType
 }
 
-export default progressBarTokens
+export const getProgressBarTokens = (
+    foundationToken: FoundationTokenType
+): ResponsiveProgressBarTokens => {
+    return {
+        sm: {
+            container: {
+                borderRadius: String(foundationToken.border.radius[8]),
+                overflow: 'hidden',
+            },
+            height: {
+                [ProgressBarSize.SMALL]: foundationToken.unit[12],
+                [ProgressBarSize.MEDIUM]: foundationToken.unit[20],
+                [ProgressBarSize.LARGE]: foundationToken.unit[24],
+            },
+            fill: {
+                solid: {
+                    backgroundColor: String(
+                        foundationToken.colors.primary[500]
+                    ),
+                    borderRadius: String(foundationToken.border.radius[8]),
+                },
+                segmented: {
+                    backgroundColor: String(
+                        foundationToken.colors.primary[500]
+                    ),
+                    borderRadius: String(foundationToken.border.radius[2]),
+                },
+            },
+            empty: {
+                solid: {
+                    backgroundColor: String(foundationToken.colors.gray[150]),
+                },
+                segmented: {
+                    backgroundColor: 'transparent',
+                    backgroundImage: `repeating-linear-gradient(
+                    to right,
+                    ${String(foundationToken.colors.gray[100])},
+                    ${String(foundationToken.colors.gray[100])} ${foundationToken.unit[2]},
+                    transparent ${foundationToken.unit[2]},
+                    transparent ${foundationToken.unit[8]}
+                )`,
+                    backgroundSize: `${foundationToken.unit[10]} 100%`,
+                },
+            },
+            circular: {
+                size: {
+                    [ProgressBarSize.SMALL]: foundationToken.unit[40],
+                    [ProgressBarSize.MEDIUM]: foundationToken.unit[60],
+                    [ProgressBarSize.LARGE]: foundationToken.unit[80],
+                },
+                strokeWidth: {
+                    [ProgressBarSize.SMALL]: 3,
+                    [ProgressBarSize.MEDIUM]: 4,
+                    [ProgressBarSize.LARGE]: 6,
+                },
+                solid: {
+                    stroke: String(foundationToken.colors.primary[500]),
+                    background: String(foundationToken.colors.gray[150]),
+                },
+                segmented: {
+                    stroke: String(foundationToken.colors.primary[500]),
+                    background: String(foundationToken.colors.gray[150]),
+                    dashArray: '4 2',
+                    dashOffset: '0',
+                },
+            },
+            label: {
+                fontSize: String(foundationToken.font.size.body.md.fontSize),
+                fontWeight: foundationToken.font.weight[500],
+                color: String(foundationToken.colors.gray[600]),
+            },
+            transition: 'width 0.3s ease-in-out',
+        },
+        lg: {
+            container: {
+                borderRadius: String(foundationToken.border.radius[8]),
+                overflow: 'hidden',
+            },
+            height: {
+                [ProgressBarSize.SMALL]: foundationToken.unit[12],
+                [ProgressBarSize.MEDIUM]: foundationToken.unit[20],
+                [ProgressBarSize.LARGE]: foundationToken.unit[24],
+            },
+            fill: {
+                solid: {
+                    backgroundColor: String(
+                        foundationToken.colors.primary[500]
+                    ),
+                    borderRadius: String(foundationToken.border.radius[8]),
+                },
+                segmented: {
+                    backgroundColor: String(
+                        foundationToken.colors.primary[500]
+                    ),
+                    borderRadius: String(foundationToken.border.radius[2]),
+                },
+            },
+            empty: {
+                solid: {
+                    backgroundColor: String(foundationToken.colors.gray[150]),
+                },
+                segmented: {
+                    backgroundColor: 'transparent',
+                    backgroundImage: `repeating-linear-gradient(
+                    to right,
+                    ${String(foundationToken.colors.gray[100])},
+                    ${String(foundationToken.colors.gray[100])} ${foundationToken.unit[2]},
+                    transparent ${foundationToken.unit[2]},
+                    transparent ${foundationToken.unit[8]}
+                )`,
+                    backgroundSize: `${foundationToken.unit[10]} 100%`,
+                },
+            },
+            circular: {
+                size: {
+                    [ProgressBarSize.SMALL]: foundationToken.unit[40],
+                    [ProgressBarSize.MEDIUM]: foundationToken.unit[60],
+                    [ProgressBarSize.LARGE]: foundationToken.unit[80],
+                },
+                strokeWidth: {
+                    [ProgressBarSize.SMALL]: 3,
+                    [ProgressBarSize.MEDIUM]: 4,
+                    [ProgressBarSize.LARGE]: 6,
+                },
+                solid: {
+                    stroke: String(foundationToken.colors.primary[500]),
+                    background: String(foundationToken.colors.gray[150]),
+                },
+                segmented: {
+                    stroke: String(foundationToken.colors.primary[500]),
+                    background: String(foundationToken.colors.gray[150]),
+                    dashArray: '4 2',
+                    dashOffset: '0',
+                },
+            },
+            label: {
+                fontSize: String(foundationToken.font.size.body.md.fontSize),
+                fontWeight: foundationToken.font.weight[500],
+                color: String(foundationToken.colors.gray[600]),
+            },
+            transition: 'width 0.3s ease-in-out',
+        },
+    }
+}

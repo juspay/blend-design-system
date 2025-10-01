@@ -57,20 +57,28 @@ const MultiSelectTrigger = ({
     const isItemSelected = selectedValues.length > 0
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === MultiSelectMenuSize.LARGE
-    const borderRadius = multiSelectTokens.trigger.borderRadius[size]
+    const borderRadius = multiSelectTokens.trigger.borderRadius[size][variant]
     const appliedBorderRadius = showCancelButton
         ? `${borderRadius} 0px 0px ${borderRadius}`
         : borderRadius
-    const paddingX = toPixels(multiSelectTokens.trigger.paddingX[size])
-    const paddingY = toPixels(multiSelectTokens.trigger.paddingY[size])
+    const paddingX = toPixels(
+        multiSelectTokens.trigger.padding[size][variant].x
+    )
+    const paddingY = toPixels(
+        multiSelectTokens.trigger.padding[size][variant].y
+    )
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
     return (
         <Block
             display="flex"
             {...((!inline || variant === MultiSelectVariant.CONTAINER) && {
-                height: toPixels(multiSelectTokens.trigger.height[size]),
-                maxHeight: toPixels(multiSelectTokens.trigger.height[size]),
+                height: toPixels(
+                    multiSelectTokens.trigger.height[size][variant]
+                ),
+                maxHeight: toPixels(
+                    multiSelectTokens.trigger.height[size][variant]
+                ),
             })}
         >
             <Block
@@ -103,11 +111,12 @@ const MultiSelectTrigger = ({
                     }
                     {...((!inline ||
                         variant === MultiSelectVariant.CONTAINER) && {
-                        height: multiSelectTokens.trigger.height[size],
+                        height: multiSelectTokens.trigger.height[size][variant],
 
-                        maxHeight: multiSelectTokens.trigger.height[size],
+                        maxHeight:
+                            multiSelectTokens.trigger.height[size][variant],
 
-                        paddingX: multiSelectTokens.trigger.paddingX[size],
+                        paddingX: paddingX,
 
                         paddingY: paddingY,
                         backgroundColor:

@@ -1,7 +1,7 @@
-import type { ButtonV2Props } from '../Button'
+import type { ButtonProps } from '../Button'
 
 export type PopoverActionType = Omit<
-    ButtonV2Props,
+    ButtonProps,
     'buttonGroupPosition' | 'subType'
 >
 

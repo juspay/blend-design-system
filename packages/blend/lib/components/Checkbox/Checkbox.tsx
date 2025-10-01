@@ -17,6 +17,7 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import type { CheckboxTokensType } from './checkbox.token'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { FOUNDATION_THEME } from '../../tokens'
 
 export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
     (
@@ -89,7 +90,10 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                             />
 
                             {slot && (
-                                <Block as="span" marginLeft={tokens.slotGap}>
+                                <Block
+                                    as="span"
+                                    marginLeft={tokens.slot.marginLeft}
+                                >
                                     {slot}
                                 </Block>
                             )}
@@ -133,15 +137,19 @@ const CheckboxIndicator: React.FC<{
             >
                 {checked === 'indeterminate' ? (
                     <Minus
-                        size={extractPixelValue(tokens.icon.size[size].width)}
+                        size={extractPixelValue(
+                            tokens.indicator.icon.width[size]
+                        )}
                         color={getCheckboxIconColor(tokens, checked, disabled)}
-                        strokeWidth={tokens.icon.size[size].strokeWidth}
+                        strokeWidth={tokens.indicator.icon.strokeWidth[size]}
                     />
                 ) : (
                     <Check
-                        size={extractPixelValue(tokens.icon.size[size].width)}
+                        size={extractPixelValue(
+                            tokens.indicator.icon.width[size]
+                        )}
                         color={getCheckboxIconColor(tokens, checked, disabled)}
-                        strokeWidth={tokens.icon.size[size].strokeWidth}
+                        strokeWidth={tokens.indicator.icon.strokeWidth[size]}
                     />
                 )}
             </Block>
@@ -176,7 +184,7 @@ const CheckboxContent: React.FC<{
                     <PrimitiveText
                         as="span"
                         color={tokens.required.color}
-                        style={{ marginLeft: tokens.required.spacing }}
+                        style={{ marginLeft: FOUNDATION_THEME.unit[2] }}
                     >
                         *
                     </PrimitiveText>

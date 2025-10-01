@@ -2,6 +2,7 @@ import React from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import Button from '../Button/Button'
+import { ButtonSubType } from '../Button/types'
 import { CardVariant, CardAlignment } from './types'
 import type { CardProps } from './types'
 import type { CardTokenType } from './card.tokens'
@@ -12,7 +13,6 @@ import {
     getBodyTitleStyles,
     getBodyContentStyles,
     getBodyStyles,
-    getHeaderSlotSpacing,
     getHeaderMarginBottom,
     getSubHeaderMarginBottom,
     getBodySlot1MarginBottom,
@@ -55,6 +55,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
         actionButton,
     } = props
 
+    const variant = CardVariant.DEFAULT
     const hasHeader = Boolean(
         headerSlot1 || headerTitle || headerTag || headerSlot2
     )
@@ -64,7 +65,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
     const hasContent = Boolean(content)
     const hasBodySlot2 = Boolean(bodySlot2)
     const hasActionButton = Boolean(actionButton)
-    const isInlineButton = isInlineActionButton(actionButton)
+    const isInlineButton = isInlineActionButton(actionButton, false) // Default cards are never center-aligned
 
     return (
         <>
@@ -79,7 +80,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                         <Block
                             display="flex"
                             alignItems="flex-start"
-                            style={{ gap: getHeaderSlotSpacing(cardToken) }}
+                            style={{ gap: cardToken.header.gap[variant] }}
                         >
                             {headerSlot1 && <Block>{headerSlot1}</Block>}
 
@@ -99,7 +100,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                                     display="flex"
                                     alignItems="center"
                                     style={{
-                                        gap: getHeaderSlotSpacing(cardToken),
+                                        gap: cardToken.header.gap[variant],
                                     }}
                                 >
                                     {headerTitle && (
@@ -139,7 +140,8 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                         style={{
                             marginBottom: getBodySlot1MarginBottom(
                                 hasBodyTitle,
-                                cardToken
+                                cardToken,
+                                variant
                             ),
                         }}
                     >
@@ -167,7 +169,8 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                         style={{
                             marginBottom: getContentMarginBottom(
                                 hasBodySlot2,
-                                cardToken
+                                cardToken,
+                                variant
                             ),
                         }}
                     >
@@ -183,7 +186,8 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                             marginBottom: getBodySlot2MarginBottom(
                                 hasActionButton,
                                 isInlineButton,
-                                cardToken
+                                cardToken,
+                                variant
                             ),
                         }}
                     >
@@ -192,8 +196,15 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                 )}
 
                 {hasActionButton && (
-                    <Block>
-                        <Button {...actionButton} />
+                    <Block display="flex" justifyContent="flex-start">
+                        <Button
+                            {...actionButton}
+                            subType={
+                                isInlineButton
+                                    ? ButtonSubType.INLINE
+                                    : undefined
+                            }
+                        />
                     </Block>
                 )}
             </Block>
@@ -218,13 +229,14 @@ const CardContent: React.FC<{
         actionButton,
     } = props
 
+    const variant = CardVariant.ALIGNED
     const hasHeader = Boolean(headerTitle || headerTag || headerSlot2)
     const hasSubHeader = Boolean(subHeader)
     const hasBodySlot1 = Boolean(bodySlot1)
     const hasBodyTitle = Boolean(bodyTitle)
     const hasContent = Boolean(content)
     const hasActionButton = Boolean(actionButton)
-    const isInlineButton = isInlineActionButton(actionButton)
+    const isInlineButton = isInlineActionButton(actionButton, centerAlign) // Pass centerAlign parameter
 
     return (
         <Block
@@ -250,7 +262,7 @@ const CardContent: React.FC<{
                         ),
                         width: centerAlign ? 'auto' : '100%',
                         gap: centerAlign
-                            ? getHeaderSlotSpacing(cardToken)
+                            ? cardToken.header.gap[variant]
                             : undefined,
                     }}
                 >
@@ -260,7 +272,7 @@ const CardContent: React.FC<{
                                 display="flex"
                                 alignItems="center"
                                 style={{
-                                    gap: getHeaderSlotSpacing(cardToken),
+                                    gap: cardToken.header.gap[variant],
                                 }}
                             >
                                 {headerTitle && (
@@ -291,7 +303,10 @@ const CardContent: React.FC<{
             {hasSubHeader && (
                 <Block
                     style={{
-                        marginBottom: getSubHeaderMarginBottom(cardToken),
+                        marginBottom: getSubHeaderMarginBottom(
+                            cardToken,
+                            variant
+                        ),
                     }}
                 >
                     <Text style={getSubHeaderStyles(cardToken)}>
@@ -305,7 +320,8 @@ const CardContent: React.FC<{
                     style={{
                         marginBottom: getBodySlot1MarginBottom(
                             hasBodyTitle,
-                            cardToken
+                            cardToken,
+                            variant
                         ),
                     }}
                 >
@@ -328,27 +344,46 @@ const CardContent: React.FC<{
                 </Block>
             )}
 
-            {hasContent && (
-                <Block>
+            {/* Wrap content and action button with proper gap */}
+            <Block
+                display="flex"
+                flexDirection="column"
+                style={{
+                    gap: hasActionButton
+                        ? centerAlign
+                            ? '24px' // Always 24px for center-aligned cards
+                            : isInlineButton
+                              ? '14px' // Always 14px for inline buttons (non-center)
+                              : String(
+                                    cardToken.body.actions.regularButtonsGap[
+                                        variant
+                                    ]
+                                )
+                        : '0',
+                }}
+            >
+                {hasContent && (
                     <Text style={getBodyContentStyles(cardToken)}>
                         {content}
                     </Text>
-                </Block>
-            )}
+                )}
 
-            {hasActionButton && (
-                <Block
-                    style={{
-                        marginTop: isInlineButton
-                            ? String(cardToken.spacing.action.inline.marginTop)
-                            : String(
-                                  cardToken.spacing.action.regular.marginTop
-                              ),
-                    }}
-                >
-                    <Button {...actionButton} />
-                </Block>
-            )}
+                {hasActionButton && (
+                    <Block
+                        display="flex"
+                        justifyContent={centerAlign ? 'center' : 'flex-start'}
+                    >
+                        <Button
+                            {...actionButton}
+                            subType={
+                                isInlineButton
+                                    ? ButtonSubType.INLINE
+                                    : undefined
+                            }
+                        />
+                    </Block>
+                )}
+            </Block>
         </Block>
     )
 }
@@ -358,6 +393,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
     cardToken,
 }) => {
     const { alignment, centerAlign = false, cardSlot } = props
+    const variant = CardVariant.ALIGNED
     const hasCardSlot = Boolean(cardSlot)
 
     if (hasCardSlot) {
@@ -368,7 +404,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: centerAlign ? 'center' : 'flex-start',
-                        gap: String(cardToken.spacing.headerSlot.gap),
+                        gap: String(cardToken.header.gap[variant]),
                         padding: cardToken.padding,
                     }}
                 >

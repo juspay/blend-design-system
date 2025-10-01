@@ -52,33 +52,37 @@ const SelectAllItem = ({
                 outline="none"
                 color={
                     disabled
-                        ? multiSelectTokens.dropdown.item.label.color.disabled
+                        ? multiSelectTokens.menu.item.optionsLabel.color
+                              .disabled
                         : selected.length === availableValues.length
-                          ? multiSelectTokens.dropdown.item.label.color.selected
-                          : multiSelectTokens.dropdown.item.label.color.default
+                          ? multiSelectTokens.menu.item.optionsLabel.color
+                                .selected
+                          : multiSelectTokens.menu.item.optionsLabel.color
+                                .default
                 }
                 backgroundColor={
-                    multiSelectTokens.dropdown.item.backgroundColor.default
+                    multiSelectTokens.menu.item.backgroundColor.default
                 }
                 cursor={disabled ? 'not-allowed' : 'pointer'}
                 style={{ userSelect: 'none' }}
                 onClick={handleClick}
             >
                 <PrimitiveText
-                    fontSize={multiSelectTokens.dropdown.item.label.fontSize}
+                    fontSize={multiSelectTokens.menu.item.optionsLabel.fontSize}
                     fontWeight={
-                        multiSelectTokens.dropdown.item.label.fontWeight
+                        multiSelectTokens.menu.item.optionsLabel.fontWeight
                     }
                     color={
                         disabled
-                            ? multiSelectTokens.dropdown.item.label.color
+                            ? multiSelectTokens.menu.item.optionsLabel.color
                                   .disabled
                             : selected.length === availableValues.length
-                              ? multiSelectTokens.dropdown.item.label.color
+                              ? multiSelectTokens.menu.item.optionsLabel.color
                                     .selected
-                              : multiSelectTokens.dropdown.item.label.color
+                              : multiSelectTokens.menu.item.optionsLabel.color
                                     .default
                     }
+                    textTransform="uppercase"
                     truncate
                 >
                     {selectAllText}

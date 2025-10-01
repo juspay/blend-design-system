@@ -3,28 +3,28 @@ import type {
     StyledAvatarContainerProps,
     StyledAvatarIndicatorProps,
 } from './types'
-import avatarTokens from './avatar.tokens'
-import { foundationToken } from '../../foundationToken'
+import type { AvatarTokensType } from './avatar.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const StyledAvatarContainer = styled.div<StyledAvatarContainerProps>`
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: ${({ $hasImage }) =>
-        $hasImage ? 'transparent' : avatarTokens.container.background.default};
-    border: 1px solid
-        ${({ $hasImage }) =>
-            $hasImage
-                ? avatarTokens.container.border.withImage
-                : avatarTokens.container.border.withoutImage};
+    ${({ $hasImage, $size, $shape }) => {
+        const tokens = useResponsiveTokens<AvatarTokensType>('AVATAR')
+        const variant = $hasImage ? 'withImage' : 'withoutImage'
 
-    width: ${({ $size }) => avatarTokens.sizes[$size].width};
-    height: ${({ $size }) => avatarTokens.sizes[$size].height};
-    border-radius: ${({ $shape }) => avatarTokens.shapes[$shape].borderRadius};
-
-    font-size: ${({ $size }) => avatarTokens.sizes[$size].fontSize};
-    font-weight: ${({ $size }) => avatarTokens.sizes[$size].fontWeight};
+        return `
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: ${tokens.container.backgroundColor[variant].default};
+            border: ${tokens.container.border[variant].default};
+            width: ${tokens.container.size[$size].width};
+            height: ${tokens.container.size[$size].height};
+            border-radius: ${tokens.container.borderRadius[$shape]};
+            font-size: ${tokens.text.fontSize[$size]}px;
+            font-weight: ${tokens.text.fontWeight[$size]};
+        `
+    }}
 `
 
 export const StyledAvatarImage = styled.img`
@@ -35,31 +35,42 @@ export const StyledAvatarImage = styled.img`
 `
 
 export const StyledAvatarFallback = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    color: ${avatarTokens.text.color.default};
-    user-select: none;
-    border-radius: inherit;
-    overflow: hidden;
+    ${() => {
+        const tokens = useResponsiveTokens<AvatarTokensType>('AVATAR')
+
+        return `
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: ${tokens.text.color.default};
+            user-select: none;
+            border-radius: inherit;
+            overflow: hidden;
+        `
+    }}
 `
 
 export const StyledAvatarIndicator = styled.span<StyledAvatarIndicatorProps>`
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: block;
-    width: ${({ $size }) => avatarTokens.sizes[$size].indicatorSize};
-    height: ${({ $size }) => avatarTokens.sizes[$size].indicatorSize};
-    background-color: ${avatarTokens.indicator.background.default};
-    border-radius: ${avatarTokens.shapes.circular.borderRadius};
-    border: ${({ $size }) => avatarTokens.sizes[$size].indicatorRingWidth} solid
-        ${avatarTokens.indicator.ring.color};
-    transform: translate(30%, -30%);
-    z-index: 1;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+    ${({ $size }) => {
+        const tokens = useResponsiveTokens<AvatarTokensType>('AVATAR')
+
+        return `
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: block;
+            width: ${tokens.indicator.size[$size].width};
+            height: ${tokens.indicator.size[$size].height};
+            background-color: ${tokens.indicator.backgroundColor.online};
+            border-radius: ${tokens.indicator.borderRadius};
+            border: ${tokens.indicator.border.online.width} solid ${tokens.indicator.border.online.color};
+            transform: translate(30%, -30%);
+            z-index: 1;
+            box-shadow: ${tokens.indicator.boxShadow};
+        `
+    }}
 `
 
 export const StyledAvatarWrapper = styled.div`
@@ -69,15 +80,27 @@ export const StyledAvatarWrapper = styled.div`
 `
 
 export const StyledAvatarLeadingSlot = styled.div`
-    display: flex;
-    align-items: center;
-    margin-right: ${foundationToken.spacing[8]};
-    color: ${foundationToken.colors.gray[700]};
+    ${() => {
+        const tokens = useResponsiveTokens<AvatarTokensType>('AVATAR')
+
+        return `
+            display: flex;
+            align-items: center;
+            margin-right: ${tokens.slot.spacing};
+            color: ${tokens.slot.color.default};
+        `
+    }}
 `
 
 export const StyledAvatarTrailingSlot = styled.div`
-    display: flex;
-    align-items: center;
-    margin-left: ${foundationToken.spacing[8]};
-    color: ${foundationToken.colors.gray[700]};
+    ${() => {
+        const tokens = useResponsiveTokens<AvatarTokensType>('AVATAR')
+
+        return `
+            display: flex;
+            align-items: center;
+            margin-left: ${tokens.slot.spacing};
+            color: ${tokens.slot.color.default};
+        `
+    }}
 `

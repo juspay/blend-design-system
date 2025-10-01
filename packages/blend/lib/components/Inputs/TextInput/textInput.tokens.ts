@@ -1,30 +1,63 @@
 import type { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME } from '../../../tokens'
 import type { FoundationTokenType } from '../../../tokens/theme.token'
 import { TextInputSize, TextInputState } from './types'
 import { BreakpointType } from '../../../breakpoints/breakPoints'
 
 export type TextInputTokensType = {
-    input: {
-        gap: CSSObject['gap']
-        borderRadius?: CSSObject['borderRadius']
-        boxShadow: {
-            [key in TextInputState]: CSSObject['boxShadow']
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextInputState]: CSSObject['color']
         }
-        paddingX: {
-            [key in TextInputSize]: CSSObject['padding']
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextInputState]: CSSObject['color']
         }
-        paddingY: {
-            [key in TextInputSize]: CSSObject['padding']
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextInputState]: CSSObject['color']
         }
-        border: {
-            [key in TextInputState]: CSSObject['border']
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        fontSize: {
+            [key in TextInputSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in TextInputSize]: CSSObject['fontWeight']
         }
         color: {
             [key in TextInputState]: CSSObject['color']
         }
-        outline: {
-            [key in TextInputState]: CSSObject['outline']
+        borderRadius: {
+            [key in TextInputSize]: CSSObject['borderRadius']
+        }
+        boxShadow: CSSObject['boxShadow']
+        padding: {
+            x: {
+                [key in TextInputSize]: CSSObject['padding']
+            }
+            y: {
+                [key in TextInputSize]: CSSObject['padding']
+            }
+        }
+        border: {
+            [key in TextInputState]: CSSObject['border']
         }
         backgroundColor: {
             [key in TextInputState]: CSSObject['backgroundColor']
@@ -41,32 +74,63 @@ export const getTextInputTokens = (
 ): ResponsiveTextInputTokens => {
     return {
         sm: {
-            input: {
-                gap: foundationTheme.unit[8],
-                borderRadius: foundationTheme.unit[10],
-                paddingX: {
-                    md: foundationTheme.unit[12],
-                    lg: foundationTheme.unit[14],
+            gap: foundationTheme.unit[8],
+            label: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[500],
+                color: {
+                    default: foundationTheme.colors.gray[700],
+                    hover: foundationTheme.colors.gray[700],
+                    focus: foundationTheme.colors.gray[700],
+                    disabled: foundationTheme.colors.gray[400],
+                    error: foundationTheme.colors.red[600],
+                },
+            },
+            subLabel: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[400],
+                color: {
+                    default: foundationTheme.colors.gray[400],
+                    hover: foundationTheme.colors.gray[400],
+                    focus: foundationTheme.colors.gray[400],
+                    disabled: foundationTheme.colors.gray[300],
+                    error: foundationTheme.colors.red[600],
+                },
+            },
+            hintText: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[400],
+                color: {
+                    default: foundationTheme.colors.gray[500],
+                    hover: foundationTheme.colors.gray[500],
+                    focus: foundationTheme.colors.gray[500],
+                    disabled: foundationTheme.colors.gray[400],
+                    error: foundationTheme.colors.red[600],
+                },
+            },
+            errorMessage: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[500],
+                color: foundationTheme.colors.red[600],
+            },
+            required: {
+                color: foundationTheme.colors.red[600],
+            },
+            inputContainer: {
+                borderRadius: {
                     sm: foundationTheme.unit[10],
+                    md: foundationTheme.unit[10],
+                    lg: foundationTheme.unit[10],
                 },
-                paddingY: {
-                    md: foundationTheme.unit[8],
-                    lg: foundationTheme.unit[14],
-                    sm: foundationTheme.unit[6],
+                fontSize: {
+                    sm: foundationTheme.font.size.body.md.fontSize,
+                    md: foundationTheme.font.size.body.md.fontSize,
+                    lg: foundationTheme.font.size.body.md.fontSize,
                 },
-                border: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
-                },
-                outline: {
-                    default: `1px solid ${foundationTheme.colors.gray[200]}`,
-                    hover: `1px solid ${foundationTheme.colors.gray[400]}`,
-                    focus: `1px solid ${foundationTheme.colors.primary[500]}`,
-                    error: `1px solid ${foundationTheme.colors.red[500]}`,
-                    disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
+                fontWeight: {
+                    sm: foundationTheme.font.weight[500],
+                    md: foundationTheme.font.weight[500],
+                    lg: foundationTheme.font.weight[500],
                 },
                 color: {
                     default: foundationTheme.colors.gray[800],
@@ -75,6 +139,25 @@ export const getTextInputTokens = (
                     error: foundationTheme.colors.red[800],
                     disabled: foundationTheme.colors.gray[300],
                 },
+                padding: {
+                    x: {
+                        sm: foundationTheme.unit[10],
+                        md: foundationTheme.unit[12],
+                        lg: foundationTheme.unit[14],
+                    },
+                    y: {
+                        sm: foundationTheme.unit[6],
+                        md: foundationTheme.unit[8],
+                        lg: foundationTheme.unit[14],
+                    },
+                },
+                border: {
+                    default: `1px solid ${foundationTheme.colors.gray[200]}`,
+                    hover: `1px solid ${foundationTheme.colors.gray[400]}`,
+                    focus: `1px solid ${foundationTheme.colors.primary[500]}`,
+                    error: `1px solid ${foundationTheme.colors.red[500]}`,
+                    disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
+                },
                 backgroundColor: {
                     default: foundationTheme.colors.gray[0],
                     disabled: foundationTheme.colors.gray[50],
@@ -82,42 +165,67 @@ export const getTextInputTokens = (
                     focus: foundationTheme.colors.gray[0],
                     error: foundationTheme.colors.gray[0],
                 },
-                boxShadow: {
-                    default: FOUNDATION_THEME.shadows.sm,
-                    hover: FOUNDATION_THEME.shadows.sm,
-                    focus: FOUNDATION_THEME.shadows.focusPrimary,
-                    error: FOUNDATION_THEME.shadows.focusError,
-                    disabled: FOUNDATION_THEME.shadows.sm,
-                },
+                boxShadow: foundationTheme.shadows.sm,
             },
         },
         lg: {
-            input: {
-                gap: foundationTheme.unit[8],
-                borderRadius: foundationTheme.unit[10],
-                paddingX: {
-                    md: foundationTheme.unit[12],
-                    lg: foundationTheme.unit[14],
+            gap: foundationTheme.unit[8],
+            label: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[500],
+                color: {
+                    default: foundationTheme.colors.gray[700],
+                    hover: foundationTheme.colors.gray[700],
+                    focus: foundationTheme.colors.gray[700],
+                    disabled: foundationTheme.colors.gray[400],
+                    error: foundationTheme.colors.red[600],
+                },
+            },
+            subLabel: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[400],
+                color: {
+                    default: foundationTheme.colors.gray[400],
+                    hover: foundationTheme.colors.gray[400],
+                    focus: foundationTheme.colors.gray[400],
+                    disabled: foundationTheme.colors.gray[300],
+                    error: foundationTheme.colors.red[600],
+                },
+            },
+            hintText: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[400],
+                color: {
+                    default: foundationTheme.colors.gray[500],
+                    hover: foundationTheme.colors.gray[500],
+                    focus: foundationTheme.colors.gray[500],
+                    disabled: foundationTheme.colors.gray[400],
+                    error: foundationTheme.colors.red[600],
+                },
+            },
+            errorMessage: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[500],
+                color: foundationTheme.colors.red[600],
+            },
+            required: {
+                color: foundationTheme.colors.red[600],
+            },
+            inputContainer: {
+                borderRadius: {
                     sm: foundationTheme.unit[10],
-                },
-                paddingY: {
-                    md: foundationTheme.unit[8],
+                    md: foundationTheme.unit[10],
                     lg: foundationTheme.unit[10],
-                    sm: foundationTheme.unit[6],
                 },
-                border: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
+                fontSize: {
+                    sm: foundationTheme.font.size.body.md.fontSize,
+                    md: foundationTheme.font.size.body.md.fontSize,
+                    lg: foundationTheme.font.size.body.md.fontSize,
                 },
-                outline: {
-                    default: `1px solid ${foundationTheme.colors.gray[200]}`,
-                    hover: `1px solid ${foundationTheme.colors.gray[400]}`,
-                    focus: `1px solid ${foundationTheme.colors.primary[500]}`,
-                    error: `1px solid ${foundationTheme.colors.red[500]}`,
-                    disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
+                fontWeight: {
+                    sm: foundationTheme.font.weight[500],
+                    md: foundationTheme.font.weight[500],
+                    lg: foundationTheme.font.weight[500],
                 },
                 color: {
                     default: foundationTheme.colors.gray[800],
@@ -126,6 +234,25 @@ export const getTextInputTokens = (
                     error: foundationTheme.colors.red[800],
                     disabled: foundationTheme.colors.gray[300],
                 },
+                padding: {
+                    x: {
+                        sm: foundationTheme.unit[10],
+                        md: foundationTheme.unit[12],
+                        lg: foundationTheme.unit[14],
+                    },
+                    y: {
+                        sm: foundationTheme.unit[6],
+                        md: foundationTheme.unit[8],
+                        lg: foundationTheme.unit[10],
+                    },
+                },
+                border: {
+                    default: `1px solid ${foundationTheme.colors.gray[200]}`,
+                    hover: `1px solid ${foundationTheme.colors.gray[400]}`,
+                    focus: `1px solid ${foundationTheme.colors.primary[500]}`,
+                    error: `1px solid ${foundationTheme.colors.red[500]}`,
+                    disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
+                },
                 backgroundColor: {
                     default: foundationTheme.colors.gray[0],
                     disabled: foundationTheme.colors.gray[50],
@@ -133,13 +260,7 @@ export const getTextInputTokens = (
                     focus: foundationTheme.colors.gray[0],
                     error: foundationTheme.colors.gray[0],
                 },
-                boxShadow: {
-                    default: FOUNDATION_THEME.shadows.sm,
-                    hover: FOUNDATION_THEME.shadows.sm,
-                    focus: FOUNDATION_THEME.shadows.focusPrimary,
-                    error: FOUNDATION_THEME.shadows.focusError,
-                    disabled: FOUNDATION_THEME.shadows.sm,
-                },
+                boxShadow: foundationTheme.shadows.sm,
             },
         },
     }

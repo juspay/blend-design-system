@@ -42,7 +42,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         const singleSelectTokens =
             useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
 
-        const tokens =
+        const tokens: MultiSelectTokensType | SingleSelectTokensType =
             type === SelectItemType.MULTI
                 ? multiSelectTokens
                 : singleSelectTokens
@@ -108,7 +108,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         ) : null
 
         const getBorderRadius = () => {
-            const defaultRadius = tokens?.dropdown?.item?.borderRadius
+            const defaultRadius = tokens?.menu?.item?.borderRadius
 
             if (!isSelected || selectedPosition === 'none') {
                 return defaultRadius
@@ -127,6 +127,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     return defaultRadius
             }
         }
+        console.log('tokens---->>', tokens)
 
         const itemContent = (
             <RadixMenu.Item
@@ -136,10 +137,10 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             >
                 <Block
                     ref={ref}
-                    padding={tokens?.dropdown?.item?.padding}
+                    padding={tokens?.menu?.item?.padding}
                     display="flex"
                     flexDirection="column"
-                    gap={tokens?.dropdown?.item?.gap || 4}
+                    gap={tokens?.menu?.item?.gap || 4}
                     borderRadius={getBorderRadius()}
                     outline="none"
                     border="none"
@@ -148,32 +149,31 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     minWidth={0}
                     color={
                         item.disabled
-                            ? tokens?.dropdown?.item?.label?.color?.disabled
+                            ? tokens?.menu?.item?.option?.color?.disabled
                             : isSelected
-                              ? tokens?.dropdown?.item?.label?.color?.selected
-                              : tokens?.dropdown?.item?.label?.color?.default
+                              ? tokens?.menu?.item?.option?.color?.selected
+                              : tokens?.menu?.item?.option?.color?.default
                     }
                     backgroundColor={
                         isSelected
-                            ? tokens?.dropdown?.item?.backgroundColor?.selected
-                            : tokens?.dropdown?.item?.backgroundColor?.default
+                            ? tokens?.menu?.item?.backgroundColor?.selected
+                            : tokens?.menu?.item?.backgroundColor?.default
                     }
                     _hover={{
                         backgroundColor:
-                            tokens?.dropdown?.item?.backgroundColor?.hover,
+                            tokens?.menu?.item?.backgroundColor?.hover,
                     }}
                     _active={{
                         backgroundColor:
-                            tokens?.dropdown?.item?.backgroundColor?.active,
+                            tokens?.menu?.item?.backgroundColor?.active,
                     }}
                     _focus={{
                         backgroundColor:
-                            tokens?.dropdown?.item?.backgroundColor?.focus,
+                            tokens?.menu?.item?.backgroundColor?.focus,
                     }}
                     _focusVisible={{
                         backgroundColor:
-                            tokens?.dropdown?.item?.backgroundColor
-                                ?.focusVisible,
+                            tokens?.menu?.item?.backgroundColor?.focusVisible,
                     }}
                     cursor={item.disabled ? 'not-allowed' : 'pointer'}
                     style={{
@@ -210,11 +210,10 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                             >
                                 <PrimitiveText
                                     fontSize={
-                                        tokens?.dropdown?.item?.label?.fontSize
+                                        tokens?.menu?.item?.option?.fontSize
                                     }
                                     fontWeight={
-                                        tokens?.dropdown?.item?.label
-                                            ?.fontWeight
+                                        tokens?.menu?.item?.option?.fontWeight
                                     }
                                     truncate={!item.disableTruncation}
                                     data-truncate="true"
@@ -261,17 +260,17 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                         >
                             <PrimitiveText
                                 fontSize={
-                                    tokens?.dropdown?.item?.subLabel?.fontSize
+                                    tokens?.menu?.item?.description?.fontSize
                                 }
                                 fontWeight={
-                                    tokens?.dropdown?.item?.subLabel?.fontWeight
+                                    tokens?.menu?.item?.description?.fontWeight
                                 }
                                 color={
                                     isSelected
-                                        ? tokens?.dropdown?.item?.subLabel
-                                              ?.color?.selected
-                                        : tokens?.dropdown?.item?.subLabel
-                                              ?.color?.default
+                                        ? tokens?.menu?.item?.description?.color
+                                              ?.selected
+                                        : tokens?.menu?.item?.description?.color
+                                              ?.default
                                 }
                                 truncate={!item.disableTruncation}
                                 data-truncate="true"

@@ -22,8 +22,8 @@ import {
     Menu,
     MenuAlignment,
     MenuSide,
-    MenuItemV2Variant,
-    MenuItemV2ActionType,
+    MenuItemVariant,
+    MenuItemActionType,
 } from 'blend-v1'
 import { Button, ButtonType } from 'blend-v1'
 import { Settings, User, LogOut, ChevronDown } from 'lucide-react'
@@ -53,8 +53,8 @@ function MyComponent() {
                 {
                     label: 'Sign Out',
                     slot1: <LogOut size={16} />,
-                    variant: MenuItemV2Variant.ACTION,
-                    actionType: MenuItemV2ActionType.DANGER,
+                    variant: MenuItemVariant.ACTION,
+                    actionType: MenuItemActionType.DANGER,
                     onClick: () => console.log('Sign out clicked'),
                 },
             ],
@@ -244,7 +244,7 @@ Structure for grouping menu items:
                 content: 'items',
                 hintText: 'Array of menu items in this group',
             },
-            { content: 'MenuItemV2Type[]', hintText: 'array' },
+            { content: 'MenuItemType[]', hintText: 'array' },
             { content: '' },
         ],
         [
@@ -261,7 +261,7 @@ Structure for grouping menu items:
     loadingMessage="Loading props..."
 />
 
-### MenuItemV2Type
+### MenuItemType
 
 Structure for individual menu items:
 
@@ -320,15 +320,15 @@ Structure for individual menu items:
                 content: 'variant',
                 hintText: 'Visual variant of the menu item',
             },
-            { content: 'MenuItemV2Variant', hintText: 'enum' },
-            { content: 'MenuItemV2Variant.DEFAULT' },
+            { content: 'MenuItemVariant', hintText: 'enum' },
+            { content: 'MenuItemVariant.DEFAULT' },
         ],
         [
             {
                 content: 'actionType',
                 hintText: 'Action type for styling (used with ACTION variant)',
             },
-            { content: 'MenuItemV2ActionType', hintText: 'enum' },
+            { content: 'MenuItemActionType', hintText: 'enum' },
             { content: '' },
         ],
         [
@@ -352,7 +352,7 @@ Structure for individual menu items:
                 content: 'subMenu',
                 hintText: 'Nested menu items for creating submenus',
             },
-            { content: 'MenuItemV2Type[]', hintText: 'array' },
+            { content: 'MenuItemType[]', hintText: 'array' },
             { content: '' },
         ],
     ]}
@@ -399,8 +399,8 @@ const basicItems = [
             {
                 label: 'Delete',
                 slot1: <Trash size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.DANGER,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.DANGER,
                 onClick: () => console.log('Delete clicked'),
             },
         ],
@@ -485,8 +485,8 @@ const groupedItems = [
             {
                 label: 'Sign Out',
                 slot1: <LogOut size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.DANGER,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.DANGER,
                 onClick: () => console.log('Sign out'),
             },
         ],
@@ -683,7 +683,7 @@ export type MenuTokensType = {
         fontSize: CSSObject['fontSize']
 
         colors: {
-            [key in MenuItemV2Variant]: {
+            [key in MenuItemVariant]: {
                 default: {
                     background: CSSObject['backgroundColor']
                     text: CSSObject['color']
@@ -700,7 +700,7 @@ export type MenuTokensType = {
         }
 
         actionColors: {
-            [key in MenuItemV2ActionType]: {
+            [key in MenuItemActionType]: {
                 default: CSSObject['color']
                 hover: CSSObject['color']
             }
@@ -776,19 +776,19 @@ enum MenuSide {
 }
 ```
 
-### MenuItemV2Variant
+### MenuItemVariant
 
 ```tsx
-enum MenuItemV2Variant {
+enum MenuItemVariant {
     DEFAULT = 'default', // Standard menu item styling
     ACTION = 'action', // Special styling for actions (with actionType)
 }
 ```
 
-### MenuItemV2ActionType
+### MenuItemActionType
 
 ```tsx
-enum MenuItemV2ActionType {
+enum MenuItemActionType {
     PRIMARY = 'primary', // Primary action styling (blue)
     DANGER = 'danger', // Danger action styling (red)
 }
