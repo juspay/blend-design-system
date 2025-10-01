@@ -9,8 +9,10 @@ export enum DateRangePreset {
     TODAY = 'today',
     YESTERDAY = 'yesterday',
     TOMORROW = 'tomorrow',
+    LAST_30_MINS = 'last30Mins',
     LAST_1_HOUR = 'last1Hour',
     LAST_6_HOURS = 'last6Hours',
+    LAST_24_HOURS = 'last24Hours',
     LAST_7_DAYS = 'last7Days',
     LAST_30_DAYS = 'last30Days',
     LAST_3_MONTHS = 'last3Months',
@@ -167,6 +169,93 @@ export type PickerColumnData = {
 // COMPONENT PROPS
 // =============================================================================
 
+/**
+ * Function type for custom date disabling logic
+ * @param date The date to check
+ * @returns true if the date should be disabled, false otherwise
+ */
+export type CustomDateDisableFunction = (date: Date) => boolean
+
+/**
+ * Function type for custom range calculation
+ * @param selectedDate The date that was selected
+ * @param currentRange The current date range
+ * @param isStartDate Whether the selected date is for start or end
+ * @returns The new date range or null to use default behavior
+ */
+export type CustomRangeCalculationFunction = (
+    selectedDate: Date,
+    currentRange: DateRange,
+    isStartDate: boolean
+) => DateRange | null
+
+/**
+ * Configuration for automatic range calculation
+ */
+export type AutoRangeConfig = {
+    /** Number of days to add to start date for end date */
+    rangeDays?: number
+    /** Number of hours to add to start date for end date */
+    rangeHours?: number
+    /** Number of minutes to add to start date for end date */
+    rangeMinutes?: number
+    /** Whether to include the start date in the range (true) or exclude it (false) */
+    includeStartDate?: boolean
+    /** Custom function to calculate the range */
+    customCalculation?: CustomRangeCalculationFunction
+}
+
+/**
+ * Function type for custom range calculation
+ * @param startDate The selected start date
+ * @param currentRange The current selected range (if any)
+ * @returns The calculated end date, or null to use default behavior
+ */
+export type CustomRangeCalculatorFunction = (
+    startDate: Date,
+    currentRange?: DateRange
+) => Date | null
+
+/**
+ * Configuration for custom range behavior
+ */
+export type CustomRangeConfig = {
+    /**
+     * Function to calculate end date based on start date
+     */
+    calculateEndDate?: CustomRangeCalculatorFunction
+
+    /**
+     * Fixed number of days for the range (alternative to calculateEndDate)
+     */
+    fixedDayRange?: number
+
+    /**
+     * Reference date range to use for comparison/duration calculation
+     * When provided, the component will calculate a range with the same duration
+     */
+    referenceRange?: DateRange
+
+    /**
+     * Number of days to go backward for backward ranges (e.g., last 5 days)
+     * Used when calculateEndDate returns the same date as clicked date
+     * @default 6
+     */
+    backwardDays?: number
+
+    /**
+     * Whether to allow manual end date selection when using custom range logic
+     * @default false
+     */
+    allowManualEndDateSelection?: boolean
+
+    /**
+     * Whether to apply custom range logic to preset selections
+     * @default false
+     */
+    applyToPresets?: boolean
+}
+
 export type DateRangePickerProps = {
     value?: DateRange
     onChange?: (range: DateRange) => void
@@ -183,6 +272,8 @@ export type DateRangePickerProps = {
     disablePastDates?: boolean
     hideFutureDates?: boolean
     hidePastDates?: boolean
+    customDisableDates?: CustomDateDisableFunction
+    customRangeConfig?: CustomRangeConfig
     triggerElement?: ReactNode
     useDrawerOnMobile?: boolean
     skipQuickFiltersOnMobile?: boolean

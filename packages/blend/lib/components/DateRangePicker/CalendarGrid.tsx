@@ -7,11 +7,11 @@ import {
     useMemo,
 } from 'react'
 import styled, { CSSObject } from 'styled-components'
-import { DateRange } from './types'
+import { DateRange, CustomRangeConfig } from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
 import {
-    handleEnhancedCalendarDateClick,
+    handleCustomRangeCalendarDateClick,
     getDayNames,
     getMonthHeight,
     findCurrentMonthIndex,
@@ -34,6 +34,8 @@ type CalendarGridProps = {
     disablePastDates?: boolean
     hideFutureDates?: boolean
     hidePastDates?: boolean
+    customDisableDates?: (date: Date) => boolean
+    customRangeConfig?: CustomRangeConfig
     showDateTimePicker?: boolean
 }
 
@@ -74,6 +76,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             disablePastDates = false,
             hideFutureDates = false,
             hidePastDates = false,
+            customDisableDates,
+            customRangeConfig,
             showDateTimePicker = true,
         },
         ref
@@ -287,13 +291,14 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 isDoubleClick: boolean = false
             ) => {
                 const clickedDate = new Date(year, month, day)
-                const newRange = handleEnhancedCalendarDateClick(
+                const newRange = handleCustomRangeCalendarDateClick(
                     clickedDate,
                     selectedRange,
                     allowSingleDateSelection,
                     today,
                     disableFutureDates,
                     disablePastDates,
+                    customRangeConfig,
                     isDoubleClick
                 )
 
@@ -307,6 +312,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 today,
                 disableFutureDates,
                 disablePastDates,
+                customRangeConfig,
                 onDateSelect,
             ]
         )
@@ -446,7 +452,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                         today,
                                                         disableFutureDates,
                                                         disablePastDates,
-                                                        calendarToken
+                                                        calendarToken,
+                                                        customDisableDates
                                                     )
 
                                                 const isSelected =
