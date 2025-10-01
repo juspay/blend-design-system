@@ -1,31 +1,74 @@
 import type { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME } from '../../../tokens'
 import type { FoundationTokenType } from '../../../tokens/theme.token'
 import { DropdownInputSize, DropdownInputState } from './types'
 import { BreakpointType } from '../../../breakpoints/breakPoints'
 
 export type DropdownInputTokensType = {
-    input: {
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in DropdownInputState]: CSSObject['color']
+        }
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in DropdownInputState]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in DropdownInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in DropdownInputState]: CSSObject['color']
+        }
+    }
+    inputContainer: {
         gap: CSSObject['gap']
-        borderRadius?: CSSObject['borderRadius']
-        boxShadow: {
-            [key in DropdownInputState]: CSSObject['boxShadow']
+        fontSize: {
+            [key in DropdownInputSize]: CSSObject['fontSize']
         }
-        paddingX: {
-            [key in DropdownInputSize]: CSSObject['padding']
-        }
-        paddingY: {
-            [key in DropdownInputSize]: CSSObject['padding']
-        }
-        border: {
-            [key in DropdownInputState]: CSSObject['border']
+        fontWeight: {
+            [key in DropdownInputSize]: CSSObject['fontWeight']
         }
         color: {
             [key in DropdownInputState]: CSSObject['color']
         }
-        outline: {
-            [key in DropdownInputState]: CSSObject['outline']
+
+        borderRadius?: {
+            [key in DropdownInputSize]: CSSObject['borderRadius']
         }
+        boxShadow: CSSObject['boxShadow']
+
+        padding: {
+            x: {
+                [key in DropdownInputSize]: CSSObject['padding']
+            }
+            y: {
+                [key in DropdownInputSize]: CSSObject['padding']
+            }
+        }
+        border: {
+            [key in DropdownInputState]: CSSObject['border']
+        }
+
         backgroundColor: {
             [key in DropdownInputState]: CSSObject['backgroundColor']
         }
@@ -36,75 +79,93 @@ export type ResponsiveDropdownInputTokens = {
     [key in keyof BreakpointType]: DropdownInputTokensType
 }
 
-const dropdownInputTokens: Readonly<DropdownInputTokensType> = {
-    input: {
-        gap: FOUNDATION_THEME.unit[8],
-        borderRadius: FOUNDATION_THEME.unit[10],
-        boxShadow: {
-            default: FOUNDATION_THEME.shadows.sm,
-            hover: FOUNDATION_THEME.shadows.sm,
-            focus: FOUNDATION_THEME.shadows.focusPrimary,
-            error: FOUNDATION_THEME.shadows.focusError,
-            disabled: FOUNDATION_THEME.shadows.sm,
-        },
-        paddingX: {
-            sm: FOUNDATION_THEME.unit[10],
-            md: FOUNDATION_THEME.unit[12],
-            lg: FOUNDATION_THEME.unit[14],
-        },
-        paddingY: {
-            sm: FOUNDATION_THEME.unit[6],
-            md: FOUNDATION_THEME.unit[8],
-            lg: FOUNDATION_THEME.unit[10],
-        },
-        border: {
-            default: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-            hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
-            focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-            error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-            disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-        },
-        outline: {
-            default: 'none',
-            hover: 'none',
-            focus: 'none',
-            error: 'none',
-            disabled: 'none',
-        },
-        color: {
-            default: FOUNDATION_THEME.colors.gray[800],
-            hover: FOUNDATION_THEME.colors.gray[800],
-            focus: FOUNDATION_THEME.colors.gray[800],
-            error: FOUNDATION_THEME.colors.red[800],
-            disabled: FOUNDATION_THEME.colors.gray[300],
-        },
-        backgroundColor: {
-            default: FOUNDATION_THEME.colors.gray[0],
-            disabled: FOUNDATION_THEME.colors.gray[50],
-            hover: FOUNDATION_THEME.colors.gray[0],
-            focus: FOUNDATION_THEME.colors.gray[0],
-            error: FOUNDATION_THEME.colors.gray[0],
-        },
-    },
-}
-
 export const getDropdownInputTokens = (
     foundationTheme: FoundationTokenType
 ): ResponsiveDropdownInputTokens => {
     return {
         sm: {
-            input: {
-                gap: foundationTheme.unit[8],
-                borderRadius: foundationTheme.unit[10],
-                paddingX: {
-                    sm: foundationTheme.unit[10],
-                    md: foundationTheme.unit[12],
-                    lg: foundationTheme.unit[14],
+            gap: foundationTheme.unit[8],
+            label: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[500],
+                color: {
+                    default: foundationTheme.colors.gray[700],
+                    hover: foundationTheme.colors.gray[700],
+                    focus: foundationTheme.colors.gray[700],
+                    disabled: foundationTheme.colors.gray[400],
+                    error: foundationTheme.colors.red[600],
                 },
-                paddingY: {
-                    sm: foundationTheme.unit[6],
-                    md: foundationTheme.unit[8],
-                    lg: foundationTheme.unit[14],
+            },
+            subLabel: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[400],
+                color: {
+                    default: foundationTheme.colors.gray[400],
+                    hover: foundationTheme.colors.gray[400],
+                    focus: foundationTheme.colors.gray[400],
+                    disabled: foundationTheme.colors.gray[300],
+                    error: foundationTheme.colors.red[600],
+                },
+            },
+
+            helpIcon: {
+                width: foundationTheme.unit[14],
+                color: {
+                    default: foundationTheme.colors.gray[400],
+                    hover: foundationTheme.colors.gray[400],
+                    focus: foundationTheme.colors.gray[400],
+                    disabled: foundationTheme.colors.gray[400],
+                    error: foundationTheme.colors.red[600],
+                },
+            },
+            hintText: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[400],
+                color: {
+                    default: foundationTheme.colors.gray[500],
+                    hover: foundationTheme.colors.gray[500],
+                    focus: foundationTheme.colors.gray[500],
+                    disabled: foundationTheme.colors.gray[400],
+                    error: foundationTheme.colors.red[600],
+                },
+            },
+            errorMessage: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[500],
+                color: foundationTheme.colors.red[600],
+            },
+            required: {
+                color: foundationTheme.colors.red[600],
+            },
+            inputContainer: {
+                gap: foundationTheme.unit[8],
+                fontSize: {
+                    sm: foundationTheme.font.size.body.md.fontSize,
+                    md: foundationTheme.font.size.body.md.fontSize,
+                    lg: foundationTheme.font.size.body.md.fontSize,
+                },
+                fontWeight: {
+                    sm: foundationTheme.font.weight[500],
+                    md: foundationTheme.font.weight[500],
+                    lg: foundationTheme.font.weight[500],
+                },
+
+                borderRadius: {
+                    sm: foundationTheme.unit[10],
+                    md: foundationTheme.unit[10],
+                    lg: foundationTheme.unit[10],
+                },
+                padding: {
+                    x: {
+                        sm: foundationTheme.unit[10],
+                        md: foundationTheme.unit[12],
+                        lg: foundationTheme.unit[14],
+                    },
+                    y: {
+                        sm: foundationTheme.unit[6],
+                        md: foundationTheme.unit[8],
+                        lg: foundationTheme.unit[14],
+                    },
                 },
                 border: {
                     default: `1px solid ${foundationTheme.colors.gray[200]}`,
@@ -112,13 +173,6 @@ export const getDropdownInputTokens = (
                     focus: `1px solid ${foundationTheme.colors.primary[500]}`,
                     error: `1px solid ${foundationTheme.colors.red[500]}`,
                     disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
-                },
-                outline: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
                 },
                 color: {
                     default: foundationTheme.colors.gray[800],
@@ -134,28 +188,92 @@ export const getDropdownInputTokens = (
                     focus: foundationTheme.colors.gray[0],
                     error: foundationTheme.colors.gray[0],
                 },
-                boxShadow: {
-                    default: FOUNDATION_THEME.shadows.sm,
-                    hover: FOUNDATION_THEME.shadows.sm,
-                    focus: FOUNDATION_THEME.shadows.focusPrimary,
-                    error: FOUNDATION_THEME.shadows.focusError,
-                    disabled: FOUNDATION_THEME.shadows.sm,
-                },
+                boxShadow: foundationTheme.shadows.sm,
             },
         },
         lg: {
-            input: {
-                gap: foundationTheme.unit[8],
-                borderRadius: foundationTheme.unit[10],
-                paddingX: {
-                    sm: foundationTheme.unit[10],
-                    md: foundationTheme.unit[12],
-                    lg: foundationTheme.unit[14],
+            gap: foundationTheme.unit[8],
+            label: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[500],
+                color: {
+                    default: foundationTheme.colors.gray[700],
+                    hover: foundationTheme.colors.gray[700],
+                    focus: foundationTheme.colors.gray[700],
+                    disabled: foundationTheme.colors.gray[400],
+                    error: foundationTheme.colors.red[600],
                 },
-                paddingY: {
-                    sm: foundationTheme.unit[6],
-                    md: foundationTheme.unit[8],
+            },
+            subLabel: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[400],
+                color: {
+                    default: foundationTheme.colors.gray[400],
+                    hover: foundationTheme.colors.gray[400],
+                    focus: foundationTheme.colors.gray[400],
+                    disabled: foundationTheme.colors.gray[300],
+                    error: foundationTheme.colors.red[600],
+                },
+            },
+            helpIcon: {
+                width: foundationTheme.unit[14],
+                color: {
+                    default: foundationTheme.colors.gray[400],
+                    hover: foundationTheme.colors.gray[400],
+                    focus: foundationTheme.colors.gray[400],
+                    disabled: foundationTheme.colors.gray[400],
+                    error: foundationTheme.colors.red[600],
+                },
+            },
+            hintText: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[400],
+                color: {
+                    default: foundationTheme.colors.gray[500],
+                    hover: foundationTheme.colors.gray[500],
+                    focus: foundationTheme.colors.gray[500],
+                    disabled: foundationTheme.colors.gray[400],
+                    error: foundationTheme.colors.red[600],
+                },
+            },
+
+            errorMessage: {
+                fontSize: foundationTheme.font.size.body.md.fontSize,
+                fontWeight: foundationTheme.font.weight[500],
+                color: foundationTheme.colors.red[600],
+            },
+            required: {
+                color: foundationTheme.colors.red[600],
+            },
+
+            inputContainer: {
+                gap: foundationTheme.unit[8],
+                fontSize: {
+                    sm: foundationTheme.font.size.body.md.fontSize,
+                    md: foundationTheme.font.size.body.md.fontSize,
+                    lg: foundationTheme.font.size.body.md.fontSize,
+                },
+                fontWeight: {
+                    sm: foundationTheme.font.weight[500],
+                    md: foundationTheme.font.weight[500],
+                    lg: foundationTheme.font.weight[500],
+                },
+                borderRadius: {
+                    sm: foundationTheme.unit[10],
+                    md: foundationTheme.unit[10],
                     lg: foundationTheme.unit[10],
+                },
+                padding: {
+                    x: {
+                        sm: foundationTheme.unit[10],
+                        md: foundationTheme.unit[12],
+                        lg: foundationTheme.unit[14],
+                    },
+                    y: {
+                        sm: foundationTheme.unit[6],
+                        md: foundationTheme.unit[8],
+                        lg: foundationTheme.unit[10],
+                    },
                 },
                 border: {
                     default: `1px solid ${foundationTheme.colors.gray[200]}`,
@@ -164,13 +282,7 @@ export const getDropdownInputTokens = (
                     error: `1px solid ${foundationTheme.colors.red[500]}`,
                     disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
                 },
-                outline: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
-                },
+
                 color: {
                     default: foundationTheme.colors.gray[800],
                     hover: foundationTheme.colors.gray[800],
@@ -185,16 +297,8 @@ export const getDropdownInputTokens = (
                     focus: foundationTheme.colors.gray[0],
                     error: foundationTheme.colors.gray[0],
                 },
-                boxShadow: {
-                    default: FOUNDATION_THEME.shadows.sm,
-                    hover: FOUNDATION_THEME.shadows.sm,
-                    focus: FOUNDATION_THEME.shadows.focusPrimary,
-                    error: FOUNDATION_THEME.shadows.focusError,
-                    disabled: FOUNDATION_THEME.shadows.sm,
-                },
+                boxShadow: foundationTheme.shadows.sm,
             },
         },
     }
 }
-
-export default dropdownInputTokens
