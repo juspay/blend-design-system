@@ -49,6 +49,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
         const scrollContainerRef = useRef<HTMLDivElement>(null)
         const [, setShowScrolling] = useState(false)
+        const prevItemsLengthRef = useRef(items.length)
 
         useEffect(() => {
             const checkScrolling = () => {
@@ -63,6 +64,18 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             window.addEventListener('resize', checkScrolling)
             return () => window.removeEventListener('resize', checkScrolling)
         }, [items])
+
+        useEffect(() => {
+            if (items.length > prevItemsLengthRef.current) {
+                if (scrollContainerRef.current) {
+                    scrollContainerRef.current.scrollTo({
+                        left: scrollContainerRef.current.scrollWidth,
+                        behavior: 'smooth',
+                    })
+                }
+            }
+            prevItemsLengthRef.current = items.length
+        }, [items.length])
 
         const processedItems = useMemo(() => {
             return processTabsWithConcatenation(items)
