@@ -38,6 +38,12 @@ export type NumberInputTokensType = {
             [key in NumberInputState]: CSSObject['color']
         }
     }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in NumberInputState]: CSSObject['color']
+        }
+    }
     errorMessage: {
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
@@ -126,6 +132,16 @@ export const getNumberInputTokens = (
                     hover: foundationToken.colors.gray[400],
                     focus: foundationToken.colors.gray[400],
                     disabled: foundationToken.colors.gray[300],
+                    error: foundationToken.colors.red[600],
+                },
+            },
+            helpIcon: {
+                width: foundationToken.unit[14],
+                color: {
+                    default: foundationToken.colors.gray[400],
+                    hover: foundationToken.colors.gray[400],
+                    focus: foundationToken.colors.gray[400],
+                    disabled: foundationToken.colors.gray[400],
                     error: foundationToken.colors.red[600],
                 },
             },
@@ -251,6 +267,16 @@ export const getNumberInputTokens = (
                     hover: foundationToken.colors.gray[400],
                     focus: foundationToken.colors.gray[400],
                     disabled: foundationToken.colors.gray[300],
+                    error: foundationToken.colors.red[600],
+                },
+            },
+            helpIcon: {
+                width: foundationToken.unit[14],
+                color: {
+                    default: foundationToken.colors.gray[400],
+                    hover: foundationToken.colors.gray[400],
+                    focus: foundationToken.colors.gray[400],
+                    disabled: foundationToken.colors.gray[400],
                     error: foundationToken.colors.red[600],
                 },
             },
