@@ -122,9 +122,15 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                 ref={ref}
                 className={className}
                 style={{
-                    borderLeft: calendarToken.quickRange.trigger.borderLeft,
-                    borderTop: calendarToken.quickRange.trigger.borderTop,
-                    borderBottom: calendarToken.quickRange.trigger.borderBottom,
+                    borderLeft: isDisabled
+                        ? calendarToken.quickRange.trigger.disabled.borderLeft
+                        : calendarToken.quickRange.trigger.borderLeft,
+                    borderTop: isDisabled
+                        ? calendarToken.quickRange.trigger.disabled.borderTop
+                        : calendarToken.quickRange.trigger.borderTop,
+                    borderBottom: isDisabled
+                        ? calendarToken.quickRange.trigger.disabled.borderBottom
+                        : calendarToken.quickRange.trigger.borderBottom,
                     borderTopLeftRadius:
                         calendarToken.quickRange.trigger.borderTopLeftRadius,
                     borderBottomLeftRadius:

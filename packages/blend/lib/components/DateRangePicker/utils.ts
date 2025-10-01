@@ -211,39 +211,51 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
         }
 
         case DateRangePreset.LAST_3_MONTHS: {
+            // Last 3 months: Start from 12:00 AM of 3 months ago to current time
             const threeMonthsAgo = new Date(now)
             threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+            threeMonthsAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
             return { startDate: threeMonthsAgo, endDate: now }
         }
 
         case DateRangePreset.LAST_12_MONTHS: {
+            // Last 12 months: Start from 12:00 AM of 12 months ago to current time
             const twelveMonthsAgo = new Date(now)
             twelveMonthsAgo.setFullYear(twelveMonthsAgo.getFullYear() - 1)
+            twelveMonthsAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
             return { startDate: twelveMonthsAgo, endDate: now }
         }
 
         case DateRangePreset.NEXT_7_DAYS: {
+            // Next 7 days: From current time to 11:59 PM of 7 days later
             const sevenDaysLater = new Date(today)
             sevenDaysLater.setDate(sevenDaysLater.getDate() + 6)
-            return { startDate: today, endDate: sevenDaysLater }
+            sevenDaysLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            return { startDate: now, endDate: sevenDaysLater }
         }
 
         case DateRangePreset.NEXT_30_DAYS: {
+            // Next 30 days: From current time to 11:59 PM of 30 days later
             const thirtyDaysLater = new Date(today)
             thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 29)
-            return { startDate: today, endDate: thirtyDaysLater }
+            thirtyDaysLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            return { startDate: now, endDate: thirtyDaysLater }
         }
 
         case DateRangePreset.NEXT_3_MONTHS: {
+            // Next 3 months: From current time to 11:59 PM of 3 months later
             const threeMonthsLater = new Date(today)
             threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3)
-            return { startDate: today, endDate: threeMonthsLater }
+            threeMonthsLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            return { startDate: now, endDate: threeMonthsLater }
         }
 
         case DateRangePreset.NEXT_12_MONTHS: {
+            // Next 12 months: From current time to 11:59 PM of 12 months later
             const twelveMonthsLater = new Date(today)
             twelveMonthsLater.setFullYear(twelveMonthsLater.getFullYear() + 1)
-            return { startDate: today, endDate: twelveMonthsLater }
+            twelveMonthsLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            return { startDate: now, endDate: twelveMonthsLater }
         }
 
         default: {
@@ -3234,7 +3246,7 @@ export const createCustomRangeCalculators = {
                 return null
             }
 
-            let currentDate = new Date(startDate)
+            const currentDate = new Date(startDate)
             let daysAdded = 0
             let businessDaysAdded = 0
 

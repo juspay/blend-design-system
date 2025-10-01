@@ -706,6 +706,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             ? borderRadiusWithPresets
                             : borderRadiusWithoutPresets
                     }
+                    border={
+                        isDisabled
+                            ? calendarToken.trigger.disabled.border
+                            : calendarToken.trigger.border
+                    }
                     aria-expanded={isOpen}
                     aria-disabled={isDisabled}
                     disabled={isDisabled}
