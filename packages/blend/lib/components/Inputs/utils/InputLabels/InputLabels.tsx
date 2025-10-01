@@ -18,6 +18,10 @@ type InputLabelTokens = {
     required?: {
         color?: string
     }
+    helpIcon?: {
+        width?: number | string
+        color?: { default?: string; disabled?: string }
+    }
 }
 
 type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
@@ -112,8 +116,14 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                             size={TooltipSize.SMALL}
                         >
                             <HelpCircleIcon
-                                size={14}
-                                color={FOUNDATION_THEME.colors.gray[400]}
+                                size={
+                                    tokens?.helpIcon?.width ||
+                                    FOUNDATION_THEME.unit[14]
+                                }
+                                color={
+                                    tokens?.helpIcon?.color?.default ||
+                                    FOUNDATION_THEME.colors.gray[400]
+                                }
                             />
                         </Tooltip>
                     </Block>
