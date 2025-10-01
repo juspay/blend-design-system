@@ -137,7 +137,9 @@ const UnitInput = ({
                 paddingX={unitInputTokens.inputContainer.unit.padding[size]}
                 margin={1}
                 contentCentered
-                backgroundColor={FOUNDATION_THEME.colors.gray[50]}
+                backgroundColor={
+                    unitInputTokens.inputContainer.unit.backgroundColor.default
+                }
                 borderRight={unitInputTokens.inputContainer.border.default}
                 borderRadius={`${unitInputTokens.inputContainer.borderRadius[size]} 0px 0px ${unitInputTokens.inputContainer.borderRadius[size]}`}
             >

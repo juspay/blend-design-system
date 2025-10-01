@@ -112,7 +112,7 @@ const TextArea = ({
                 paddingBottom={
                     isSmallScreen && inputFocusedOrWithValue ? 0 : paddingY
                 }
-                boxShadow={textAreaTokens.inputContainer.boxShadow.default}
+                boxShadow={textAreaTokens.inputContainer.boxShadow}
                 border={
                     textAreaTokens.inputContainer.border[
                         error ? 'error' : 'default'
@@ -120,11 +120,6 @@ const TextArea = ({
                 }
                 fontSize={textAreaTokens.inputContainer.fontSize}
                 fontWeight={textAreaTokens.inputContainer.fontWeight}
-                outline={
-                    textAreaTokens.inputContainer.outline[
-                        error ? 'error' : 'default'
-                    ]
-                }
                 _hover={{
                     border: textAreaTokens.inputContainer.border[
                         error ? 'error' : 'hover'
@@ -139,10 +134,7 @@ const TextArea = ({
                     border: textAreaTokens.inputContainer.border[
                         error ? 'error' : 'focus'
                     ],
-                    boxShadow:
-                        textAreaTokens.inputContainer.boxShadow[
-                            error ? 'error' : 'focus'
-                        ],
+                    boxShadow: textAreaTokens.inputContainer.boxShadow,
                 }}
                 disabled={disabled}
                 _disabled={{

@@ -42,31 +42,27 @@ export type SearchInputTokensType = {
         color: CSSObject['color']
     }
     inputContainer: {
-        height: CSSObject['height']
-        width: CSSObject['width']
         padding: {
             x: CSSObject['padding']
             y: CSSObject['padding']
         }
         borderRadius: CSSObject['borderRadius']
-        borderTop: {
-            [key in SearchInputState]: CSSObject['borderTop']
-        }
-        borderLeft: {
-            [key in SearchInputState]: CSSObject['borderLeft']
-        }
-        borderRight: {
-            [key in SearchInputState]: CSSObject['borderRight']
-        }
         borderBottom: {
             [key in SearchInputState]: CSSObject['borderBottom']
         }
         outline: CSSObject['outline']
         boxShadow: CSSObject['boxShadow']
-        color: CSSObject['color']
+        color: {
+            [key in SearchInputState]: CSSObject['color']
+        }
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
-        placeholderColor: CSSObject['color']
+    }
+    icon: {
+        color: {
+            [key in SearchInputState]: CSSObject['color']
+        }
+        width: CSSObject['width']
     }
 }
 
@@ -122,34 +118,11 @@ export const getSearchInputTokens = (
                 color: foundationTokens.colors.red[600],
             },
             inputContainer: {
-                width: '100%',
-                height: foundationTokens.unit[40],
                 padding: {
                     x: foundationTokens.unit[8],
                     y: foundationTokens.unit[8],
                 },
                 borderRadius: foundationTokens.unit[0],
-                borderTop: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
-                },
-                borderLeft: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
-                },
-                borderRight: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
-                },
                 borderBottom: {
                     default: `1px solid ${foundationTokens.colors.gray[200]} !important`,
                     hover: `1px solid ${foundationTokens.colors.gray[400]} !important`,
@@ -159,10 +132,25 @@ export const getSearchInputTokens = (
                 },
                 outline: 'none',
                 boxShadow: foundationTokens.shadows.sm,
-                color: foundationTokens.colors.gray[900],
+                color: {
+                    default: foundationTokens.colors.gray[400],
+                    hover: foundationTokens.colors.gray[800],
+                    focus: foundationTokens.colors.gray[800],
+                    disabled: foundationTokens.colors.gray[300],
+                    error: foundationTokens.colors.red[800],
+                },
                 fontSize: foundationTokens.font.size.body.md.fontSize,
                 fontWeight: foundationTokens.font.weight[500],
-                placeholderColor: foundationTokens.colors.gray[400],
+            },
+            icon: {
+                color: {
+                    default: foundationTokens.colors.gray[400],
+                    hover: foundationTokens.colors.gray[600],
+                    focus: foundationTokens.colors.primary[500],
+                    disabled: foundationTokens.colors.gray[300],
+                    error: foundationTokens.colors.red[500],
+                },
+                width: foundationTokens.unit[16],
             },
         },
         lg: {
@@ -209,34 +197,11 @@ export const getSearchInputTokens = (
                 color: foundationTokens.colors.red[600],
             },
             inputContainer: {
-                width: '100%',
-                height: foundationTokens.unit[40],
                 padding: {
                     x: foundationTokens.unit[8],
                     y: foundationTokens.unit[8],
                 },
                 borderRadius: foundationTokens.unit[0],
-                borderTop: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
-                },
-                borderLeft: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
-                },
-                borderRight: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
-                },
                 borderBottom: {
                     default: `1px solid ${foundationTokens.colors.gray[200]} !important`,
                     hover: `1px solid ${foundationTokens.colors.gray[400]} !important`,
@@ -246,10 +211,25 @@ export const getSearchInputTokens = (
                 },
                 outline: 'none',
                 boxShadow: foundationTokens.shadows.sm,
-                color: foundationTokens.colors.gray[900],
+                color: {
+                    default: foundationTokens.colors.gray[400],
+                    hover: foundationTokens.colors.gray[800],
+                    focus: foundationTokens.colors.gray[800],
+                    disabled: foundationTokens.colors.gray[300],
+                    error: foundationTokens.colors.red[800],
+                },
                 fontSize: foundationTokens.font.size.body.md.fontSize,
                 fontWeight: foundationTokens.font.weight[500],
-                placeholderColor: foundationTokens.colors.gray[400],
+            },
+            icon: {
+                color: {
+                    default: foundationTokens.colors.gray[400],
+                    hover: foundationTokens.colors.gray[600],
+                    focus: foundationTokens.colors.primary[500],
+                    disabled: foundationTokens.colors.gray[300],
+                    error: foundationTokens.colors.red[500],
+                },
+                width: foundationTokens.unit[16],
             },
         },
     }

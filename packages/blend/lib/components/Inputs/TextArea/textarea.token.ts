@@ -49,12 +49,7 @@ export type TextAreaTokensType = {
             y: CSSObject['padding']
         }
         borderRadius: CSSObject['borderRadius']
-        boxShadow: {
-            [key in TextAreaState]: CSSObject['boxShadow']
-        }
-        outline: {
-            [key in TextAreaState]: CSSObject['outline']
-        }
+        boxShadow: CSSObject['boxShadow']
         border: {
             [key in TextAreaState]: CSSObject['border']
         }
@@ -126,20 +121,7 @@ export const getTextAreaTokens = (
                     y: foundationTokens.unit[10],
                 },
                 borderRadius: foundationTokens.unit[8],
-                boxShadow: {
-                    default: foundationTokens.shadows.sm,
-                    hover: foundationTokens.shadows.sm,
-                    focus: foundationTokens.shadows.focusPrimary,
-                    error: foundationTokens.shadows.focusError,
-                    disabled: foundationTokens.shadows.sm,
-                },
-                outline: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
-                },
+                boxShadow: foundationTokens.shadows.sm,
                 border: {
                     default: `1px solid ${foundationTokens.colors.gray[200]}`,
                     hover: `1px solid ${foundationTokens.colors.gray[400]}`,
@@ -214,20 +196,7 @@ export const getTextAreaTokens = (
                     y: foundationTokens.unit[10],
                 },
                 borderRadius: foundationTokens.unit[8],
-                boxShadow: {
-                    default: foundationTokens.shadows.sm,
-                    hover: foundationTokens.shadows.sm,
-                    focus: foundationTokens.shadows.focusPrimary,
-                    error: foundationTokens.shadows.focusError,
-                    disabled: foundationTokens.shadows.sm,
-                },
-                outline: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
-                },
+                boxShadow: foundationTokens.shadows.sm,
                 border: {
                     default: `1px solid ${foundationTokens.colors.gray[200]}`,
                     hover: `1px solid ${foundationTokens.colors.gray[400]}`,

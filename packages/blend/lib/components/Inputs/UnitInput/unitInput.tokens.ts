@@ -83,6 +83,9 @@ export type UnitInputTokensType = {
             padding: {
                 [key in UnitInputSize]: CSSObject['padding']
             }
+            backgroundColor: {
+                [key in UnitInputState]: CSSObject['backgroundColor']
+            }
         }
     }
 }
@@ -203,6 +206,13 @@ export const getUnitInputTokens = (
                         md: foundationTheme.unit[12],
                         lg: foundationTheme.unit[14],
                     },
+                    backgroundColor: {
+                        default: foundationTheme.colors.gray[0],
+                        disabled: foundationTheme.colors.gray[50],
+                        hover: foundationTheme.colors.gray[0],
+                        focus: foundationTheme.colors.gray[0],
+                        error: foundationTheme.colors.gray[0],
+                    },
                 },
             },
         },
@@ -313,6 +323,13 @@ export const getUnitInputTokens = (
                     padding: {
                         md: foundationTheme.unit[12],
                         lg: foundationTheme.unit[14],
+                    },
+                    backgroundColor: {
+                        default: foundationTheme.colors.gray[0],
+                        disabled: foundationTheme.colors.gray[50],
+                        hover: foundationTheme.colors.gray[0],
+                        focus: foundationTheme.colors.gray[0],
+                        error: foundationTheme.colors.gray[0],
                     },
                 },
             },
