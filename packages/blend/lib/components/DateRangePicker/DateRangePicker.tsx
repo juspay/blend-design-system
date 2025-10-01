@@ -18,6 +18,7 @@ import {
     validateDateTimeRange,
     DateValidationResult,
     detectPresetFromRange,
+    validateCustomRangeConfig,
 } from './utils'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
@@ -186,6 +187,8 @@ type CalendarSectionProps = {
     disablePastDates: boolean
     hideFutureDates: boolean
     hidePastDates: boolean
+    customDisableDates?: (date: Date) => boolean
+    customRangeConfig?: import('./types').CustomRangeConfig
     onDateSelect: (range: DateRange) => void
     showDateTimePicker: boolean
 }
@@ -198,6 +201,8 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
     disablePastDates,
     hideFutureDates,
     hidePastDates,
+    customDisableDates,
+    customRangeConfig,
     onDateSelect,
     showDateTimePicker,
 }) => (
@@ -211,6 +216,8 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
             disablePastDates={disablePastDates}
             hideFutureDates={hideFutureDates}
             hidePastDates={hidePastDates}
+            customDisableDates={customDisableDates}
+            customRangeConfig={customRangeConfig}
             showDateTimePicker={showDateTimePicker}
         />
     </Block>
@@ -275,6 +282,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             disablePastDates = false,
             hideFutureDates = false,
             hidePastDates = false,
+            customDisableDates,
+            customRangeConfig,
             triggerElement = null,
             useDrawerOnMobile = true,
             skipQuickFiltersOnMobile = false,
@@ -390,6 +399,18 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             },
             [dateFormat]
         )
+
+        useEffect(() => {
+            if (customRangeConfig) {
+                const validation = validateCustomRangeConfig(customRangeConfig)
+                if (!validation.isValid) {
+                    console.warn(
+                        'DateRangePicker: Invalid customRangeConfig:',
+                        validation.error
+                    )
+                }
+            }
+        }, [customRangeConfig])
 
         const handlePresetSelect = useCallback(
             (preset: DateRangePreset) => {
@@ -730,7 +751,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         if (isMobile && useDrawerOnMobile) {
             const getFilteredPresets = () => {
                 const pastPresets = [
+                    DateRangePreset.LAST_30_MINS,
                     DateRangePreset.LAST_6_HOURS,
+                    DateRangePreset.LAST_24_HOURS,
                     DateRangePreset.TODAY,
                     DateRangePreset.YESTERDAY,
                     DateRangePreset.LAST_7_DAYS,
@@ -852,6 +875,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             disablePastDates={disablePastDates}
                             hideFutureDates={hideFutureDates}
                             hidePastDates={hidePastDates}
+                            customDisableDates={customDisableDates}
+                            customRangeConfig={customRangeConfig}
                             onDateSelect={handleDateSelectCallback}
                             showDateTimePicker={showDateTimePicker}
                         />

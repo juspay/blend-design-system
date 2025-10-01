@@ -48,8 +48,10 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
         const getFilteredPresets = () => {
             const pastPresets = [
                 DateRangePreset.YESTERDAY,
+                DateRangePreset.LAST_30_MINS,
                 DateRangePreset.LAST_1_HOUR,
                 DateRangePreset.LAST_6_HOURS,
+                DateRangePreset.LAST_24_HOURS,
                 DateRangePreset.LAST_7_DAYS,
                 DateRangePreset.LAST_30_DAYS,
                 DateRangePreset.LAST_3_MONTHS,
