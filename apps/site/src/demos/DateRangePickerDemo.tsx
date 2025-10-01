@@ -1071,6 +1071,193 @@ const DateRangePickerDemo = () => {
                         </div>
                     </div>
 
+                    {/* Custom Date Disabling - Days 3-9 */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Disable Specific Days (3-9)
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Disables dates 3-9 in any month (analytics use case)
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customDisableDates={(date) => {
+                                    const day = date.getDate()
+                                    return day >= 3 && day <= 9
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Custom Date Disabling - Specific Month/Year */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Disable January 2016
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Disables entire January 2016 month
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customDisableDates={(date) => {
+                                    return (
+                                        date.getFullYear() === 2016 &&
+                                        date.getMonth() === 0
+                                    ) // January is month 0
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Custom Date Disabling - Last 3 Months */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Disable Last 3 Months
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Disables the last 3 months from today
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customDisableDates={(date) => {
+                                    const today = new Date()
+                                    const threeMonthsAgo = new Date()
+                                    threeMonthsAgo.setMonth(
+                                        today.getMonth() - 3
+                                    )
+                                    return (
+                                        date >= threeMonthsAgo && date <= today
+                                    )
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Custom Date Disabling - Weekends */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Disable Weekends
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Disables all Saturdays and Sundays
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customDisableDates={(date) => {
+                                    const dayOfWeek = date.getDay()
+                                    return dayOfWeek === 0 || dayOfWeek === 6 // Sunday = 0, Saturday = 6
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Custom Date Disabling - Complex Logic */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Complex Disable Logic
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Disables: Jan 2016, weekends, and 15th of every
+                            month
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customDisableDates={(date) => {
+                                    // Disable January 2016
+                                    if (
+                                        date.getFullYear() === 2016 &&
+                                        date.getMonth() === 0
+                                    ) {
+                                        return true
+                                    }
+
+                                    // Disable weekends
+                                    const dayOfWeek = date.getDay()
+                                    if (dayOfWeek === 0 || dayOfWeek === 6) {
+                                        return true
+                                    }
+
+                                    // Disable 15th of every month
+                                    if (date.getDate() === 15) {
+                                        return true
+                                    }
+
+                                    return false
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Custom Date Disabling - Date Range */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Disable Date Range
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Disables Dec 20, 2024 to Jan 5, 2025 (holiday
+                            period)
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customDisableDates={(date) => {
+                                    const startDisable = new Date(2024, 11, 20) // Dec 20, 2024
+                                    const endDisable = new Date(2025, 0, 5) // Jan 5, 2025
+                                    return (
+                                        date >= startDisable &&
+                                        date <= endDisable
+                                    )
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* New Time Presets */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            New Time Presets
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Includes Last 30 Mins and Last 24 Hours presets
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                                formatConfig={{
+                                    preset: DateFormatPreset.MEDIUM_RANGE,
+                                    includeTime: true,
+                                    timeFormat: '12h',
+                                }}
+                            />
+                        </div>
+                    </div>
+
                     {/* Disabled State */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
@@ -1085,6 +1272,303 @@ const DateRangePickerDemo = () => {
                                 onChange={handleBasicRangeChange}
                                 isDisabled={true}
                                 showPresets={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Fixed 5-Day Range */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Fixed 5-Day Range
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            When you select a start date, end date is
+                            automatically set to 5 days later
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customRangeConfig={{
+                                    calculateEndDate: (startDate) => {
+                                        const endDate = new Date(startDate)
+                                        endDate.setDate(startDate.getDate() + 5)
+                                        return endDate
+                                    },
+                                    allowManualEndDateSelection: false,
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Fixed Week Range */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Fixed Week Range
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Automatically creates a 7-day range from selected
+                            start date
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customRangeConfig={{
+                                    calculateEndDate: (startDate) => {
+                                        const endDate = new Date(startDate)
+                                        endDate.setDate(startDate.getDate() + 7)
+                                        return endDate
+                                    },
+                                    allowManualEndDateSelection: false,
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Business Week Range */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Business Week (5 Days)
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Selects 5 business days (excluding weekends) from
+                            start date
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customRangeConfig={{
+                                    calculateEndDate: (startDate) => {
+                                        let endDate = new Date(startDate)
+                                        let daysAdded = 0
+                                        while (daysAdded < 5) {
+                                            endDate.setDate(
+                                                endDate.getDate() + 1
+                                            )
+                                            const dayOfWeek = endDate.getDay()
+                                            if (
+                                                dayOfWeek !== 0 &&
+                                                dayOfWeek !== 6
+                                            ) {
+                                                // Not weekend
+                                                daysAdded++
+                                            }
+                                        }
+                                        return endDate
+                                    },
+                                    allowManualEndDateSelection: false,
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Month Range */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Month Range
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            From selected start date to end of that month
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customRangeConfig={{
+                                    calculateEndDate: (startDate) => {
+                                        const endDate = new Date(
+                                            startDate.getFullYear(),
+                                            startDate.getMonth() + 1,
+                                            0
+                                        )
+                                        return endDate
+                                    },
+                                    allowManualEndDateSelection: false,
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Quarter Range */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Quarter Range
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            From selected start date to end of that quarter
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customRangeConfig={{
+                                    calculateEndDate: (startDate) => {
+                                        const quarter = Math.floor(
+                                            startDate.getMonth() / 3
+                                        )
+                                        const endMonth = (quarter + 1) * 3 - 1
+                                        const endDate = new Date(
+                                            startDate.getFullYear(),
+                                            endMonth + 1,
+                                            0
+                                        )
+                                        return endDate
+                                    },
+                                    allowManualEndDateSelection: false,
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Flexible Range with Manual Override */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Flexible 10-Day Range
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Default 10-day range, but allows manual end date
+                            selection
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customRangeConfig={{
+                                    calculateEndDate: (startDate) => {
+                                        const endDate = new Date(startDate)
+                                        endDate.setDate(
+                                            startDate.getDate() + 10
+                                        )
+                                        return endDate
+                                    },
+                                    allowManualEndDateSelection: true,
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Last 5 Days Range (Backward) */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Last 5 Days Range (Backward)
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            When you select a date, it creates a range from 5
+                            days before to that selected date
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customRangeConfig={{
+                                    calculateEndDate: (startDate) => {
+                                        // Return the same date to trigger backward range logic
+                                        return new Date(startDate)
+                                    },
+                                    backwardDays: 4, // 4 days before + selected day = 5 days total
+                                    allowManualEndDateSelection: false,
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Last Week Range (Backward) */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Last Week Range (Backward)
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            When you select a date, it creates a range from 7
+                            days before to that selected date
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customRangeConfig={{
+                                    calculateEndDate: (startDate) => {
+                                        // Return the same date to trigger backward range logic
+                                        return new Date(startDate)
+                                    },
+                                    backwardDays: 6, // 6 days before + selected day = 7 days total
+                                    allowManualEndDateSelection: false,
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Compare Range with Reference */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Compare Range (Clean API)
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Uses referenceRange prop to create ranges with same
+                            duration as a reference period
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customRangeConfig={{
+                                    referenceRange: {
+                                        startDate: new Date(2024, 0, 1, 9, 0), // Jan 1, 2024 9:00 AM
+                                        endDate: new Date(2024, 0, 8, 17, 30), // Jan 8, 2024 5:30 PM
+                                    },
+                                    allowManualEndDateSelection: false,
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Custom Calculator - End of Week */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            End of Week Calculator
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            From selected start date to end of that week
+                            (Sunday)
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                customRangeConfig={{
+                                    calculateEndDate: (startDate) => {
+                                        const endDate = new Date(startDate)
+                                        const daysUntilSunday =
+                                            7 - startDate.getDay()
+                                        endDate.setDate(
+                                            startDate.getDate() +
+                                                daysUntilSunday
+                                        )
+                                        return endDate
+                                    },
+                                    allowManualEndDateSelection: false,
+                                }}
+                                showPresets={true}
+                                showDateTimePicker={true}
                             />
                         </div>
                     </div>

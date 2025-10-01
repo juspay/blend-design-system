@@ -91,14 +91,11 @@ const Popover = ({
             }}
             modal={asModal}
         >
-            <RadixPopover.Trigger
-                asChild
-                style={{ outline: 'none', minWidth, maxWidth }}
-            >
+            <RadixPopover.Trigger asChild style={{ outline: 'none' }}>
                 {trigger}
             </RadixPopover.Trigger>
             <RadixPopover.Content
-                style={{ zIndex, outline: 'none' }}
+                style={{ zIndex, outline: 'none', minWidth, maxWidth }}
                 asChild
                 sideOffset={sideOffset}
                 side={side}

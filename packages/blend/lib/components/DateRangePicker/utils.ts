@@ -5,6 +5,8 @@ import {
     DateFormatConfig,
     CustomFormatFunction,
     HapticFeedbackType,
+    CustomRangeConfig,
+    CustomRangeCalculatorFunction,
 } from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import { DATE_RANGE_PICKER_CONSTANTS } from './constants'
@@ -161,6 +163,18 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
             return createSingleDateRange(yesterday)
         }
 
+        case DateRangePreset.LAST_30_MINS: {
+            const thirtyMinsAgo = new Date(now.getTime() - 30 * 60 * 1000)
+            return { startDate: thirtyMinsAgo, endDate: now }
+        }
+
+        case DateRangePreset.LAST_24_HOURS: {
+            const twentyFourHoursAgo = new Date(
+                now.getTime() - 24 * 60 * 60 * 1000
+            )
+            return { startDate: twentyFourHoursAgo, endDate: now }
+        }
+
         case DateRangePreset.TOMORROW: {
             const tomorrow = new Date(today)
             tomorrow.setDate(tomorrow.getDate() + 1)
@@ -197,39 +211,51 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
         }
 
         case DateRangePreset.LAST_3_MONTHS: {
+            // Last 3 months: Start from 12:00 AM of 3 months ago to current time
             const threeMonthsAgo = new Date(now)
             threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+            threeMonthsAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
             return { startDate: threeMonthsAgo, endDate: now }
         }
 
         case DateRangePreset.LAST_12_MONTHS: {
+            // Last 12 months: Start from 12:00 AM of 12 months ago to current time
             const twelveMonthsAgo = new Date(now)
             twelveMonthsAgo.setFullYear(twelveMonthsAgo.getFullYear() - 1)
+            twelveMonthsAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
             return { startDate: twelveMonthsAgo, endDate: now }
         }
 
         case DateRangePreset.NEXT_7_DAYS: {
+            // Next 7 days: From current time to 11:59 PM of 7 days later
             const sevenDaysLater = new Date(today)
             sevenDaysLater.setDate(sevenDaysLater.getDate() + 6)
-            return { startDate: today, endDate: sevenDaysLater }
+            sevenDaysLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            return { startDate: now, endDate: sevenDaysLater }
         }
 
         case DateRangePreset.NEXT_30_DAYS: {
+            // Next 30 days: From current time to 11:59 PM of 30 days later
             const thirtyDaysLater = new Date(today)
             thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 29)
-            return { startDate: today, endDate: thirtyDaysLater }
+            thirtyDaysLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            return { startDate: now, endDate: thirtyDaysLater }
         }
 
         case DateRangePreset.NEXT_3_MONTHS: {
+            // Next 3 months: From current time to 11:59 PM of 3 months later
             const threeMonthsLater = new Date(today)
             threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3)
-            return { startDate: today, endDate: threeMonthsLater }
+            threeMonthsLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            return { startDate: now, endDate: threeMonthsLater }
         }
 
         case DateRangePreset.NEXT_12_MONTHS: {
+            // Next 12 months: From current time to 11:59 PM of 12 months later
             const twelveMonthsLater = new Date(today)
             twelveMonthsLater.setFullYear(twelveMonthsLater.getFullYear() + 1)
-            return { startDate: today, endDate: twelveMonthsLater }
+            twelveMonthsLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            return { startDate: now, endDate: twelveMonthsLater }
         }
 
         default: {
@@ -251,10 +277,14 @@ export const getPresetLabel = (preset: DateRangePreset): string => {
             return 'Yesterday'
         case DateRangePreset.TOMORROW:
             return 'Tomorrow'
+        case DateRangePreset.LAST_30_MINS:
+            return 'Last 30 mins'
         case DateRangePreset.LAST_1_HOUR:
             return 'Last 1 hour'
         case DateRangePreset.LAST_6_HOURS:
             return 'Last 6 hours'
+        case DateRangePreset.LAST_24_HOURS:
+            return 'Last 24 hours'
         case DateRangePreset.LAST_7_DAYS:
             return 'Last 7 days'
         case DateRangePreset.LAST_30_DAYS:
@@ -951,6 +981,7 @@ export const getScrollToMonth = (
  * @param today Today's date
  * @param disableFutureDates Whether future dates are disabled
  * @param disablePastDates Whether past dates are disabled
+ * @param customDisableDates Custom function to disable specific dates
  * @returns Object with all date states
  */
 export const getDateCellStates = (
@@ -958,7 +989,8 @@ export const getDateCellStates = (
     selectedRange: DateRange,
     today: Date,
     disableFutureDates: boolean = false,
-    disablePastDates: boolean = false
+    disablePastDates: boolean = false,
+    customDisableDates?: (date: Date) => boolean
 ) => {
     const isStart = isStartDate(date, selectedRange)
     const isEnd = isEndDate(date, selectedRange)
@@ -974,7 +1006,8 @@ export const getDateCellStates = (
 
     const isDisabled = Boolean(
         (disableFutureDates && date > today) ||
-            (disablePastDates && date < today)
+            (disablePastDates && date < today) ||
+            (customDisableDates && customDisableDates(date))
     )
 
     return {
@@ -1568,6 +1601,7 @@ export const createCalendarMonthData = (
  * @param disableFutureDates Whether future dates are disabled
  * @param disablePastDates Whether past dates are disabled
  * @param calendarToken Calendar token for styling
+ * @param customDisableDates Custom function to disable specific dates
  * @returns Day cell props
  */
 export const calculateDayCellProps = (
@@ -1576,7 +1610,8 @@ export const calculateDayCellProps = (
     today: Date,
     disableFutureDates: boolean,
     disablePastDates: boolean,
-    calendarToken: CalendarTokenType
+    calendarToken: CalendarTokenType,
+    customDisableDates?: (date: Date) => boolean
 ): {
     dateStates: ReturnType<typeof getDateCellStates>
     styles: Record<string, unknown>
@@ -1588,7 +1623,8 @@ export const calculateDayCellProps = (
         selectedRange,
         today,
         disableFutureDates,
-        disablePastDates
+        disablePastDates,
+        customDisableDates
     )
 
     const getCellStyles = () => {
@@ -2049,7 +2085,13 @@ export const formatTriggerDisplay = (
         return placeholder
     }
 
-    return formatDateRangeWithConfig(range, config)
+    const enhancedConfig = {
+        ...config,
+        includeTime:
+            config.includeTime !== undefined ? config.includeTime : true, // Default to showing time
+    }
+
+    return formatDateRangeWithConfig(range, enhancedConfig)
 }
 
 /**
@@ -2798,9 +2840,18 @@ export const matchesYesterdayPreset = (range: DateRange): boolean => {
     // Check if it's a full day range for yesterday
     const startIsYesterday = isSameCalendarDay(range.startDate, yesterday)
     const endIsYesterday = isSameCalendarDay(range.endDate, yesterday)
-    const isFullDay = isFullDayRange(range.startDate, range.endDate)
 
-    return startIsYesterday && endIsYesterday && isFullDay
+    // More flexible check for full day - allow for slight variations in milliseconds
+    const isFullDayOrClose =
+        isFullDayRange(range.startDate, range.endDate) ||
+        (startIsYesterday &&
+            endIsYesterday &&
+            range.startDate.getHours() === 0 &&
+            range.startDate.getMinutes() === 0 &&
+            range.endDate.getHours() === 23 &&
+            range.endDate.getMinutes() === 59)
+
+    return startIsYesterday && endIsYesterday && isFullDayOrClose
 }
 
 /**
@@ -2851,9 +2902,15 @@ export const detectPresetFromRange = (range: DateRange): DateRangePreset => {
     if (timeDiff <= tolerance) {
         const durationMs = range.endDate.getTime() - range.startDate.getTime()
 
-        // Check hour-based presets
+        // Check minute and hour-based presets
+        const thirtyMins = 30 * 60 * 1000
         const oneHour = 60 * 60 * 1000
         const sixHours = 6 * 60 * 60 * 1000
+        const twentyFourHours = 24 * 60 * 60 * 1000
+
+        if (Math.abs(durationMs - thirtyMins) <= tolerance) {
+            return DateRangePreset.LAST_30_MINS
+        }
 
         if (Math.abs(durationMs - oneHour) <= tolerance) {
             return DateRangePreset.LAST_1_HOUR
@@ -2861,6 +2918,10 @@ export const detectPresetFromRange = (range: DateRange): DateRangePreset => {
 
         if (Math.abs(durationMs - sixHours) <= tolerance) {
             return DateRangePreset.LAST_6_HOURS
+        }
+
+        if (Math.abs(durationMs - twentyFourHours) <= tolerance) {
+            return DateRangePreset.LAST_24_HOURS
         }
     }
 
@@ -2947,4 +3008,390 @@ export const detectPresetFromRange = (range: DateRange): DateRangePreset => {
     }
 
     return DateRangePreset.CUSTOM
+}
+
+/**
+ * Applies custom range calculation logic to a selected start date
+ * @param startDate The selected start date
+ * @param customRangeConfig Custom range configuration
+ * @param currentRange Current selected range (optional)
+ * @returns Calculated range or null to use default behavior
+ */
+export const applyCustomRangeCalculation = (
+    startDate: Date,
+    customRangeConfig: CustomRangeConfig,
+    currentRange?: DateRange
+): DateRange | null => {
+    if (!customRangeConfig) {
+        return null
+    }
+
+    if (customRangeConfig.referenceRange) {
+        const { referenceRange } = customRangeConfig
+        if (referenceRange.startDate && referenceRange.endDate) {
+            const rangeDuration =
+                referenceRange.endDate.getTime() -
+                referenceRange.startDate.getTime()
+            const endDate = new Date(startDate.getTime() + rangeDuration)
+            return {
+                startDate: new Date(startDate),
+                endDate: endDate,
+            }
+        }
+    }
+
+    if (customRangeConfig.calculateEndDate) {
+        const calculatedEndDate = customRangeConfig.calculateEndDate(
+            startDate,
+            currentRange
+        )
+        if (calculatedEndDate) {
+            if (
+                calculatedEndDate.getTime() === startDate.getTime() ||
+                (calculatedEndDate.getDate() === startDate.getDate() &&
+                    calculatedEndDate.getMonth() === startDate.getMonth() &&
+                    calculatedEndDate.getFullYear() === startDate.getFullYear())
+            ) {
+                const actualStartDate = new Date(startDate)
+                actualStartDate.setDate(
+                    startDate.getDate() - (customRangeConfig.backwardDays || 6)
+                )
+                actualStartDate.setHours(0, 0, 0, 0)
+
+                const actualEndDate = new Date(startDate)
+                actualEndDate.setHours(23, 59, 59, 999)
+
+                return {
+                    startDate: actualStartDate,
+                    endDate: actualEndDate,
+                }
+            }
+
+            // Forward range - normal behavior
+            return {
+                startDate: new Date(startDate),
+                endDate: calculatedEndDate,
+            }
+        }
+    }
+
+    // Use fixed day range if provided
+    if (
+        customRangeConfig.fixedDayRange &&
+        customRangeConfig.fixedDayRange > 0
+    ) {
+        const endDate = new Date(startDate)
+        endDate.setDate(
+            startDate.getDate() + customRangeConfig.fixedDayRange - 1
+        )
+        endDate.setHours(23, 59, 59, 999) // Set to end of day
+        return {
+            startDate: new Date(startDate),
+            endDate: endDate,
+        }
+    }
+
+    return null
+}
+
+/**
+ * Enhanced calendar date click handler with custom range calculation support
+ * @param clickedDate The date that was clicked
+ * @param selectedRange Current selected range
+ * @param allowSingleDateSelection Whether single date selection is allowed
+ * @param today Today's date for validation
+ * @param disableFutureDates Whether future dates are disabled
+ * @param disablePastDates Whether past dates are disabled
+ * @param customRangeConfig Custom range configuration
+ * @param isDoubleClick Whether this is a double-click event
+ * @returns New date range or null if click should be ignored
+ */
+export const handleCustomRangeCalendarDateClick = (
+    clickedDate: Date,
+    selectedRange: DateRange,
+    allowSingleDateSelection: boolean = false,
+    today: Date,
+    disableFutureDates: boolean = false,
+    disablePastDates: boolean = false,
+    customRangeConfig?: CustomRangeConfig,
+    isDoubleClick: boolean = false
+): DateRange | null => {
+    // Validate date is not disabled
+    if (
+        (disableFutureDates && clickedDate > today) ||
+        (disablePastDates && clickedDate < today)
+    ) {
+        return null
+    }
+
+    // Create clean date without time components for comparison
+    const clickedDateOnly = new Date(
+        clickedDate.getFullYear(),
+        clickedDate.getMonth(),
+        clickedDate.getDate()
+    )
+
+    // Handle double click - always create single date range if allowed
+    if (isDoubleClick && allowSingleDateSelection) {
+        return createSingleDateRange(clickedDateOnly)
+    }
+
+    // Apply custom range calculation if configured
+    if (customRangeConfig) {
+        const startDate = createStartOfDay(clickedDateOnly)
+
+        // Try to calculate custom end date
+        const customEndDate = applyCustomRangeCalculation(
+            startDate,
+            customRangeConfig,
+            selectedRange
+        )
+
+        if (customEndDate) {
+            return customEndDate
+        }
+
+        // If custom calculation returns null and manual selection is not allowed,
+        // fall back to single date
+        if (!customRangeConfig.allowManualEndDateSelection) {
+            return { startDate, endDate: startDate }
+        }
+    }
+
+    // Fall back to default behavior
+    return handleEnhancedCalendarDateClick(
+        clickedDate,
+        selectedRange,
+        allowSingleDateSelection,
+        today,
+        disableFutureDates,
+        disablePastDates,
+        isDoubleClick
+    )
+}
+
+/**
+ * Validates custom range configuration
+ * @param config Custom range configuration to validate
+ * @returns Validation result with error message if invalid
+ */
+export const validateCustomRangeConfig = (
+    config: CustomRangeConfig
+): { isValid: boolean; error?: string } => {
+    if (!config) {
+        return { isValid: true }
+    }
+
+    // Check if both calculateEndDate and fixedDayRange are provided
+    if (config.calculateEndDate && config.fixedDayRange) {
+        return {
+            isValid: false,
+            error: 'Cannot specify both calculateEndDate and fixedDayRange. Choose one.',
+        }
+    }
+
+    // Validate fixedDayRange if provided
+    if (config.fixedDayRange !== undefined) {
+        if (
+            !Number.isInteger(config.fixedDayRange) ||
+            config.fixedDayRange <= 0
+        ) {
+            return {
+                isValid: false,
+                error: 'fixedDayRange must be a positive integer.',
+            }
+        }
+
+        if (config.fixedDayRange > 365) {
+            return {
+                isValid: false,
+                error: 'fixedDayRange cannot exceed 365 days.',
+            }
+        }
+    }
+
+    return { isValid: true }
+}
+
+/**
+ * Creates common custom range calculation functions
+ */
+export const createCustomRangeCalculators = {
+    /**
+     * Creates a calculator for fixed number of days
+     * @param days Number of days for the range
+     * @returns Custom range calculator function
+     */
+    fixedDays: (days: number): CustomRangeCalculatorFunction => {
+        return (startDate: Date) => {
+            if (!Number.isInteger(days) || days <= 0) {
+                return null
+            }
+
+            const endDate = new Date(startDate)
+            endDate.setDate(startDate.getDate() + days - 1)
+            endDate.setHours(23, 59, 59, 999)
+            return endDate
+        }
+    },
+
+    /**
+     * Creates a calculator for business days (excluding weekends)
+     * @param businessDays Number of business days
+     * @returns Custom range calculator function
+     */
+    businessDays: (businessDays: number): CustomRangeCalculatorFunction => {
+        return (startDate: Date) => {
+            if (!Number.isInteger(businessDays) || businessDays <= 0) {
+                return null
+            }
+
+            const currentDate = new Date(startDate)
+            let daysAdded = 0
+            let businessDaysAdded = 0
+
+            while (businessDaysAdded < businessDays) {
+                const dayOfWeek = currentDate.getDay()
+
+                // If it's not a weekend (Saturday = 6, Sunday = 0)
+                if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                    businessDaysAdded++
+                }
+
+                if (businessDaysAdded < businessDays) {
+                    currentDate.setDate(currentDate.getDate() + 1)
+                    daysAdded++
+                }
+
+                // Safety check to prevent infinite loops
+                if (daysAdded > 365) {
+                    return null
+                }
+            }
+
+            currentDate.setHours(23, 59, 59, 999)
+            return currentDate
+        }
+    },
+
+    /**
+     * Creates a calculator for end of week (Sunday)
+     * @returns Custom range calculator function
+     */
+    endOfWeek: (): CustomRangeCalculatorFunction => {
+        return (startDate: Date) => {
+            const endDate = new Date(startDate)
+            const daysUntilSunday = 7 - startDate.getDay()
+            endDate.setDate(
+                startDate.getDate() +
+                    (daysUntilSunday === 7 ? 0 : daysUntilSunday)
+            )
+            endDate.setHours(23, 59, 59, 999)
+            return endDate
+        }
+    },
+
+    /**
+     * Creates a calculator for end of month
+     * @returns Custom range calculator function
+     */
+    endOfMonth: (): CustomRangeCalculatorFunction => {
+        return (startDate: Date) => {
+            const endDate = new Date(
+                startDate.getFullYear(),
+                startDate.getMonth() + 1,
+                0
+            )
+            endDate.setHours(23, 59, 59, 999)
+            return endDate
+        }
+    },
+
+    /**
+     * Creates a calculator for quarter end
+     * @returns Custom range calculator function
+     */
+    endOfQuarter: (): CustomRangeCalculatorFunction => {
+        return (startDate: Date) => {
+            const quarter = Math.floor(startDate.getMonth() / 3)
+            const endMonth = (quarter + 1) * 3 - 1
+            const endDate = new Date(startDate.getFullYear(), endMonth + 1, 0)
+            endDate.setHours(23, 59, 59, 999)
+            return endDate
+        }
+    },
+
+    /**
+     * Creates a calculator that compares with another date range
+     * @param compareRange The range to compare with
+     * @returns Custom range calculator function
+     */
+    compareWithRange: (
+        compareRange: DateRange
+    ): CustomRangeCalculatorFunction => {
+        return (startDate: Date) => {
+            if (!compareRange.startDate || !compareRange.endDate) {
+                return null
+            }
+
+            const rangeDuration =
+                compareRange.endDate.getTime() -
+                compareRange.startDate.getTime()
+            const endDate = new Date(startDate.getTime() + rangeDuration)
+            return endDate
+        }
+    },
+}
+
+/**
+ * Helper function to create common custom range configurations
+ */
+export const createCustomRangeConfigs = {
+    /**
+     * Fixed 5-day range
+     */
+    fiveDayRange: (): CustomRangeConfig => ({
+        fixedDayRange: 5,
+        allowManualEndDateSelection: false,
+    }),
+
+    /**
+     * Fixed 7-day range (week)
+     */
+    weekRange: (): CustomRangeConfig => ({
+        fixedDayRange: 7,
+        allowManualEndDateSelection: false,
+    }),
+
+    /**
+     * Business week (5 business days)
+     */
+    businessWeek: (): CustomRangeConfig => ({
+        calculateEndDate: createCustomRangeCalculators.businessDays(5),
+        allowManualEndDateSelection: false,
+    }),
+
+    /**
+     * Month range (start date to end of month)
+     */
+    monthRange: (): CustomRangeConfig => ({
+        calculateEndDate: createCustomRangeCalculators.endOfMonth(),
+        allowManualEndDateSelection: false,
+    }),
+
+    /**
+     * Quarter range (start date to end of quarter)
+     */
+    quarterRange: (): CustomRangeConfig => ({
+        calculateEndDate: createCustomRangeCalculators.endOfQuarter(),
+        allowManualEndDateSelection: false,
+    }),
+
+    /**
+     * Flexible range with manual override
+     */
+    flexibleRange: (defaultDays: number): CustomRangeConfig => ({
+        fixedDayRange: defaultDays,
+        allowManualEndDateSelection: true,
+    }),
 }

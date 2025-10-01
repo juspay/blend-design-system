@@ -21,7 +21,9 @@ import {
     Activity,
     Target,
     Star,
+    Info,
 } from 'lucide-react'
+import { Popover } from '../../../../packages/blend/lib/main'
 
 const StatCardDemo = () => {
     // Playground state
@@ -97,13 +99,41 @@ const StatCardDemo = () => {
         setDropdownValue(value)
     }
 
+    const InfoPopoverExample = () => {
+        return (
+            <Popover
+                heading="Help Information"
+                trigger={<span>+4 more</span>}
+                side="top"
+                showCloseButton={false}
+                minWidth={280}
+            >
+                <div className="p-4">
+                    <div className="flex items-start gap-3">
+                        <Info className="text-blue-500 mt-0.5" size={16} />
+                        <div>
+                            <p className="text-sm text-gray-700 font-medium mb-1">
+                                Quick Tip
+                            </p>
+                            <p className="text-sm text-gray-600">
+                                You can use keyboard shortcuts to navigate
+                                faster. Press Ctrl+K to open the command
+                                palette.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </Popover>
+        )
+    }
+
     return (
         <div className="p-8 space-y-12">
             {/* Playground Section */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Playground</h2>
                 <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  ">
                         <SingleSelect
                             label="Variant"
                             items={[{ items: variantOptions }]}
@@ -264,7 +294,7 @@ const StatCardDemo = () => {
             {/* StatCard Variants */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">StatCard Variants</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-6">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
                             Number Variant
@@ -302,7 +332,7 @@ const StatCardDemo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Line Chart</h3>
                         <StatCard
-                            height="190px"
+                            height="160px"
                             dropdownProps={{
                                 label: 'Currency',
                                 placeholder: 'Currency',
@@ -319,7 +349,7 @@ const StatCardDemo = () => {
                                 selected: dropdownValue,
                                 onSelect: handleDropdownSelect,
                             }}
-                            title="Revenue Trend"
+                            title="GMV Trend via internal retry to get ur api calls done"
                             value="$8,234"
                             subtitle="last 7 days"
                             variant={StatCardVariant.LINE}
@@ -327,8 +357,10 @@ const StatCardDemo = () => {
                                 value: 8.2,
                                 valueType: ChangeType.INCREASE,
                             }}
-                            titleIcon={<TrendingUp size={16} />}
+                            helpIconText="This is a help icon"
+                            // titleIcon={<TrendingUp size={16} />}
                             chartData={sampleLineData}
+                            actionIcon={<InfoPopoverExample />}
                         />
                     </div>
 
