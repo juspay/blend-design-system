@@ -37,17 +37,18 @@ const applyIconStyles = (
         return tokens.icon.color.default
     }
 
-    const iconProps = icon.props as any
-
-    return cloneElement(icon, {
-        ...iconProps,
-        style: {
-            ...(iconProps.style || {}),
-            color: getIconColor(),
-            width: tokens.icon.width,
-            height: tokens.icon.width,
-        },
-    })
+    return cloneElement(
+        icon as React.ReactElement<{ style?: React.CSSProperties }>,
+        {
+            style: {
+                ...((icon.props as { style?: React.CSSProperties }).style ||
+                    {}),
+                color: getIconColor(),
+                width: tokens.icon.width,
+                height: tokens.icon.width,
+            },
+        }
+    )
 }
 
 const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(

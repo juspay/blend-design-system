@@ -497,7 +497,7 @@ const SidebarDemo = () => {
             isCollapsible: false,
             items: [
                 {
-                    label: 'Text Input',
+                    label: 'Text Input777',
                     leftSlot: (
                         <FormInput style={{ width: '16px', height: '16px' }} />
                     ),

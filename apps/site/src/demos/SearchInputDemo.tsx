@@ -1,344 +1,571 @@
+import { SearchInput } from '../../../../packages/blend/lib/components/Inputs/SearchInput'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
+import {
+    Search,
+    X,
+    Filter,
+    Menu,
+    User,
+    Mail,
+    Phone,
+    MapPin,
+    Calendar,
+    Clock,
+    Settings,
+    Star,
+} from 'lucide-react'
 import { useState } from 'react'
-import { Search, X, Filter } from 'lucide-react'
-import { SearchInput } from '../../../../packages/blend/lib/main'
-import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
-import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
-import Text from '../../../../packages/blend/lib/components/Text/Text'
 
 const SearchInputDemo = () => {
-    const [basicSearch, setBasicSearch] = useState('')
-    const [searchWithIcon, setSearchWithIcon] = useState('')
-    const [searchWithActions, setSearchWithActions] = useState('')
-    const [errorSearch, setErrorSearch] = useState('')
-    const [disabledSearch, setDisabledSearch] = useState('Disabled input')
+    const [playgroundValue, setPlaygroundValue] = useState('')
+    const [showLeftSlot, setShowLeftSlot] = useState(true)
+    const [showRightSlot, setShowRightSlot] = useState(false)
+    const [isDisabled, setIsDisabled] = useState(false)
+    const [hasError, setHasError] = useState(false)
+    const playgroundPlaceholder = 'Search...'
 
-    const clearSearch = (setter: (value: string) => void) => {
-        setter('')
+    // State for interactive examples
+    const [searchValue1, setSearchValue1] = useState('')
+    const [searchValue2, setSearchValue2] = useState('')
+    const [searchValue3, setSearchValue3] = useState('')
+
+    const leftSlotOptions = [
+        { value: 'search', label: 'Search', icon: <Search size={16} /> },
+        { value: 'filter', label: 'Filter', icon: <Filter size={16} /> },
+        { value: 'menu', label: 'Menu', icon: <Menu size={16} /> },
+        { value: 'user', label: 'User', icon: <User size={16} /> },
+        { value: 'mail', label: 'Mail', icon: <Mail size={16} /> },
+        { value: 'phone', label: 'Phone', icon: <Phone size={16} /> },
+        { value: 'location', label: 'Location', icon: <MapPin size={16} /> },
+        { value: 'calendar', label: 'Calendar', icon: <Calendar size={16} /> },
+    ]
+
+    const rightSlotOptions = [
+        { value: 'x', label: 'Clear (X)', icon: <X size={16} /> },
+        { value: 'filter', label: 'Filter', icon: <Filter size={16} /> },
+        { value: 'settings', label: 'Settings', icon: <Settings size={16} /> },
+        { value: 'clock', label: 'Clock', icon: <Clock size={16} /> },
+        { value: 'star', label: 'Star', icon: <Star size={16} /> },
+    ]
+
+    const [selectedLeftSlot, setSelectedLeftSlot] = useState('search')
+    const [selectedRightSlot, setSelectedRightSlot] = useState('x')
+
+    const getLeftSlotIcon = () => {
+        const option = leftSlotOptions.find(
+            (opt) => opt.value === selectedLeftSlot
+        )
+        return option?.icon
+    }
+
+    const getRightSlotIcon = () => {
+        const option = rightSlotOptions.find(
+            (opt) => opt.value === selectedRightSlot
+        )
+        return option?.icon
+    }
+
+    const handleClearSearch = (
+        setValue: React.Dispatch<React.SetStateAction<string>>
+    ) => {
+        setValue('')
+        addSnackbar({
+            header: 'Search cleared',
+        })
     }
 
     return (
-        <div
-            style={{
-                padding: '2rem',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '2rem',
-            }}
-        >
-            <div>
-                <Text
-                    variant="heading.lg"
-                    fontWeight={700}
-                    color={FOUNDATION_THEME.colors.gray[900]}
-                >
-                    Search Input Demo
-                </Text>
-                <div style={{ marginTop: '0.5rem' }}>
-                    <Text
-                        variant="body.md"
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                    >
-                        Demonstrates different states and configurations of the
-                        SearchInput component
-                    </Text>
+        <div className="p-8 space-y-12">
+            {/* Playground Section */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Playground</h2>
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <SingleSelect
+                            label="Left Slot Icon"
+                            items={[{ items: leftSlotOptions }]}
+                            selected={selectedLeftSlot}
+                            onSelect={(value) =>
+                                setSelectedLeftSlot(value as string)
+                            }
+                            placeholder="Select left slot"
+                        />
+
+                        <SingleSelect
+                            label="Right Slot Icon"
+                            items={[{ items: rightSlotOptions }]}
+                            selected={selectedRightSlot}
+                            onSelect={(value) =>
+                                setSelectedRightSlot(value as string)
+                            }
+                            placeholder="Select right slot"
+                        />
+                    </div>
+
+                    <div className="flex items-center gap-6">
+                        <Switch
+                            label="Show Left Slot"
+                            checked={showLeftSlot}
+                            onChange={() => setShowLeftSlot(!showLeftSlot)}
+                        />
+                        <Switch
+                            label="Show Right Slot"
+                            checked={showRightSlot}
+                            onChange={() => setShowRightSlot(!showRightSlot)}
+                        />
+                        <Switch
+                            label="Disabled"
+                            checked={isDisabled}
+                            onChange={() => setIsDisabled(!isDisabled)}
+                        />
+                        <Switch
+                            label="Error State"
+                            checked={hasError}
+                            onChange={() => setHasError(!hasError)}
+                        />
+                    </div>
+
+                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
+                        <div className="w-full max-w-md">
+                            <SearchInput
+                                value={playgroundValue}
+                                onChange={(e) =>
+                                    setPlaygroundValue(e.target.value)
+                                }
+                                placeholder={playgroundPlaceholder}
+                                leftSlot={
+                                    showLeftSlot ? getLeftSlotIcon() : undefined
+                                }
+                                rightSlot={
+                                    showRightSlot
+                                        ? getRightSlotIcon()
+                                        : undefined
+                                }
+                                disabled={isDisabled}
+                                error={hasError}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '1.5rem',
-                }}
-            >
-                {/* Basic Search Input */}
-                <Block>
-                    <div style={{ marginBottom: '0.75rem' }}>
-                        <Text
-                            variant="body.lg"
-                            fontWeight={600}
-                            color={FOUNDATION_THEME.colors.gray[800]}
-                        >
-                            Basic Search Input
-                        </Text>
-                    </div>
-                    <Block width="400px">
+            {/* Basic Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Basic Examples</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Default Search
+                        </h3>
                         <SearchInput
+                            value=""
+                            onChange={() => {}}
                             placeholder="Search..."
-                            value={basicSearch}
-                            onChange={(e) => setBasicSearch(e.target.value)}
+                            leftSlot={<Search size={16} />}
                         />
-                    </Block>
-                    <div style={{ marginTop: '0.5rem' }}>
-                        <Text
-                            variant="body.sm"
-                            color={FOUNDATION_THEME.colors.gray[500]}
-                        >
-                            Default state - hover and focus to see state changes
-                        </Text>
                     </div>
-                </Block>
 
-                {/* Search Input with Left Icon */}
-                <Block>
-                    <div style={{ marginBottom: '0.75rem' }}>
-                        <Text
-                            variant="body.lg"
-                            fontWeight={600}
-                            color={FOUNDATION_THEME.colors.gray[800]}
-                        >
-                            Search Input with Left Icon
-                        </Text>
-                    </div>
-                    <Block width="400px">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Search with Clear
+                        </h3>
                         <SearchInput
-                            placeholder="Search with icon..."
-                            value={searchWithIcon}
-                            onChange={(e) => setSearchWithIcon(e.target.value)}
-                            leftSlot={<Search />}
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Type to search"
+                            leftSlot={<Search size={16} />}
+                            rightSlot={<X size={16} />}
                         />
-                    </Block>
-                    <div style={{ marginTop: '0.5rem' }}>
-                        <Text
-                            variant="body.sm"
-                            color={FOUNDATION_THEME.colors.gray[500]}
-                        >
-                            With search icon on the left
-                        </Text>
                     </div>
-                </Block>
 
-                {/* Search Input with Actions */}
-                <Block>
-                    <div style={{ marginBottom: '0.75rem' }}>
-                        <Text
-                            variant="body.lg"
-                            fontWeight={600}
-                            color={FOUNDATION_THEME.colors.gray[800]}
-                        >
-                            Search Input with Actions
-                        </Text>
-                    </div>
-                    <Block width="400px">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">Filter Search</h3>
                         <SearchInput
-                            placeholder="Search with actions..."
-                            value={searchWithActions}
-                            onChange={(e) =>
-                                setSearchWithActions(e.target.value)
-                            }
-                            leftSlot={<Search />}
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Filter items..."
+                            leftSlot={<Filter size={16} />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">User Search</h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Search users..."
+                            leftSlot={<User size={16} />}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* States */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">States</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">Default</h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Default state"
+                            leftSlot={<Search size={16} />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">Disabled</h3>
+                        <SearchInput
+                            value="Disabled search"
+                            onChange={() => {}}
+                            placeholder="Disabled state"
+                            leftSlot={<Search size={16} />}
+                            disabled
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">Error</h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Error state"
+                            leftSlot={<Search size={16} />}
+                            error
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">With Value</h3>
+                        <SearchInput
+                            value="Search query"
+                            onChange={() => {}}
+                            placeholder="Search..."
+                            leftSlot={<Search size={16} />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Disabled with Value
+                        </h3>
+                        <SearchInput
+                            value="Disabled search value"
+                            onChange={() => {}}
+                            placeholder="Search..."
+                            leftSlot={<Search size={16} />}
+                            disabled
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Error with Value
+                        </h3>
+                        <SearchInput
+                            value="Invalid search"
+                            onChange={() => {}}
+                            placeholder="Search..."
+                            leftSlot={<Search size={16} />}
+                            error
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Icon Variations */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Icon Variations</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Left Icon Only
+                        </h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Search..."
+                            leftSlot={<Search size={16} />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Right Icon Only
+                        </h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Type here..."
+                            rightSlot={<Filter size={16} />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">Both Icons</h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Search and filter"
+                            leftSlot={<Search size={16} />}
+                            rightSlot={<Filter size={16} />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">No Icons</h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Plain search"
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">Email Search</h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Search emails..."
+                            leftSlot={<Mail size={16} />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Location Search
+                        </h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Search location..."
+                            leftSlot={<MapPin size={16} />}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Interactive Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Interactive Examples</h2>
+                <div className="space-y-8">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Controlled Search with Clear
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Value: {searchValue1 || '(empty)'}
+                        </p>
+                        <SearchInput
+                            value={searchValue1}
+                            onChange={(e) => setSearchValue1(e.target.value)}
+                            placeholder="Type to search..."
+                            leftSlot={<Search size={16} />}
                             rightSlot={
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.25rem',
-                                    }}
-                                >
-                                    {searchWithActions && (
-                                        <button
-                                            onClick={() =>
-                                                clearSearch(
-                                                    setSearchWithActions
-                                                )
-                                            }
-                                            style={{
-                                                padding: '0.25rem',
-                                                border: 'none',
-                                                background: 'transparent',
-                                                borderRadius: '0.25rem',
-                                                cursor: 'pointer',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                            }}
-                                            type="button"
-                                        >
-                                            <X
-                                                size={14}
-                                                color={
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[400]
-                                                }
-                                            />
-                                        </button>
-                                    )}
-                                    <button
-                                        style={{
-                                            padding: '0.25rem',
-                                            border: 'none',
-                                            background: 'transparent',
-                                            borderRadius: '0.25rem',
-                                            cursor: 'pointer',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                        type="button"
-                                    >
-                                        <Filter
-                                            size={14}
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[400]
-                                            }
-                                        />
-                                    </button>
-                                </div>
-                            }
-                        />
-                    </Block>
-                    <div style={{ marginTop: '0.5rem' }}>
-                        <Text
-                            variant="body.sm"
-                            color={FOUNDATION_THEME.colors.gray[500]}
-                        >
-                            With search icon and action buttons (clear and
-                            filter)
-                        </Text>
-                    </div>
-                </Block>
-
-                {/* Error State */}
-                <Block>
-                    <div style={{ marginBottom: '0.75rem' }}>
-                        <Text
-                            variant="body.lg"
-                            fontWeight={600}
-                            color={FOUNDATION_THEME.colors.gray[800]}
-                        >
-                            Error State
-                        </Text>
-                    </div>
-                    <Block width="400px">
-                        <SearchInput
-                            placeholder="Search with error..."
-                            value={errorSearch}
-                            onChange={(e) => setErrorSearch(e.target.value)}
-                            error={true}
-                            leftSlot={<Search />}
-                        />
-                    </Block>
-                    <div style={{ marginTop: '0.5rem' }}>
-                        <Text
-                            variant="body.sm"
-                            color={FOUNDATION_THEME.colors.red[600]}
-                        >
-                            Error state with red border and text color
-                        </Text>
-                    </div>
-                </Block>
-
-                {/* Disabled State */}
-                <Block>
-                    <div style={{ marginBottom: '0.75rem' }}>
-                        <Text
-                            variant="body.lg"
-                            fontWeight={600}
-                            color={FOUNDATION_THEME.colors.gray[800]}
-                        >
-                            Disabled State
-                        </Text>
-                    </div>
-                    <Block width="400px">
-                        <SearchInput
-                            placeholder="Disabled search..."
-                            value={disabledSearch}
-                            onChange={(e) => setDisabledSearch(e.target.value)}
-                            disabled={true}
-                            leftSlot={<Search />}
-                        />
-                    </Block>
-                    <div style={{ marginTop: '0.5rem' }}>
-                        <Text
-                            variant="body.sm"
-                            color={FOUNDATION_THEME.colors.gray[400]}
-                        >
-                            Disabled state with muted colors and no interaction
-                        </Text>
-                    </div>
-                </Block>
-
-                {/* Interactive Demo */}
-                <Block>
-                    <div style={{ marginBottom: '0.75rem' }}>
-                        <Text
-                            variant="body.lg"
-                            fontWeight={600}
-                            color={FOUNDATION_THEME.colors.gray[800]}
-                        >
-                            Interactive Demo
-                        </Text>
-                    </div>
-                    <div style={{ marginBottom: '0.75rem' }}>
-                        <Text
-                            variant="body.sm"
-                            color={FOUNDATION_THEME.colors.gray[600]}
-                        >
-                            Try typing, hovering, focusing, and interacting with
-                            the search input below:
-                        </Text>
-                    </div>
-                    <Block width="400px">
-                        <SearchInput
-                            placeholder="Try me! Type, hover, focus..."
-                            value={searchWithActions}
-                            onChange={(e) =>
-                                setSearchWithActions(e.target.value)
-                            }
-                            leftSlot={<Search />}
-                            rightSlot={
-                                searchWithActions ? (
+                                searchValue1 ? (
                                     <button
                                         onClick={() =>
-                                            clearSearch(setSearchWithActions)
+                                            handleClearSearch(setSearchValue1)
                                         }
-                                        style={{
-                                            padding: '0.25rem',
-                                            border: 'none',
-                                            background: 'transparent',
-                                            borderRadius: '0.25rem',
-                                            cursor: 'pointer',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                        type="button"
-                                        title="Clear search"
+                                        className="cursor-pointer"
                                     >
-                                        <X
-                                            size={14}
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[400]
-                                            }
-                                        />
+                                        <X size={16} />
                                     </button>
-                                ) : (
-                                    <span
-                                        style={{
-                                            fontSize: 12,
-                                            color: FOUNDATION_THEME.colors
-                                                .gray[300],
-                                        }}
-                                    >
-                                        ⌘ + K
-                                    </span>
-                                )
+                                ) : undefined
                             }
                         />
-                    </Block>
-                    {searchWithActions && (
-                        <div style={{ marginTop: '0.5rem' }}>
-                            <Text
-                                variant="body.sm"
-                                color={FOUNDATION_THEME.colors.gray[600]}
-                            >
-                                You typed: "{searchWithActions}"
-                            </Text>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Search with Filter Action
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Value: {searchValue2 || '(empty)'}
+                        </p>
+                        <SearchInput
+                            value={searchValue2}
+                            onChange={(e) => setSearchValue2(e.target.value)}
+                            placeholder="Search and filter..."
+                            leftSlot={<Search size={16} />}
+                            rightSlot={
+                                <button
+                                    onClick={() => {
+                                        addSnackbar({
+                                            header: `Filter clicked - Current search: ${searchValue2 || 'empty'}`,
+                                        })
+                                    }}
+                                    className="cursor-pointer"
+                                >
+                                    <Filter size={16} />
+                                </button>
+                            }
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Date Search with Calendar
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Value: {searchValue3 || '(empty)'}
+                        </p>
+                        <SearchInput
+                            value={searchValue3}
+                            onChange={(e) => setSearchValue3(e.target.value)}
+                            placeholder="Search dates..."
+                            leftSlot={<Calendar size={16} />}
+                            rightSlot={
+                                searchValue3 ? (
+                                    <button
+                                        onClick={() =>
+                                            handleClearSearch(setSearchValue3)
+                                        }
+                                        className="cursor-pointer"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                ) : undefined
+                            }
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Use Cases */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Common Use Cases</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Global Navigation Search
+                        </h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Search across the app..."
+                            leftSlot={<Search size={16} />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">Table Filter</h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Filter table data..."
+                            leftSlot={<Filter size={16} />}
+                            rightSlot={<Settings size={16} />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            User Directory
+                        </h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Find a user..."
+                            leftSlot={<User size={16} />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Phone Number Lookup
+                        </h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Search phone numbers..."
+                            leftSlot={<Phone size={16} />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Address Finder
+                        </h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Enter address..."
+                            leftSlot={<MapPin size={16} />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Time-based Search
+                        </h3>
+                        <SearchInput
+                            value=""
+                            onChange={() => {}}
+                            placeholder="Search by time..."
+                            leftSlot={<Clock size={16} />}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* All States Comparison */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">All States Comparison</h2>
+                <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4">
+                        <div>
+                            <p className="text-sm font-medium mb-2">Default</p>
+                            <SearchInput
+                                value=""
+                                onChange={() => {}}
+                                placeholder="Default state"
+                                leftSlot={<Search size={16} />}
+                                rightSlot={<X size={16} />}
+                            />
                         </div>
-                    )}
-                </Block>
+
+                        <div>
+                            <p className="text-sm font-medium mb-2">
+                                With Value
+                            </p>
+                            <SearchInput
+                                value="Search query text"
+                                onChange={() => {}}
+                                placeholder="Default state"
+                                leftSlot={<Search size={16} />}
+                                rightSlot={<X size={16} />}
+                            />
+                        </div>
+
+                        <div>
+                            <p className="text-sm font-medium mb-2">Disabled</p>
+                            <SearchInput
+                                value="Disabled search"
+                                onChange={() => {}}
+                                placeholder="Disabled state"
+                                leftSlot={<Search size={16} />}
+                                rightSlot={<X size={16} />}
+                                disabled
+                            />
+                        </div>
+
+                        <div>
+                            <p className="text-sm font-medium mb-2">Error</p>
+                            <SearchInput
+                                value="Invalid search query"
+                                onChange={() => {}}
+                                placeholder="Error state"
+                                leftSlot={<Search size={16} />}
+                                rightSlot={<X size={16} />}
+                                error
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )

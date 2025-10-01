@@ -1,760 +1,758 @@
 import type { ComponentTokenType } from '../../../../packages/blend/lib/context/ThemeContext'
-import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 
 export const HDFC_COMPONENT_TOKENS: ComponentTokenType = {
-    NUMBER_INPUT: {
-        sm: {
-            gap: FOUNDATION_THEME.unit[8],
-            label: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[700],
-                    hover: FOUNDATION_THEME.colors.gray[700],
-                    focus: FOUNDATION_THEME.colors.gray[700],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            subLabel: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[400],
-                    hover: FOUNDATION_THEME.colors.gray[400],
-                    focus: FOUNDATION_THEME.colors.gray[400],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            hintText: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[500],
-                    hover: FOUNDATION_THEME.colors.gray[500],
-                    focus: FOUNDATION_THEME.colors.gray[500],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            errorMessage: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            required: {
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            inputContainer: {
-                borderRadius: {
-                    md: FOUNDATION_THEME.unit[10],
-                    lg: FOUNDATION_THEME.unit[10],
-                },
-                fontSize: {
-                    md: FOUNDATION_THEME.font.size.body.md.fontSize,
-                    lg: FOUNDATION_THEME.font.size.body.md.fontSize,
-                },
-                fontWeight: {
-                    md: FOUNDATION_THEME.font.weight[500],
-                    lg: FOUNDATION_THEME.font.weight[500],
-                },
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[800],
-                    hover: FOUNDATION_THEME.colors.gray[800],
-                    focus: FOUNDATION_THEME.colors.gray[800],
-                    error: FOUNDATION_THEME.colors.red[800],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                },
-                padding: {
-                    x: {
-                        md: FOUNDATION_THEME.unit[12],
-                        lg: FOUNDATION_THEME.unit[14],
-                    },
-                    y: {
-                        md: FOUNDATION_THEME.unit[8],
-                        lg: FOUNDATION_THEME.unit[10],
-                    },
-                },
-                border: {
-                    default: `1px solid ${FOUNDATION_THEME.colors.green[500]}`,
-                    hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
-                    focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                    error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-                    disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-                },
-                backgroundColor: {
-                    default: FOUNDATION_THEME.colors.gray[0],
-                    disabled: FOUNDATION_THEME.colors.gray[50],
-                    hover: FOUNDATION_THEME.colors.gray[0],
-                    focus: FOUNDATION_THEME.colors.gray[0],
-                    error: FOUNDATION_THEME.colors.gray[0],
-                },
-                boxShadow: FOUNDATION_THEME.shadows.sm,
-                stepperButton: {
-                    width: {
-                        md: FOUNDATION_THEME.unit[32],
-                        lg: FOUNDATION_THEME.unit[32],
-                    },
-                    backgroundColor: {
-                        default: FOUNDATION_THEME.colors.gray[0],
-                        disabled: FOUNDATION_THEME.colors.gray[50],
-                        hover: FOUNDATION_THEME.colors.gray[100],
-                        focus: FOUNDATION_THEME.colors.gray[100],
-                        error: FOUNDATION_THEME.colors.gray[0],
-                    },
-                    icon: {
-                        color: {
-                            default: FOUNDATION_THEME.colors.gray[400],
-                            disabled: FOUNDATION_THEME.colors.gray[300],
-                            hover: FOUNDATION_THEME.colors.gray[400],
-                            focus: FOUNDATION_THEME.colors.gray[400],
-                            error: FOUNDATION_THEME.colors.gray[400],
-                        },
-                        fill: {
-                            default: FOUNDATION_THEME.colors.gray[400],
-                            disabled: FOUNDATION_THEME.colors.gray[300],
-                            hover: FOUNDATION_THEME.colors.gray[400],
-                            focus: FOUNDATION_THEME.colors.gray[400],
-                            error: FOUNDATION_THEME.colors.gray[400],
-                        },
-                        width: {
-                            md: FOUNDATION_THEME.unit[6],
-                            lg: FOUNDATION_THEME.unit[6],
-                        },
-                    },
-                },
-            },
-        },
-        lg: {
-            gap: FOUNDATION_THEME.unit[8],
-            label: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[700],
-                    hover: FOUNDATION_THEME.colors.gray[700],
-                    focus: FOUNDATION_THEME.colors.gray[700],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            subLabel: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[400],
-                    hover: FOUNDATION_THEME.colors.gray[400],
-                    focus: FOUNDATION_THEME.colors.gray[400],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            hintText: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[500],
-                    hover: FOUNDATION_THEME.colors.gray[500],
-                    focus: FOUNDATION_THEME.colors.gray[500],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            errorMessage: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            required: {
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            inputContainer: {
-                borderRadius: {
-                    md: FOUNDATION_THEME.unit[10],
-                    lg: FOUNDATION_THEME.unit[10],
-                },
-                fontSize: {
-                    md: FOUNDATION_THEME.font.size.body.md.fontSize,
-                    lg: FOUNDATION_THEME.font.size.body.md.fontSize,
-                },
-                fontWeight: {
-                    md: FOUNDATION_THEME.font.weight[500],
-                    lg: FOUNDATION_THEME.font.weight[500],
-                },
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[800],
-                    hover: FOUNDATION_THEME.colors.gray[800],
-                    focus: FOUNDATION_THEME.colors.gray[800],
-                    error: FOUNDATION_THEME.colors.red[800],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                },
-                padding: {
-                    x: {
-                        md: FOUNDATION_THEME.unit[12],
-                        lg: FOUNDATION_THEME.unit[14],
-                    },
-                    y: {
-                        md: FOUNDATION_THEME.unit[8],
-                        lg: FOUNDATION_THEME.unit[10],
-                    },
-                },
-                border: {
-                    default: `1px solid ${FOUNDATION_THEME.colors.green[500]}`,
-                    hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
-                    focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                    error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-                    disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-                },
-                backgroundColor: {
-                    default: FOUNDATION_THEME.colors.gray[0],
-                    disabled: FOUNDATION_THEME.colors.gray[50],
-                    hover: FOUNDATION_THEME.colors.gray[0],
-                    focus: FOUNDATION_THEME.colors.gray[0],
-                    error: FOUNDATION_THEME.colors.gray[0],
-                },
-                boxShadow: FOUNDATION_THEME.shadows.sm,
-                stepperButton: {
-                    width: {
-                        md: FOUNDATION_THEME.unit[32],
-                        lg: FOUNDATION_THEME.unit[32],
-                    },
-                    backgroundColor: {
-                        default: FOUNDATION_THEME.colors.gray[0],
-                        disabled: FOUNDATION_THEME.colors.gray[50],
-                        hover: FOUNDATION_THEME.colors.gray[100],
-                        focus: FOUNDATION_THEME.colors.gray[100],
-                        error: FOUNDATION_THEME.colors.gray[0],
-                    },
-                    icon: {
-                        color: {
-                            default: FOUNDATION_THEME.colors.gray[400],
-                            disabled: FOUNDATION_THEME.colors.gray[300],
-                            hover: FOUNDATION_THEME.colors.gray[400],
-                            focus: FOUNDATION_THEME.colors.gray[400],
-                            error: FOUNDATION_THEME.colors.gray[400],
-                        },
-                        fill: {
-                            default: FOUNDATION_THEME.colors.gray[400],
-                            disabled: FOUNDATION_THEME.colors.gray[300],
-                            hover: FOUNDATION_THEME.colors.gray[400],
-                            focus: FOUNDATION_THEME.colors.gray[400],
-                            error: FOUNDATION_THEME.colors.gray[400],
-                        },
-                        width: {
-                            md: FOUNDATION_THEME.unit[6],
-                            lg: FOUNDATION_THEME.unit[6],
-                        },
-                    },
-                },
-            },
-        },
-    },
-    TEXT_INPUT: {
-        sm: {
-            gap: FOUNDATION_THEME.unit[8],
-            label: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[700],
-                    hover: FOUNDATION_THEME.colors.gray[700],
-                    focus: FOUNDATION_THEME.colors.gray[700],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            subLabel: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[400],
-                    hover: FOUNDATION_THEME.colors.gray[400],
-                    focus: FOUNDATION_THEME.colors.gray[400],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            hintText: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[500],
-                    hover: FOUNDATION_THEME.colors.gray[500],
-                    focus: FOUNDATION_THEME.colors.gray[500],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            errorMessage: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            required: {
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            inputContainer: {
-                borderRadius: {
-                    sm: FOUNDATION_THEME.unit[10],
-                    md: FOUNDATION_THEME.unit[10],
-                    lg: FOUNDATION_THEME.unit[10],
-                },
-                fontSize: {
-                    sm: FOUNDATION_THEME.font.size.body.md.fontSize,
-                    md: FOUNDATION_THEME.font.size.body.md.fontSize,
-                    lg: FOUNDATION_THEME.font.size.body.md.fontSize,
-                },
-                fontWeight: {
-                    sm: FOUNDATION_THEME.font.weight[500],
-                    md: FOUNDATION_THEME.font.weight[500],
-                    lg: FOUNDATION_THEME.font.weight[500],
-                },
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[800],
-                    hover: FOUNDATION_THEME.colors.gray[800],
-                    focus: FOUNDATION_THEME.colors.gray[800],
-                    error: FOUNDATION_THEME.colors.red[800],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                },
-                padding: {
-                    x: {
-                        sm: FOUNDATION_THEME.unit[10],
-                        md: FOUNDATION_THEME.unit[12],
-                        lg: FOUNDATION_THEME.unit[14],
-                    },
-                    y: {
-                        sm: FOUNDATION_THEME.unit[6],
-                        md: FOUNDATION_THEME.unit[8],
-                        lg: FOUNDATION_THEME.unit[14],
-                    },
-                },
-                border: {
-                    default: `1px solid ${FOUNDATION_THEME.colors.red[200]}`,
-                    hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
-                    focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                    error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-                    disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-                },
-                backgroundColor: {
-                    default: FOUNDATION_THEME.colors.gray[0],
-                    disabled: FOUNDATION_THEME.colors.gray[50],
-                    hover: FOUNDATION_THEME.colors.gray[0],
-                    focus: FOUNDATION_THEME.colors.gray[0],
-                    error: FOUNDATION_THEME.colors.gray[0],
-                },
-                boxShadow: FOUNDATION_THEME.shadows.sm,
-            },
-        },
-        lg: {
-            gap: FOUNDATION_THEME.unit[8],
-            label: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[700],
-                    hover: FOUNDATION_THEME.colors.gray[700],
-                    focus: FOUNDATION_THEME.colors.gray[700],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            subLabel: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[400],
-                    hover: FOUNDATION_THEME.colors.gray[400],
-                    focus: FOUNDATION_THEME.colors.gray[400],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            hintText: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[500],
-                    hover: FOUNDATION_THEME.colors.gray[500],
-                    focus: FOUNDATION_THEME.colors.gray[500],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            errorMessage: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            required: {
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            inputContainer: {
-                borderRadius: {
-                    sm: FOUNDATION_THEME.unit[10],
-                    md: FOUNDATION_THEME.unit[10],
-                    lg: FOUNDATION_THEME.unit[10],
-                },
-                fontSize: {
-                    sm: FOUNDATION_THEME.font.size.body.md.fontSize,
-                    md: FOUNDATION_THEME.font.size.body.md.fontSize,
-                    lg: FOUNDATION_THEME.font.size.body.md.fontSize,
-                },
-                fontWeight: {
-                    sm: FOUNDATION_THEME.font.weight[500],
-                    md: FOUNDATION_THEME.font.weight[500],
-                    lg: FOUNDATION_THEME.font.weight[500],
-                },
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[800],
-                    hover: FOUNDATION_THEME.colors.gray[800],
-                    focus: FOUNDATION_THEME.colors.gray[800],
-                    error: FOUNDATION_THEME.colors.red[800],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                },
-                padding: {
-                    x: {
-                        sm: FOUNDATION_THEME.unit[10],
-                        md: FOUNDATION_THEME.unit[12],
-                        lg: FOUNDATION_THEME.unit[14],
-                    },
-                    y: {
-                        sm: FOUNDATION_THEME.unit[6],
-                        md: FOUNDATION_THEME.unit[8],
-                        lg: FOUNDATION_THEME.unit[10],
-                    },
-                },
-                border: {
-                    default: `1px solid ${FOUNDATION_THEME.colors.red[200]}`,
-                    hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
-                    focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                    error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-                    disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-                },
-                backgroundColor: {
-                    default: FOUNDATION_THEME.colors.gray[0],
-                    disabled: FOUNDATION_THEME.colors.gray[50],
-                    hover: FOUNDATION_THEME.colors.gray[0],
-                    focus: FOUNDATION_THEME.colors.gray[0],
-                    error: FOUNDATION_THEME.colors.gray[0],
-                },
-                boxShadow: FOUNDATION_THEME.shadows.sm,
-            },
-        },
-    },
-    TEXT_AREA: {
-        sm: {
-            gap: FOUNDATION_THEME.unit[8],
-            label: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[700],
-                    hover: FOUNDATION_THEME.colors.gray[700],
-                    focus: FOUNDATION_THEME.colors.gray[700],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            subLabel: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[400],
-                    hover: FOUNDATION_THEME.colors.gray[400],
-                    focus: FOUNDATION_THEME.colors.gray[400],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            hintText: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[500],
-                    hover: FOUNDATION_THEME.colors.gray[500],
-                    focus: FOUNDATION_THEME.colors.gray[500],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            errorMessage: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            required: {
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            inputContainer: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                padding: {
-                    x: FOUNDATION_THEME.unit[14],
-                    y: FOUNDATION_THEME.unit[10],
-                },
-                borderRadius: FOUNDATION_THEME.unit[8],
-                boxShadow: FOUNDATION_THEME.shadows.sm,
-
-                border: {
-                    default: `1px solid ${FOUNDATION_THEME.colors.green[200]}`,
-                    hover: `1px solid ${FOUNDATION_THEME.colors.primary[400]}`,
-                    focus: `1px solid ${FOUNDATION_THEME.colors.orange[500]}`,
-                    error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-                    disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-                },
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[800],
-                    hover: FOUNDATION_THEME.colors.gray[800],
-                    focus: FOUNDATION_THEME.colors.gray[800],
-                    error: FOUNDATION_THEME.colors.red[800],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                },
-                backgroundColor: {
-                    default: FOUNDATION_THEME.colors.gray[0],
-                    hover: FOUNDATION_THEME.colors.gray[0],
-                    focus: FOUNDATION_THEME.colors.gray[0],
-                    error: FOUNDATION_THEME.colors.gray[0],
-                    disabled: FOUNDATION_THEME.colors.gray[50],
-                },
-            },
-        },
-        lg: {
-            gap: FOUNDATION_THEME.unit[8],
-            label: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[700],
-                    hover: FOUNDATION_THEME.colors.gray[700],
-                    focus: FOUNDATION_THEME.colors.gray[700],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            subLabel: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[400],
-                    hover: FOUNDATION_THEME.colors.gray[400],
-                    focus: FOUNDATION_THEME.colors.gray[400],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            hintText: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[500],
-                    hover: FOUNDATION_THEME.colors.gray[500],
-                    focus: FOUNDATION_THEME.colors.gray[500],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            errorMessage: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            required: {
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            inputContainer: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                padding: {
-                    x: FOUNDATION_THEME.unit[14],
-                    y: FOUNDATION_THEME.unit[10],
-                },
-                borderRadius: FOUNDATION_THEME.unit[8],
-                boxShadow: FOUNDATION_THEME.shadows.sm,
-                border: {
-                    default: `1px solid ${FOUNDATION_THEME.colors.green[200]}`,
-                    hover: `1px solid ${FOUNDATION_THEME.colors.primary[400]}`,
-                    focus: `1px solid ${FOUNDATION_THEME.colors.orange[500]}`,
-                    error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
-                    disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-                },
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[800],
-                    hover: FOUNDATION_THEME.colors.gray[800],
-                    focus: FOUNDATION_THEME.colors.gray[800],
-                    error: FOUNDATION_THEME.colors.red[800],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                },
-                backgroundColor: {
-                    default: FOUNDATION_THEME.colors.gray[0],
-                    hover: FOUNDATION_THEME.colors.gray[0],
-                    focus: FOUNDATION_THEME.colors.gray[0],
-                    error: FOUNDATION_THEME.colors.gray[0],
-                    disabled: FOUNDATION_THEME.colors.gray[50],
-                },
-            },
-        },
-    },
-    SEARCH_INPUT: {
-        sm: {
-            gap: FOUNDATION_THEME.unit[8],
-            label: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[700],
-                    hover: FOUNDATION_THEME.colors.gray[700],
-                    focus: FOUNDATION_THEME.colors.gray[700],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            subLabel: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[400],
-                    hover: FOUNDATION_THEME.colors.gray[400],
-                    focus: FOUNDATION_THEME.colors.gray[400],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            hintText: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[500],
-                    hover: FOUNDATION_THEME.colors.gray[500],
-                    focus: FOUNDATION_THEME.colors.gray[500],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            errorMessage: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            required: {
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            inputContainer: {
-                padding: {
-                    x: FOUNDATION_THEME.unit[8],
-                    y: FOUNDATION_THEME.unit[8],
-                },
-                borderRadius: FOUNDATION_THEME.unit[0],
-                borderBottom: {
-                    default: `1px solid ${FOUNDATION_THEME.colors.red[500]} !important`,
-                    hover: `1px solid ${FOUNDATION_THEME.colors.green[700]} !important`,
-                    focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]} !important`,
-                    error: `1px solid ${FOUNDATION_THEME.colors.primary[500]} !important`,
-                    disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]} !important`,
-                },
-                outline: 'none',
-                boxShadow: FOUNDATION_THEME.shadows.sm,
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[800],
-                    hover: FOUNDATION_THEME.colors.gray[800],
-                    focus: FOUNDATION_THEME.colors.gray[800],
-                    error: FOUNDATION_THEME.colors.red[800],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                },
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-            },
-            icon: {
-                color: {
-                    default: FOUNDATION_THEME.colors.blue[500],
-                    hover: FOUNDATION_THEME.colors.blue[600],
-                    focus: FOUNDATION_THEME.colors.orange[500],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                    error: FOUNDATION_THEME.colors.red[500],
-                },
-                width: FOUNDATION_THEME.unit[20],
-            },
-        },
-        lg: {
-            gap: FOUNDATION_THEME.unit[8],
-            label: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[700],
-                    hover: FOUNDATION_THEME.colors.gray[700],
-                    focus: FOUNDATION_THEME.colors.gray[700],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            subLabel: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[400],
-                    hover: FOUNDATION_THEME.colors.gray[400],
-                    focus: FOUNDATION_THEME.colors.gray[400],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            hintText: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[500],
-                    hover: FOUNDATION_THEME.colors.gray[500],
-                    focus: FOUNDATION_THEME.colors.gray[500],
-                    disabled: FOUNDATION_THEME.colors.gray[400],
-                    error: FOUNDATION_THEME.colors.red[600],
-                },
-            },
-            errorMessage: {
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[500],
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            required: {
-                color: FOUNDATION_THEME.colors.red[600],
-            },
-            inputContainer: {
-                padding: {
-                    x: FOUNDATION_THEME.unit[8],
-                    y: FOUNDATION_THEME.unit[8],
-                },
-                borderRadius: FOUNDATION_THEME.unit[0],
-                borderBottom: {
-                    default: `1px solid ${FOUNDATION_THEME.colors.red[500]} !important`,
-                    hover: `1px solid ${FOUNDATION_THEME.colors.green[700]} !important`,
-                    focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]} !important`,
-                    error: `1px solid ${FOUNDATION_THEME.colors.primary[500]} !important`,
-                    disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]} !important`,
-                },
-                outline: 'none',
-                boxShadow: FOUNDATION_THEME.shadows.sm,
-                color: {
-                    default: FOUNDATION_THEME.colors.gray[800],
-                    hover: FOUNDATION_THEME.colors.gray[800],
-                    focus: FOUNDATION_THEME.colors.gray[800],
-                    error: FOUNDATION_THEME.colors.red[800],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                },
-                fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-                fontWeight: FOUNDATION_THEME.font.weight[400],
-            },
-            icon: {
-                color: {
-                    default: FOUNDATION_THEME.colors.blue[500],
-                    hover: FOUNDATION_THEME.colors.blue[600],
-                    focus: FOUNDATION_THEME.colors.orange[500],
-                    disabled: FOUNDATION_THEME.colors.gray[300],
-                    error: FOUNDATION_THEME.colors.red[500],
-                },
-                width: FOUNDATION_THEME.unit[20],
-            },
-        },
-    },
+    // NUMBER_INPUT: {
+    //     sm: {
+    //         gap: FOUNDATION_THEME.unit[8],
+    //         label: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[700],
+    //                 hover: FOUNDATION_THEME.colors.gray[700],
+    //                 focus: FOUNDATION_THEME.colors.gray[700],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         subLabel: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[400],
+    //                 hover: FOUNDATION_THEME.colors.gray[400],
+    //                 focus: FOUNDATION_THEME.colors.gray[400],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         hintText: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[500],
+    //                 hover: FOUNDATION_THEME.colors.gray[500],
+    //                 focus: FOUNDATION_THEME.colors.gray[500],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         errorMessage: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         required: {
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         inputContainer: {
+    //             borderRadius: {
+    //                 md: FOUNDATION_THEME.unit[10],
+    //                 lg: FOUNDATION_THEME.unit[10],
+    //             },
+    //             fontSize: {
+    //                 md: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //                 lg: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             },
+    //             fontWeight: {
+    //                 md: FOUNDATION_THEME.font.weight[500],
+    //                 lg: FOUNDATION_THEME.font.weight[500],
+    //             },
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[800],
+    //                 hover: FOUNDATION_THEME.colors.gray[800],
+    //                 focus: FOUNDATION_THEME.colors.gray[800],
+    //                 error: FOUNDATION_THEME.colors.red[800],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //             },
+    //             padding: {
+    //                 x: {
+    //                     md: FOUNDATION_THEME.unit[12],
+    //                     lg: FOUNDATION_THEME.unit[14],
+    //                 },
+    //                 y: {
+    //                     md: FOUNDATION_THEME.unit[8],
+    //                     lg: FOUNDATION_THEME.unit[10],
+    //                 },
+    //             },
+    //             border: {
+    //                 default: `1px solid ${FOUNDATION_THEME.colors.green[500]}`,
+    //                 hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
+    //                 focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+    //                 error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+    //                 disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+    //             },
+    //             backgroundColor: {
+    //                 default: FOUNDATION_THEME.colors.gray[0],
+    //                 disabled: FOUNDATION_THEME.colors.gray[50],
+    //                 hover: FOUNDATION_THEME.colors.gray[0],
+    //                 focus: FOUNDATION_THEME.colors.gray[0],
+    //                 error: FOUNDATION_THEME.colors.gray[0],
+    //             },
+    //             boxShadow: FOUNDATION_THEME.shadows.sm,
+    //             stepperButton: {
+    //                 width: {
+    //                     md: FOUNDATION_THEME.unit[32],
+    //                     lg: FOUNDATION_THEME.unit[32],
+    //                 },
+    //                 backgroundColor: {
+    //                     default: FOUNDATION_THEME.colors.gray[0],
+    //                     disabled: FOUNDATION_THEME.colors.gray[50],
+    //                     hover: FOUNDATION_THEME.colors.gray[100],
+    //                     focus: FOUNDATION_THEME.colors.gray[100],
+    //                     error: FOUNDATION_THEME.colors.gray[0],
+    //                 },
+    //                 icon: {
+    //                     color: {
+    //                         default: FOUNDATION_THEME.colors.gray[400],
+    //                         disabled: FOUNDATION_THEME.colors.gray[300],
+    //                         hover: FOUNDATION_THEME.colors.gray[400],
+    //                         focus: FOUNDATION_THEME.colors.gray[400],
+    //                         error: FOUNDATION_THEME.colors.gray[400],
+    //                     },
+    //                     fill: {
+    //                         default: FOUNDATION_THEME.colors.gray[400],
+    //                         disabled: FOUNDATION_THEME.colors.gray[300],
+    //                         hover: FOUNDATION_THEME.colors.gray[400],
+    //                         focus: FOUNDATION_THEME.colors.gray[400],
+    //                         error: FOUNDATION_THEME.colors.gray[400],
+    //                     },
+    //                     width: {
+    //                         md: FOUNDATION_THEME.unit[6],
+    //                         lg: FOUNDATION_THEME.unit[6],
+    //                     },
+    //                 },
+    //             },
+    //         },
+    //     },
+    //     lg: {
+    //         gap: FOUNDATION_THEME.unit[8],
+    //         label: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[700],
+    //                 hover: FOUNDATION_THEME.colors.gray[700],
+    //                 focus: FOUNDATION_THEME.colors.gray[700],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         subLabel: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[400],
+    //                 hover: FOUNDATION_THEME.colors.gray[400],
+    //                 focus: FOUNDATION_THEME.colors.gray[400],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         hintText: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[500],
+    //                 hover: FOUNDATION_THEME.colors.gray[500],
+    //                 focus: FOUNDATION_THEME.colors.gray[500],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         errorMessage: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         required: {
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         inputContainer: {
+    //             borderRadius: {
+    //                 md: FOUNDATION_THEME.unit[10],
+    //                 lg: FOUNDATION_THEME.unit[10],
+    //             },
+    //             fontSize: {
+    //                 md: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //                 lg: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             },
+    //             fontWeight: {
+    //                 md: FOUNDATION_THEME.font.weight[500],
+    //                 lg: FOUNDATION_THEME.font.weight[500],
+    //             },
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[800],
+    //                 hover: FOUNDATION_THEME.colors.gray[800],
+    //                 focus: FOUNDATION_THEME.colors.gray[800],
+    //                 error: FOUNDATION_THEME.colors.red[800],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //             },
+    //             padding: {
+    //                 x: {
+    //                     md: FOUNDATION_THEME.unit[12],
+    //                     lg: FOUNDATION_THEME.unit[14],
+    //                 },
+    //                 y: {
+    //                     md: FOUNDATION_THEME.unit[8],
+    //                     lg: FOUNDATION_THEME.unit[10],
+    //                 },
+    //             },
+    //             border: {
+    //                 default: `1px solid ${FOUNDATION_THEME.colors.green[500]}`,
+    //                 hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
+    //                 focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+    //                 error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+    //                 disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+    //             },
+    //             backgroundColor: {
+    //                 default: FOUNDATION_THEME.colors.gray[0],
+    //                 disabled: FOUNDATION_THEME.colors.gray[50],
+    //                 hover: FOUNDATION_THEME.colors.gray[0],
+    //                 focus: FOUNDATION_THEME.colors.gray[0],
+    //                 error: FOUNDATION_THEME.colors.gray[0],
+    //             },
+    //             boxShadow: FOUNDATION_THEME.shadows.sm,
+    //             stepperButton: {
+    //                 width: {
+    //                     md: FOUNDATION_THEME.unit[32],
+    //                     lg: FOUNDATION_THEME.unit[32],
+    //                 },
+    //                 backgroundColor: {
+    //                     default: FOUNDATION_THEME.colors.gray[0],
+    //                     disabled: FOUNDATION_THEME.colors.gray[50],
+    //                     hover: FOUNDATION_THEME.colors.gray[100],
+    //                     focus: FOUNDATION_THEME.colors.gray[100],
+    //                     error: FOUNDATION_THEME.colors.gray[0],
+    //                 },
+    //                 icon: {
+    //                     color: {
+    //                         default: FOUNDATION_THEME.colors.gray[400],
+    //                         disabled: FOUNDATION_THEME.colors.gray[300],
+    //                         hover: FOUNDATION_THEME.colors.gray[400],
+    //                         focus: FOUNDATION_THEME.colors.gray[400],
+    //                         error: FOUNDATION_THEME.colors.gray[400],
+    //                     },
+    //                     fill: {
+    //                         default: FOUNDATION_THEME.colors.gray[400],
+    //                         disabled: FOUNDATION_THEME.colors.gray[300],
+    //                         hover: FOUNDATION_THEME.colors.gray[400],
+    //                         focus: FOUNDATION_THEME.colors.gray[400],
+    //                         error: FOUNDATION_THEME.colors.gray[400],
+    //                     },
+    //                     width: {
+    //                         md: FOUNDATION_THEME.unit[6],
+    //                         lg: FOUNDATION_THEME.unit[6],
+    //                     },
+    //                 },
+    //             },
+    //         },
+    //     },
+    // },
+    // TEXT_INPUT: {
+    //     sm: {
+    //         gap: FOUNDATION_THEME.unit[8],
+    //         label: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[700],
+    //                 hover: FOUNDATION_THEME.colors.gray[700],
+    //                 focus: FOUNDATION_THEME.colors.gray[700],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         subLabel: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[400],
+    //                 hover: FOUNDATION_THEME.colors.gray[400],
+    //                 focus: FOUNDATION_THEME.colors.gray[400],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         hintText: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[500],
+    //                 hover: FOUNDATION_THEME.colors.gray[500],
+    //                 focus: FOUNDATION_THEME.colors.gray[500],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         errorMessage: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         required: {
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         inputContainer: {
+    //             borderRadius: {
+    //                 sm: FOUNDATION_THEME.unit[10],
+    //                 md: FOUNDATION_THEME.unit[10],
+    //                 lg: FOUNDATION_THEME.unit[10],
+    //             },
+    //             fontSize: {
+    //                 sm: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //                 md: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //                 lg: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             },
+    //             fontWeight: {
+    //                 sm: FOUNDATION_THEME.font.weight[500],
+    //                 md: FOUNDATION_THEME.font.weight[500],
+    //                 lg: FOUNDATION_THEME.font.weight[500],
+    //             },
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[800],
+    //                 hover: FOUNDATION_THEME.colors.gray[800],
+    //                 focus: FOUNDATION_THEME.colors.gray[800],
+    //                 error: FOUNDATION_THEME.colors.red[800],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //             },
+    //             padding: {
+    //                 x: {
+    //                     sm: FOUNDATION_THEME.unit[10],
+    //                     md: FOUNDATION_THEME.unit[12],
+    //                     lg: FOUNDATION_THEME.unit[14],
+    //                 },
+    //                 y: {
+    //                     sm: FOUNDATION_THEME.unit[6],
+    //                     md: FOUNDATION_THEME.unit[8],
+    //                     lg: FOUNDATION_THEME.unit[14],
+    //                 },
+    //             },
+    //             border: {
+    //                 default: `1px solid ${FOUNDATION_THEME.colors.red[200]}`,
+    //                 hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
+    //                 focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+    //                 error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+    //                 disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+    //             },
+    //             backgroundColor: {
+    //                 default: FOUNDATION_THEME.colors.gray[0],
+    //                 disabled: FOUNDATION_THEME.colors.gray[50],
+    //                 hover: FOUNDATION_THEME.colors.gray[0],
+    //                 focus: FOUNDATION_THEME.colors.gray[0],
+    //                 error: FOUNDATION_THEME.colors.gray[0],
+    //             },
+    //             boxShadow: FOUNDATION_THEME.shadows.sm,
+    //         },
+    //     },
+    //     lg: {
+    //         gap: FOUNDATION_THEME.unit[8],
+    //         label: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[700],
+    //                 hover: FOUNDATION_THEME.colors.gray[700],
+    //                 focus: FOUNDATION_THEME.colors.gray[700],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         subLabel: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[400],
+    //                 hover: FOUNDATION_THEME.colors.gray[400],
+    //                 focus: FOUNDATION_THEME.colors.gray[400],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         hintText: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[500],
+    //                 hover: FOUNDATION_THEME.colors.gray[500],
+    //                 focus: FOUNDATION_THEME.colors.gray[500],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         errorMessage: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         required: {
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         inputContainer: {
+    //             borderRadius: {
+    //                 sm: FOUNDATION_THEME.unit[10],
+    //                 md: FOUNDATION_THEME.unit[10],
+    //                 lg: FOUNDATION_THEME.unit[10],
+    //             },
+    //             fontSize: {
+    //                 sm: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //                 md: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //                 lg: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             },
+    //             fontWeight: {
+    //                 sm: FOUNDATION_THEME.font.weight[500],
+    //                 md: FOUNDATION_THEME.font.weight[500],
+    //                 lg: FOUNDATION_THEME.font.weight[500],
+    //             },
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[800],
+    //                 hover: FOUNDATION_THEME.colors.gray[800],
+    //                 focus: FOUNDATION_THEME.colors.gray[800],
+    //                 error: FOUNDATION_THEME.colors.red[800],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //             },
+    //             padding: {
+    //                 x: {
+    //                     sm: FOUNDATION_THEME.unit[10],
+    //                     md: FOUNDATION_THEME.unit[12],
+    //                     lg: FOUNDATION_THEME.unit[14],
+    //                 },
+    //                 y: {
+    //                     sm: FOUNDATION_THEME.unit[6],
+    //                     md: FOUNDATION_THEME.unit[8],
+    //                     lg: FOUNDATION_THEME.unit[10],
+    //                 },
+    //             },
+    //             border: {
+    //                 default: `1px solid ${FOUNDATION_THEME.colors.red[200]}`,
+    //                 hover: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
+    //                 focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+    //                 error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+    //                 disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+    //             },
+    //             backgroundColor: {
+    //                 default: FOUNDATION_THEME.colors.gray[0],
+    //                 disabled: FOUNDATION_THEME.colors.gray[50],
+    //                 hover: FOUNDATION_THEME.colors.gray[0],
+    //                 focus: FOUNDATION_THEME.colors.gray[0],
+    //                 error: FOUNDATION_THEME.colors.gray[0],
+    //             },
+    //             boxShadow: FOUNDATION_THEME.shadows.sm,
+    //         },
+    //     },
+    // },
+    // TEXT_AREA: {
+    //     sm: {
+    //         gap: FOUNDATION_THEME.unit[8],
+    //         label: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[700],
+    //                 hover: FOUNDATION_THEME.colors.gray[700],
+    //                 focus: FOUNDATION_THEME.colors.gray[700],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         subLabel: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[400],
+    //                 hover: FOUNDATION_THEME.colors.gray[400],
+    //                 focus: FOUNDATION_THEME.colors.gray[400],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         hintText: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[500],
+    //                 hover: FOUNDATION_THEME.colors.gray[500],
+    //                 focus: FOUNDATION_THEME.colors.gray[500],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         errorMessage: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         required: {
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         inputContainer: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             padding: {
+    //                 x: FOUNDATION_THEME.unit[14],
+    //                 y: FOUNDATION_THEME.unit[10],
+    //             },
+    //             borderRadius: FOUNDATION_THEME.unit[8],
+    //             boxShadow: FOUNDATION_THEME.shadows.sm,
+    //             border: {
+    //                 default: `1px solid ${FOUNDATION_THEME.colors.green[200]}`,
+    //                 hover: `1px solid ${FOUNDATION_THEME.colors.primary[400]}`,
+    //                 focus: `1px solid ${FOUNDATION_THEME.colors.orange[500]}`,
+    //                 error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+    //                 disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+    //             },
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[800],
+    //                 hover: FOUNDATION_THEME.colors.gray[800],
+    //                 focus: FOUNDATION_THEME.colors.gray[800],
+    //                 error: FOUNDATION_THEME.colors.red[800],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //             },
+    //             backgroundColor: {
+    //                 default: FOUNDATION_THEME.colors.gray[0],
+    //                 hover: FOUNDATION_THEME.colors.gray[0],
+    //                 focus: FOUNDATION_THEME.colors.gray[0],
+    //                 error: FOUNDATION_THEME.colors.gray[0],
+    //                 disabled: FOUNDATION_THEME.colors.gray[50],
+    //             },
+    //         },
+    //     },
+    //     lg: {
+    //         gap: FOUNDATION_THEME.unit[8],
+    //         label: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[700],
+    //                 hover: FOUNDATION_THEME.colors.gray[700],
+    //                 focus: FOUNDATION_THEME.colors.gray[700],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         subLabel: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[400],
+    //                 hover: FOUNDATION_THEME.colors.gray[400],
+    //                 focus: FOUNDATION_THEME.colors.gray[400],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         hintText: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[500],
+    //                 hover: FOUNDATION_THEME.colors.gray[500],
+    //                 focus: FOUNDATION_THEME.colors.gray[500],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         errorMessage: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         required: {
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         inputContainer: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             padding: {
+    //                 x: FOUNDATION_THEME.unit[14],
+    //                 y: FOUNDATION_THEME.unit[10],
+    //             },
+    //             borderRadius: FOUNDATION_THEME.unit[8],
+    //             boxShadow: FOUNDATION_THEME.shadows.sm,
+    //             border: {
+    //                 default: `1px solid ${FOUNDATION_THEME.colors.green[200]}`,
+    //                 hover: `1px solid ${FOUNDATION_THEME.colors.primary[400]}`,
+    //                 focus: `1px solid ${FOUNDATION_THEME.colors.orange[500]}`,
+    //                 error: `1px solid ${FOUNDATION_THEME.colors.red[500]}`,
+    //                 disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+    //             },
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[800],
+    //                 hover: FOUNDATION_THEME.colors.gray[800],
+    //                 focus: FOUNDATION_THEME.colors.gray[800],
+    //                 error: FOUNDATION_THEME.colors.red[800],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //             },
+    //             backgroundColor: {
+    //                 default: FOUNDATION_THEME.colors.gray[0],
+    //                 hover: FOUNDATION_THEME.colors.gray[0],
+    //                 focus: FOUNDATION_THEME.colors.gray[0],
+    //                 error: FOUNDATION_THEME.colors.gray[0],
+    //                 disabled: FOUNDATION_THEME.colors.gray[50],
+    //             },
+    //         },
+    //     },
+    // },
+    // SEARCH_INPUT: {
+    //     sm: {
+    //         gap: FOUNDATION_THEME.unit[8],
+    //         label: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[700],
+    //                 hover: FOUNDATION_THEME.colors.gray[700],
+    //                 focus: FOUNDATION_THEME.colors.gray[700],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         subLabel: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[400],
+    //                 hover: FOUNDATION_THEME.colors.gray[400],
+    //                 focus: FOUNDATION_THEME.colors.gray[400],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         hintText: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[500],
+    //                 hover: FOUNDATION_THEME.colors.gray[500],
+    //                 focus: FOUNDATION_THEME.colors.gray[500],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         errorMessage: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         required: {
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         inputContainer: {
+    //             padding: {
+    //                 x: FOUNDATION_THEME.unit[8],
+    //                 y: FOUNDATION_THEME.unit[8],
+    //             },
+    //             borderRadius: FOUNDATION_THEME.unit[0],
+    //             borderBottom: {
+    //                 default: `1px solid ${FOUNDATION_THEME.colors.red[500]} !important`,
+    //                 hover: `1px solid ${FOUNDATION_THEME.colors.green[700]} !important`,
+    //                 focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]} !important`,
+    //                 error: `1px solid ${FOUNDATION_THEME.colors.primary[500]} !important`,
+    //                 disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]} !important`,
+    //             },
+    //             outline: 'none',
+    //             boxShadow: FOUNDATION_THEME.shadows.sm,
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[800],
+    //                 hover: FOUNDATION_THEME.colors.gray[800],
+    //                 focus: FOUNDATION_THEME.colors.gray[800],
+    //                 error: FOUNDATION_THEME.colors.red[800],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //             },
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //         },
+    //         icon: {
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.blue[500],
+    //                 hover: FOUNDATION_THEME.colors.blue[600],
+    //                 focus: FOUNDATION_THEME.colors.orange[500],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //                 error: FOUNDATION_THEME.colors.red[500],
+    //             },
+    //             width: FOUNDATION_THEME.unit[20],
+    //         },
+    //     },
+    //     lg: {
+    //         gap: FOUNDATION_THEME.unit[8],
+    //         label: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[700],
+    //                 hover: FOUNDATION_THEME.colors.gray[700],
+    //                 focus: FOUNDATION_THEME.colors.gray[700],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         subLabel: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[400],
+    //                 hover: FOUNDATION_THEME.colors.gray[400],
+    //                 focus: FOUNDATION_THEME.colors.gray[400],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         hintText: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[500],
+    //                 hover: FOUNDATION_THEME.colors.gray[500],
+    //                 focus: FOUNDATION_THEME.colors.gray[500],
+    //                 disabled: FOUNDATION_THEME.colors.gray[400],
+    //                 error: FOUNDATION_THEME.colors.red[600],
+    //             },
+    //         },
+    //         errorMessage: {
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[500],
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         required: {
+    //             color: FOUNDATION_THEME.colors.red[600],
+    //         },
+    //         inputContainer: {
+    //             padding: {
+    //                 x: FOUNDATION_THEME.unit[8],
+    //                 y: FOUNDATION_THEME.unit[8],
+    //             },
+    //             borderRadius: FOUNDATION_THEME.unit[0],
+    //             borderBottom: {
+    //                 default: `1px solid ${FOUNDATION_THEME.colors.red[500]} !important`,
+    //                 hover: `1px solid ${FOUNDATION_THEME.colors.green[700]} !important`,
+    //                 focus: `1px solid ${FOUNDATION_THEME.colors.primary[500]} !important`,
+    //                 error: `1px solid ${FOUNDATION_THEME.colors.primary[500]} !important`,
+    //                 disabled: `1px solid ${FOUNDATION_THEME.colors.gray[200]} !important`,
+    //             },
+    //             outline: 'none',
+    //             boxShadow: FOUNDATION_THEME.shadows.sm,
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.gray[800],
+    //                 hover: FOUNDATION_THEME.colors.gray[800],
+    //                 focus: FOUNDATION_THEME.colors.gray[800],
+    //                 error: FOUNDATION_THEME.colors.red[800],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //             },
+    //             fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+    //             fontWeight: FOUNDATION_THEME.font.weight[400],
+    //         },
+    //         icon: {
+    //             color: {
+    //                 default: FOUNDATION_THEME.colors.blue[500],
+    //                 hover: FOUNDATION_THEME.colors.blue[600],
+    //                 focus: FOUNDATION_THEME.colors.orange[500],
+    //                 disabled: FOUNDATION_THEME.colors.gray[300],
+    //                 error: FOUNDATION_THEME.colors.red[500],
+    //             },
+    //             width: FOUNDATION_THEME.unit[20],
+    //         },
+    //     },
+    // },
     // TAGS: {
     //   background: {
     //     noFill: {
