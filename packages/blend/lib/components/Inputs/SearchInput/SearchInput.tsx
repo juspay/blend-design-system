@@ -5,7 +5,7 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 
 import type { SearchInputProps } from './types'
 import type { SearchInputTokensType } from './searchInput.tokens'
-import { useComponentToken } from '../../../context/useComponentToken'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const toPixels = (value: string | number | undefined): number => {
     if (typeof value === 'number') {
@@ -35,9 +35,8 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         },
         ref
     ) => {
-        const searchInputTokens = useComponentToken(
-            'SEARCH_INPUT'
-        ) as SearchInputTokensType
+        const searchInputTokens =
+            useResponsiveTokens<SearchInputTokensType>('SEARCH_INPUT')
 
         const leftSlotRef = useRef<HTMLDivElement>(null)
         const rightSlotRef = useRef<HTMLDivElement>(null)
@@ -58,8 +57,8 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             }
         }, [leftSlot, rightSlot])
 
-        const paddingX = toPixels(searchInputTokens.padding.x)
-        const paddingY = toPixels(searchInputTokens.padding.y)
+        const paddingX = toPixels(searchInputTokens.inputContainer.padding.x)
+        const paddingY = toPixels(searchInputTokens.inputContainer.padding.y)
         const GAP = toPixels(searchInputTokens.gap)
 
         const paddingInlineStart = leftSlot
@@ -102,31 +101,43 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                     name={name}
                     value={value}
                     onChange={onChange}
-                    height={searchInputTokens.height}
-                    width={searchInputTokens.width}
+                    height={searchInputTokens.inputContainer.height}
+                    width={searchInputTokens.inputContainer.width}
                     placeholder={placeholder}
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
                     paddingY={paddingY}
-                    outline={searchInputTokens.outline}
-                    borderRadius={searchInputTokens.borderRadius}
-                    borderTop={searchInputTokens.borderTop.default}
-                    borderLeft={searchInputTokens.borderLeft.default}
-                    borderRight={searchInputTokens.borderRight.default}
+                    outline={searchInputTokens.inputContainer.outline}
+                    borderRadius={searchInputTokens.inputContainer.borderRadius}
+                    borderTop={
+                        searchInputTokens.inputContainer.borderTop.default
+                    }
+                    borderLeft={
+                        searchInputTokens.inputContainer.borderLeft.default
+                    }
+                    borderRight={
+                        searchInputTokens.inputContainer.borderRight.default
+                    }
                     borderBottom={
                         error
-                            ? searchInputTokens.borderBottom.error
-                            : searchInputTokens.borderBottom.default
+                            ? searchInputTokens.inputContainer.borderBottom
+                                  .error
+                            : searchInputTokens.inputContainer.borderBottom
+                                  .default
                     }
-                    color={searchInputTokens.color}
-                    fontSize={searchInputTokens.fontSize}
-                    fontWeight={searchInputTokens.fontWeight}
-                    placeholderColor={searchInputTokens.placeholderColor}
+                    color={searchInputTokens.inputContainer.color}
+                    fontSize={searchInputTokens.inputContainer.fontSize}
+                    fontWeight={searchInputTokens.inputContainer.fontWeight}
+                    placeholderColor={
+                        searchInputTokens.inputContainer.placeholderColor
+                    }
                     _hover={{
-                        borderBottom: searchInputTokens.borderBottom.hover,
+                        borderBottom:
+                            searchInputTokens.inputContainer.borderBottom.hover,
                     }}
                     _focus={{
-                        borderBottom: searchInputTokens.borderBottom.focus,
+                        borderBottom:
+                            searchInputTokens.inputContainer.borderBottom.focus,
                     }}
                     {...rest}
                 />

@@ -53,9 +53,9 @@ const UnitInput = ({
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === UnitInputSize.LARGE
 
-    const paddingX = unitInputTokens.input.paddingX[size]
+    const paddingX = toPixels(unitInputTokens.inputContainer.padding.x[size])
     const paddingY =
-        toPixels(unitInputTokens.input.paddingY[size]) +
+        toPixels(unitInputTokens.inputContainer.padding.y[size]) +
         (isSmallScreenWithLargeSize ? 0.5 : 0)
 
     const leftSlotRef = useRef<HTMLDivElement>(null)
@@ -100,17 +100,22 @@ const UnitInput = ({
                 top={0}
                 right={0}
                 bottom={0}
-                paddingX={12}
+                paddingX={unitInputTokens.inputContainer.unit.padding[size]}
                 margin={1}
                 contentCentered
                 backgroundColor={FOUNDATION_THEME.colors.gray[50]}
-                borderLeft={unitInputTokens.input.border.default}
-                borderRadius={`0px ${unitInputTokens.input.borderRadius} ${unitInputTokens.input.borderRadius} 0px`}
+                borderLeft={unitInputTokens.inputContainer.border.default}
+                borderRadius={`0px ${unitInputTokens.inputContainer.borderRadius[size]} ${unitInputTokens.inputContainer.borderRadius[size]} 0px`}
             >
                 <Text
-                    variant="body.md"
+                    fontSize={
+                        unitInputTokens.inputContainer.unit.fontSize[size]
+                    }
+                    fontWeight={
+                        unitInputTokens.inputContainer.unit.fontWeight[size]
+                    }
                     color={
-                        unitInputTokens.input.color[
+                        unitInputTokens.inputContainer.unit.color[
                             disabled ? 'disabled' : 'default'
                         ]
                     }
@@ -129,17 +134,22 @@ const UnitInput = ({
                 top={0}
                 left={0}
                 bottom={0}
-                paddingX={12}
+                paddingX={unitInputTokens.inputContainer.unit.padding[size]}
                 margin={1}
                 contentCentered
                 backgroundColor={FOUNDATION_THEME.colors.gray[50]}
-                borderRight={unitInputTokens.input.border.default}
-                borderRadius={`${unitInputTokens.input.borderRadius} 0px 0px ${unitInputTokens.input.borderRadius}`}
+                borderRight={unitInputTokens.inputContainer.border.default}
+                borderRadius={`${unitInputTokens.inputContainer.borderRadius[size]} 0px 0px ${unitInputTokens.inputContainer.borderRadius[size]}`}
             >
                 <Text
-                    variant="body.md"
+                    fontSize={
+                        unitInputTokens.inputContainer.unit.fontSize[size]
+                    }
+                    fontWeight={
+                        unitInputTokens.inputContainer.unit.fontWeight[size]
+                    }
                     color={
-                        unitInputTokens.input.color[
+                        unitInputTokens.inputContainer.unit.color[
                             disabled ? 'disabled' : 'default'
                         ]
                     }
@@ -246,52 +256,47 @@ const UnitInput = ({
                             : paddingY
                     }
                     required={required}
-                    borderRadius={unitInputTokens.input.borderRadius}
-                    boxShadow={unitInputTokens.input.boxShadow.default}
+                    borderRadius={
+                        unitInputTokens.inputContainer.borderRadius[size]
+                    }
+                    boxShadow={unitInputTokens.inputContainer.boxShadow}
                     border={
-                        unitInputTokens.input.border[
+                        unitInputTokens.inputContainer.border[
                             error ? 'error' : 'default'
                         ]
                     }
-                    fontSize={'14px'}
-                    fontWeight={500}
+                    fontSize={unitInputTokens.inputContainer.fontSize[size]}
+                    fontWeight={unitInputTokens.inputContainer.fontWeight[size]}
                     outline="none"
                     width={'100%'}
                     _hover={{
-                        border: unitInputTokens.input.border[
+                        border: unitInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
                         ],
                     }}
                     color={
-                        unitInputTokens.input.color[
+                        unitInputTokens.inputContainer.color[
                             disabled ? 'disabled' : 'default'
                         ]
                     }
                     _focusVisible={{
-                        border: unitInputTokens.input.border[
+                        border: unitInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
-                        boxShadow:
-                            unitInputTokens.input.boxShadow[
-                                error ? 'error' : 'focus'
-                            ],
                         outline: 'none !important',
                     }}
                     _focus={{
-                        border: unitInputTokens.input.border[
+                        border: unitInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
-                        boxShadow:
-                            unitInputTokens.input.boxShadow[
-                                error ? 'error' : 'focus'
-                            ],
                         outline: 'none !important',
                     }}
                     disabled={disabled}
                     _disabled={{
                         backgroundColor:
-                            unitInputTokens.input.backgroundColor.disabled,
-                        border: unitInputTokens.input.border.disabled,
+                            unitInputTokens.inputContainer.backgroundColor
+                                .disabled,
+                        border: unitInputTokens.inputContainer.border.disabled,
                         cursor: 'not-allowed',
                     }}
                     onFocus={(e) => {

@@ -1,4 +1,4 @@
-import type { SearchInputTokensType } from '../components/Inputs/SearchInput/searchInput.tokens'
+import type { ResponsiveSearchInputTokens } from '../components/Inputs/SearchInput/searchInput.tokens'
 import type { ResponsiveTextAreaTokens } from '../components/Inputs/TextArea/textarea.token'
 import type { ResponsiveTagTokens } from '../components/Tags/tag.tokens'
 import type { ResponsiveRadioTokens } from '../components/Radio/radio.token'
@@ -39,7 +39,7 @@ import { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens
 export const useComponentToken = (
     component: keyof ComponentTokenType
 ):
-    | SearchInputTokensType
+    | ResponsiveSearchInputTokens
     | ResponsiveTagTokens
     | ResponsiveTextAreaTokens
     | ResponsiveTextInputTokens
