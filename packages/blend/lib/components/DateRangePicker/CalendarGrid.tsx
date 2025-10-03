@@ -86,6 +86,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         const [scrollTop, setScrollTop] = useState(0)
         const animationFrameRef = useRef<number | undefined>(undefined)
         const isInitialized = useRef(false)
+        const isUserScrolling = useRef(false)
+        const scrollTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
         const [isLoadingPast, setIsLoadingPast] = useState(false)
         const [isLoadingFuture, setIsLoadingFuture] = useState(false)
         const [months, setMonths] = useState<{ month: number; year: number }[]>(
@@ -215,6 +217,16 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 const scrollHeight = e.currentTarget.scrollHeight
                 const clientHeight = e.currentTarget.clientHeight
 
+                isUserScrolling.current = true
+
+                if (scrollTimeoutRef.current) {
+                    clearTimeout(scrollTimeoutRef.current)
+                }
+
+                scrollTimeoutRef.current = setTimeout(() => {
+                    isUserScrolling.current = false
+                }, 150)
+
                 if (animationFrameRef.current) {
                     cancelAnimationFrame(animationFrameRef.current)
                 }
@@ -279,6 +291,9 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             return () => {
                 if (animationFrameRef.current) {
                     cancelAnimationFrame(animationFrameRef.current)
+                }
+                if (scrollTimeoutRef.current) {
+                    clearTimeout(scrollTimeoutRef.current)
                 }
             }
         }, [])
