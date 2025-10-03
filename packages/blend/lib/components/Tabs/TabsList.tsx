@@ -121,12 +121,14 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         width: '100%',
                         overflow: 'hidden',
                         position: 'relative',
-                        borderBottom: variant === TabsVariant.UNDERLINE 
-                            ? tabsToken.list.borderBottom[variant]
-                            : 'none',
-                        paddingTop: variant === TabsVariant.UNDERLINE 
-                            ? FOUNDATION_THEME.unit[8]
-                            : '0',
+                        borderBottom:
+                            variant === TabsVariant.UNDERLINE
+                                ? tabsToken.list.borderBottom[variant]
+                                : 'none',
+                        paddingTop:
+                            variant === TabsVariant.UNDERLINE
+                                ? FOUNDATION_THEME.unit[8]
+                                : '0',
                     }}
                 >
                     <Block
@@ -249,9 +251,10 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             <Block
                 style={{
                     position: 'relative',
-                    borderBottom: variant === TabsVariant.UNDERLINE 
-                        ? tabsToken.list.borderBottom[variant]
-                        : 'none',
+                    borderBottom:
+                        variant === TabsVariant.UNDERLINE
+                            ? tabsToken.list.borderBottom[variant]
+                            : 'none',
                 }}
             >
                 <StyledTabsList
