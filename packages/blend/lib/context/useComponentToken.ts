@@ -24,7 +24,7 @@ import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.to
 import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
 import type { ResponsiveProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
-import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
+import type { ResponsiveDrawerTokens } from '../components/Drawer/drawer.tokens'
 import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
 import { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
@@ -66,7 +66,7 @@ export const useComponentToken = (
     | ResponsiveAccordionTokens
     | ResponsiveStatCardTokens
     | ResponsiveProgressBarTokens
-    | DrawerTokensType
+    | ResponsiveDrawerTokens
     | ResponsiveChartTokens
     | ResponsiveSnackbarTokens
     | ResponsiveKeyValuePairTokens

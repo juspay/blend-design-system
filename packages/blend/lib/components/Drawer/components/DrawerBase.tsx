@@ -4,7 +4,7 @@ import './Drawer.css'
 import React, { forwardRef } from 'react'
 import { Drawer as VaulDrawer } from 'vaul'
 import styled from 'styled-components'
-import { useComponentToken } from '../../../context/useComponentToken'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import Block from '../../Primitives/Block/Block'
 import type { DrawerTokensType } from '../drawer.tokens'
 import type {
@@ -21,7 +21,7 @@ import type {
 const StyledOverlay = styled(VaulDrawer.Overlay)<{ tokens: DrawerTokensType }>`
     position: fixed;
     inset: 0;
-    background-color: ${({ tokens }) => tokens.overlay.backgroundColor};
+    background-color: ${({ tokens }) => tokens.overlay.backgroundColor.default};
     z-index: ${({ tokens }) => tokens.overlay.zIndex};
 `
 
@@ -40,7 +40,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
     }
 }>`
     z-index: ${({ tokens }) => tokens.content.zIndex};
-    background-color: ${({ tokens }) => tokens.content.backgroundColor};
+    background-color: ${({ tokens }) => tokens.content.backgroundColor.default};
     border: ${({ tokens }) => tokens.content.border};
     box-shadow: ${({ tokens }) => tokens.content.boxShadow};
     outline: none;
@@ -200,19 +200,19 @@ const StyledContent = styled(VaulDrawer.Content)<{
 `
 
 const StyledTitle = styled(VaulDrawer.Title)<{ tokens: DrawerTokensType }>`
-    color: ${({ tokens }) => tokens.header.title.color};
-    font-size: ${({ tokens }) => tokens.header.title.fontSize}px;
-    font-weight: ${({ tokens }) => tokens.header.title.fontWeight};
-    line-height: ${({ tokens }) => tokens.header.title.lineHeight}px;
+    color: ${({ tokens }) => tokens.header.text.title.color.default};
+    font-size: ${({ tokens }) => tokens.header.text.title.fontSize}px;
+    font-weight: ${({ tokens }) => tokens.header.text.title.fontWeight};
+    line-height: ${({ tokens }) => tokens.header.text.title.lineHeight}px;
     margin: 0;
 `
 
 const StyledDescription = styled(VaulDrawer.Description)<{
     tokens: DrawerTokensType
 }>`
-    color: ${({ tokens }) => tokens.header.description.color};
-    font-size: ${({ tokens }) => tokens.header.description.fontSize}px;
-    line-height: ${({ tokens }) => tokens.header.description.lineHeight}px;
+    color: ${({ tokens }) => tokens.header.text.description.color.default};
+    font-size: ${({ tokens }) => tokens.header.text.description.fontSize}px;
+    line-height: ${({ tokens }) => tokens.header.text.description.lineHeight}px;
     margin: 4px 0 0 0;
 `
 
@@ -274,7 +274,7 @@ export const DrawerPortal = VaulDrawer.Portal
 
 export const DrawerOverlay = forwardRef<HTMLDivElement, { className?: string }>(
     ({ className, ...props }, ref) => {
-        const tokens = useComponentToken('DRAWER') as DrawerTokensType
+        const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
 
         return (
             <StyledOverlay
@@ -324,7 +324,7 @@ export const DrawerContent = forwardRef<
         },
         ref
     ) => {
-        const tokens = useComponentToken('DRAWER') as DrawerTokensType
+        const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
 
         return (
             <StyledContent
@@ -346,7 +346,9 @@ export const DrawerContent = forwardRef<
                         <Block
                             width={tokens.handle.width}
                             height={tokens.handle.height}
-                            backgroundColor={tokens.handle.backgroundColor}
+                            backgroundColor={
+                                tokens.handle.backgroundColor.default
+                            }
                             borderRadius={tokens.handle.borderRadius}
                             margin={
                                 direction === 'bottom'
@@ -370,13 +372,13 @@ DrawerContent.displayName = 'DrawerContent'
 
 export const DrawerHeader = forwardRef<HTMLDivElement, DrawerHeaderProps>(
     ({ children, className, ...props }, ref) => {
-        const tokens = useComponentToken('DRAWER') as DrawerTokensType
+        const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
 
         return (
             <Block
                 ref={ref}
                 className={className}
-                backgroundColor={tokens.header.backgroundColor}
+                backgroundColor={tokens.header.backgroundColor.default}
                 padding={tokens.header.padding}
                 flexShrink={0}
                 {...props}
@@ -391,7 +393,7 @@ DrawerHeader.displayName = 'DrawerHeader'
 
 export const DrawerTitle = forwardRef<HTMLHeadingElement, DrawerTitleProps>(
     ({ children, className, ...props }, ref) => {
-        const tokens = useComponentToken('DRAWER') as DrawerTokensType
+        const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
 
         return (
             <StyledTitle
@@ -412,7 +414,7 @@ export const DrawerDescription = forwardRef<
     HTMLParagraphElement,
     DrawerDescriptionProps
 >(({ children, className, ...props }, ref) => {
-    const tokens = useComponentToken('DRAWER') as DrawerTokensType
+    const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
 
     return (
         <StyledDescription
@@ -449,7 +451,7 @@ export const DrawerBody = forwardRef<
         },
         ref
     ) => {
-        const tokens = useComponentToken('DRAWER') as DrawerTokensType
+        const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
 
         const borderRadius = hasFooter
             ? `${tokens.body.borderRadius} ${tokens.body.borderRadius} 0 0`
@@ -460,7 +462,7 @@ export const DrawerBody = forwardRef<
                 ref={ref}
                 className={className}
                 padding={noPadding ? 0 : tokens.body.padding}
-                backgroundColor={tokens.body.backgroundColor}
+                backgroundColor={tokens.body.backgroundColor.default}
                 borderRadius={borderRadius}
                 flexGrow={1}
                 overflowY={overflowY || tokens.body.overflowY}
@@ -476,14 +478,14 @@ DrawerBody.displayName = 'DrawerBody'
 
 export const DrawerFooter = forwardRef<HTMLDivElement, DrawerFooterProps>(
     ({ children, className, ...props }, ref) => {
-        const tokens = useComponentToken('DRAWER') as DrawerTokensType
+        const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
 
         return (
             <Block
                 ref={ref}
                 className={className}
                 padding={tokens.footer.padding}
-                backgroundColor={tokens.footer.backgroundColor}
+                backgroundColor={tokens.footer.backgroundColor.default}
                 borderRadius={`0 0 ${tokens.body.borderRadius} ${tokens.body.borderRadius}`}
                 display="flex"
                 alignItems={tokens.footer.alignItems}

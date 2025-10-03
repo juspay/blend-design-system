@@ -29,7 +29,7 @@ import {
     getProgressBarTokens,
     type ResponsiveProgressBarTokens,
 } from '../components/ProgressBar/progressbar.tokens'
-import type { DrawerTokensType } from '../components/Drawer/drawer.tokens'
+import type { ResponsiveDrawerTokens } from '../components/Drawer/drawer.tokens'
 import type { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
 import type { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 import type { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
@@ -107,7 +107,7 @@ export type ComponentTokenType = {
     ACCORDION?: ResponsiveAccordionTokens
     STAT_CARD?: ResponsiveStatCardTokens
     PROGRESS_BAR?: ResponsiveProgressBarTokens
-    DRAWER?: DrawerTokensType
+    DRAWER?: ResponsiveDrawerTokens
     CHARTS?: ResponsiveChartTokens
     SNACKBAR?: ResponsiveSnackbarTokens
     KEYVALUEPAIR?: ResponsiveKeyValuePairTokens
