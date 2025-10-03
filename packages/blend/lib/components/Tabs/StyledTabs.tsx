@@ -33,7 +33,9 @@ export const StyledTabsList = styled(TabsPrimitive.List)<{
     padding: props.$tabsToken.list.padding[props.$variant],
     backgroundColor: props.$tabsToken.list.backgroundColor[props.$variant],
     borderRadius: props.$tabsToken.list.borderRadius[props.$variant],
-    borderBottom: props.$tabsToken.list.borderBottom[props.$variant],
+    borderBottom: props.$variant === TabsVariant.UNDERLINE 
+        ? 'none'
+        : props.$tabsToken.list.borderBottom[props.$variant],
 
     ...(props.$expanded &&
         !props.$fitContent && {
