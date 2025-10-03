@@ -355,9 +355,7 @@ const CardContent: React.FC<{
                             : isInlineButton
                               ? '14px' // Always 14px for inline buttons (non-center)
                               : String(
-                                    cardToken.body.actions.regularButtonsGap[
-                                        variant
-                                    ]
+                                    cardToken.body.actions.regular.gap[variant]
                                 )
                         : '0',
                 }}

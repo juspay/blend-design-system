@@ -56,6 +56,7 @@ export type CardTokenType = {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
                 color: CSSObject['color']
+                gap: CSSObject['gap'] // Gap between title and subtitle
             }
             subTitle: {
                 fontSize: CSSObject['fontSize']
@@ -68,8 +69,6 @@ export type CardTokenType = {
         gap: {
             [key in CardVariant]: CSSObject['gap']
         }
-        // Spacing between title and subtitle text
-        titleToSubTitleGap: CSSObject['gap']
     }
 
     // Body section
@@ -80,8 +79,6 @@ export type CardTokenType = {
         gap: {
             [key in CardVariant]: CSSObject['gap']
         }
-        // Spacing between title and content text
-        titleToContentGap: CSSObject['gap']
 
         // Content section within body (for complex content layouts)
         content: {
@@ -90,18 +87,18 @@ export type CardTokenType = {
                     fontSize: CSSObject['fontSize']
                     fontWeight: CSSObject['fontWeight']
                     color: CSSObject['color']
+                    gap: CSSObject['gap'] // Gap between title and content text
                 }
                 subtitle: {
                     fontSize: CSSObject['fontSize']
                     color: CSSObject['color']
+                    gap: CSSObject['gap'] // Gap between title and subtitle
                 }
                 content: {
                     fontSize: CSSObject['fontSize']
                     color: CSSObject['color']
                 }
             }
-            // Gap between content title and subtitle
-            titleToSubtitleGap: CSSObject['gap']
             // Gap for content slot positioning (variant-dependent)
             gap: {
                 [key in CardVariant]: CSSObject['gap']
@@ -110,13 +107,15 @@ export type CardTokenType = {
 
         // Action buttons section (variant-dependent)
         actions: {
-            // Spacing for inline action buttons (center-aligned) - variant dependent
-            inlineButtonsGap: {
-                [key in CardVariant]: CSSObject['gap']
+            inline: {
+                gap: {
+                    [key in CardVariant]: CSSObject['gap']
+                }
             }
-            // Spacing for regular action buttons (default spacing) - variant dependent
-            regularButtonsGap: {
-                [key in CardVariant]: CSSObject['gap']
+            regular: {
+                gap: {
+                    [key in CardVariant]: CSSObject['gap']
+                }
             }
         }
     }
@@ -155,6 +154,7 @@ export const getCardTokens = (
                         fontSize: foundationToken.font.size.body.lg.fontSize,
                         fontWeight: foundationToken.font.weight[600],
                         color: foundationToken.colors.gray[800],
+                        gap: foundationToken.unit[2], // Gap between title and subtitle
                     },
                     subTitle: {
                         fontSize: foundationToken.font.size.body.sm.fontSize,
@@ -168,7 +168,6 @@ export const getCardTokens = (
                     [CardVariant.ALIGNED]: foundationToken.unit[12], // More spacing for aligned cards
                     [CardVariant.CUSTOM]: foundationToken.unit[8],
                 },
-                titleToSubTitleGap: foundationToken.unit[2],
             },
 
             // Body section
@@ -180,7 +179,6 @@ export const getCardTokens = (
                     [CardVariant.ALIGNED]: foundationToken.unit[16], // Tighter spacing for aligned layouts
                     [CardVariant.CUSTOM]: foundationToken.unit[24],
                 },
-                titleToContentGap: foundationToken.unit[6],
 
                 content: {
                     text: {
@@ -189,11 +187,13 @@ export const getCardTokens = (
                                 foundationToken.font.size.body.md.fontSize,
                             fontWeight: foundationToken.font.weight[500],
                             color: foundationToken.colors.gray[800],
+                            gap: foundationToken.unit[6], // Gap between title and content text
                         },
                         subtitle: {
                             fontSize:
                                 foundationToken.font.size.body.sm.fontSize,
                             color: foundationToken.colors.gray[500],
+                            gap: foundationToken.unit[4], // Gap between title and subtitle
                         },
                         content: {
                             fontSize:
@@ -201,7 +201,6 @@ export const getCardTokens = (
                             color: foundationToken.colors.gray[500],
                         },
                     },
-                    titleToSubtitleGap: foundationToken.unit[4],
                     gap: {
                         [CardVariant.DEFAULT]: foundationToken.unit[8],
                         [CardVariant.ALIGNED]: foundationToken.unit[6], // Tighter for aligned content
@@ -211,15 +210,19 @@ export const getCardTokens = (
 
                 // Action buttons section (variant-dependent)
                 actions: {
-                    inlineButtonsGap: {
-                        [CardVariant.DEFAULT]: foundationToken.unit[14], // Always 14px for inline buttons
-                        [CardVariant.ALIGNED]: foundationToken.unit[14], // Always 14px for inline buttons (except center-aligned uses 24px)
-                        [CardVariant.CUSTOM]: foundationToken.unit[14],
+                    inline: {
+                        gap: {
+                            [CardVariant.DEFAULT]: foundationToken.unit[14], // Always 14px for inline buttons
+                            [CardVariant.ALIGNED]: foundationToken.unit[14], // Always 14px for inline buttons (except center-aligned uses 24px)
+                            [CardVariant.CUSTOM]: foundationToken.unit[14],
+                        },
                     },
-                    regularButtonsGap: {
-                        [CardVariant.DEFAULT]: foundationToken.unit[24],
-                        [CardVariant.ALIGNED]: foundationToken.unit[24], // Regular buttons use 24px
-                        [CardVariant.CUSTOM]: foundationToken.unit[24],
+                    regular: {
+                        gap: {
+                            [CardVariant.DEFAULT]: foundationToken.unit[24],
+                            [CardVariant.ALIGNED]: foundationToken.unit[24], // Regular buttons use 24px
+                            [CardVariant.CUSTOM]: foundationToken.unit[24],
+                        },
                     },
                 },
             },
@@ -249,6 +252,7 @@ export const getCardTokens = (
                         fontSize: foundationToken.font.size.body.lg.fontSize,
                         fontWeight: foundationToken.font.weight[600],
                         color: foundationToken.colors.gray[800],
+                        gap: foundationToken.unit[2], // Gap between title and subtitle
                     },
                     subTitle: {
                         fontSize: foundationToken.font.size.body.sm.fontSize,
@@ -262,7 +266,6 @@ export const getCardTokens = (
                     [CardVariant.ALIGNED]: foundationToken.unit[16], // More spacing for aligned cards on larger screens
                     [CardVariant.CUSTOM]: foundationToken.unit[8],
                 },
-                titleToSubTitleGap: foundationToken.unit[2],
             },
 
             // Body section
@@ -274,7 +277,6 @@ export const getCardTokens = (
                     [CardVariant.ALIGNED]: foundationToken.unit[20], // Adjusted spacing for aligned layouts
                     [CardVariant.CUSTOM]: foundationToken.unit[24],
                 },
-                titleToContentGap: foundationToken.unit[6],
 
                 content: {
                     text: {
@@ -283,11 +285,13 @@ export const getCardTokens = (
                                 foundationToken.font.size.body.md.fontSize,
                             fontWeight: foundationToken.font.weight[500],
                             color: foundationToken.colors.gray[800],
+                            gap: foundationToken.unit[6], // Gap between title and content text
                         },
                         subtitle: {
                             fontSize:
                                 foundationToken.font.size.body.sm.fontSize,
                             color: foundationToken.colors.gray[500],
+                            gap: foundationToken.unit[4], // Gap between title and subtitle
                         },
                         content: {
                             fontSize:
@@ -295,7 +299,6 @@ export const getCardTokens = (
                             color: foundationToken.colors.gray[500],
                         },
                     },
-                    titleToSubtitleGap: foundationToken.unit[4],
                     gap: {
                         [CardVariant.DEFAULT]: foundationToken.unit[8],
                         [CardVariant.ALIGNED]: foundationToken.unit[8], // Consistent for larger screens
@@ -305,15 +308,19 @@ export const getCardTokens = (
 
                 // Action buttons section (variant-dependent)
                 actions: {
-                    inlineButtonsGap: {
-                        [CardVariant.DEFAULT]: foundationToken.unit[14], // Always 14px for inline buttons
-                        [CardVariant.ALIGNED]: foundationToken.unit[14], // Always 14px for inline buttons (except center-aligned uses 24px)
-                        [CardVariant.CUSTOM]: foundationToken.unit[14],
+                    inline: {
+                        gap: {
+                            [CardVariant.DEFAULT]: foundationToken.unit[14], // Always 14px for inline buttons
+                            [CardVariant.ALIGNED]: foundationToken.unit[14], // Always 14px for inline buttons (except center-aligned uses 24px)
+                            [CardVariant.CUSTOM]: foundationToken.unit[14],
+                        },
                     },
-                    regularButtonsGap: {
-                        [CardVariant.DEFAULT]: foundationToken.unit[24],
-                        [CardVariant.ALIGNED]: foundationToken.unit[24], // Regular buttons use 24px
-                        [CardVariant.CUSTOM]: foundationToken.unit[24],
+                    regular: {
+                        gap: {
+                            [CardVariant.DEFAULT]: foundationToken.unit[24],
+                            [CardVariant.ALIGNED]: foundationToken.unit[24], // Regular buttons use 24px
+                            [CardVariant.CUSTOM]: foundationToken.unit[24],
+                        },
                     },
                 },
             },

@@ -115,7 +115,7 @@ export const getHeaderMarginBottom = (
     hasSubHeader: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasSubHeader) return String(cardToken.header.titleToSubTitleGap)
+    if (hasSubHeader) return String(cardToken.header.text.title.gap)
     return '0'
 }
 
@@ -148,7 +148,7 @@ export const getBodyTitleMarginBottom = (
     hasContent: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasContent) return String(cardToken.body.titleToContentGap) // 6px for closely related content
+    if (hasContent) return String(cardToken.body.content.text.title.gap) // 6px for closely related content
     return '0'
 }
 
@@ -175,8 +175,8 @@ export const getBodySlot2MarginBottom = (
 ): string => {
     if (!hasActionButton) return '0'
     return isInlineButton
-        ? String(cardToken.body.actions.inlineButtonsGap[variant]) // variant-dependent inline spacing
-        : String(cardToken.body.actions.regularButtonsGap[variant]) // variant-dependent regular spacing
+        ? String(cardToken.body.actions.inline.gap[variant]) // variant-dependent inline spacing
+        : String(cardToken.body.actions.regular.gap[variant]) // variant-dependent regular spacing
 }
 
 /**
