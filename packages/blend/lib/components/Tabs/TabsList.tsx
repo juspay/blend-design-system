@@ -120,6 +120,15 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         alignItems: 'center',
                         width: '100%',
                         overflow: 'hidden',
+                        position: 'relative',
+                        borderBottom:
+                            variant === TabsVariant.UNDERLINE
+                                ? tabsToken.list.borderBottom[variant]
+                                : 'none',
+                        paddingTop:
+                            variant === TabsVariant.UNDERLINE
+                                ? FOUNDATION_THEME.unit[8]
+                                : '0',
                     }}
                 >
                     <Block
@@ -239,18 +248,28 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         }
 
         return (
-            <StyledTabsList
-                ref={ref}
-                className={className}
-                $variant={variant}
-                $size={size}
-                $expanded={expanded}
-                $fitContent={fitContent}
-                $tabsToken={tabsToken}
-                {...props}
+            <Block
+                style={{
+                    position: 'relative',
+                    borderBottom:
+                        variant === TabsVariant.UNDERLINE
+                            ? tabsToken.list.borderBottom[variant]
+                            : 'none',
+                }}
             >
-                {children}
-            </StyledTabsList>
+                <StyledTabsList
+                    ref={ref}
+                    className={className}
+                    $variant={variant}
+                    $size={size}
+                    $expanded={expanded}
+                    $fitContent={fitContent}
+                    $tabsToken={tabsToken}
+                    {...props}
+                >
+                    {children}
+                </StyledTabsList>
+            </Block>
         )
     }
 )
