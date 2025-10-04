@@ -17,12 +17,18 @@ import {
     VisuallyHidden,
 } from './StyledAvatarGroup'
 import {
+    DarkStyledAvatarGroupContainer,
+    DarkStyledAvatarWrapper,
+    DarkStyledMenuContainer,
+    DarkStyledOverflowCounter,
+    DarkVisuallyHidden,
+} from './DarkStyledAvatarGroup'
+import {
     positionMenu,
     createMenuItems,
     filterAvatars,
 } from './avatarGroupUtils'
 
-// Temporarily stubbed Menu component until implemented fully
 type MenuProps = {
     items: MenuItemProps[]
     hasSearch?: boolean
@@ -122,125 +128,33 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
         },
         ref
     ) => {
-        // Ensure maxCount is at least 1
         const safeMaxCount = Math.max(1, maxCount)
 
-        // State
-        const [isMenuOpen, setIsMenuOpen] = useState(false)
         const [internalSelectedIds, setInternalSelectedIds] = useState<
             (string | number)[]
         >(selectedAvatarIds || [])
-        const [searchTerm, setSearchTerm] = useState('')
+        const [lightMenuOpen, setLightMenuOpen] = useState(false)
+        const [darkMenuOpen, setDarkMenuOpen] = useState(false)
+        const [lightSearchTerm, setLightSearchTerm] = useState('')
+        const [darkSearchTerm, setDarkSearchTerm] = useState('')
 
-        // Refs
         const overflowCounterRef = useRef<HTMLButtonElement>(null)
-        const menuRef = useRef<HTMLDivElement>(null)
-        const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+        const lightMenuRef = useRef<HTMLDivElement>(null)
+        const darkMenuRef = useRef<HTMLDivElement>(null)
 
-        // Determine visible avatars and overflow count
         const visibleAvatars = avatars.slice(0, safeMaxCount)
         const overflowCount = Math.max(0, avatars.length - safeMaxCount)
 
-        // Position menu when it opens
-        useEffect(() => {
-            if (isMenuOpen) {
-                // Cast the ref types to match the expected parameter types
-                const typedMenuRef = menuRef as RefObject<HTMLDivElement>
-                const typedCounterRef =
-                    overflowCounterRef as RefObject<HTMLButtonElement>
-
-                positionMenu(typedMenuRef, typedCounterRef)
-
-                // Handle window scroll and resize
-                const handleScroll = (event: Event) => {
-                    requestAnimationFrame(() => {
-                        positionMenu(typedMenuRef, typedCounterRef)
-                    })
-
-                    // Don't close menu when scrolling within it
-                    if (
-                        menuRef.current &&
-                        (menuRef.current === event.target ||
-                            menuRef.current.contains(event.target as Node))
-                    ) {
-                        return
-                    }
-
-                    // Close menu after a short delay when scrolling outside
-                    if (scrollTimeoutRef.current) {
-                        clearTimeout(scrollTimeoutRef.current)
-                    }
-
-                    scrollTimeoutRef.current = setTimeout(() => {
-                        setIsMenuOpen(false)
-                    }, 100)
-                }
-
-                const handleResize = () => {
-                    requestAnimationFrame(() => {
-                        positionMenu(typedMenuRef, typedCounterRef)
-                    })
-                }
-
-                // Add event listeners
-                window.addEventListener('scroll', handleScroll, true)
-                window.addEventListener('resize', handleResize)
-
-                // Clean up
-                return () => {
-                    window.removeEventListener('scroll', handleScroll, true)
-                    window.removeEventListener('resize', handleResize)
-                    if (scrollTimeoutRef.current) {
-                        clearTimeout(scrollTimeoutRef.current)
-                    }
-                }
-            }
-        }, [isMenuOpen])
-
-        // Handle click outside
-        useEffect(() => {
-            if (!isMenuOpen) return
-
-            const handleClickOutside = (event: MouseEvent) => {
-                if (
-                    overflowCounterRef.current &&
-                    menuRef.current &&
-                    !overflowCounterRef.current.contains(
-                        event.target as Node
-                    ) &&
-                    !menuRef.current.contains(event.target as Node)
-                ) {
-                    setIsMenuOpen(false)
-                }
-            }
-
-            const handleKeyDown = (event: KeyboardEvent) => {
-                if (event.key === 'Escape') {
-                    setIsMenuOpen(false)
-                }
-            }
-
-            document.addEventListener('mousedown', handleClickOutside)
-            document.addEventListener('keydown', handleKeyDown)
-
-            return () => {
-                document.removeEventListener('mousedown', handleClickOutside)
-                document.removeEventListener('keydown', handleKeyDown)
-            }
-        }, [isMenuOpen])
-
-        // Sync internal state with props
         useEffect(() => {
             setInternalSelectedIds(selectedAvatarIds || [])
         }, [selectedAvatarIds])
 
-        // Handle avatar selection
         const handleSelect = useCallback(
             (id: string | number) => {
                 setInternalSelectedIds((prevSelected) => {
                     const newSelectedIds = prevSelected.includes(id)
-                        ? prevSelected.filter((selectedId) => selectedId !== id) // Remove id
-                        : [...prevSelected, id] // Add id
+                        ? prevSelected.filter((selectedId) => selectedId !== id)
+                        : [...prevSelected, id]
 
                     onSelectionChange?.(newSelectedIds)
                     return newSelectedIds
@@ -249,125 +163,244 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
             [onSelectionChange]
         )
 
-        // Toggle menu
-        const toggleMenu = useCallback(
+        const toggleLightMenu = useCallback(
             (e: React.MouseEvent<HTMLButtonElement>) => {
                 e.preventDefault()
                 e.stopPropagation()
-                setIsMenuOpen((prev) => !prev)
+                setLightMenuOpen((prev) => !prev)
             },
             []
         )
 
-        // Handle search change
-        const handleSearchChange = useCallback((term: string) => {
-            setSearchTerm(term)
-        }, [])
+        const toggleDarkMenu = useCallback(
+            (e: React.MouseEvent<HTMLButtonElement>) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setDarkMenuOpen((prev) => !prev)
+            },
+            []
+        )
 
-        // Filtered items for search
-        const filteredAvatars = searchTerm
-            ? filterAvatars(avatars, searchTerm)
+        const handleLightSearchChange = useCallback(
+            (term: string) => setLightSearchTerm(term),
+            []
+        )
+        const handleDarkSearchChange = useCallback(
+            (term: string) => setDarkSearchTerm(term),
+            []
+        )
+
+        const filteredLightAvatars = lightSearchTerm
+            ? filterAvatars(avatars, lightSearchTerm)
+            : avatars
+        const filteredDarkAvatars = darkSearchTerm
+            ? filterAvatars(avatars, darkSearchTerm)
             : avatars
 
-        // Generate menu items
-        const menuItems = createMenuItems(
-            filteredAvatars,
+        const lightMenuItems = createMenuItems(
+            filteredLightAvatars,
+            internalSelectedIds,
+            handleSelect,
+            Avatar
+        )
+        const darkMenuItems = createMenuItems(
+            filteredDarkAvatars,
             internalSelectedIds,
             handleSelect,
             Avatar
         )
 
         return (
-            <StyledAvatarGroupContainer
-                ref={ref}
-                role="group"
-                aria-label={`Group of ${avatars.length} avatars, ${internalSelectedIds.length} selected`}
-                {...props}
-            >
-                {visibleAvatars.map((avatar, index) => (
-                    <StyledAvatarWrapper
-                        key={avatar.id}
-                        $index={index}
-                        $total={visibleAvatars.length}
-                        $isSelected={internalSelectedIds.includes(avatar.id)}
-                        $size={size}
-                        role="button"
-                        tabIndex={0}
-                        aria-pressed={internalSelectedIds.includes(avatar.id)}
-                        aria-label={`Select avatar ${avatar.alt || (typeof avatar.fallback === 'string' ? avatar.fallback : avatar.id)}`}
-                        onClick={() => handleSelect(avatar.id)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault()
-                                handleSelect(avatar.id)
-                            }
-                        }}
-                    >
-                        <Avatar
-                            src={avatar.src}
-                            alt={avatar.alt}
-                            fallback={avatar.fallback}
-                            size={size}
-                            shape={shape}
-                        />
-                    </StyledAvatarWrapper>
-                ))}
-
-                {overflowCount > 0 && (
-                    <StyledOverflowCounter
-                        ref={overflowCounterRef}
-                        type="button"
-                        $size={size}
-                        $shape={shape}
-                        $isOpen={isMenuOpen}
-                        aria-expanded={isMenuOpen}
-                        aria-haspopup="menu"
-                        aria-controls={
-                            isMenuOpen
-                                ? 'avatar-group-overflow-menu'
-                                : undefined
-                        }
-                        aria-label={`+${overflowCount} more avatars, click to view and select`}
-                        onClick={toggleMenu}
-                        onMouseDown={(e) => e.preventDefault()}
-                    >
-                        +{overflowCount}
-                    </StyledOverflowCounter>
-                )}
-
-                {/* Menu displayed when overflow counter is clicked */}
-                {overflowCount > 0 && isMenuOpen && (
-                    <StyledMenuContainer
-                        ref={menuRef}
-                        id="avatar-group-overflow-menu"
-                    >
-                        <Menu
-                            items={menuItems}
-                            hasSearch={true}
-                            searchPlaceholder="Search avatars..."
-                            searchTerm={searchTerm}
-                            onSearchTermChange={handleSearchChange}
-                            onItemClick={(item: MenuItemProps) => {
-                                if (item.id) {
-                                    handleSelect(item.id)
+            <>
+                {/* ---------- LIGHT THEME ---------- */}
+                <StyledAvatarGroupContainer
+                    ref={ref}
+                    role="group"
+                    aria-label={`Group of ${avatars.length} avatars, ${internalSelectedIds.length} selected`}
+                    {...props}
+                >
+                    {visibleAvatars.map((avatar, index) => (
+                        <StyledAvatarWrapper
+                            key={avatar.id}
+                            $index={index}
+                            $total={visibleAvatars.length}
+                            $isSelected={internalSelectedIds.includes(
+                                avatar.id
+                            )}
+                            $size={size}
+                            role="button"
+                            tabIndex={0}
+                            aria-pressed={internalSelectedIds.includes(
+                                avatar.id
+                            )}
+                            aria-label={`Select avatar ${
+                                avatar.alt ||
+                                (typeof avatar.fallback === 'string'
+                                    ? avatar.fallback
+                                    : avatar.id)
+                            }`}
+                            onClick={() => handleSelect(avatar.id)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault()
+                                    handleSelect(avatar.id)
                                 }
                             }}
-                        />
-                    </StyledMenuContainer>
-                )}
+                        >
+                            <Avatar
+                                src={avatar.src}
+                                alt={avatar.alt}
+                                fallback={avatar.fallback}
+                                size={size}
+                                shape={shape}
+                            />
+                        </StyledAvatarWrapper>
+                    ))}
 
-                {/* Hidden text for screen readers to announce the overflow */}
-                {overflowCount > 0 && !isMenuOpen && (
-                    <VisuallyHidden>
-                        And {overflowCount} more{' '}
-                        {overflowCount === 1 ? 'avatar' : 'avatars'}
-                    </VisuallyHidden>
-                )}
-            </StyledAvatarGroupContainer>
+                    {overflowCount > 0 && (
+                        <StyledOverflowCounter
+                            ref={overflowCounterRef}
+                            type="button"
+                            $size={size}
+                            $shape={shape}
+                            $isOpen={lightMenuOpen}
+                            aria-expanded={lightMenuOpen}
+                            aria-haspopup="menu"
+                            aria-controls={
+                                lightMenuOpen
+                                    ? 'avatar-group-light-menu'
+                                    : undefined
+                            }
+                            aria-label={`+${overflowCount} more avatars, click to view and select`}
+                            onClick={toggleLightMenu}
+                            onMouseDown={(e) => e.preventDefault()}
+                        >
+                            +{overflowCount}
+                        </StyledOverflowCounter>
+                    )}
+
+                    {overflowCount > 0 && lightMenuOpen && (
+                        <StyledMenuContainer
+                            ref={lightMenuRef}
+                            id="avatar-group-light-menu"
+                        >
+                            <Menu
+                                items={lightMenuItems}
+                                hasSearch
+                                searchPlaceholder="Search avatars..."
+                                searchTerm={lightSearchTerm}
+                                onSearchTermChange={handleLightSearchChange}
+                                onItemClick={(item) =>
+                                    item.id && handleSelect(item.id)
+                                }
+                            />
+                        </StyledMenuContainer>
+                    )}
+
+                    {overflowCount > 0 && !lightMenuOpen && (
+                        <VisuallyHidden>
+                            And {overflowCount} more{' '}
+                            {overflowCount === 1 ? 'avatar' : 'avatars'}
+                        </VisuallyHidden>
+                    )}
+                </StyledAvatarGroupContainer>
+
+                {/* ---------- DARK THEME ---------- */}
+                <DarkStyledAvatarGroupContainer
+                    ref={ref}
+                    role="group"
+                    aria-label={`Dark group of ${avatars.length} avatars, ${internalSelectedIds.length} selected`}
+                    {...props}
+                >
+                    {visibleAvatars.map((avatar, index) => (
+                        <DarkStyledAvatarWrapper
+                            key={avatar.id}
+                            $index={index}
+                            $total={visibleAvatars.length}
+                            $isSelected={internalSelectedIds.includes(
+                                avatar.id
+                            )}
+                            $size={size}
+                            role="button"
+                            tabIndex={0}
+                            aria-pressed={internalSelectedIds.includes(
+                                avatar.id
+                            )}
+                            aria-label={`Select avatar ${
+                                avatar.alt ||
+                                (typeof avatar.fallback === 'string'
+                                    ? avatar.fallback
+                                    : avatar.id)
+                            }`}
+                            onClick={() => handleSelect(avatar.id)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault()
+                                    handleSelect(avatar.id)
+                                }
+                            }}
+                        >
+                            <Avatar
+                                src={avatar.src}
+                                alt={avatar.alt}
+                                fallback={avatar.fallback}
+                                size={size}
+                                shape={shape}
+                            />
+                        </DarkStyledAvatarWrapper>
+                    ))}
+
+                    {overflowCount > 0 && (
+                        <DarkStyledOverflowCounter
+                            ref={overflowCounterRef}
+                            type="button"
+                            $size={size}
+                            $shape={shape}
+                            $isOpen={darkMenuOpen}
+                            aria-expanded={darkMenuOpen}
+                            aria-haspopup="menu"
+                            aria-controls={
+                                darkMenuOpen
+                                    ? 'avatar-group-dark-menu'
+                                    : undefined
+                            }
+                            aria-label={`+${overflowCount} more avatars, click to view and select`}
+                            onClick={toggleDarkMenu}
+                            onMouseDown={(e) => e.preventDefault()}
+                        >
+                            +{overflowCount}
+                        </DarkStyledOverflowCounter>
+                    )}
+
+                    {overflowCount > 0 && darkMenuOpen && (
+                        <DarkStyledMenuContainer
+                            ref={darkMenuRef}
+                            id="avatar-group-dark-menu"
+                        >
+                            <Menu
+                                items={darkMenuItems}
+                                hasSearch
+                                searchPlaceholder="Search avatars..."
+                                searchTerm={darkSearchTerm}
+                                onSearchTermChange={handleDarkSearchChange}
+                                onItemClick={(item) =>
+                                    item.id && handleSelect(item.id)
+                                }
+                            />
+                        </DarkStyledMenuContainer>
+                    )}
+
+                    {overflowCount > 0 && !darkMenuOpen && (
+                        <DarkVisuallyHidden>
+                            And {overflowCount} more{' '}
+                            {overflowCount === 1 ? 'avatar' : 'avatars'}
+                        </DarkVisuallyHidden>
+                    )}
+                </DarkStyledAvatarGroupContainer>
+            </>
         )
     }
 )
 
 AvatarGroup.displayName = 'AvatarGroup'
-
 export default AvatarGroup
