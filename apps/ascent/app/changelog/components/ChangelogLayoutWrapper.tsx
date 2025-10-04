@@ -3,6 +3,7 @@
 import React from 'react'
 import { SharedDocLayout } from '@/components/layout'
 import { useChangelogThemeForcer } from '../hooks/useChangelogThemeForcer'
+import { TableOfContentsProvider } from '@/app/docs/context/TableOfContentsContext'
 
 interface ChangelogLayoutWrapperProps {
     baseRoute: string
@@ -25,14 +26,16 @@ export const ChangelogLayoutWrapper: React.FC<ChangelogLayoutWrapperProps> = ({
     useChangelogThemeForcer()
 
     return (
-        <SharedDocLayout
-            baseRoute={baseRoute}
-            sidebarItems={sidebarItems}
-            showThemeToggle={showThemeToggle}
-            showSidebar={showSidebar}
-            showFooter={showFooter}
-        >
-            {children}
-        </SharedDocLayout>
+        <TableOfContentsProvider>
+            <SharedDocLayout
+                baseRoute={baseRoute}
+                sidebarItems={sidebarItems}
+                showThemeToggle={showThemeToggle}
+                showSidebar={showSidebar}
+                showFooter={showFooter}
+            >
+                {children}
+            </SharedDocLayout>
+        </TableOfContentsProvider>
     )
 }

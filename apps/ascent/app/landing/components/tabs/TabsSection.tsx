@@ -104,8 +104,8 @@ export const TabsSection = () => {
                 />
             </div>
 
-            <div ref={tokenizerRef}>
-                <TokenizerComp />
+            <div ref={tokenizerRef} className="relative">
+                <TokenizerComp reference={tokenizerRef} />
             </div>
             <div ref={componentsRef} className="w-full">
                 <Components />
