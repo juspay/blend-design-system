@@ -409,8 +409,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
                 setStartDate(formatDate(range.startDate, dateFormat))
                 setEndDate(formatDate(range.endDate, dateFormat))
-
-                console.log('Date selected from calendar:', range)
             },
             [dateFormat]
         )
