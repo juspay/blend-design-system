@@ -202,6 +202,23 @@ const DateRangePickerDemo = () => {
         setPlaygroundRange(range)
     }
 
+    const handlePlaygroundPresetSelection = (data: any) => {
+        console.log('🚀 Preset Selected!', {
+            preset: data.preset,
+            label: data.label,
+            dateRange: {
+                startDate: data.dateRange.startDate.toISOString(),
+                endDate: data.dateRange.endDate.toISOString(),
+            },
+            formattedDates: {
+                startDate: data.formattedStartDate,
+                endDate: data.formattedEndDate,
+                startTime: data.formattedStartTime,
+                endTime: data.formattedEndTime,
+            },
+        })
+    }
+
     const handleBasicRangeChange = (range: DateRange) => {
         console.log('Basic Range Changed:', {
             startDate: range.startDate.toISOString(),
@@ -718,6 +735,9 @@ const DateRangePickerDemo = () => {
                                 <DateRangePicker
                                     value={playgroundRange}
                                     onChange={handlePlaygroundRangeChange}
+                                    onPresetSelection={
+                                        handlePlaygroundPresetSelection
+                                    }
                                     showPresets={config.showPresets}
                                     showDateTimePicker={
                                         config.showDateTimePicker
@@ -1549,6 +1569,43 @@ const DateRangePickerDemo = () => {
                             </div>
                             <div className="text-gray-600">
                                 Define your own business logic for date ranges
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Preset Selection Callback */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            🆕 Preset Selection Callback
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Get instant callbacks when predefined options are
+                            selected! Perfect for analytics dashboards that need
+                            to know what preset was chosen.
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                onPresetSelection={
+                                    handlePlaygroundPresetSelection
+                                }
+                                showPresets={true}
+                                showDateTimePicker={true}
+                                formatConfig={{
+                                    preset: DateFormatPreset.MEDIUM_RANGE,
+                                    includeTime: true,
+                                    timeFormat: '12h',
+                                }}
+                            />
+                        </div>
+                        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded text-xs font-mono">
+                            <div className="text-green-600 mb-1">
+                                ✅ onPresetSelection callback enabled!
+                            </div>
+                            <div className="text-gray-600">
+                                Check console logs when you select presets to
+                                see the callback data
                             </div>
                         </div>
                     </div>

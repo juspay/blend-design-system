@@ -690,6 +690,14 @@ const TableHeader = forwardRef<
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                                 boxSizing: 'border-box',
+                                position: 'sticky',
+                                right: 0,
+                                backgroundColor:
+                                    tableToken.dataTable.table.header
+                                        .backgroundColor,
+                                width: FOUNDATION_THEME.unit[48],
+                                minWidth: FOUNDATION_THEME.unit[48],
+                                maxWidth: FOUNDATION_THEME.unit[48],
                             }}
                         >
                             <Block position="relative">
