@@ -1,7 +1,14 @@
-# Changelog for v0.0.19-beta (Beta)
+# Changelog for v0.0.19 (Stable)
 
-This is a beta release from the staging branch. Changes since last tag:
+This is a stable release. Changes since last stable release:
 
+- Merge pull request #448 from juspay/staging (a0c8646)
+- Merge pull request #447 from juspay/dev (d5bb6ee)
+- feat: add showPreset for enhanced preset functionality (#446) (aebd34b)
+- Fix tabs and calendar (#445) (8111c1a)
+- Merge pull request #444 from juspay/dev (2f37d24)
+- Merge pull request #443 from juspay/release/update-beta-version-0.0.19-beta (e90e0b7)
+- chore(release): v0.0.19-beta [BETA] (ce5f5c7)
 - Merge pull request #442 from juspay/dev (578256e)
 - Merge pull request #441 from juspay/release/update-beta-version-0.0.19-beta (e741ce4)
 - chore(release): v0.0.19-beta [BETA] (c87e938)
@@ -16,13 +23,7 @@ This is a beta release from the staging branch. Changes since last tag:
 - feat: added title truncation (a9fd5be)
 - fix: fixed popover trigger width issue (5de8590)
 - fix: update zIndex values for Menu component (8e5f324)
+- Merge pull request #433 from juspay/staging (0fef48e)
 - Merge pull request #432 from juspay/dev (16b805b)
 - Merge pull request #431 from juspay/release/update-stable-version-0.0.18 (7029db7)
 - chore(release): v0.0.18 [STABLE] (1f55c9c)
-- Merge pull request #429 from juspay/dev (ff4b374)
-- fix: chart labels margin (#428) (2ab5040)
-- feat: enhance preset detection and add yesterday range example (#426) (e848d2e)
-- Update data table , calendar, drawer, sidebar (#427) (89ff68c)
-- Merge pull request #423 from juspay/dev (459ab08)
-- Merge pull request #422 from juspay/release/update-beta-version-0.0.18-beta (bb3c71e)
-- chore(release): v0.0.18-beta [BETA] (62318ce)

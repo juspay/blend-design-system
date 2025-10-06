@@ -286,9 +286,23 @@ export type CustomRangeConfig = {
     applyToPresets?: boolean
 }
 
+/**
+ * Preset selection callback data
+ */
+export type PresetSelectionData = {
+    preset: DateRangePreset
+    label: string
+    dateRange: DateRange
+    formattedStartDate: string
+    formattedEndDate: string
+    formattedStartTime: string
+    formattedEndTime: string
+}
+
 export type DateRangePickerProps = {
     value?: DateRange
     onChange?: (range: DateRange) => void
+    onPresetSelection?: (data: PresetSelectionData) => void
     showDateTimePicker?: boolean
     showPresets?: boolean
     customPresets?: PresetsConfig

@@ -5,6 +5,7 @@ import {
     DateRangePreset,
     DateRange,
     DateRangePickerSize,
+    PresetSelectionData,
 } from './types'
 import {
     formatDate,
@@ -21,6 +22,7 @@ import {
     processCustomPresets,
     getFilteredPresets,
     validateCustomRangeConfig,
+    getPresetLabelWithCustom,
 } from './utils'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
@@ -275,6 +277,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         {
             value,
             onChange,
+            onPresetSelection,
             showDateTimePicker = true,
             showPresets = true,
             customPresets,
@@ -436,6 +439,20 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 setStartTime(result.formattedStartTime)
                 setEndTime(result.formattedEndTime)
 
+                // Trigger preset selection callback if provided
+                if (onPresetSelection && preset !== DateRangePreset.CUSTOM) {
+                    const presetSelectionData: PresetSelectionData = {
+                        preset,
+                        label: getPresetLabelWithCustom(preset, presetConfigs),
+                        dateRange: result.updatedRange,
+                        formattedStartDate: result.formattedStartDate,
+                        formattedEndDate: result.formattedEndDate,
+                        formattedStartTime: result.formattedStartTime,
+                        formattedEndTime: result.formattedEndTime,
+                    }
+                    onPresetSelection(presetSelectionData)
+                }
+
                 // For presets, immediately update the committed value (different from calendar selection)
                 if (preset !== DateRangePreset.CUSTOM) {
                     onChange?.(result.updatedRange)
@@ -448,7 +465,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     }
                 }
             },
-            [dateFormat, onChange, showPreset]
+            [dateFormat, onChange, showPreset, onPresetSelection, presetConfigs]
         )
 
         const handleStartDateChange = useCallback(
