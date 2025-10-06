@@ -942,7 +942,7 @@ const TableBody = forwardRef<
                                       {/* Column Manager - Always rightmost (empty cell in body, actual manager in header) */}
                                       {enableColumnManager && (
                                           <StyledTableCell
-                                              $width="50px"
+                                              $width="48px"
                                               $customBackgroundColor={
                                                   rowStyling.backgroundColor
                                               }
@@ -950,11 +950,14 @@ const TableBody = forwardRef<
                                                   hasCustomBackground
                                               }
                                               style={{
-                                                  minWidth: '50px',
-                                                  maxWidth: '50px',
+                                                  minWidth:  FOUNDATION_THEME.unit[48],
+                                                  maxWidth:  FOUNDATION_THEME.unit[48],
                                                   fontSize:
                                                       tableToken.dataTable.table
                                                           .body.cell.fontSize,
+                                                  position: 'sticky',
+                                                  right: 0,
+                                                  backgroundColor: rowStyling.backgroundColor || foundationToken.colors.gray[0],
                                               }}
                                           />
                                       )}
