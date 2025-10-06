@@ -33,6 +33,7 @@ type QuickRangeSelectorProps = {
     isDisabled?: boolean
     size?: DateRangePickerSize
     maxMenuHeight?: number
+    isStandalone?: boolean
 }
 
 const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
@@ -48,6 +49,7 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
             isDisabled = false,
             size = DateRangePickerSize.MEDIUM,
             maxMenuHeight = 200,
+            isStandalone = false,
         },
         ref
     ) => {
@@ -99,12 +101,26 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
             }
         }
 
-        return (
-            <Block
-                position="relative"
-                ref={ref}
-                className={className}
-                style={{
+        const getContainerStyle = () => {
+            const baseStyle = {
+                backgroundColor:
+                    calendarToken.quickRange.trigger.backgroundColor,
+            }
+
+            if (isStandalone) {
+                const border = isDisabled
+                    ? calendarToken.quickRange.trigger.disabled.borderLeft
+                    : calendarToken.quickRange.trigger.borderLeft
+
+                return {
+                    ...baseStyle,
+                    border: border,
+                    borderRadius:
+                        calendarToken.quickRange.trigger.borderTopLeftRadius,
+                }
+            } else {
+                return {
+                    ...baseStyle,
                     borderLeft: isDisabled
                         ? calendarToken.quickRange.trigger.disabled.borderLeft
                         : calendarToken.quickRange.trigger.borderLeft,
@@ -118,9 +134,16 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                         calendarToken.quickRange.trigger.borderTopLeftRadius,
                     borderBottomLeftRadius:
                         calendarToken.quickRange.trigger.borderBottomLeftRadius,
-                    backgroundColor:
-                        calendarToken.quickRange.trigger.backgroundColor,
-                }}
+                }
+            }
+        }
+
+        return (
+            <Block
+                position="relative"
+                ref={ref}
+                className={className}
+                style={getContainerStyle()}
             >
                 <SingleSelect
                     placeholder={getPresetLabel(activePreset)}
