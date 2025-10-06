@@ -47,6 +47,10 @@ export type TabsTokensType = {
     border: {
         [key in TabsVariant]: CSSObject['border']
     }
+    // Pattern: borderBottom.[variant]
+    borderBottom: {
+        [key in TabsVariant]: CSSObject['borderBottom']
+    }
     container: {
         // Pattern: container.backgroundColor.[variant]
         backgroundColor: {
@@ -215,6 +219,14 @@ export const getTabsTokens = (
                 [TabsVariant.BOXED]: 'none',
                 [TabsVariant.FLOATING]: 'none',
                 [TabsVariant.PILLS]: `1px solid ${foundationToken.colors.gray[200]}`,
+            },
+            // Pattern: borderBottom.[variant]
+            // Example: borderBottom.underline
+            borderBottom: {
+                [TabsVariant.UNDERLINE]: `1px solid ${foundationToken.colors.gray[200]}`,
+                [TabsVariant.BOXED]: 'none',
+                [TabsVariant.FLOATING]: 'none',
+                [TabsVariant.PILLS]: 'none',
             },
             container: {
                 // Pattern: container.backgroundColor.[variant]
@@ -462,6 +474,14 @@ export const getTabsTokens = (
                 [TabsVariant.BOXED]: 'none',
                 [TabsVariant.FLOATING]: 'none',
                 [TabsVariant.PILLS]: `1px solid ${foundationToken.colors.gray[200]}`,
+            },
+            // Pattern: borderBottom.[variant]
+            // Example: borderBottom.underline
+            borderBottom: {
+                [TabsVariant.UNDERLINE]: `1px solid ${foundationToken.colors.gray[200]}`,
+                [TabsVariant.BOXED]: 'none',
+                [TabsVariant.FLOATING]: 'none',
+                [TabsVariant.PILLS]: 'none',
             },
             container: {
                 // Pattern: container.backgroundColor.[variant]

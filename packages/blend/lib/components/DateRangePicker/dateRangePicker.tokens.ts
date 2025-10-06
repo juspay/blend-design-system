@@ -30,6 +30,11 @@ export type CalendarTokenType = {
                 md: CSSObject['fontSize']
                 lg: CSSObject['fontSize']
             }
+            disabled: {
+                borderLeft: CSSObject['borderLeft']
+                borderTop: CSSObject['borderTop']
+                borderBottom: CSSObject['borderBottom']
+            }
         }
         content: {
             padding: CSSObject['padding']
@@ -166,6 +171,7 @@ export type CalendarTokenType = {
         disabled: {
             opacity: CSSObject['opacity']
             cursor: CSSObject['cursor']
+            border: CSSObject['border']
         }
         borderRadiusWithPresets: CSSObject['borderRadius']
         borderRadiusWithoutPresets: CSSObject['borderRadius']
@@ -451,6 +457,11 @@ export const getCalendarToken = (
                     md: `${foundationToken.font.size.body.md.fontSize}px`,
                     lg: `${foundationToken.font.size.body.md.fontSize}px`,
                 },
+                disabled: {
+                    borderLeft: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
+                    borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
+                    borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
+                },
             },
             content: {
                 padding: FOUNDATION_THEME.unit[4],
@@ -508,6 +519,7 @@ export const getCalendarToken = (
             disabled: {
                 opacity: 0.5,
                 cursor: 'not-allowed',
+                border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
             },
             borderRadiusWithPresets: '0 8px 8px 0',
             borderRadiusWithoutPresets: foundationToken.border.radius[8],

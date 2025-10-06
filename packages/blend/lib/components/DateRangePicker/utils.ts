@@ -5,6 +5,10 @@ import {
     DateFormatConfig,
     CustomFormatFunction,
     HapticFeedbackType,
+    CustomPresetConfig,
+    CustomPresetDefinition,
+    PresetsConfig,
+    CustomRangeConfig,
 } from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import { DATE_RANGE_PICKER_CONSTANTS } from './constants'
@@ -135,6 +139,12 @@ export const formatDateRange = (
  * @returns The date range for the preset
  */
 export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
+    // Check if this is a custom preset
+    const customDefinition = getCustomPresetDefinition(preset as string)
+    if (customDefinition) {
+        return customDefinition.getDateRange()
+    }
+
     const now = new Date()
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
@@ -161,6 +171,11 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
             return createSingleDateRange(yesterday)
         }
 
+        case DateRangePreset.LAST_30_MINUTES: {
+            const thirtyMinsAgo = new Date(now.getTime() - 30 * 60 * 1000)
+            return { startDate: thirtyMinsAgo, endDate: now }
+        }
+
         case DateRangePreset.TOMORROW: {
             const tomorrow = new Date(today)
             tomorrow.setDate(tomorrow.getDate() + 1)
@@ -175,6 +190,13 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
         case DateRangePreset.LAST_6_HOURS: {
             const sixHoursAgo = new Date(now.getTime() - 6 * 60 * 60 * 1000)
             return { startDate: sixHoursAgo, endDate: now }
+        }
+
+        case DateRangePreset.LAST_24_HOURS: {
+            const twentyFourHoursAgo = new Date(
+                now.getTime() - 24 * 60 * 60 * 1000
+            )
+            return { startDate: twentyFourHoursAgo, endDate: now }
         }
 
         case DateRangePreset.LAST_7_DAYS: {
@@ -196,40 +218,94 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
             return { startDate: thirtyDaysAgo, endDate: now }
         }
 
+        case DateRangePreset.THIS_MONTH: {
+            // This month: Start of current month (1st day at 12:00 AM) to current time
+            const startOfMonth = new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                1,
+                0,
+                0,
+                0,
+                0
+            )
+            return { startDate: startOfMonth, endDate: now }
+        }
+
+        case DateRangePreset.LAST_MONTH: {
+            // Last month: Full previous month (1st day 12:00 AM to last day 11:59 PM)
+            const lastMonth = new Date(
+                today.getFullYear(),
+                today.getMonth() - 1,
+                1
+            )
+            const startOfLastMonth = new Date(
+                lastMonth.getFullYear(),
+                lastMonth.getMonth(),
+                1,
+                0,
+                0,
+                0,
+                0
+            )
+            const endOfLastMonth = new Date(
+                lastMonth.getFullYear(),
+                lastMonth.getMonth() + 1,
+                0,
+                23,
+                59,
+                59,
+                999
+            )
+            return { startDate: startOfLastMonth, endDate: endOfLastMonth }
+        }
+
         case DateRangePreset.LAST_3_MONTHS: {
+            // Last 3 months: Start from 12:00 AM of 3 months ago to current time
             const threeMonthsAgo = new Date(now)
             threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+            threeMonthsAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
             return { startDate: threeMonthsAgo, endDate: now }
         }
 
         case DateRangePreset.LAST_12_MONTHS: {
+            // Last 12 months: Start from 12:00 AM of 12 months ago to current time
             const twelveMonthsAgo = new Date(now)
             twelveMonthsAgo.setFullYear(twelveMonthsAgo.getFullYear() - 1)
+            twelveMonthsAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
             return { startDate: twelveMonthsAgo, endDate: now }
         }
 
         case DateRangePreset.NEXT_7_DAYS: {
+            // Next 7 days: From current time to 11:59 PM of 7 days later
             const sevenDaysLater = new Date(today)
             sevenDaysLater.setDate(sevenDaysLater.getDate() + 6)
-            return { startDate: today, endDate: sevenDaysLater }
+            sevenDaysLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            return { startDate: now, endDate: sevenDaysLater }
         }
 
         case DateRangePreset.NEXT_30_DAYS: {
+            // Next 30 days: From current time to 11:59 PM of 30 days later
             const thirtyDaysLater = new Date(today)
             thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 29)
-            return { startDate: today, endDate: thirtyDaysLater }
+            thirtyDaysLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            return { startDate: now, endDate: thirtyDaysLater }
         }
 
         case DateRangePreset.NEXT_3_MONTHS: {
+            // Next 3 months: From current time to 11:59 PM of 3 months later
             const threeMonthsLater = new Date(today)
             threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3)
-            return { startDate: today, endDate: threeMonthsLater }
+            threeMonthsLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            return { startDate: now, endDate: threeMonthsLater }
         }
 
         case DateRangePreset.NEXT_12_MONTHS: {
+            // Next 12 months: From current time to 11:59 PM of 12 months later
             const twelveMonthsLater = new Date(today)
             twelveMonthsLater.setFullYear(twelveMonthsLater.getFullYear() + 1)
-            return { startDate: today, endDate: twelveMonthsLater }
+            twelveMonthsLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            return { startDate: now, endDate: twelveMonthsLater }
         }
 
         default: {
@@ -244,6 +320,12 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
  * @returns The label for the preset
  */
 export const getPresetLabel = (preset: DateRangePreset): string => {
+    // Check if this is a custom preset
+    const customDefinition = getCustomPresetDefinition(preset as string)
+    if (customDefinition) {
+        return customDefinition.label
+    }
+
     switch (preset) {
         case DateRangePreset.TODAY:
             return 'Today'
@@ -251,14 +333,22 @@ export const getPresetLabel = (preset: DateRangePreset): string => {
             return 'Yesterday'
         case DateRangePreset.TOMORROW:
             return 'Tomorrow'
+        case DateRangePreset.LAST_30_MINUTES:
+            return 'Last 30 minutes'
         case DateRangePreset.LAST_1_HOUR:
             return 'Last 1 hour'
         case DateRangePreset.LAST_6_HOURS:
             return 'Last 6 hours'
+        case DateRangePreset.LAST_24_HOURS:
+            return 'Last 24 hours'
         case DateRangePreset.LAST_7_DAYS:
             return 'Last 7 days'
         case DateRangePreset.LAST_30_DAYS:
             return 'Last 30 days'
+        case DateRangePreset.THIS_MONTH:
+            return 'This month'
+        case DateRangePreset.LAST_MONTH:
+            return 'Last month'
         case DateRangePreset.LAST_3_MONTHS:
             return 'Last 3 months'
         case DateRangePreset.LAST_12_MONTHS:
@@ -951,6 +1041,7 @@ export const getScrollToMonth = (
  * @param today Today's date
  * @param disableFutureDates Whether future dates are disabled
  * @param disablePastDates Whether past dates are disabled
+ * @param customDisableDates Custom function to disable specific dates
  * @returns Object with all date states
  */
 export const getDateCellStates = (
@@ -958,7 +1049,8 @@ export const getDateCellStates = (
     selectedRange: DateRange,
     today: Date,
     disableFutureDates: boolean = false,
-    disablePastDates: boolean = false
+    disablePastDates: boolean = false,
+    customDisableDates?: (date: Date) => boolean
 ) => {
     const isStart = isStartDate(date, selectedRange)
     const isEnd = isEndDate(date, selectedRange)
@@ -974,7 +1066,8 @@ export const getDateCellStates = (
 
     const isDisabled = Boolean(
         (disableFutureDates && date > today) ||
-            (disablePastDates && date < today)
+            (disablePastDates && date < today) ||
+            (customDisableDates && customDisableDates(date))
     )
 
     return {
@@ -1568,6 +1661,7 @@ export const createCalendarMonthData = (
  * @param disableFutureDates Whether future dates are disabled
  * @param disablePastDates Whether past dates are disabled
  * @param calendarToken Calendar token for styling
+ * @param customDisableDates Custom function to disable specific dates
  * @returns Day cell props
  */
 export const calculateDayCellProps = (
@@ -1576,7 +1670,8 @@ export const calculateDayCellProps = (
     today: Date,
     disableFutureDates: boolean,
     disablePastDates: boolean,
-    calendarToken: CalendarTokenType
+    calendarToken: CalendarTokenType,
+    customDisableDates?: (date: Date) => boolean
 ): {
     dateStates: ReturnType<typeof getDateCellStates>
     styles: Record<string, unknown>
@@ -1588,7 +1683,8 @@ export const calculateDayCellProps = (
         selectedRange,
         today,
         disableFutureDates,
-        disablePastDates
+        disablePastDates,
+        customDisableDates
     )
 
     const getCellStyles = () => {
@@ -2049,7 +2145,13 @@ export const formatTriggerDisplay = (
         return placeholder
     }
 
-    return formatDateRangeWithConfig(range, config)
+    const enhancedConfig = {
+        ...config,
+        includeTime:
+            config.includeTime !== undefined ? config.includeTime : true, // Default to showing time
+    }
+
+    return formatDateRangeWithConfig(range, enhancedConfig)
 }
 
 /**
@@ -2699,6 +2801,162 @@ export const handleEnhancedCalendarDateClick = (
     return { startDate, endDate: startDate }
 }
 
+/**
+ * Validates custom range configuration
+ * @param config The custom range configuration to validate
+ * @returns Validation result
+ */
+export const validateCustomRangeConfig = (
+    config: CustomRangeConfig
+): { isValid: boolean; error?: string } => {
+    if (!config.calculateEndDate && !config.referenceRange) {
+        return {
+            isValid: false,
+            error: 'Either calculateEndDate or referenceRange must be provided',
+        }
+    }
+
+    if (config.backwardDays !== undefined && config.backwardDays < 0) {
+        return {
+            isValid: false,
+            error: 'backwardDays must be a non-negative number',
+        }
+    }
+
+    return { isValid: true }
+}
+
+/**
+ * Handles calendar date click with custom range configuration support
+ * @param clickedDate The date that was clicked
+ * @param selectedRange Current selected range
+ * @param allowSingleDateSelection Whether single date selection is allowed
+ * @param today Today's date for validation
+ * @param disableFutureDates Whether future dates are disabled
+ * @param disablePastDates Whether past dates are disabled
+ * @param customRangeConfig Custom range configuration
+ * @param isDoubleClick Whether this is a double-click event
+ * @returns New date range or null if click should be ignored
+ */
+export const handleCustomRangeCalendarDateClick = (
+    clickedDate: Date,
+    selectedRange: DateRange,
+    allowSingleDateSelection: boolean = false,
+    today: Date,
+    disableFutureDates: boolean = false,
+    disablePastDates: boolean = false,
+    customRangeConfig?: CustomRangeConfig,
+    isDoubleClick: boolean = false
+): DateRange | null => {
+    // Validate date is not disabled
+    if (
+        (disableFutureDates && clickedDate > today) ||
+        (disablePastDates && clickedDate < today)
+    ) {
+        return null
+    }
+
+    // If no custom range config, use standard logic
+    if (!customRangeConfig) {
+        return handleCalendarDateClick(
+            clickedDate,
+            selectedRange,
+            allowSingleDateSelection,
+            today,
+            disableFutureDates,
+            disablePastDates,
+            isDoubleClick
+        )
+    }
+
+    // Custom range logic
+    const clickedDateOnly = new Date(
+        clickedDate.getFullYear(),
+        clickedDate.getMonth(),
+        clickedDate.getDate()
+    )
+
+    // Handle double click - always create single date range if allowed
+    if (isDoubleClick && allowSingleDateSelection) {
+        return createSingleDateRange(clickedDateOnly)
+    }
+
+    // Calculate end date based on custom config
+    let endDate: Date
+
+    if (customRangeConfig.referenceRange) {
+        // Use reference range to calculate duration
+        const duration =
+            customRangeConfig.referenceRange.endDate.getTime() -
+            customRangeConfig.referenceRange.startDate.getTime()
+        endDate = new Date(clickedDateOnly.getTime() + duration)
+    } else if (customRangeConfig.calculateEndDate) {
+        const calculatedDate =
+            customRangeConfig.calculateEndDate(clickedDateOnly)
+        if (!calculatedDate) {
+            // Fallback to standard logic if calculation returns null
+            return handleCalendarDateClick(
+                clickedDate,
+                selectedRange,
+                allowSingleDateSelection,
+                today,
+                disableFutureDates,
+                disablePastDates,
+                isDoubleClick
+            )
+        }
+        endDate = calculatedDate
+    } else {
+        // Fallback to standard logic
+        return handleCalendarDateClick(
+            clickedDate,
+            selectedRange,
+            allowSingleDateSelection,
+            today,
+            disableFutureDates,
+            disablePastDates,
+            isDoubleClick
+        )
+    }
+
+    // Handle backward days if specified
+    if (customRangeConfig.backwardDays !== undefined) {
+        const startDate = new Date(clickedDateOnly)
+        startDate.setDate(startDate.getDate() - customRangeConfig.backwardDays)
+        startDate.setHours(0, 0, 0, 0)
+
+        const calculatedEndDate = new Date(clickedDateOnly)
+        calculatedEndDate.setHours(23, 59, 59, 999)
+
+        return { startDate, endDate: calculatedEndDate }
+    }
+
+    // Set start date to beginning of clicked day
+    const startDate = createStartOfDay(clickedDateOnly)
+
+    // If manual end date selection is allowed and we already have a start date
+    if (
+        customRangeConfig.allowManualEndDateSelection &&
+        selectedRange.startDate &&
+        !isSameDay(selectedRange.startDate, selectedRange.endDate)
+    ) {
+        // Allow second click to set end date
+        if (clickedDateOnly > selectedRange.startDate) {
+            return {
+                startDate: selectedRange.startDate,
+                endDate: createEndOfDay(clickedDateOnly),
+            }
+        }
+    }
+
+    // Ensure end date is at end of day
+    if (isSameDay(startDate, endDate)) {
+        endDate = createEndOfDay(endDate)
+    }
+
+    return { startDate, endDate }
+}
+
 // =============================================================================
 // PRESET DETECTION UTILITIES
 // =============================================================================
@@ -2798,9 +3056,18 @@ export const matchesYesterdayPreset = (range: DateRange): boolean => {
     // Check if it's a full day range for yesterday
     const startIsYesterday = isSameCalendarDay(range.startDate, yesterday)
     const endIsYesterday = isSameCalendarDay(range.endDate, yesterday)
-    const isFullDay = isFullDayRange(range.startDate, range.endDate)
 
-    return startIsYesterday && endIsYesterday && isFullDay
+    // More flexible check for full day - allow for slight variations in milliseconds
+    const isFullDayOrClose =
+        isFullDayRange(range.startDate, range.endDate) ||
+        (startIsYesterday &&
+            endIsYesterday &&
+            range.startDate.getHours() === 0 &&
+            range.startDate.getMinutes() === 0 &&
+            range.endDate.getHours() === 23 &&
+            range.endDate.getMinutes() === 59)
+
+    return startIsYesterday && endIsYesterday && isFullDayOrClose
 }
 
 /**
@@ -2851,9 +3118,15 @@ export const detectPresetFromRange = (range: DateRange): DateRangePreset => {
     if (timeDiff <= tolerance) {
         const durationMs = range.endDate.getTime() - range.startDate.getTime()
 
-        // Check hour-based presets
+        // Check minute and hour-based presets
+        const thirtyMinutes = 30 * 60 * 1000
         const oneHour = 60 * 60 * 1000
         const sixHours = 6 * 60 * 60 * 1000
+        const twentyFourHours = 24 * 60 * 60 * 1000
+
+        if (Math.abs(durationMs - thirtyMinutes) <= tolerance) {
+            return DateRangePreset.LAST_30_MINUTES
+        }
 
         if (Math.abs(durationMs - oneHour) <= tolerance) {
             return DateRangePreset.LAST_1_HOUR
@@ -2861,6 +3134,10 @@ export const detectPresetFromRange = (range: DateRange): DateRangePreset => {
 
         if (Math.abs(durationMs - sixHours) <= tolerance) {
             return DateRangePreset.LAST_6_HOURS
+        }
+
+        if (Math.abs(durationMs - twentyFourHours) <= tolerance) {
+            return DateRangePreset.LAST_24_HOURS
         }
     }
 
@@ -2947,4 +3224,277 @@ export const detectPresetFromRange = (range: DateRange): DateRangePreset => {
     }
 
     return DateRangePreset.CUSTOM
+}
+
+// =============================================================================
+// CUSTOM PRESET CONFIGURATION UTILITIES
+// =============================================================================
+
+/**
+ * Default preset configuration for the DateRangePicker
+ */
+export const DEFAULT_PRESET_CONFIG: DateRangePreset[] = [
+    DateRangePreset.LAST_30_MINUTES,
+    DateRangePreset.LAST_1_HOUR,
+    DateRangePreset.LAST_6_HOURS,
+    DateRangePreset.LAST_24_HOURS,
+    DateRangePreset.TODAY,
+    DateRangePreset.YESTERDAY,
+    DateRangePreset.LAST_7_DAYS,
+    DateRangePreset.LAST_30_DAYS,
+    DateRangePreset.THIS_MONTH,
+    DateRangePreset.LAST_MONTH,
+]
+
+/**
+ * Store for custom preset definitions
+ * Maps custom preset IDs to their definitions
+ */
+const customPresetDefinitions = new Map<string, CustomPresetDefinition>()
+
+/**
+ * Get custom preset definition by ID
+ */
+export const getCustomPresetDefinition = (
+    id: string
+): CustomPresetDefinition | undefined => {
+    return customPresetDefinitions.get(id)
+}
+
+/**
+ * Processes custom presets configuration and returns normalized preset configs
+ * @param customPresets User-provided presets configuration
+ * @returns Array of normalized CustomPresetConfig objects
+ */
+export const processCustomPresets = (
+    customPresets?: PresetsConfig
+): CustomPresetConfig[] => {
+    if (!customPresets || customPresets.length === 0) {
+        return DEFAULT_PRESET_CONFIG.map((preset) => ({
+            preset,
+            visible: true,
+        }))
+    }
+
+    // If first item is a DateRangePreset, treat as simple array
+    if (typeof customPresets[0] === 'string') {
+        return (customPresets as DateRangePreset[]).map((preset) => ({
+            preset,
+            visible: true,
+        }))
+    }
+
+    // Process array that may contain DateRangePreset, CustomPresetConfig, or CustomPresetDefinition
+    return customPresets.map((item) => {
+        // If it's a string, it's a DateRangePreset
+        if (typeof item === 'string') {
+            return {
+                preset: item as DateRangePreset,
+                visible: true,
+            }
+        }
+
+        // Check if it's a CustomPresetDefinition (has id and getDateRange)
+        if ('id' in item && 'getDateRange' in item) {
+            const definition = item as CustomPresetDefinition
+            // Store the definition for later use
+            customPresetDefinitions.set(definition.id, definition)
+
+            // Convert to CustomPresetConfig using the id as the preset value
+            return {
+                preset: definition.id as DateRangePreset,
+                label: definition.label,
+                visible: definition.visible !== false,
+            }
+        }
+
+        // Otherwise, it's already a CustomPresetConfig
+        return item as CustomPresetConfig
+    })
+}
+
+/**
+ * Filters presets based on visibility and other criteria
+ * @param presetConfigs Array of preset configurations
+ * @param disableFutureDates Whether future date presets should be excluded
+ * @param disablePastDates Whether past date presets should be excluded
+ * @returns Array of visible and enabled presets
+ */
+export const getFilteredPresets = (
+    presetConfigs: CustomPresetConfig[],
+    disableFutureDates: boolean = false,
+    disablePastDates: boolean = false
+): DateRangePreset[] => {
+    const futurePresets = [
+        DateRangePreset.TOMORROW,
+        DateRangePreset.NEXT_7_DAYS,
+        DateRangePreset.NEXT_30_DAYS,
+        DateRangePreset.NEXT_3_MONTHS,
+        DateRangePreset.NEXT_12_MONTHS,
+    ]
+
+    const pastPresets = [
+        DateRangePreset.LAST_30_MINUTES,
+        DateRangePreset.LAST_1_HOUR,
+        DateRangePreset.LAST_6_HOURS,
+        DateRangePreset.LAST_24_HOURS,
+        DateRangePreset.YESTERDAY,
+        DateRangePreset.LAST_7_DAYS,
+        DateRangePreset.LAST_30_DAYS,
+        DateRangePreset.LAST_MONTH,
+        DateRangePreset.LAST_3_MONTHS,
+        DateRangePreset.LAST_12_MONTHS,
+    ]
+
+    return presetConfigs
+        .filter((config) => {
+            // Filter out invisible presets
+            if (config.visible === false) {
+                return false
+            }
+
+            // Filter out future presets if disabled
+            if (disableFutureDates && futurePresets.includes(config.preset)) {
+                return false
+            }
+
+            // Filter out past presets if disabled
+            if (disablePastDates && pastPresets.includes(config.preset)) {
+                return false
+            }
+
+            return true
+        })
+        .map((config) => config.preset)
+}
+
+/**
+ * Gets the label for a preset, using custom label if provided
+ * @param preset The preset to get label for
+ * @param presetConfigs Array of preset configurations with potential custom labels
+ * @returns The label for the preset
+ */
+export const getPresetLabelWithCustom = (
+    preset: DateRangePreset,
+    presetConfigs?: CustomPresetConfig[]
+): string => {
+    if (presetConfigs) {
+        const config = presetConfigs.find((config) => config.preset === preset)
+        if (config?.label) {
+            return config.label
+        }
+    }
+
+    return getPresetLabel(preset)
+}
+
+/**
+ * Creates a preset configuration with custom label and visibility
+ * @param preset The preset enum value
+ * @param label Optional custom label
+ * @param visible Whether the preset should be visible (default: true)
+ * @returns CustomPresetConfig object
+ */
+export const createPresetConfig = (
+    preset: DateRangePreset,
+    label?: string,
+    visible: boolean = true
+): CustomPresetConfig => ({
+    preset,
+    label,
+    visible,
+})
+
+/**
+ * Helper function to create common preset configurations
+ */
+export const PRESET_HELPERS = {
+    /**
+     * Creates a configuration for time-based presets only
+     */
+    timeBasedOnly: (): CustomPresetConfig[] => [
+        createPresetConfig(DateRangePreset.LAST_30_MINUTES),
+        createPresetConfig(DateRangePreset.LAST_1_HOUR),
+        createPresetConfig(DateRangePreset.LAST_6_HOURS),
+        createPresetConfig(DateRangePreset.LAST_24_HOURS),
+    ],
+
+    /**
+     * Creates a configuration for day-based presets only
+     */
+    dayBasedOnly: (): CustomPresetConfig[] => [
+        createPresetConfig(DateRangePreset.TODAY),
+        createPresetConfig(DateRangePreset.YESTERDAY),
+        createPresetConfig(DateRangePreset.LAST_7_DAYS),
+        createPresetConfig(DateRangePreset.LAST_30_DAYS),
+    ],
+
+    /**
+     * Creates a configuration for month-based presets only
+     */
+    monthBasedOnly: (): CustomPresetConfig[] => [
+        createPresetConfig(DateRangePreset.THIS_MONTH),
+        createPresetConfig(DateRangePreset.LAST_MONTH),
+        createPresetConfig(DateRangePreset.LAST_3_MONTHS),
+        createPresetConfig(DateRangePreset.LAST_12_MONTHS),
+    ],
+
+    /**
+     * Creates a minimal preset configuration
+     */
+    minimal: (): CustomPresetConfig[] => [
+        createPresetConfig(DateRangePreset.TODAY),
+        createPresetConfig(DateRangePreset.LAST_7_DAYS),
+        createPresetConfig(DateRangePreset.LAST_30_DAYS),
+    ],
+
+    /**
+     * Creates a comprehensive preset configuration
+     */
+    comprehensive: (): CustomPresetConfig[] => [
+        createPresetConfig(DateRangePreset.LAST_30_MINUTES),
+        createPresetConfig(DateRangePreset.LAST_1_HOUR),
+        createPresetConfig(DateRangePreset.LAST_6_HOURS),
+        createPresetConfig(DateRangePreset.LAST_24_HOURS),
+        createPresetConfig(DateRangePreset.TODAY),
+        createPresetConfig(DateRangePreset.YESTERDAY),
+        createPresetConfig(DateRangePreset.LAST_7_DAYS),
+        createPresetConfig(DateRangePreset.LAST_30_DAYS),
+        createPresetConfig(DateRangePreset.THIS_MONTH),
+        createPresetConfig(DateRangePreset.LAST_MONTH),
+        createPresetConfig(DateRangePreset.LAST_3_MONTHS),
+        createPresetConfig(DateRangePreset.LAST_12_MONTHS),
+    ],
+
+    /**
+     * Creates a configuration with custom labels
+     */
+    withCustomLabels: (): CustomPresetConfig[] => [
+        createPresetConfig(DateRangePreset.LAST_30_MINUTES, 'Last 30 min'),
+        createPresetConfig(DateRangePreset.LAST_1_HOUR, 'Last hour'),
+        createPresetConfig(DateRangePreset.LAST_6_HOURS, 'Last 6 hours'),
+        createPresetConfig(DateRangePreset.LAST_24_HOURS, 'Last 24 hours'),
+        createPresetConfig(DateRangePreset.TODAY, 'Today'),
+        createPresetConfig(DateRangePreset.YESTERDAY, 'Yesterday'),
+        createPresetConfig(DateRangePreset.LAST_7_DAYS, 'Last 7 days'),
+        createPresetConfig(DateRangePreset.LAST_30_DAYS, 'Last 30 days'),
+        createPresetConfig(DateRangePreset.THIS_MONTH, 'This month'),
+        createPresetConfig(DateRangePreset.LAST_MONTH, 'Last month'),
+    ],
+
+    /**
+     * Creates a configuration with some presets hidden
+     */
+    selectiveVisibility: (): CustomPresetConfig[] => [
+        createPresetConfig(DateRangePreset.LAST_30_MINUTES),
+        createPresetConfig(DateRangePreset.LAST_1_HOUR),
+        createPresetConfig(DateRangePreset.LAST_6_HOURS),
+        createPresetConfig(DateRangePreset.LAST_24_HOURS, undefined, false), // Hidden
+        createPresetConfig(DateRangePreset.TODAY),
+        createPresetConfig(DateRangePreset.YESTERDAY),
+        createPresetConfig(DateRangePreset.LAST_7_DAYS),
+        createPresetConfig(DateRangePreset.LAST_30_DAYS),
+        createPresetConfig(DateRangePreset.THIS_MONTH),
+        createPresetConfig(DateRangePreset.LAST_MONTH),
+    ],
 }

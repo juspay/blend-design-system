@@ -296,21 +296,33 @@ const StatCard = ({
                             flexGrow={1}
                             gap={statCardToken.header.gap}
                         >
-                            <Text
-                                as="span"
-                                fontSize={
-                                    statCardToken.header.title[variant].fontSize
-                                }
-                                fontWeight={
-                                    statCardToken.header.title[variant]
-                                        .fontWeight
-                                }
-                                color={
-                                    statCardToken.header.title[variant].color
-                                }
-                            >
-                                {title}
-                            </Text>
+                            <Tooltip content={title}>
+                                <Text
+                                    as="span"
+                                    fontSize={
+                                        statCardToken.header.title[variant]
+                                            .fontSize
+                                    }
+                                    fontWeight={
+                                        statCardToken.header.title[variant]
+                                            .fontWeight
+                                    }
+                                    color={
+                                        statCardToken.header.title[variant]
+                                            .color
+                                    }
+                                    style={{
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 1,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        wordBreak: 'break-word',
+                                    }}
+                                >
+                                    {title}
+                                </Text>
+                            </Tooltip>
                             {helpIconText && (
                                 <Block
                                     display="flex"
@@ -458,29 +470,40 @@ const StatCard = ({
                             alignItems="center"
                             justifyContent="space-between"
                             width="100%"
+                            gap={statCardToken.header.gap}
                         >
                             <Block
                                 display="flex"
                                 alignItems="center"
                                 gap={statCardToken.header.gap}
                             >
-                                <Text
-                                    as="span"
-                                    fontSize={
-                                        statCardToken.header.title[variant]
-                                            .fontSize
-                                    }
-                                    fontWeight={
-                                        statCardToken.header.title[variant]
-                                            .fontWeight
-                                    }
-                                    color={
-                                        statCardToken.header.title[variant]
-                                            .color
-                                    }
-                                >
-                                    {title}
-                                </Text>
+                                <Tooltip content={title}>
+                                    <Text
+                                        as="span"
+                                        fontSize={
+                                            statCardToken.header.title[variant]
+                                                .fontSize
+                                        }
+                                        fontWeight={
+                                            statCardToken.header.title[variant]
+                                                .fontWeight
+                                        }
+                                        color={
+                                            statCardToken.header.title[variant]
+                                                .color
+                                        }
+                                        style={{
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: 1,
+                                            WebkitBoxOrient: 'vertical',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            wordBreak: 'break-word',
+                                        }}
+                                    >
+                                        {title}
+                                    </Text>
+                                </Tooltip>
                                 {helpIconText && (
                                     <Block
                                         flexShrink={0}
@@ -634,21 +657,33 @@ const StatCard = ({
                             flexGrow={1}
                             gap={statCardToken.header.gap}
                         >
-                            <Text
-                                as="span"
-                                fontSize={
-                                    statCardToken.header.title[variant].fontSize
-                                }
-                                fontWeight={
-                                    statCardToken.header.title[variant]
-                                        .fontWeight
-                                }
-                                color={
-                                    statCardToken.header.title[variant].color
-                                }
-                            >
-                                {title}
-                            </Text>
+                            <Tooltip content={title}>
+                                <Text
+                                    as="span"
+                                    fontSize={
+                                        statCardToken.header.title[variant]
+                                            .fontSize
+                                    }
+                                    fontWeight={
+                                        statCardToken.header.title[variant]
+                                            .fontWeight
+                                    }
+                                    color={
+                                        statCardToken.header.title[variant]
+                                            .color
+                                    }
+                                    style={{
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 1,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        wordBreak: 'break-word',
+                                    }}
+                                >
+                                    {title}
+                                </Text>
+                            </Tooltip>
                             {helpIconText && (
                                 <Block
                                     display="flex"
