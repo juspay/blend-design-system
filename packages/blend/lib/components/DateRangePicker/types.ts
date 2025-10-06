@@ -9,12 +9,14 @@ export enum DateRangePreset {
     TODAY = 'today',
     YESTERDAY = 'yesterday',
     TOMORROW = 'tomorrow',
-    LAST_30_MINS = 'last30Mins',
+    LAST_30_MINUTES = 'last30Minutes',
     LAST_1_HOUR = 'last1Hour',
     LAST_6_HOURS = 'last6Hours',
     LAST_24_HOURS = 'last24Hours',
     LAST_7_DAYS = 'last7Days',
     LAST_30_DAYS = 'last30Days',
+    THIS_MONTH = 'thisMonth',
+    LAST_MONTH = 'lastMonth',
     LAST_3_MONTHS = 'last3Months',
     LAST_12_MONTHS = 'last12Months',
     NEXT_7_DAYS = 'next7Days',
@@ -165,6 +167,34 @@ export type PickerColumnData = {
     selectedIndex: number
 }
 
+/**
+ * Custom preset configuration for predefined presets
+ */
+export type CustomPresetConfig = {
+    preset: DateRangePreset
+    label?: string
+    visible?: boolean
+}
+
+/**
+ * Custom preset definition for truly custom presets
+ */
+export type CustomPresetDefinition = {
+    id: string
+    label: string
+    getDateRange: () => DateRange
+    visible?: boolean
+}
+
+/**
+ * Presets configuration - can be predefined presets, custom configs, or custom definitions
+ */
+export type PresetsConfig =
+    | DateRangePreset[]
+    | CustomPresetConfig[]
+    | CustomPresetDefinition[]
+    | (DateRangePreset | CustomPresetConfig | CustomPresetDefinition)[]
+
 // =============================================================================
 // COMPONENT PROPS
 // =============================================================================
@@ -261,6 +291,7 @@ export type DateRangePickerProps = {
     onChange?: (range: DateRange) => void
     showDateTimePicker?: boolean
     showPresets?: boolean
+    customPresets?: PresetsConfig
     placeholder?: string
     isDisabled?: boolean
     icon?: ReactNode
@@ -281,6 +312,7 @@ export type DateRangePickerProps = {
     formatConfig?: DateFormatConfig
     triggerConfig?: TriggerConfig
     maxMenuHeight?: number
+    showPreset?: boolean
 }
 
 export type PresetItemProps = {

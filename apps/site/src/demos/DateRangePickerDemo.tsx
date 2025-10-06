@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { DateRangePicker } from '../../../../packages/blend/lib/components/DateRangePicker'
 import {
     DateRange,
+    DateRangePreset,
     DateFormatPreset,
     DateFormatConfig,
     TriggerConfig,
@@ -110,6 +111,7 @@ const DateRangePickerDemo = () => {
         hideFutureDates: false,
         hidePastDates: false,
         isDisabled: false,
+        showPreset: false,
         formatPreset: DateFormatPreset.MEDIUM_RANGE,
         includeTime: false,
         includeYear: true,
@@ -493,6 +495,18 @@ const DateRangePickerDemo = () => {
                                             Skip Quick Filters on Mobile
                                         </span>
                                     </label>
+
+                                    <label className="flex items-center cursor-pointer text-gray-700">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.showPreset}
+                                            onChange={handleCheckboxChange(
+                                                'showPreset'
+                                            )}
+                                            className="mr-2 cursor-pointer"
+                                        />
+                                        <span>🆕 Preset-Only Mode</span>
+                                    </label>
                                 </div>
                             </div>
 
@@ -722,6 +736,7 @@ const DateRangePickerDemo = () => {
                                     hideFutureDates={config.hideFutureDates}
                                     hidePastDates={config.hidePastDates}
                                     isDisabled={config.isDisabled}
+                                    showPreset={config.showPreset}
                                     size={config.size}
                                     formatConfig={getFormatConfig()}
                                     triggerConfig={getTriggerConfig()}
@@ -1235,6 +1250,309 @@ const DateRangePickerDemo = () => {
                         </div>
                     </div>
 
+                    {/* Preset-Only Mode Basic */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            🆕 Preset-Only Mode
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Shows only the preset dropdown menu. Click any
+                            preset to immediately apply the date range - no
+                            calendar or apply button needed!
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                showPreset={true}
+                                showPresets={true}
+                            />
+                        </div>
+                        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded text-xs font-mono">
+                            <div className="text-green-600 mb-1">
+                                ✅ showPreset={'{true}'}
+                            </div>
+                            <div className="text-gray-600">
+                                Renders only the preset selector, immediately
+                                applies selection
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Preset-Only Mode with Custom Presets */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            🆕 Preset-Only Mode + Custom Presets
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Preset-only mode with custom preset configuration.
+                            Perfect for filtering analytics dashboards!
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                showPreset={true}
+                                customPresets={[
+                                    DateRangePreset.LAST_30_MINUTES,
+                                    DateRangePreset.LAST_1_HOUR,
+                                    DateRangePreset.LAST_6_HOURS,
+                                    DateRangePreset.LAST_24_HOURS,
+                                    DateRangePreset.TODAY,
+                                    DateRangePreset.YESTERDAY,
+                                ]}
+                                showPresets={true}
+                            />
+                        </div>
+                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded text-xs font-mono">
+                            <div className="text-blue-600 mb-1">
+                                💡 Analytics Dashboard Perfect!
+                            </div>
+                            <div className="text-gray-600">
+                                Time-based presets + instant selection = great
+                                UX
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Preset-Only Mode with Size Variants */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            🆕 Preset-Only Mode Sizes
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Different sizes available for preset-only mode:
+                            Small, Medium, and Large
+                        </p>
+                        <div className="space-y-4">
+                            <div>
+                                <div className="text-xs text-gray-500 mb-2">
+                                    Small Size
+                                </div>
+                                <DateRangePicker
+                                    value={customRange}
+                                    onChange={handleCustomRangeChange}
+                                    showPreset={true}
+                                    size={DateRangePickerSize.SMALL}
+                                    customPresets={[
+                                        DateRangePreset.TODAY,
+                                        DateRangePreset.LAST_7_DAYS,
+                                        DateRangePreset.LAST_30_DAYS,
+                                    ]}
+                                />
+                            </div>
+                            <div>
+                                <div className="text-xs text-gray-500 mb-2">
+                                    Medium Size (Default)
+                                </div>
+                                <DateRangePicker
+                                    value={customRange}
+                                    onChange={handleCustomRangeChange}
+                                    showPreset={true}
+                                    size={DateRangePickerSize.MEDIUM}
+                                    customPresets={[
+                                        DateRangePreset.TODAY,
+                                        DateRangePreset.LAST_7_DAYS,
+                                        DateRangePreset.LAST_30_DAYS,
+                                    ]}
+                                />
+                            </div>
+                            <div>
+                                <div className="text-xs text-gray-500 mb-2">
+                                    Large Size
+                                </div>
+                                <DateRangePicker
+                                    value={customRange}
+                                    onChange={handleCustomRangeChange}
+                                    showPreset={true}
+                                    size={DateRangePickerSize.LARGE}
+                                    customPresets={[
+                                        DateRangePreset.TODAY,
+                                        DateRangePreset.LAST_7_DAYS,
+                                        DateRangePreset.LAST_30_DAYS,
+                                    ]}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Preset-Only Mode for Reports */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            🆕 Preset-Only for Reports
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Perfect for report dashboards where users need quick
+                            access to common time periods without the complexity
+                            of a full calendar
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={formatRange}
+                                onChange={handleFormatRangeChange}
+                                showPreset={true}
+                                customPresets={[
+                                    DateRangePreset.THIS_MONTH,
+                                    DateRangePreset.LAST_MONTH,
+                                    DateRangePreset.LAST_3_MONTHS,
+                                    DateRangePreset.LAST_12_MONTHS,
+                                ]}
+                                formatConfig={{
+                                    preset: DateFormatPreset.MEDIUM_RANGE,
+                                    includeTime: false,
+                                    includeYear: true,
+                                }}
+                            />
+                        </div>
+                        <div className="mt-3 p-3 bg-purple-50 border border-purple-200 rounded text-xs font-mono">
+                            <div className="text-purple-600 mb-1">
+                                📊 Perfect for Business Reports
+                            </div>
+                            <div className="text-gray-600">
+                                Month-based presets + clean formatting
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Preset-Only Mode with Custom Definitions */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            🆕 Preset-Only + Custom Definitions
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Preset-only mode with completely custom preset
+                            definitions. Business hours, specific weeks,
+                            quarters, etc.
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                showPreset={true}
+                                customPresets={[
+                                    // Business hours preset
+                                    {
+                                        id: 'businessHours',
+                                        label: 'Business Hours Today',
+                                        getDateRange: () => {
+                                            const today = new Date()
+                                            const start = new Date(
+                                                today.getFullYear(),
+                                                today.getMonth(),
+                                                today.getDate(),
+                                                9,
+                                                0,
+                                                0
+                                            )
+                                            const end = new Date(
+                                                today.getFullYear(),
+                                                today.getMonth(),
+                                                today.getDate(),
+                                                17,
+                                                0,
+                                                0
+                                            )
+                                            return {
+                                                startDate: start,
+                                                endDate: end,
+                                            }
+                                        },
+                                    },
+                                    // This week preset
+                                    {
+                                        id: 'thisWeek',
+                                        label: 'This Week (Mon-Fri)',
+                                        getDateRange: () => {
+                                            const today = new Date()
+                                            const dayOfWeek = today.getDay()
+                                            const monday = new Date(today)
+                                            monday.setDate(
+                                                today.getDate() -
+                                                    (dayOfWeek === 0
+                                                        ? 6
+                                                        : dayOfWeek - 1)
+                                            )
+                                            monday.setHours(0, 0, 0, 0)
+
+                                            const friday = new Date(monday)
+                                            friday.setDate(monday.getDate() + 4)
+                                            friday.setHours(23, 59, 59, 999)
+
+                                            return {
+                                                startDate: monday,
+                                                endDate: friday,
+                                            }
+                                        },
+                                    },
+                                    // Current quarter preset
+                                    {
+                                        id: 'currentQuarter',
+                                        label: 'Current Quarter',
+                                        getDateRange: () => {
+                                            const today = new Date()
+                                            const quarter = Math.floor(
+                                                today.getMonth() / 3
+                                            )
+                                            const startMonth = quarter * 3
+
+                                            const start = new Date(
+                                                today.getFullYear(),
+                                                startMonth,
+                                                1,
+                                                0,
+                                                0,
+                                                0,
+                                                0
+                                            )
+
+                                            const end = new Date(
+                                                today.getFullYear(),
+                                                startMonth + 3,
+                                                0,
+                                                23,
+                                                59,
+                                                59,
+                                                999
+                                            )
+
+                                            return {
+                                                startDate: start,
+                                                endDate: end,
+                                            }
+                                        },
+                                    },
+                                    // Last 2 weeks preset
+                                    {
+                                        id: 'last2Weeks',
+                                        label: 'Last 2 Weeks',
+                                        getDateRange: () => {
+                                            const today = new Date()
+                                            const start = new Date(today)
+                                            start.setDate(today.getDate() - 14)
+                                            start.setHours(0, 0, 0, 0)
+
+                                            const end = new Date(today)
+                                            end.setHours(23, 59, 59, 999)
+
+                                            return {
+                                                startDate: start,
+                                                endDate: end,
+                                            }
+                                        },
+                                    },
+                                ]}
+                            />
+                        </div>
+                        <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded text-xs font-mono">
+                            <div className="text-orange-600 mb-1">
+                                🚀 Ultimate Flexibility
+                            </div>
+                            <div className="text-gray-600">
+                                Define your own business logic for date ranges
+                            </div>
+                        </div>
+                    </div>
+
                     {/* New Time Presets */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
@@ -1570,6 +1888,409 @@ const DateRangePickerDemo = () => {
                                 showPresets={true}
                                 showDateTimePicker={true}
                             />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Custom Presets Section */}
+                <div className="mt-8">
+                    <h3 className="text-xl font-semibold text-gray-700 mb-4">
+                        Custom Presets Configuration
+                    </h3>
+                    <p className="text-base text-gray-600 mb-6">
+                        Configure which presets to show using the customPresets
+                        prop. Pass an array of DateRangePreset enums.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Time-based Presets */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[250px] flex flex-col">
+                            <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                                Time-based Presets Only
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">
+                                Show only time-based presets for analytics
+                                dashboards
+                            </p>
+                            <div className="overflow-hidden">
+                                <DateRangePicker
+                                    value={customRange}
+                                    onChange={handleCustomRangeChange}
+                                    customPresets={[
+                                        DateRangePreset.LAST_30_MINUTES,
+                                        DateRangePreset.LAST_1_HOUR,
+                                        DateRangePreset.LAST_6_HOURS,
+                                        DateRangePreset.LAST_24_HOURS,
+                                    ]}
+                                    showPresets={true}
+                                />
+                            </div>
+                            <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded text-xs font-mono">
+                                <div className="text-gray-600 mb-1">
+                                    customPresets={`[`}
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.LAST_30_MINUTES,
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.LAST_1_HOUR,
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.LAST_6_HOURS,
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.LAST_24_HOURS,
+                                </div>
+                                <div className="text-gray-600">{`]}`}</div>
+                            </div>
+                        </div>
+
+                        {/* Day-based Presets */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[250px] flex flex-col">
+                            <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                                Day-based Presets Only
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">
+                                Show only day-based presets for reports and date
+                                selection
+                            </p>
+                            <div className="overflow-hidden">
+                                <DateRangePicker
+                                    value={basicRange}
+                                    onChange={handleBasicRangeChange}
+                                    customPresets={[
+                                        DateRangePreset.TODAY,
+                                        DateRangePreset.YESTERDAY,
+                                        DateRangePreset.LAST_7_DAYS,
+                                        DateRangePreset.LAST_30_DAYS,
+                                    ]}
+                                    showPresets={true}
+                                />
+                            </div>
+                            <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded text-xs font-mono">
+                                <div className="text-gray-600 mb-1">
+                                    customPresets={`[`}
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.TODAY,
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.YESTERDAY,
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.LAST_7_DAYS,
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.LAST_30_DAYS,
+                                </div>
+                                <div className="text-gray-600">{`]}`}</div>
+                            </div>
+                        </div>
+
+                        {/* Month-based Presets */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[250px] flex flex-col">
+                            <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                                Month-based Presets Only
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">
+                                Show only month-based presets for longer period
+                                reports
+                            </p>
+                            <div className="overflow-hidden">
+                                <DateRangePicker
+                                    value={formatRange}
+                                    onChange={handleFormatRangeChange}
+                                    customPresets={[
+                                        DateRangePreset.THIS_MONTH,
+                                        DateRangePreset.LAST_MONTH,
+                                        DateRangePreset.LAST_3_MONTHS,
+                                        DateRangePreset.LAST_12_MONTHS,
+                                    ]}
+                                    showPresets={true}
+                                />
+                            </div>
+                            <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded text-xs font-mono">
+                                <div className="text-gray-600 mb-1">
+                                    customPresets={`[`}
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.THIS_MONTH,
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.LAST_MONTH,
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.LAST_3_MONTHS,
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.LAST_12_MONTHS,
+                                </div>
+                                <div className="text-gray-600">{`]}`}</div>
+                            </div>
+                        </div>
+
+                        {/* Minimal Presets */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[250px] flex flex-col">
+                            <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                                Minimal Presets
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">
+                                Show only essential presets for simple date
+                                selection
+                            </p>
+                            <div className="overflow-hidden">
+                                <DateRangePicker
+                                    value={customRange}
+                                    onChange={handleCustomRangeChange}
+                                    customPresets={[
+                                        DateRangePreset.TODAY,
+                                        DateRangePreset.LAST_7_DAYS,
+                                        DateRangePreset.LAST_30_DAYS,
+                                    ]}
+                                    showPresets={true}
+                                />
+                            </div>
+                            <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded text-xs font-mono">
+                                <div className="text-gray-600 mb-1">
+                                    customPresets={`[`}
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.TODAY,
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.LAST_7_DAYS,
+                                </div>
+                                <div className="text-gray-600 ml-2">
+                                    DateRangePreset.LAST_30_DAYS,
+                                </div>
+                                <div className="text-gray-600">{`]}`}</div>
+                            </div>
+                        </div>
+
+                        {/* Truly Custom Presets */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[250px] flex flex-col">
+                            <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                                🚀 Truly Custom Presets
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">
+                                Define your own custom presets with custom logic
+                                (e.g., "Last 45 minutes", "Next 1.5 hours")
+                            </p>
+                            <div className="overflow-hidden">
+                                <DateRangePicker
+                                    value={customRange}
+                                    onChange={handleCustomRangeChange}
+                                    customPresets={[
+                                        // Custom preset: Last 45 minutes
+                                        {
+                                            id: 'last45min',
+                                            label: 'Last 45 minutes',
+                                            getDateRange: () => {
+                                                const now = new Date()
+                                                const start = new Date(
+                                                    now.getTime() -
+                                                        45 * 60 * 1000
+                                                )
+                                                return {
+                                                    startDate: start,
+                                                    endDate: now,
+                                                }
+                                            },
+                                        },
+                                        // Custom preset: Next 1.5 hours
+                                        {
+                                            id: 'next90min',
+                                            label: 'Next 1.5 hours',
+                                            getDateRange: () => {
+                                                const now = new Date()
+                                                const end = new Date(
+                                                    now.getTime() +
+                                                        90 * 60 * 1000
+                                                )
+                                                return {
+                                                    startDate: now,
+                                                    endDate: end,
+                                                }
+                                            },
+                                        },
+                                        // Custom preset: Business hours today
+                                        {
+                                            id: 'businessToday',
+                                            label: 'Business hours today',
+                                            getDateRange: () => {
+                                                const today = new Date()
+                                                const start = new Date(
+                                                    today.getFullYear(),
+                                                    today.getMonth(),
+                                                    today.getDate(),
+                                                    9,
+                                                    0,
+                                                    0
+                                                )
+                                                const end = new Date(
+                                                    today.getFullYear(),
+                                                    today.getMonth(),
+                                                    today.getDate(),
+                                                    17,
+                                                    0,
+                                                    0
+                                                )
+                                                return {
+                                                    startDate: start,
+                                                    endDate: end,
+                                                }
+                                            },
+                                        },
+                                        // Custom preset: This week (Monday to Sunday)
+                                        {
+                                            id: 'thisWeek',
+                                            label: 'This week (Mon-Sun)',
+                                            getDateRange: () => {
+                                                const today = new Date()
+                                                const dayOfWeek = today.getDay()
+                                                const monday = new Date(today)
+                                                monday.setDate(
+                                                    today.getDate() -
+                                                        (dayOfWeek === 0
+                                                            ? 6
+                                                            : dayOfWeek - 1)
+                                                )
+                                                monday.setHours(0, 0, 0, 0)
+
+                                                const sunday = new Date(monday)
+                                                sunday.setDate(
+                                                    monday.getDate() + 6
+                                                )
+                                                sunday.setHours(23, 59, 59, 999)
+
+                                                return {
+                                                    startDate: monday,
+                                                    endDate: sunday,
+                                                }
+                                            },
+                                        },
+                                    ]}
+                                    showPresets={true}
+                                />
+                            </div>
+                            <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded text-xs font-mono">
+                                <div className="text-green-600 mb-1">
+                                    ✅ User-defined custom presets with your own
+                                    logic!
+                                </div>
+                                <div className="text-gray-600 mb-1">
+                                    customPresets={`[`}
+                                </div>
+                                <div className="text-blue-600 ml-2">{`{ id: 'last45min', label: 'Last 45 minutes', getDateRange: () => ... },`}</div>
+                                <div className="text-blue-600 ml-2">{`{ id: 'next90min', label: 'Next 1.5 hours', getDateRange: () => ... },`}</div>
+                                <div className="text-blue-600 ml-2">{`{ id: 'businessToday', label: 'Business hours', getDateRange: () => ... },`}</div>
+                                <div className="text-gray-600">{`]}`}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Code Examples */}
+                    <div className="mt-6 p-6 bg-gray-50 border border-gray-200 rounded-lg">
+                        <h4 className="text-lg font-semibold text-gray-700 mb-4">
+                            📝 Custom Presets Code Examples
+                        </h4>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h5 className="font-medium text-gray-700 mb-2">
+                                    Simple Preset Array
+                                </h5>
+                                <div className="bg-white p-4 rounded border text-sm font-mono">
+                                    <div className="text-gray-600 mb-2">
+                                        // Show only specific presets
+                                    </div>
+                                    <div>{`const customPresets = [`}</div>
+                                    <div className="ml-2 text-blue-600">
+                                        DateRangePreset.LAST_30_MINUTES,
+                                    </div>
+                                    <div className="ml-2 text-blue-600">
+                                        DateRangePreset.LAST_1_HOUR,
+                                    </div>
+                                    <div className="ml-2 text-blue-600">
+                                        DateRangePreset.TODAY,
+                                    </div>
+                                    <div className="ml-2 text-blue-600">
+                                        DateRangePreset.LAST_7_DAYS,
+                                    </div>
+                                    <div>{`]`}</div>
+                                    <div className="mt-2">{`<DateRangePicker customPresets={customPresets} />`}</div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h5 className="font-medium text-gray-700 mb-2">
+                                    Available Presets
+                                </h5>
+                                <div className="bg-white p-4 rounded border text-sm">
+                                    <div className="space-y-1">
+                                        <div>
+                                            <span className="font-medium text-blue-600">
+                                                LAST_30_MINUTES
+                                            </span>{' '}
+                                            - Last 30 minutes
+                                        </div>
+                                        <div>
+                                            <span className="font-medium text-blue-600">
+                                                LAST_1_HOUR
+                                            </span>{' '}
+                                            - Last 1 hour
+                                        </div>
+                                        <div>
+                                            <span className="font-medium text-blue-600">
+                                                LAST_6_HOURS
+                                            </span>{' '}
+                                            - Last 6 hours
+                                        </div>
+                                        <div>
+                                            <span className="font-medium text-blue-600">
+                                                LAST_24_HOURS
+                                            </span>{' '}
+                                            - Last 24 hours
+                                        </div>
+                                        <div>
+                                            <span className="font-medium text-blue-600">
+                                                TODAY
+                                            </span>{' '}
+                                            - Today
+                                        </div>
+                                        <div>
+                                            <span className="font-medium text-blue-600">
+                                                YESTERDAY
+                                            </span>{' '}
+                                            - Yesterday
+                                        </div>
+                                        <div>
+                                            <span className="font-medium text-blue-600">
+                                                LAST_7_DAYS
+                                            </span>{' '}
+                                            - Last 7 days
+                                        </div>
+                                        <div>
+                                            <span className="font-medium text-blue-600">
+                                                LAST_30_DAYS
+                                            </span>{' '}
+                                            - Last 30 days
+                                        </div>
+                                        <div>
+                                            <span className="font-medium text-blue-600">
+                                                THIS_MONTH
+                                            </span>{' '}
+                                            - This month
+                                        </div>
+                                        <div>
+                                            <span className="font-medium text-blue-600">
+                                                LAST_MONTH
+                                            </span>{' '}
+                                            - Last month
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
