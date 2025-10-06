@@ -18,6 +18,8 @@ import {
     validateDateTimeRange,
     DateValidationResult,
     detectPresetFromRange,
+    processCustomPresets,
+    getFilteredPresets,
     validateCustomRangeConfig,
 } from './utils'
 import CalendarGrid from './CalendarGrid'
@@ -275,6 +277,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             onChange,
             showDateTimePicker = true,
             showPresets = true,
+            customPresets,
             isDisabled = false,
             dateFormat = 'dd/MM/yyyy',
             allowSingleDateSelection = false,
@@ -330,6 +333,18 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             useState<DateValidationResult>({ isValid: true, error: 'none' })
 
         const today = new Date()
+
+        const presetConfigs = React.useMemo(() => {
+            return processCustomPresets(customPresets)
+        }, [customPresets])
+
+        const availablePresets = React.useMemo(() => {
+            return getFilteredPresets(
+                presetConfigs,
+                disableFutureDates,
+                disablePastDates
+            )
+        }, [presetConfigs, disableFutureDates, disablePastDates])
 
         // Calculate if apply button should be disabled and get validation message
         const applyButtonValidation = React.useMemo(() => {
@@ -394,8 +409,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
                 setStartDate(formatDate(range.startDate, dateFormat))
                 setEndDate(formatDate(range.endDate, dateFormat))
-
-                console.log('Date selected from calendar:', range)
             },
             [dateFormat]
         )
@@ -754,20 +767,12 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         }
 
         if (isMobile && useDrawerOnMobile) {
-            const getFilteredPresets = () => {
-                const pastPresets = [
-                    DateRangePreset.LAST_30_MINS,
-                    DateRangePreset.LAST_6_HOURS,
-                    DateRangePreset.LAST_24_HOURS,
-                    DateRangePreset.TODAY,
-                    DateRangePreset.YESTERDAY,
-                    DateRangePreset.LAST_7_DAYS,
-                    DateRangePreset.LAST_30_DAYS,
-                ]
-
-                const availablePresets = [...pastPresets]
-                availablePresets.push(DateRangePreset.CUSTOM)
-                return availablePresets
+            const getMobilePresets = () => {
+                const presetsWithCustom = [...availablePresets]
+                if (!presetsWithCustom.includes(DateRangePreset.CUSTOM)) {
+                    presetsWithCustom.push(DateRangePreset.CUSTOM)
+                }
+                return presetsWithCustom
             }
 
             return (
@@ -777,7 +782,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         setDrawerOpen={setDrawerOpen}
                         renderTrigger={renderTrigger}
                         showPresets={showPresets && !skipQuickFiltersOnMobile}
-                        availablePresets={getFilteredPresets()}
+                        availablePresets={getMobilePresets()}
                         activePreset={activePreset}
                         selectedRange={selectedRange}
                         startTime={startTime}
@@ -822,6 +827,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         activePreset={activePreset}
                         onPresetSelect={handlePresetSelect}
                         excludeCustom={true}
+                        customPresets={presetConfigs}
                         disableFutureDates={disableFutureDates}
                         disablePastDates={disablePastDates}
                         isDisabled={isDisabled}
