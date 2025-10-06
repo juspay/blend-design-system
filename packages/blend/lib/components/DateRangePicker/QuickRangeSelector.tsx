@@ -1,7 +1,15 @@
 import { forwardRef } from 'react'
 import { ChevronDown } from 'lucide-react'
-import { DateRangePreset, DateRangePickerSize } from './types'
-import { getPresetLabel } from './utils'
+import {
+    DateRangePreset,
+    DateRangePickerSize,
+    CustomPresetConfig,
+} from './types'
+import {
+    getPresetLabel,
+    getPresetLabelWithCustom,
+    getFilteredPresets,
+} from './utils'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -18,12 +26,14 @@ type QuickRangeSelectorProps = {
     activePreset: DateRangePreset
     onPresetSelect: (preset: DateRangePreset) => void
     excludeCustom?: boolean
+    customPresets?: CustomPresetConfig[]
     className?: string
     disableFutureDates?: boolean
     disablePastDates?: boolean
     isDisabled?: boolean
     size?: DateRangePickerSize
     maxMenuHeight?: number
+    isStandalone?: boolean
 }
 
 const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
@@ -32,12 +42,14 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
             activePreset,
             onPresetSelect,
             excludeCustom = false,
+            customPresets,
             className,
             disableFutureDates = false,
             disablePastDates = false,
             isDisabled = false,
             size = DateRangePickerSize.MEDIUM,
             maxMenuHeight = 200,
+            isStandalone = false,
         },
         ref
     ) => {
@@ -45,50 +57,25 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
             useResponsiveTokens<CalendarTokenType>('CALENDAR')
         const calendarToken = responsiveCalendarTokens
 
-        const getFilteredPresets = () => {
-            const pastPresets = [
-                DateRangePreset.YESTERDAY,
-                DateRangePreset.LAST_1_HOUR,
-                DateRangePreset.LAST_6_HOURS,
-                DateRangePreset.LAST_7_DAYS,
-                DateRangePreset.LAST_30_DAYS,
-                DateRangePreset.LAST_3_MONTHS,
-                DateRangePreset.LAST_12_MONTHS,
-            ]
+        // Use the already processed presets directly
+        const presetConfigs = customPresets || []
 
-            const futurePresets = [
-                DateRangePreset.TOMORROW,
-                DateRangePreset.NEXT_7_DAYS,
-                DateRangePreset.NEXT_30_DAYS,
-                DateRangePreset.NEXT_3_MONTHS,
-                DateRangePreset.NEXT_12_MONTHS,
-            ]
+        // Get filtered presets based on configuration and restrictions
+        const filteredPresets = getFilteredPresets(
+            presetConfigs,
+            disableFutureDates,
+            disablePastDates
+        )
 
-            const neutralPresets = [DateRangePreset.TODAY]
-
-            let availablePresets = [...neutralPresets]
-
-            if (!disablePastDates) {
-                availablePresets = [...availablePresets, ...pastPresets]
-            }
-
-            if (!disableFutureDates) {
-                availablePresets = [...availablePresets, ...futurePresets]
-            }
-
-            if (!excludeCustom) {
-                availablePresets.push(DateRangePreset.CUSTOM)
-            }
-
-            return availablePresets
-        }
-
-        const filteredPresets = getFilteredPresets()
+        // Add CUSTOM preset if not excluded
+        const presetsToShow = excludeCustom
+            ? filteredPresets.filter((p) => p !== DateRangePreset.CUSTOM)
+            : filteredPresets
 
         const selectItems: SelectMenuGroupType[] = [
             {
-                items: filteredPresets.map((preset) => ({
-                    label: getPresetLabel(preset),
+                items: presetsToShow.map((preset) => ({
+                    label: getPresetLabelWithCustom(preset, presetConfigs),
                     value: preset,
                 })),
             },
@@ -114,22 +101,49 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
             }
         }
 
+        const getContainerStyle = () => {
+            const baseStyle = {
+                backgroundColor:
+                    calendarToken.quickRange.trigger.backgroundColor,
+            }
+
+            if (isStandalone) {
+                const border = isDisabled
+                    ? calendarToken.quickRange.trigger.disabled.borderLeft
+                    : calendarToken.quickRange.trigger.borderLeft
+
+                return {
+                    ...baseStyle,
+                    border: border,
+                    borderRadius:
+                        calendarToken.quickRange.trigger.borderTopLeftRadius,
+                }
+            } else {
+                return {
+                    ...baseStyle,
+                    borderLeft: isDisabled
+                        ? calendarToken.quickRange.trigger.disabled.borderLeft
+                        : calendarToken.quickRange.trigger.borderLeft,
+                    borderTop: isDisabled
+                        ? calendarToken.quickRange.trigger.disabled.borderTop
+                        : calendarToken.quickRange.trigger.borderTop,
+                    borderBottom: isDisabled
+                        ? calendarToken.quickRange.trigger.disabled.borderBottom
+                        : calendarToken.quickRange.trigger.borderBottom,
+                    borderTopLeftRadius:
+                        calendarToken.quickRange.trigger.borderTopLeftRadius,
+                    borderBottomLeftRadius:
+                        calendarToken.quickRange.trigger.borderBottomLeftRadius,
+                }
+            }
+        }
+
         return (
             <Block
                 position="relative"
                 ref={ref}
                 className={className}
-                style={{
-                    borderLeft: calendarToken.quickRange.trigger.borderLeft,
-                    borderTop: calendarToken.quickRange.trigger.borderTop,
-                    borderBottom: calendarToken.quickRange.trigger.borderBottom,
-                    borderTopLeftRadius:
-                        calendarToken.quickRange.trigger.borderTopLeftRadius,
-                    borderBottomLeftRadius:
-                        calendarToken.quickRange.trigger.borderBottomLeftRadius,
-                    backgroundColor:
-                        calendarToken.quickRange.trigger.backgroundColor,
-                }}
+                style={getContainerStyle()}
             >
                 <SingleSelect
                     placeholder={getPresetLabel(activePreset)}
@@ -187,7 +201,10 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                                     whiteSpace: 'nowrap',
                                 }}
                             >
-                                {getPresetLabel(activePreset)}
+                                {getPresetLabelWithCustom(
+                                    activePreset,
+                                    presetConfigs
+                                )}
                             </Block>
                             <ChevronDown
                                 size={

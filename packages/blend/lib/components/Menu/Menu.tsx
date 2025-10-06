@@ -15,7 +15,7 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 export const contentBaseStyle: CSSObject = {
     backgroundColor: 'white',
     boxShadow: FOUNDATION_THEME.shadows.sm,
-    zIndex: 49,
+    zIndex: 99,
     overflowY: 'auto',
     overflowX: 'hidden',
     scrollbarWidth: 'none',
@@ -115,7 +115,7 @@ const Menu = ({
                         top={0}
                         left={0}
                         right={0}
-                        zIndex={50}
+                        zIndex={100}
                         backgroundColor="white"
                         padding="0px"
                         // paddingBottom="0px"
