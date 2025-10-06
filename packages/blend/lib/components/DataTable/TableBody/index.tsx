@@ -950,14 +950,19 @@ const TableBody = forwardRef<
                                                   hasCustomBackground
                                               }
                                               style={{
-                                                  minWidth:  FOUNDATION_THEME.unit[48],
-                                                  maxWidth:  FOUNDATION_THEME.unit[48],
+                                                  minWidth:
+                                                      FOUNDATION_THEME.unit[48],
+                                                  maxWidth:
+                                                      FOUNDATION_THEME.unit[48],
                                                   fontSize:
                                                       tableToken.dataTable.table
                                                           .body.cell.fontSize,
                                                   position: 'sticky',
                                                   right: 0,
-                                                  backgroundColor: rowStyling.backgroundColor || foundationToken.colors.gray[0],
+                                                  backgroundColor:
+                                                      rowStyling.backgroundColor ||
+                                                      foundationToken.colors
+                                                          .gray[0],
                                               }}
                                           />
                                       )}
