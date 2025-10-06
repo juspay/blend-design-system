@@ -293,7 +293,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             size = DateRangePickerSize.MEDIUM,
             formatConfig,
             triggerConfig,
-            maxMenuHeight = 200,
+            maxMenuHeight = 250,
+            showPreset = false,
         },
         ref
     ) => {
@@ -438,9 +439,16 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 // For presets, immediately update the committed value (different from calendar selection)
                 if (preset !== DateRangePreset.CUSTOM) {
                     onChange?.(result.updatedRange)
+
+                    if (showPreset) {
+                        setIsQuickRangeOpen(false)
+                        setIsOpen(false)
+                        setDrawerOpen(false)
+                        setPopoverKey((prev) => prev + 1)
+                    }
                 }
             },
-            [dateFormat, onChange]
+            [dateFormat, onChange, showPreset]
         )
 
         const handleStartDateChange = useCallback(
@@ -814,6 +822,30 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             triggerConfig?.element ||
             triggerElement
         )
+
+        if (showPreset && showPresets) {
+            return (
+                <Block ref={ref} display="flex">
+                    <QuickRangeSelector
+                        isOpen={isQuickRangeOpen}
+                        onToggle={() =>
+                            !isDisabled &&
+                            setIsQuickRangeOpen(!isQuickRangeOpen)
+                        }
+                        activePreset={activePreset}
+                        onPresetSelect={handlePresetSelect}
+                        excludeCustom={true}
+                        customPresets={presetConfigs}
+                        disableFutureDates={disableFutureDates}
+                        disablePastDates={disablePastDates}
+                        isDisabled={isDisabled}
+                        size={size}
+                        maxMenuHeight={maxMenuHeight}
+                        isStandalone={true}
+                    />
+                </Block>
+            )
+        }
 
         return (
             <Block ref={ref} display="flex">
