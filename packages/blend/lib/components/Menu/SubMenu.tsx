@@ -271,6 +271,7 @@ export const SubMenu = ({
                             ? `${maxHeight}px`
                             : 'var(--radix-popper-available-height)',
                         overflowY: 'auto',
+                        border: menuTokens.border,
                     }}
                     avoidCollisions
                     onFocusCapture={(e) => {
