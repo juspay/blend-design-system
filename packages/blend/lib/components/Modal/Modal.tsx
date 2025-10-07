@@ -182,7 +182,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             children,
             primaryAction,
             secondaryAction,
-            className,
             showCloseButton = true,
             closeOnBackdropClick = true,
             headerRightSlot,
@@ -235,7 +234,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         subtitle={subtitle}
                         primaryAction={primaryAction}
                         secondaryAction={secondaryAction}
-                        className={className}
                         showCloseButton={showCloseButton}
                         closeOnBackdropClick={closeOnBackdropClick}
                         headerRightSlot={headerRightSlot}
@@ -273,7 +271,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
                     <Block
                         ref={ref}
-                        className={className}
                         display="flex"
                         flexDirection="column"
                         position="relative"

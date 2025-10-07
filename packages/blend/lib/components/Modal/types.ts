@@ -11,7 +11,6 @@ export type ModalProps = {
     children: ReactNode
     primaryAction?: ModalButtonAction
     secondaryAction?: ModalButtonAction
-    className?: string
     showCloseButton?: boolean
     showHeader?: boolean
     showFooter?: boolean
