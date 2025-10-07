@@ -2255,7 +2255,7 @@ const ChartDemo = () => {
                     label: 'Date (Timestamp)',
                     show: true,
                     type: AxisType.DATE_TIME,
-                    maxTicks: 10, // Reduce ticks for 30 days to prevent overlap
+                    // maxTicks: 10,
                 }}
                 yAxis={{
                     label: 'Currency',
