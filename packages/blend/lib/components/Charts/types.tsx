@@ -79,10 +79,14 @@ export type AxisConfig = {
     tickFormatter?: (value: string | number) => string
     customTick?: React.ComponentType<TickProps>
     dateOnly?: boolean
-    smart?: boolean
-    timeZone?: string
-    hour12?: boolean
+    useUTC?: boolean
+    formatString?: string
+    timeOnly?: boolean
     showYear?: boolean
+    ticks?: (number | string)[] // Custom tick values for consistent intervals
+    autoConsistentTicks?: boolean // Automatically generate consistent ticks for DATE_TIME axes (default: true)
+    maxTicks?: number // Maximum number of ticks to generate (default: 10)
+    smartDateTimeFormat?: boolean // Alternates between showing date and time like Highcharts (default: true for DATE_TIME)
 }
 
 export type XAxisConfig = AxisConfig
