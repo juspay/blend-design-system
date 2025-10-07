@@ -1830,6 +1830,16 @@ const DateRangePickerDemo = () => {
                                     },
                                     allowManualEndDateSelection: true,
                                 }}
+                                customDisableDates={(date) => {
+                                    const today = new Date()
+                                    const threeMonthsAgo = new Date()
+                                    threeMonthsAgo.setMonth(
+                                        today.getMonth() - 3
+                                    )
+                                    return (
+                                        date >= threeMonthsAgo && date <= today
+                                    )
+                                }}
                                 showPresets={true}
                                 showDateTimePicker={true}
                             />
