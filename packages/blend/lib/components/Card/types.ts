@@ -50,6 +50,5 @@ export type CustomCardProps = {
 }
 
 export type CardProps = {
-    className?: string
     maxWidth?: string
 } & (DefaultCardProps | AlignedCardProps | CustomCardProps)
