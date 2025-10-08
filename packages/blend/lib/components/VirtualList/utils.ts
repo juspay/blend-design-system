@@ -449,15 +449,25 @@ export const scrollToIndex = (
 // Render optimization utilities
 export const createVirtualItemStyle = (
     top: number,
-    height: number
-): React.CSSProperties => ({
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height,
-    transform: `translateY(${top}px)`,
-})
+    height: number,
+    useAbsolute: boolean = true
+): React.CSSProperties => {
+    if (!useAbsolute) {
+        return {
+            minHeight: height,
+            height: 'auto',
+        }
+    }
+
+    return {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height,
+        transform: `translateY(${top}px)`,
+    }
+}
 
 // ResizeObserver setup for dynamic heights with better measurement
 export const setupResizeObserver = (

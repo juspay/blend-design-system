@@ -475,39 +475,30 @@ const SingleSelectMenu = ({
                     </Block>
                 ) : enableVirtualization && flattenedItems.length > 0 ? (
                     <Block
-                        padding={singleSelectTokens.dropdown.paddingTop}
+                        padding={FOUNDATION_THEME.unit[6]}
                         style={{
                             paddingTop: enableSearch
                                 ? 0
-                                : singleSelectTokens.dropdown.paddingTop,
+                                : FOUNDATION_THEME.unit[6],
                         }}
                     >
                         <VirtualList
                             items={flattenedItems}
                             itemHeight={virtualListItemHeight}
-                            containerHeight={Math.min(
-                                maxMenuHeight -
-                                    (enableSearch
-                                        ? parseInt(
-                                              String(
-                                                  singleSelectTokens.dropdown
-                                                      .paddingTop || '16'
-                                              )
-                                          ) * 4
-                                        : parseInt(
-                                              String(
-                                                  singleSelectTokens.dropdown
-                                                      .paddingBottom || '16'
-                                              )
-                                          ) * 2),
-                                flattenedItems.length * virtualListItemHeight
-                            )}
+                            maxHeight={maxMenuHeight - (enableSearch ? 80 : 20)}
                             overscan={virtualListOverscan}
+                            dynamicHeight={true}
+                            estimatedItemHeight={virtualListItemHeight}
                             itemsToRender={itemsToRender}
                             onEndReached={onEndReached}
                             endReachedThreshold={endReachedThreshold}
                             hasMore={hasMore}
                             loadingComponent={loadingComponent}
+                            style={{
+                                height: 'auto',
+                                maxHeight:
+                                    maxMenuHeight - (enableSearch ? 80 : 20),
+                            }}
                             renderItem={({ item: flatItem }) => {
                                 const typed = flatItem as FlattenedItem
 

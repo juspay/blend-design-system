@@ -29,8 +29,16 @@ import {
 import { FOUNDATION_THEME } from '../../tokens'
 import { foundationToken } from '../../foundationToken'
 
-const VirtualListContainer = styled.div<{ height: number }>`
-    height: ${({ height }) => height}px;
+const VirtualListContainer = styled.div<{
+    height?: number
+    autoHeight?: boolean
+    maxHeight?: number
+}>`
+    ${({ height, autoHeight }) =>
+        !autoHeight && height ? `height: ${height}px;` : ''}
+    ${({ autoHeight, maxHeight }) =>
+        autoHeight && maxHeight ? `max-height: ${maxHeight}px;` : ''}
+    ${({ autoHeight }) => (autoHeight ? 'height: auto;' : '')}
     overflow-y: auto;
     overflow-x: hidden;
     position: relative;
@@ -122,6 +130,8 @@ const VirtualList = forwardRef<
             }
         }, [ssrMode])
 
+        const actualContainerHeight = containerHeight || 400 // Default height for dropdown mode
+
         const {
             scrollTop,
             setScrollTop,
@@ -135,7 +145,7 @@ const VirtualList = forwardRef<
         } = useVirtualList({
             items,
             itemHeight,
-            containerHeight,
+            containerHeight: actualContainerHeight,
             overscan,
             getItemHeight,
             dynamicHeight,
@@ -163,7 +173,7 @@ const VirtualList = forwardRef<
                     const isEndReached = checkEndReached(
                         newScrollTop,
                         totalHeight,
-                        containerHeight,
+                        actualContainerHeight,
                         endReachedThreshold
                     )
 
@@ -224,12 +234,12 @@ const VirtualList = forwardRef<
                     itemOffsets,
                     itemHeights,
                     items.length,
-                    containerHeight,
+                    actualContainerHeight,
                     alignment,
                     smooth
                 )
             },
-            [itemOffsets, itemHeights, items.length, containerHeight]
+            [itemOffsets, itemHeights, items.length, actualContainerHeight]
         )
 
         const getVisibleRange = useCallback(
@@ -284,6 +294,7 @@ const VirtualList = forwardRef<
 
         const visibleItems = useMemo(() => {
             const renderedItems = []
+            const useAbsolute = !!containerHeight // Use absolute positioning only when containerHeight is specified
 
             for (let i = startIndex; i <= endIndex && i < items.length; i++) {
                 const item = items[i]
@@ -291,7 +302,11 @@ const VirtualList = forwardRef<
                 const height =
                     itemHeights[i] ||
                     (typeof itemHeight === 'number' ? itemHeight : 40)
-                const itemStyle = createVirtualItemStyle(top, height)
+                const itemStyle = createVirtualItemStyle(
+                    top,
+                    height,
+                    useAbsolute
+                )
 
                 renderedItems.push(
                     <div
@@ -313,6 +328,7 @@ const VirtualList = forwardRef<
             itemOffsets,
             itemHeights,
             itemHeight,
+            containerHeight,
             renderItem,
         ])
 
@@ -375,6 +391,8 @@ const VirtualList = forwardRef<
             <VirtualListContainer
                 ref={containerRef}
                 height={containerHeight}
+                autoHeight={!containerHeight}
+                maxHeight={maxHeight}
                 onScroll={handleScroll}
                 onKeyDown={handleKeyDown}
                 className={className}
@@ -384,7 +402,13 @@ const VirtualList = forwardRef<
                 aria-label={`Virtual list with ${items.length} items`}
                 {...props}
             >
-                <div style={{ height: totalHeight, position: 'relative' }}>
+                <div
+                    style={{
+                        height: containerHeight ? totalHeight : 'auto',
+                        minHeight: containerHeight ? totalHeight : 'auto',
+                        position: 'relative',
+                    }}
+                >
                     {visibleItems}
                     {isLoading && (loadingComponent || <DefaultLoader />)}
                 </div>

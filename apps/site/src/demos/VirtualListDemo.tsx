@@ -16,8 +16,13 @@ import {
     Zap,
 } from 'lucide-react'
 import SingleSelect from '../../../../packages/blend/lib/components/SingleSelect/SingleSelect'
+import MultiSelect from '../../../../packages/blend/lib/components/MultiSelect/MultiSelect'
 import { SelectMenuSize } from '../../../../packages/blend/lib/components/Select'
 import type { SelectMenuGroupType } from '../../../../packages/blend/lib/components/Select'
+import {
+    type MultiSelectMenuGroupType,
+    MultiSelectMenuSize,
+} from '../../../../packages/blend/lib/components/MultiSelect/types'
 
 // Inline styles
 const styles = {
@@ -262,6 +267,42 @@ const generateSelectItems = (count: number): SelectMenuGroupType[] => {
     return groups
 }
 
+// Generate large dataset for MultiSelect
+const generateMultiSelectItems = (
+    count: number
+): MultiSelectMenuGroupType[] => {
+    const categories = [
+        'Engineering',
+        'Design',
+        'Product',
+        'Marketing',
+        'Sales',
+    ]
+    const groups: MultiSelectMenuGroupType[] = []
+
+    categories.forEach((category, categoryIndex) => {
+        const items: MultiSelectMenuGroupType['items'] = []
+        const itemsPerGroup = Math.floor(count / categories.length)
+
+        for (let i = 0; i < itemsPerGroup; i++) {
+            const itemNumber = categoryIndex * itemsPerGroup + i + 1
+            items.push({
+                label: `${category} Option ${itemNumber}`,
+                value: `${category.toLowerCase()}-${itemNumber}`,
+                subLabel: `Description for option ${itemNumber}`,
+            })
+        }
+
+        groups.push({
+            groupLabel: category,
+            items,
+            showSeparator: categoryIndex < categories.length - 1,
+        })
+    })
+
+    return groups
+}
+
 const VirtualListDemo = () => {
     // Demo 1: Basic Fixed Height List
     const [basicItems] = useState(() => generateUsers(1000))
@@ -337,6 +378,70 @@ const VirtualListDemo = () => {
     const [selectHasMore, setSelectHasMore] = useState(true)
     const [selectPage, setSelectPage] = useState(1)
     const [selectedInfinite, setSelectedInfinite] = useState('')
+
+    // Demo 9: MultiSelect with Virtualization
+    const [multiSelectItems] = useState(() => generateMultiSelectItems(1000))
+    const [selectedMultiNormal, setSelectedMultiNormal] = useState<string[]>([])
+    const [selectedMultiVirtualized, setSelectedMultiVirtualized] = useState<
+        string[]
+    >([])
+
+    const handleMultiSelectChange = (
+        setter: React.Dispatch<React.SetStateAction<string[]>>
+    ) => {
+        return (value: string) => {
+            setter((prev) =>
+                prev.includes(value)
+                    ? prev.filter((v) => v !== value)
+                    : [...prev, value]
+            )
+        }
+    }
+
+    // Demo 10: MultiSelect with Infinite Scroll
+    const [infiniteMultiSelectItems, setInfiniteMultiSelectItems] = useState<
+        MultiSelectMenuGroupType[]
+    >(() => generateMultiSelectItems(50))
+    const [multiSelectLoading, setMultiSelectLoading] = useState(false)
+    const [multiSelectHasMore, setMultiSelectHasMore] = useState(true)
+    const [multiSelectPage, setMultiSelectPage] = useState(1)
+    const [selectedInfiniteMulti, setSelectedInfiniteMulti] = useState<
+        string[]
+    >([])
+
+    const loadMoreMultiSelectOptions = useCallback(async () => {
+        if (multiSelectLoading) return
+
+        setMultiSelectLoading(true)
+
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+
+        const newPage = multiSelectPage + 1
+        const newItems = generateMultiSelectItems(50)
+
+        setInfiniteMultiSelectItems((prev) => {
+            const combined: MultiSelectMenuGroupType[] = [...prev]
+            newItems.forEach((newGroup, index) => {
+                if (combined[index]) {
+                    combined[index] = {
+                        ...combined[index],
+                        items: [...combined[index].items, ...newGroup.items],
+                    }
+                } else {
+                    combined.push(newGroup)
+                }
+            })
+            return combined
+        })
+
+        setMultiSelectPage(newPage)
+
+        if (newPage >= 10) {
+            setMultiSelectHasMore(false)
+        }
+
+        setMultiSelectLoading(false)
+    }, [multiSelectLoading, multiSelectPage])
 
     const loadMoreSelectOptions = useCallback(async () => {
         if (selectLoading) return
@@ -512,99 +617,6 @@ const VirtualListDemo = () => {
                         <div style={styles.stats}>
                             💡 Scroll to the bottom to load more items
                             automatically
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Demo 3: Dynamic Heights */}
-            <div style={styles.demoSection}>
-                <h2 style={styles.sectionTitle}>3. Dynamic Heights</h2>
-                <p style={styles.sectionDescription}>
-                    Handle items with variable heights. The component
-                    automatically measures and adjusts.
-                </p>
-                <div style={styles.demoGrid}>
-                    <div style={styles.demoCard}>
-                        <div style={styles.cardHeader}>
-                            <h3 style={styles.cardTitle}>
-                                Variable Height Items
-                            </h3>
-                            <p style={styles.cardSubtitle}>
-                                500 messages • Dynamic height calculation
-                            </p>
-                        </div>
-                        <div style={styles.cardContent}>
-                            <VirtualList
-                                items={dynamicItems}
-                                containerHeight={400}
-                                dynamicHeight
-                                estimatedItemHeight={70}
-                                overscan={3}
-                                renderItem={({ item }) => {
-                                    const message = item as MessageItem
-                                    return (
-                                        <div
-                                            style={{
-                                                ...styles.listItem,
-                                                background: message.unread
-                                                    ? '#eff6ff'
-                                                    : 'transparent',
-                                                padding: message.unread
-                                                    ? '20px'
-                                                    : '16px 20px',
-                                            }}
-                                        >
-                                            <div
-                                                style={styles.iconWrapper(
-                                                    message.unread
-                                                        ? '#3b82f6'
-                                                        : '#94a3b8'
-                                                )}
-                                            >
-                                                <Mail size={20} />
-                                            </div>
-                                            <div style={styles.itemContent}>
-                                                <div style={styles.itemTitle}>
-                                                    {message.title}
-                                                    {message.unread && (
-                                                        <span
-                                                            style={{
-                                                                ...styles.badge(),
-                                                                marginLeft:
-                                                                    '8px',
-                                                            }}
-                                                        >
-                                                            NEW
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <div
-                                                    style={styles.itemSubtitle}
-                                                >
-                                                    <Clock size={12} />
-                                                    {message.timestamp}
-                                                </div>
-                                                {message.unread && (
-                                                    <div
-                                                        style={{
-                                                            marginTop: '8px',
-                                                            fontSize: '13px',
-                                                            color: '#475569',
-                                                        }}
-                                                    >
-                                                        {message.preview}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <ChevronRight
-                                                size={20}
-                                                color="#cbd5e1"
-                                            />
-                                        </div>
-                                    )
-                                }}
-                            />
                         </div>
                     </div>
                 </div>
@@ -1061,6 +1073,249 @@ const loadMore = async () => {
                 </div>
             </div>
 
+            {/* Demo 9: MultiSelect with Virtualization */}
+            <div style={styles.demoSection}>
+                <h2 style={styles.sectionTitle}>
+                    9. MultiSelect with Virtualization
+                </h2>
+                <p style={styles.sectionDescription}>
+                    Compare normal vs virtualized MultiSelect with 1,000+
+                    options. Virtualization enables smooth multi-selection even
+                    with massive datasets.
+                </p>
+                <div style={styles.demoGrid}>
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                Normal MultiSelect (Laggy)
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                1,000 options • Without virtualization
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <MultiSelect
+                                label="Select Options"
+                                placeholder="Choose multiple options..."
+                                items={multiSelectItems}
+                                selectedValues={selectedMultiNormal}
+                                onChange={handleMultiSelectChange(
+                                    setSelectedMultiNormal
+                                )}
+                                enableSearch
+                                searchPlaceholder="Search 1,000 options..."
+                                size={MultiSelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                                enableSelectAll
+                            />
+                            {selectedMultiNormal.length > 0 && (
+                                <div
+                                    style={{
+                                        marginTop: '12px',
+                                        fontSize: '14px',
+                                        color: '#666',
+                                    }}
+                                >
+                                    Selected: {selectedMultiNormal.length} items
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                Virtualized MultiSelect{' '}
+                                <Zap
+                                    size={16}
+                                    style={{
+                                        display: 'inline',
+                                        color: '#f59e0b',
+                                    }}
+                                />
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                1,000 options • With virtualization (Smooth!)
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <MultiSelect
+                                label="Select Options"
+                                placeholder="Choose multiple options..."
+                                items={multiSelectItems}
+                                selectedValues={selectedMultiVirtualized}
+                                onChange={handleMultiSelectChange(
+                                    setSelectedMultiVirtualized
+                                )}
+                                enableSearch
+                                searchPlaceholder="Search 1,000 options..."
+                                size={MultiSelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                                enableSelectAll
+                                enableVirtualization={true}
+                                virtualListItemHeight={48}
+                                virtualListOverscan={5}
+                            />
+                            {selectedMultiVirtualized.length > 0 && (
+                                <div
+                                    style={{
+                                        marginTop: '12px',
+                                        fontSize: '14px',
+                                        color: '#666',
+                                    }}
+                                >
+                                    Selected: {selectedMultiVirtualized.length}{' '}
+                                    items
+                                </div>
+                            )}
+                        </div>
+                        <div style={styles.stats}>
+                            ⚡ Check/uncheck multiple items - notice the smooth
+                            performance!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Demo 10: Infinite Scroll MultiSelect */}
+            <div style={styles.demoSection}>
+                <h2 style={styles.sectionTitle}>
+                    10. MultiSelect with Infinite Scroll & API Calls
+                </h2>
+                <p style={styles.sectionDescription}>
+                    Load options on demand as you scroll in a multi-select
+                    dropdown! Perfect for selecting from thousands of options
+                    loaded incrementally. Includes "Select All" for the loaded
+                    items.
+                </p>
+                <div style={styles.demoGrid}>
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                Infinite Scroll MultiSelect
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                {infiniteMultiSelectItems.reduce(
+                                    (acc, group) => acc + group.items.length,
+                                    0
+                                )}{' '}
+                                options loaded
+                                {multiSelectHasMore && ' • More available'}
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <MultiSelect
+                                label="Select Multiple Options"
+                                placeholder="Choose options..."
+                                items={infiniteMultiSelectItems}
+                                selectedValues={selectedInfiniteMulti}
+                                onChange={handleMultiSelectChange(
+                                    setSelectedInfiniteMulti
+                                )}
+                                enableSearch
+                                searchPlaceholder="Search options..."
+                                size={MultiSelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                                enableSelectAll
+                                enableVirtualization={true}
+                                virtualListItemHeight={48}
+                                onEndReached={loadMoreMultiSelectOptions}
+                                endReachedThreshold={200}
+                                hasMore={multiSelectHasMore}
+                                itemsToRender={50}
+                            />
+                            {selectedInfiniteMulti.length > 0 && (
+                                <div
+                                    style={{
+                                        marginTop: '12px',
+                                        fontSize: '14px',
+                                        color: '#666',
+                                    }}
+                                >
+                                    Selected: {selectedInfiniteMulti.length}{' '}
+                                    items
+                                </div>
+                            )}
+                            <div
+                                style={{
+                                    marginTop: '12px',
+                                    fontSize: '12px',
+                                    color: '#999',
+                                }}
+                            >
+                                💡 Scroll to bottom to load more options • Use
+                                "Select All" to select all loaded items
+                            </div>
+                        </div>
+                        <div
+                            style={{
+                                ...styles.stats,
+                                background: '#dbeafe',
+                                borderBottom: '1px solid #93c5fd',
+                                color: '#1e40af',
+                            }}
+                        >
+                            🔄{' '}
+                            {multiSelectLoading
+                                ? 'Loading more options...'
+                                : `${infiniteMultiSelectItems.reduce((acc, g) => acc + g.items.length, 0)} options loaded`}
+                            {!multiSelectHasMore && ' • All data loaded'}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Code Example */}
+                <div
+                    style={{
+                        marginTop: '24px',
+                        padding: '20px',
+                        background: '#1e293b',
+                        borderRadius: '8px',
+                        color: '#e2e8f0',
+                        fontSize: '13px',
+                        fontFamily: 'monospace',
+                        overflowX: 'auto',
+                    }}
+                >
+                    <div style={{ marginBottom: '12px', color: '#94a3b8' }}>
+                        // MultiSelect Usage Example:
+                    </div>
+                    <pre
+                        style={{ margin: 0, whiteSpace: 'pre-wrap' }}
+                    >{`const [items, setItems] = useState(initialItems)
+const [selectedValues, setSelectedValues] = useState<string[]>([])
+const [hasMore, setHasMore] = useState(true)
+
+const loadMore = async () => {
+  const newItems = await fetchFromAPI()
+  setItems(prev => [...prev, ...newItems])
+  if (newItems.length === 0) setHasMore(false)
+}
+
+const handleChange = (value: string) => {
+  setSelectedValues(prev =>
+    prev.includes(value)
+      ? prev.filter(v => v !== value)
+      : [...prev, value]
+  )
+}
+
+<MultiSelect
+  label="Select Options"
+  placeholder="Choose multiple..."
+  items={items}
+  selectedValues={selectedValues}
+  onChange={handleChange}
+  enableVirtualization={true}
+  onEndReached={loadMore}           // Load more on scroll
+  endReachedThreshold={200}          // Trigger 200px before end
+  hasMore={hasMore}                  // Show loading state
+  itemsToRender={50}                 // Render max 50 at once
+  enableSelectAll={true}             // Allow select all
+/>`}</pre>
+                </div>
+            </div>
+
             {/* Summary */}
             <div
                 style={{
@@ -1125,6 +1380,13 @@ const loadMore = async () => {
                         <strong>🎯 SingleSelect Integration</strong>
                         <p style={{ margin: '4px 0 0 0' }}>
                             Eliminates lag in dropdowns with 1000+ options
+                        </p>
+                    </div>
+                    <div>
+                        <strong>✅ MultiSelect Support</strong>
+                        <p style={{ margin: '4px 0 0 0' }}>
+                            Smooth multi-selection with virtualization &
+                            infinite scroll
                         </p>
                     </div>
                 </div>

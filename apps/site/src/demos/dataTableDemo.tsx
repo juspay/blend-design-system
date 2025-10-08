@@ -773,7 +773,7 @@ const SimpleDataTableExample = () => {
                 }}
                 idField="id"
                 title="Product Inventory (Mobile: 2 Columns + Overflow)"
-                description="Simple product management table demonstrating DROPDOWN and DATE column types with smart row actions. On desktop, actions appear in a fixed 200px column with overflow menu when needed. On mobile, actions appear in the overflow drawer footer for better UX."
+                description="" // Test case: Empty description to verify SearchInput border-bottom visibility
                 enableSearch={true}
                 enableFiltering={true}
                 enableAdvancedFilter={false}

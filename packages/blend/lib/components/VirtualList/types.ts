@@ -22,7 +22,7 @@ export type VisibleRange = {
 export type VirtualListProps<T extends VirtualListItem> = {
     items: T[]
     itemHeight?: number | ((item: T, index: number) => number)
-    containerHeight: number
+    containerHeight?: number
     overscan?: number
     onScroll?: (scrollTop: number) => void
     renderItem: (params: VirtualListRenderParams<T>) => React.ReactNode
