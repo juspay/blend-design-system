@@ -2090,7 +2090,7 @@ const ChartDemo = () => {
                     type: AxisType.DATE_TIME,
                     smartDateTimeFormat: false,
                     showYear: true,
-                    maxTicks: 4,
+                    maxTicks: last1hour5minsData.length / 2,
                 }}
                 yAxis={{
                     label: 'Currency',

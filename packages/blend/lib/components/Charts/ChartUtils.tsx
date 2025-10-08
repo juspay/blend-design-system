@@ -463,7 +463,7 @@ export function generateConsistentDateTimeTicks(
     ticks: string[]
     formatter: (value: string | number) => string
 } {
-    const { maxTicks = 10, customInterval, ...formatterOptions } = options
+    const { maxTicks, customInterval, ...formatterOptions } = options
 
     if (data.length === 0) {
         return {
@@ -490,7 +490,8 @@ export function generateConsistentDateTimeTicks(
 
     // Determine interval
     const interval =
-        customInterval || getSuggestedTickInterval(data, maxTicks).interval
+        customInterval ||
+        getSuggestedTickInterval(data, maxTicks || 10).interval
 
     // Round down minTime to nearest interval boundary
     const startTick = Math.floor(minTime / interval) * interval
@@ -507,8 +508,21 @@ export function generateConsistentDateTimeTicks(
         currentTick += interval
     }
 
+    // Limit ticks to maxTicks if specified
+    let finalTicks = ticksNumbers
+    if (maxTicks && ticksNumbers.length > maxTicks) {
+        // Simple approach: take every nth tick to get approximately maxTicks
+        const step = Math.max(1, Math.floor(ticksNumbers.length / maxTicks))
+        finalTicks = ticksNumbers.filter((_, index) => index % step === 0)
+
+        // If we still have too many, take the first maxTicks
+        if (finalTicks.length > maxTicks) {
+            finalTicks = finalTicks.slice(0, maxTicks)
+        }
+    }
+
     // Convert to strings to match the data format (data.name is a string)
-    const ticks = ticksNumbers.map((tick) => String(tick))
+    const ticks = finalTicks.map((tick) => String(tick))
 
     return {
         ticks,
