@@ -407,13 +407,22 @@ const DataTableHeader = forwardRef<
                 maxWidth={tableToken.header.maxWidth}
                 overflowX={tableToken.header.overflowX}
                 overflowY="hidden"
-                style={{ minWidth: 0, height: 'auto' }}
+                style={{
+                    minWidth: 0,
+                    height: 'auto',
+                    minHeight: FOUNDATION_THEME.unit[48],
+                }}
             >
                 <Block
                     display="flex"
                     flexDirection="column"
                     gap={FOUNDATION_THEME.unit[10]}
-                    style={{ minWidth: 0, flexShrink: 1, maxWidth: '40%' }}
+                    style={{
+                        minWidth: 0,
+                        flexShrink: 1,
+                        maxWidth: '40%',
+                        minHeight: FOUNDATION_THEME.unit[40],
+                    }}
                 >
                     {title && (
                         <PrimitiveText

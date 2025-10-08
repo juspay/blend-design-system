@@ -75,6 +75,14 @@ const SingleSelect = ({
     onFocus,
     inline = false,
     fullWidth = false,
+    enableVirtualization = false,
+    virtualListItemHeight,
+    virtualListOverscan,
+    itemsToRender,
+    onEndReached,
+    endReachedThreshold,
+    hasMore,
+    loadingComponent,
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -123,6 +131,14 @@ const SingleSelect = ({
                 onBlur={onBlur}
                 onFocus={onFocus}
                 inline={inline}
+                enableVirtualization={enableVirtualization}
+                virtualListItemHeight={virtualListItemHeight}
+                virtualListOverscan={virtualListOverscan}
+                itemsToRender={itemsToRender}
+                onEndReached={onEndReached}
+                endReachedThreshold={endReachedThreshold}
+                hasMore={hasMore}
+                loadingComponent={loadingComponent}
             />
         )
     }
@@ -185,6 +201,14 @@ const SingleSelect = ({
                         alignOffset={alignOffset}
                         enableSearch={enableSearch}
                         searchPlaceholder={searchPlaceholder}
+                        enableVirtualization={enableVirtualization}
+                        virtualListItemHeight={virtualListItemHeight}
+                        virtualListOverscan={virtualListOverscan}
+                        itemsToRender={itemsToRender}
+                        onEndReached={onEndReached}
+                        endReachedThreshold={endReachedThreshold}
+                        hasMore={hasMore}
+                        loadingComponent={loadingComponent}
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
