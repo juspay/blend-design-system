@@ -26,6 +26,12 @@ export type TextAreaTokensType = {
             [key in TextAreaState]: CSSObject['color']
         }
     }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in TextAreaState]: CSSObject['color']
+        }
+    }
     hintText: {
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
@@ -91,6 +97,16 @@ export const getTextAreaTokens = (
                     hover: foundationTokens.colors.gray[400],
                     focus: foundationTokens.colors.gray[400],
                     disabled: foundationTokens.colors.gray[300],
+                    error: foundationTokens.colors.red[600],
+                },
+            },
+            helpIcon: {
+                width: foundationTokens.unit[14],
+                color: {
+                    default: foundationTokens.colors.gray[400],
+                    hover: foundationTokens.colors.gray[400],
+                    focus: foundationTokens.colors.gray[400],
+                    disabled: foundationTokens.colors.gray[400],
                     error: foundationTokens.colors.red[600],
                 },
             },
@@ -166,6 +182,16 @@ export const getTextAreaTokens = (
                     hover: foundationTokens.colors.gray[400],
                     focus: foundationTokens.colors.gray[400],
                     disabled: foundationTokens.colors.gray[300],
+                    error: foundationTokens.colors.red[600],
+                },
+            },
+            helpIcon: {
+                width: foundationTokens.unit[14],
+                color: {
+                    default: foundationTokens.colors.gray[400],
+                    hover: foundationTokens.colors.gray[400],
+                    focus: foundationTokens.colors.gray[400],
+                    disabled: foundationTokens.colors.gray[400],
                     error: foundationTokens.colors.red[600],
                 },
             },
