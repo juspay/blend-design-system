@@ -1,8 +1,9 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import type {
     VirtualListItem,
     UseVirtualListParams,
     UseVirtualListReturn,
+    ScrollAlignment,
 } from './types'
 
 // Throttle utility for scroll performance
@@ -68,13 +69,21 @@ export const calculateFixedHeightRange = (
     containerHeight: number,
     itemHeight: number,
     itemsLength: number,
-    overscan: number
+    overscan: number,
+    itemsToRender?: number
 ) => {
     const startIndex = Math.max(
         0,
         Math.floor(scrollTop / itemHeight) - overscan
     )
-    const visibleCount = Math.ceil(containerHeight / itemHeight) + 2 * overscan
+
+    let visibleCount = Math.ceil(containerHeight / itemHeight) + 2 * overscan
+
+    // If itemsToRender is specified, limit the visible count
+    if (itemsToRender !== undefined && itemsToRender > 0) {
+        visibleCount = Math.min(visibleCount, itemsToRender)
+    }
+
     const endIndex = Math.min(itemsLength - 1, startIndex + visibleCount)
     return { startIndex, endIndex }
 }
@@ -85,7 +94,8 @@ export const calculateDynamicHeightRange = (
     containerHeight: number,
     itemOffsets: number[],
     itemsLength: number,
-    overscan: number
+    overscan: number,
+    itemsToRender?: number
 ) => {
     if (itemsLength === 0) {
         return { startIndex: 0, endIndex: 0 }
@@ -111,7 +121,7 @@ export const calculateDynamicHeightRange = (
 
     // Use optimized binary search for end
     const viewportBottom = scrollTop + containerHeight
-    const endIndex = findEndIndexBinarySearch(
+    let endIndex = findEndIndexBinarySearch(
         startIndex,
         viewportBottom,
         itemOffsets,
@@ -119,30 +129,71 @@ export const calculateDynamicHeightRange = (
         overscan
     )
 
+    // If itemsToRender is specified, limit the range
+    if (itemsToRender !== undefined && itemsToRender > 0) {
+        endIndex = Math.min(endIndex, startIndex + itemsToRender - 1)
+    }
+
     return { startIndex, endIndex }
 }
 
-// Calculate item heights efficiently
+// Calculate item heights efficiently with min/max constraints
 export const calculateItemHeights = <T extends VirtualListItem>(
     items: T[],
     itemHeight?: number | ((item: T, index: number) => number),
-    getItemHeight?: (item: T, index: number) => number
+    getItemHeight?: (item: T, index: number) => number,
+    estimatedItemHeight?: number,
+    minHeight?: number,
+    maxHeight?: number,
+    measuredHeights?: Map<number, number>
 ): number[] => {
+    const defaultHeight = estimatedItemHeight || 40
+
     if (typeof itemHeight === 'number') {
         // Fixed height - fastest path
-        return new Array(items.length).fill(itemHeight)
+        const constrainedHeight = constrainHeight(
+            itemHeight,
+            minHeight,
+            maxHeight
+        )
+        return new Array(items.length).fill(constrainedHeight)
     }
 
     // Dynamic heights - cache for performance
     return items.map((item, index) => {
+        // Check if we have a measured height
+        if (measuredHeights?.has(index)) {
+            return measuredHeights.get(index)!
+        }
+
+        let height = defaultHeight
+
         if (getItemHeight) {
-            return getItemHeight(item, index)
+            height = getItemHeight(item, index)
+        } else if (typeof itemHeight === 'function') {
+            height = itemHeight(item, index)
+        } else if (item.height) {
+            height = item.height
         }
-        if (typeof itemHeight === 'function') {
-            return itemHeight(item, index)
-        }
-        return item.height || 40
+
+        return constrainHeight(height, minHeight, maxHeight)
     })
+}
+
+// Constrain height to min/max bounds
+export const constrainHeight = (
+    height: number,
+    minHeight?: number,
+    maxHeight?: number
+): number => {
+    let constrained = height
+    if (minHeight !== undefined) {
+        constrained = Math.max(constrained, minHeight)
+    }
+    if (maxHeight !== undefined) {
+        constrained = Math.min(constrained, maxHeight)
+    }
+    return constrained
 }
 
 // Calculate offsets efficiently
@@ -166,17 +217,56 @@ export function useVirtualList<T extends VirtualListItem>({
     overscan = 5,
     getItemHeight,
     ssrMode = false,
+    estimatedItemHeight,
+    itemsToRender,
+    minHeight,
+    maxHeight,
 }: UseVirtualListParams<T>): UseVirtualListReturn {
     const [scrollTop, setScrollTop] = useState(0)
     const [forceRecalculate, setForceRecalculate] = useState(0)
+    const measuredHeightsRef = useRef<Map<number, number>>(new Map())
 
     // SSR safety - ensure initial render is consistent
     const safeScrollTop = ssrMode && !isBrowser ? 0 : scrollTop
 
+    // Measure item method for dynamic heights
+    const measureItem = useCallback(
+        (index: number, height: number) => {
+            const constrainedHeight = constrainHeight(
+                height,
+                minHeight,
+                maxHeight
+            )
+            const current = measuredHeightsRef.current.get(index)
+
+            if (current !== constrainedHeight) {
+                measuredHeightsRef.current.set(index, constrainedHeight)
+                setForceRecalculate((prev) => prev + 1)
+            }
+        },
+        [minHeight, maxHeight]
+    )
+
     // Ultra-fast height calculation with dynamic height support
     const itemHeights = useMemo(() => {
-        return calculateItemHeights(items, itemHeight, getItemHeight)
-    }, [items, itemHeight, getItemHeight, forceRecalculate])
+        return calculateItemHeights(
+            items,
+            itemHeight,
+            getItemHeight,
+            estimatedItemHeight,
+            minHeight,
+            maxHeight,
+            measuredHeightsRef.current
+        )
+    }, [
+        items,
+        itemHeight,
+        getItemHeight,
+        estimatedItemHeight,
+        minHeight,
+        maxHeight,
+        forceRecalculate,
+    ])
 
     // Efficient offset calculation
     const { totalHeight, itemOffsets } = useMemo(() => {
@@ -196,7 +286,8 @@ export function useVirtualList<T extends VirtualListItem>({
                 containerHeight,
                 itemHeight,
                 items.length,
-                overscan
+                overscan,
+                itemsToRender
             )
         }
 
@@ -206,7 +297,8 @@ export function useVirtualList<T extends VirtualListItem>({
             containerHeight,
             itemOffsets,
             items.length,
-            overscan
+            overscan,
+            itemsToRender
         )
     }, [
         safeScrollTop,
@@ -215,10 +307,12 @@ export function useVirtualList<T extends VirtualListItem>({
         itemOffsets,
         items.length,
         overscan,
+        itemsToRender,
     ])
 
     // Force recalculation method for dynamic heights
     const recalculateHeights = useCallback(() => {
+        measuredHeightsRef.current.clear()
         setForceRecalculate((prev) => prev + 1)
     }, [])
 
@@ -229,6 +323,7 @@ export function useVirtualList<T extends VirtualListItem>({
         itemOffsets,
         itemHeights,
         recalculateHeights,
+        measureItem,
         ...visibleRange,
     }
 }
@@ -270,13 +365,61 @@ export const handleVirtualListKeyDown = (
     }
 }
 
-// Scroll utilities
+// Calculate scroll position for alignment
+export const calculateScrollForAlignment = (
+    index: number,
+    alignment: ScrollAlignment,
+    containerHeight: number,
+    itemOffsets: number[],
+    itemHeights: number[],
+    itemsLength: number
+): number => {
+    if (index < 0 || index >= itemsLength) {
+        return 0
+    }
+
+    const itemOffset = itemOffsets[index] || 0
+    const itemHeight = itemHeights[index] || 40
+
+    switch (alignment) {
+        case 'start':
+            return itemOffset
+        case 'center':
+            return itemOffset - (containerHeight - itemHeight) / 2
+        case 'end':
+            return itemOffset - containerHeight + itemHeight
+        case 'auto':
+        default: {
+            // Auto: scroll only if item is not visible
+            const scrollTop = itemOffsets[0] || 0
+            const itemEnd = itemOffset + itemHeight
+            const viewportEnd = scrollTop + containerHeight
+
+            if (itemOffset < scrollTop) {
+                return itemOffset // Scroll to start
+            } else if (itemEnd > viewportEnd) {
+                return itemOffset - containerHeight + itemHeight // Scroll to end
+            }
+            return scrollTop // No scroll needed
+        }
+    }
+}
+
+// Scroll utilities with smooth scrolling support
 export const scrollToPosition = (
     containerRef: React.RefObject<HTMLDivElement | null>,
-    scrollTop: number
+    scrollTop: number,
+    smooth: boolean = false
 ) => {
     if (containerRef.current) {
-        containerRef.current.scrollTop = scrollTop
+        if (smooth) {
+            containerRef.current.scrollTo({
+                top: scrollTop,
+                behavior: 'smooth',
+            })
+        } else {
+            containerRef.current.scrollTop = scrollTop
+        }
     }
 }
 
@@ -284,11 +427,22 @@ export const scrollToIndex = (
     containerRef: React.RefObject<HTMLDivElement | null>,
     index: number,
     itemOffsets: number[],
-    itemsLength: number
+    itemHeights: number[],
+    itemsLength: number,
+    containerHeight: number,
+    alignment: ScrollAlignment = 'start',
+    smooth: boolean = false
 ) => {
     if (containerRef.current && index >= 0 && index < itemsLength) {
-        const offset = itemOffsets[index] || 0
-        containerRef.current.scrollTop = offset
+        const scrollTop = calculateScrollForAlignment(
+            index,
+            alignment,
+            containerHeight,
+            itemOffsets,
+            itemHeights,
+            itemsLength
+        )
+        scrollToPosition(containerRef, Math.max(0, scrollTop), smooth)
     }
 }
 
@@ -305,18 +459,25 @@ export const createVirtualItemStyle = (
     transform: `translateY(${top}px)`,
 })
 
-// ResizeObserver setup for dynamic heights
+// ResizeObserver setup for dynamic heights with better measurement
 export const setupResizeObserver = (
     dynamicHeight: boolean,
     isMounted: boolean,
     containerRef: React.RefObject<HTMLDivElement | null>,
-    recalculateHeights: () => void
+    measureItem: (index: number, height: number) => void
 ) => {
     if (!dynamicHeight || !isBrowser || !isMounted) return
 
-    const resizeObserver = new ResizeObserver(() => {
-        // Recalculate heights when any item resizes
-        recalculateHeights()
+    const resizeObserver = new ResizeObserver((entries) => {
+        // Measure each resized item individually
+        entries.forEach((entry) => {
+            const element = entry.target as HTMLElement
+            const index = element.getAttribute('data-index')
+            if (index !== null) {
+                const height = entry.contentRect.height
+                measureItem(parseInt(index, 10), height)
+            }
+        })
     })
 
     const container = containerRef.current
@@ -329,4 +490,36 @@ export const setupResizeObserver = (
     return () => {
         resizeObserver.disconnect()
     }
+}
+
+// Check if end is reached for infinite scroll
+export const checkEndReached = (
+    scrollTop: number,
+    totalHeight: number,
+    containerHeight: number,
+    threshold: number
+): boolean => {
+    const scrollBottom = scrollTop + containerHeight
+    const distanceFromBottom = totalHeight - scrollBottom
+    return distanceFromBottom <= threshold
+}
+
+// Previous range tracker for detecting range changes
+export const usePreviousRange = (
+    startIndex: number,
+    endIndex: number,
+    onRangeChange?: (range: { startIndex: number; endIndex: number }) => void
+) => {
+    const previousRangeRef = useRef({ startIndex: -1, endIndex: -1 })
+
+    useEffect(() => {
+        const prev = previousRangeRef.current
+        if (
+            onRangeChange &&
+            (prev.startIndex !== startIndex || prev.endIndex !== endIndex)
+        ) {
+            previousRangeRef.current = { startIndex, endIndex }
+            onRangeChange({ startIndex, endIndex })
+        }
+    }, [startIndex, endIndex, onRangeChange])
 }

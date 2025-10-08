@@ -12,6 +12,13 @@ export type VirtualListRenderParams<T extends VirtualListItem> = {
     style: React.CSSProperties
 }
 
+export type ScrollAlignment = 'start' | 'center' | 'end' | 'auto'
+
+export type VisibleRange = {
+    startIndex: number
+    endIndex: number
+}
+
 export type VirtualListProps<T extends VirtualListItem> = {
     items: T[]
     itemHeight?: number | ((item: T, index: number) => number)
@@ -24,6 +31,7 @@ export type VirtualListProps<T extends VirtualListItem> = {
     getItemHeight?: (item: T, index: number) => number
     // Dynamic height support
     dynamicHeight?: boolean
+    estimatedItemHeight?: number // For better initial rendering with dynamic heights
     // SSR safety
     ssrMode?: boolean
     // Accessibility
@@ -33,13 +41,37 @@ export type VirtualListProps<T extends VirtualListItem> = {
     emptyState?: React.ReactNode
     // Performance
     throttleScrollMs?: number
+    // Infinite scroll / Load more
+    onEndReached?: () => void
+    endReachedThreshold?: number // Distance from bottom to trigger onEndReached (default: 200px)
+    isLoading?: boolean
+    loadingComponent?: React.ReactNode
+    hasMore?: boolean
+    // Range change callback
+    onRangeChange?: (range: VisibleRange) => void
+    // Initial scroll
+    initialScrollOffset?: number
+    initialScrollIndex?: number
+    scrollAlignment?: ScrollAlignment
+    // Item count to render
+    itemsToRender?: number // Max items to render at once (overrides overscan calculation)
+    // Height management
+    minHeight?: number // Minimum height for items
+    maxHeight?: number // Maximum height for items
+    maintainScrollPosition?: boolean // Maintain scroll position when items change
 }
 
 export type VirtualListRef = {
-    scrollTo: (scrollTop: number) => void
-    scrollToIndex: (index: number) => void
+    scrollTo: (scrollTop: number, smooth?: boolean) => void
+    scrollToIndex: (
+        index: number,
+        alignment?: ScrollAlignment,
+        smooth?: boolean
+    ) => void
     getScrollOffset: () => number
     recalculateHeights: () => void
+    getVisibleRange: () => VisibleRange
+    measureItem: (index: number) => void
 }
 
 export type UseVirtualListParams<T extends VirtualListItem> = {
@@ -50,6 +82,10 @@ export type UseVirtualListParams<T extends VirtualListItem> = {
     getItemHeight?: (item: T, index: number) => number
     dynamicHeight?: boolean
     ssrMode?: boolean
+    estimatedItemHeight?: number
+    itemsToRender?: number
+    minHeight?: number
+    maxHeight?: number
 }
 
 export type UseVirtualListReturn = {
@@ -61,4 +97,5 @@ export type UseVirtualListReturn = {
     recalculateHeights: () => void
     startIndex: number
     endIndex: number
+    measureItem: (index: number, height: number) => void
 }

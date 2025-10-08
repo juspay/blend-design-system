@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import {
     SelectMenuAlignment,
@@ -15,6 +15,8 @@ import { SearchInput } from '../Inputs'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
+import VirtualList from '../VirtualList/VirtualList'
+import type { VirtualListItem } from '../VirtualList/types'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -37,6 +39,60 @@ type SingleSelectMenuProps = {
     // open
     open: boolean
     onOpenChange: (open: boolean) => void
+
+    // virtualization
+    enableVirtualization?: boolean
+    virtualListItemHeight?: number
+    virtualListOverscan?: number
+    itemsToRender?: number
+
+    // infinite scroll
+    onEndReached?: () => void
+    endReachedThreshold?: number
+    hasMore?: boolean
+    loadingComponent?: React.ReactNode
+}
+
+type FlattenedItem = VirtualListItem & {
+    type: 'item' | 'label' | 'separator'
+    item?: SelectMenuItemType
+    label?: string
+    groupId?: number
+}
+
+const flattenGroups = (groups: SelectMenuGroupType[]): FlattenedItem[] => {
+    const flattened: FlattenedItem[] = []
+    let idCounter = 0
+
+    groups.forEach((group, groupId) => {
+        if (group.groupLabel) {
+            flattened.push({
+                id: `label-${groupId}`,
+                type: 'label',
+                label: group.groupLabel,
+                groupId,
+            })
+        }
+
+        group.items.forEach((item) => {
+            flattened.push({
+                id: `item-${idCounter++}`,
+                type: 'item',
+                item,
+                groupId,
+            })
+        })
+
+        if (groupId !== groups.length - 1 && group.showSeparator) {
+            flattened.push({
+                id: `separator-${groupId}`,
+                type: 'separator',
+                groupId,
+            })
+        }
+    })
+
+    return flattened
 }
 
 const Content = styled(RadixMenu.Content)(() => ({
@@ -268,7 +324,7 @@ const SingleSelectMenu = ({
     trigger,
     minMenuWidth,
     maxMenuWidth,
-    maxMenuHeight,
+    maxMenuHeight = 400,
     enableSearch,
     searchPlaceholder = 'Search options...',
     disabled,
@@ -278,6 +334,14 @@ const SingleSelectMenu = ({
     alignOffset = 0,
     open,
     onOpenChange,
+    enableVirtualization = false,
+    virtualListItemHeight = 48,
+    virtualListOverscan = 5,
+    itemsToRender,
+    onEndReached,
+    endReachedThreshold,
+    hasMore,
+    loadingComponent,
 }: SingleSelectMenuProps) => {
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
@@ -285,6 +349,11 @@ const SingleSelectMenu = ({
     const [searchText, setSearchText] = useState('')
     const searchInputRef = React.useRef<HTMLInputElement>(null)
     const filteredItems = filterMenuGroups(items, searchText)
+
+    const flattenedItems = useMemo(
+        () => flattenGroups(filteredItems),
+        [filteredItems]
+    )
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled) return
@@ -366,57 +435,101 @@ const SingleSelectMenu = ({
                         </Block>
                     </Block>
                 )}
-                <Block
-                    padding={FOUNDATION_THEME.unit[6]}
-                    style={{
-                        paddingTop: enableSearch ? 0 : FOUNDATION_THEME.unit[6],
-                    }}
-                >
-                    {filteredItems &&
-                    filteredItems.length === 0 &&
-                    searchText.length > 0 ? (
-                        <Block
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            padding={`${FOUNDATION_THEME.unit[16]} ${FOUNDATION_THEME.unit[8]}`}
+                {items.length === 0 ? (
+                    <Block
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        padding={singleSelectTokens.dropdown.item.padding}
+                    >
+                        <Text
+                            variant="body.md"
+                            color={
+                                singleSelectTokens.dropdown.item.label.color
+                                    .disabled
+                            }
+                            textAlign="center"
                         >
-                            <Text
-                                variant="body.md"
-                                color={FOUNDATION_THEME.colors.gray[400]}
-                                textAlign="center"
-                            >
-                                No results found
-                            </Text>
-                        </Block>
-                    ) : (
-                        filteredItems &&
-                        filteredItems.map((group, groupId) => (
-                            <React.Fragment key={groupId}>
-                                {group.groupLabel && (
-                                    <Label>
-                                        <Text
-                                            variant="body.sm"
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[400]
-                                            }
-                                        >
-                                            {group.groupLabel}
-                                        </Text>
-                                    </Label>
-                                )}
-                                {group.items.map((item, itemIndex) => (
-                                    <Item
-                                        key={`${groupId}-${itemIndex}`}
-                                        selected={selected}
-                                        item={item}
-                                        onSelect={onSelect}
-                                        singleSelectTokens={singleSelectTokens}
-                                    />
-                                ))}
-                                {groupId !== items.length - 1 &&
-                                    group.showSeparator && (
+                            No items available
+                        </Text>
+                    </Block>
+                ) : filteredItems &&
+                  filteredItems.length === 0 &&
+                  searchText.length > 0 ? (
+                    <Block
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        padding={`${FOUNDATION_THEME.unit[16]} ${FOUNDATION_THEME.unit[8]}`}
+                    >
+                        <Text
+                            variant="body.md"
+                            color={
+                                singleSelectTokens.dropdown.item.label.color
+                                    .disabled
+                            }
+                            textAlign="center"
+                        >
+                            No results found
+                        </Text>
+                    </Block>
+                ) : enableVirtualization && flattenedItems.length > 0 ? (
+                    <Block
+                        padding={singleSelectTokens.dropdown.paddingTop}
+                        style={{
+                            paddingTop: enableSearch
+                                ? 0
+                                : singleSelectTokens.dropdown.paddingTop,
+                        }}
+                    >
+                        <VirtualList
+                            items={flattenedItems}
+                            itemHeight={virtualListItemHeight}
+                            containerHeight={Math.min(
+                                maxMenuHeight -
+                                    (enableSearch
+                                        ? parseInt(
+                                              String(
+                                                  singleSelectTokens.dropdown
+                                                      .paddingTop || '16'
+                                              )
+                                          ) * 4
+                                        : parseInt(
+                                              String(
+                                                  singleSelectTokens.dropdown
+                                                      .paddingBottom || '16'
+                                              )
+                                          ) * 2),
+                                flattenedItems.length * virtualListItemHeight
+                            )}
+                            overscan={virtualListOverscan}
+                            itemsToRender={itemsToRender}
+                            onEndReached={onEndReached}
+                            endReachedThreshold={endReachedThreshold}
+                            hasMore={hasMore}
+                            loadingComponent={loadingComponent}
+                            renderItem={({ item: flatItem }) => {
+                                const typed = flatItem as FlattenedItem
+
+                                if (typed.type === 'label') {
+                                    return (
+                                        <Label>
+                                            <Text
+                                                variant="body.sm"
+                                                color={
+                                                    singleSelectTokens.dropdown
+                                                        .item.label.color
+                                                        .disabled
+                                                }
+                                            >
+                                                {typed.label}
+                                            </Text>
+                                        </Label>
+                                    )
+                                }
+
+                                if (typed.type === 'separator') {
+                                    return (
                                         <RadixMenu.Separator asChild>
                                             <Block
                                                 height={
@@ -431,13 +544,91 @@ const SingleSelectMenu = ({
                                                     singleSelectTokens.dropdown
                                                         .seperator.margin
                                                 }
-                                            ></Block>
+                                            />
                                         </RadixMenu.Separator>
+                                    )
+                                }
+
+                                if (typed.type === 'item' && typed.item) {
+                                    return (
+                                        <Item
+                                            selected={selected}
+                                            item={typed.item}
+                                            onSelect={onSelect}
+                                            singleSelectTokens={
+                                                singleSelectTokens
+                                            }
+                                        />
+                                    )
+                                }
+
+                                return null
+                            }}
+                        />
+                    </Block>
+                ) : (
+                    <Block
+                        padding={FOUNDATION_THEME.unit[6]}
+                        style={{
+                            paddingTop: enableSearch
+                                ? 0
+                                : FOUNDATION_THEME.unit[6],
+                        }}
+                    >
+                        {filteredItems &&
+                            filteredItems.map((group, groupId) => (
+                                <React.Fragment key={groupId}>
+                                    {group.groupLabel && (
+                                        <Label>
+                                            <Text
+                                                variant="body.sm"
+                                                color={
+                                                    singleSelectTokens.dropdown
+                                                        .item.label.color
+                                                        .disabled
+                                                }
+                                            >
+                                                {group.groupLabel}
+                                            </Text>
+                                        </Label>
                                     )}
-                            </React.Fragment>
-                        ))
-                    )}
-                </Block>
+                                    {group.items.map((item, itemIndex) => (
+                                        <Item
+                                            key={`${groupId}-${itemIndex}`}
+                                            selected={selected}
+                                            item={item}
+                                            onSelect={onSelect}
+                                            singleSelectTokens={
+                                                singleSelectTokens
+                                            }
+                                        />
+                                    ))}
+                                    {groupId !== items.length - 1 &&
+                                        group.showSeparator && (
+                                            <RadixMenu.Separator asChild>
+                                                <Block
+                                                    height={
+                                                        singleSelectTokens
+                                                            .dropdown.seperator
+                                                            .height
+                                                    }
+                                                    backgroundColor={
+                                                        singleSelectTokens
+                                                            .dropdown.seperator
+                                                            .color
+                                                    }
+                                                    margin={
+                                                        singleSelectTokens
+                                                            .dropdown.seperator
+                                                            .margin
+                                                    }
+                                                />
+                                            </RadixMenu.Separator>
+                                        )}
+                                </React.Fragment>
+                            ))}
+                    </Block>
+                )}
             </Content>
         </RadixMenu.Root>
     )

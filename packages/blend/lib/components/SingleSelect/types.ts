@@ -112,4 +112,16 @@ export type SingleSelectProps = {
     error?: boolean
     errorMessage?: string
     fullWidth?: boolean
+
+    // Virtualization options
+    enableVirtualization?: boolean
+    virtualListItemHeight?: number
+    virtualListOverscan?: number
+    itemsToRender?: number
+
+    // Infinite scroll / Load more (works with virtualization)
+    onEndReached?: () => void
+    endReachedThreshold?: number
+    hasMore?: boolean
+    loadingComponent?: React.ReactNode
 }
