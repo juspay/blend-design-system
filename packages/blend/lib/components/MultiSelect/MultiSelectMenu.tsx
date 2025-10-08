@@ -135,11 +135,9 @@ const MultiSelectMenu = ({
     enableVirtualization = false,
     virtualListItemHeight = 48,
     virtualListOverscan = 5,
-    itemsToRender,
     onEndReached,
     endReachedThreshold,
     hasMore,
-    loadingComponent,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -346,20 +344,12 @@ const MultiSelectMenu = ({
                         >
                             <VirtualList
                                 items={flattenedItems}
+                                height={(maxMenuHeight || 400) - 80}
                                 itemHeight={virtualListItemHeight}
-                                maxHeight={(maxMenuHeight || 400) - 80}
                                 overscan={virtualListOverscan}
-                                dynamicHeight={true}
-                                estimatedItemHeight={virtualListItemHeight}
-                                itemsToRender={itemsToRender}
                                 onEndReached={onEndReached}
                                 endReachedThreshold={endReachedThreshold}
                                 hasMore={hasMore}
-                                loadingComponent={loadingComponent}
-                                style={{
-                                    height: 'auto',
-                                    maxHeight: (maxMenuHeight || 400) - 80,
-                                }}
                                 renderItem={({ item: flatItem }) => {
                                     const typed =
                                         flatItem as FlattenedMultiSelectItem

@@ -75,10 +75,9 @@ const SingleSelect = ({
     onFocus,
     inline = false,
     fullWidth = false,
-    enableVirtualization = false,
+    enableVirtualization,
     virtualListItemHeight,
     virtualListOverscan,
-    itemsToRender,
     onEndReached,
     endReachedThreshold,
     hasMore,
@@ -134,7 +133,6 @@ const SingleSelect = ({
                 enableVirtualization={enableVirtualization}
                 virtualListItemHeight={virtualListItemHeight}
                 virtualListOverscan={virtualListOverscan}
-                itemsToRender={itemsToRender}
                 onEndReached={onEndReached}
                 endReachedThreshold={endReachedThreshold}
                 hasMore={hasMore}
@@ -204,7 +202,6 @@ const SingleSelect = ({
                         enableVirtualization={enableVirtualization}
                         virtualListItemHeight={virtualListItemHeight}
                         virtualListOverscan={virtualListOverscan}
-                        itemsToRender={itemsToRender}
                         onEndReached={onEndReached}
                         endReachedThreshold={endReachedThreshold}
                         hasMore={hasMore}

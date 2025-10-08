@@ -116,13 +116,7 @@ const Menu = ({
         enableVirtualScrolling && totalItemCount >= virtualScrollThreshold
 
     const renderVirtualItem = useCallback(
-        ({
-            item,
-        }: {
-            item: VirtualListItem
-            index: number
-            style: React.CSSProperties
-        }) => {
+        ({ item }: { item: VirtualListItem; index: number }) => {
             const data = item.data || {}
             const { type, label, originalItem, groupId, itemIndex } = data as {
                 type?: string
@@ -262,28 +256,16 @@ const Menu = ({
                     >
                         <VirtualList
                             items={virtualListItems}
+                            height={
+                                (maxHeight || 400) - (enableSearch ? 80 : 20)
+                            }
                             itemHeight={
                                 typeof virtualItemHeight === 'number'
                                     ? virtualItemHeight
                                     : 40
                             }
-                            maxHeight={
-                                (maxHeight || 400) - (enableSearch ? 80 : 20)
-                            }
                             overscan={virtualOverscan}
-                            dynamicHeight={true}
-                            estimatedItemHeight={
-                                typeof virtualItemHeight === 'number'
-                                    ? virtualItemHeight
-                                    : 40
-                            }
                             renderItem={renderVirtualItem}
-                            style={{
-                                height: 'auto',
-                                maxHeight:
-                                    (maxHeight || 400) -
-                                    (enableSearch ? 80 : 20),
-                            }}
                         />
                     </Block>
                 ) : (
