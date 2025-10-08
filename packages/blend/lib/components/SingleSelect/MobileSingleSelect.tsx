@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import {
     Drawer,
     DrawerTrigger,
@@ -27,54 +27,8 @@ import SingleSelectTrigger from './SingleSelectTrigger'
 import { TextInput } from '../Inputs/TextInput'
 import { TextInputSize } from '../Inputs/TextInput/types'
 import { Check } from 'lucide-react'
-import VirtualList from '../VirtualList/VirtualList'
-import type { VirtualListItem } from '../VirtualList/types'
 
 type MobileSingleSelectProps = SingleSelectProps
-
-type FlattenedMobileItem = VirtualListItem & {
-    type: 'item' | 'label' | 'separator'
-    item?: SelectMenuItemType
-    label?: string
-    groupId?: number
-}
-
-const flattenMobileGroups = (
-    groups: SelectMenuGroupType[]
-): FlattenedMobileItem[] => {
-    const flattened: FlattenedMobileItem[] = []
-    let idCounter = 0
-
-    groups.forEach((group, groupId) => {
-        if (group.groupLabel) {
-            flattened.push({
-                id: `label-${groupId}`,
-                type: 'label',
-                label: group.groupLabel,
-                groupId,
-            })
-        }
-
-        group.items.forEach((item) => {
-            flattened.push({
-                id: `item-${idCounter++}`,
-                type: 'item',
-                item,
-                groupId,
-            })
-        })
-
-        if (groupId !== groups.length - 1 && group.showSeparator) {
-            flattened.push({
-                id: `separator-${groupId}`,
-                type: 'separator',
-                groupId,
-            })
-        }
-    })
-
-    return flattened
-}
 
 const map = function getValueLabelMap(
     groups: SelectMenuGroupType[]
@@ -261,14 +215,6 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
     onBlur,
     onFocus,
     inline = false,
-    enableVirtualization = false,
-    virtualListItemHeight = 56,
-    virtualListOverscan = 5,
-    itemsToRender,
-    onEndReached,
-    endReachedThreshold,
-    hasMore,
-    loadingComponent,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -279,11 +225,6 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
     const valueLabelMap = map(items)
 
     const filteredItems = filterMenuGroups(items, searchText)
-
-    const flattenedItems = useMemo(
-        () => flattenMobileGroups(filteredItems),
-        [filteredItems]
-    )
 
     const isItemSelected = selected.length > 0
     const isSmallScreenWithLargeSize =
@@ -422,128 +363,6 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                                 No results found
                                             </Text>
                                         </Block>
-                                    ) : enableVirtualization &&
-                                      flattenedItems.length > 0 ? (
-                                        <VirtualList
-                                            items={flattenedItems}
-                                            itemHeight={virtualListItemHeight}
-                                            containerHeight={
-                                                parseInt(
-                                                    String(
-                                                        singleSelectTokens
-                                                            .dropdown
-                                                            .paddingTop || '16'
-                                                    )
-                                                ) * 40
-                                            }
-                                            overscan={virtualListOverscan}
-                                            dynamicHeight={true}
-                                            estimatedItemHeight={
-                                                virtualListItemHeight
-                                            }
-                                            itemsToRender={itemsToRender}
-                                            onEndReached={onEndReached}
-                                            endReachedThreshold={
-                                                endReachedThreshold
-                                            }
-                                            hasMore={hasMore}
-                                            loadingComponent={loadingComponent}
-                                            renderItem={({
-                                                item: flatItem,
-                                            }) => {
-                                                const typed =
-                                                    flatItem as FlattenedMobileItem
-
-                                                if (typed.type === 'label') {
-                                                    return (
-                                                        <Block
-                                                            padding={`${singleSelectTokens.dropdown.item.gap} ${singleSelectTokens.dropdown.item.padding}`}
-                                                            margin={
-                                                                singleSelectTokens
-                                                                    .dropdown
-                                                                    .item.margin
-                                                            }
-                                                        >
-                                                            <Text
-                                                                variant="body.sm"
-                                                                color={
-                                                                    singleSelectTokens
-                                                                        .dropdown
-                                                                        .item
-                                                                        .label
-                                                                        .color
-                                                                        .disabled
-                                                                }
-                                                                textTransform="uppercase"
-                                                                fontSize={
-                                                                    singleSelectTokens
-                                                                        .dropdown
-                                                                        .item
-                                                                        .subLabel
-                                                                        .fontSize
-                                                                }
-                                                            >
-                                                                {typed.label}
-                                                            </Text>
-                                                        </Block>
-                                                    )
-                                                }
-
-                                                if (
-                                                    typed.type === 'separator'
-                                                ) {
-                                                    return (
-                                                        <Block
-                                                            height={
-                                                                singleSelectTokens
-                                                                    .dropdown
-                                                                    .seperator
-                                                                    .height
-                                                            }
-                                                            backgroundColor={
-                                                                singleSelectTokens
-                                                                    .dropdown
-                                                                    .seperator
-                                                                    .color
-                                                            }
-                                                            margin={
-                                                                singleSelectTokens
-                                                                    .dropdown
-                                                                    .seperator
-                                                                    .margin
-                                                            }
-                                                        />
-                                                    )
-                                                }
-
-                                                if (
-                                                    typed.type === 'item' &&
-                                                    typed.item
-                                                ) {
-                                                    const isSelected =
-                                                        selected ===
-                                                        typed.item.value
-                                                    return (
-                                                        <SingleSelectItem
-                                                            item={typed.item}
-                                                            isSelected={
-                                                                isSelected
-                                                            }
-                                                            onSelect={(
-                                                                value
-                                                            ) => {
-                                                                onSelect(value)
-                                                                setDrawerOpen(
-                                                                    false
-                                                                )
-                                                            }}
-                                                        />
-                                                    )
-                                                }
-
-                                                return null
-                                            }}
-                                        />
                                     ) : (
                                         <Block
                                             display="flex"

@@ -16,7 +16,6 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
 import VirtualList from '../VirtualList/VirtualList'
-import type { VirtualListItem } from '../VirtualList/types'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -44,7 +43,6 @@ type SingleSelectMenuProps = {
     enableVirtualization?: boolean
     virtualListItemHeight?: number
     virtualListOverscan?: number
-    itemsToRender?: number
 
     // infinite scroll
     onEndReached?: () => void
@@ -53,7 +51,8 @@ type SingleSelectMenuProps = {
     loadingComponent?: React.ReactNode
 }
 
-type FlattenedItem = VirtualListItem & {
+type FlattenedItem = {
+    id: string
     type: 'item' | 'label' | 'separator'
     item?: SelectMenuItemType
     label?: string
@@ -99,8 +98,6 @@ const Content = styled(RadixMenu.Content)(() => ({
     position: 'relative',
     backgroundColor: 'white',
     borderRadius: 8,
-    // width: "var(--radix-dropdown-menu-trigger-width)",
-    // maxWidth: "var(--radix-dropdown-menu-trigger-width)",
     boxShadow: FOUNDATION_THEME.shadows.sm,
     zIndex: 49,
     overflowY: 'auto',
@@ -119,16 +116,13 @@ const SubTrigger = styled(RadixMenu.SubTrigger)(() => ({
     padding: '8px 6px',
     margin: '0px 8px',
     borderRadius: 4,
-    // hover effects
     '&:hover': {
         backgroundColor: FOUNDATION_THEME.colors.gray[50],
     },
-
     '&[data-disabled]': {
         opacity: 0.5,
         cursor: 'not-allowed',
     },
-
     '&[data-highlighted]': {
         border: 'none',
         outline: 'none',
@@ -283,10 +277,6 @@ function filterMenuGroups(
     const lower = searchText.toLowerCase()
     return groups
         .map((group: SelectMenuGroupType) => {
-            // TODO: Should we include the whole group if the label matches?
-            // if (group.label && group.label.toLowerCase().includes(lower)) {
-            //   return group;
-            // }
             const filteredItems = group.items
                 .map((item: SelectMenuItemType) => filterMenuItem(item, lower))
                 .filter(Boolean) as SelectMenuItemType[]
@@ -300,11 +290,9 @@ function filterMenuItem(
     item: SelectMenuItemType,
     lower: string
 ): SelectMenuItemType | null {
-    // Check if this item matches
     const matches =
         (item.label && item.label.toLowerCase().includes(lower)) ||
         (item.subLabel && item.subLabel.toLowerCase().includes(lower))
-    // If it has a submenu, filter recursively
     if (item.subMenu) {
         const filteredSub = item.subMenu
             .map((sub: SelectMenuItemType) => filterMenuItem(sub, lower))
@@ -336,23 +324,28 @@ const SingleSelectMenu = ({
     onOpenChange,
     enableVirtualization = false,
     virtualListItemHeight = 48,
-    virtualListOverscan = 5,
-    itemsToRender,
+    virtualListOverscan = 2,
     onEndReached,
     endReachedThreshold,
     hasMore,
-    loadingComponent,
 }: SingleSelectMenuProps) => {
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
 
     const [searchText, setSearchText] = useState('')
     const searchInputRef = React.useRef<HTMLInputElement>(null)
-    const filteredItems = filterMenuGroups(items, searchText)
+
+    const filteredItems = useMemo(
+        () => (searchText ? filterMenuGroups(items, searchText) : items),
+        [items, searchText]
+    )
 
     const flattenedItems = useMemo(
-        () => flattenGroups(filteredItems),
-        [filteredItems]
+        () =>
+            enableVirtualization || searchText
+                ? flattenGroups(filteredItems)
+                : [],
+        [filteredItems, enableVirtualization, searchText]
     )
 
     const handleOpenChange = (newOpen: boolean) => {
@@ -361,6 +354,56 @@ const SingleSelectMenu = ({
             setSearchText('')
         }
         onOpenChange(newOpen)
+    }
+
+    const renderVirtualItem = ({
+        item: flatItem,
+    }: {
+        item: FlattenedItem
+        index: number
+    }) => {
+        if (flatItem.type === 'label') {
+            return (
+                <Label>
+                    <Text
+                        variant="body.sm"
+                        color={
+                            singleSelectTokens.dropdown.item.label.color
+                                .disabled
+                        }
+                    >
+                        {flatItem.label}
+                    </Text>
+                </Label>
+            )
+        }
+
+        if (flatItem.type === 'separator') {
+            return (
+                <RadixMenu.Separator asChild>
+                    <Block
+                        height={singleSelectTokens.dropdown.seperator.height}
+                        backgroundColor={
+                            singleSelectTokens.dropdown.seperator.color
+                        }
+                        margin={singleSelectTokens.dropdown.seperator.margin}
+                    />
+                </RadixMenu.Separator>
+            )
+        }
+
+        if (flatItem.type === 'item' && flatItem.item) {
+            return (
+                <Item
+                    selected={selected}
+                    item={flatItem.item}
+                    onSelect={onSelect}
+                    singleSelectTokens={singleSelectTokens}
+                />
+            )
+        }
+
+        return null
     }
 
     return (
@@ -474,87 +517,17 @@ const SingleSelectMenu = ({
                         </Text>
                     </Block>
                 ) : enableVirtualization && flattenedItems.length > 0 ? (
-                    <Block
-                        padding={FOUNDATION_THEME.unit[6]}
-                        style={{
-                            paddingTop: enableSearch
-                                ? 0
-                                : FOUNDATION_THEME.unit[6],
-                        }}
-                    >
+                    <Block padding={FOUNDATION_THEME.unit[6]}>
                         <VirtualList
                             items={flattenedItems}
+                            renderItem={renderVirtualItem}
+                            height={maxMenuHeight - 60}
                             itemHeight={virtualListItemHeight}
-                            maxHeight={maxMenuHeight - (enableSearch ? 80 : 20)}
                             overscan={virtualListOverscan}
-                            dynamicHeight={true}
-                            estimatedItemHeight={virtualListItemHeight}
-                            itemsToRender={itemsToRender}
                             onEndReached={onEndReached}
                             endReachedThreshold={endReachedThreshold}
                             hasMore={hasMore}
-                            loadingComponent={loadingComponent}
-                            style={{
-                                height: 'auto',
-                                maxHeight:
-                                    maxMenuHeight - (enableSearch ? 80 : 20),
-                            }}
-                            renderItem={({ item: flatItem }) => {
-                                const typed = flatItem as FlattenedItem
-
-                                if (typed.type === 'label') {
-                                    return (
-                                        <Label>
-                                            <Text
-                                                variant="body.sm"
-                                                color={
-                                                    singleSelectTokens.dropdown
-                                                        .item.label.color
-                                                        .disabled
-                                                }
-                                            >
-                                                {typed.label}
-                                            </Text>
-                                        </Label>
-                                    )
-                                }
-
-                                if (typed.type === 'separator') {
-                                    return (
-                                        <RadixMenu.Separator asChild>
-                                            <Block
-                                                height={
-                                                    singleSelectTokens.dropdown
-                                                        .seperator.height
-                                                }
-                                                backgroundColor={
-                                                    singleSelectTokens.dropdown
-                                                        .seperator.color
-                                                }
-                                                margin={
-                                                    singleSelectTokens.dropdown
-                                                        .seperator.margin
-                                                }
-                                            />
-                                        </RadixMenu.Separator>
-                                    )
-                                }
-
-                                if (typed.type === 'item' && typed.item) {
-                                    return (
-                                        <Item
-                                            selected={selected}
-                                            item={typed.item}
-                                            onSelect={onSelect}
-                                            singleSelectTokens={
-                                                singleSelectTokens
-                                            }
-                                        />
-                                    )
-                                }
-
-                                return null
-                            }}
+                            isLoading={false}
                         />
                     </Block>
                 ) : (

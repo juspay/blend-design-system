@@ -113,13 +113,12 @@ export type SingleSelectProps = {
     errorMessage?: string
     fullWidth?: boolean
 
-    // Virtualization options
+    // virtualization
     enableVirtualization?: boolean
     virtualListItemHeight?: number
     virtualListOverscan?: number
-    itemsToRender?: number
 
-    // Infinite scroll / Load more (works with virtualization)
+    // infinite scroll
     onEndReached?: () => void
     endReachedThreshold?: number
     hasMore?: boolean

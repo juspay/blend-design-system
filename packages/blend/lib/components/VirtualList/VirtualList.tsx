@@ -1,421 +1,250 @@
 import React, {
     useRef,
+    useState,
+    useEffect,
     useCallback,
-    useMemo,
     forwardRef,
     useImperativeHandle,
-    useEffect,
-    useLayoutEffect,
-    useState,
+    useMemo,
 } from 'react'
-import styled from 'styled-components'
-import type {
-    VirtualListProps,
-    VirtualListRef,
-    VirtualListItem,
-    ScrollAlignment,
-} from './types'
+import type { VirtualListProps, VirtualListRef, VirtualListItem } from './types'
+import Block from '../../components/Primitives/Block/Block'
 import {
-    useVirtualList,
-    isBrowser,
-    handleVirtualListKeyDown,
-    scrollToPosition,
-    scrollToIndex,
-    createVirtualItemStyle,
-    setupResizeObserver,
-    checkEndReached,
-    usePreviousRange,
+    findStartNode,
+    findEndNode,
+    calculateChildPositions,
+    calculateTotalHeight,
 } from './utils'
-import { FOUNDATION_THEME } from '../../tokens'
-import { foundationToken } from '../../foundationToken'
 
-const VirtualListContainer = styled.div<{
-    height?: number
-    autoHeight?: boolean
-    maxHeight?: number
-}>`
-    ${({ height, autoHeight }) =>
-        !autoHeight && height ? `height: ${height}px;` : ''}
-    ${({ autoHeight, maxHeight }) =>
-        autoHeight && maxHeight ? `max-height: ${maxHeight}px;` : ''}
-    ${({ autoHeight }) => (autoHeight ? 'height: auto;' : '')}
-    overflow-y: auto;
-    overflow-x: hidden;
-    position: relative;
-    &:focus {
-        outline: 2px solid ${FOUNDATION_THEME.colors.primary[500]};
-        outline-offset: -2px;
-    }
-`
+/**
+ * Hook for scroll detection with requestAnimationFrame optimization
+ */
+function useScrollAware<T extends HTMLElement>() {
+    const [scrollTop, setScrollTop] = useState(0)
+    const ref = useRef<T>(null)
+    const animationFrame = useRef<number | undefined>(undefined)
 
-const LoadingContainer = styled.div`
-    padding: ${FOUNDATION_THEME.unit[16]};
-    text-align: center;
-    color: ${foundationToken.colors.gray[500]};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: ${FOUNDATION_THEME.unit[8]};
-`
-
-const DefaultLoader = () => (
-    <LoadingContainer>
-        <div
-            style={{
-                width: '20px',
-                height: '20px',
-                border: `2px solid ${foundationToken.colors.gray[300]}`,
-                borderTop: `2px solid ${foundationToken.colors.primary[500]}`,
-                borderRadius: '50%',
-                animation: 'spin 1s linear infinite',
-            }}
-        />
-        <span>Loading...</span>
-        <style>
-            {`
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            `}
-        </style>
-    </LoadingContainer>
-)
-
-const VirtualList = forwardRef<
-    VirtualListRef,
-    VirtualListProps<VirtualListItem>
->(
-    <T extends VirtualListItem>(
-        {
-            items,
-            itemHeight = 40,
-            containerHeight,
-            overscan = 5,
-            onScroll,
-            renderItem,
-            className,
-            style,
-            getItemHeight,
-            dynamicHeight = false,
-            estimatedItemHeight,
-            ssrMode = false,
-            ariaRole = 'list',
-            onKeyDown,
-            emptyState,
-            onEndReached,
-            endReachedThreshold = 200,
-            isLoading = false,
-            loadingComponent,
-            hasMore = false,
-            onRangeChange,
-            initialScrollOffset,
-            initialScrollIndex,
-            scrollAlignment = 'start',
-            itemsToRender,
-            minHeight,
-            maxHeight,
-            ...props
-        }: VirtualListProps<T>,
-        ref: React.Ref<VirtualListRef>
-    ) => {
-        const containerRef = useRef<HTMLDivElement>(null)
-        const [isMounted, setIsMounted] = useState(!ssrMode)
-        const endReachedCalledRef = useRef(false)
-        const previousItemCountRef = useRef(items.length)
-
-        useLayoutEffect(() => {
-            if (ssrMode && isBrowser) {
-                setIsMounted(true)
-            }
-        }, [ssrMode])
-
-        const actualContainerHeight = containerHeight || 400 // Default height for dropdown mode
-
-        const {
-            scrollTop,
-            setScrollTop,
-            totalHeight,
-            itemOffsets,
-            itemHeights,
-            startIndex,
-            endIndex,
-            recalculateHeights,
-            measureItem,
-        } = useVirtualList({
-            items,
-            itemHeight,
-            containerHeight: actualContainerHeight,
-            overscan,
-            getItemHeight,
-            dynamicHeight,
-            ssrMode,
-            estimatedItemHeight,
-            itemsToRender,
-            minHeight,
-            maxHeight,
+    const onScroll = useCallback((e: Event) => {
+        if (animationFrame.current) {
+            cancelAnimationFrame(animationFrame.current)
+        }
+        animationFrame.current = requestAnimationFrame(() => {
+            setScrollTop((e.target as T).scrollTop)
         })
+    }, [])
 
-        usePreviousRange(startIndex, endIndex, onRangeChange)
+    useEffect(() => {
+        const scrollContainer = ref.current
+        if (!scrollContainer) return
 
-        const handleScroll = useCallback(
-            (e: React.UIEvent<HTMLDivElement>) => {
-                const newScrollTop = e.currentTarget.scrollTop
-                setScrollTop(newScrollTop)
-                onScroll?.(newScrollTop)
-
-                if (
-                    hasMore &&
-                    !isLoading &&
-                    onEndReached &&
-                    !endReachedCalledRef.current
-                ) {
-                    const isEndReached = checkEndReached(
-                        newScrollTop,
-                        totalHeight,
-                        actualContainerHeight,
-                        endReachedThreshold
-                    )
-
-                    if (isEndReached) {
-                        endReachedCalledRef.current = true
-                        onEndReached()
-                    }
-                }
-            },
-            [
-                setScrollTop,
-                onScroll,
-                hasMore,
-                isLoading,
-                onEndReached,
-                totalHeight,
-                containerHeight,
-                endReachedThreshold,
-            ]
-        )
-
-        useEffect(() => {
-            if (!isLoading || items.length > previousItemCountRef.current) {
-                endReachedCalledRef.current = false
-                previousItemCountRef.current = items.length
+        setScrollTop(scrollContainer.scrollTop)
+        scrollContainer.addEventListener('scroll', onScroll)
+        return () => {
+            scrollContainer.removeEventListener('scroll', onScroll)
+            if (animationFrame.current) {
+                cancelAnimationFrame(animationFrame.current)
             }
-        }, [isLoading, items.length])
+        }
+    }, [onScroll])
 
-        const handleKeyDown = useCallback(
-            (e: React.KeyboardEvent<HTMLDivElement>) => {
-                handleVirtualListKeyDown(
-                    e,
-                    ariaRole,
-                    totalHeight,
-                    containerRef,
-                    onKeyDown
+    return [scrollTop, ref] as const
+}
+
+/**
+ * A simple, performant virtual list component that only renders visible items.
+ *
+ */
+function VirtualListInner<T extends VirtualListItem>(
+    {
+        items,
+        renderItem,
+        height = 400,
+        itemHeight,
+        overscan = 20,
+        onScroll,
+        onEndReached,
+        endReachedThreshold = 200,
+        isLoading = false,
+        hasMore = false,
+        className,
+        style,
+    }: VirtualListProps<T>,
+    ref: React.Ref<VirtualListRef>
+) {
+    const [scrollTop, containerRef] = useScrollAware<HTMLDivElement>()
+    const [containerHeight, setContainerHeight] = useState(
+        typeof height === 'number' ? height : 400
+    )
+    const endReachedCalledRef = useRef(false)
+
+    // Measure container height
+    useEffect(() => {
+        if (!containerRef.current) return
+
+        const updateHeight = () => {
+            if (containerRef.current) {
+                setContainerHeight(containerRef.current.clientHeight)
+            }
+        }
+
+        updateHeight()
+        const resizeObserver = new ResizeObserver(updateHeight)
+        resizeObserver.observe(containerRef.current)
+
+        return () => resizeObserver.disconnect()
+    }, [containerRef])
+
+    // Calculate child positions (memoized for performance)
+    const childPositions = useMemo(() => {
+        return calculateChildPositions(items.length, itemHeight)
+    }, [items.length, itemHeight])
+
+    // Calculate total height
+    const totalHeight = useMemo(() => {
+        return calculateTotalHeight(childPositions, items.length, itemHeight)
+    }, [childPositions, items.length, itemHeight])
+
+    // Find first visible node using binary search (only when scrolled)
+    const firstVisibleNode = useMemo(() => {
+        if (!items.length || !childPositions.length) return 0
+        return findStartNode(scrollTop, childPositions, items.length)
+    }, [scrollTop, childPositions, items.length])
+
+    // Calculate start node with overscan
+    const startNode = Math.max(0, firstVisibleNode - overscan)
+
+    // Find last visible node
+    const lastVisibleNode = useMemo(() => {
+        if (!items.length || !containerHeight)
+            return Math.min(20, items.length - 1)
+        return findEndNode(
+            childPositions,
+            firstVisibleNode,
+            items.length,
+            containerHeight
+        )
+    }, [childPositions, firstVisibleNode, items.length, containerHeight])
+
+    // Calculate end node with overscan
+    const endNode = Math.min(items.length - 1, lastVisibleNode + overscan)
+    const visibleNodeCount = Math.max(0, endNode - startNode + 1)
+
+    // Calculate offset for shifting nodes down
+    const offsetY = childPositions[startNode]
+
+    // Render visible children (memoized)
+    const visibleChildren = useMemo(() => {
+        const children = []
+        for (let i = 0; i < visibleNodeCount; i++) {
+            const itemIndex = i + startNode
+            if (items[itemIndex]) {
+                children.push(
+                    <Block key={items[itemIndex].id || itemIndex}>
+                        {renderItem({
+                            item: items[itemIndex],
+                            index: itemIndex,
+                        })}
+                    </Block>
                 )
-            },
-            [ariaRole, totalHeight, onKeyDown]
-        )
+            }
+        }
+        return children
+    }, [startNode, visibleNodeCount, items, renderItem])
 
-        const scrollTo = useCallback(
-            (scrollTop: number, smooth: boolean = false) => {
-                scrollToPosition(containerRef, scrollTop, smooth)
-            },
-            []
-        )
+    // Handle scroll callbacks
+    useEffect(() => {
+        onScroll?.(scrollTop)
 
-        const scrollToIndexMethod = useCallback(
-            (
-                index: number,
-                alignment: ScrollAlignment = 'start',
-                smooth: boolean = false
-            ) => {
-                scrollToIndex(
-                    containerRef,
-                    index,
-                    itemOffsets,
-                    itemHeights,
-                    items.length,
-                    actualContainerHeight,
-                    alignment,
-                    smooth
-                )
-            },
-            [itemOffsets, itemHeights, items.length, actualContainerHeight]
-        )
+        // Check for infinite scroll
+        if (
+            hasMore &&
+            !isLoading &&
+            onEndReached &&
+            !endReachedCalledRef.current
+        ) {
+            const distanceFromBottom =
+                totalHeight - (scrollTop + containerHeight)
+            if (distanceFromBottom < endReachedThreshold) {
+                endReachedCalledRef.current = true
+                onEndReached()
+            }
+        }
+    }, [
+        scrollTop,
+        onScroll,
+        hasMore,
+        isLoading,
+        onEndReached,
+        totalHeight,
+        containerHeight,
+        endReachedThreshold,
+    ])
 
-        const getVisibleRange = useCallback(
-            () => ({ startIndex, endIndex }),
-            [startIndex, endIndex]
-        )
+    // Reset endReachedCalled when loading completes
+    useEffect(() => {
+        if (!isLoading) {
+            endReachedCalledRef.current = false
+        }
+    }, [isLoading])
 
-        const measureItemMethod = useCallback(
-            (index: number) => {
+    // Expose methods via ref
+    useImperativeHandle(
+        ref,
+        () => ({
+            scrollTo: (offset: number) => {
                 if (containerRef.current) {
-                    const item = containerRef.current.querySelector(
-                        `[data-index="${index}"]`
-                    )
-                    if (item) {
-                        const height = item.getBoundingClientRect().height
-                        measureItem(index, height)
-                    }
+                    containerRef.current.scrollTop = offset
                 }
             },
-            [measureItem]
-        )
-
-        useImperativeHandle(
-            ref,
-            () => ({
-                scrollTo,
-                scrollToIndex: scrollToIndexMethod,
-                getScrollOffset: () => scrollTop,
-                recalculateHeights,
-                getVisibleRange,
-                measureItem: measureItemMethod,
-            }),
-            [
-                scrollTo,
-                scrollToIndexMethod,
-                scrollTop,
-                recalculateHeights,
-                getVisibleRange,
-                measureItemMethod,
-            ]
-        )
-
-        useEffect(() => {
-            if (isMounted && containerRef.current) {
-                if (initialScrollIndex !== undefined) {
-                    scrollToIndexMethod(initialScrollIndex, scrollAlignment)
-                } else if (initialScrollOffset !== undefined) {
-                    scrollTo(initialScrollOffset)
+            scrollToIndex: (index: number) => {
+                if (
+                    containerRef.current &&
+                    childPositions[index] !== undefined
+                ) {
+                    containerRef.current.scrollTop = childPositions[index]
                 }
-            }
-        }, [isMounted])
+            },
+        }),
+        [childPositions, containerRef]
+    )
 
-        const visibleItems = useMemo(() => {
-            const renderedItems = []
-            const useAbsolute = !!containerHeight // Use absolute positioning only when containerHeight is specified
-
-            for (let i = startIndex; i <= endIndex && i < items.length; i++) {
-                const item = items[i]
-                const top = itemOffsets[i] || 0
-                const height =
-                    itemHeights[i] ||
-                    (typeof itemHeight === 'number' ? itemHeight : 40)
-                const itemStyle = createVirtualItemStyle(
-                    top,
-                    height,
-                    useAbsolute
-                )
-
-                renderedItems.push(
-                    <div
-                        key={item.id || i}
-                        style={itemStyle}
-                        data-virtual-item={true}
-                        data-index={i}
-                    >
-                        {renderItem({ item, index: i, style: itemStyle })}
-                    </div>
-                )
-            }
-
-            return renderedItems
-        }, [
-            items,
-            startIndex,
-            endIndex,
-            itemOffsets,
-            itemHeights,
-            itemHeight,
-            containerHeight,
-            renderItem,
-        ])
-
-        useEffect(() => {
-            return setupResizeObserver(
-                dynamicHeight,
-                isMounted,
-                containerRef,
-                measureItem
-            )
-        }, [dynamicHeight, isMounted, measureItem, startIndex, endIndex])
-
-        if (items.length === 0) {
-            return (
-                <VirtualListContainer
-                    ref={containerRef}
-                    height={containerHeight}
-                    className={className}
-                    style={style}
-                    role={ariaRole}
-                    tabIndex={0}
-                    onKeyDown={handleKeyDown}
-                    {...props}
-                >
-                    {emptyState || (
-                        <div
-                            style={{
-                                padding: FOUNDATION_THEME.unit[20],
-                                textAlign: 'center',
-                                color: foundationToken.colors.gray[500],
-                            }}
-                        >
-                            No items
-                        </div>
-                    )}
-                </VirtualListContainer>
-            )
-        }
-
-        if (ssrMode && !isMounted) {
-            return (
-                <VirtualListContainer
-                    ref={containerRef}
-                    height={containerHeight}
-                    className={className}
-                    style={style}
-                    role={ariaRole}
-                    tabIndex={0}
-                    onKeyDown={handleKeyDown}
-                    {...props}
-                >
-                    <div style={{ height: totalHeight, position: 'relative' }}>
-                        <div style={{ padding: '20px' }}>Loading...</div>
-                    </div>
-                </VirtualListContainer>
-            )
-        }
-
-        return (
-            <VirtualListContainer
-                ref={containerRef}
-                height={containerHeight}
-                autoHeight={!containerHeight}
-                maxHeight={maxHeight}
-                onScroll={handleScroll}
-                onKeyDown={handleKeyDown}
-                className={className}
-                style={style}
-                role={ariaRole}
-                tabIndex={0}
-                aria-label={`Virtual list with ${items.length} items`}
-                {...props}
+    return (
+        <Block
+            ref={containerRef}
+            className={className}
+            style={{
+                height,
+                overflow: 'auto',
+                position: 'relative',
+                ...style,
+            }}
+        >
+            <Block
+                style={{
+                    height: totalHeight,
+                    overflow: 'hidden',
+                    willChange: 'transform',
+                    position: 'relative',
+                }}
             >
-                <div
+                <Block
                     style={{
-                        height: containerHeight ? totalHeight : 'auto',
-                        minHeight: containerHeight ? totalHeight : 'auto',
-                        position: 'relative',
+                        willChange: 'transform',
+                        transform: `translateY(${offsetY}px)`,
                     }}
                 >
-                    {visibleItems}
-                    {isLoading && (loadingComponent || <DefaultLoader />)}
-                </div>
-            </VirtualListContainer>
-        )
-    }
-)
+                    {visibleChildren}
+                </Block>
+            </Block>
+        </Block>
+    )
+}
+
+const VirtualList = forwardRef(VirtualListInner) as (<
+    T extends VirtualListItem,
+>(
+    props: VirtualListProps<T> & { ref?: React.Ref<VirtualListRef> }
+) => ReturnType<typeof VirtualListInner>) & { displayName?: string }
 
 VirtualList.displayName = 'VirtualList'
 

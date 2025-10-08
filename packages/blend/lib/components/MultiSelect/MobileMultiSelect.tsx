@@ -317,11 +317,9 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     enableVirtualization = false,
     virtualListItemHeight = 56,
     virtualListOverscan = 5,
-    itemsToRender,
     onEndReached,
     endReachedThreshold,
     hasMore,
-    loadingComponent,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -508,24 +506,14 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                       flattenedItems.length > 0 ? (
                                         <VirtualList
                                             items={flattenedItems}
+                                            height={600}
                                             itemHeight={virtualListItemHeight}
-                                            maxHeight={600}
                                             overscan={virtualListOverscan}
-                                            dynamicHeight={true}
-                                            estimatedItemHeight={
-                                                virtualListItemHeight
-                                            }
-                                            itemsToRender={itemsToRender}
                                             onEndReached={onEndReached}
                                             endReachedThreshold={
                                                 endReachedThreshold
                                             }
                                             hasMore={hasMore}
-                                            loadingComponent={loadingComponent}
-                                            style={{
-                                                height: 'auto',
-                                                maxHeight: 600,
-                                            }}
                                             renderItem={({
                                                 item: flatItem,
                                             }) => {
