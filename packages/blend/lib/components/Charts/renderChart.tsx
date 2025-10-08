@@ -13,13 +13,13 @@ import {
     ScatterChart,
     Scatter,
 } from 'recharts'
-import { ChartType, RenderChartProps, TickProps } from './types'
+import { ChartType, RenderChartProps, TickProps, AxisType } from './types'
 import {
     formatNumber,
+    getAxisFormatter,
     lightenHexColor,
-    getAxisFormatterWithConfig,
-    createStableSmartFormatter,
     transformScatterData,
+    generateConsistentDateTimeTicks,
 } from './ChartUtils'
 import { CustomTooltip } from './CustomTooltip'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -56,6 +56,46 @@ export const renderChart = ({
         interval: yAxis?.interval,
         show: yAxis?.show ?? true,
         ...yAxis,
+    }
+
+    // Auto-generate consistent ticks for DATE_TIME axes (like Highcharts)
+    if (
+        finalXAxis.type === AxisType.DATE_TIME &&
+        finalXAxis.autoConsistentTicks !== false &&
+        !finalXAxis.ticks &&
+        originalData.length > 0
+    ) {
+        // Responsive tick count: aggressively reduce ticks on small screens to prevent overlap
+        const defaultMaxTicks = isSmallScreen ? 4 : 10
+        const { ticks } = generateConsistentDateTimeTicks(originalData, {
+            maxTicks: finalXAxis.maxTicks
+                ? isSmallScreen
+                    ? Math.max(3, Math.floor(finalXAxis.maxTicks / 2))
+                    : finalXAxis.maxTicks
+                : defaultMaxTicks,
+            dateOnly: finalXAxis.dateOnly,
+            timeOnly: finalXAxis.timeOnly,
+            showYear: finalXAxis.showYear,
+            useUTC: finalXAxis.useUTC,
+            formatString: finalXAxis.formatString,
+        })
+        finalXAxis.ticks = ticks
+
+        // Enable smart date/time format by default (alternates between date and time)
+        // Only if user hasn't specified dateOnly, timeOnly, or formatString
+        if (
+            finalXAxis.smartDateTimeFormat === undefined &&
+            !finalXAxis.dateOnly &&
+            !finalXAxis.timeOnly &&
+            !finalXAxis.formatString
+        ) {
+            finalXAxis.smartDateTimeFormat = true
+        }
+    }
+
+    // When using custom ticks, set interval to 0 to show all ticks
+    if (finalXAxis.ticks && finalXAxis.interval === undefined) {
+        finalXAxis.interval = 0
     }
 
     const getColor = (key: string, chartType: ChartType) => {
@@ -172,10 +212,16 @@ export const renderChart = ({
                         tickLine={false}
                         interval={finalXAxis.interval}
                         tickMargin={20}
-                        tickFormatter={createStableSmartFormatter(
-                            finalXAxis,
-                            flattenedData
-                        )}
+                        ticks={finalXAxis.ticks}
+                        tickFormatter={
+                            finalXAxis.customTick
+                                ? undefined
+                                : finalXAxis.tickFormatter
+                                  ? finalXAxis.tickFormatter
+                                  : finalXAxis.type
+                                    ? getAxisFormatter(finalXAxis)
+                                    : (value) => formatNumber(value)
+                        }
                         tick={
                             (!finalXAxis.show
                                 ? false
@@ -183,9 +229,10 @@ export const renderChart = ({
                                   ? finalXAxis.customTick
                                   : {
                                         fill: FOUNDATION_THEME.colors.gray[400],
-                                        fontSize: 12,
+                                        fontSize: isSmallScreen ? 10 : 12,
                                         fontWeight:
                                             FOUNDATION_THEME.font.weight[500],
+                                        // textAnchor: 'end',
                                     }) as TickProps
                         }
                         label={
@@ -211,8 +258,6 @@ export const renderChart = ({
                     />
                     {!isSmallScreen && finalYAxis.show && (
                         <YAxis
-                            // width={50}
-
                             axisLine={false}
                             tickLine={false}
                             interval={finalYAxis.interval}
@@ -222,13 +267,7 @@ export const renderChart = ({
                                     : finalYAxis.tickFormatter
                                       ? finalYAxis.tickFormatter
                                       : finalYAxis.type
-                                        ? getAxisFormatterWithConfig(
-                                              finalYAxis.type,
-                                              finalYAxis.dateOnly,
-                                              finalYAxis.smart,
-                                              finalYAxis.timeZone,
-                                              finalYAxis.hour12
-                                          )
+                                        ? getAxisFormatter(finalYAxis)
                                         : (value) => formatNumber(value)
                             }
                             tick={
@@ -321,10 +360,16 @@ export const renderChart = ({
                         tickLine={false}
                         interval={finalXAxis.interval}
                         tickMargin={20}
-                        tickFormatter={createStableSmartFormatter(
-                            finalXAxis,
-                            flattenedData
-                        )}
+                        ticks={finalXAxis.ticks}
+                        tickFormatter={
+                            finalXAxis.customTick
+                                ? undefined
+                                : finalXAxis.tickFormatter
+                                  ? finalXAxis.tickFormatter
+                                  : finalXAxis.type
+                                    ? getAxisFormatter(finalXAxis)
+                                    : (value) => formatNumber(value)
+                        }
                         tick={
                             (!finalXAxis.show
                                 ? false
@@ -332,7 +377,7 @@ export const renderChart = ({
                                   ? finalXAxis.customTick
                                   : {
                                         fill: FOUNDATION_THEME.colors.gray[400],
-                                        fontSize: 12,
+                                        fontSize: isSmallScreen ? 10 : 12,
                                         fontWeight:
                                             FOUNDATION_THEME.font.weight[500],
                                     }) as TickProps
@@ -356,7 +401,6 @@ export const renderChart = ({
                     />
                     {!isSmallScreen && finalYAxis.show && (
                         <YAxis
-                            // width={50}
                             axisLine={false}
                             tickLine={false}
                             interval={finalYAxis.interval}
@@ -366,13 +410,7 @@ export const renderChart = ({
                                     : finalYAxis.tickFormatter
                                       ? finalYAxis.tickFormatter
                                       : finalYAxis.type
-                                        ? getAxisFormatterWithConfig(
-                                              finalYAxis.type,
-                                              finalYAxis.dateOnly,
-                                              finalYAxis.smart,
-                                              finalYAxis.timeZone,
-                                              finalYAxis.hour12
-                                          )
+                                        ? getAxisFormatter(finalYAxis)
                                         : (value) => formatNumber(value)
                             }
                             tick={
@@ -524,19 +562,14 @@ export const renderChart = ({
                         tickLine={false}
                         interval={finalXAxis.interval}
                         tickMargin={20}
+                        ticks={finalXAxis.ticks}
                         tickFormatter={
                             finalXAxis.customTick
                                 ? undefined
                                 : finalXAxis.tickFormatter
                                   ? finalXAxis.tickFormatter
                                   : finalXAxis.type
-                                    ? getAxisFormatterWithConfig(
-                                          finalXAxis.type,
-                                          finalXAxis.dateOnly,
-                                          finalXAxis.smart,
-                                          finalXAxis.timeZone,
-                                          finalXAxis.hour12
-                                      )
+                                    ? getAxisFormatter(finalXAxis)
                                     : (value) => formatNumber(value)
                         }
                         tick={
@@ -546,7 +579,7 @@ export const renderChart = ({
                                   ? finalXAxis.customTick
                                   : {
                                         fill: FOUNDATION_THEME.colors.gray[400],
-                                        fontSize: 12,
+                                        fontSize: isSmallScreen ? 10 : 12,
                                         fontWeight:
                                             FOUNDATION_THEME.font.weight[500],
                                     }) as TickProps
@@ -585,13 +618,7 @@ export const renderChart = ({
                                 : finalYAxis.tickFormatter
                                   ? finalYAxis.tickFormatter
                                   : finalYAxis.type
-                                    ? getAxisFormatterWithConfig(
-                                          finalYAxis.type,
-                                          finalYAxis.dateOnly,
-                                          finalYAxis.smart,
-                                          finalYAxis.timeZone,
-                                          finalYAxis.hour12
-                                      )
+                                    ? getAxisFormatter(finalYAxis)
                                     : (value) => formatNumber(value)
                         }
                         tick={

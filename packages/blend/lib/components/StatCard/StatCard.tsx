@@ -30,7 +30,8 @@ import {
     SingleSelect,
 } from '../SingleSelect'
 import { toPixels } from '../../global-utils/GlobalUtils'
-import { getAxisFormatterWithConfig } from '../Charts/ChartUtils'
+import { getAxisFormatter, createDateTimeFormatter } from '../Charts/ChartUtils'
+import { AxisType } from '../Charts/types'
 
 const StatCard = ({
     title,
@@ -61,14 +62,17 @@ const StatCard = ({
     const formatTooltipLabel = (label: string | number): string => {
         if (!xAxis) return String(label)
         if (xAxis.tickFormatter) return xAxis.tickFormatter(label)
+        if (xAxis.type === AxisType.DATE_TIME) {
+            // For tooltips, always show full date/time with year
+            const tooltipFormatter = createDateTimeFormatter({
+                useUTC: true,
+                smartDateTimeFormat: false,
+                showYear: true,
+            })
+            return tooltipFormatter(label)
+        }
         if (xAxis.type) {
-            return getAxisFormatterWithConfig(
-                xAxis.type,
-                xAxis.dateOnly,
-                xAxis.smart,
-                xAxis.timeZone,
-                xAxis.hour12
-            )(label)
+            return getAxisFormatter(xAxis)(label)
         }
         return String(label)
     }
@@ -79,26 +83,14 @@ const StatCard = ({
         }
         if (yAxis.tickFormatter) return yAxis.tickFormatter(val)
         if (yAxis.type) {
-            return getAxisFormatterWithConfig(
-                yAxis.type,
-                yAxis.dateOnly,
-                yAxis.smart,
-                yAxis.timeZone,
-                yAxis.hour12
-            )(val)
+            return getAxisFormatter(yAxis)(val)
         }
         return typeof val === 'number' ? val.toLocaleString() : String(val)
     }
 
     const formatMainValue = (val: string | number): string => {
         if (valueFormatter) {
-            return getAxisFormatterWithConfig(
-                valueFormatter,
-                false,
-                false,
-                undefined,
-                undefined
-            )(val)
+            return getAxisFormatter({ type: valueFormatter })(val)
         }
         return String(val)
     }
@@ -113,12 +105,6 @@ const StatCard = ({
 
     const normalizedVariant =
         variant === StatCardVariant.PROGRESS_BAR ? 'progress' : variant
-
-    // const variant =
-    //     (variant === StatCardVariant.LINE || variant === StatCardVariant.BAR) && variant
-    // (!chartData || chartData.length === 0)
-    //     ? StatCardVariant.NUMBER
-    //     :
 
     const formattedChange = change ? (
         <Block

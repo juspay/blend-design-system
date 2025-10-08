@@ -125,7 +125,7 @@ export const getChartTokens = (
                 },
                 border: {
                     container: {
-                        default: `1px solid ${foundationToken.colors.gray[300]}`,
+                        default: `1px solid ${foundationToken.colors.gray[200]}`,
                         hover: `1px solid ${foundationToken.colors.gray[300]}`,
                         active: `1px solid ${foundationToken.colors.gray[300]}`,
                         fullscreen: `1px solid ${foundationToken.colors.gray[300]}`,
@@ -260,7 +260,7 @@ export const getChartTokens = (
                 },
                 border: {
                     container: {
-                        default: `1px solid ${foundationToken.colors.gray[300]}`,
+                        default: `1px solid ${foundationToken.colors.gray[200]}`,
                         hover: `1px solid ${foundationToken.colors.gray[300]}`,
                         active: `1px solid ${foundationToken.colors.gray[300]}`,
                         fullscreen: `1px solid ${foundationToken.colors.gray[300]}`,

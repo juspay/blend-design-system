@@ -9,7 +9,8 @@ import {
 import {
     capitaliseCamelCase,
     formatNumber,
-    getAxisFormatterWithConfig,
+    getAxisFormatter,
+    createDateTimeFormatter,
 } from './ChartUtils'
 import Block from '../../components/Primitives/Block/Block'
 import Text from '../../components/Text/Text'
@@ -42,26 +43,19 @@ const formatTooltipLabel = (
     }
 
     if (xAxis.type === AxisType.DATE_TIME) {
-        return getAxisFormatterWithConfig(
-            xAxis.type,
-            false,
-            false,
-            xAxis.timeZone,
-            xAxis.hour12,
-            xAxis.showYear,
-            true
-        )(label)
+        const tooltipFormatter = createDateTimeFormatter({
+            useUTC: xAxis.useUTC ?? true,
+            smartDateTimeFormat: false,
+            showYear: true,
+            dateOnly: false,
+            timeOnly: false,
+            formatString: xAxis.formatString,
+        })
+        return tooltipFormatter(label)
     }
 
     if (xAxis.type) {
-        return getAxisFormatterWithConfig(
-            xAxis.type,
-            xAxis.dateOnly,
-            xAxis.smart,
-            xAxis.timeZone,
-            xAxis.hour12,
-            xAxis.showYear
-        )(label)
+        return getAxisFormatter(xAxis)(label)
     }
 
     return capitaliseCamelCase(String(label))
@@ -80,13 +74,7 @@ const formatTooltipValue = (
     }
 
     if (yAxis.type) {
-        return getAxisFormatterWithConfig(
-            yAxis.type,
-            yAxis.dateOnly,
-            yAxis.smart,
-            yAxis.timeZone,
-            yAxis.hour12
-        )(value)
+        return getAxisFormatter(yAxis)(value)
     }
 
     return typeof value === 'number' ? formatNumber(value) : String(value)
@@ -97,13 +85,7 @@ const formatAuxTooltipValue = (
     auxItem: AuxItem
 ): string => {
     if (auxItem.type) {
-        return getAxisFormatterWithConfig(
-            auxItem.type,
-            auxItem.dateOnly,
-            auxItem.smart,
-            auxItem.timeZone,
-            auxItem.hour12
-        )(value)
+        return getAxisFormatter(auxItem)(value)
     }
 
     return typeof value === 'number' ? formatNumber(value) : String(value)
