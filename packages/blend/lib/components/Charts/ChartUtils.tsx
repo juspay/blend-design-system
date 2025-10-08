@@ -4,7 +4,7 @@ import {
     AxisType,
     AxisConfig,
 } from './types'
-import { HighchartsDateTimeFormatter } from './HighchartsDateTimeFormatter'
+import { parseTimestamp, dateFormat } from './DateTimeFormatter'
 
 export function transformNestedData(
     data: NewNestedDataPoint[],
@@ -245,32 +245,30 @@ export const createDateTimeFormatter = (
         smartDateTimeFormat = false,
     } = options
 
-    const dateTimeFormatter = HighchartsDateTimeFormatter.getInstance({
-        useUTC,
-    })
+    const dateTimeConfig = { useUTC }
 
     // Smart format: show date at start of day, time otherwise
     if (smartDateTimeFormat) {
         let previousDay: number | null = null
 
         return (value: string | number) => {
-            const timestamp = HighchartsDateTimeFormatter.parseTimestamp(value)
+            const timestamp = parseTimestamp(value)
             if (timestamp === null) return value.toString()
 
             // Get the day of this timestamp
             const currentDay = parseInt(
-                dateTimeFormatter.dateFormat('%e', timestamp)
+                dateFormat('%e', timestamp, dateTimeConfig)
             )
 
             // If it's a new day, show the date
             if (previousDay === null || currentDay !== previousDay) {
                 previousDay = currentDay
-                const dateFormat = showYear ? '%e. %b %Y' : '%e. %b'
-                return dateTimeFormatter.dateFormat(dateFormat, timestamp)
+                const formatStr = showYear ? '%e. %b %Y' : '%e. %b'
+                return dateFormat(formatStr, timestamp, dateTimeConfig)
             }
 
             // Otherwise, show the time
-            return dateTimeFormatter.dateFormat('%H:%M', timestamp)
+            return dateFormat('%H:%M', timestamp, dateTimeConfig)
         }
     }
 
@@ -292,10 +290,10 @@ export const createDateTimeFormatter = (
     }
 
     return (value: string | number) => {
-        const timestamp = HighchartsDateTimeFormatter.parseTimestamp(value)
+        const timestamp = parseTimestamp(value)
         if (timestamp === null) return value.toString()
 
-        return dateTimeFormatter.dateFormat(finalFormat, timestamp)
+        return dateFormat(finalFormat, timestamp, { useUTC })
     }
 }
 
@@ -395,7 +393,7 @@ export function getSuggestedTickInterval(
 
     // Parse timestamps
     const timestamps = data
-        .map((d) => HighchartsDateTimeFormatter.parseTimestamp(d.name))
+        .map((d) => parseTimestamp(d.name))
         .filter((t): t is number => t !== null)
         .sort((a, b) => a - b)
 
@@ -476,7 +474,7 @@ export function generateConsistentDateTimeTicks(
 
     // Parse all timestamps
     const timestamps = data
-        .map((d) => HighchartsDateTimeFormatter.parseTimestamp(d.name))
+        .map((d) => parseTimestamp(d.name))
         .filter((t): t is number => t !== null)
         .sort((a, b) => a - b)
 
