@@ -4,17 +4,7 @@ import type {
     VirtualListItem,
     VirtualListRef,
 } from '../../../../packages/blend/lib/components/VirtualList/types'
-import {
-    User,
-    Mail,
-    Phone,
-    MapPin,
-    Star,
-    Clock,
-    ChevronRight,
-    Database,
-    Zap,
-} from 'lucide-react'
+import { User, Mail, Phone, MapPin, Star, Database, Zap } from 'lucide-react'
 import SingleSelect from '../../../../packages/blend/lib/components/SingleSelect/SingleSelect'
 import MultiSelect from '../../../../packages/blend/lib/components/MultiSelect/MultiSelect'
 import { SelectMenuSize } from '../../../../packages/blend/lib/components/Select'
@@ -165,14 +155,6 @@ interface UserItem extends VirtualListItem {
     role: string
     status: 'active' | 'inactive'
 }
-
-interface MessageItem extends VirtualListItem {
-    title: string
-    preview: string
-    timestamp: string
-    unread: boolean
-}
-
 // Helpers
 const generateUsers = (count: number, startId: number = 0): UserItem[] => {
     const roles = ['Developer', 'Designer', 'Manager', 'Analyst', 'Engineer']
@@ -189,34 +171,6 @@ const generateUsers = (count: number, startId: number = 0): UserItem[] => {
         email: `user${startId + i + 1}@example.com`,
         role: roles[Math.floor(Math.random() * roles.length)],
         status: statuses[Math.floor(Math.random() * statuses.length)],
-    }))
-}
-
-const generateMessages = (
-    count: number,
-    startId: number = 0
-): MessageItem[] => {
-    const titles = [
-        'Meeting Reminder',
-        'Project Update',
-        'Code Review Request',
-        'Design Feedback',
-        'Weekly Report',
-    ]
-    const previews = [
-        'Please review the latest changes...',
-        'The project is progressing well...',
-        'Could you take a look at PR #123...',
-        'Here are my thoughts on the design...',
-        "Summary of this week's accomplishments...",
-    ]
-
-    return Array.from({ length: count }, (_, i) => ({
-        id: startId + i,
-        title: titles[Math.floor(Math.random() * titles.length)],
-        preview: previews[Math.floor(Math.random() * previews.length)],
-        timestamp: `${Math.floor(Math.random() * 24)}h ago`,
-        unread: Math.random() > 0.5,
     }))
 }
 
@@ -334,9 +288,6 @@ const VirtualListDemo = () => {
             setIsLoading(false)
         }
     }, [page, isLoading, infiniteItems.length])
-
-    // Demo 3: Dynamic Heights
-    const [dynamicItems] = useState(() => generateMessages(500))
 
     // Demo 4: Controlled Scrolling
     const virtualListRef = useRef<VirtualListRef>(null)
