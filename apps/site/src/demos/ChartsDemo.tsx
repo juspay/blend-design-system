@@ -812,12 +812,8 @@ const GranularChartsDemo = () => {
                                             selectedKeys={selectedKeys}
                                             enableHover={true}
                                             xAxis={{
-                                                show: true,
-                                                showLabel: false,
                                                 type: AxisType.DATE_TIME,
-                                                interval:
-                                                    AxisIntervalType.PRESERVE_START,
-                                                timeOnly: true,
+                                                maxTicks: 3,
                                             }}
                                             yAxis={{
                                                 show: true,
@@ -2091,11 +2087,13 @@ const ChartDemo = () => {
                     smartDateTimeFormat: false,
                     showYear: true,
                     maxTicks: last1hour5minsData.length / 2,
+                    showLabel: true,
                 }}
                 yAxis={{
                     label: 'Currency',
                     show: true,
                     type: AxisType.CURRENCY,
+                    showLabel: true,
                 }}
                 chartHeaderSlot={
                     <div className="chart-header">
@@ -2113,6 +2111,7 @@ const ChartDemo = () => {
                 xAxis={{
                     label: 'Date (Timestamp)',
                     show: true,
+                    showLabel: true,
                     type: AxisType.DATE_TIME,
                     // dateOnly: true,
                     // timeOnly: true,
@@ -2121,6 +2120,7 @@ const ChartDemo = () => {
                 yAxis={{
                     label: 'Currency',
                     show: true,
+                    showLabel: true,
                     type: AxisType.CURRENCY,
                 }}
                 chartHeaderSlot={
