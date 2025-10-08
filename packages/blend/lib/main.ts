@@ -31,6 +31,7 @@ export * from './components/ProgressBar'
 export * from './components/Drawer'
 export * from './components/Skeleton'
 export * from './components/KeyValuePair'
+export * from './components/VirtualList'
 
 // V2 Components with Theme Support
 export * from './components/ButtonGroup'

@@ -1986,11 +1986,19 @@ export const formatDateRangeWithConfig = (
             const endDay = endDate.getDate()
             const year = includeYear ? ` ${startDate.getFullYear()}` : ''
 
-            if (isSameDate) {
-                const timeStr = includeTime
-                    ? `, ${formatTimeString(startDate)}`
-                    : ''
-                return `${startMonth} ${startDay}${year}${timeStr}`
+            if (isSameDate && !includeTime) {
+                return `${startMonth} ${startDay}${year}`
+            }
+
+            if (isSameDate && includeTime) {
+                const startTimeStr = formatTimeString(startDate)
+                const endTimeStr = formatTimeString(endDate)
+
+                if (startTimeStr === endTimeStr) {
+                    return `${startMonth} ${startDay}${year}, ${startTimeStr}`
+                } else {
+                    return `${startMonth} ${startDay}${year}, ${startTimeStr} - ${endTimeStr}`
+                }
             }
 
             if (
@@ -2020,10 +2028,18 @@ export const formatDateRangeWithConfig = (
             const year = includeYear ? ` ${startDate.getFullYear()}` : ''
 
             if (isSameDate) {
-                const timeStr = includeTime
-                    ? `, ${formatTimeString(startDate)}`
-                    : ''
-                return `${startMonth} ${startDay}${year}${timeStr}`
+                if (!includeTime) {
+                    return `${startMonth} ${startDay}${year}`
+                } else {
+                    const startTimeStr = formatTimeString(startDate)
+                    const endTimeStr = formatTimeString(endDate)
+
+                    if (startTimeStr === endTimeStr) {
+                        return `${startMonth} ${startDay}${year}, ${startTimeStr}`
+                    } else {
+                        return `${startMonth} ${startDay}${year}, ${startTimeStr} - ${endTimeStr}`
+                    }
+                }
             }
 
             const endMonth = getMonthAbbr(endDate)
@@ -2043,20 +2059,32 @@ export const formatDateRangeWithConfig = (
             const startDay = startDate.getDate()
             const startYear = includeYear ? ` ${startDate.getFullYear()}` : ''
 
-            if (isSameDate) {
-                const timeStr = includeTime
-                    ? `, ${formatTimeString(startDate)}`
-                    : ''
-                return `${startMonth} ${startDay}${startYear}${timeStr}`
+            if (isSameDate && !includeTime) {
+                return `${startMonth} ${startDay}${startYear}`
+            }
+
+            if (isSameDate && includeTime) {
+                const startTimeStr = formatTimeString(startDate)
+                const endTimeStr = formatTimeString(endDate)
+
+                if (startTimeStr === endTimeStr) {
+                    return `${startMonth} ${startDay}${startYear}, ${startTimeStr}`
+                } else {
+                    return `${startMonth} ${startDay}${startYear}, ${startTimeStr}${separator}${startMonth} ${startDay}${startYear}, ${endTimeStr}`
+                }
             }
 
             const endMonth = getMonthAbbr(endDate)
             const endDay = endDate.getDate()
             const endYear = includeYear ? ` ${endDate.getFullYear()}` : ''
-            const timeStr = includeTime
-                ? `, ${formatTimeString(startDate)} - ${formatTimeString(endDate)}`
-                : ''
-            return `${startMonth} ${startDay}${startYear}${separator}${endMonth} ${endDay}${endYear}${timeStr}`
+
+            if (includeTime) {
+                const startTimeStr = formatTimeString(startDate)
+                const endTimeStr = formatTimeString(endDate)
+                return `${startMonth} ${startDay}${startYear}, ${startTimeStr}${separator}${endMonth} ${endDay}${endYear}, ${endTimeStr}`
+            }
+
+            return `${startMonth} ${startDay}${startYear}${separator}${endMonth} ${endDay}${endYear}`
         }
 
         case DateFormatPreset.SHORT_SINGLE: {
@@ -2145,13 +2173,7 @@ export const formatTriggerDisplay = (
         return placeholder
     }
 
-    const enhancedConfig = {
-        ...config,
-        includeTime:
-            config.includeTime !== undefined ? config.includeTime : true, // Default to showing time
-    }
-
-    return formatDateRangeWithConfig(range, enhancedConfig)
+    return formatDateRangeWithConfig(range, config)
 }
 
 /**

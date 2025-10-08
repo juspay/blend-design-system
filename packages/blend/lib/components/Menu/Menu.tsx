@@ -1,8 +1,13 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled, { type CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
-import { type MenuV2Props, MenuAlignment, MenuSide } from './types'
-import React, { useState, useRef } from 'react'
+import {
+    type MenuV2Props,
+    MenuAlignment,
+    MenuSide,
+    type MenuItemV2Type,
+} from './types'
+import React, { useState, useRef, useMemo, useCallback } from 'react'
 import { filterMenuGroups } from './utils'
 import MenuItem from './MenuItem'
 import Block from '../Primitives/Block/Block'
@@ -11,6 +16,7 @@ import { Search } from 'lucide-react'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { type MenuTokensType } from './menu.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { VirtualList, type VirtualListItem } from '../VirtualList'
 
 export const contentBaseStyle: CSSObject = {
     backgroundColor: 'white',
@@ -44,6 +50,10 @@ const Menu = ({
     maxWidth,
     open,
     onOpenChange,
+    enableVirtualScrolling = false,
+    virtualItemHeight = 40,
+    virtualOverscan = 5,
+    virtualScrollThreshold = 50,
 }: MenuV2Props) => {
     const [searchText, setSearchText] = useState<string>('')
     const searchInputRef = useRef<HTMLInputElement>(null)
@@ -60,6 +70,112 @@ const Menu = ({
         }
         onOpenChange?.(newOpen)
     }
+
+    const virtualListItems = useMemo(() => {
+        const virtualItems: VirtualListItem[] = []
+
+        filteredItems.forEach((group, groupId) => {
+            if (group.label) {
+                virtualItems.push({
+                    id: `label-${groupId}`,
+                    data: { type: 'label', label: group.label },
+                })
+            }
+
+            group.items.forEach((item, itemIndex) => {
+                virtualItems.push({
+                    id: `item-${groupId}-${itemIndex}`,
+                    data: {
+                        type: 'item',
+                        originalItem: item,
+                        groupId,
+                        itemIndex,
+                    },
+                })
+            })
+
+            if (groupId !== filteredItems.length - 1 && group.showSeparator) {
+                virtualItems.push({
+                    id: `separator-${groupId}`,
+                    data: { type: 'separator' },
+                })
+            }
+        })
+
+        return virtualItems
+    }, [filteredItems])
+
+    const totalItemCount = useMemo(() => {
+        return filteredItems.reduce(
+            (count, group) => count + group.items.length,
+            0
+        )
+    }, [filteredItems])
+
+    const shouldUseVirtualScrolling =
+        enableVirtualScrolling && totalItemCount >= virtualScrollThreshold
+
+    const renderVirtualItem = useCallback(
+        ({
+            item,
+        }: {
+            item: VirtualListItem
+            index: number
+            style: React.CSSProperties
+        }) => {
+            const data = item.data || {}
+            const { type, label, originalItem, groupId, itemIndex } = data as {
+                type?: string
+                label?: string
+                originalItem?: unknown
+                groupId?: number
+                itemIndex?: number
+            }
+
+            if (type === 'label') {
+                return (
+                    <RadixMenu.Label asChild>
+                        <PrimitiveText
+                            fontSize={12}
+                            padding="6px 8px"
+                            userSelect="none"
+                            margin="0px 6px"
+                            textTransform="uppercase"
+                            color={FOUNDATION_THEME.colors.gray[400]}
+                        >
+                            {label}
+                        </PrimitiveText>
+                    </RadixMenu.Label>
+                )
+            }
+
+            if (type === 'separator') {
+                return (
+                    <RadixMenu.Separator asChild>
+                        <Block
+                            height={menuTokens.seperator.height}
+                            backgroundColor={menuTokens.seperator.color}
+                            margin={menuTokens.seperator.margin}
+                        />
+                    </RadixMenu.Separator>
+                )
+            }
+
+            if (type === 'item' && originalItem) {
+                return (
+                    <MenuItem
+                        key={`${groupId}-${itemIndex}`}
+                        item={originalItem as MenuItemV2Type}
+                        idx={itemIndex || 0}
+                        maxHeight={maxHeight}
+                    />
+                )
+            }
+
+            return null
+        },
+        [menuTokens, maxHeight]
+    )
 
     return (
         <RadixMenu.Root
@@ -135,47 +251,101 @@ const Menu = ({
                         />
                     </Block>
                 )}
-                {filteredItems &&
-                    filteredItems.map((group, groupId) => (
-                        <React.Fragment key={groupId}>
-                            {group.label && (
-                                <RadixMenu.Label asChild>
-                                    <PrimitiveText
-                                        fontSize={12}
-                                        padding="6px 8px"
-                                        userSelect="none"
-                                        margin="0px 6px"
-                                        textTransform="uppercase"
-                                        color={
-                                            FOUNDATION_THEME.colors.gray[400]
-                                        }
-                                    >
-                                        {group.label}
-                                    </PrimitiveText>
-                                </RadixMenu.Label>
-                            )}
-                            {group.items.map((item, itemIndex) => (
-                                <MenuItem
-                                    key={`${groupId}-${itemIndex}`}
-                                    item={item}
-                                    idx={itemIndex}
-                                    maxHeight={maxHeight}
-                                />
+                {shouldUseVirtualScrolling ? (
+                    <Block
+                        padding={FOUNDATION_THEME.unit[6]}
+                        style={{
+                            paddingTop: enableSearch
+                                ? 0
+                                : FOUNDATION_THEME.unit[6],
+                        }}
+                    >
+                        <VirtualList
+                            items={virtualListItems}
+                            itemHeight={
+                                typeof virtualItemHeight === 'number'
+                                    ? virtualItemHeight
+                                    : 40
+                            }
+                            maxHeight={
+                                (maxHeight || 400) - (enableSearch ? 80 : 20)
+                            }
+                            overscan={virtualOverscan}
+                            dynamicHeight={true}
+                            estimatedItemHeight={
+                                typeof virtualItemHeight === 'number'
+                                    ? virtualItemHeight
+                                    : 40
+                            }
+                            renderItem={renderVirtualItem}
+                            style={{
+                                height: 'auto',
+                                maxHeight:
+                                    (maxHeight || 400) -
+                                    (enableSearch ? 80 : 20),
+                            }}
+                        />
+                    </Block>
+                ) : (
+                    <Block
+                        padding={FOUNDATION_THEME.unit[6]}
+                        style={{
+                            paddingTop: enableSearch
+                                ? 0
+                                : FOUNDATION_THEME.unit[6],
+                        }}
+                    >
+                        {filteredItems &&
+                            filteredItems.map((group, groupId) => (
+                                <React.Fragment key={groupId}>
+                                    {group.label && (
+                                        <RadixMenu.Label asChild>
+                                            <PrimitiveText
+                                                fontSize={12}
+                                                padding="6px 8px"
+                                                userSelect="none"
+                                                margin="0px 6px"
+                                                textTransform="uppercase"
+                                                color={
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[400]
+                                                }
+                                            >
+                                                {group.label}
+                                            </PrimitiveText>
+                                        </RadixMenu.Label>
+                                    )}
+                                    {group.items.map((item, itemIndex) => (
+                                        <MenuItem
+                                            key={`${groupId}-${itemIndex}`}
+                                            item={item}
+                                            idx={itemIndex}
+                                            maxHeight={maxHeight}
+                                        />
+                                    ))}
+                                    {groupId !== filteredItems.length - 1 &&
+                                        group.showSeparator && (
+                                            <RadixMenu.Separator asChild>
+                                                <Block
+                                                    height={
+                                                        menuTokens.seperator
+                                                            .height
+                                                    }
+                                                    backgroundColor={
+                                                        menuTokens.seperator
+                                                            .color
+                                                    }
+                                                    margin={
+                                                        menuTokens.seperator
+                                                            .margin
+                                                    }
+                                                ></Block>
+                                            </RadixMenu.Separator>
+                                        )}
+                                </React.Fragment>
                             ))}
-                            {groupId !== filteredItems.length - 1 &&
-                                group.showSeparator && (
-                                    <RadixMenu.Separator asChild>
-                                        <Block
-                                            height={menuTokens.seperator.height}
-                                            backgroundColor={
-                                                menuTokens.seperator.color
-                                            }
-                                            margin={menuTokens.seperator.margin}
-                                        ></Block>
-                                    </RadixMenu.Separator>
-                                )}
-                        </React.Fragment>
-                    ))}
+                    </Block>
+                )}
             </Content>
         </RadixMenu.Root>
     )

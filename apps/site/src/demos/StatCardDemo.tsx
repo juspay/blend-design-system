@@ -1054,7 +1054,6 @@ const StatCardDemo = () => {
                             ]}
                             xAxis={{
                                 type: AxisType.NUMBER,
-                                smart: true,
                             }}
                             yAxis={{
                                 type: AxisType.DATE_TIME,

@@ -339,6 +339,7 @@ const StackedLegends: React.FC<{
         >
             {keys.map((key, index) => (
                 <Block
+                    key={key}
                     display="flex"
                     alignItems="center"
                     justifyContent="space-between"
