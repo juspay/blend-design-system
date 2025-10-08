@@ -121,7 +121,6 @@ export type TriggerConfig = {
     placeholder?: string
     showIcon?: boolean
     icon?: ReactNode
-    className?: string
     style?: React.CSSProperties
     renderTrigger?: (props: {
         selectedRange: DateRange | undefined

@@ -56,7 +56,6 @@ let makeItem = (
   ~subtextSlot: option<React.element>=?,
   ~isDisabled: option<bool>=?,
   ~chevronPosition: option<accordionChevronPosition>=?,
-  ~className: option<string>=?,
 ) => {
   <AccordionItemBinding
     value
@@ -67,7 +66,6 @@ let makeItem = (
     ?subtextSlot
     ?isDisabled
     ?chevronPosition
-    ?className
     children
   />
 }`
@@ -93,7 +91,6 @@ external makeItem: (
   ~subtextSlot: React.element=?,
   ~isDisabled: bool=?,
   ~chevronPosition: [#left | #right]=?,
-  ~className: string=?,
 ) => React.element = "AccordionItem"`
 
     return (

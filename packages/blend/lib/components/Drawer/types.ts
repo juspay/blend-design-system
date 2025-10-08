@@ -72,18 +72,6 @@ export type DrawerProps = {
         right?: string
     }
     /**
-     * Custom class name for the drawer content
-     */
-    className?: string
-    /**
-     * Custom class name for the overlay
-     */
-    overlayClassName?: string
-    /**
-     * Custom styles for the drawer content
-     */
-    style?: React.CSSProperties
-    /**
      * Children content
      */
     children: ReactNode

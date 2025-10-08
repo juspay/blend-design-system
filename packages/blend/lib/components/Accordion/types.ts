@@ -19,7 +19,6 @@ export type AccordionItemProps = {
     subtextSlot?: ReactNode
     children: ReactNode
     isDisabled?: boolean
-    className?: string
     chevronPosition?: AccordionChevronPosition
 }
 
