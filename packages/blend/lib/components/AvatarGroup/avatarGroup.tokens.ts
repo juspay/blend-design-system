@@ -1,5 +1,5 @@
 import type { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME, type ThemeType } from '../../tokens'
+import { type ThemeType } from '../../tokens'
 import { AvatarSize, AvatarShape } from '../Avatar/types'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 
@@ -244,8 +244,3 @@ export const getAvatarGroupTokens = (
         },
     }
 }
-
-const avatarGroupTokens: ResponsiveAvatarGroupTokens =
-    getAvatarGroupTokens(FOUNDATION_THEME)
-
-export default avatarGroupTokens

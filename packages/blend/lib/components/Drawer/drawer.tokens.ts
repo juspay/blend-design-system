@@ -1,4 +1,3 @@
-import { FOUNDATION_THEME } from '../../tokens'
 import type { CSSObject } from 'styled-components'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
@@ -274,8 +273,3 @@ export const getDrawerComponentTokens = (
         },
     }
 }
-
-const drawerTokens: ResponsiveDrawerTokens =
-    getDrawerComponentTokens(FOUNDATION_THEME)
-
-export default drawerTokens

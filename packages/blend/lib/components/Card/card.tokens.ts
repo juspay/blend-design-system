@@ -1,8 +1,6 @@
 import type { CSSObject } from 'styled-components'
 import { CardVariant } from './types'
-import FOUNDATION_THEME, {
-    type FoundationTokenType,
-} from '../../tokens/theme.token'
+import { type FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type CardState = 'default' | 'hover'
@@ -327,7 +325,3 @@ export const getCardTokens = (
         },
     }
 }
-
-const cardTokens: ResponsiveCardTokens = getCardTokens(FOUNDATION_THEME)
-
-export default cardTokens

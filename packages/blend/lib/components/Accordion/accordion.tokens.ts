@@ -1,8 +1,6 @@
 import type { CSSObject } from 'styled-components'
 import { AccordionType } from './types'
-import FOUNDATION_THEME, {
-    type FoundationTokenType,
-} from '../../tokens/theme.token'
+import { type FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type AccordionState =
@@ -290,8 +288,3 @@ export const getAccordionToken = (
         },
     }
 }
-
-const accordionTokens: ResponsiveAccordionTokens =
-    getAccordionToken(FOUNDATION_THEME)
-
-export default accordionTokens

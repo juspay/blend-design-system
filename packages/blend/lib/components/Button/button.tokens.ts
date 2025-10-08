@@ -1,5 +1,4 @@
 import type { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME } from '../../tokens'
 import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
@@ -99,7 +98,7 @@ export const getButtonTokens = (
 ): ResponsiveButtonTokens => {
     return {
         sm: {
-            gap: FOUNDATION_THEME.unit[6],
+            gap: foundationToken.unit[6],
             // Pattern: backgroundColor.[variant].[subType].[state]
             // Example: backgroundColor.primary.default.hover
             backgroundColor: {
@@ -856,7 +855,7 @@ export const getButtonTokens = (
             },
         },
         lg: {
-            gap: FOUNDATION_THEME.unit[6],
+            gap: foundationToken.unit[6],
             backgroundColor: {
                 primary: {
                     default: {

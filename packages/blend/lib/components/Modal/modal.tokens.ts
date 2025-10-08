@@ -1,7 +1,5 @@
 import type { CSSObject } from 'styled-components'
-import FOUNDATION_THEME, {
-    type FoundationTokenType,
-} from '../../tokens/theme.token'
+import { type FoundationTokenType } from '../../tokens/theme.token'
 import { type BreakpointType } from '../../breakpoints/breakPoints'
 
 export type ModalState = 'default'
@@ -196,8 +194,3 @@ export const getModalComponentTokens = (
         },
     }
 }
-
-const modalTokens: ResponsiveModalTokens =
-    getModalComponentTokens(FOUNDATION_THEME)
-
-export default modalTokens

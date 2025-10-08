@@ -1,6 +1,5 @@
 import type { CSSObject } from 'styled-components'
 import { SelectMenuSize, SelectMenuVariant } from './types'
-import { FOUNDATION_THEME } from '../../tokens'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
@@ -201,47 +200,47 @@ export const getSingleSelectTokens = (
             trigger: {
                 height: {
                     sm: {
-                        container: FOUNDATION_THEME.unit[32],
-                        'no-container': FOUNDATION_THEME.unit[32],
+                        container: foundationToken.unit[32],
+                        'no-container': foundationToken.unit[32],
                     },
                     md: {
-                        container: FOUNDATION_THEME.unit[36],
-                        'no-container': FOUNDATION_THEME.unit[36],
+                        container: foundationToken.unit[36],
+                        'no-container': foundationToken.unit[36],
                     },
                     lg: {
-                        container: FOUNDATION_THEME.unit[52],
-                        'no-container': FOUNDATION_THEME.unit[52],
+                        container: foundationToken.unit[52],
+                        'no-container': foundationToken.unit[52],
                     },
                 },
                 padding: {
                     sm: {
                         container: {
-                            x: FOUNDATION_THEME.unit[14],
-                            y: FOUNDATION_THEME.unit[7],
+                            x: foundationToken.unit[14],
+                            y: foundationToken.unit[7],
                         },
                         'no-container': {
-                            x: FOUNDATION_THEME.unit[14],
-                            y: FOUNDATION_THEME.unit[7],
+                            x: foundationToken.unit[14],
+                            y: foundationToken.unit[7],
                         },
                     },
                     md: {
                         container: {
-                            x: FOUNDATION_THEME.unit[14],
-                            y: FOUNDATION_THEME.unit[8],
+                            x: foundationToken.unit[14],
+                            y: foundationToken.unit[8],
                         },
                         'no-container': {
-                            x: FOUNDATION_THEME.unit[14],
-                            y: FOUNDATION_THEME.unit[8],
+                            x: foundationToken.unit[14],
+                            y: foundationToken.unit[8],
                         },
                     },
                     lg: {
                         container: {
-                            x: FOUNDATION_THEME.unit[12],
-                            y: FOUNDATION_THEME.unit[10],
+                            x: foundationToken.unit[12],
+                            y: foundationToken.unit[10],
                         },
                         'no-container': {
-                            x: FOUNDATION_THEME.unit[12],
-                            y: FOUNDATION_THEME.unit[10],
+                            x: foundationToken.unit[12],
+                            y: foundationToken.unit[10],
                         },
                     },
                 },
@@ -301,32 +300,32 @@ export const getSingleSelectTokens = (
                 padding: {
                     sm: {
                         container: {
-                            x: FOUNDATION_THEME.unit[6],
-                            y: FOUNDATION_THEME.unit[6],
+                            x: foundationToken.unit[6],
+                            y: foundationToken.unit[6],
                         },
                         'no-container': {
-                            x: FOUNDATION_THEME.unit[6],
-                            y: FOUNDATION_THEME.unit[6],
+                            x: foundationToken.unit[6],
+                            y: foundationToken.unit[6],
                         },
                     },
                     md: {
                         container: {
-                            x: FOUNDATION_THEME.unit[6],
-                            y: FOUNDATION_THEME.unit[6],
+                            x: foundationToken.unit[6],
+                            y: foundationToken.unit[6],
                         },
                         'no-container': {
-                            x: FOUNDATION_THEME.unit[6],
-                            y: FOUNDATION_THEME.unit[6],
+                            x: foundationToken.unit[6],
+                            y: foundationToken.unit[6],
                         },
                     },
                     lg: {
                         container: {
-                            x: FOUNDATION_THEME.unit[6],
-                            y: FOUNDATION_THEME.unit[6],
+                            x: foundationToken.unit[6],
+                            y: foundationToken.unit[6],
                         },
                         'no-container': {
-                            x: FOUNDATION_THEME.unit[6],
-                            y: FOUNDATION_THEME.unit[6],
+                            x: foundationToken.unit[6],
+                            y: foundationToken.unit[6],
                         },
                     },
                 },
@@ -334,8 +333,8 @@ export const getSingleSelectTokens = (
                 // outline: foundationToken.colors.gray[200],
                 borderRadius: foundationToken.unit[8],
                 item: {
-                    padding: FOUNDATION_THEME.unit[8],
-                    margin: `${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[0]}`,
+                    padding: foundationToken.unit[8],
+                    margin: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
                     borderRadius: foundationToken.unit[8],
                     gap: foundationToken.unit[4],
                     backgroundColor: {
@@ -453,47 +452,47 @@ export const getSingleSelectTokens = (
             trigger: {
                 height: {
                     sm: {
-                        container: FOUNDATION_THEME.unit[32],
-                        'no-container': FOUNDATION_THEME.unit[32],
+                        container: foundationToken.unit[32],
+                        'no-container': foundationToken.unit[32],
                     },
                     md: {
-                        container: FOUNDATION_THEME.unit[36],
-                        'no-container': FOUNDATION_THEME.unit[36],
+                        container: foundationToken.unit[36],
+                        'no-container': foundationToken.unit[36],
                     },
                     lg: {
-                        container: FOUNDATION_THEME.unit[40],
-                        'no-container': FOUNDATION_THEME.unit[40],
+                        container: foundationToken.unit[40],
+                        'no-container': foundationToken.unit[40],
                     },
                 },
                 padding: {
                     sm: {
                         container: {
-                            x: FOUNDATION_THEME.unit[14],
-                            y: FOUNDATION_THEME.unit[7],
+                            x: foundationToken.unit[14],
+                            y: foundationToken.unit[7],
                         },
                         'no-container': {
-                            x: FOUNDATION_THEME.unit[14],
-                            y: FOUNDATION_THEME.unit[7],
+                            x: foundationToken.unit[14],
+                            y: foundationToken.unit[7],
                         },
                     },
                     md: {
                         container: {
-                            x: FOUNDATION_THEME.unit[14],
-                            y: FOUNDATION_THEME.unit[8],
+                            x: foundationToken.unit[14],
+                            y: foundationToken.unit[8],
                         },
                         'no-container': {
-                            x: FOUNDATION_THEME.unit[14],
-                            y: FOUNDATION_THEME.unit[8],
+                            x: foundationToken.unit[14],
+                            y: foundationToken.unit[8],
                         },
                     },
                     lg: {
                         container: {
-                            x: FOUNDATION_THEME.unit[12],
-                            y: FOUNDATION_THEME.unit[10],
+                            x: foundationToken.unit[12],
+                            y: foundationToken.unit[10],
                         },
                         'no-container': {
-                            x: FOUNDATION_THEME.unit[12],
-                            y: FOUNDATION_THEME.unit[10],
+                            x: foundationToken.unit[12],
+                            y: foundationToken.unit[10],
                         },
                     },
                 },
@@ -554,32 +553,32 @@ export const getSingleSelectTokens = (
                 padding: {
                     sm: {
                         container: {
-                            x: FOUNDATION_THEME.unit[6],
-                            y: FOUNDATION_THEME.unit[6],
+                            x: foundationToken.unit[6],
+                            y: foundationToken.unit[6],
                         },
                         'no-container': {
-                            x: FOUNDATION_THEME.unit[6],
-                            y: FOUNDATION_THEME.unit[6],
+                            x: foundationToken.unit[6],
+                            y: foundationToken.unit[6],
                         },
                     },
                     md: {
                         container: {
-                            x: FOUNDATION_THEME.unit[6],
-                            y: FOUNDATION_THEME.unit[6],
+                            x: foundationToken.unit[6],
+                            y: foundationToken.unit[6],
                         },
                         'no-container': {
-                            x: FOUNDATION_THEME.unit[6],
-                            y: FOUNDATION_THEME.unit[6],
+                            x: foundationToken.unit[6],
+                            y: foundationToken.unit[6],
                         },
                     },
                     lg: {
                         container: {
-                            x: FOUNDATION_THEME.unit[6],
-                            y: FOUNDATION_THEME.unit[6],
+                            x: foundationToken.unit[6],
+                            y: foundationToken.unit[6],
                         },
                         'no-container': {
-                            x: FOUNDATION_THEME.unit[6],
-                            y: FOUNDATION_THEME.unit[6],
+                            x: foundationToken.unit[6],
+                            y: foundationToken.unit[6],
                         },
                     },
                 },

@@ -1,6 +1,6 @@
 import type { CSSObject } from 'styled-components'
 import { BreakpointType } from '../../breakpoints/breakPoints'
-import FOUNDATION_THEME, { FoundationTokenType } from '../../tokens/theme.token'
+import { FoundationTokenType } from '../../tokens/theme.token'
 import { SnackbarVariant } from './types'
 
 /**
@@ -264,8 +264,3 @@ export const getSnackbarTokens = (
         },
     }
 }
-
-const snackbarTokens: ResponsiveSnackbarTokens =
-    getSnackbarTokens(FOUNDATION_THEME)
-
-export default snackbarTokens

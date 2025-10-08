@@ -1,5 +1,4 @@
 import type { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME } from '../../tokens'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { type BreakpointType } from '../../breakpoints/breakPoints'
 
@@ -103,8 +102,3 @@ export const getBreadcrumbTokens = (
         },
     }
 }
-
-const breadcrumbTokens: ResponsiveBreadcrumbTokens =
-    getBreadcrumbTokens(FOUNDATION_THEME)
-
-export default breadcrumbTokens

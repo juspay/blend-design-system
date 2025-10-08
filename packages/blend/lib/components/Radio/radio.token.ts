@@ -1,5 +1,5 @@
 import type { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME, type ThemeType } from '../../tokens'
+import { type ThemeType } from '../../tokens'
 import { RadioSize } from './types'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 
@@ -285,7 +285,3 @@ export const getRadioTokens = (
         },
     }
 }
-
-const radioTokens: ResponsiveRadioTokens = getRadioTokens(FOUNDATION_THEME)
-
-export default radioTokens
