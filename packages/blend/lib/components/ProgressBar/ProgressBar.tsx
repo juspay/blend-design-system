@@ -109,7 +109,6 @@ const LinearProgressBar: React.FC<{
     tokens: ProgressBarTokenType
     showLabel: boolean
 }> = ({ value, size, variant, tokens, showLabel }) => {
-    console.log({ tokens })
     const clampedValue = Math.min(100, Math.max(0, value))
     const containerHeight = tokens?.height[size]
     const fillStyles = tokens.fill[variant as keyof typeof tokens.fill]
