@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
@@ -19,6 +19,8 @@ import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Button from '../Button/Button'
 import { ButtonType, ButtonSize } from '../Button/types'
+import VirtualList from '../VirtualList/VirtualList'
+import type { VirtualListItem } from '../VirtualList/types'
 
 const Content = styled(RadixMenu.Content)(() => ({
     position: 'relative',
@@ -62,6 +64,50 @@ const FixedActionButtons = styled(Block)(() => ({
     flexShrink: 0,
 }))
 
+type FlattenedMultiSelectItem = VirtualListItem & {
+    type: 'item' | 'label' | 'separator'
+    item?: MultiSelectMenuItemType
+    label?: string
+    groupId?: number
+}
+
+const flattenMultiSelectGroups = (
+    groups: MultiSelectMenuGroupType[]
+): FlattenedMultiSelectItem[] => {
+    const flattened: FlattenedMultiSelectItem[] = []
+    let idCounter = 0
+
+    groups.forEach((group, groupId) => {
+        if (group.groupLabel) {
+            flattened.push({
+                id: `label-${groupId}`,
+                type: 'label',
+                label: group.groupLabel,
+                groupId,
+            })
+        }
+
+        group.items.forEach((item) => {
+            flattened.push({
+                id: `item-${idCounter++}`,
+                type: 'item',
+                item,
+                groupId,
+            })
+        })
+
+        if (groupId !== groups.length - 1 && group.showSeparator) {
+            flattened.push({
+                id: `separator-${groupId}`,
+                type: 'separator',
+                groupId,
+            })
+        }
+    })
+
+    return flattened
+}
+
 const MultiSelectMenu = ({
     items,
     selected,
@@ -86,6 +132,12 @@ const MultiSelectMenu = ({
     showActionButtons = true,
     primaryAction,
     secondaryAction,
+    enableVirtualization = false,
+    virtualListItemHeight = 48,
+    virtualListOverscan = 5,
+    onEndReached,
+    endReachedThreshold,
+    hasMore,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -100,6 +152,11 @@ const MultiSelectMenu = ({
     )
     const availableValues = React.useMemo(
         () => getAllAvailableValues(filteredItems),
+        [filteredItems]
+    )
+
+    const flattenedItems = useMemo(
+        () => flattenMultiSelectGroups(filteredItems),
         [filteredItems]
     )
 
@@ -221,7 +278,7 @@ const MultiSelectMenu = ({
                         availableValues.length > 0 && (
                             <Block
                                 borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                                padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[6]}`}
+                                padding={`0 ${multiSelectTokens.menu.item.gap}`}
                             >
                                 <SelectAllItem
                                     selected={selected}
@@ -238,15 +295,32 @@ const MultiSelectMenu = ({
                         maxHeight: maxMenuHeight
                             ? `${maxMenuHeight - 80}px`
                             : '320px',
-                        padding: FOUNDATION_THEME.unit[6],
                     }}
                 >
-                    {filteredItems.length === 0 && searchText.length > 0 ? (
+                    {items.length === 0 ? (
                         <Block
                             display="flex"
                             justifyContent="center"
                             alignItems="center"
-                            padding={FOUNDATION_THEME.unit[6]}
+                            padding={multiSelectTokens.menu.item.padding}
+                        >
+                            <PrimitiveText
+                                fontSize={14}
+                                color={
+                                    multiSelectTokens.menu.item.optionsLabel
+                                        .color.default
+                                }
+                                textAlign="center"
+                            >
+                                No items available
+                            </PrimitiveText>
+                        </Block>
+                    ) : filteredItems.length === 0 && searchText.length > 0 ? (
+                        <Block
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            padding={multiSelectTokens.menu.item.padding}
                         >
                             <PrimitiveText
                                 fontSize={14}
@@ -255,6 +329,92 @@ const MultiSelectMenu = ({
                             >
                                 No results found
                             </PrimitiveText>
+                        </Block>
+                    ) : enableVirtualization && flattenedItems.length > 0 ? (
+                        <Block
+                            padding={FOUNDATION_THEME.unit[6]}
+                            style={{
+                                paddingTop: enableSearch
+                                    ? 0
+                                    : FOUNDATION_THEME.unit[6],
+                            }}
+                        >
+                            <VirtualList
+                                items={flattenedItems}
+                                height={(maxMenuHeight || 400) - 80}
+                                itemHeight={virtualListItemHeight}
+                                overscan={virtualListOverscan}
+                                onEndReached={onEndReached}
+                                endReachedThreshold={endReachedThreshold}
+                                hasMore={hasMore}
+                                renderItem={({ item: flatItem }) => {
+                                    const typed =
+                                        flatItem as FlattenedMultiSelectItem
+
+                                    if (typed.type === 'label') {
+                                        return (
+                                            <RadixMenu.Label asChild>
+                                                <PrimitiveText
+                                                    fontSize={12}
+                                                    padding={
+                                                        multiSelectTokens.menu
+                                                            .item.padding
+                                                    }
+                                                    userSelect="none"
+                                                    textTransform="uppercase"
+                                                    color={
+                                                        multiSelectTokens.menu
+                                                            .item.optionsLabel
+                                                            .color.default
+                                                    }
+                                                >
+                                                    {typed.label}
+                                                </PrimitiveText>
+                                            </RadixMenu.Label>
+                                        )
+                                    }
+
+                                    if (typed.type === 'separator') {
+                                        return (
+                                            <RadixMenu.Separator asChild>
+                                                <Block
+                                                    height={
+                                                        multiSelectTokens.menu
+                                                            .item.seperator
+                                                            .height
+                                                    }
+                                                    backgroundColor={
+                                                        multiSelectTokens.menu
+                                                            .item.seperator
+                                                            .color
+                                                    }
+                                                    margin={
+                                                        multiSelectTokens.menu
+                                                            .item.seperator
+                                                            .margin
+                                                    }
+                                                />
+                                            </RadixMenu.Separator>
+                                        )
+                                    }
+
+                                    if (typed.type === 'item' && typed.item) {
+                                        return (
+                                            <MultiSelectMenuItem
+                                                selected={selected}
+                                                item={typed.item}
+                                                onSelect={onSelect}
+                                                maxSelections={maxSelections}
+                                                allItems={filteredItems.flatMap(
+                                                    (g) => g.items
+                                                )}
+                                            />
+                                        )
+                                    }
+
+                                    return null
+                                }}
+                            />
                         </Block>
                     ) : (
                         filteredItems.map(

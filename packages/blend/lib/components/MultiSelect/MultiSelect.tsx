@@ -64,6 +64,14 @@ const MultiSelect = ({
     showItemDividers = false,
     showHeaderBorder = false,
     fullWidth = false,
+    enableVirtualization = false,
+    virtualListItemHeight = 48,
+    virtualListOverscan = 5,
+    itemsToRender,
+    onEndReached,
+    endReachedThreshold,
+    hasMore,
+    loadingComponent,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -153,6 +161,14 @@ const MultiSelect = ({
                 secondaryAction={secondaryAction}
                 showItemDividers={showItemDividers}
                 showHeaderBorder={showHeaderBorder}
+                enableVirtualization={enableVirtualization}
+                virtualListItemHeight={virtualListItemHeight}
+                virtualListOverscan={virtualListOverscan}
+                itemsToRender={itemsToRender}
+                onEndReached={onEndReached}
+                endReachedThreshold={endReachedThreshold}
+                hasMore={hasMore}
+                loadingComponent={loadingComponent}
             />
         )
     }
@@ -226,6 +242,14 @@ const MultiSelect = ({
                         : undefined
                 }
                 secondaryAction={secondaryAction}
+                enableVirtualization={enableVirtualization}
+                virtualListItemHeight={virtualListItemHeight}
+                virtualListOverscan={virtualListOverscan}
+                itemsToRender={itemsToRender}
+                onEndReached={onEndReached}
+                endReachedThreshold={endReachedThreshold}
+                hasMore={hasMore}
+                loadingComponent={loadingComponent}
                 trigger={
                     customTrigger || (
                         <Block

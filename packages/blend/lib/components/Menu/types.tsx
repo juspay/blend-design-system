@@ -24,6 +24,10 @@ export type MenuProps = {
 
     enableSearch?: boolean
     searchPlaceholder?: string
+    enableVirtualScrolling?: boolean
+    virtualItemHeight?: number | ((item: MenuItemType, index: number) => number)
+    virtualOverscan?: number
+    virtualScrollThreshold?: number
     // Radix Menu Props
     open?: boolean
     onOpenChange?: (open: boolean) => void

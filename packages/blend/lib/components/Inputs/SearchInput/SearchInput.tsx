@@ -117,7 +117,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             : null
 
         return (
-            <Block position="relative" width={'100%'} height={40}>
+            <Block position="relative" width={'100%'}>
                 {styledLeftSlot && (
                     <Block
                         ref={leftSlotRef}
@@ -150,6 +150,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}
+                    width="100%"
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
                     paddingY={paddingY}

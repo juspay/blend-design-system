@@ -86,6 +86,7 @@ import Block from '../../../../packages/blend/lib/components/Primitives/Block/Bl
 import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
 import SearchInputDemo from './SearchInputDemo'
+import VirtualListDemo from './VirtualListDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -138,6 +139,7 @@ const SidebarDemo = () => {
         | 'card'
         | 'dataRangePicker'
         | 'allComponents'
+        | 'virtualList'
     >('dataRangePicker')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -388,6 +390,8 @@ const SidebarDemo = () => {
                 return <CardDemo />
             case 'allComponents':
                 return <AllComponentsDemo />
+            case 'virtualList':
+                return <VirtualListDemo />
             default:
                 return (
                     <div className="p-8">
@@ -489,6 +493,13 @@ const SidebarDemo = () => {
                         <Grid style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('breadcrumb'),
+                },
+                {
+                    label: 'Virtual List',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('virtualList'),
                 },
             ],
         },

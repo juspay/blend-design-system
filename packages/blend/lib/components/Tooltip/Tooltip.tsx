@@ -30,6 +30,7 @@ export const Tooltip = ({
     delayDuration = 300,
     offset = 5,
     open,
+    maxWidth,
 }: TooltipProps) => {
     const tooltipTokens = useResponsiveTokens<TooltipTokensType>('TOOLTIP')
     return (
@@ -50,7 +51,7 @@ export const Tooltip = ({
                             backgroundColor={tooltipTokens.background}
                             padding={tooltipTokens.padding[size]}
                             borderRadius={tooltipTokens.borderRadius[size]}
-                            maxWidth={tooltipTokens.maxWidth[size]}
+                            maxWidth={maxWidth || tooltipTokens.maxWidth[size]}
                             width="fit-content"
                             gap={tooltipTokens.gap[size]}
                         >
