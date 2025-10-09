@@ -13,6 +13,7 @@ import {
     getBodyTitleStyles,
     getBodyContentStyles,
     getBodyStyles,
+    getHeaderSpacing,
     getHeaderMarginBottom,
     getSubHeaderMarginBottom,
     getBodySlot1MarginBottom,
@@ -80,7 +81,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                         <Block
                             display="flex"
                             alignItems="flex-start"
-                            style={{ gap: cardToken.header.gap[variant] }}
+                            style={{ gap: getHeaderSpacing(cardToken) }}
                         >
                             {headerSlot1 && <Block>{headerSlot1}</Block>}
 
@@ -100,7 +101,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                                     display="flex"
                                     alignItems="center"
                                     style={{
-                                        gap: cardToken.header.gap[variant],
+                                        gap: getHeaderSpacing(cardToken),
                                     }}
                                 >
                                     {headerTitle && (
@@ -262,7 +263,7 @@ const CardContent: React.FC<{
                         ),
                         width: centerAlign ? 'auto' : '100%',
                         gap: centerAlign
-                            ? cardToken.header.gap[variant]
+                            ? getHeaderSpacing(cardToken)
                             : undefined,
                     }}
                 >
@@ -272,7 +273,7 @@ const CardContent: React.FC<{
                                 display="flex"
                                 alignItems="center"
                                 style={{
-                                    gap: cardToken.header.gap[variant],
+                                    gap: getHeaderSpacing(cardToken),
                                 }}
                             >
                                 {headerTitle && (
@@ -354,9 +355,7 @@ const CardContent: React.FC<{
                             ? '24px' // Always 24px for center-aligned cards
                             : isInlineButton
                               ? '14px' // Always 14px for inline buttons (non-center)
-                              : String(
-                                    cardToken.body.actions.regular.gap[variant]
-                                )
+                              : '24px' // Always 24px for regular buttons in aligned variant
                         : '0',
                 }}
             >
@@ -402,8 +401,8 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: centerAlign ? 'center' : 'flex-start',
-                        gap: String(cardToken.header.gap[variant]),
-                        padding: cardToken.padding,
+                        gap: getHeaderSpacing(cardToken),
+                        padding: cardToken.padding[variant],
                     }}
                 >
                     <Block
@@ -434,9 +433,11 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                             justifyContent: centerAlign
                                 ? 'center'
                                 : 'flex-start',
-                            paddingBottom: cardToken.padding,
+                            paddingBottom: cardToken.padding[variant],
                             minHeight: '142px',
-                            ...(centerAlign && { padding: cardToken.padding }),
+                            ...(centerAlign && {
+                                padding: cardToken.padding[variant],
+                            }),
                         }}
                     >
                         {cardSlot}
@@ -444,7 +445,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
 
                     <Block
                         style={{
-                            padding: `0 ${String(cardToken.padding)} ${String(cardToken.padding)} ${String(cardToken.padding)}`,
+                            padding: `0 ${String(cardToken.padding[variant])} ${String(cardToken.padding[variant])} ${String(cardToken.padding[variant])}`,
                         }}
                     >
                         <CardContent
@@ -459,7 +460,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
         }
     } else {
         return (
-            <Block style={{ padding: String(cardToken.padding) }}>
+            <Block style={{ padding: String(cardToken.padding[variant]) }}>
                 <CardContent
                     props={props}
                     cardToken={cardToken}

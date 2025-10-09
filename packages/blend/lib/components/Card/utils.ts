@@ -37,15 +37,17 @@ export const isCustomCard = (variant?: CardVariant): boolean => {
 export const getHeaderBoxStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    backgroundColor: cardToken.header.backgroundColor,
-    padding: cardToken.header.padding,
-    borderBottom: cardToken.header.borderBottom,
+    backgroundColor:
+        cardToken.header.boxStyling[CardVariant.DEFAULT]?.backgroundColor,
+    padding: cardToken.header.boxStyling[CardVariant.DEFAULT]?.padding,
+    borderBottom:
+        cardToken.header.boxStyling[CardVariant.DEFAULT]?.borderBottom,
     display: 'flex',
     flexDirection: 'column' as const,
 })
 
 /**
- * Gets header title styles
+ * Gets header title styles (shared across all variants)
  */
 export const getHeaderTitleStyles = (
     cardToken: CardTokenType
@@ -56,7 +58,7 @@ export const getHeaderTitleStyles = (
 })
 
 /**
- * Gets sub header styles
+ * Gets sub header styles (shared across all variants)
  */
 export const getSubHeaderStyles = (
     cardToken: CardTokenType
@@ -67,33 +69,33 @@ export const getSubHeaderStyles = (
 })
 
 /**
- * Gets body title styles
+ * Gets body title styles (shared across all variants)
  */
 export const getBodyTitleStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.body.content.text.title.fontSize,
-    fontWeight: cardToken.body.content.text.title.fontWeight,
-    color: cardToken.body.content.text.title.color,
+    fontSize: cardToken.body.text.title.fontSize,
+    fontWeight: cardToken.body.text.title.fontWeight,
+    color: cardToken.body.text.title.color,
 })
 
 /**
- * Gets body content styles
+ * Gets body content styles (shared across all variants)
  */
 export const getBodyContentStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    fontSize: cardToken.body.content.text.content.fontSize,
-    color: cardToken.body.content.text.content.color,
+    fontSize: cardToken.body.text.content.fontSize,
+    color: cardToken.body.text.content.color,
 })
 
 /**
- * Gets body container styles
+ * Gets body container styles for default card
  */
 export const getBodyStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    padding: cardToken.body.padding,
+    padding: cardToken.body.padding[CardVariant.DEFAULT],
     display: 'flex',
     flexDirection: 'column' as const,
 })
@@ -101,11 +103,8 @@ export const getBodyStyles = (
 /**
  * Gets spacing between header elements for a specific variant
  */
-export const getHeaderSpacing = (
-    cardToken: CardTokenType,
-    variant: CardVariant
-): string => {
-    return String(cardToken.header.gap[variant])
+export const getHeaderSpacing = (cardToken: CardTokenType): string => {
+    return String(cardToken.header.text.title.gap)
 }
 
 /**
@@ -115,8 +114,8 @@ export const getHeaderMarginBottom = (
     hasSubHeader: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasSubHeader) return String(cardToken.header.text.title.gap)
-    return '0'
+    if (!hasSubHeader) return '0'
+    return String(cardToken.header.text.gap)
 }
 
 /**
@@ -126,7 +125,7 @@ export const getSubHeaderMarginBottom = (
     cardToken: CardTokenType,
     variant: CardVariant
 ): string => {
-    return String(cardToken.body.gap[variant]) // variant-dependent spacing
+    return String(cardToken.body.gap[variant] || '0')
 }
 
 /**
@@ -137,8 +136,8 @@ export const getBodySlot1MarginBottom = (
     cardToken: CardTokenType,
     variant: CardVariant
 ): string => {
-    if (hasBodyTitle) return String(cardToken.body.gap[variant]) // variant-dependent spacing
-    return '0'
+    if (!hasBodyTitle) return '0'
+    return String(cardToken.body.gap[variant] || '0')
 }
 
 /**
@@ -148,8 +147,8 @@ export const getBodyTitleMarginBottom = (
     hasContent: boolean,
     cardToken: CardTokenType
 ): string => {
-    if (hasContent) return String(cardToken.body.content.text.title.gap) // 6px for closely related content
-    return '0'
+    if (!hasContent) return '0'
+    return String(cardToken.body.text.title.gap || '0')
 }
 
 /**
@@ -160,8 +159,8 @@ export const getContentMarginBottom = (
     cardToken: CardTokenType,
     variant: CardVariant
 ): string => {
-    if (hasBodySlot2) return String(cardToken.body.gap[variant]) // variant-dependent spacing
-    return '0'
+    if (!hasBodySlot2) return '0'
+    return String(cardToken.body.gap[variant] || '0')
 }
 
 /**
@@ -174,9 +173,17 @@ export const getBodySlot2MarginBottom = (
     variant: CardVariant
 ): string => {
     if (!hasActionButton) return '0'
-    return isInlineButton
-        ? String(cardToken.body.actions.inline.gap[variant]) // variant-dependent inline spacing
-        : String(cardToken.body.actions.regular.gap[variant]) // variant-dependent regular spacing
+
+    if (variant === CardVariant.DEFAULT) {
+        return isInlineButton
+            ? String(cardToken.body.actions.inline.gap[variant] || '0')
+            : String(cardToken.body.actions.regular.gap[variant] || '0')
+    } else if (variant === CardVariant.ALIGNED) {
+        // Aligned cards only use inline actions
+        return String(cardToken.body.actions.inline.gap[variant] || '0')
+    }
+
+    return '0'
 }
 
 /**
@@ -185,7 +192,7 @@ export const getBodySlot2MarginBottom = (
 export const getCustomCardStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => ({
-    padding: cardToken.padding,
+    padding: cardToken.padding[CardVariant.CUSTOM],
 })
 
 /**

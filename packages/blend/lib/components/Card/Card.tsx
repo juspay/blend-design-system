@@ -59,15 +59,13 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
             const target = e.currentTarget as HTMLElement
             target.style.outline = cardToken.border as string
-            target.style.backgroundColor = cardToken.backgroundColor
-                .hover as string
+            target.style.backgroundColor = cardToken.backgroundColor as string
         }
 
         const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
             const target = e.currentTarget as HTMLElement
             target.style.outline = cardToken.border as string
-            target.style.backgroundColor = cardToken.backgroundColor
-                .default as string
+            target.style.backgroundColor = cardToken.backgroundColor as string
         }
 
         return (
@@ -80,8 +78,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                 }
                 outline={cardToken.border}
                 borderRadius={cardToken.borderRadius}
-                backgroundColor={cardToken.backgroundColor.default}
-                boxShadow={cardToken.boxShadow.default}
+                backgroundColor={cardToken.backgroundColor}
+                boxShadow={cardToken.boxShadow}
                 overflow="hidden"
                 display="flex"
                 flexDirection="column"
