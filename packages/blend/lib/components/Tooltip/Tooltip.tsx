@@ -71,12 +71,6 @@ export const Tooltip = ({
                                     lineHeight={
                                         tooltipTokens.text.lineHeight[size]
                                     }
-                                    style={{
-                                        wordWrap: 'break-word',
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                    }}
                                 >
                                     {content}
                                 </PrimitiveText>
