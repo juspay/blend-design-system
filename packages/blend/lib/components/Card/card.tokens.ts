@@ -30,7 +30,10 @@ export type CardTokenType = {
     boxShadow: CSSObject['boxShadow']
     backgroundColor: CSSObject['backgroundColor']
     padding: {
-        [key in CardVariant]: CSSObject['padding']
+        [key in CardVariant]: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
     }
 
     // Header section
@@ -39,7 +42,10 @@ export type CardTokenType = {
         boxStyling: {
             [CardVariant.DEFAULT]: {
                 backgroundColor: CSSObject['backgroundColor']
-                padding: CSSObject['padding']
+                padding: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
                 borderBottom: CSSObject['borderBottom']
             }
             [CardVariant.ALIGNED]: undefined
@@ -67,7 +73,10 @@ export type CardTokenType = {
     body: {
         // Body container padding (only DEFAULT variant has padding)
         padding: {
-            [CardVariant.DEFAULT]: CSSObject['padding']
+            [CardVariant.DEFAULT]: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
             [CardVariant.ALIGNED]: undefined
             [CardVariant.CUSTOM]: undefined
         }
@@ -83,12 +92,13 @@ export type CardTokenType = {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
                 color: CSSObject['color']
-                gap: CSSObject['gap'] // Gap between bodyTitle and content description
             }
             content: {
                 fontSize: CSSObject['fontSize']
                 color: CSSObject['color']
+                fontWeight: CSSObject['fontWeight']
             }
+            gap: CSSObject['gap'] // Gap between bodyTitle and content description
         }
 
         // Action buttons styling
@@ -119,16 +129,7 @@ export type CardTokenType = {
                         marginRight: CSSObject['marginRight']
                         width: CSSObject['width']
                         height: CSSObject['height']
-                        flexShrink: CSSObject['flexShrink']
                     }
-                }
-                centerAlign: {
-                    textAlign: CSSObject['textAlign']
-                    alignItems: CSSObject['alignItems']
-                    justifyContent: CSSObject['justifyContent']
-                }
-                content: {
-                    flex: CSSObject['flex']
                 }
             }
             [CardVariant.DEFAULT]: undefined
@@ -154,9 +155,18 @@ export const getCardTokens = (
             boxShadow: foundationToken.shadows.sm,
             backgroundColor: foundationToken.colors.gray[0],
             padding: {
-                [CardVariant.DEFAULT]: foundationToken.unit[16],
-                [CardVariant.ALIGNED]: foundationToken.unit[16],
-                [CardVariant.CUSTOM]: foundationToken.unit[16],
+                [CardVariant.DEFAULT]: {
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[16],
+                },
+                [CardVariant.ALIGNED]: {
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[16],
+                },
+                [CardVariant.CUSTOM]: {
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[16],
+                },
             },
 
             // Header section
@@ -164,7 +174,10 @@ export const getCardTokens = (
                 boxStyling: {
                     [CardVariant.DEFAULT]: {
                         backgroundColor: foundationToken.colors.gray[25],
-                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
+                        padding: {
+                            x: foundationToken.unit[16],
+                            y: foundationToken.unit[12],
+                        },
                         borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                     },
                     [CardVariant.ALIGNED]: undefined,
@@ -189,7 +202,10 @@ export const getCardTokens = (
             // Body section
             body: {
                 padding: {
-                    [CardVariant.DEFAULT]: foundationToken.unit[16],
+                    [CardVariant.DEFAULT]: {
+                        x: foundationToken.unit[16],
+                        y: foundationToken.unit[16],
+                    },
                     [CardVariant.ALIGNED]: undefined,
                     [CardVariant.CUSTOM]: undefined,
                 },
@@ -203,17 +219,19 @@ export const getCardTokens = (
                         fontSize: foundationToken.font.size.body.md.fontSize,
                         fontWeight: foundationToken.font.weight[500],
                         color: foundationToken.colors.gray[800],
-                        gap: foundationToken.unit[6],
                     },
                     content: {
                         fontSize: foundationToken.font.size.body.md.fontSize,
                         color: foundationToken.colors.gray[500],
+                        fontWeight: foundationToken.font.weight[400],
                     },
+                    gap: foundationToken.unit[6],
                 },
                 actions: {
                     inline: {
                         gap: {
                             [CardVariant.DEFAULT]: foundationToken.unit[14],
+
                             [CardVariant.ALIGNED]: foundationToken.unit[14],
                             [CardVariant.CUSTOM]: foundationToken.unit[14],
                         },
@@ -237,17 +255,17 @@ export const getCardTokens = (
                                 marginRight: foundationToken.unit[16],
                                 width: foundationToken.unit[92],
                                 height: foundationToken.unit[92],
-                                flexShrink: 0,
+                                // flexShrink: 0,
                             },
                         },
-                        centerAlign: {
-                            textAlign: 'center',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        },
-                        content: {
-                            flex: '1',
-                        },
+                        // centerAlign: {
+                        //     textAlign: 'center',
+                        //     alignItems: 'center',
+                        //     justifyContent: 'center',
+                        // },
+                        // content: {
+                        //     flex: '1',
+                        // },
                     },
                     [CardVariant.DEFAULT]: undefined,
                     [CardVariant.CUSTOM]: undefined,
@@ -264,9 +282,18 @@ export const getCardTokens = (
             boxShadow: foundationToken.shadows.sm,
             backgroundColor: foundationToken.colors.gray[0],
             padding: {
-                [CardVariant.DEFAULT]: foundationToken.unit[16],
-                [CardVariant.ALIGNED]: foundationToken.unit[16],
-                [CardVariant.CUSTOM]: foundationToken.unit[16],
+                [CardVariant.DEFAULT]: {
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[16],
+                },
+                [CardVariant.ALIGNED]: {
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[16],
+                },
+                [CardVariant.CUSTOM]: {
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[16],
+                },
             },
 
             // Header section
@@ -274,7 +301,10 @@ export const getCardTokens = (
                 boxStyling: {
                     [CardVariant.DEFAULT]: {
                         backgroundColor: foundationToken.colors.gray[25],
-                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
+                        padding: {
+                            x: foundationToken.unit[16],
+                            y: foundationToken.unit[12],
+                        },
                         borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                     },
                     [CardVariant.ALIGNED]: undefined,
@@ -299,7 +329,10 @@ export const getCardTokens = (
             // Body section
             body: {
                 padding: {
-                    [CardVariant.DEFAULT]: foundationToken.unit[16],
+                    [CardVariant.DEFAULT]: {
+                        x: foundationToken.unit[16],
+                        y: foundationToken.unit[16],
+                    },
                     [CardVariant.ALIGNED]: undefined,
                     [CardVariant.CUSTOM]: undefined,
                 },
@@ -313,12 +346,13 @@ export const getCardTokens = (
                         fontSize: foundationToken.font.size.body.md.fontSize,
                         fontWeight: foundationToken.font.weight[500],
                         color: foundationToken.colors.gray[800],
-                        gap: foundationToken.unit[6],
                     },
                     content: {
                         fontSize: foundationToken.font.size.body.md.fontSize,
                         color: foundationToken.colors.gray[500],
+                        fontWeight: foundationToken.font.weight[400],
                     },
+                    gap: foundationToken.unit[6],
                 },
                 actions: {
                     inline: {
@@ -347,17 +381,17 @@ export const getCardTokens = (
                                 marginRight: foundationToken.unit[16],
                                 width: foundationToken.unit[92],
                                 height: foundationToken.unit[92],
-                                flexShrink: 0,
+                                // flexShrink: 0,
                             },
                         },
-                        centerAlign: {
-                            textAlign: 'center',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        },
-                        content: {
-                            flex: '1',
-                        },
+                        // centerAlign: {
+                        //     textAlign: 'center',
+                        //     alignItems: 'center',
+                        //     justifyContent: 'center',
+                        // },
+                        // content: {
+                        //     flex: '1',
+                        // },
                     },
                     [CardVariant.DEFAULT]: undefined,
                     [CardVariant.CUSTOM]: undefined,

@@ -36,15 +36,20 @@ export const isCustomCard = (variant?: CardVariant): boolean => {
  */
 export const getHeaderBoxStyles = (
     cardToken: CardTokenType
-): React.CSSProperties => ({
-    backgroundColor:
-        cardToken.header.boxStyling[CardVariant.DEFAULT]?.backgroundColor,
-    padding: cardToken.header.boxStyling[CardVariant.DEFAULT]?.padding,
-    borderBottom:
-        cardToken.header.boxStyling[CardVariant.DEFAULT]?.borderBottom,
-    display: 'flex',
-    flexDirection: 'column' as const,
-})
+): React.CSSProperties => {
+    const boxStyling = cardToken.header.boxStyling[CardVariant.DEFAULT]
+    const padding = boxStyling?.padding
+        ? `${String(boxStyling.padding.y)} ${String(boxStyling.padding.x)}`
+        : undefined
+
+    return {
+        backgroundColor: boxStyling?.backgroundColor,
+        padding,
+        borderBottom: boxStyling?.borderBottom,
+        display: 'flex',
+        flexDirection: 'column' as const,
+    }
+}
 
 /**
  * Gets header title styles (shared across all variants)
@@ -94,11 +99,18 @@ export const getBodyContentStyles = (
  */
 export const getBodyStyles = (
     cardToken: CardTokenType
-): React.CSSProperties => ({
-    padding: cardToken.body.padding[CardVariant.DEFAULT],
-    display: 'flex',
-    flexDirection: 'column' as const,
-})
+): React.CSSProperties => {
+    const bodyPadding = cardToken.body.padding[CardVariant.DEFAULT]
+    const padding = bodyPadding
+        ? `${String(bodyPadding.y)} ${String(bodyPadding.x)}`
+        : undefined
+
+    return {
+        padding,
+        display: 'flex',
+        flexDirection: 'column' as const,
+    }
+}
 
 /**
  * Gets spacing between header elements for a specific variant
@@ -148,7 +160,7 @@ export const getBodyTitleMarginBottom = (
     cardToken: CardTokenType
 ): string => {
     if (!hasContent) return '0'
-    return String(cardToken.body.text.title.gap || '0')
+    return String(cardToken.body.text.gap || '0')
 }
 
 /**
@@ -191,9 +203,12 @@ export const getBodySlot2MarginBottom = (
  */
 export const getCustomCardStyles = (
     cardToken: CardTokenType
-): React.CSSProperties => ({
-    padding: cardToken.padding[CardVariant.CUSTOM],
-})
+): React.CSSProperties => {
+    const padding = cardToken.padding[CardVariant.CUSTOM]
+    return {
+        padding: `${String(padding.y)} ${String(padding.x)}`,
+    }
+}
 
 /**
  * Determines if action button is inline type

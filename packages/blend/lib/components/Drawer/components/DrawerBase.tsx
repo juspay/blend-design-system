@@ -21,8 +21,8 @@ import type {
 const StyledOverlay = styled(VaulDrawer.Overlay)<{ tokens: DrawerTokensType }>`
     position: fixed;
     inset: 0;
-    background-color: ${({ tokens }) => tokens.overlay.backgroundColor.default};
-    z-index: ${({ tokens }) => tokens.overlay.zIndex};
+    background-color: ${({ tokens }) => tokens.overlay.backgroundColor};
+    z-index: 1100;
 `
 
 const StyledContent = styled(VaulDrawer.Content)<{
@@ -39,10 +39,8 @@ const StyledContent = styled(VaulDrawer.Content)<{
         right?: string
     }
 }>`
-    z-index: ${({ tokens }) => tokens.content.zIndex};
-    background-color: ${({ tokens }) => tokens.content.backgroundColor.default};
-    border: ${({ tokens }) => tokens.content.border};
-    box-shadow: ${({ tokens }) => tokens.content.boxShadow};
+    z-index: 1200;
+    background-color: ${({ tokens }) => tokens.content.backgroundColor};
     outline: none;
     display: flex;
     flex-direction: column;
@@ -57,10 +55,10 @@ const StyledContent = styled(VaulDrawer.Content)<{
         mobileOffset,
     }) => {
         const offset = {
-            top: mobileOffset?.top ?? tokens.mobileOffset.top,
-            bottom: mobileOffset?.bottom ?? tokens.mobileOffset.bottom,
-            left: mobileOffset?.left ?? tokens.mobileOffset.left,
-            right: mobileOffset?.right ?? tokens.mobileOffset.right,
+            top: mobileOffset?.top ?? tokens.offset.top,
+            bottom: mobileOffset?.bottom ?? tokens.offset.bottom,
+            left: mobileOffset?.left ?? tokens.offset.left,
+            right: mobileOffset?.right ?? tokens.offset.right,
         }
 
         if (direction === 'bottom') {
@@ -77,7 +75,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
                           ? `max-height: calc(100% - calc(${offset.top} + ${offset.bottom}));`
                           : `top: ${offset.top};`
                 }
-                border-radius: ${tokens.content.borderRadius};
+                border-radius: ${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft};
                 
                 @media (min-width: 1024px) {
                     ${
@@ -119,7 +117,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
                     max-height: calc(97% - calc(${offset.top} + ${offset.bottom}));
                 `
                 }
-                border-radius: ${tokens.content.borderRadius};
+                border-radius: ${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft};
                 
                 @media (min-width: 1024px) {
                     ${
@@ -155,7 +153,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
                 top: ${offset.top};
                 bottom: ${offset.bottom};
                 left: ${offset.left};
-                border-radius: ${tokens.content.borderRadius};
+                border-radius: ${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft};
                 width: calc(100% - calc(${offset.left} + ${offset.right}));
                 overflow: hidden;
                 max-width: ${maxWidthValue};
@@ -183,7 +181,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
                 top: ${offset.top};
                 bottom: ${offset.bottom};
                 right: ${offset.right};
-                border-radius: ${tokens.content.borderRadius};
+                border-radius: ${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft};
                 width: calc(100% - calc(${offset.left} + ${offset.right}));
                 overflow: hidden;
                 max-width: ${maxWidthValue};
@@ -199,21 +197,14 @@ const StyledContent = styled(VaulDrawer.Content)<{
     }}
 `
 
-const StyledTitle = styled(VaulDrawer.Title)<{ tokens: DrawerTokensType }>`
-    color: ${({ tokens }) => tokens.header.text.title.color.default};
-    font-size: ${({ tokens }) => tokens.header.text.title.fontSize}px;
-    font-weight: ${({ tokens }) => tokens.header.text.title.fontWeight};
-    line-height: ${({ tokens }) => tokens.header.text.title.lineHeight}px;
+const StyledTitle = styled(VaulDrawer.Title)`
     margin: 0;
+    font-weight: 600;
 `
 
-const StyledDescription = styled(VaulDrawer.Description)<{
-    tokens: DrawerTokensType
-}>`
-    color: ${({ tokens }) => tokens.header.text.description.color.default};
-    font-size: ${({ tokens }) => tokens.header.text.description.fontSize}px;
-    line-height: ${({ tokens }) => tokens.header.text.description.lineHeight}px;
+const StyledDescription = styled(VaulDrawer.Description)`
     margin: 4px 0 0 0;
+    opacity: 0.7;
 `
 
 export const Drawer = ({
@@ -344,12 +335,12 @@ export const DrawerContent = forwardRef<
                     (direction === 'bottom' || direction === 'top') &&
                     (handle || (
                         <Block
-                            width={tokens.handle.width}
-                            height={tokens.handle.height}
+                            width={tokens.content.handle.width}
+                            height={tokens.content.handle.height}
                             backgroundColor={
-                                tokens.handle.backgroundColor.default
+                                tokens.content.handle.backgroundColor
                             }
-                            borderRadius={tokens.handle.borderRadius}
+                            borderRadius={tokens.content.handle.borderRadius}
                             margin={
                                 direction === 'bottom'
                                     ? '14px auto 14px auto'
@@ -378,8 +369,10 @@ export const DrawerHeader = forwardRef<HTMLDivElement, DrawerHeaderProps>(
             <Block
                 ref={ref}
                 className={className}
-                backgroundColor={tokens.header.backgroundColor.default}
-                padding={tokens.header.padding}
+                backgroundColor={tokens.content.backgroundColor}
+                padding={
+                    tokens.content.padding.x + ' ' + tokens.content.padding.y
+                }
                 flexShrink={0}
                 {...props}
             >
@@ -393,15 +386,8 @@ DrawerHeader.displayName = 'DrawerHeader'
 
 export const DrawerTitle = forwardRef<HTMLHeadingElement, DrawerTitleProps>(
     ({ children, className, ...props }, ref) => {
-        const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
-
         return (
-            <StyledTitle
-                ref={ref}
-                className={className}
-                tokens={tokens}
-                {...props}
-            >
+            <StyledTitle ref={ref} className={className} {...props}>
                 {children}
             </StyledTitle>
         )
@@ -414,15 +400,8 @@ export const DrawerDescription = forwardRef<
     HTMLParagraphElement,
     DrawerDescriptionProps
 >(({ children, className, ...props }, ref) => {
-    const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
-
     return (
-        <StyledDescription
-            ref={ref}
-            className={className}
-            tokens={tokens}
-            {...props}
-        >
+        <StyledDescription ref={ref} className={className} {...props}>
             {children}
         </StyledDescription>
     )
@@ -444,28 +423,28 @@ export const DrawerBody = forwardRef<
         {
             children,
             className,
-            overflowY,
+            overflowY = 'auto',
             noPadding = false,
-            hasFooter = false,
             ...props
         },
         ref
     ) => {
         const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
 
-        const borderRadius = hasFooter
-            ? `${tokens.body.borderRadius} ${tokens.body.borderRadius} 0 0`
-            : tokens.body.borderRadius
-
         return (
             <Block
                 ref={ref}
                 className={className}
-                padding={noPadding ? 0 : tokens.body.padding}
-                backgroundColor={tokens.body.backgroundColor.default}
-                borderRadius={borderRadius}
+                padding={
+                    noPadding
+                        ? 0
+                        : tokens.content.padding.x +
+                          ' ' +
+                          tokens.content.padding.y
+                }
+                backgroundColor={tokens.content.backgroundColor}
                 flexGrow={1}
-                overflowY={overflowY || tokens.body.overflowY}
+                overflowY={overflowY}
                 {...props}
             >
                 {children}
@@ -484,13 +463,14 @@ export const DrawerFooter = forwardRef<HTMLDivElement, DrawerFooterProps>(
             <Block
                 ref={ref}
                 className={className}
-                padding={tokens.footer.padding}
-                backgroundColor={tokens.footer.backgroundColor.default}
-                borderRadius={`0 0 ${tokens.body.borderRadius} ${tokens.body.borderRadius}`}
+                padding={
+                    tokens.content.padding.x + ' ' + tokens.content.padding.y
+                }
+                backgroundColor={tokens.content.backgroundColor}
                 display="flex"
-                alignItems={tokens.footer.alignItems}
-                justifyContent={tokens.footer.justifyContent}
-                gap={tokens.footer.gap}
+                alignItems="center"
+                justifyContent="flex-end"
+                gap="12px"
                 flexShrink={0}
                 {...props}
             >
