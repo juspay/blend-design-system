@@ -188,7 +188,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                                 hasActionButton,
                                 isInlineButton,
                                 cardToken,
-                                variant
+                                false
                             ),
                         }}
                     >
@@ -352,10 +352,8 @@ const CardContent: React.FC<{
                 style={{
                     gap: hasActionButton
                         ? centerAlign
-                            ? '24px' // Always 24px for center-aligned cards
-                            : isInlineButton
-                              ? '14px' // Always 14px for inline buttons (non-center)
-                              : '24px' // Always 24px for regular buttons in aligned variant
+                            ? String(cardToken.body.actions.centerAlignGap) // 24px for center-aligned cards
+                            : String(cardToken.body.actions.gap) // 14px for all other cases
                         : '0',
                 }}
             >

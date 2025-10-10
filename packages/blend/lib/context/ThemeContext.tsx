@@ -37,6 +37,7 @@ import type { ResponsiveCardTokens } from '../components/Card/card.tokens'
 import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
 import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
+import type { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import { BREAKPOINTS } from '../breakpoints/breakPoints'
@@ -78,6 +79,7 @@ import {
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
+import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -116,6 +118,7 @@ export type ComponentTokenType = {
     TOPBAR?: ResponsiveTopbarTokens
     AVATAR?: ResponsiveAvatarTokens
     AVATAR_GROUP?: ResponsiveAvatarGroupTokens
+    SIDEBAR?: ResponsiveSidebarTokens
 }
 
 type ThemeContextType = {
@@ -163,6 +166,7 @@ const ThemeContext = createContext<ThemeContextType>({
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
         AVATAR: getAvatarTokens(FOUNDATION_THEME),
         AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),
+        SIDEBAR: getSidebarTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

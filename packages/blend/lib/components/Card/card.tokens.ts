@@ -39,18 +39,16 @@ export type CardTokenType = {
     // Header section
     header: {
         // Box styling (only DEFAULT variant has gray background box)
-        boxStyling: {
-            [CardVariant.DEFAULT]: {
-                backgroundColor: CSSObject['backgroundColor']
-                padding: {
-                    x: CSSObject['padding']
-                    y: CSSObject['padding']
-                }
-                borderBottom: CSSObject['borderBottom']
+        [CardVariant.DEFAULT]: {
+            backgroundColor: CSSObject['backgroundColor']
+            padding: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
             }
-            [CardVariant.ALIGNED]: undefined
-            [CardVariant.CUSTOM]: undefined
+            borderBottom: CSSObject['borderBottom']
         }
+        [CardVariant.ALIGNED]: undefined
+        [CardVariant.CUSTOM]: undefined
 
         // Text styling within header
         text: {
@@ -77,8 +75,8 @@ export type CardTokenType = {
                 x: CSSObject['padding']
                 y: CSSObject['padding']
             }
-            [CardVariant.ALIGNED]: undefined
-            [CardVariant.CUSTOM]: undefined
+            [CardVariant.ALIGNED]: undefined // paddig should be there
+            [CardVariant.CUSTOM]: undefined // 12 px default padding
         }
 
         // Spacing between body elements (bodySlot1 → bodyTitle → content → bodySlot2 → actionButton)
@@ -101,20 +99,10 @@ export type CardTokenType = {
             gap: CSSObject['gap'] // Gap between bodyTitle and content description
         }
 
-        // Action buttons styling
+        // Action buttons styling - Simple gap (14px default, 24px for center-aligned)
         actions: {
-            inline: {
-                gap: {
-                    [key in CardVariant]: CSSObject['gap'] // 14px normal, 24px center-aligned
-                }
-            }
-            regular: {
-                gap: {
-                    [CardVariant.DEFAULT]: CSSObject['gap']
-                    [CardVariant.ALIGNED]: undefined
-                    [CardVariant.CUSTOM]: undefined
-                }
-            }
+            gap: CSSObject['gap'] // Base gap for actions (14px)
+            centerAlignGap: CSSObject['gap'] // Gap for center-aligned cards (24px)
         }
 
         // Alignment styling (only for ALIGNED variant, similar to header.boxStyling)
@@ -171,18 +159,16 @@ export const getCardTokens = (
 
             // Header section
             header: {
-                boxStyling: {
-                    [CardVariant.DEFAULT]: {
-                        backgroundColor: foundationToken.colors.gray[25],
-                        padding: {
-                            x: foundationToken.unit[16],
-                            y: foundationToken.unit[12],
-                        },
-                        borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                [CardVariant.DEFAULT]: {
+                    backgroundColor: foundationToken.colors.gray[25],
+                    padding: {
+                        x: foundationToken.unit[16],
+                        y: foundationToken.unit[12],
                     },
-                    [CardVariant.ALIGNED]: undefined,
-                    [CardVariant.CUSTOM]: undefined,
+                    borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 },
+                [CardVariant.ALIGNED]: undefined,
+                [CardVariant.CUSTOM]: undefined,
                 text: {
                     title: {
                         fontSize: foundationToken.font.size.body.lg.fontSize,
@@ -228,21 +214,8 @@ export const getCardTokens = (
                     gap: foundationToken.unit[6],
                 },
                 actions: {
-                    inline: {
-                        gap: {
-                            [CardVariant.DEFAULT]: foundationToken.unit[14],
-
-                            [CardVariant.ALIGNED]: foundationToken.unit[14],
-                            [CardVariant.CUSTOM]: foundationToken.unit[14],
-                        },
-                    },
-                    regular: {
-                        gap: {
-                            [CardVariant.DEFAULT]: foundationToken.unit[24],
-                            [CardVariant.ALIGNED]: undefined,
-                            [CardVariant.CUSTOM]: undefined,
-                        },
-                    },
+                    gap: foundationToken.unit[14], // Base gap for actions (14px)
+                    centerAlignGap: foundationToken.unit[24], // Gap for center-aligned cards (24px)
                 },
                 alignment: {
                     [CardVariant.ALIGNED]: {
@@ -298,18 +271,16 @@ export const getCardTokens = (
 
             // Header section
             header: {
-                boxStyling: {
-                    [CardVariant.DEFAULT]: {
-                        backgroundColor: foundationToken.colors.gray[25],
-                        padding: {
-                            x: foundationToken.unit[16],
-                            y: foundationToken.unit[12],
-                        },
-                        borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                [CardVariant.DEFAULT]: {
+                    backgroundColor: foundationToken.colors.gray[25],
+                    padding: {
+                        x: foundationToken.unit[16],
+                        y: foundationToken.unit[12],
                     },
-                    [CardVariant.ALIGNED]: undefined,
-                    [CardVariant.CUSTOM]: undefined,
+                    borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 },
+                [CardVariant.ALIGNED]: undefined,
+                [CardVariant.CUSTOM]: undefined,
                 text: {
                     title: {
                         fontSize: foundationToken.font.size.body.lg.fontSize,
@@ -355,20 +326,8 @@ export const getCardTokens = (
                     gap: foundationToken.unit[6],
                 },
                 actions: {
-                    inline: {
-                        gap: {
-                            [CardVariant.DEFAULT]: foundationToken.unit[14],
-                            [CardVariant.ALIGNED]: foundationToken.unit[14],
-                            [CardVariant.CUSTOM]: foundationToken.unit[14],
-                        },
-                    },
-                    regular: {
-                        gap: {
-                            [CardVariant.DEFAULT]: foundationToken.unit[24],
-                            [CardVariant.ALIGNED]: undefined,
-                            [CardVariant.CUSTOM]: undefined,
-                        },
-                    },
+                    gap: foundationToken.unit[14], // Base gap for actions (14px)
+                    centerAlignGap: foundationToken.unit[24], // Gap for center-aligned cards (24px)
                 },
                 alignment: {
                     [CardVariant.ALIGNED]: {

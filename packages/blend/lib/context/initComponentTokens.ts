@@ -36,6 +36,7 @@ import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import { getProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
+import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -110,6 +111,7 @@ const initTokens = (
         AVATAR_GROUP:
             componentTokens.AVATAR_GROUP ??
             getAvatarGroupTokens(foundationTokens),
+        SIDEBAR: componentTokens.SIDEBAR ?? getSidebarTokens(foundationTokens),
     }
 }
 

@@ -37,7 +37,7 @@ export const isCustomCard = (variant?: CardVariant): boolean => {
 export const getHeaderBoxStyles = (
     cardToken: CardTokenType
 ): React.CSSProperties => {
-    const boxStyling = cardToken.header.boxStyling[CardVariant.DEFAULT]
+    const boxStyling = cardToken.header[CardVariant.DEFAULT]
     const padding = boxStyling?.padding
         ? `${String(boxStyling.padding.y)} ${String(boxStyling.padding.x)}`
         : undefined
@@ -176,26 +176,23 @@ export const getContentMarginBottom = (
 }
 
 /**
- * Gets gap before action button
+ * Gets gap before action button - Simple logic: 14px default, 24px for center-aligned
  */
 export const getBodySlot2MarginBottom = (
     hasActionButton: boolean,
-    isInlineButton: boolean,
+    _isInlineButton: boolean,
     cardToken: CardTokenType,
-    variant: CardVariant
+    centerAlign?: boolean
 ): string => {
     if (!hasActionButton) return '0'
 
-    if (variant === CardVariant.DEFAULT) {
-        return isInlineButton
-            ? String(cardToken.body.actions.inline.gap[variant] || '0')
-            : String(cardToken.body.actions.regular.gap[variant] || '0')
-    } else if (variant === CardVariant.ALIGNED) {
-        // Aligned cards only use inline actions
-        return String(cardToken.body.actions.inline.gap[variant] || '0')
+    // For center-aligned cards, always use centerAlignGap (24px)
+    if (centerAlign) {
+        return String(cardToken.body.actions.centerAlignGap || '0')
     }
 
-    return '0'
+    // For all other cases, use base gap (14px)
+    return String(cardToken.body.actions.gap || '0')
 }
 
 /**
