@@ -402,7 +402,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                         flexDirection: 'row',
                         alignItems: centerAlign ? 'center' : 'flex-start',
                         gap: getHeaderSpacing(cardToken),
-                        padding: cardToken.padding[variant],
+                        padding: `${String(cardToken.padding[variant].y)} ${String(cardToken.padding[variant].x)}`,
                     }}
                 >
                     <Block
@@ -433,10 +433,10 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                             justifyContent: centerAlign
                                 ? 'center'
                                 : 'flex-start',
-                            paddingBottom: cardToken.padding[variant],
+                            paddingBottom: String(cardToken.padding[variant].y),
                             minHeight: '142px',
                             ...(centerAlign && {
-                                padding: cardToken.padding[variant],
+                                padding: `${String(cardToken.padding[variant].y)} ${String(cardToken.padding[variant].x)}`,
                             }),
                         }}
                     >
@@ -445,7 +445,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
 
                     <Block
                         style={{
-                            padding: `0 ${String(cardToken.padding[variant])} ${String(cardToken.padding[variant])} ${String(cardToken.padding[variant])}`,
+                            padding: `0 ${String(cardToken.padding[variant].x)} ${String(cardToken.padding[variant].y)} ${String(cardToken.padding[variant].x)}`,
                         }}
                     >
                         <CardContent
@@ -460,7 +460,11 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
         }
     } else {
         return (
-            <Block style={{ padding: String(cardToken.padding[variant]) }}>
+            <Block
+                style={{
+                    padding: `${String(cardToken.padding[variant].y)} ${String(cardToken.padding[variant].x)}`,
+                }}
+            >
                 <CardContent
                     props={props}
                     cardToken={cardToken}

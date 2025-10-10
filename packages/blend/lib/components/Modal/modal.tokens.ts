@@ -35,16 +35,19 @@ export type ModalState = 'default'
  */
 export type ModalTokensType = {
     // Pattern: shadow
-    shadow: CSSObject['boxShadow']
+    boxShadow: CSSObject['boxShadow']
     // Pattern: borderRadius
     borderRadius: CSSObject['borderRadius']
 
     // Header properties
     header: {
         // Pattern: header.padding
-        padding: CSSObject['padding']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
         // Pattern: header.border
-        border: CSSObject['border']
+        borderBottom: CSSObject['border']
         // Pattern: header.backgroundColor
         backgroundColor: CSSObject['backgroundColor']
 
@@ -82,11 +85,9 @@ export type ModalTokensType = {
         // Pattern: footer.padding
         padding: CSSObject['padding']
         // Pattern: footer.border
-        border: CSSObject['border']
+        borderTop: CSSObject['border']
         // Pattern: footer.backgroundColor
         backgroundColor: CSSObject['backgroundColor']
-        // Pattern: footer.alignItems
-        alignItems: CSSObject['alignItems']
         // Pattern: footer.gap
         gap: CSSObject['gap']
     }
@@ -105,13 +106,16 @@ export const getModalComponentTokens = (
     return {
         sm: {
             // Container properties
-            shadow: foundationToken.shadows.xs,
+            boxShadow: foundationToken.shadows.xs,
             borderRadius: foundationToken.border.radius[12],
 
             // Header properties
             header: {
-                padding: foundationToken.unit[16],
-                border: `1px solid ${foundationToken.colors.gray[200]}`,
+                padding: {
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[16],
+                },
+                borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 // borderRadius: foundationToken.border.radius[12],
                 backgroundColor: foundationToken.colors.gray[0],
 
@@ -138,10 +142,9 @@ export const getModalComponentTokens = (
             // Footer properties
             footer: {
                 padding: foundationToken.unit[16],
-                border: `1px solid ${foundationToken.colors.gray[200]}`,
+                borderTop: `1px solid ${foundationToken.colors.gray[200]}`,
                 // borderRadius: `0 0 ${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]}`,
                 backgroundColor: foundationToken.colors.gray[0],
-                alignItems: 'flex-end',
                 gap: foundationToken.unit[12],
             },
             closeButton: {
@@ -150,13 +153,16 @@ export const getModalComponentTokens = (
         },
         lg: {
             // Container properties
-            shadow: foundationToken.shadows.lg,
+            boxShadow: foundationToken.shadows.lg,
             borderRadius: foundationToken.border.radius[16],
 
             // Header properties
             header: {
-                padding: foundationToken.unit[20],
-                border: `1px solid ${foundationToken.colors.gray[200]}`,
+                padding: {
+                    x: foundationToken.unit[20],
+                    y: foundationToken.unit[20],
+                },
+                borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 backgroundColor: foundationToken.colors.gray[0],
 
                 text: {
@@ -182,10 +188,9 @@ export const getModalComponentTokens = (
             // Footer properties
             footer: {
                 padding: foundationToken.unit[20],
-                border: `1px solid ${foundationToken.colors.gray[200]}`,
+                borderTop: `1px solid ${foundationToken.colors.gray[200]}`,
                 // borderRadius: `0 0 ${foundationToken.border.radius[16]} ${foundationToken.border.radius[16]}`,
                 backgroundColor: foundationToken.colors.gray[0],
-                alignItems: 'flex-end',
                 gap: foundationToken.unit[16],
             },
             closeButton: {

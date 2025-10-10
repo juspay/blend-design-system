@@ -59,12 +59,18 @@ const ModalHeader = ({
             display="flex"
             justifyContent="space-between"
             alignItems="flex-start"
-            padding={modalTokens.header.padding}
+            padding={
+                modalTokens.header.padding.x +
+                ' ' +
+                modalTokens.header.padding.y
+            }
             flexShrink={0}
             overflow="auto"
             maxHeight="20vh"
             gap={FOUNDATION_THEME.unit[16]}
-            borderBottom={showDivider ? modalTokens.header.border : undefined}
+            borderBottom={
+                showDivider ? modalTokens.header.borderBottom : undefined
+            }
         >
             <Block
                 display="flex"
@@ -127,11 +133,11 @@ const ModalFooter = ({
         <Block
             display="flex"
             backgroundColor={modalTokens.footer.backgroundColor}
-            justifyContent={modalTokens.footer.alignItems}
+            justifyContent="flex-end"
             gap={modalTokens.footer.gap}
             padding={modalTokens.footer.padding}
             flexShrink={0}
-            borderTop={showDivider ? modalTokens.footer.border : undefined}
+            borderTop={showDivider ? modalTokens.footer.borderTop : undefined}
             // borderRadius={modalTokens.borderRadius}
         >
             {secondaryAction && (
@@ -250,6 +256,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     justifyContent="center"
                     overflow="auto"
                     padding={FOUNDATION_THEME.unit[16]}
+                    boxShadow={modalTokens.boxShadow}
                 >
                     <Block
                         onClick={handleBackdropClick}
