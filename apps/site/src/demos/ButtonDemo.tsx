@@ -5,6 +5,7 @@ import {
     ButtonType,
     ButtonSize,
     ButtonSubType,
+    ButtonState,
 } from '../../../../packages/blend/lib/components/Button'
 import { SkeletonButton } from '../../../../packages/blend/lib/components/Skeleton'
 import type { SkeletonVariant } from '../../../../packages/blend/lib/components/Skeleton/skeleton.tokens'
@@ -187,6 +188,11 @@ const ButtonDemo = () => {
                         loading={isLoading}
                         disabled={isDisabled}
                         fullWidth={fullWidth}
+                        state={
+                            isDisabled
+                                ? ButtonState.DISABLED
+                                : ButtonState.DEFAULT
+                        }
                         onClick={() => {
                             addSnackbar({
                                 header: 'Pure Button clicked!',

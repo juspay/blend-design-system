@@ -1,31 +1,31 @@
-import { type MenuItemV2Type, type MenuV2GroupType } from './types'
+import { MenuGroupType, type MenuItemType } from './types'
 
 // Utility: Recursively filter menu items and groups by search text
 export const filterMenuGroups = (
-    groups: MenuV2GroupType[],
+    groups: MenuGroupType[],
     searchText: string
-): MenuV2GroupType[] => {
+): MenuGroupType[] => {
     if (!searchText) return groups
     const lower = searchText.toLowerCase()
     return groups
-        .map((group: MenuV2GroupType) => {
+        .map((group: MenuGroupType) => {
             // TODO: Should we include the whole group if the label matches?
             // if (group.label && group.label.toLowerCase().includes(lower)) {
             //   return group;
             // }
             const filteredItems = group.items
-                .map((item: MenuItemV2Type) => filterMenuItem(item, lower))
-                .filter(Boolean) as MenuItemV2Type[]
+                .map((item: MenuItemType) => filterMenuItem(item, lower))
+                .filter(Boolean) as MenuItemType[]
             if (filteredItems.length === 0) return null
             return { ...group, items: filteredItems }
         })
-        .filter(Boolean) as MenuV2GroupType[]
+        .filter(Boolean) as MenuGroupType[]
 }
 
 export const filterMenuItem = (
-    item: MenuItemV2Type,
+    item: MenuItemType,
     lower: string
-): MenuItemV2Type | null => {
+): MenuItemType | null => {
     // Check if this item matches
     const matches =
         (item.label && item.label.toLowerCase().includes(lower)) ||
@@ -33,8 +33,8 @@ export const filterMenuItem = (
     // If it has a submenu, filter recursively
     if (item.subMenu) {
         const filteredSub = item.subMenu
-            .map((sub: MenuItemV2Type) => filterMenuItem(sub, lower))
-            .filter(Boolean) as MenuItemV2Type[]
+            .map((sub: MenuItemType) => filterMenuItem(sub, lower))
+            .filter(Boolean) as MenuItemType[]
         if (filteredSub.length > 0 || matches) {
             return { ...item, subMenu: filteredSub }
         }

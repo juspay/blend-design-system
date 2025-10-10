@@ -1,11 +1,11 @@
-import { useEffect, forwardRef } from 'react'
+import { useEffect, forwardRef, cloneElement, isValidElement } from 'react'
 import { useRef, useState } from 'react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 
 import type { SearchInputProps } from './types'
 import type { SearchInputTokensType } from './searchInput.tokens'
-import { useComponentToken } from '../../../context/useComponentToken'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const toPixels = (value: string | number | undefined): number => {
     if (typeof value === 'number') {
@@ -19,6 +19,36 @@ const toPixels = (value: string | number | undefined): number => {
     }
 
     return 0
+}
+
+const applyIconStyles = (
+    icon: React.ReactNode,
+    tokens: SearchInputTokensType,
+    disabled: boolean,
+    error: boolean
+): React.ReactNode => {
+    if (!isValidElement(icon)) {
+        return icon
+    }
+
+    const getIconColor = () => {
+        if (disabled) return tokens.icon.color.disabled
+        if (error) return tokens.icon.color.error
+        return tokens.icon.color.default
+    }
+
+    return cloneElement(
+        icon as React.ReactElement<{ style?: React.CSSProperties }>,
+        {
+            style: {
+                ...((icon.props as { style?: React.CSSProperties }).style ||
+                    {}),
+                color: getIconColor(),
+                width: tokens.icon.width,
+                height: tokens.icon.width,
+            },
+        }
+    )
 }
 
 const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
@@ -35,9 +65,8 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         },
         ref
     ) => {
-        const searchInputTokens = useComponentToken(
-            'SEARCH_INPUT'
-        ) as SearchInputTokensType
+        const searchInputTokens =
+            useResponsiveTokens<SearchInputTokensType>('SEARCH_INPUT')
 
         const leftSlotRef = useRef<HTMLDivElement>(null)
         const rightSlotRef = useRef<HTMLDivElement>(null)
@@ -58,8 +87,8 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             }
         }, [leftSlot, rightSlot])
 
-        const paddingX = toPixels(searchInputTokens.padding.x)
-        const paddingY = toPixels(searchInputTokens.padding.y)
+        const paddingX = toPixels(searchInputTokens.inputContainer.padding.x)
+        const paddingY = toPixels(searchInputTokens.inputContainer.padding.y)
         const GAP = toPixels(searchInputTokens.gap)
 
         const paddingInlineStart = leftSlot
@@ -69,9 +98,27 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             ? paddingX + rightSlotWidth + GAP
             : paddingX
 
+        const styledLeftSlot = leftSlot
+            ? applyIconStyles(
+                  leftSlot,
+                  searchInputTokens,
+                  rest.disabled || false,
+                  error
+              )
+            : null
+
+        const styledRightSlot = rightSlot
+            ? applyIconStyles(
+                  rightSlot,
+                  searchInputTokens,
+                  rest.disabled || false,
+                  error
+              )
+            : null
+
         return (
-            <Block position="relative" width={'100%'} height={40}>
-                {leftSlot && (
+            <Block position="relative" width={'100%'}>
+                {styledLeftSlot && (
                     <Block
                         ref={leftSlotRef}
                         position="absolute"
@@ -80,11 +127,11 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                         bottom={paddingY}
                         contentCentered
                     >
-                        {leftSlot}
+                        {styledLeftSlot}
                     </Block>
                 )}
 
-                {rightSlot && (
+                {styledRightSlot && (
                     <Block
                         ref={rightSlotRef}
                         position="absolute"
@@ -93,7 +140,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                         bottom={paddingY}
                         contentCentered
                     >
-                        {rightSlot}
+                        {styledRightSlot}
                     </Block>
                 )}
 
@@ -102,31 +149,56 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                     name={name}
                     value={value}
                     onChange={onChange}
-                    height={searchInputTokens.height}
-                    width={searchInputTokens.width}
                     placeholder={placeholder}
+                    width="100%"
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
                     paddingY={paddingY}
-                    outline={searchInputTokens.outline}
-                    borderRadius={searchInputTokens.borderRadius}
-                    borderTop={searchInputTokens.borderTop.default}
-                    borderLeft={searchInputTokens.borderLeft.default}
-                    borderRight={searchInputTokens.borderRight.default}
+                    outline={searchInputTokens.inputContainer.outline}
+                    borderRadius={searchInputTokens.inputContainer.borderRadius}
                     borderBottom={
-                        error
-                            ? searchInputTokens.borderBottom.error
-                            : searchInputTokens.borderBottom.default
+                        rest.disabled
+                            ? searchInputTokens.inputContainer.borderBottom
+                                  .disabled
+                            : error
+                              ? searchInputTokens.inputContainer.borderBottom
+                                    .error
+                              : searchInputTokens.inputContainer.borderBottom
+                                    .default
                     }
-                    color={searchInputTokens.color}
-                    fontSize={searchInputTokens.fontSize}
-                    fontWeight={searchInputTokens.fontWeight}
-                    placeholderColor={searchInputTokens.placeholderColor}
+                    color={
+                        rest.disabled
+                            ? searchInputTokens.inputContainer.color.disabled
+                            : error
+                              ? searchInputTokens.inputContainer.color.error
+                              : searchInputTokens.inputContainer.color.default
+                    }
+                    fontSize={searchInputTokens.inputContainer.fontSize}
+                    fontWeight={searchInputTokens.inputContainer.fontWeight}
                     _hover={{
-                        borderBottom: searchInputTokens.borderBottom.hover,
+                        borderBottom: rest.disabled
+                            ? searchInputTokens.inputContainer.borderBottom
+                                  .disabled
+                            : searchInputTokens.inputContainer.borderBottom
+                                  .hover,
+                        color: rest.disabled
+                            ? searchInputTokens.inputContainer.color.disabled
+                            : searchInputTokens.inputContainer.color.hover,
                     }}
                     _focus={{
-                        borderBottom: searchInputTokens.borderBottom.focus,
+                        borderBottom: rest.disabled
+                            ? searchInputTokens.inputContainer.borderBottom
+                                  .disabled
+                            : error
+                              ? searchInputTokens.inputContainer.borderBottom
+                                    .error
+                              : searchInputTokens.inputContainer.borderBottom
+                                    .focus,
+                        color: rest.disabled
+                            ? searchInputTokens.inputContainer.color.disabled
+                            : error
+                              ? searchInputTokens.inputContainer.color.error
+                              : searchInputTokens.inputContainer.color.focus,
                     }}
                     {...rest}
                 />

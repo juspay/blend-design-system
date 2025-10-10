@@ -1,4 +1,3 @@
-import { FOUNDATION_THEME } from '../../tokens'
 import type { CSSObject } from 'styled-components'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
@@ -464,13 +463,13 @@ export const getCalendarToken = (
                 },
             },
             content: {
-                padding: FOUNDATION_THEME.unit[4],
+                padding: foundationToken.unit[4],
                 width: '100%',
                 maxHeight: '200px',
                 zIndex: 50,
-                backgroundColor: FOUNDATION_THEME.colors.gray[0],
-                borderRadius: FOUNDATION_THEME.border.radius[6],
-                boxShadow: FOUNDATION_THEME.shadows.xs,
+                backgroundColor: foundationToken.colors.gray[0],
+                borderRadius: foundationToken.border.radius[6],
+                boxShadow: foundationToken.shadows.xs,
                 overflowY: 'auto',
                 overflowX: 'hidden',
             },

@@ -130,6 +130,7 @@ const NumberInputDemo = () => {
                         <div className="w-full max-w-md">
                             <NumberInput
                                 label="Your Label"
+                                sublabel="This is a sublabel"
                                 value={playgroundValue}
                                 onChange={(e) =>
                                     setPlaygroundValue(Number(e.target.value))

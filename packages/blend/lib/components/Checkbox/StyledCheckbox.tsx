@@ -40,37 +40,32 @@ export const StyledCheckboxRoot = styled(CheckboxPrimitive.Root)<{
         const currentInteractionState = getInteractionState($isDisabled, $error)
 
         return css`
-            border-radius: ${tokens.indicator.border.radius};
-            background-color: ${tokens.indicator.background[
+            border-radius: ${tokens.indicator.borderRadius[size]};
+            background-color: ${tokens.indicator.backgroundColor[
                 currentCheckedState
             ]?.[currentInteractionState]};
-            border-width: ${tokens.indicator.border.width};
             border-style: solid;
-            border-color: ${tokens.indicator.border.color[
-                currentCheckedState
-            ]?.[currentInteractionState]};
-            width: ${tokens.indicator.size[size].width};
-            height: ${tokens.indicator.size[size].height};
+            border: ${tokens.indicator.border[currentCheckedState]?.[
+                currentInteractionState
+            ]};
+            width: ${tokens.indicator.width[size]};
+            height: ${tokens.indicator.height[size]};
             margin: 0;
             padding: 0;
             flex-shrink: 0;
-            transition: all ${tokens.transition.duration}
-                ${tokens.transition.easing};
+            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
             &:focus-visible {
-                outline: ${tokens.indicator.focus.outlineWidth} solid
-                    ${tokens.indicator.focus.outlineColor};
-                outline-offset: ${tokens.indicator.focus.outlineOffset};
-                box-shadow: ${tokens.indicator.focus.boxShadow};
+                outline: ${tokens.indicator.outline};
+                outline-offset: ${tokens.indicator.outlineOffset};
+                box-shadow: ${tokens.indicator.boxShadow};
             }
 
             &:not([disabled]):hover {
-                background-color: ${tokens.indicator.background[
+                background-color: ${tokens.indicator.backgroundColor[
                     currentCheckedState
                 ]?.hover};
-                border-color: ${tokens.indicator.border.color[
-                    currentCheckedState
-                ]?.hover};
+                border: ${tokens.indicator.border[currentCheckedState]?.hover};
             }
 
             ${$isDisabled &&
@@ -97,17 +92,14 @@ export const StyledCheckboxIndicator = styled(CheckboxPrimitive.Indicator)<{
     height: 100%;
 
     ${() => {
-        const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
         return css`
             &[data-state='checked'],
             &[data-state='indeterminate'] {
-                animation: scale-in ${tokens.transition.duration}
-                    ${tokens.transition.easing};
+                animation: scale-in 150ms cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             &[data-state='unchecked'] {
-                animation: scale-out ${tokens.transition.duration}
-                    ${tokens.transition.easing};
+                animation: scale-out 150ms cubic-bezier(0.4, 0, 0.2, 1);
             }
         `
     }}

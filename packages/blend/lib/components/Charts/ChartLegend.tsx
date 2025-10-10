@@ -28,7 +28,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
     stackedLegendsData,
 }) => {
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
-    const legendTokens = chartTokens.legend
+    const legendTokens = chartTokens.content.legend
 
     const lastWidth = useRef<number>(0)
     const legendItemsContainerRef = useRef<HTMLDivElement>(null!)
@@ -45,9 +45,9 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
         const BUFFER = 30
         const MORE_BUTTON_ESTIMATED_WIDTH = 80
         const GAP_SIZE =
-            typeof legendTokens.gap.lg === 'string'
-                ? parseFloat(legendTokens.gap.lg)
-                : (legendTokens.gap.lg as number) || 16
+            typeof legendTokens.gap === 'string'
+                ? parseFloat(legendTokens.gap)
+                : (legendTokens.gap as number) || 16
 
         const legendItems = Array.from(container.children)
 
@@ -90,7 +90,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
 
         const newCutoff = Math.max(1, Math.min(optimalCutoff, keys.length))
         setCuttOffIndex(newCutoff)
-    }, [keys.length, legendTokens.gap.lg])
+    }, [keys.length, legendTokens.gap])
 
     const debouncedResize = useDebounce(handleResize, 150)
 
@@ -146,7 +146,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
         <Block
             display="flex"
             alignItems="center"
-            gap={legendTokens.gap.lg}
+            gap={legendTokens.gap}
             justifyContent="space-between"
         >
             <Block
@@ -159,7 +159,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                 whiteSpace="nowrap"
                 style={{ flex: 1 }}
                 justifyContent={isSmallScreen ? 'center' : 'start'}
-                gap={legendTokens.gap.lg}
+                gap={legendTokens.gap}
             >
                 {keys.slice(0, cuttOffIndex).map((dataKey, index) => (
                     <Block
@@ -168,7 +168,6 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                         alignItems="center"
                         gap={legendTokens.item.gap}
                         cursor="pointer"
-                        paddingRight={legendTokens.padding.sm}
                         transition="all 300ms"
                         key={dataKey}
                         onClick={() => handleLegendClick(dataKey)}
@@ -227,17 +226,15 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                             >
                                 {keys.slice(cuttOffIndex).map((dataKey) => (
                                     <Block
-                                        padding={legendTokens.item.padding}
-                                        paddingLeft={legendTokens.padding.md}
-                                        paddingRight={legendTokens.padding.md}
+                                        padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[12]}`}
                                         style={{
                                             fontSize:
                                                 legendTokens.item.fontSize,
                                         }}
                                         _hover={{
                                             backgroundColor:
-                                                legendTokens.item
-                                                    .backgroundColor.hover,
+                                                FOUNDATION_THEME.colors
+                                                    .gray[50],
                                         }}
                                         color={legendTokens.item.color.default}
                                         cursor="pointer"
@@ -316,7 +313,7 @@ const StackedLegends: React.FC<{
 }) => {
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
 
-    const legendTokens = chartTokens.legend
+    const legendTokens = chartTokens.content.legend
 
     const getItemOpacity = (key: string) => {
         if (hoveredKey) {
@@ -335,7 +332,7 @@ const StackedLegends: React.FC<{
             display="flex"
             flexDirection="column"
             justifyContent="center"
-            gap={legendTokens.gap.sm}
+            gap={legendTokens.gap}
         >
             {keys.map((key, index) => (
                 <Block
@@ -343,7 +340,7 @@ const StackedLegends: React.FC<{
                     display="flex"
                     alignItems="center"
                     justifyContent="space-between"
-                    padding={8}
+                    padding={FOUNDATION_THEME.unit[8]}
                     {...(isSmallScreen && {
                         _hover: {
                             backgroundColor: FOUNDATION_THEME.colors.gray[100],
@@ -362,7 +359,6 @@ const StackedLegends: React.FC<{
                         alignItems="center"
                         gap={legendTokens.item.gap}
                         cursor="pointer"
-                        paddingRight={legendTokens.padding.sm}
                         transition="all 300ms"
                         key={key}
                         onClick={() => handleLegendClick(key)}

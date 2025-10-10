@@ -2,10 +2,10 @@ import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled, { type CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 import {
-    type MenuV2Props,
+    type MenuProps,
     MenuAlignment,
     MenuSide,
-    type MenuItemV2Type,
+    type MenuItemType,
 } from './types'
 import React, { useState, useRef, useMemo, useCallback } from 'react'
 import { filterMenuGroups } from './utils'
@@ -28,6 +28,7 @@ export const contentBaseStyle: CSSObject = {
     scrollbarColor: 'transparent transparent',
     paddingBottom: 6,
     borderRadius: 8,
+    border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
 }
 
 const Content = styled(RadixMenu.Content)(() => ({
@@ -54,7 +55,7 @@ const Menu = ({
     virtualItemHeight = 40,
     virtualOverscan = 5,
     virtualScrollThreshold = 50,
-}: MenuV2Props) => {
+}: MenuProps) => {
     const [searchText, setSearchText] = useState<string>('')
     const searchInputRef = useRef<HTMLInputElement>(null)
     const filteredItems = filterMenuGroups(items, searchText)
@@ -147,9 +148,9 @@ const Menu = ({
                 return (
                     <RadixMenu.Separator asChild>
                         <Block
-                            height={menuTokens.seperator.height}
-                            backgroundColor={menuTokens.seperator.color}
-                            margin={menuTokens.seperator.margin}
+                            height={menuTokens.item.seperator.height}
+                            backgroundColor={menuTokens.item.seperator.color}
+                            margin={menuTokens.item.seperator.margin.x}
                         />
                     </RadixMenu.Separator>
                 )
@@ -159,7 +160,7 @@ const Menu = ({
                 return (
                     <MenuItem
                         key={`${groupId}-${itemIndex}`}
-                        item={originalItem as MenuItemV2Type}
+                        item={originalItem as MenuItemType}
                         idx={itemIndex || 0}
                         maxHeight={maxHeight}
                     />
@@ -190,7 +191,8 @@ const Menu = ({
                         : 'var(--radix-popper-available-height)',
                     minWidth: minWidth ? `${minWidth}px` : '200px',
                     maxWidth: maxWidth ? `${maxWidth}px` : '280px',
-                    paddingTop: enableSearch ? 0 : menuTokens.paddingTop,
+                    paddingTop: enableSearch ? 0 : menuTokens.padding.y,
+
                     border: menuTokens.border,
                 }}
                 onFocusCapture={(e) => {
@@ -245,6 +247,73 @@ const Menu = ({
                         />
                     </Block>
                 )}
+                {filteredItems &&
+                    filteredItems.map((group, groupId) => (
+                        <React.Fragment key={groupId}>
+                            {group.label && (
+                                <RadixMenu.Label asChild>
+                                    <PrimitiveText
+                                        fontSize={
+                                            menuTokens.item.optionsLabel
+                                                .fontSize
+                                        }
+                                        paddingY={
+                                            menuTokens.item.optionsLabel.padding
+                                                .y
+                                        }
+                                        paddingX={
+                                            menuTokens.item.optionsLabel.padding
+                                                .x
+                                        }
+                                        userSelect="none"
+                                        marginY={
+                                            menuTokens.item.optionsLabel.margin
+                                                .y
+                                        }
+                                        marginX={
+                                            menuTokens.item.optionsLabel.margin
+                                                .x
+                                        }
+                                        textTransform="uppercase"
+                                        color={
+                                            menuTokens.item.optionsLabel.color
+                                        }
+                                    >
+                                        {group.label}
+                                    </PrimitiveText>
+                                </RadixMenu.Label>
+                            )}
+                            {group.items.map((item, itemIndex) => (
+                                <MenuItem
+                                    key={`${groupId}-${itemIndex}`}
+                                    item={item}
+                                    idx={itemIndex}
+                                    maxHeight={maxHeight}
+                                />
+                            ))}
+                            {groupId !== filteredItems.length - 1 &&
+                                group.showSeparator && (
+                                    <RadixMenu.Separator asChild>
+                                        <Block
+                                            height={
+                                                menuTokens.item.seperator.height
+                                            }
+                                            backgroundColor={
+                                                menuTokens.item.seperator.color
+                                            }
+                                            marginY={
+                                                menuTokens.item.seperator.margin
+                                                    .y
+                                            }
+                                            marginX={
+                                                menuTokens.item.seperator.margin
+                                                    .x
+                                            }
+                                        ></Block>
+                                    </RadixMenu.Separator>
+                                )}
+                        </React.Fragment>
+                    ))}
                 {shouldUseVirtualScrolling ? (
                     <Block
                         padding={FOUNDATION_THEME.unit[6]}
@@ -310,16 +379,20 @@ const Menu = ({
                                             <RadixMenu.Separator asChild>
                                                 <Block
                                                     height={
-                                                        menuTokens.seperator
-                                                            .height
+                                                        menuTokens.item
+                                                            .seperator.height
                                                     }
                                                     backgroundColor={
-                                                        menuTokens.seperator
-                                                            .color
+                                                        menuTokens.item
+                                                            .seperator.color
                                                     }
-                                                    margin={
-                                                        menuTokens.seperator
-                                                            .margin
+                                                    marginY={
+                                                        menuTokens.item
+                                                            .seperator.margin.y
+                                                    }
+                                                    marginX={
+                                                        menuTokens.item
+                                                            .seperator.margin.x
                                                     }
                                                 ></Block>
                                             </RadixMenu.Separator>

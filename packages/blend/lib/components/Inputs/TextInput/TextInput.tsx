@@ -50,11 +50,11 @@ const TextInput = ({
     const [leftSlotWidth, setLeftSlotWidth] = useState(0)
     const [rightSlotWidth, setRightSlotWidth] = useState(0)
 
-    const paddingX = toPixels(textInputTokens.input.paddingX[size])
+    const paddingX = toPixels(textInputTokens.inputContainer.padding.x[size])
     const paddingY =
-        toPixels(textInputTokens.input.paddingY[size]) +
+        toPixels(textInputTokens.inputContainer.padding.y[size]) +
         (isSmallScreenWithLargeSize ? 0.5 : 0)
-    const GAP = toPixels(textInputTokens.input.gap)
+    const GAP = toPixels(textInputTokens.gap)
 
     const paddingInlineStart = leftSlot
         ? paddingX + leftSlotWidth + GAP
@@ -148,45 +148,38 @@ const TextInput = ({
                             ? paddingY / 2
                             : paddingY
                     }
-                    borderRadius={textInputTokens.input.borderRadius}
-                    boxShadow={textInputTokens.input.boxShadow.default}
-                    outline={
-                        textInputTokens.input.outline[
+                    borderRadius={
+                        textInputTokens.inputContainer.borderRadius[size]
+                    }
+                    boxShadow={textInputTokens.inputContainer.boxShadow}
+                    border={
+                        textInputTokens.inputContainer.border[
                             error ? 'error' : 'default'
                         ]
                     }
-                    fontSize={FOUNDATION_THEME.font.size.body.md.fontSize}
-                    fontWeight={500}
+                    fontSize={textInputTokens.inputContainer.fontSize[size]}
+                    fontWeight={textInputTokens.inputContainer.fontWeight[size]}
                     lineHeight={FOUNDATION_THEME.unit[20]}
                     _hover={{
-                        border: textInputTokens.input.border[
+                        border: textInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
                         ],
-                        outline:
-                            textInputTokens.input.outline[
-                                error ? 'error' : 'hover'
-                            ],
                     }}
                     color={
-                        textInputTokens.input.color[
+                        textInputTokens.inputContainer.color[
                             disabled ? 'disabled' : 'default'
                         ]
                     }
                     _focus={{
-                        outline:
-                            textInputTokens.input.outline[
-                                error ? 'error' : 'focus'
-                            ],
-                        boxShadow:
-                            textInputTokens.input.boxShadow[
-                                error ? 'error' : 'focus'
-                            ],
+                        border: textInputTokens.inputContainer.border[
+                            error ? 'error' : 'focus'
+                        ],
                     }}
                     _disabled={{
                         backgroundColor:
-                            textInputTokens.input.backgroundColor.disabled,
-                        border: textInputTokens.input.border.disabled,
-                        outline: textInputTokens.input.outline.disabled,
+                            textInputTokens.inputContainer.backgroundColor
+                                .disabled,
+                        border: textInputTokens.inputContainer.border.disabled,
                         cursor: 'not-allowed',
                     }}
                     onFocus={(e) => {

@@ -72,12 +72,12 @@ export const getCheckboxIconColor = (
 ): string => {
     if (disabled) {
         return currentChecked === CheckboxCheckedState.INDETERMINATE
-            ? String(tokens.icon.color.indeterminate?.disabled || '')
-            : String(tokens.icon.color.checked?.disabled || '')
+            ? String(tokens.indicator.icon.color.indeterminate?.disabled || '')
+            : String(tokens.indicator.icon.color.checked?.disabled || '')
     }
     return currentChecked === CheckboxCheckedState.INDETERMINATE
-        ? String(tokens.icon.color.indeterminate?.default || '')
-        : String(tokens.icon.color.checked?.default || '')
+        ? String(tokens.indicator.icon.color.indeterminate?.default || '')
+        : String(tokens.indicator.icon.color.checked?.default || '')
 }
 
 /**
@@ -119,8 +119,8 @@ export const getCheckboxTextProps = (
     fontWeight: string
     color: string
 } => ({
-    fontSize: String(tokens.content.label.font[size]?.fontSize || ''),
-    fontWeight: String(tokens.content.label.font[size]?.fontWeight || ''),
+    fontSize: String(tokens.content.label.fontSize[size] || ''),
+    fontWeight: String(tokens.content.label.fontWeight[size] || ''),
     color: getCheckboxTextColor(tokens, disabled, error),
 })
 
@@ -136,7 +136,7 @@ export const getCheckboxSubtextProps = (
     fontSize: string
     color: string
 } => ({
-    fontSize: String(tokens.content.subtext.font[size]?.fontSize || ''),
+    fontSize: String(tokens.content.subtext.fontSize[size] || ''),
     color: getCheckboxSubtextColor(tokens, disabled, error),
 })
 

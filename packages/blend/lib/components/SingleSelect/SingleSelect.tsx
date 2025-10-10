@@ -99,9 +99,13 @@ const SingleSelect = ({
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === SelectMenuSize.LARGE
 
-    const borderRadius = singleSelectTokens.trigger.borderRadius[size]
-    const paddingX = toPixels(singleSelectTokens.trigger.paddingX[size])
-    const paddingY = toPixels(singleSelectTokens.trigger.paddingY[size])
+    const borderRadius = singleSelectTokens.trigger.borderRadius[size][variant]
+    const paddingX = toPixels(
+        singleSelectTokens.trigger.padding[size][variant].x
+    )
+    const paddingY = toPixels(
+        singleSelectTokens.trigger.padding[size][variant].y
+    )
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
@@ -146,7 +150,7 @@ const SingleSelect = ({
             width="100%"
             display="flex"
             flexDirection="column"
-            gap={8}
+            gap={singleSelectTokens.gap}
             maxWidth={'100%'}
         >
             {variant === SelectMenuVariant.CONTAINER &&
@@ -158,13 +162,14 @@ const SingleSelect = ({
                         helpIconHintText={helpIconText}
                         name={name}
                         required={required}
+                        tokens={singleSelectTokens}
                     />
                 )}
             <Block
                 display="flex"
                 {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
-                    height: singleSelectTokens.trigger.height[size],
-                    maxHeight: singleSelectTokens.trigger.height[size],
+                    height: singleSelectTokens.trigger.height[size][variant],
+                    maxHeight: singleSelectTokens.trigger.height[size][variant],
                 })}
             >
                 <Block
@@ -249,10 +254,12 @@ const SingleSelect = ({
                                                       ? 'open'
                                                       : 'closed'
                                             ],
+                                        height: singleSelectTokens.trigger
+                                            .height[size][variant],
                                         maxHeight:
                                             singleSelectTokens.trigger.height[
                                                 size
-                                            ],
+                                            ][variant],
                                         _hover: {
                                             outline:
                                                 singleSelectTokens.trigger
@@ -413,6 +420,8 @@ const SingleSelect = ({
                                 </PrimitiveButton>
                             )
                         }
+                        size={size}
+                        variant={variant}
                     />
                 </Block>
             </Block>
@@ -421,6 +430,7 @@ const SingleSelect = ({
                     hintText={hintText}
                     error={error}
                     errorMessage={errorMessage}
+                    tokens={singleSelectTokens}
                 />
             )}
         </Block>

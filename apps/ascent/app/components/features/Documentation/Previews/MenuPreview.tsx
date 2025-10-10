@@ -3,8 +3,8 @@ import {
     Menu,
     MenuAlignment,
     MenuSide,
-    MenuItemV2Variant,
-    MenuItemV2ActionType,
+    MenuItemVariant,
+    MenuItemActionType,
 } from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
@@ -12,7 +12,7 @@ import { Button, ButtonType } from '@juspay/blend-design-system'
 import { Settings, User, LogOut, ChevronDown } from 'lucide-react'
 
 const MenuPreview = () => {
-    const tsCode = `import { Menu, MenuAlignment, MenuSide, MenuItemV2Variant, MenuItemV2ActionType } from "@juspay/blend-design-system";
+    const tsCode = `import { Menu, MenuAlignment, MenuSide, MenuItemVariant, MenuItemActionType } from "@juspay/blend-design-system";
 import { Button, ButtonType } from "@juspay/blend-design-system";
 import { Settings, User, LogOut, ChevronDown } from "lucide-react";
 
@@ -31,8 +31,8 @@ function MyComponent() {
     {
       label: "Logout",
       slot1: <LogOut size={16} />,
-      variant: MenuItemV2Variant.ACTION,
-      actionType: MenuItemV2ActionType.DANGER,
+      variant: MenuItemVariant.ACTION,
+      actionType: MenuItemActionType.DANGER,
       onClick: () => console.log("Logout clicked"),
     },
   ];
@@ -136,8 +136,8 @@ external make: (
         {
             label: 'Logout',
             slot1: <LogOut size={16} />,
-            variant: MenuItemV2Variant.ACTION,
-            actionType: MenuItemV2ActionType.DANGER,
+            variant: MenuItemVariant.ACTION,
+            actionType: MenuItemActionType.DANGER,
             onClick: () => console.log('Logout clicked'),
         },
     ]

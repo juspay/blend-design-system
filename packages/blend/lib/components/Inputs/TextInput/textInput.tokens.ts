@@ -1,30 +1,69 @@
 import type { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME } from '../../../tokens'
 import type { FoundationTokenType } from '../../../tokens/theme.token'
 import { TextInputSize, TextInputState } from './types'
 import { BreakpointType } from '../../../breakpoints/breakPoints'
 
 export type TextInputTokensType = {
-    input: {
-        gap: CSSObject['gap']
-        borderRadius?: CSSObject['borderRadius']
-        boxShadow: {
-            [key in TextInputState]: CSSObject['boxShadow']
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextInputState]: CSSObject['color']
         }
-        paddingX: {
-            [key in TextInputSize]: CSSObject['padding']
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextInputState]: CSSObject['color']
         }
-        paddingY: {
-            [key in TextInputSize]: CSSObject['padding']
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextInputState]: CSSObject['color']
         }
-        border: {
-            [key in TextInputState]: CSSObject['border']
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in TextInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        fontSize: {
+            [key in TextInputSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in TextInputSize]: CSSObject['fontWeight']
         }
         color: {
             [key in TextInputState]: CSSObject['color']
         }
-        outline: {
-            [key in TextInputState]: CSSObject['outline']
+        borderRadius: {
+            [key in TextInputSize]: CSSObject['borderRadius']
+        }
+        boxShadow: CSSObject['boxShadow']
+        padding: {
+            x: {
+                [key in TextInputSize]: CSSObject['padding']
+            }
+            y: {
+                [key in TextInputSize]: CSSObject['padding']
+            }
+        }
+        border: {
+            [key in TextInputState]: CSSObject['border']
         }
         backgroundColor: {
             [key in TextInputState]: CSSObject['backgroundColor']
@@ -37,109 +76,217 @@ export type ResponsiveTextInputTokens = {
 }
 
 export const getTextInputTokens = (
-    foundationTheme: FoundationTokenType
+    foundationTokens: FoundationTokenType
 ): ResponsiveTextInputTokens => {
     return {
         sm: {
-            input: {
-                gap: foundationTheme.unit[8],
-                borderRadius: foundationTheme.unit[10],
-                paddingX: {
-                    md: foundationTheme.unit[12],
-                    lg: foundationTheme.unit[14],
-                    sm: foundationTheme.unit[10],
+            gap: foundationTokens.unit[8],
+            label: {
+                fontSize: foundationTokens.font.size.body.md.fontSize,
+                fontWeight: foundationTokens.font.weight[500],
+                color: {
+                    default: foundationTokens.colors.gray[700],
+                    hover: foundationTokens.colors.gray[700],
+                    focus: foundationTokens.colors.gray[700],
+                    disabled: foundationTokens.colors.gray[400],
+                    error: foundationTokens.colors.red[600],
                 },
-                paddingY: {
-                    md: foundationTheme.unit[8],
-                    lg: foundationTheme.unit[14],
-                    sm: foundationTheme.unit[6],
+            },
+            subLabel: {
+                fontSize: foundationTokens.font.size.body.md.fontSize,
+                fontWeight: foundationTokens.font.weight[400],
+                color: {
+                    default: foundationTokens.colors.gray[400],
+                    hover: foundationTokens.colors.gray[400],
+                    focus: foundationTokens.colors.gray[400],
+                    disabled: foundationTokens.colors.gray[300],
+                    error: foundationTokens.colors.red[600],
                 },
-                border: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
+            },
+            helpIcon: {
+                width: foundationTokens.unit[14],
+                color: {
+                    default: foundationTokens.colors.gray[400],
+                    hover: foundationTokens.colors.gray[400],
+                    focus: foundationTokens.colors.gray[400],
+                    disabled: foundationTokens.colors.gray[400],
+                    error: foundationTokens.colors.red[600],
                 },
-                outline: {
-                    default: `1px solid ${foundationTheme.colors.gray[200]}`,
-                    hover: `1px solid ${foundationTheme.colors.gray[400]}`,
-                    focus: `1px solid ${foundationTheme.colors.primary[500]}`,
-                    error: `1px solid ${foundationTheme.colors.red[500]}`,
-                    disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
+            },
+            hintText: {
+                fontSize: foundationTokens.font.size.body.md.fontSize,
+                fontWeight: foundationTokens.font.weight[400],
+                color: {
+                    default: foundationTokens.colors.gray[500],
+                    hover: foundationTokens.colors.gray[500],
+                    focus: foundationTokens.colors.gray[500],
+                    disabled: foundationTokens.colors.gray[400],
+                    error: foundationTokens.colors.red[600],
+                },
+            },
+            errorMessage: {
+                fontSize: foundationTokens.font.size.body.md.fontSize,
+                fontWeight: foundationTokens.font.weight[500],
+                color: foundationTokens.colors.red[600],
+            },
+            required: {
+                color: foundationTokens.colors.red[600],
+            },
+            inputContainer: {
+                borderRadius: {
+                    sm: foundationTokens.unit[10],
+                    md: foundationTokens.unit[10],
+                    lg: foundationTokens.unit[10],
+                },
+                fontSize: {
+                    sm: foundationTokens.font.size.body.md.fontSize,
+                    md: foundationTokens.font.size.body.md.fontSize,
+                    lg: foundationTokens.font.size.body.md.fontSize,
+                },
+                fontWeight: {
+                    sm: foundationTokens.font.weight[500],
+                    md: foundationTokens.font.weight[500],
+                    lg: foundationTokens.font.weight[500],
                 },
                 color: {
-                    default: foundationTheme.colors.gray[800],
-                    hover: foundationTheme.colors.gray[800],
-                    focus: foundationTheme.colors.gray[800],
-                    error: foundationTheme.colors.red[800],
-                    disabled: foundationTheme.colors.gray[300],
+                    default: foundationTokens.colors.gray[800],
+                    hover: foundationTokens.colors.gray[800],
+                    focus: foundationTokens.colors.gray[800],
+                    error: foundationTokens.colors.red[800],
+                    disabled: foundationTokens.colors.gray[300],
+                },
+                padding: {
+                    x: {
+                        sm: foundationTokens.unit[10],
+                        md: foundationTokens.unit[12],
+                        lg: foundationTokens.unit[14],
+                    },
+                    y: {
+                        sm: foundationTokens.unit[6],
+                        md: foundationTokens.unit[8],
+                        lg: foundationTokens.unit[14],
+                    },
+                },
+                border: {
+                    default: `1px solid ${foundationTokens.colors.gray[200]}`,
+                    hover: `1px solid ${foundationTokens.colors.gray[400]}`,
+                    focus: `1px solid ${foundationTokens.colors.primary[500]}`,
+                    error: `1px solid ${foundationTokens.colors.red[500]}`,
+                    disabled: `1px solid ${foundationTokens.colors.gray[200]}`,
                 },
                 backgroundColor: {
-                    default: foundationTheme.colors.gray[0],
-                    disabled: foundationTheme.colors.gray[50],
-                    hover: foundationTheme.colors.gray[0],
-                    focus: foundationTheme.colors.gray[0],
-                    error: foundationTheme.colors.gray[0],
+                    default: foundationTokens.colors.gray[0],
+                    disabled: foundationTokens.colors.gray[50],
+                    hover: foundationTokens.colors.gray[0],
+                    focus: foundationTokens.colors.gray[0],
+                    error: foundationTokens.colors.gray[0],
                 },
-                boxShadow: {
-                    default: FOUNDATION_THEME.shadows.sm,
-                    hover: FOUNDATION_THEME.shadows.sm,
-                    focus: FOUNDATION_THEME.shadows.focusPrimary,
-                    error: FOUNDATION_THEME.shadows.focusError,
-                    disabled: FOUNDATION_THEME.shadows.sm,
-                },
+                boxShadow: foundationTokens.shadows.sm,
             },
         },
         lg: {
-            input: {
-                gap: foundationTheme.unit[8],
-                borderRadius: foundationTheme.unit[10],
-                paddingX: {
-                    md: foundationTheme.unit[12],
-                    lg: foundationTheme.unit[14],
-                    sm: foundationTheme.unit[10],
+            gap: foundationTokens.unit[8],
+            label: {
+                fontSize: foundationTokens.font.size.body.md.fontSize,
+                fontWeight: foundationTokens.font.weight[500],
+                color: {
+                    default: foundationTokens.colors.gray[700],
+                    hover: foundationTokens.colors.gray[700],
+                    focus: foundationTokens.colors.gray[700],
+                    disabled: foundationTokens.colors.gray[400],
+                    error: foundationTokens.colors.red[600],
                 },
-                paddingY: {
-                    md: foundationTheme.unit[8],
-                    lg: foundationTheme.unit[10],
-                    sm: foundationTheme.unit[6],
+            },
+            subLabel: {
+                fontSize: foundationTokens.font.size.body.md.fontSize,
+                fontWeight: foundationTokens.font.weight[400],
+                color: {
+                    default: foundationTokens.colors.gray[400],
+                    hover: foundationTokens.colors.gray[400],
+                    focus: foundationTokens.colors.gray[400],
+                    disabled: foundationTokens.colors.gray[300],
+                    error: foundationTokens.colors.red[600],
                 },
-                border: {
-                    default: 'none',
-                    hover: 'none',
-                    focus: 'none',
-                    error: 'none',
-                    disabled: 'none',
+            },
+            helpIcon: {
+                width: foundationTokens.unit[14],
+                color: {
+                    default: foundationTokens.colors.gray[400],
+                    hover: foundationTokens.colors.gray[400],
+                    focus: foundationTokens.colors.gray[400],
+                    disabled: foundationTokens.colors.gray[400],
+                    error: foundationTokens.colors.red[600],
                 },
-                outline: {
-                    default: `1px solid ${foundationTheme.colors.gray[200]}`,
-                    hover: `1px solid ${foundationTheme.colors.gray[400]}`,
-                    focus: `1px solid ${foundationTheme.colors.primary[500]}`,
-                    error: `1px solid ${foundationTheme.colors.red[500]}`,
-                    disabled: `1px solid ${foundationTheme.colors.gray[200]}`,
+            },
+            hintText: {
+                fontSize: foundationTokens.font.size.body.md.fontSize,
+                fontWeight: foundationTokens.font.weight[400],
+                color: {
+                    default: foundationTokens.colors.gray[500],
+                    hover: foundationTokens.colors.gray[500],
+                    focus: foundationTokens.colors.gray[500],
+                    disabled: foundationTokens.colors.gray[400],
+                    error: foundationTokens.colors.red[600],
+                },
+            },
+            errorMessage: {
+                fontSize: foundationTokens.font.size.body.md.fontSize,
+                fontWeight: foundationTokens.font.weight[500],
+                color: foundationTokens.colors.red[600],
+            },
+            required: {
+                color: foundationTokens.colors.red[600],
+            },
+            inputContainer: {
+                borderRadius: {
+                    sm: foundationTokens.unit[10],
+                    md: foundationTokens.unit[10],
+                    lg: foundationTokens.unit[10],
+                },
+                fontSize: {
+                    sm: foundationTokens.font.size.body.md.fontSize,
+                    md: foundationTokens.font.size.body.md.fontSize,
+                    lg: foundationTokens.font.size.body.md.fontSize,
+                },
+                fontWeight: {
+                    sm: foundationTokens.font.weight[500],
+                    md: foundationTokens.font.weight[500],
+                    lg: foundationTokens.font.weight[500],
                 },
                 color: {
-                    default: foundationTheme.colors.gray[800],
-                    hover: foundationTheme.colors.gray[800],
-                    focus: foundationTheme.colors.gray[800],
-                    error: foundationTheme.colors.red[800],
-                    disabled: foundationTheme.colors.gray[300],
+                    default: foundationTokens.colors.gray[800],
+                    hover: foundationTokens.colors.gray[800],
+                    focus: foundationTokens.colors.gray[800],
+                    error: foundationTokens.colors.red[800],
+                    disabled: foundationTokens.colors.gray[300],
+                },
+                padding: {
+                    x: {
+                        sm: foundationTokens.unit[10],
+                        md: foundationTokens.unit[12],
+                        lg: foundationTokens.unit[14],
+                    },
+                    y: {
+                        sm: foundationTokens.unit[6],
+                        md: foundationTokens.unit[8],
+                        lg: foundationTokens.unit[10],
+                    },
+                },
+                border: {
+                    default: `1px solid ${foundationTokens.colors.gray[200]}`,
+                    hover: `1px solid ${foundationTokens.colors.gray[400]}`,
+                    focus: `1px solid ${foundationTokens.colors.primary[500]}`,
+                    error: `1px solid ${foundationTokens.colors.red[500]}`,
+                    disabled: `1px solid ${foundationTokens.colors.gray[200]}`,
                 },
                 backgroundColor: {
-                    default: foundationTheme.colors.gray[0],
-                    disabled: foundationTheme.colors.gray[50],
-                    hover: foundationTheme.colors.gray[0],
-                    focus: foundationTheme.colors.gray[0],
-                    error: foundationTheme.colors.gray[0],
+                    default: foundationTokens.colors.gray[0],
+                    disabled: foundationTokens.colors.gray[50],
+                    hover: foundationTokens.colors.gray[0],
+                    focus: foundationTokens.colors.gray[0],
+                    error: foundationTokens.colors.gray[0],
                 },
-                boxShadow: {
-                    default: FOUNDATION_THEME.shadows.sm,
-                    hover: FOUNDATION_THEME.shadows.sm,
-                    focus: FOUNDATION_THEME.shadows.focusPrimary,
-                    error: FOUNDATION_THEME.shadows.focusError,
-                    disabled: FOUNDATION_THEME.shadows.sm,
-                },
+                boxShadow: foundationTokens.shadows.sm,
             },
         },
     }

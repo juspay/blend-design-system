@@ -3,8 +3,8 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { ProgressBarSize, ProgressBarVariant, ProgressBarType } from './types'
 import type { ProgressBarProps } from './types'
-import { useComponentToken } from '../../context/useComponentToken'
 import type { ProgressBarTokenType } from './progressbar.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const CircularProgressBar: React.FC<{
     value: number
@@ -56,7 +56,7 @@ const CircularProgressBar: React.FC<{
                     cy={center}
                     r={radius}
                     fill="none"
-                    stroke={tokens.circular[type].background}
+                    stroke={tokens.circular.background[type]}
                     strokeWidth={strokeWidth}
                     strokeDasharray={
                         type === ProgressBarType.SEGMENTED
@@ -69,7 +69,7 @@ const CircularProgressBar: React.FC<{
                     cy={center}
                     r={radius}
                     fill="none"
-                    stroke={tokens.circular[type].stroke}
+                    stroke={tokens.circular.stroke[type]}
                     strokeWidth={strokeWidth}
                     strokeDasharray={strokeDasharray}
                     strokeDashoffset={strokeDashoffset}
@@ -90,7 +90,7 @@ const CircularProgressBar: React.FC<{
                 >
                     <Text
                         as="span"
-                        variant="body.xs"
+                        fontSize={tokens.label.fontSize}
                         fontWeight={tokens.label.fontWeight}
                         color={tokens.label.color}
                     >
@@ -105,17 +105,16 @@ const CircularProgressBar: React.FC<{
 const LinearProgressBar: React.FC<{
     value: number
     size: ProgressBarSize
-    variant: ProgressBarVariant
+    variant: Exclude<ProgressBarVariant, ProgressBarVariant.CIRCULAR>
     tokens: ProgressBarTokenType
     showLabel: boolean
 }> = ({ value, size, variant, tokens, showLabel }) => {
     const clampedValue = Math.min(100, Math.max(0, value))
-    const containerHeight = tokens.height[size]
-    const fillStyles = tokens.fill[variant as keyof typeof tokens.fill]
-    const emptyStyles = tokens.empty[variant as keyof typeof tokens.empty]
-
-    const containerBorderRadius =
-        variant === ProgressBarVariant.SEGMENTED ? '0px' : '8px'
+    const containerHeight = tokens.linear.height[size]
+    const fillBackgroundColor = tokens.linear.fill.backgroundColor[variant]
+    const fillBorderRadius = tokens.linear.fill.borderRadius[variant]
+    const emptyBackgroundColor = tokens.linear.empty.backgroundColor[variant]
+    const containerBorderRadius = tokens.linear.borderRadius[variant]
 
     return (
         <Block display="flex" alignItems="center" gap="8px" width="100%">
@@ -125,17 +124,17 @@ const LinearProgressBar: React.FC<{
                 display="flex"
                 flexGrow={1}
                 borderRadius={containerBorderRadius}
-                overflow={tokens.container.overflow}
+                overflow={'hidden'}
                 backgroundColor={
                     variant === ProgressBarVariant.SOLID
-                        ? emptyStyles.backgroundColor
+                        ? emptyBackgroundColor
                         : 'transparent'
                 }
             >
                 <Block
                     height="100%"
-                    backgroundColor={fillStyles.backgroundColor}
-                    borderRadius={fillStyles.borderRadius}
+                    backgroundColor={fillBackgroundColor}
+                    borderRadius={fillBorderRadius}
                     style={{
                         width: `${clampedValue}%`,
                         transition: tokens.transition,
@@ -144,16 +143,12 @@ const LinearProgressBar: React.FC<{
                 {variant === ProgressBarVariant.SEGMENTED && (
                     <Block
                         height="100%"
-                        backgroundColor={emptyStyles.backgroundColor}
+                        backgroundColor={emptyBackgroundColor}
                         backgroundImage={
-                            'backgroundImage' in emptyStyles
-                                ? emptyStyles.backgroundImage
-                                : undefined
+                            tokens.linear.empty.backgroundImage.segmented
                         }
                         backgroundSize={
-                            'backgroundSize' in emptyStyles
-                                ? emptyStyles.backgroundSize
-                                : undefined
+                            tokens.linear.empty.backgroundSize.segmented
                         }
                         style={{
                             width: `${100 - clampedValue}%`,
@@ -166,9 +161,9 @@ const LinearProgressBar: React.FC<{
                 <Block flexShrink={0}>
                     <Text
                         as="span"
-                        variant="body.xs"
                         fontWeight={tokens.label.fontWeight}
                         color={tokens.label.color}
+                        fontSize={tokens.label.fontSize}
                     >
                         {Math.round(clampedValue)}%
                     </Text>
@@ -186,9 +181,8 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     showLabel = false,
     className,
 }) => {
-    const progressBarToken = useComponentToken(
-        'PROGRESS_BAR'
-    ) as ProgressBarTokenType
+    const progressBarToken =
+        useResponsiveTokens<ProgressBarTokenType>('PROGRESS_BAR')
 
     if (variant === ProgressBarVariant.CIRCULAR) {
         return (

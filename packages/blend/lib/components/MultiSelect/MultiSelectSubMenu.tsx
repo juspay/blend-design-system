@@ -41,26 +41,23 @@ const MultiSelectSubMenu = ({
                     outline="none"
                     border="none"
                     backgroundColor={
-                        multiSelectTokens.dropdown.item.backgroundColor.default
+                        multiSelectTokens.menu.item.backgroundColor.default
                     }
                     _hover={{
                         backgroundColor:
-                            multiSelectTokens.dropdown.item.backgroundColor
-                                .hover,
+                            multiSelectTokens.menu.item.backgroundColor.hover,
                     }}
                     _active={{
                         backgroundColor:
-                            multiSelectTokens.dropdown.item.backgroundColor
-                                .active,
+                            multiSelectTokens.menu.item.backgroundColor.active,
                     }}
                     _focus={{
                         backgroundColor:
-                            multiSelectTokens.dropdown.item.backgroundColor
-                                .focus,
+                            multiSelectTokens.menu.item.backgroundColor.focus,
                     }}
                     _focusVisible={{
                         backgroundColor:
-                            multiSelectTokens.dropdown.item.backgroundColor
+                            multiSelectTokens.menu.item.backgroundColor
                                 .focusVisible,
                     }}
                     style={{ userSelect: 'none' }}
@@ -89,15 +86,14 @@ const MultiSelectSubMenu = ({
               </Text> */}
                             <PrimitiveText
                                 fontSize={
-                                    multiSelectTokens.dropdown.item.label
-                                        .fontSize
+                                    multiSelectTokens.menu.item.option.fontSize
                                 }
                                 fontWeight={
-                                    multiSelectTokens.dropdown.item.label
+                                    multiSelectTokens.menu.item.option
                                         .fontWeight
                                 }
                                 color={
-                                    multiSelectTokens.dropdown.item.label.color
+                                    multiSelectTokens.menu.item.option.color
                                         .default
                                 }
                                 truncate

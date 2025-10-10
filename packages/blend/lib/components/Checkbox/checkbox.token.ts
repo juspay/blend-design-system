@@ -1,161 +1,77 @@
 import type { CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { ThemeType } from '../../tokens'
-import { CheckboxSize, CheckboxInteractionState } from './types'
+import {
+    CheckboxSize,
+    CheckboxInteractionState,
+    CheckboxCheckedState,
+} from './types'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 
-// Token Structure: $component.$target.$property.[$variant].[$type].[$state]
-// $component: CHECKBOX (implied)
-// $target: e.g., indicator, icon, content.label, content.subtext, required, transition
-// $property: e.g., size, background, border, color, font, spacing, duration
-// [$variant]: Optional. e.g., CheckboxSize (sm, md), checked state (checked, unchecked, indeterminate)
-// [$type]: Optional. Generally not used explicitly in this component's tokens.
-// [$state]: Optional. e.g., CheckboxInteractionState (default, hover, disabled, error)
+// Token Structure: component.[target].CSSProp.[size].[variant].[subType].[state].value
 
 export type CheckboxTokensType = {
-    // Top-level layout tokens (can be considered $target: 'layout', $property: 'gap', etc.)
     gap: CSSObject['gap']
-    slotGap: CSSObject['gap']
-    checkboxMarginRight: CSSObject['marginRight']
+    slot: {
+        marginLeft: CSSObject['marginLeft']
+    }
 
-    // $target: 'indicator' (The checkbox square itself)
     indicator: {
-        // $property: 'size'
-        size: {
-            [key in CheckboxSize]: {
-                // $variant: sm, md
-                width: CSSObject['width']
-                height: CSSObject['height']
+        width: { [key in CheckboxSize]: CSSObject['width'] }
+        height: { [key in CheckboxSize]: CSSObject['height'] }
+
+        backgroundColor: {
+            [key in CheckboxCheckedState]?: {
+                [key in CheckboxInteractionState]?: CSSObject['backgroundColor']
             }
         }
-        // $property: 'background'
-        background: {
-            checked?: {
-                [key in CheckboxInteractionState]?: CSSObject['backgroundColor'] // $state: default, hover, disabled, error
-            }
-            unchecked?: {
-                [key in CheckboxInteractionState]?: CSSObject['backgroundColor'] // $state: default, hover, disabled, error
-            }
-            indeterminate?: {
-                [key in CheckboxInteractionState]?: CSSObject['backgroundColor'] // $state: default, hover, disabled, error
-            }
-        }
-        // $property: 'border'
+
+        borderRadius: { [key in CheckboxSize]: CSSObject['borderRadius'] }
+
         border: {
-            radius: CSSObject['borderRadius'] // Direct sub-property
-            width: CSSObject['borderWidth'] // Direct sub-property
+            [key in CheckboxCheckedState]?: {
+                [key in CheckboxInteractionState]?: CSSObject['border']
+            }
+        }
+
+        outline: CSSObject['outline']
+        outlineOffset: CSSObject['outlineOffset']
+        boxShadow: CSSObject['boxShadow']
+        icon: {
             color: {
-                // Sub-property 'color'
-                checked?: {
-                    [key in CheckboxInteractionState]?: CSSObject['borderColor'] // $state: default, hover, disabled, error
-                }
-                unchecked?: {
-                    [key in CheckboxInteractionState]?: CSSObject['borderColor'] // $state: default, hover, disabled, error
-                }
-                indeterminate?: {
-                    [key in CheckboxInteractionState]?: CSSObject['borderColor'] // $state: default, hover, disabled, error
+                [key in CheckboxCheckedState]?: {
+                    [key in Extract<
+                        CheckboxInteractionState,
+                        'default' | 'disabled'
+                    >]?: CSSObject['color']
                 }
             }
-        }
-        // $property: 'focus' (conceptually, focus is a $state of the 'indicator' $target)
-        focus: {
-            outlineColor: CSSObject['borderColor'] // Sub-property
-            outlineWidth: CSSObject['borderWidth'] // Sub-property
-            outlineOffset: CSSObject['outlineOffset'] // Sub-property
-            boxShadow: CSSObject['boxShadow'] // Sub-property
+            width: { [key in CheckboxSize]: CSSObject['width'] }
+            height: { [key in CheckboxSize]: CSSObject['height'] }
+            strokeWidth: { [key in CheckboxSize]: CSSObject['strokeWidth'] }
         }
     }
 
-    // $target: 'icon' (The check/minus symbol)
-    icon: {
-        // $property: 'color'
-        color: {
-            checked?: {
-                // $state: default, disabled
-                [key in Extract<
-                    CheckboxInteractionState,
-                    'default' | 'disabled'
-                >]?: CSSObject['color']
-            }
-            indeterminate?: {
-                // $state: default, disabled
-                [key in Extract<
-                    CheckboxInteractionState,
-                    'default' | 'disabled'
-                >]?: CSSObject['color']
-            }
-        }
-        // $property: 'size'
-        size: {
-            [key in CheckboxSize]: {
-                // $variant: sm, md
-                width: CSSObject['width']
-                height: CSSObject['height']
-                strokeWidth: CSSObject['strokeWidth']
-            }
-        }
-    }
-
-    // $target: 'content' (Wrapper for label and subtext)
     content: {
         gap: CSSObject['gap']
-        // Sub-target: 'label'
         label: {
-            // $property: 'color'
             color: {
-                // $state: default, disabled, error (hover is usually not applied to label color directly)
-                [key in Exclude<
-                    CheckboxInteractionState,
-                    'hover'
-                >]: CSSObject['color']
+                [key in CheckboxInteractionState]: CSSObject['color']
             }
-            // $property: 'font'
-            font: {
-                [key in CheckboxSize]: {
-                    // $variant: sm, md
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                }
-            }
+            fontSize: { [key in CheckboxSize]: CSSObject['fontSize'] }
+            fontWeight: { [key in CheckboxSize]: CSSObject['fontWeight'] }
         }
-        // Sub-target: 'subtext'
         subtext: {
-            // $property: 'color'
             color: {
-                [key in Exclude<
-                    CheckboxInteractionState,
-                    'hover'
-                >]: CSSObject['color'] // $state: default, disabled, error
+                [key in CheckboxInteractionState]: CSSObject['color']
             }
-            // $property: 'font'
-            font: {
-                [key in CheckboxSize]: {
-                    // $variant: sm, md
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                }
-            }
-            // $property: 'spacing'
-            spacing: {
-                left: {
-                    // Sub-property
-                    [key in CheckboxSize]: CSSObject['marginLeft'] // $variant: sm, md
-                }
-                top: CSSObject['marginTop'] // Sub-property
-            }
+            fontSize: { [key in CheckboxSize]: CSSObject['fontSize'] }
+            fontWeight: { [key in CheckboxSize]: CSSObject['fontWeight'] }
         }
     }
 
-    // $target: 'required' (The required indicator, e.g., asterisk)
     required: {
-        color: CSSObject['color'] // $property
-        spacing: CSSObject['marginLeft'] // $property
-    }
-
-    // $target: 'transition' (General animation properties)
-    transition: {
-        duration: CSSObject['transitionDuration'] // $property
-        easing: CSSObject['transitionTimingFunction'] // $property
+        color: CSSObject['color']
     }
 }
 
@@ -169,21 +85,20 @@ export const getCheckboxTokens = (
     return {
         sm: {
             gap: foundationToken.unit[8],
-            slotGap: foundationToken.unit[6],
-            checkboxMarginRight: foundationToken.unit[8],
+            slot: {
+                marginLeft: foundationToken.unit[6],
+            },
 
             indicator: {
-                size: {
-                    sm: {
-                        width: foundationToken.unit[16],
-                        height: foundationToken.unit[16],
-                    },
-                    md: {
-                        width: foundationToken.unit[20],
-                        height: foundationToken.unit[20],
-                    },
+                width: {
+                    sm: foundationToken.unit[16],
+                    md: foundationToken.unit[20],
                 },
-                background: {
+                height: {
+                    sm: foundationToken.unit[16],
+                    md: foundationToken.unit[20],
+                },
+                backgroundColor: {
                     unchecked: {
                         default: foundationToken.colors.gray[0],
                         hover: foundationToken.colors.gray[150],
@@ -203,80 +118,79 @@ export const getCheckboxTokens = (
                         error: foundationToken.colors.primary[500],
                     },
                 },
-                border: {
-                    radius: foundationToken.border.radius[4],
-                    width: foundationToken.border.width[1],
-                    color: {
-                        unchecked: {
-                            default: foundationToken.colors.gray[300],
-                            hover: foundationToken.colors.gray[400],
-                            disabled: foundationToken.colors.gray[200],
-                            error: foundationToken.colors.red[500],
-                        },
-                        checked: {
-                            default: 'transparent',
-                            hover: 'transparent',
-                            disabled: 'transparent',
-                            error: foundationToken.colors.red[500],
-                        },
-                        indeterminate: {
-                            default: 'transparent',
-                            hover: 'transparent',
-                            disabled: 'transparent',
-                            error: foundationToken.colors.red[500],
-                        },
-                    },
-                },
-                focus: {
-                    outlineColor: foundationToken.colors.primary[200],
-                    outlineWidth: foundationToken.border.width[2],
-                    outlineOffset: foundationToken.unit[2],
-                    boxShadow: `0 0 0 2px ${foundationToken.colors.primary[100]}`,
-                },
-            },
 
-            icon: {
-                color: {
+                borderRadius: {
+                    sm: foundationToken.border.radius[4],
+                    md: foundationToken.border.radius[4],
+                },
+                border: {
+                    unchecked: {
+                        default: `1px solid ${foundationToken.colors.gray[300]}`,
+                        hover: `1px solid ${foundationToken.colors.gray[400]}`,
+                        disabled: `1px solid ${foundationToken.colors.gray[200]}`,
+                        error: `1px solid ${foundationToken.colors.red[500]}`,
+                    },
                     checked: {
-                        default: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
+                        default: 'transparent',
+                        hover: 'transparent',
+                        disabled: 'transparent',
+                        error: `1px solid ${foundationToken.colors.red[500]}`,
                     },
                     indeterminate: {
-                        default: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
+                        default: 'transparent',
+                        hover: 'transparent',
+                        disabled: 'transparent',
+                        error: `1px solid ${foundationToken.colors.red[500]}`,
                     },
                 },
-                size: {
-                    sm: {
-                        width: foundationToken.unit[12],
-                        height: foundationToken.unit[12],
-                        strokeWidth: 2.5,
+
+                outline: `1px solid ${foundationToken.colors.primary[200]}`,
+                outlineOffset: foundationToken.unit[2],
+                boxShadow: `0 0 0 2px ${foundationToken.colors.primary[100]}`,
+
+                icon: {
+                    color: {
+                        checked: {
+                            default: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        indeterminate: {
+                            default: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
                     },
-                    md: {
-                        width: foundationToken.unit[14],
-                        height: foundationToken.unit[14],
-                        strokeWidth: 2.5,
+                    width: {
+                        sm: foundationToken.unit[12],
+                        md: foundationToken.unit[14],
+                    },
+                    height: {
+                        sm: foundationToken.unit[12],
+                        md: foundationToken.unit[14],
+                    },
+                    strokeWidth: {
+                        sm: 2.5,
+                        md: 2.5,
                     },
                 },
             },
 
             content: {
-                gap: foundationToken.unit[2],
+                gap: foundationToken.unit[0],
                 label: {
                     color: {
                         default: foundationToken.colors.gray[700],
+                        hover: foundationToken.colors.gray[700],
                         disabled: foundationToken.colors.gray[300],
                         error: foundationToken.colors.red[600],
                     },
-                    font: {
-                        sm: {
-                            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[500],
-                        },
-                        md: {
-                            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[500],
-                        },
+
+                    fontSize: {
+                        sm: `${foundationToken.font.size.body.md.fontSize}px`,
+                        md: `${foundationToken.font.size.body.md.fontSize}px`,
+                    },
+                    fontWeight: {
+                        sm: foundationToken.font.weight[500],
+                        md: foundationToken.font.weight[500],
                     },
                 },
                 subtext: {
@@ -284,54 +198,42 @@ export const getCheckboxTokens = (
                         default: foundationToken.colors.gray[400],
                         disabled: foundationToken.colors.gray[200],
                         error: foundationToken.colors.red[500],
+                        hover: foundationToken.colors.gray[400],
                     },
-                    font: {
-                        sm: {
-                            fontSize: `${foundationToken.font.size.body.sm.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[400],
-                        },
-                        md: {
-                            fontSize: `${foundationToken.font.size.body.sm.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[400],
-                        },
+
+                    fontSize: {
+                        sm: `${foundationToken.font.size.body.sm.fontSize}px`,
+                        md: `${foundationToken.font.size.body.md.fontSize}px`,
                     },
-                    spacing: {
-                        left: {
-                            sm: foundationToken.unit[20],
-                            md: foundationToken.unit[24],
-                        },
-                        top: foundationToken.unit[4],
+                    fontWeight: {
+                        sm: foundationToken.font.weight[400],
+                        md: foundationToken.font.weight[400],
                     },
                 },
             },
 
             required: {
                 color: foundationToken.colors.red[600],
-                spacing: foundationToken.unit[2],
-            },
-
-            transition: {
-                duration: '150ms',
-                easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
             },
         },
         lg: {
             gap: foundationToken.unit[8],
-            slotGap: foundationToken.unit[6],
-            checkboxMarginRight: foundationToken.unit[8],
+            slot: {
+                marginLeft: foundationToken.unit[6],
+            },
 
             indicator: {
-                size: {
-                    sm: {
-                        width: foundationToken.unit[14],
-                        height: foundationToken.unit[14],
-                    },
-                    md: {
-                        width: foundationToken.unit[16],
-                        height: foundationToken.unit[16],
-                    },
+                width: {
+                    sm: foundationToken.unit[14],
+                    md: foundationToken.unit[16],
                 },
-                background: {
+
+                height: {
+                    sm: foundationToken.unit[14],
+                    md: foundationToken.unit[16],
+                },
+
+                backgroundColor: {
                     unchecked: {
                         default: foundationToken.colors.gray[0],
                         hover: foundationToken.colors.gray[150],
@@ -351,80 +253,77 @@ export const getCheckboxTokens = (
                         error: foundationToken.colors.primary[500],
                     },
                 },
+                borderRadius: {
+                    sm: foundationToken.border.radius[4],
+                    md: foundationToken.border.radius[4],
+                },
                 border: {
-                    radius: foundationToken.border.radius[4],
-                    width: foundationToken.border.width[1],
-                    color: {
-                        unchecked: {
-                            default: foundationToken.colors.gray[300],
-                            hover: foundationToken.colors.gray[400],
-                            disabled: foundationToken.colors.gray[200],
-                            error: foundationToken.colors.red[500],
-                        },
-                        checked: {
-                            default: 'transparent',
-                            hover: 'transparent',
-                            disabled: 'transparent',
-                            error: foundationToken.colors.red[500],
-                        },
-                        indeterminate: {
-                            default: 'transparent',
-                            hover: 'transparent',
-                            disabled: 'transparent',
-                            error: foundationToken.colors.red[500],
-                        },
+                    unchecked: {
+                        default: `1px solid ${foundationToken.colors.gray[300]}`,
+                        hover: `1px solid ${foundationToken.colors.gray[400]}`,
+                        disabled: `1px solid ${foundationToken.colors.gray[200]}`,
+                        error: `1px solid ${foundationToken.colors.red[500]}`,
                     },
-                },
-                focus: {
-                    outlineColor: foundationToken.colors.primary[200],
-                    outlineWidth: foundationToken.border.width[2],
-                    outlineOffset: foundationToken.unit[2],
-                    boxShadow: `0 0 0 2px ${foundationToken.colors.primary[100]}`,
-                },
-            },
-
-            icon: {
-                color: {
                     checked: {
-                        default: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
+                        default: 'transparent',
+                        hover: 'transparent',
+                        disabled: 'transparent',
+                        error: `1px solid ${foundationToken.colors.red[500]}`,
                     },
                     indeterminate: {
-                        default: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
+                        default: 'transparent',
+                        hover: 'transparent',
+                        disabled: 'transparent',
+                        error: `1px solid ${foundationToken.colors.red[500]}`,
                     },
                 },
-                size: {
-                    sm: {
-                        width: foundationToken.unit[10],
-                        height: foundationToken.unit[10],
-                        strokeWidth: 2.5,
+                outline: `1px solid ${foundationToken.colors.primary[200]}`,
+                outlineOffset: foundationToken.unit[2],
+                boxShadow: `0 0 0 2px ${foundationToken.colors.primary[100]}`,
+                icon: {
+                    color: {
+                        checked: {
+                            default: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        indeterminate: {
+                            default: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
                     },
-                    md: {
-                        width: foundationToken.unit[12],
-                        height: foundationToken.unit[12],
-                        strokeWidth: 2.5,
+
+                    width: {
+                        sm: foundationToken.unit[10],
+                        md: foundationToken.unit[12],
+                    },
+                    height: {
+                        sm: foundationToken.unit[10],
+                        md: foundationToken.unit[12],
+                    },
+                    strokeWidth: {
+                        sm: 2.5,
+                        md: 2.5,
                     },
                 },
             },
 
             content: {
-                gap: foundationToken.unit[2],
+                gap: foundationToken.unit[0],
                 label: {
                     color: {
                         default: foundationToken.colors.gray[700],
                         disabled: foundationToken.colors.gray[300],
                         error: foundationToken.colors.red[600],
+                        hover: foundationToken.colors.gray[700],
                     },
-                    font: {
-                        sm: {
-                            fontSize: `${foundationToken.font.size.body.sm.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[500],
-                        },
-                        md: {
-                            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[500],
-                        },
+
+                    fontSize: {
+                        sm: `${foundationToken.font.size.body.sm.fontSize}px`,
+                        md: `${foundationToken.font.size.body.md.fontSize}px`,
+                    },
+                    fontWeight: {
+                        sm: foundationToken.font.weight[500],
+                        md: foundationToken.font.weight[500],
                     },
                 },
                 subtext: {
@@ -432,35 +331,22 @@ export const getCheckboxTokens = (
                         default: foundationToken.colors.gray[400],
                         disabled: foundationToken.colors.gray[200],
                         error: foundationToken.colors.red[500],
+                        hover: foundationToken.colors.gray[400],
                     },
-                    font: {
-                        sm: {
-                            fontSize: `${foundationToken.font.size.body.sm.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[400],
-                        },
-                        md: {
-                            fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                            fontWeight: foundationToken.font.weight[400],
-                        },
+
+                    fontSize: {
+                        sm: `${foundationToken.font.size.body.sm.fontSize}px`,
+                        md: `${foundationToken.font.size.body.md.fontSize}px`,
                     },
-                    spacing: {
-                        left: {
-                            sm: foundationToken.unit[20],
-                            md: foundationToken.unit[24],
-                        },
-                        top: foundationToken.unit[4],
+                    fontWeight: {
+                        sm: foundationToken.font.weight[400],
+                        md: foundationToken.font.weight[400],
                     },
                 },
             },
 
             required: {
                 color: foundationToken.colors.red[600],
-                spacing: foundationToken.unit[2],
-            },
-
-            transition: {
-                duration: '150ms',
-                easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
             },
         },
     }

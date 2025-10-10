@@ -43,7 +43,9 @@ const DropdownInput = ({
     onDropdownClose,
     onBlur,
     onFocus,
-    maxDropdownHeight,
+    maxMenuHeight,
+    minMenuWidth,
+    maxMenuWidth,
     ...rest
 }: DropdownInputProps) => {
     const dropdownInputTokens =
@@ -64,11 +66,13 @@ const DropdownInput = ({
     const slotRef = useRef<HTMLDivElement>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
 
-    const paddingX = toPixels(dropdownInputTokens.input.paddingX[size])
+    const paddingX = toPixels(
+        dropdownInputTokens.inputContainer.padding.x[size]
+    )
     const paddingY =
-        toPixels(dropdownInputTokens.input.paddingY[size]) +
+        toPixels(dropdownInputTokens.inputContainer.padding.y[size]) +
         (isSmallScreenWithLargeSize ? 0.5 : 0)
-    const GAP = toPixels(dropdownInputTokens.input.gap)
+    const GAP = toPixels(dropdownInputTokens.inputContainer.gap)
 
     const paddingInlineStart =
         dropdownPosition === DropdownPosition.LEFT
@@ -94,7 +98,12 @@ const DropdownInput = ({
     }, [slot, dropDownValue])
 
     return (
-        <Block display="flex" flexDirection="column" gap={8} width={'100%'}>
+        <Block
+            display="flex"
+            flexDirection="column"
+            gap={dropdownInputTokens.gap}
+            width={'100%'}
+        >
             {(!isSmallScreen || size !== TextInputSize.LARGE) && (
                 <InputLabels
                     label={label}
@@ -103,6 +112,7 @@ const DropdownInput = ({
                     helpIconHintText={helpIconHintText}
                     name={name}
                     required={required}
+                    tokens={dropdownInputTokens}
                 />
             )}
             <Block position="relative" width={'100%'}>
@@ -158,7 +168,9 @@ const DropdownInput = ({
                             variant={SelectMenuVariant.NO_CONTAINER}
                             size={SelectMenuSize.SMALL}
                             placeholder={placeholder || ''}
-                            maxMenuHeight={maxDropdownHeight}
+                            maxMenuHeight={maxMenuHeight}
+                            minMenuWidth={minMenuWidth}
+                            maxMenuWidth={maxMenuWidth}
                             items={dropDownItems}
                             enableSearch={false}
                             alignment={SelectMenuAlignment.END}
@@ -203,42 +215,45 @@ const DropdownInput = ({
                             : paddingY
                     }
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
-                    borderRadius={dropdownInputTokens.input.borderRadius}
-                    boxShadow={dropdownInputTokens.input.boxShadow.default}
+                    borderRadius={
+                        dropdownInputTokens.inputContainer.borderRadius?.[size]
+                    }
+                    boxShadow={dropdownInputTokens.inputContainer.boxShadow}
                     border={
                         error
-                            ? dropdownInputTokens.input.border.error
-                            : dropdownInputTokens.input.border.default
+                            ? dropdownInputTokens.inputContainer.border.error
+                            : dropdownInputTokens.inputContainer.border.default
                     }
-                    fontSize={'14px'}
-                    fontWeight={500}
+                    fontSize={dropdownInputTokens.inputContainer.fontSize[size]}
+                    fontWeight={
+                        dropdownInputTokens.inputContainer.fontWeight[size]
+                    }
                     outline="none"
                     width={'100%'}
                     _hover={{
-                        border: dropdownInputTokens.input.border[
+                        border: dropdownInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
                         ],
                     }}
                     color={
                         disabled
-                            ? dropdownInputTokens.input.color.disabled
-                            : dropdownInputTokens.input.color.default
+                            ? dropdownInputTokens.inputContainer.color.disabled
+                            : dropdownInputTokens.inputContainer.color.default
                     }
                     _focus={{
-                        border: dropdownInputTokens.input.border[
+                        border: dropdownInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
-                        boxShadow:
-                            dropdownInputTokens.input.boxShadow[
-                                error ? 'error' : 'focus'
-                            ],
+                        boxShadow: dropdownInputTokens.inputContainer.boxShadow,
                         outline: 'none !important',
                     }}
                     disabled={disabled}
                     _disabled={{
                         backgroundColor:
-                            dropdownInputTokens.input.backgroundColor.disabled,
-                        border: dropdownInputTokens.input.border.disabled,
+                            dropdownInputTokens.inputContainer.backgroundColor
+                                .disabled,
+                        border: dropdownInputTokens.inputContainer.border
+                            .disabled,
                         cursor: 'not-allowed',
                     }}
                     onFocus={(e) => {
@@ -268,7 +283,9 @@ const DropdownInput = ({
                             variant={SelectMenuVariant.NO_CONTAINER}
                             size={SelectMenuSize.SMALL}
                             placeholder={placeholder || ''}
-                            maxMenuHeight={maxDropdownHeight}
+                            maxMenuHeight={maxMenuHeight}
+                            minMenuWidth={minMenuWidth}
+                            maxMenuWidth={maxMenuWidth}
                             items={dropDownItems}
                             enableSearch={false}
                             alignment={SelectMenuAlignment.END}
@@ -299,6 +316,7 @@ const DropdownInput = ({
                 errorMessage={errorMessage}
                 hintText={hintText}
                 disabled={disabled}
+                tokens={dropdownInputTokens}
             />
         </Block>
     )

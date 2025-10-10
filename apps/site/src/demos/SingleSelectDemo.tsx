@@ -637,17 +637,33 @@ const SingleSelectDemo = () => {
                         <div className="space-y-2">
                             <h3 className="font-semibold">Simple Select</h3>
                             <SingleSelect
-                                label="Basic Option"
-                                subLabel="aryan"
-                                items={simpleItems}
-                                selected={basicSimpleSelected}
+                                useDrawerOnMobile={false}
+                                inline={true}
+                                error={playgroundError}
+                                errorMessage={playgroundErrorMessage}
+                                onBlur={() => {
+                                    console.log('blur')
+                                }}
+                                onFocus={() => {
+                                    console.log('focus')
+                                }}
+                                // useDrawerOnMobile={false}
+                                label={playgroundLabel}
+                                subLabel={playgroundSubLabel}
+                                hintText={playgroundHintText}
+                                placeholder={playgroundPlaceholder}
+                                size={playgroundSize}
+                                variant={playgroundVariant}
+                                alignment={playgroundAlignment}
+                                side={playgroundSide}
+                                items={groupedItems}
+                                selected={playgroundSelected}
                                 onSelect={(value) => {
                                     setBasicSimpleSelected(value)
                                     addSnackbar({
                                         header: `Basic Selected: ${value}`,
                                     })
                                 }}
-                                placeholder="Choose an option"
                             />
                             {basicSimpleSelected && (
                                 <p className="text-xs text-gray-600">

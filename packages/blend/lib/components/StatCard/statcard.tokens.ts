@@ -10,66 +10,59 @@ export type StatCardState = 'default' | 'hover' | 'loading'
 export type StatCardTokenType = {
     height: CSSObject['height']
     maxWidth: CSSObject['maxWidth']
-    border: {
-        [key in StatCardState]?: CSSObject['border']
-    }
+    border: CSSObject['border']
     borderRadius: CSSObject['borderRadius']
-    backgroundColor: {
-        [key in StatCardState]?: CSSObject['backgroundColor']
-    }
+    backgroundColor: CSSObject['backgroundColor']
     boxShadow: CSSObject['boxShadow']
-    padding: CSSObject['padding']
-    gap: CSSObject['gap']
-    header: {
+    padding: {
+        x: CSSObject['padding']
+        y: CSSObject['padding']
+    }
+    textContainer: {
         gap: CSSObject['gap']
-        titleIcon: {
-            width: CSSObject['width']
-            height: CSSObject['height']
-            margin: CSSObject['margin']
-        }
-        title: {
-            [key in StatCardVariant]: {
+        header: {
+            gap: CSSObject['gap']
+            title: {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
                 color: CSSObject['color']
             }
-        }
-        helpIcon: {
-            width: CSSObject['width']
-            height: CSSObject['height']
-            color: CSSObject['color']
-        }
-    }
-    headerStatGap: {
-        gap: CSSObject['gap']
-    }
-
-    stats: {
-        gap: CSSObject['gap']
-        value: {
-            [key in StatCardVariant]: {
-                fontSize: CSSObject['fontSize']
-                fontWeight: CSSObject['fontWeight']
-                color: CSSObject['color']
-            }
-        }
-        change: {
-            margin: CSSObject['margin']
-            arrow: {
+            titleIcon: {
                 width: CSSObject['width']
-                height: CSSObject['height']
-                margin: CSSObject['margin']
             }
-            text: {
-                [key in ChangeType]: {
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                    color: CSSObject['color']
+
+            helpIcon: {
+                width: CSSObject['width']
+                color: { [key in StatCardState]: CSSObject['color'] }
+            }
+        }
+
+        stats: {
+            gap: CSSObject['gap']
+            title: {
+                gap: CSSObject['gap']
+                value: {
+                    [key in StatCardVariant]: {
+                        fontSize: CSSObject['fontSize']
+                        fontWeight: CSSObject['fontWeight']
+                        color: CSSObject['color']
+                    }
+                }
+                change: {
+                    margin: CSSObject['margin'] //todo: check if this is needed
+                    arrow: {
+                        width: CSSObject['width']
+                    }
+                    text: {
+                        fontSize: CSSObject['fontSize']
+                        fontWeight: CSSObject['fontWeight']
+                        color: {
+                            [key in ChangeType]: CSSObject['color']
+                        }
+                    }
                 }
             }
-        }
-        subtitle: {
-            [key in StatCardVariant]: {
+            subtitle: {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
                 color: CSSObject['color']
@@ -97,7 +90,7 @@ export type StatCardTokenType = {
         line: {
             strokeWidth: CSSObject['strokeWidth']
             activeDot: {
-                borderRadius: CSSObject['borderRadius']
+                width: CSSObject['width']
                 fill: CSSObject['fill']
             }
         }
@@ -106,10 +99,7 @@ export type StatCardTokenType = {
             borderTopLeftRadius: CSSObject['borderTopLeftRadius']
             borderBottomRightRadius: CSSObject['borderBottomRightRadius']
             borderBottomLeftRadius: CSSObject['borderBottomLeftRadius']
-            fill: CSSObject['fill']
-            activeBar: {
-                fill: CSSObject['fill']
-            }
+            fill: { [key in StatCardState]: CSSObject['fill'] }
         }
         progressBar: {
             height: CSSObject['height']
@@ -130,23 +120,15 @@ export type StatCardTokenType = {
             }
         }
         tooltip: {
-            cursor: {
-                strokeDasharray: string
-                stroke: CSSObject['stroke']
+            backgroundColor: CSSObject['backgroundColor']
+            padding: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
             }
-            container: {
-                backgroundColor: CSSObject['backgroundColor']
-                padding: CSSObject['padding']
-                borderRadius: CSSObject['borderRadius']
-            }
-            text: {
-                color: CSSObject['color']
-            }
-            bar: {
-                cursor: {
-                    fill: CSSObject['fill']
-                }
-            }
+            borderRadius: CSSObject['borderRadius']
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
         }
     }
 }
@@ -162,118 +144,91 @@ export const getStatCardToken = (
         sm: {
             maxWidth: foundationToken.unit[200],
             height: 'auto',
-            border: {
-                default: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
-            },
-            borderRadius: foundationToken.border.radius[12],
-            backgroundColor: {
-                default: foundationToken.colors.gray[0],
-            },
-            boxShadow: foundationToken.shadows.xs,
-            padding: foundationToken.unit[12],
-            gap: foundationToken.unit[24],
+            border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
 
-            header: {
-                gap: foundationToken.unit[8],
-                titleIcon: {
-                    width: foundationToken.unit[20],
-                    height: foundationToken.unit[20],
-                    margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[16])} ${String(foundationToken.unit[0])}`,
-                },
-                title: {
-                    [StatCardVariant.NUMBER]: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
-                    },
-                    [StatCardVariant.LINE]: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
-                    },
-                    [StatCardVariant.BAR]: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
-                    },
-                    [StatCardVariant.PROGRESS_BAR]: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
-                    },
-                },
-                helpIcon: {
-                    width: foundationToken.unit[16],
-                    height: foundationToken.unit[16],
-                    color: foundationToken.colors.gray[400],
-                },
+            borderRadius: foundationToken.border.radius[12],
+            backgroundColor: foundationToken.colors.gray[0],
+
+            boxShadow: foundationToken.shadows.xs,
+            padding: {
+                x: foundationToken.unit[12],
+                y: foundationToken.unit[12],
             },
-            headerStatGap: {
+            textContainer: {
                 gap: foundationToken.unit[0],
-            },
-            stats: {
-                gap: foundationToken.unit[4],
-                value: {
-                    [StatCardVariant.NUMBER]: {
-                        fontSize: foundationToken.font.size.heading.lg.fontSize,
-                        fontWeight: foundationToken.font.weight[600],
-                        color: foundationToken.colors.gray[800],
+
+                header: {
+                    gap: foundationToken.unit[8],
+                    titleIcon: {
+                        width: foundationToken.unit[20],
                     },
-                    [StatCardVariant.LINE]: {
-                        fontSize: foundationToken.font.size.heading.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[600],
-                        color: foundationToken.colors.gray[800],
+                    title: {
+                        fontSize: foundationToken.font.size.body.sm.fontSize,
+                        fontWeight: foundationToken.font.weight[500],
+                        color: foundationToken.colors.gray[400],
                     },
-                    [StatCardVariant.BAR]: {
-                        fontSize: foundationToken.font.size.heading.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[600],
-                        color: foundationToken.colors.gray[800],
-                    },
-                    [StatCardVariant.PROGRESS_BAR]: {
-                        fontSize: foundationToken.font.size.heading.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[600],
-                        color: foundationToken.colors.gray[800],
-                    },
-                },
-                change: {
-                    margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[8])}`,
-                    arrow: {
-                        width: foundationToken.unit[14],
-                        height: foundationToken.unit[14],
-                        margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[2])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])}`,
-                    },
-                    text: {
-                        increase: {
-                            fontSize:
-                                foundationToken.font.size.body.xs.fontSize,
-                            fontWeight: foundationToken.font.weight[600],
-                            color: foundationToken.colors.green[600],
-                        },
-                        decrease: {
-                            fontSize:
-                                foundationToken.font.size.body.xs.fontSize,
-                            fontWeight: foundationToken.font.weight[600],
-                            color: foundationToken.colors.red[600],
+                    helpIcon: {
+                        width: foundationToken.unit[16],
+                        color: {
+                            default: foundationToken.colors.gray[400],
+                            hover: foundationToken.colors.gray[400],
+                            loading: foundationToken.colors.gray[400],
                         },
                     },
                 },
-                subtitle: {
-                    [StatCardVariant.NUMBER]: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
+
+                stats: {
+                    gap: foundationToken.unit[8],
+                    title: {
+                        gap: foundationToken.unit[8],
+                        value: {
+                            [StatCardVariant.NUMBER]: {
+                                fontSize:
+                                    foundationToken.font.size.heading.lg
+                                        .fontSize,
+                                fontWeight: foundationToken.font.weight[600],
+                                color: foundationToken.colors.gray[800],
+                            },
+                            [StatCardVariant.LINE]: {
+                                fontSize:
+                                    foundationToken.font.size.heading.sm
+                                        .fontSize,
+                                fontWeight: foundationToken.font.weight[600],
+                                color: foundationToken.colors.gray[800],
+                            },
+                            [StatCardVariant.BAR]: {
+                                fontSize:
+                                    foundationToken.font.size.heading.sm
+                                        .fontSize,
+                                fontWeight: foundationToken.font.weight[600],
+                                color: foundationToken.colors.gray[800],
+                            },
+                            [StatCardVariant.PROGRESS_BAR]: {
+                                fontSize:
+                                    foundationToken.font.size.heading.sm
+                                        .fontSize,
+                                fontWeight: foundationToken.font.weight[600],
+                                color: foundationToken.colors.gray[800],
+                            },
+                        },
+                        change: {
+                            margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[8])}`,
+                            arrow: {
+                                width: foundationToken.unit[14],
+                            },
+                            text: {
+                                color: {
+                                    increase: foundationToken.colors.green[600],
+                                    decrease: foundationToken.colors.red[600],
+                                },
+                                fontSize:
+                                    foundationToken.font.size.body.xs.fontSize,
+                                fontWeight: foundationToken.font.weight[600],
+                            },
+                        },
                     },
-                    [StatCardVariant.LINE]: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
-                    },
-                    [StatCardVariant.BAR]: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
-                    },
-                    [StatCardVariant.PROGRESS_BAR]: {
+
+                    subtitle: {
                         fontSize: foundationToken.font.size.body.sm.fontSize,
                         fontWeight: foundationToken.font.weight[500],
                         color: foundationToken.colors.gray[400],
@@ -302,7 +257,7 @@ export const getStatCardToken = (
                 line: {
                     strokeWidth: foundationToken.unit[2],
                     activeDot: {
-                        borderRadius: foundationToken.border.radius[4],
+                        width: foundationToken.border.radius[4],
                         fill: foundationToken.colors.gray[0],
                     },
                 },
@@ -311,9 +266,10 @@ export const getStatCardToken = (
                     borderTopLeftRadius: foundationToken.border.radius[2],
                     borderBottomRightRadius: foundationToken.border.radius[0],
                     borderBottomLeftRadius: foundationToken.border.radius[0],
-                    fill: foundationToken.colors.primary[500],
-                    activeBar: {
-                        fill: foundationToken.colors.primary[100],
+                    fill: {
+                        default: foundationToken.colors.primary[500],
+                        hover: foundationToken.colors.primary[100],
+                        loading: foundationToken.colors.primary[500],
                     },
                 },
                 progressBar: {
@@ -335,141 +291,107 @@ export const getStatCardToken = (
                     },
                 },
                 tooltip: {
-                    cursor: {
-                        strokeDasharray: `${foundationToken.unit[6]} ${foundationToken.unit[5]}`,
-                        stroke: foundationToken.colors.gray[400],
+                    backgroundColor: foundationToken.colors.gray[900],
+                    padding: {
+                        x: foundationToken.unit[8],
+                        y: foundationToken.unit[4],
                     },
-                    container: {
-                        backgroundColor: foundationToken.colors.gray[900],
-                        padding: `${foundationToken.unit[4]} ${foundationToken.unit[8]}`,
-                        borderRadius: foundationToken.border.radius[4],
-                    },
-                    text: {
-                        color: foundationToken.colors.gray[0],
-                    },
-                    bar: {
-                        cursor: {
-                            fill: 'transparent',
-                        },
-                    },
+                    borderRadius: foundationToken.border.radius[4],
+
+                    color: foundationToken.colors.gray[0],
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
                 },
             },
         },
         lg: {
             maxWidth: foundationToken.unit[350],
             height: 'auto',
-            border: {
-                default: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
-            },
-            borderRadius: foundationToken.border.radius[8],
-            backgroundColor: {
-                default: foundationToken.colors.gray[0],
-            },
-            boxShadow: foundationToken.shadows.xs,
-            padding: foundationToken.unit[16],
-            gap: foundationToken.unit[24],
+            border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
 
-            header: {
-                gap: foundationToken.unit[8],
-                titleIcon: {
-                    width: foundationToken.unit[20],
-                    height: foundationToken.unit[20],
-                    margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[16])} ${String(foundationToken.unit[0])}`,
-                },
-                title: {
-                    [StatCardVariant.NUMBER]: {
-                        fontSize: foundationToken.font.size.body.md.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
-                    },
-                    [StatCardVariant.LINE]: {
-                        fontSize: foundationToken.font.size.body.md.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
-                    },
-                    [StatCardVariant.BAR]: {
-                        fontSize: foundationToken.font.size.body.md.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
-                    },
-                    [StatCardVariant.PROGRESS_BAR]: {
-                        fontSize: foundationToken.font.size.body.md.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
-                    },
-                },
-                helpIcon: {
-                    width: foundationToken.unit[16],
-                    height: foundationToken.unit[16],
-                    color: foundationToken.colors.gray[400],
-                },
+            borderRadius: foundationToken.border.radius[8],
+            backgroundColor: foundationToken.colors.gray[0],
+
+            boxShadow: foundationToken.shadows.xs,
+            padding: {
+                x: foundationToken.unit[16],
+                y: foundationToken.unit[16],
             },
-            headerStatGap: {
+
+            textContainer: {
                 gap: foundationToken.unit[6],
-            },
-            stats: {
-                gap: foundationToken.unit[4],
-                value: {
-                    [StatCardVariant.NUMBER]: {
-                        fontSize: foundationToken.font.size.heading.xl.fontSize,
-                        fontWeight: foundationToken.font.weight[600],
-                        color: foundationToken.colors.gray[800],
+
+                header: {
+                    gap: foundationToken.unit[8],
+                    titleIcon: {
+                        width: foundationToken.unit[20],
                     },
-                    [StatCardVariant.LINE]: {
-                        fontSize: foundationToken.font.size.heading.lg.fontSize,
-                        fontWeight: foundationToken.font.weight[600],
-                        color: foundationToken.colors.gray[800],
+                    title: {
+                        fontSize: foundationToken.font.size.body.md.fontSize,
+                        fontWeight: foundationToken.font.weight[500],
+                        color: foundationToken.colors.gray[400],
                     },
-                    [StatCardVariant.BAR]: {
-                        fontSize: foundationToken.font.size.heading.lg.fontSize,
-                        fontWeight: foundationToken.font.weight[600],
-                        color: foundationToken.colors.gray[800],
-                    },
-                    [StatCardVariant.PROGRESS_BAR]: {
-                        fontSize: foundationToken.font.size.heading.lg.fontSize,
-                        fontWeight: foundationToken.font.weight[600],
-                        color: foundationToken.colors.gray[800],
-                    },
-                },
-                change: {
-                    margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[8])}`,
-                    arrow: {
-                        width: foundationToken.unit[14],
-                        height: foundationToken.unit[14],
-                        margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[2])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])}`,
-                    },
-                    text: {
-                        increase: {
-                            color: foundationToken.colors.green[600],
-                            fontSize:
-                                foundationToken.font.size.body.sm.fontSize,
-                            fontWeight: foundationToken.font.weight[600],
-                        },
-                        decrease: {
-                            color: foundationToken.colors.red[600],
-                            fontSize:
-                                foundationToken.font.size.body.sm.fontSize,
-                            fontWeight: foundationToken.font.weight[600],
+                    helpIcon: {
+                        width: foundationToken.unit[16],
+                        color: {
+                            default: foundationToken.colors.gray[400],
+                            hover: foundationToken.colors.gray[400],
+                            loading: foundationToken.colors.gray[400],
                         },
                     },
                 },
-                subtitle: {
-                    [StatCardVariant.NUMBER]: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
+
+                stats: {
+                    gap: foundationToken.unit[8],
+                    title: {
+                        gap: foundationToken.unit[8],
+                        value: {
+                            [StatCardVariant.NUMBER]: {
+                                fontSize:
+                                    foundationToken.font.size.heading.xl
+                                        .fontSize,
+                                fontWeight: foundationToken.font.weight[600],
+                                color: foundationToken.colors.gray[800],
+                            },
+                            [StatCardVariant.LINE]: {
+                                fontSize:
+                                    foundationToken.font.size.heading.lg
+                                        .fontSize,
+                                fontWeight: foundationToken.font.weight[600],
+                                color: foundationToken.colors.gray[800],
+                            },
+                            [StatCardVariant.BAR]: {
+                                fontSize:
+                                    foundationToken.font.size.heading.lg
+                                        .fontSize,
+                                fontWeight: foundationToken.font.weight[600],
+                                color: foundationToken.colors.gray[800],
+                            },
+                            [StatCardVariant.PROGRESS_BAR]: {
+                                fontSize:
+                                    foundationToken.font.size.heading.lg
+                                        .fontSize,
+                                fontWeight: foundationToken.font.weight[600],
+                                color: foundationToken.colors.gray[800],
+                            },
+                        },
+                        change: {
+                            margin: `${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[0])} ${String(foundationToken.unit[8])}`,
+                            arrow: {
+                                width: foundationToken.unit[14],
+                            },
+                            text: {
+                                color: {
+                                    increase: foundationToken.colors.green[600],
+                                    decrease: foundationToken.colors.red[600],
+                                },
+                                fontSize:
+                                    foundationToken.font.size.body.sm.fontSize,
+                                fontWeight: foundationToken.font.weight[600],
+                            },
+                        },
                     },
-                    [StatCardVariant.LINE]: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
-                    },
-                    [StatCardVariant.BAR]: {
-                        fontSize: foundationToken.font.size.body.sm.fontSize,
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[400],
-                    },
-                    [StatCardVariant.PROGRESS_BAR]: {
+                    subtitle: {
                         fontSize: foundationToken.font.size.body.sm.fontSize,
                         fontWeight: foundationToken.font.weight[500],
                         color: foundationToken.colors.gray[400],
@@ -498,7 +420,7 @@ export const getStatCardToken = (
                 line: {
                     strokeWidth: foundationToken.unit[2],
                     activeDot: {
-                        borderRadius: foundationToken.border.radius[4],
+                        width: foundationToken.border.radius[4],
                         fill: foundationToken.colors.gray[0],
                     },
                 },
@@ -508,9 +430,10 @@ export const getStatCardToken = (
                     borderBottomRightRadius: foundationToken.border.radius[0],
                     borderBottomLeftRadius: foundationToken.border.radius[0],
 
-                    fill: foundationToken.colors.primary[500],
-                    activeBar: {
-                        fill: foundationToken.colors.primary[100],
+                    fill: {
+                        default: foundationToken.colors.primary[500],
+                        hover: foundationToken.colors.primary[100],
+                        loading: foundationToken.colors.primary[500],
                     },
                 },
                 progressBar: {
@@ -532,23 +455,16 @@ export const getStatCardToken = (
                     },
                 },
                 tooltip: {
-                    cursor: {
-                        strokeDasharray: `${foundationToken.unit[6]} ${foundationToken.unit[5]}`,
-                        stroke: foundationToken.colors.gray[400],
+                    backgroundColor: foundationToken.colors.gray[900],
+                    padding: {
+                        x: foundationToken.unit[8],
+                        y: foundationToken.unit[4],
                     },
-                    container: {
-                        backgroundColor: foundationToken.colors.gray[900],
-                        padding: `${foundationToken.unit[4]} ${foundationToken.unit[8]}`,
-                        borderRadius: foundationToken.border.radius[4],
-                    },
-                    text: {
-                        color: foundationToken.colors.gray[0],
-                    },
-                    bar: {
-                        cursor: {
-                            fill: 'transparent',
-                        },
-                    },
+                    borderRadius: foundationToken.border.radius[4],
+
+                    color: foundationToken.colors.gray[0],
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
                 },
             },
         },

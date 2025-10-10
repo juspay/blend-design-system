@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { TenantItem } from './types'
-import { FOUNDATION_THEME } from '../../tokens'
+import type { SidebarTokenType } from './sidebar.tokens'
 
 export const arrangeTenants = (
     tenants: TenantItem[],
@@ -43,21 +43,25 @@ export const arrangeTenants = (
 export const getSidebarWidth = (
     isExpanded: boolean,
     isHovering: boolean,
-    hasLeftPanel: boolean
+    hasLeftPanel: boolean,
+    tokens: SidebarTokenType
 ): string => {
     if (isExpanded || isHovering) {
-        return hasLeftPanel ? '300px' : '250px'
+        return hasLeftPanel
+            ? String(tokens.maxWidth.withLeftPanel)
+            : String(tokens.maxWidth.withoutLeftPanel)
     }
-    return '0'
+    return hasLeftPanel
+        ? String(tokens.maxWidth.withLeftPanel)
+        : String(tokens.maxWidth.withoutLeftPanel)
 }
 
 export const getSidebarBorder = (
     isExpanded: boolean,
-    isHovering: boolean
+    isHovering: boolean,
+    tokens: SidebarTokenType
 ): string => {
-    return isExpanded || isHovering
-        ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
-        : 'none'
+    return isExpanded || isHovering ? String(tokens.borderRight) : 'none'
 }
 
 export const getTopbarStyles = (
