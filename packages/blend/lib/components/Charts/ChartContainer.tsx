@@ -18,9 +18,9 @@ export const ChartContainer: React.FC<ChartContainerProps> = ({
             ref={chartContainerRef}
             width="100%"
             height="100%"
-            border={chartTokens.container.border.container.default}
-            borderRadius={chartTokens.container.borderRadius.default}
-            backgroundColor={chartTokens.container.backgroundColor.default}
+            border={chartTokens.border}
+            borderRadius={chartTokens.borderRadius}
+            backgroundColor={chartTokens.content.backgroundColor}
         >
             {children}
         </Block>

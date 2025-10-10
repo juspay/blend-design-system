@@ -2084,6 +2084,9 @@ const ChartDemo = () => {
             <Charts
                 data={last1hour5minsData}
                 chartType={ChartType.LINE}
+                slot1={<div>Hello</div>}
+                slot2={<div>World</div>}
+                slot3={<div>World</div>}
                 xAxis={{
                     label: 'Date & Time Together',
                     show: true,

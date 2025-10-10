@@ -140,7 +140,7 @@ const SidebarDemo = () => {
         | 'dataRangePicker'
         | 'allComponents'
         | 'virtualList'
-    >('dataRangePicker')
+    >('charts')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
