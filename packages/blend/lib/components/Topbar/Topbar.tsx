@@ -11,7 +11,9 @@ import { useComponentToken } from '../../context/useComponentToken'
 import type { ResponsiveTopbarTokens } from './topbar.tokens'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 
-const ToggleButton = styled.button<{ isMobile: boolean }>`
+const ToggleButton = styled.button.withConfig({
+    shouldForwardProp: (prop) => prop !== 'isMobile',
+})<{ isMobile: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -47,7 +49,9 @@ const ToggleButton = styled.button<{ isMobile: boolean }>`
     }
 `
 
-const ActionButton = styled.button<{ isMobile: boolean }>`
+const ActionButton = styled.button.withConfig({
+    shouldForwardProp: (prop) => prop !== 'isMobile',
+})<{ isMobile: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -104,7 +108,9 @@ const ActionButton = styled.button<{ isMobile: boolean }>`
     }
 `
 
-const TenantIconButton = styled.button<{ isMobile: boolean }>`
+const TenantIconButton = styled.button.withConfig({
+    shouldForwardProp: (prop) => prop !== 'isMobile',
+})<{ isMobile: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -149,7 +155,9 @@ const TenantIconButton = styled.button<{ isMobile: boolean }>`
     }
 `
 
-const MerchantSelectTrigger = styled.button<{ isMobile: boolean }>`
+const MerchantSelectTrigger = styled.button.withConfig({
+    shouldForwardProp: (prop) => prop !== 'isMobile',
+})<{ isMobile: boolean }>`
     display: flex;
     align-items: center;
     justify-content: space-between;

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { TenantItem } from './types'
 import type { SidebarTokenType } from './sidebar.tokens'
+import { FOUNDATION_THEME } from '../../tokens'
 
 export const arrangeTenants = (
     tenants: TenantItem[],
@@ -51,9 +52,7 @@ export const getSidebarWidth = (
             ? String(tokens.maxWidth.withLeftPanel)
             : String(tokens.maxWidth.withoutLeftPanel)
     }
-    return hasLeftPanel
-        ? String(tokens.maxWidth.withLeftPanel)
-        : String(tokens.maxWidth.withoutLeftPanel)
+    return String(FOUNDATION_THEME.unit[4])
 }
 
 export const getSidebarBorder = (

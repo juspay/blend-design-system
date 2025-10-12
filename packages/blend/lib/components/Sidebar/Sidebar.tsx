@@ -171,45 +171,54 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         willChange: 'transform',
                         transitionDuration: '150ms',
                         animation: 'slide-in-from-left 0.3s ease-out',
+                        overflow: 'hidden',
                     }}
                     onMouseLeave={handleMouseLeave}
                 >
-                    {(isExpanded || isHovering) && !isMobile && (
+                    {!isMobile && (
                         <>
-                            {hasLeftPanel && leftPanel && (
-                                <TenantPanel
-                                    items={leftPanel.items}
-                                    selected={leftPanel.selected}
-                                    onSelect={leftPanel.onSelect}
-                                    maxVisibleItems={leftPanel.maxVisibleItems}
-                                />
-                            )}
-
-                            <Block
-                                width="100%"
-                                height="100%"
-                                display="flex"
-                                flexDirection="column"
-                                position="relative"
-                            >
-                                <SidebarHeader
-                                    sidebarTopSlot={sidebarTopSlot}
-                                    merchantInfo={merchantInfo}
-                                    isExpanded={isExpanded}
-                                    isScrolled={isScrolled}
-                                    sidebarCollapseKey={sidebarCollapseKey}
-                                    onToggle={toggleSidebar}
-                                />
-
-                                <DirectoryContainer data-directory-container>
-                                    <Directory
-                                        directoryData={data}
-                                        className="pb-20"
+                            {hasLeftPanel &&
+                                leftPanel &&
+                                (isExpanded || isHovering) && (
+                                    <TenantPanel
+                                        items={leftPanel.items}
+                                        selected={leftPanel.selected}
+                                        onSelect={leftPanel.onSelect}
+                                        maxVisibleItems={
+                                            leftPanel.maxVisibleItems
+                                        }
                                     />
-                                </DirectoryContainer>
+                                )}
 
-                                <SidebarFooter footer={footer} />
-                            </Block>
+                            {(isExpanded || isHovering) && (
+                                <Block
+                                    width="100%"
+                                    height="100%"
+                                    display="flex"
+                                    flexDirection="column"
+                                    position="relative"
+                                >
+                                    <SidebarHeader
+                                        sidebarTopSlot={sidebarTopSlot}
+                                        merchantInfo={merchantInfo}
+                                        isExpanded={isExpanded}
+                                        isScrolled={isScrolled}
+                                        sidebarCollapseKey={sidebarCollapseKey}
+                                        onToggle={toggleSidebar}
+                                    />
+
+                                    <DirectoryContainer
+                                        data-directory-container
+                                    >
+                                        <Directory
+                                            directoryData={data}
+                                            className="pb-20"
+                                        />
+                                    </DirectoryContainer>
+
+                                    <SidebarFooter footer={footer} />
+                                </Block>
+                            )}
                         </>
                     )}
                 </Block>
