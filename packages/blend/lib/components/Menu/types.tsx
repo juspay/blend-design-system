@@ -1,3 +1,5 @@
+import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
+
 export enum MenuAlignment {
     START = 'start',
     CENTER = 'center',
@@ -23,6 +25,12 @@ export type MenuV2Props = {
     // height?: number;
     enableSearch?: boolean
     searchPlaceholder?: string
+    enableVirtualScrolling?: boolean
+    virtualItemHeight?:
+        | number
+        | ((item: MenuItemV2Type, index: number) => number)
+    virtualOverscan?: number
+    virtualScrollThreshold?: number
     // Radix Menu Props
     open?: boolean
     onOpenChange?: (open: boolean) => void
@@ -56,6 +64,17 @@ export type MenuItemV2Type = {
     disabled?: boolean
     onClick?: () => void
     subMenu?: MenuItemV2Type[]
+    enableSubMenuSearch?: boolean
+    subMenuSearchPlaceholder?: string
+    tooltip?: string | React.ReactNode
+    tooltipProps?: {
+        side?: TooltipSide
+        align?: TooltipAlign
+        size?: TooltipSize
+        showArrow?: boolean
+        delayDuration?: number
+        offset?: number
+    }
 }
 
 export type MenuV2GroupType = {

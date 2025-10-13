@@ -29,9 +29,11 @@ export type StatCardAxisConfig = {
     type?: AxisType
     tickFormatter?: (value: string | number) => string
     dateOnly?: boolean
-    smart?: boolean
-    timeZone?: string
-    hour12?: boolean
+    useUTC?: boolean
+    formatString?: string
+    timeOnly?: boolean
+    showYear?: boolean
+    smartDateTimeFormat?: boolean
 }
 
 export type StatCardProps = {
@@ -51,4 +53,5 @@ export type StatCardProps = {
     xAxis?: StatCardAxisConfig
     yAxis?: StatCardAxisConfig
     valueFormatter?: AxisType
+    height?: string
 }

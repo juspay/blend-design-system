@@ -66,6 +66,11 @@ const TableHeader = forwardRef<
             selectAll,
             enableInlineEdit = false,
             enableColumnManager = true,
+            columnManagerMaxSelections,
+            columnManagerAlwaysSelected,
+            columnManagerPrimaryAction,
+            columnManagerSecondaryAction,
+            columnManagerWidth,
             enableRowExpansion = false,
             enableRowSelection = true,
             rowActions,
@@ -169,7 +174,7 @@ const TableHeader = forwardRef<
                 style={{
                     position: 'sticky',
                     top: 0,
-                    zIndex: 60,
+                    zIndex: 10,
                     backgroundColor:
                         tableToken.dataTable.table.header.backgroundColor,
                     borderBottom:
@@ -196,7 +201,7 @@ const TableHeader = forwardRef<
                                 ...(columnFreeze > 0 && {
                                     position: 'sticky',
                                     left: '0px',
-                                    zIndex: 55,
+                                    zIndex: 9,
                                     backgroundColor:
                                         tableToken.dataTable.table.header
                                             .backgroundColor,
@@ -225,7 +230,7 @@ const TableHeader = forwardRef<
                                 ...(columnFreeze > 0 && {
                                     position: 'sticky',
                                     left: enableRowExpansion ? '50px' : '0px',
-                                    zIndex: 55,
+                                    zIndex: 9,
                                     backgroundColor:
                                         tableToken.dataTable.table.header
                                             .backgroundColor,
@@ -470,7 +475,8 @@ const TableHeader = forwardRef<
                                         )}
                                     </Block>
 
-                                    {(columnConfig.supportsSorting ||
+                                    {((columnConfig.supportsSorting &&
+                                        column.isSortable !== false) ||
                                         columnConfig.supportsFiltering) && (
                                         <Block
                                             display="flex"
@@ -534,6 +540,9 @@ const TableHeader = forwardRef<
                                                                     filterState={
                                                                         filterState
                                                                     }
+                                                                    sortState={
+                                                                        sortState
+                                                                    }
                                                                     onColumnFilter={
                                                                         onColumnFilter
                                                                     }
@@ -562,7 +571,6 @@ const TableHeader = forwardRef<
                                                     }
                                                     maxWidth={220}
                                                     minWidth={220}
-                                                    zIndex={1000}
                                                     side="bottom"
                                                     align={getPopoverAlignment(
                                                         index,
@@ -598,6 +606,7 @@ const TableHeader = forwardRef<
                                                         filterState={
                                                             filterState
                                                         }
+                                                        sortState={sortState}
                                                         onColumnFilter={
                                                             onColumnFilter
                                                         }
@@ -681,6 +690,14 @@ const TableHeader = forwardRef<
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                                 boxSizing: 'border-box',
+                                position: 'sticky',
+                                right: 0,
+                                backgroundColor:
+                                    tableToken.dataTable.table.header
+                                        .backgroundColor,
+                                width: FOUNDATION_THEME.unit[48],
+                                minWidth: FOUNDATION_THEME.unit[48],
+                                maxWidth: FOUNDATION_THEME.unit[48],
                             }}
                         >
                             <Block position="relative">
@@ -690,6 +707,17 @@ const TableHeader = forwardRef<
                                         allVisibleColumns || localColumns
                                     }
                                     onColumnChange={onColumnChange}
+                                    maxSelections={columnManagerMaxSelections}
+                                    alwaysSelectedColumns={
+                                        columnManagerAlwaysSelected
+                                    }
+                                    columnManagerPrimaryAction={
+                                        columnManagerPrimaryAction
+                                    }
+                                    columnManagerSecondaryAction={
+                                        columnManagerSecondaryAction
+                                    }
+                                    multiSelectWidth={columnManagerWidth}
                                 />
                             </Block>
                         </th>

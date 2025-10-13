@@ -1,4 +1,5 @@
 import {
+    AxisType,
     ChartType,
     CustomTooltipProps,
     NewNestedDataPoint,
@@ -8,7 +9,8 @@ import {
 import {
     capitaliseCamelCase,
     formatNumber,
-    getAxisFormatterWithConfig,
+    getAxisFormatter,
+    createDateTimeFormatter,
 } from './ChartUtils'
 import Block from '../../components/Primitives/Block/Block'
 import Text from '../../components/Text/Text'
@@ -23,6 +25,11 @@ import { FOUNDATION_THEME } from '../../tokens'
 interface AuxItem {
     label: string
     val: string | number
+    type?: AxisType
+    dateOnly?: boolean
+    smart?: boolean
+    timeZone?: string
+    hour12?: boolean
 }
 
 const formatTooltipLabel = (
@@ -35,14 +42,20 @@ const formatTooltipLabel = (
         return xAxis.tickFormatter(label)
     }
 
+    if (xAxis.type === AxisType.DATE_TIME) {
+        const tooltipFormatter = createDateTimeFormatter({
+            useUTC: xAxis.useUTC ?? true,
+            smartDateTimeFormat: false,
+            showYear: true,
+            dateOnly: false,
+            timeOnly: false,
+            formatString: xAxis.formatString,
+        })
+        return tooltipFormatter(label)
+    }
+
     if (xAxis.type) {
-        return getAxisFormatterWithConfig(
-            xAxis.type,
-            xAxis.dateOnly,
-            xAxis.smart,
-            xAxis.timeZone,
-            xAxis.hour12
-        )(label)
+        return getAxisFormatter(xAxis)(label)
     }
 
     return capitaliseCamelCase(String(label))
@@ -61,13 +74,18 @@ const formatTooltipValue = (
     }
 
     if (yAxis.type) {
-        return getAxisFormatterWithConfig(
-            yAxis.type,
-            yAxis.dateOnly,
-            yAxis.smart,
-            yAxis.timeZone,
-            yAxis.hour12
-        )(value)
+        return getAxisFormatter(yAxis)(value)
+    }
+
+    return typeof value === 'number' ? formatNumber(value) : String(value)
+}
+
+const formatAuxTooltipValue = (
+    value: string | number,
+    auxItem: AuxItem
+): string => {
+    if (auxItem.type) {
+        return getAxisFormatter(auxItem)(value)
     }
 
     return typeof value === 'number' ? formatNumber(value) : String(value)
@@ -138,6 +156,17 @@ export const CustomTooltip = ({
                     payload={payload}
                     selectedKeys={selectedKeys}
                     setHoveredKey={setHoveredKey}
+                    originalData={originalData}
+                    hoveredKey={hoveredKey}
+                    xAxis={xAxis}
+                    yAxis={yAxis}
+                />
+            )}
+            {chartType === ChartType.SCATTER && (
+                <ScatterChartTooltip
+                    active={active}
+                    payload={payload}
+                    selectedKeys={selectedKeys}
                     originalData={originalData}
                     hoveredKey={hoveredKey}
                     xAxis={xAxis}
@@ -374,7 +403,7 @@ const LineChartTooltip = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={FOUNDATION_THEME.colors.gray[700]}
                             >
-                                {formatTooltipValue(auxItem.val, yAxis)}
+                                {formatAuxTooltipValue(auxItem.val, auxItem)}
                             </Text>
                         </Block>
                     ))}
@@ -498,12 +527,138 @@ const PieChartTooltip = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={FOUNDATION_THEME.colors.gray[700]}
                             >
-                                {formatTooltipValue(auxItem.val, yAxis)}
+                                {formatAuxTooltipValue(auxItem.val, auxItem)}
                             </Text>
                         </Block>
                     ))}
                 </Block>
             )}
+        </>
+    )
+}
+
+const ScatterChartTooltip = ({
+    originalData,
+    hoveredKey,
+    active,
+    payload,
+    selectedKeys,
+    xAxis,
+    yAxis,
+}: {
+    originalData: NewNestedDataPoint[]
+    hoveredKey: string | null
+    active: boolean
+    payload: Payload<ValueType, NameType>[]
+    selectedKeys: string[]
+    xAxis?: XAxisConfig
+    yAxis?: YAxisConfig
+}) => {
+    if (!active || !payload || !payload.length) {
+        return null
+    }
+
+    // Get the scatter point data from payload
+    const point = payload[0]?.payload
+    if (
+        !point ||
+        typeof point.x === 'undefined' ||
+        typeof point.y === 'undefined'
+    ) {
+        return null
+    }
+
+    // Find the series key from the payload or use first available key
+    const seriesKey =
+        hoveredKey ||
+        (selectedKeys.length > 0
+            ? selectedKeys[0]
+            : Object.keys(originalData[0]?.data || {})[0])
+
+    if (!seriesKey) {
+        return null
+    }
+
+    return (
+        <>
+            <Block position="relative" paddingLeft={8}>
+                <Block
+                    backgroundColor={point.fill || '#AD46FF'}
+                    position="absolute"
+                    top={FOUNDATION_THEME.unit[2]}
+                    left={0}
+                    width={FOUNDATION_THEME.unit[4]}
+                    height={FOUNDATION_THEME.unit[16]}
+                    borderRadius={FOUNDATION_THEME.border.radius[8]}
+                    transition="all 75ms"
+                />
+                <Block display="flex" flexDirection="column">
+                    <Text
+                        fontSize={14}
+                        fontWeight={FOUNDATION_THEME.font.weight[600]}
+                        color={FOUNDATION_THEME.colors.gray[900]}
+                    >
+                        {capitaliseCamelCase(seriesKey)}
+                    </Text>
+                    <Text
+                        fontSize={12}
+                        fontWeight={FOUNDATION_THEME.font.weight[500]}
+                        color={FOUNDATION_THEME.colors.gray[400]}
+                    >
+                        {point.name || 'Data Point'}
+                    </Text>
+                </Block>
+            </Block>
+
+            <Block
+                display="flex"
+                flexDirection="column"
+                paddingLeft={8}
+                gap={4}
+            >
+                <Block
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                >
+                    <Text
+                        fontSize={12}
+                        fontWeight={FOUNDATION_THEME.font.weight[500]}
+                        color={FOUNDATION_THEME.colors.gray[400]}
+                    >
+                        X:
+                    </Text>
+                    <Text
+                        fontSize={12}
+                        fontWeight={FOUNDATION_THEME.font.weight[600]}
+                        color={FOUNDATION_THEME.colors.gray[900]}
+                        truncate={true}
+                    >
+                        {formatTooltipValue(point.x, xAxis)}
+                    </Text>
+                </Block>
+                <Block
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                >
+                    <Text
+                        fontSize={12}
+                        fontWeight={FOUNDATION_THEME.font.weight[500]}
+                        color={FOUNDATION_THEME.colors.gray[400]}
+                    >
+                        Y:
+                    </Text>
+                    <Text
+                        fontSize={12}
+                        fontWeight={FOUNDATION_THEME.font.weight[600]}
+                        color={FOUNDATION_THEME.colors.gray[900]}
+                        truncate={true}
+                    >
+                        {formatTooltipValue(point.y, yAxis)}
+                    </Text>
+                </Block>
+            </Block>
         </>
     )
 }

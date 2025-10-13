@@ -46,7 +46,7 @@ const avatarGroupTokens = {
     },
     menu: {
         spacing: foundationToken.spacing[4], // Spacing between menu and avatars
-        zIndex: 50, // z-index for the menu
+        zIndex: 48, // z-index for the menu
     },
 }
 

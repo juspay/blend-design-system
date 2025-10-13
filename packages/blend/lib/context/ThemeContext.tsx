@@ -1,24 +1,23 @@
 import { createContext, useContext } from 'react'
-import { FOUNDATION_THEME, type ThemeType } from '../tokens'
-import {
-    type ResponsiveTagTokens,
-    getTagTokens,
-} from '../components/Tags/tag.tokens'
 import {
     getSearchInputTokens,
     type SearchInputTokensType,
 } from '../components/Inputs/SearchInput/searchInput.tokens'
 import {
+    getTagTokens,
+    type ResponsiveTagTokens,
+} from '../components/Tags/tag.tokens'
+import {
     getTextAreaTokens,
     type ResponsiveTextAreaTokens,
 } from '../components/Inputs/TextArea/textarea.token'
 import {
-    type ResponsiveRadioTokens,
     getRadioTokens,
+    type ResponsiveRadioTokens,
 } from '../components/Radio/radio.token'
 import {
-    type ResponsiveSwitchTokens,
     getSwitchTokens,
+    type ResponsiveSwitchTokens,
 } from '../components/Switch/switch.token'
 import {
     getTextInputTokens,
@@ -57,12 +56,12 @@ import {
     type ResponsiveCheckboxTokens,
 } from '../components/Checkbox/checkbox.token'
 import {
-    ResponsiveTabsTokens,
     getTabsTokens,
-} from '../components/Tabs/tabs.token' // Added TABS
+    type ResponsiveTabsTokens,
+} from '../components/Tabs/tabs.token'
 import {
-    type ResponsiveButtonTokens,
     getButtonTokens,
+    type ResponsiveButtonTokens,
 } from '../components/Button/button.tokens'
 import {
     getModalComponentTokens,
@@ -85,12 +84,16 @@ import {
     type ResponsiveMultiSelectTokens,
 } from '../components/MultiSelect/multiSelect.tokens'
 import {
+    getSingleSelectTokens,
+    type ResponsiveSingleSelectTokens,
+} from '../components/SingleSelect/singleSelect.tokens'
+import {
     getTableToken,
     type ResponsiveTableTokens,
 } from '../components/DataTable/dataTable.tokens'
 import {
-    type ResponsiveCalendarTokens,
     getCalendarToken,
+    type ResponsiveCalendarTokens,
 } from '../components/DateRangePicker/dateRangePicker.tokens'
 import {
     getAccordionToken,
@@ -100,30 +103,42 @@ import {
     getStatCardToken,
     type ResponsiveStatCardTokens,
 } from '../components/StatCard/statcard.tokens'
-import progressBarTokens, {
-    type ProgressBarTokenType,
-} from '../components/ProgressBar/progressbar.tokens'
+import type { ProgressBarTokenType } from '../components/ProgressBar/progressbar.tokens'
 import {
     getDrawerComponentTokens,
     type DrawerTokensType,
 } from '../components/Drawer/drawer.tokens'
-import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
-import {
-    getSingleSelectTokens,
-    ResponsiveSingleSelectTokens,
-} from '../components/SingleSelect/singleSelect.tokens'
 import {
     getChartTokens,
-    ResponsiveChartTokens,
+    type ResponsiveChartTokens,
 } from '../components/Charts/chart.tokens'
 import {
     getSnackbarTokens,
-    ResponsiveSnackbarTokens,
+    type ResponsiveSnackbarTokens,
 } from '../components/Snackbar/snackbar.tokens'
+import {
+    getKeyValuePairTokens,
+    type ResponsiveKeyValuePairTokens,
+} from '../components/KeyValuePair/KeyValuePair.tokens'
+import {
+    getCardTokens,
+    type ResponsiveCardTokens,
+} from '../components/Card/card.tokens'
+import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
+
+import { FOUNDATION_THEME, type ThemeType } from '../tokens'
+
+import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 import {
     getStepperTokens,
     ResponsiveStepperTokens,
 } from '../components/Stepper/stepper.tokens'
+import {
+    getSkeletonTokens,
+    ResponsiveSkeletonTokens,
+} from '../components/Skeleton/skeleton.tokens'
+import { BREAKPOINTS } from '../breakpoints/breakPoints'
+import progressBarTokens from '../components/ProgressBar/progressbar.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -157,12 +172,16 @@ export type ComponentTokenType = {
     CHARTS?: ResponsiveChartTokens
     SNACKBAR?: ResponsiveSnackbarTokens
     STEPPER?: ResponsiveStepperTokens
+    KEYVALUEPAIR?: ResponsiveKeyValuePairTokens
+    CARD?: ResponsiveCardTokens
+    SKELETON?: ResponsiveSkeletonTokens
+    TOPBAR?: ResponsiveTopbarTokens
 }
 
 type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>
-    breakpoints: BreakpointType
+    breakpoints: typeof BREAKPOINTS
 }
 
 const ThemeContext = createContext<ThemeContextType>({
@@ -199,6 +218,10 @@ const ThemeContext = createContext<ThemeContextType>({
         CHARTS: getChartTokens(FOUNDATION_THEME),
         SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
         STEPPER: getStepperTokens(FOUNDATION_THEME),
+        KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
+        CARD: getCardTokens(FOUNDATION_THEME),
+        TOPBAR: getTopbarTokens(FOUNDATION_THEME),
+        SKELETON: getSkeletonTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

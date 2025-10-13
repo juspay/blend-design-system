@@ -1,13 +1,24 @@
 import { forwardRef } from 'react'
-import { ChevronDown, ChevronUp } from 'lucide-react'
-import { styled } from 'styled-components'
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import { DateRangePreset } from './types'
-import { getPresetLabel } from './utils'
+import { ChevronDown } from 'lucide-react'
+import {
+    DateRangePreset,
+    DateRangePickerSize,
+    CustomPresetConfig,
+} from './types'
+import {
+    getPresetLabel,
+    getPresetLabelWithCustom,
+    getFilteredPresets,
+} from './utils'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
-import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import SingleSelect from '../SingleSelect/SingleSelect'
+import {
+    SelectMenuGroupType,
+    SelectMenuSize,
+    SelectMenuVariant,
+} from '../SingleSelect/types'
 
 type QuickRangeSelectorProps = {
     isOpen: boolean
@@ -15,115 +26,160 @@ type QuickRangeSelectorProps = {
     activePreset: DateRangePreset
     onPresetSelect: (preset: DateRangePreset) => void
     excludeCustom?: boolean
+    customPresets?: CustomPresetConfig[]
     className?: string
     disableFutureDates?: boolean
     disablePastDates?: boolean
+    isDisabled?: boolean
+    size?: DateRangePickerSize
+    maxMenuHeight?: number
+    isStandalone?: boolean
 }
-
-// const StyledTrigger = styled.button<{ $isOpen: boolean }>`
-//   ${dateRangePickerTokens.quickRange.trigger}
-//   width: 100%;
-//   background: transparent;
-//   padding: 8px 12px;
-//   cursor: pointer;
-//   display: flex;
-//   align-items: center;
-//   justify-content: space-between;
-
-//   &:focus {
-//     outline: none;
-//   }
-// `;
-
-const StyledItem = styled(DropdownMenu.Item)<{
-    $isActive: boolean
-    $calendarToken: CalendarTokenType
-}>`
-    ${(props) => props.$calendarToken.quickRange.item}
-    ${(props) => props.$calendarToken.quickRange.item.text}
-  ${(props) => props.$isActive && props.$calendarToken.quickRange.item.active}
-`
-
-const StyledContent = styled(DropdownMenu.Content)<{
-    $calendarToken: CalendarTokenType
-}>`
-    ${(props) => props.$calendarToken.quickRange.content}
-`
 
 const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
     (
         {
-            isOpen,
-            onToggle,
             activePreset,
             onPresetSelect,
             excludeCustom = false,
+            customPresets,
             className,
             disableFutureDates = false,
             disablePastDates = false,
+            isDisabled = false,
+            size = DateRangePickerSize.MEDIUM,
+            maxMenuHeight = 200,
+            isStandalone = false,
         },
         ref
     ) => {
         const responsiveCalendarTokens =
             useResponsiveTokens<CalendarTokenType>('CALENDAR')
         const calendarToken = responsiveCalendarTokens
-        const activePresetLabel = getPresetLabel(activePreset)
 
-        const getFilteredPresets = () => {
-            const pastPresets = [
-                DateRangePreset.YESTERDAY,
-                DateRangePreset.LAST_1_HOUR,
-                DateRangePreset.LAST_6_HOURS,
-                DateRangePreset.LAST_7_DAYS,
-                DateRangePreset.LAST_30_DAYS,
-                DateRangePreset.LAST_3_MONTHS,
-                DateRangePreset.LAST_12_MONTHS,
-            ]
+        // Use the already processed presets directly
+        const presetConfigs = customPresets || []
 
-            const futurePresets = [
-                DateRangePreset.TOMORROW,
-                DateRangePreset.NEXT_7_DAYS,
-                DateRangePreset.NEXT_30_DAYS,
-                DateRangePreset.NEXT_3_MONTHS,
-                DateRangePreset.NEXT_12_MONTHS,
-            ]
+        // Get filtered presets based on configuration and restrictions
+        const filteredPresets = getFilteredPresets(
+            presetConfigs,
+            disableFutureDates,
+            disablePastDates
+        )
 
-            const neutralPresets = [DateRangePreset.TODAY]
+        // Add CUSTOM preset if not excluded
+        const presetsToShow = excludeCustom
+            ? filteredPresets.filter((p) => p !== DateRangePreset.CUSTOM)
+            : filteredPresets
 
-            let availablePresets = [...neutralPresets]
+        const selectItems: SelectMenuGroupType[] = [
+            {
+                items: presetsToShow.map((preset) => ({
+                    label: getPresetLabelWithCustom(preset, presetConfigs),
+                    value: preset,
+                })),
+            },
+        ]
 
-            if (!disablePastDates) {
-                availablePresets = [...availablePresets, ...pastPresets]
+        const handlePresetSelect = (value: string) => {
+            if (!isDisabled) {
+                onPresetSelect(value as DateRangePreset)
             }
-
-            if (!disableFutureDates) {
-                availablePresets = [...availablePresets, ...futurePresets]
-            }
-
-            if (!excludeCustom) {
-                availablePresets.push(DateRangePreset.CUSTOM)
-            }
-
-            return availablePresets
         }
 
-        const filteredPresets = getFilteredPresets()
+        const getSelectSize = (
+            pickerSize: DateRangePickerSize
+        ): SelectMenuSize => {
+            switch (pickerSize) {
+                case DateRangePickerSize.SMALL:
+                    return SelectMenuSize.SMALL
+                case DateRangePickerSize.LARGE:
+                    return SelectMenuSize.LARGE
+                case DateRangePickerSize.MEDIUM:
+                default:
+                    return SelectMenuSize.MEDIUM
+            }
+        }
 
-        const handlePresetSelect = (preset: DateRangePreset) => {
-            onPresetSelect(preset)
+        const getContainerStyle = () => {
+            const baseStyle = {
+                backgroundColor:
+                    calendarToken.quickRange.trigger.backgroundColor,
+            }
+
+            if (isStandalone) {
+                const border = isDisabled
+                    ? calendarToken.quickRange.trigger.disabled.borderLeft
+                    : calendarToken.quickRange.trigger.borderLeft
+
+                return {
+                    ...baseStyle,
+                    border: border,
+                    borderRadius:
+                        calendarToken.quickRange.trigger.borderTopLeftRadius,
+                }
+            } else {
+                return {
+                    ...baseStyle,
+                    borderLeft: isDisabled
+                        ? calendarToken.quickRange.trigger.disabled.borderLeft
+                        : calendarToken.quickRange.trigger.borderLeft,
+                    borderTop: isDisabled
+                        ? calendarToken.quickRange.trigger.disabled.borderTop
+                        : calendarToken.quickRange.trigger.borderTop,
+                    borderBottom: isDisabled
+                        ? calendarToken.quickRange.trigger.disabled.borderBottom
+                        : calendarToken.quickRange.trigger.borderBottom,
+                    borderTopLeftRadius:
+                        calendarToken.quickRange.trigger.borderTopLeftRadius,
+                    borderBottomLeftRadius:
+                        calendarToken.quickRange.trigger.borderBottomLeftRadius,
+                }
+            }
         }
 
         return (
             <Block
                 position="relative"
-                width={calendarToken.quickRange.width}
                 ref={ref}
                 className={className}
+                style={getContainerStyle()}
             >
-                <DropdownMenu.Root open={isOpen} onOpenChange={onToggle}>
-                    <DropdownMenu.Trigger asChild>
-                        <PrimitiveButton
-                            style={{ ...calendarToken.quickRange.trigger }}
+                <SingleSelect
+                    placeholder={getPresetLabel(activePreset)}
+                    items={selectItems}
+                    selected={activePreset}
+                    onSelect={handlePresetSelect}
+                    disabled={isDisabled}
+                    size={getSelectSize(size)}
+                    variant={SelectMenuVariant.NO_CONTAINER}
+                    useDrawerOnMobile={false}
+                    customTrigger={
+                        <Block
+                            style={{
+                                display:
+                                    calendarToken.quickRange.trigger.display,
+                                justifyContent:
+                                    calendarToken.quickRange.trigger
+                                        .justifyContent,
+                                alignItems:
+                                    calendarToken.quickRange.trigger.alignItems,
+                                cursor: isDisabled
+                                    ? 'not-allowed'
+                                    : calendarToken.quickRange.trigger.cursor,
+                                width: calendarToken.quickRange.trigger.width,
+                                backgroundColor:
+                                    calendarToken.quickRange.trigger
+                                        .backgroundColor,
+                                padding:
+                                    calendarToken.quickRange.trigger.padding[
+                                        size
+                                    ],
+                                gap: calendarToken.quickRange.trigger.gap,
+                                opacity: isDisabled ? 0.5 : 1,
+                                border: 'none',
+                                borderRadius: 0,
+                            }}
                         >
                             <Block
                                 as="span"
@@ -131,57 +187,40 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                                     calendarToken.quickRange.trigger.text.color
                                 }
                                 fontSize={
-                                    calendarToken.quickRange.trigger.text
-                                        .fontSize
+                                    calendarToken.quickRange.trigger.fontSize[
+                                        size
+                                    ]
                                 }
+                                fontWeight={
+                                    calendarToken.quickRange.trigger.text
+                                        .fontWeight
+                                }
+                                style={{
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                }}
                             >
-                                {activePresetLabel}
+                                {getPresetLabelWithCustom(
+                                    activePreset,
+                                    presetConfigs
+                                )}
                             </Block>
-                            {isOpen ? (
-                                <ChevronUp
-                                    size={
-                                        calendarToken.quickRange.trigger
-                                            .iconSize as number
-                                    }
-                                    color={
-                                        calendarToken.quickRange.trigger.text
-                                            .color
-                                    }
-                                />
-                            ) : (
-                                <ChevronDown
-                                    size={
-                                        calendarToken.quickRange.trigger
-                                            .iconSize as number
-                                    }
-                                    color={
-                                        calendarToken.quickRange.trigger.text
-                                            .color
-                                    }
-                                />
-                            )}
-                        </PrimitiveButton>
-                    </DropdownMenu.Trigger>
-
-                    <DropdownMenu.Portal>
-                        <StyledContent
-                            align="start"
-                            sideOffset={4}
-                            $calendarToken={calendarToken}
-                        >
-                            {filteredPresets.map((preset) => (
-                                <StyledItem
-                                    key={preset}
-                                    $isActive={preset === activePreset}
-                                    $calendarToken={calendarToken}
-                                    onSelect={() => handlePresetSelect(preset)}
-                                >
-                                    {getPresetLabel(preset)}
-                                </StyledItem>
-                            ))}
-                        </StyledContent>
-                    </DropdownMenu.Portal>
-                </DropdownMenu.Root>
+                            <ChevronDown
+                                size={
+                                    calendarToken.quickRange.trigger
+                                        .iconSize as number
+                                }
+                                color={
+                                    calendarToken.quickRange.trigger.text.color
+                                }
+                            />
+                        </Block>
+                    }
+                    maxMenuHeight={maxMenuHeight}
+                    minMenuWidth={150}
+                    maxMenuWidth={200}
+                />
             </Block>
         )
     }

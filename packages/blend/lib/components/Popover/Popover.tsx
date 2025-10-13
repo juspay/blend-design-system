@@ -30,11 +30,12 @@ const Popover = ({
     height,
     minHeight,
     maxHeight,
-    zIndex = 1000,
+    zIndex = 999,
     size = PopoverSize.MEDIUM,
     onClose,
     shadow = 'lg',
     useDrawerOnMobile = true,
+    avoidCollisions = true,
 }: PopoverProps) => {
     const [isOpen, setIsOpen] = useState(open || false)
     const popoverTokens = useComponentToken('POPOVER') as PopoverTokenType
@@ -90,17 +91,20 @@ const Popover = ({
             }}
             modal={asModal}
         >
-            <RadixPopover.Trigger asChild>{trigger}</RadixPopover.Trigger>
+            <RadixPopover.Trigger asChild style={{ outline: 'none' }}>
+                {trigger}
+            </RadixPopover.Trigger>
             <RadixPopover.Content
-                style={{ zIndex }}
+                style={{ zIndex, outline: 'none', minWidth, maxWidth }}
                 asChild
                 sideOffset={sideOffset}
                 side={side}
                 align={align}
                 alignOffset={alignOffset}
+                avoidCollisions={avoidCollisions}
             >
                 <Block
-                    zIndex={popoverTokens.zIndex}
+                    zIndex={999}
                     backgroundColor={popoverTokens.background}
                     boxShadow={
                         popoverTokens.shadow?.[shadow] ||

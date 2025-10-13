@@ -165,6 +165,20 @@ const MultiSelectDemo = () => {
         string[]
     >([])
 
+    const [maxSelectionsBasicSelected, setMaxSelectionsBasicSelected] =
+        useState<string[]>([])
+    const [maxSelectionsAdvancedSelected, setMaxSelectionsAdvancedSelected] =
+        useState<string[]>([])
+    const [borderRadiusFixSelected, setBorderRadiusFixSelected] = useState<
+        string[]
+    >([])
+
+    // Always Selected demo state
+    const [alwaysSelectedBasicSelected, setAlwaysSelectedBasicSelected] =
+        useState<string[]>(['react', 'nodejs']) // Pre-select some items that are always selected
+    const [alwaysSelectedAdvancedSelected, setAlwaysSelectedAdvancedSelected] =
+        useState<string[]>(['users.view', 'content.create']) // Pre-select some permissions
+
     // Truncation demo state
     const [truncationBasicSelected, setTruncationBasicSelected] = useState<
         string[]
@@ -675,6 +689,9 @@ const MultiSelectDemo = () => {
         setTruncationBasicSelected([])
         setTruncationCustomSelected([])
         setTruncationMixedSelected([])
+        setMaxSelectionsBasicSelected([])
+        setMaxSelectionsAdvancedSelected([])
+        setBorderRadiusFixSelected([])
         addSnackbar({
             header: 'All Selections Cleared',
             description: 'All multi-select values have been reset',
@@ -846,6 +863,21 @@ const MultiSelectDemo = () => {
                             style={{ width: '400px' }}
                         >
                             <MultiSelect
+                                fullWidth={true}
+                                minMenuWidth={400}
+                                showActionButtons={true}
+                                primaryAction={{
+                                    text: 'Apply',
+                                    onClick: (selected) => {
+                                        console.log('Applied', selected)
+                                    },
+                                }}
+                                secondaryAction={{
+                                    text: 'Reset',
+                                    onClick: () => {
+                                        console.log('Reset')
+                                    },
+                                }}
                                 error={playgroundError}
                                 errorMessage={playgroundErrorMessage}
                                 onBlur={() => {
@@ -880,7 +912,6 @@ const MultiSelectDemo = () => {
                                         <User size={16} />
                                     ) : undefined
                                 }
-                                minWidth={300}
                             />
                             {playgroundSelected.length > 0 && (
                                 <div className="mt-4 p-3 bg-blue-50 rounded-lg">
@@ -1785,7 +1816,6 @@ const MultiSelectDemo = () => {
                             enableSelectAll={true}
                             searchPlaceholder="Search through 30+ options..."
                             selectionTagType={MultiSelectSelectionTagType.COUNT}
-                            maxHeight={300}
                         />
                         {searchLargeDatasetSelected.length > 0 && (
                             <div className="p-3 bg-orange-50 rounded-lg">
@@ -1985,7 +2015,6 @@ const MultiSelectDemo = () => {
                             showItemDividers={true}
                             enableSearch={true}
                             selectionTagType={MultiSelectSelectionTagType.COUNT}
-                            maxHeight={300}
                         />
                         {dividersComparisonSelected.length > 0 && (
                             <div className="p-3 bg-orange-50 rounded-lg">
@@ -2463,11 +2492,495 @@ const MultiSelectDemo = () => {
                 </div>
             </div>
 
+            {/* Max Selections Feature */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    🎯 Max Selections Feature
+                </h2>
+                <p className="text-gray-600">
+                    <strong>
+                        NEW: Limit the maximum number of selections!
+                    </strong>
+                    Use the{' '}
+                    <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                        maxSelections
+                    </code>{' '}
+                    prop to restrict how many items users can select. Items
+                    become disabled when the limit is reached.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Max 3 Selections</h3>
+                        <MultiSelect
+                            label="Choose up to 3 skills"
+                            sublabel="Selection limit: 3 items"
+                            items={skillItems}
+                            selectedValues={maxSelectionsBasicSelected}
+                            onChange={handleMultiSelectChange(
+                                maxSelectionsBasicSelected,
+                                setMaxSelectionsBasicSelected
+                            )}
+                            placeholder="Select up to 3 skills"
+                            maxSelections={3}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {maxSelectionsBasicSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        Selected (
+                                        {maxSelectionsBasicSelected.length}/3):
+                                    </strong>{' '}
+                                    {maxSelectionsBasicSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    {maxSelectionsBasicSelected.length >= 3
+                                        ? '🚫 Maximum reached - other items are disabled'
+                                        : `✅ ${3 - maxSelectionsBasicSelected.length} more selections allowed`}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Max 5 Permissions</h3>
+                        <MultiSelect
+                            label="Grant up to 5 permissions"
+                            sublabel="Security limit: 5 permissions max"
+                            items={permissionItems}
+                            selectedValues={maxSelectionsAdvancedSelected}
+                            onChange={handleMultiSelectChange(
+                                maxSelectionsAdvancedSelected,
+                                setMaxSelectionsAdvancedSelected
+                            )}
+                            placeholder="Select up to 5 permissions"
+                            maxSelections={5}
+                            enableSearch={true}
+                            enableSelectAll={false}
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                            useDrawerOnMobile={false}
+                        />
+                        {maxSelectionsAdvancedSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        Granted (
+                                        {maxSelectionsAdvancedSelected.length}
+                                        /5):
+                                    </strong>{' '}
+                                    {maxSelectionsAdvancedSelected
+                                        .slice(0, 3)
+                                        .join(', ')}
+                                    {maxSelectionsAdvancedSelected.length > 3 &&
+                                        ` +${maxSelectionsAdvancedSelected.length - 3} more`}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    {maxSelectionsAdvancedSelected.length >= 5
+                                        ? '🔒 Security limit reached'
+                                        : `🔓 ${5 - maxSelectionsAdvancedSelected.length} more permissions can be granted`}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Border Radius Fix Demo
+                        </h3>
+                        <MultiSelect
+                            label="Select multiple items"
+                            sublabel="Notice the improved border radius on selected items"
+                            items={simpleItems}
+                            selectedValues={borderRadiusFixSelected}
+                            onChange={handleMultiSelectChange(
+                                borderRadiusFixSelected,
+                                setBorderRadiusFixSelected
+                            )}
+                            placeholder="Select multiple to see border fix"
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {borderRadiusFixSelected.length > 0 && (
+                            <div className="p-3 bg-purple-50 rounded-lg">
+                                <p className="text-sm text-purple-700">
+                                    <strong>
+                                        Selected (
+                                        {borderRadiusFixSelected.length}):
+                                    </strong>{' '}
+                                    {borderRadiusFixSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-purple-600 mt-1">
+                                    {borderRadiusFixSelected.length > 1
+                                        ? '🎨 Border radius applied only to first/last selected items'
+                                        : '🎨 Single selection gets full border radius'}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-200">
+                    <h4 className="font-semibold text-blue-900 mb-2">
+                        🎯 Max Selections Features:
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul className="text-sm text-blue-800 space-y-1">
+                            <li>
+                                • <strong>Flexible Limits:</strong> Set any
+                                number as maximum (e.g., maxSelections={3})
+                            </li>
+                            <li>
+                                • <strong>Smart Disabling:</strong> Unselected
+                                items become disabled when limit is reached
+                            </li>
+                            <li>
+                                • <strong>Selected Items Stay Active:</strong>{' '}
+                                Already selected items can still be deselected
+                            </li>
+                            <li>
+                                • <strong>Visual Feedback:</strong> Disabled
+                                items show appropriate styling
+                            </li>
+                        </ul>
+                        <ul className="text-sm text-blue-800 space-y-1">
+                            <li>
+                                • <strong>Works Everywhere:</strong> Desktop
+                                dropdown, mobile drawer, and submenus
+                            </li>
+                            <li>
+                                • <strong>Search Compatible:</strong> Limit
+                                applies to filtered results too
+                            </li>
+                            <li>
+                                • <strong>Border Radius Fix:</strong> Selected
+                                items now have proper border radius
+                            </li>
+                            <li>
+                                • <strong>Accessibility:</strong> Screen readers
+                                understand disabled state
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="mt-3 p-2 bg-white rounded border-l-4 border-blue-400">
+                        <p className="text-sm text-blue-700">
+                            <strong>Border Radius Improvement:</strong> When
+                            multiple items are selected, only the first item
+                            gets top border radius and the last item gets bottom
+                            border radius. Middle items have no border radius
+                            for a seamless connected appearance.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Always Selected Feature */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    🔒 Always Selected Feature
+                </h2>
+                <p className="text-gray-600">
+                    <strong>
+                        NEW: Force certain items to always be selected and
+                        disabled!
+                    </strong>
+                    Use the{' '}
+                    <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                        alwaysSelected: true
+                    </code>{' '}
+                    property on items to make them permanently selected and
+                    non-deselectable. Perfect for mandatory requirements or core
+                    permissions.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Core Technologies (Always Selected)
+                        </h3>
+                        <MultiSelect
+                            label="Required Tech Stack"
+                            sublabel="Some technologies are mandatory for this project"
+                            items={[
+                                {
+                                    groupLabel: 'Frontend (Required)',
+                                    showSeparator: true,
+                                    items: [
+                                        {
+                                            label: 'React',
+                                            value: 'react',
+                                            slot1: <Code size={16} />,
+                                            alwaysSelected: true,
+                                        },
+                                        {
+                                            label: 'Vue.js',
+                                            value: 'vue',
+                                            slot1: <Code size={16} />,
+                                        },
+                                        {
+                                            label: 'Angular',
+                                            value: 'angular',
+                                            slot1: <Code size={16} />,
+                                        },
+                                    ],
+                                },
+                                {
+                                    groupLabel: 'Backend (Required)',
+                                    showSeparator: true,
+                                    items: [
+                                        {
+                                            label: 'Node.js',
+                                            value: 'nodejs',
+                                            slot1: <Server size={16} />,
+                                            alwaysSelected: true,
+                                        },
+                                        {
+                                            label: 'Python',
+                                            value: 'python',
+                                            slot1: <Server size={16} />,
+                                        },
+                                        {
+                                            label: 'Java',
+                                            value: 'java',
+                                            slot1: <Server size={16} />,
+                                        },
+                                    ],
+                                },
+                                {
+                                    groupLabel: 'Database (Optional)',
+                                    items: [
+                                        {
+                                            label: 'PostgreSQL',
+                                            value: 'postgresql',
+                                            slot1: <Database size={16} />,
+                                        },
+                                        {
+                                            label: 'MySQL',
+                                            value: 'mysql',
+                                            slot1: <Database size={16} />,
+                                        },
+                                        {
+                                            label: 'MongoDB',
+                                            value: 'mongodb',
+                                            slot1: <Database size={16} />,
+                                        },
+                                    ],
+                                },
+                            ]}
+                            selectedValues={alwaysSelectedBasicSelected}
+                            onChange={handleMultiSelectChange(
+                                alwaysSelectedBasicSelected,
+                                setAlwaysSelectedBasicSelected
+                            )}
+                            placeholder="Select additional technologies"
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {alwaysSelectedBasicSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        Tech Stack (
+                                        {alwaysSelectedBasicSelected.length}):
+                                    </strong>{' '}
+                                    {alwaysSelectedBasicSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    🔒 React and Node.js are always selected
+                                    (mandatory)
+                                </p>
+                                <p className="text-xs text-blue-600">
+                                    ✅ You can select additional optional
+                                    technologies
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Base Permissions (Always Selected)
+                        </h3>
+                        <MultiSelect
+                            label="User Access Control"
+                            sublabel="Basic permissions are mandatory for all users"
+                            items={[
+                                {
+                                    groupLabel: 'Basic Access (Required)',
+                                    showSeparator: true,
+                                    items: [
+                                        {
+                                            label: 'View Users',
+                                            value: 'users.view',
+                                            subLabel: 'Read-only access',
+                                            slot1: <Users size={16} />,
+                                            alwaysSelected: true,
+                                        },
+                                        {
+                                            label: 'Edit Users',
+                                            value: 'users.edit',
+                                            subLabel: 'Modify user data',
+                                            slot1: <Users size={16} />,
+                                        },
+                                        {
+                                            label: 'Delete Users',
+                                            value: 'users.delete',
+                                            subLabel: 'Remove users',
+                                            slot1: <Users size={16} />,
+                                        },
+                                    ],
+                                },
+                                {
+                                    groupLabel: 'Content Management (Required)',
+                                    showSeparator: true,
+                                    items: [
+                                        {
+                                            label: 'Create Content',
+                                            value: 'content.create',
+                                            subLabel: 'Add new content',
+                                            slot1: <Star size={16} />,
+                                            alwaysSelected: true,
+                                        },
+                                        {
+                                            label: 'Edit Content',
+                                            value: 'content.edit',
+                                            subLabel: 'Modify existing',
+                                            slot1: <Star size={16} />,
+                                        },
+                                        {
+                                            label: 'Publish Content',
+                                            value: 'content.publish',
+                                            subLabel: 'Make content live',
+                                            slot1: <Star size={16} />,
+                                        },
+                                    ],
+                                },
+                                {
+                                    groupLabel: 'System Settings (Optional)',
+                                    items: [
+                                        {
+                                            label: 'View Settings',
+                                            value: 'settings.view',
+                                            subLabel: 'Read-only access',
+                                            slot1: <Settings size={16} />,
+                                        },
+                                        {
+                                            label: 'Edit Settings',
+                                            value: 'settings.edit',
+                                            subLabel: 'Modify settings',
+                                            slot1: <Settings size={16} />,
+                                        },
+                                        {
+                                            label: 'Advanced Settings',
+                                            value: 'settings.advanced',
+                                            subLabel: 'System config',
+                                            slot1: <Shield size={16} />,
+                                        },
+                                    ],
+                                },
+                            ]}
+                            selectedValues={alwaysSelectedAdvancedSelected}
+                            onChange={handleMultiSelectChange(
+                                alwaysSelectedAdvancedSelected,
+                                setAlwaysSelectedAdvancedSelected
+                            )}
+                            placeholder="Grant additional permissions"
+                            enableSearch={true}
+                            enableSelectAll={false}
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                            useDrawerOnMobile={false}
+                        />
+                        {alwaysSelectedAdvancedSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        Granted Permissions (
+                                        {alwaysSelectedAdvancedSelected.length}
+                                        ):
+                                    </strong>{' '}
+                                    {alwaysSelectedAdvancedSelected
+                                        .slice(0, 3)
+                                        .join(', ')}
+                                    {alwaysSelectedAdvancedSelected.length >
+                                        3 &&
+                                        ` +${alwaysSelectedAdvancedSelected.length - 3} more`}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    🔒 View Users and Create Content are always
+                                    granted (mandatory)
+                                </p>
+                                <p className="text-xs text-green-600">
+                                    ✅ Additional permissions can be granted as
+                                    needed
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border border-orange-200">
+                    <h4 className="font-semibold text-orange-900 mb-2">
+                        🔒 Always Selected Features:
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul className="text-sm text-orange-800 space-y-1">
+                            <li>
+                                • <strong>Mandatory Items:</strong> Set
+                                alwaysSelected: true to make items permanently
+                                selected
+                            </li>
+                            <li>
+                                • <strong>Visual Indication:</strong> Always
+                                selected items appear disabled but selected
+                            </li>
+                            <li>
+                                • <strong>Cannot be Deselected:</strong> Users
+                                cannot uncheck these items
+                            </li>
+                            <li>
+                                • <strong>Select All Exclusion:</strong> Always
+                                selected items are excluded from "Select All"
+                                logic
+                            </li>
+                        </ul>
+                        <ul className="text-sm text-orange-800 space-y-1">
+                            <li>
+                                • <strong>Works Everywhere:</strong> Desktop
+                                dropdown, mobile drawer, and submenus
+                            </li>
+                            <li>
+                                • <strong>Search Compatible:</strong> Always
+                                selected items remain visible in search results
+                            </li>
+                            <li>
+                                • <strong>Max Selections Compatible:</strong>{' '}
+                                Always selected items don't count toward
+                                maxSelections limit
+                            </li>
+                            <li>
+                                • <strong>Perfect for Requirements:</strong>{' '}
+                                Ideal for mandatory permissions, core features,
+                                etc.
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="mt-3 p-2 bg-white rounded border-l-4 border-orange-400">
+                        <p className="text-sm text-orange-700">
+                            <strong>Use Cases:</strong> Core permissions that
+                            all users must have, mandatory project requirements,
+                            essential features that cannot be disabled,
+                            compliance requirements, or baseline configurations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             {/* New Features Demo */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">New Features Demo</h2>
+                <h2 className="text-2xl font-bold">Other New Features</h2>
                 <p className="text-gray-600">
-                    Showcase the latest features: controllable header border and
+                    Additional latest features: controllable header border and
                     improved item dividers.
                 </p>
 
@@ -2670,7 +3183,6 @@ const MultiSelectDemo = () => {
                             )}
                             placeholder="Select items with long text..."
                             selectionTagType={MultiSelectSelectionTagType.COUNT}
-                            maxWidth={300} // Constrain width to force truncation
                             useDrawerOnMobile={false}
                         />
                         {truncationBasicSelected.length > 0 && (
@@ -2709,7 +3221,6 @@ const MultiSelectDemo = () => {
                             )}
                             placeholder="Select enhanced options..."
                             selectionTagType={MultiSelectSelectionTagType.COUNT}
-                            maxWidth={320}
                             useDrawerOnMobile={false}
                         />
                         {truncationCustomSelected.length > 0 && (
@@ -2744,7 +3255,6 @@ const MultiSelectDemo = () => {
                             )}
                             placeholder="Select mixed content..."
                             selectionTagType={MultiSelectSelectionTagType.TEXT}
-                            maxWidth={300}
                             useDrawerOnMobile={false}
                         />
                         {truncationMixedSelected.length > 0 && (

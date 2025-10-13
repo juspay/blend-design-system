@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
 import { ColumnManagerProps } from './types'
@@ -14,49 +15,129 @@ import {
     type MultiSelectMenuGroupType,
     MultiSelectMenuSide,
 } from '../MultiSelect/types'
+import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export const ColumnManager = <T extends Record<string, unknown>>({
     columns,
     visibleColumns,
     onColumnChange,
+    maxSelections,
+    alwaysSelectedColumns = [],
+    columnManagerPrimaryAction,
+    columnManagerSecondaryAction,
+    multiSelectWidth = 250,
 }: ColumnManagerProps<T>) => {
     const mobileConfig = useMobileDataTable()
     const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
+    const hasPrimaryAction = !!columnManagerPrimaryAction
+
+    const [pendingSelectedColumns, setPendingSelectedColumns] = useState<
+        string[]
+    >([])
+
+    useEffect(() => {
+        if (hasPrimaryAction) {
+            setPendingSelectedColumns(
+                visibleColumns.map((col) => String(col.field))
+            )
+        }
+    }, [visibleColumns, hasPrimaryAction])
 
     const managableColumns = columns.filter((col) => col.canHide !== false)
+    const selectedColumnValues = hasPrimaryAction
+        ? pendingSelectedColumns
+        : visibleColumns.map((col) => String(col.field))
 
     const multiSelectItems: MultiSelectMenuGroupType[] = [
         {
-            groupLabel: 'Manage Columns',
+            groupLabel: '',
             showSeparator: false,
             items: managableColumns.map((column) => ({
                 label: column.header,
                 value: String(column.field),
+                alwaysSelected: alwaysSelectedColumns.includes(
+                    String(column.field)
+                ),
+                tooltipProps: {
+                    side: TooltipSide.LEFT,
+                    align: TooltipAlign.CENTER,
+                    size: TooltipSize.SMALL,
+                    delayDuration: 300,
+                },
             })),
         },
     ]
 
-    const selectedColumnValues = visibleColumns.map((col) => String(col.field))
+    const handleDeselectAll = () => {
+        if (hasPrimaryAction) {
+            setPendingSelectedColumns(alwaysSelectedColumns)
+            return
+        }
 
-    const handleMultiSelectChange = (value: string) => {
-        if (value === '') {
-            if (visibleColumns.length > 1) {
-                onColumnChange([visibleColumns[0]])
-            }
-        } else {
-            const field = value as keyof T
-            const isCurrentlyVisible = visibleColumns.some(
-                (col) => col.field === field
-            )
+        const alwaysSelectedCols = visibleColumns.filter((col) =>
+            alwaysSelectedColumns.includes(String(col.field))
+        )
 
-            if (isCurrentlyVisible) {
-                if (visibleColumns.length > 1) {
-                    const newVisibleColumns = visibleColumns.filter(
-                        (col) => col.field !== field
-                    )
-                    onColumnChange(newVisibleColumns)
+        if (alwaysSelectedCols.length > 0) {
+            onColumnChange(alwaysSelectedCols)
+        } else if (visibleColumns.length > 1) {
+            onColumnChange([visibleColumns[0]])
+        }
+    }
+
+    const handleColumnToggle = (field: string) => {
+        if (hasPrimaryAction) {
+            const isSelected = pendingSelectedColumns.includes(field)
+            const isAlwaysSelected = alwaysSelectedColumns.includes(field)
+
+            if (
+                isSelected &&
+                !isAlwaysSelected &&
+                pendingSelectedColumns.length > 1
+            ) {
+                setPendingSelectedColumns((prev) =>
+                    prev.filter((col) => col !== field)
+                )
+            } else if (!isSelected) {
+                const selectableCount = pendingSelectedColumns.filter(
+                    (col) => !alwaysSelectedColumns.includes(col)
+                ).length
+
+                const canAdd =
+                    !maxSelections ||
+                    selectableCount < maxSelections ||
+                    isAlwaysSelected
+                if (canAdd) {
+                    setPendingSelectedColumns((prev) => [...prev, field])
                 }
-            } else {
+            }
+            return
+        }
+
+        const isCurrentlyVisible = visibleColumns.some(
+            (col) => col.field === field
+        )
+        const isAlwaysSelected = alwaysSelectedColumns.includes(field)
+
+        if (
+            isCurrentlyVisible &&
+            !isAlwaysSelected &&
+            visibleColumns.length > 1
+        ) {
+            const newVisibleColumns = visibleColumns.filter(
+                (col) => col.field !== field
+            )
+            onColumnChange(newVisibleColumns)
+        } else if (!isCurrentlyVisible) {
+            const selectableCount = visibleColumns.filter(
+                (col) => !alwaysSelectedColumns.includes(String(col.field))
+            ).length
+
+            const canAdd =
+                !maxSelections ||
+                selectableCount < maxSelections ||
+                isAlwaysSelected
+            if (canAdd) {
                 const columnToAdd = columns.find((col) => col.field === field)
                 if (columnToAdd) {
                     onColumnChange([...visibleColumns, columnToAdd])
@@ -64,6 +145,67 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             }
         }
     }
+
+    const handleMultiSelectChange = (value: string) => {
+        if (value === '') {
+            handleDeselectAll()
+        } else {
+            handleColumnToggle(value)
+        }
+    }
+
+    const handlePrimaryActionClick = () => {
+        if (!columnManagerPrimaryAction) return
+
+        const newVisibleColumns = pendingSelectedColumns
+            .map((fieldValue) =>
+                columns.find((col) => String(col.field) === fieldValue)
+            )
+            .filter(Boolean) as typeof columns
+
+        onColumnChange(newVisibleColumns)
+        columnManagerPrimaryAction.onClick(pendingSelectedColumns)
+    }
+
+    const customTrigger = (
+        <PrimitiveButton
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            width="auto"
+            height="auto"
+            cursor="pointer"
+            border="none"
+        >
+            <Plus
+                size={tableTokens.header.actionIcons.columnManagerIcon.width}
+                color={FOUNDATION_THEME.colors.gray[400]}
+            />
+        </PrimitiveButton>
+    )
+
+    const primaryAction = columnManagerPrimaryAction
+        ? {
+              ...columnManagerPrimaryAction,
+              onClick: handlePrimaryActionClick,
+          }
+        : undefined
+
+    const commonProps = {
+        items: multiSelectItems,
+        selectedValues: selectedColumnValues,
+        onChange: handleMultiSelectChange,
+        enableSearch: true,
+        enableSelectAll: false,
+        showHeaderBorder: false,
+        maxSelections,
+        minMenuWidth: multiSelectWidth,
+        customTrigger,
+        showActionButtons: true,
+        primaryAction,
+        secondaryAction: columnManagerSecondaryAction,
+    }
+
     return (
         <Block>
             {mobileConfig.isMobile ? (
@@ -73,33 +215,8 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     placeholder="Select columns to display"
                     variant={MultiSelectVariant.CONTAINER}
                     size={MultiSelectMenuSize.MEDIUM}
-                    items={multiSelectItems}
-                    selectedValues={selectedColumnValues}
-                    onChange={handleMultiSelectChange}
-                    enableSearch={true}
-                    enableSelectAll={true}
                     showItemDividers={true}
-                    showHeaderBorder={false}
-                    showActionButtons={false}
-                    customTrigger={
-                        <PrimitiveButton
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            width="auto"
-                            height="auto"
-                            cursor="pointer"
-                            border="none"
-                        >
-                            <Plus
-                                size={
-                                    tableTokens.header.actionIcons
-                                        .columnManagerIcon.width
-                                }
-                                color={FOUNDATION_THEME.colors.gray[400]}
-                            />
-                        </PrimitiveButton>
-                    }
+                    {...commonProps}
                 />
             ) : (
                 <MultiSelect
@@ -109,34 +226,9 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     variant={MultiSelectVariant.NO_CONTAINER}
                     alignment={MultiSelectMenuAlignment.END}
                     size={MultiSelectMenuSize.SMALL}
-                    items={multiSelectItems}
-                    selectedValues={selectedColumnValues}
-                    onChange={handleMultiSelectChange}
-                    enableSearch={true}
-                    enableSelectAll={true}
                     selectAllText="Select All Columns"
-                    showActionButtons={false}
-                    maxHeight={400}
-                    showHeaderBorder={false}
-                    customTrigger={
-                        <PrimitiveButton
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            width="auto"
-                            height="auto"
-                            cursor="pointer"
-                            border="none"
-                        >
-                            <Plus
-                                size={
-                                    tableTokens.header.actionIcons
-                                        .columnManagerIcon.width
-                                }
-                                color={FOUNDATION_THEME.colors.gray[400]}
-                            />
-                        </PrimitiveButton>
-                    }
+                    maxMenuHeight={400}
+                    {...commonProps}
                 />
             )}
         </Block>

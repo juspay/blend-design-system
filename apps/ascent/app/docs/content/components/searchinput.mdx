@@ -1,0 +1,482 @@
+---
+title: SearchInput
+description: The SearchInput component provides a specialized input field for search functionality, featuring customizable left and right slots for icons, error states, and a clean minimalist design with underline borders.
+category: components
+tags:
+    - searchinput
+    - component
+    - input
+    - search
+    - form
+    - textfield
+    - filter
+    - query
+    - find
+    - lookup
+RepoFolderName: SearchInput
+StorybookLink: components-searchinput--docs
+---
+
+<SearchInputPreview />
+
+## Usage
+
+```tsx
+import { SearchInput } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [searchValue, setSearchValue] = useState('')
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(e.target.value)
+    }
+
+    return (
+        <SearchInput
+            placeholder="Search products..."
+            value={searchValue}
+            onChange={handleSearchChange}
+            leftSlot={<SearchIcon />}
+            rightSlot={<FilterIcon />}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'leftSlot',
+                hintText:
+                    'React element to display on the left side of the input',
+            },
+            { content: 'React.ReactNode', hintText: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText:
+                    'React element to display on the right side of the input',
+            },
+            { content: 'React.ReactNode', hintText: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'Whether the input is in error state',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText: 'Current search input value',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback when input value changes',
+            },
+            {
+                content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text for the input',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '"Enter"' },
+        ],
+        [
+            {
+                content: 'name',
+                hintText: 'Name attribute for the input element',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'Whether the input is disabled',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'autoFocus',
+                hintText: 'Whether to auto-focus the input on mount',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'onFocus',
+                hintText: 'Callback when input receives focus',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onBlur',
+                hintText: 'Callback when input loses focus',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the SearchInput component using the following tokens:
+
+```tsx
+export type SearchInputTokensType = {
+    height: CSSObject['height']
+    width: CSSObject['width']
+    gap: CSSObject['gap']
+    padding: {
+        x: CSSObject['padding']
+        y: CSSObject['padding']
+    }
+    borderRadius: CSSObject['borderRadius']
+    borderTop: {
+        [key in SearchInputState]: CSSObject['borderTop']
+    }
+    borderLeft: {
+        [key in SearchInputState]: CSSObject['borderTop']
+    }
+    borderRight: {
+        [key in SearchInputState]: CSSObject['borderRight']
+    }
+    borderBottom: {
+        [key in SearchInputState]: CSSObject['borderBottom']
+    }
+    outline: CSSObject['outline']
+    boxShadow: CSSObject['boxShadow']
+}
+
+export type SearchInputState = 'default' | 'hover' | 'focus' | 'error'
+```
+
+The component uses a minimalist design with only bottom borders for different states and customizable padding for left and right slots.
+
+## Features
+
+- **Slot Support**: Configurable left and right slots for icons or other elements
+- **Dynamic Padding**: Automatically adjusts padding based on slot content width
+- **Error States**: Visual error feedback with customizable border colors
+- **Minimalist Design**: Clean underline-only border styling
+- **Focus Management**: Proper focus and hover state handling
+- **Accessibility**: Full keyboard navigation and screen reader support
+- **Form Integration**: Compatible with form libraries and validation
+- **Responsive**: Adapts to container width with 100% default width
+
+## Usage Examples
+
+### Basic Search
+
+Simple search input with left search icon:
+
+```tsx
+import { SearchInput } from '@juspay/blend-design-system'
+
+const [query, setQuery] = useState('')
+
+const SearchIcon = () => (
+    <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#6B7280"
+    >
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.35-4.35" />
+    </svg>
+)
+
+;<SearchInput
+    placeholder="Search..."
+    value={query}
+    onChange={(e) => setQuery(e.target.value)}
+    leftSlot={<SearchIcon />}
+/>
+```
+
+### Search with Filter
+
+Search input with both search and filter icons:
+
+```tsx
+const [searchTerm, setSearchTerm] = useState('')
+
+const FilterIcon = () => (
+    <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#6B7280"
+    >
+        <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46" />
+    </svg>
+)
+
+;<SearchInput
+    placeholder="Search products..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    leftSlot={<SearchIcon />}
+    rightSlot={<FilterIcon />}
+/>
+```
+
+### Global Search Bar
+
+Search bar for site-wide search functionality:
+
+```tsx
+const [globalSearch, setGlobalSearch] = useState('')
+
+const handleGlobalSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGlobalSearch(e.target.value)
+
+    if (e.target.value.length >= 3) {
+        // Trigger search API call
+        performSearch(e.target.value)
+    }
+}
+
+;<SearchInput
+    placeholder="Search everything..."
+    value={globalSearch}
+    onChange={handleGlobalSearch}
+    leftSlot={<SearchIcon />}
+    name="global-search"
+    autoFocus
+/>
+```
+
+### Product Filter Search
+
+Search with category filter integration:
+
+```tsx
+const [productQuery, setProductQuery] = useState('')
+const [showFilters, setShowFilters] = useState(false)
+
+const CategoryIcon = () => (
+    <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#6B7280"
+    >
+        <rect x="3" y="3" width="7" height="7" />
+        <rect x="14" y="3" width="7" height="7" />
+        <rect x="14" y="14" width="7" height="7" />
+        <rect x="3" y="14" width="7" height="7" />
+    </svg>
+)
+
+;<div>
+    <SearchInput
+        placeholder="Search products by name, category..."
+        value={productQuery}
+        onChange={(e) => setProductQuery(e.target.value)}
+        leftSlot={<SearchIcon />}
+        rightSlot={
+            <button onClick={() => setShowFilters(!showFilters)}>
+                <CategoryIcon />
+            </button>
+        }
+    />
+    {showFilters && <div className="filter-panel">{/* Filter options */}</div>}
+</div>
+```
+
+### Error State Search
+
+Search input with validation and error handling:
+
+```tsx
+const [searchInput, setSearchInput] = useState('')
+const [hasError, setHasError] = useState(false)
+
+const validateSearch = (value: string) => {
+    if (value.length > 0 && value.length < 2) {
+        setHasError(true)
+        return false
+    }
+    setHasError(false)
+    return true
+}
+
+const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setSearchInput(value)
+    validateSearch(value)
+}
+
+;<div>
+    <SearchInput
+        placeholder="Search (minimum 2 characters)..."
+        value={searchInput}
+        onChange={handleSearchInput}
+        leftSlot={<SearchIcon />}
+        error={hasError}
+    />
+    {hasError && (
+        <p className="error-message">
+            Search term must be at least 2 characters long
+        </p>
+    )}
+</div>
+```
+
+### Advanced Search with Commands
+
+Search input supporting command shortcuts:
+
+```tsx
+const [commandSearch, setCommandSearch] = useState('')
+
+const CommandIcon = () => <kbd className="command-key">⌘K</kbd>
+
+const handleCommandSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setCommandSearch(value)
+
+    // Handle command patterns like @user, #tag, /command
+    if (value.startsWith('@')) {
+        // User search
+    } else if (value.startsWith('#')) {
+        // Tag search
+    } else if (value.startsWith('/')) {
+        // Command search
+    }
+}
+
+;<SearchInput
+    placeholder="Search or type @ for users, # for tags..."
+    value={commandSearch}
+    onChange={handleCommandSearch}
+    leftSlot={<SearchIcon />}
+    rightSlot={<CommandIcon />}
+/>
+```
+
+## Behavior
+
+### Slot Management
+
+- **Dynamic Sizing**: Slots automatically calculate their width to adjust input padding
+- **Position**: Left slot positioned at the left edge, right slot at the right edge
+- **Centering**: Slot content is vertically centered within the input height
+- **Gap Handling**: Consistent gap between slot content and input text
+
+### Input Styling
+
+- **Border Design**: Only bottom border visible, other borders set to none
+- **State Colors**: Different border colors for default, hover, focus, and error states
+- **Outline**: Removes default browser outline for custom focus styling
+- **Width**: Full width by default (100%) for responsive layout
+
+### Focus Behavior
+
+- **Focus Indication**: Bottom border changes color on focus
+- **Auto-Focus**: Optional auto-focus on component mount
+- **Tab Navigation**: Proper tab order and keyboard accessibility
+- **Focus Events**: Supports onFocus and onBlur event handlers
+
+### Error Handling
+
+- **Visual Feedback**: Error state changes bottom border to error color
+- **State Persistence**: Error state maintained until explicitly cleared
+- **Validation**: Can be integrated with form validation libraries
+- **Accessibility**: Error states are properly announced to screen readers
+
+## Best Practices
+
+### When to Use SearchInput
+
+- **Search Functionality**: Primary search interfaces in applications
+- **Filter Interfaces**: Product catalogs, data tables, and content lists
+- **Command Interfaces**: Admin panels and developer tools
+- **Quick Find**: Navigation and content discovery features
+- **Global Search**: Site-wide search functionality
+
+### Icon and Slot Guidelines
+
+- **Search Icon**: Always include a search icon for recognition
+- **Filter Icon**: Add filter icon for advanced search capabilities
+- **Clear Button**: Consider adding a clear/reset button in right slot
+- **Command Hints**: Use keyboard shortcut hints for power users
+- **Loading States**: Show loading indicators during search operations
+
+### Accessibility Considerations
+
+- **Label Association**: Ensure proper labeling for screen readers
+- **Keyboard Support**: Test all keyboard interactions thoroughly
+- **Focus Management**: Maintain visible focus indicators
+- **Error Communication**: Ensure error states are accessible
+- **ARIA Labels**: Use appropriate ARIA labels for search context
+
+### Performance Optimization
+
+- **Debouncing**: Implement debouncing for search API calls
+- **Memoization**: Use React.memo for slot components if needed
+- **State Management**: Use appropriate state management patterns
+- **Search Optimization**: Consider search suggestions and autocomplete
+
+### Form Integration
+
+- **Controlled Components**: Always use controlled inputs with proper state
+- **Validation**: Integrate with form validation libraries
+- **Submission**: Handle form submission and search triggers
+- **Reset Functionality**: Implement proper form reset behavior
+- **Search Context**: Maintain search state across navigation
+
+### Styling Guidelines
+
+- **Consistent Slots**: Use consistent icon sizing and colors
+- **Visual Hierarchy**: Ensure search input stands out appropriately
+- **Responsive Design**: Test on various screen sizes
+- **Theme Integration**: Follow design system color and spacing tokens
+- **State Feedback**: Provide clear visual feedback for all states
+
+### Search Experience
+
+- **Real-time Results**: Consider live search for better UX
+- **Search History**: Implement search history and suggestions
+- **No Results**: Handle empty search results gracefully
+- **Search Analytics**: Track search patterns for optimization
+- **Contextual Search**: Scope search to relevant content areas

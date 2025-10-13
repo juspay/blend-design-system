@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
     Drawer,
     DrawerTrigger,
@@ -36,8 +36,62 @@ import { Checkbox } from '../Checkbox'
 import { CheckboxSize } from '../Checkbox/types'
 import { TextInput } from '../Inputs/TextInput'
 import { TextInputSize } from '../Inputs/TextInput/types'
+import VirtualList from '../VirtualList/VirtualList'
+import type { VirtualListItem } from '../VirtualList/types'
 
 type MobileMultiSelectProps = MultiSelectProps
+
+type FlattenedMobileMultiSelectItem = VirtualListItem & {
+    type: 'item' | 'label' | 'separator' | 'selectAll'
+    item?: MultiSelectMenuItemType
+    label?: string
+    groupId?: number
+}
+
+const flattenMobileMultiSelectGroups = (
+    groups: MultiSelectMenuGroupType[],
+    enableSelectAll: boolean
+): FlattenedMobileMultiSelectItem[] => {
+    const flattened: FlattenedMobileMultiSelectItem[] = []
+    let idCounter = 0
+
+    if (enableSelectAll) {
+        flattened.push({
+            id: 'select-all',
+            type: 'selectAll',
+        })
+    }
+
+    groups.forEach((group, groupId) => {
+        if (group.groupLabel) {
+            flattened.push({
+                id: `label-${groupId}`,
+                type: 'label',
+                label: group.groupLabel,
+                groupId,
+            })
+        }
+
+        group.items.forEach((item) => {
+            flattened.push({
+                id: `item-${idCounter++}`,
+                type: 'item',
+                item,
+                groupId,
+            })
+        })
+
+        if (groupId !== groups.length - 1 && group.showSeparator) {
+            flattened.push({
+                id: `separator-${groupId}`,
+                type: 'separator',
+                groupId,
+            })
+        }
+    })
+
+    return flattened
+}
 
 const SelectAllItem = ({
     items,
@@ -51,7 +105,9 @@ const SelectAllItem = ({
     selectAllText: string
 }) => {
     const allValues = items.flatMap((group) =>
-        group.items.filter((item) => !item.disabled).map((item) => item.value)
+        group.items
+            .filter((item) => !item.disabled && !item.alwaysSelected)
+            .map((item) => item.value)
     )
 
     const allSelected =
@@ -131,11 +187,21 @@ const MultiSelectItem = ({
     item,
     isSelected,
     onChange,
+    maxSelections,
+    selectedCount,
 }: {
     item: MultiSelectMenuItemType
     isSelected: boolean
     onChange: (value: string) => void
+    maxSelections?: number
+    selectedCount: number
 }) => {
+    const isMaxReached =
+        maxSelections !== undefined &&
+        selectedCount >= maxSelections &&
+        !isSelected
+    const isItemDisabled = item.disabled || isMaxReached || item.alwaysSelected
+
     return (
         <Block
             display="flex"
@@ -144,12 +210,12 @@ const MultiSelectItem = ({
             padding="8px 6px"
             margin="0px 8px"
             borderRadius={4}
-            cursor={item.disabled ? 'not-allowed' : 'pointer'}
+            cursor={isItemDisabled ? 'not-allowed' : 'pointer'}
             _hover={{
                 backgroundColor: FOUNDATION_THEME.colors.gray[50],
             }}
             onClick={() => {
-                if (!item.disabled) {
+                if (!isItemDisabled) {
                     onChange(item.value)
                 }
             }}
@@ -188,9 +254,9 @@ const MultiSelectItem = ({
                     <Checkbox
                         size={CheckboxSize.SMALL}
                         checked={isSelected}
-                        disabled={item.disabled}
+                        disabled={isItemDisabled}
                         onCheckedChange={() => {
-                            if (!item.disabled) {
+                            if (!isItemDisabled) {
                                 onChange(item.value)
                             }
                         }}
@@ -232,6 +298,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     searchPlaceholder = 'Search options...',
     enableSelectAll = false,
     selectAllText = 'Select All',
+    maxSelections,
     customTrigger,
     onBlur,
     onFocus,
@@ -247,6 +314,12 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     secondaryAction,
     showItemDividers = false,
     showHeaderBorder = false,
+    enableVirtualization = false,
+    virtualListItemHeight = 56,
+    virtualListOverscan = 5,
+    onEndReached,
+    endReachedThreshold,
+    hasMore,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -257,6 +330,11 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     const valueLabelMap = map(items)
 
     const filteredItems = filterMenuGroups(items, searchText)
+
+    const flattenedItems = useMemo(
+        () => flattenMobileMultiSelectGroups(filteredItems, enableSelectAll),
+        [filteredItems, enableSelectAll]
+    )
 
     return (
         <Block width="100%" display="flex" flexDirection="column" gap={8}>
@@ -364,7 +442,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                             backgroundColor={
                                                 FOUNDATION_THEME.colors.gray[0]
                                             }
-                                            zIndex={1000}
+                                            zIndex={50}
                                         >
                                             <TextInput
                                                 size={TextInputSize.MEDIUM}
@@ -379,111 +457,322 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                         </Block>
                                     )}
 
-                                    {enableSelectAll && (
-                                        <SelectAllItem
-                                            items={filteredItems}
-                                            selectedValues={selectedValues}
-                                            onChange={onChange}
-                                            selectAllText={selectAllText}
-                                        />
-                                    )}
+                                    {items.length === 0 ? (
+                                        <Block
+                                            display="flex"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            padding={
+                                                multiSelectTokens.dropdown.item
+                                                    .padding
+                                            }
+                                        >
+                                            <Text
+                                                variant="body.md"
+                                                color={
+                                                    multiSelectTokens.dropdown
+                                                        .item.label.color
+                                                        .disabled
+                                                }
+                                                textAlign="center"
+                                            >
+                                                No items available
+                                            </Text>
+                                        </Block>
+                                    ) : filteredItems.length === 0 &&
+                                      searchText.length > 0 ? (
+                                        <Block
+                                            display="flex"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            padding={
+                                                multiSelectTokens.dropdown.item
+                                                    .padding
+                                            }
+                                        >
+                                            <Text
+                                                variant="body.md"
+                                                color={
+                                                    multiSelectTokens.dropdown
+                                                        .item.label.color
+                                                        .disabled
+                                                }
+                                                textAlign="center"
+                                            >
+                                                No results found
+                                            </Text>
+                                        </Block>
+                                    ) : enableVirtualization &&
+                                      flattenedItems.length > 0 ? (
+                                        <VirtualList
+                                            items={flattenedItems}
+                                            height={600}
+                                            itemHeight={virtualListItemHeight}
+                                            overscan={virtualListOverscan}
+                                            onEndReached={onEndReached}
+                                            endReachedThreshold={
+                                                endReachedThreshold
+                                            }
+                                            hasMore={hasMore}
+                                            renderItem={({
+                                                item: flatItem,
+                                            }) => {
+                                                const typed =
+                                                    flatItem as FlattenedMobileMultiSelectItem
 
-                                    {filteredItems.map((group, groupId) => (
-                                        <React.Fragment key={groupId}>
-                                            {group.groupLabel && (
-                                                <Block
-                                                    padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
-                                                    margin={`0 ${FOUNDATION_THEME.unit[6]}`}
-                                                >
-                                                    <Text
-                                                        variant="body.sm"
-                                                        color={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[400]
-                                                        }
-                                                        textTransform="uppercase"
-                                                        fontSize={12}
-                                                    >
-                                                        {group.groupLabel}
-                                                    </Text>
-                                                </Block>
-                                            )}
-                                            {group.items.map(
-                                                (item, itemIndex) => {
-                                                    const isSelected =
-                                                        selectedValues.includes(
-                                                            item.value
-                                                        )
-
-                                                    const isLastItemOverall =
-                                                        (() => {
-                                                            const isLastGroup =
-                                                                groupId ===
-                                                                filteredItems.length -
-                                                                    1
-                                                            const isLastItemInGroup =
-                                                                itemIndex ===
-                                                                group.items
-                                                                    .length -
-                                                                    1
-                                                            return (
-                                                                isLastGroup &&
-                                                                isLastItemInGroup
-                                                            )
-                                                        })()
-
-                                                    const shouldShowDivider =
-                                                        showItemDividers &&
-                                                        !isLastItemOverall
-
+                                                if (
+                                                    typed.type === 'selectAll'
+                                                ) {
                                                     return (
-                                                        <React.Fragment
-                                                            key={`${groupId}-${itemIndex}`}
+                                                        <Block
+                                                            borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                                                            marginBottom={8}
+                                                            paddingBottom={8}
                                                         >
-                                                            <MultiSelectItem
-                                                                item={item}
-                                                                isSelected={
-                                                                    isSelected
+                                                            <SelectAllItem
+                                                                items={
+                                                                    filteredItems
+                                                                }
+                                                                selectedValues={
+                                                                    selectedValues
                                                                 }
                                                                 onChange={
                                                                     onChange
                                                                 }
+                                                                selectAllText={
+                                                                    selectAllText
+                                                                }
                                                             />
-                                                            {shouldShowDivider && (
-                                                                <Block
-                                                                    height={1}
-                                                                    flexShrink={
-                                                                        0
-                                                                    }
-                                                                    width="auto"
-                                                                    display="block"
-                                                                    style={{
-                                                                        borderTop: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-                                                                        minHeight:
-                                                                            '1px',
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        </React.Fragment>
+                                                        </Block>
                                                     )
                                                 }
+
+                                                if (typed.type === 'label') {
+                                                    return (
+                                                        <Block
+                                                            padding={`${multiSelectTokens.dropdown.item.gap} ${multiSelectTokens.dropdown.item.padding}`}
+                                                            margin={
+                                                                multiSelectTokens
+                                                                    .dropdown
+                                                                    .item.margin
+                                                            }
+                                                        >
+                                                            <Text
+                                                                variant="body.sm"
+                                                                color={
+                                                                    multiSelectTokens
+                                                                        .dropdown
+                                                                        .item
+                                                                        .label
+                                                                        .color
+                                                                        .disabled
+                                                                }
+                                                                textTransform="uppercase"
+                                                                fontSize={
+                                                                    multiSelectTokens
+                                                                        .dropdown
+                                                                        .item
+                                                                        .subLabel
+                                                                        .fontSize
+                                                                }
+                                                            >
+                                                                {typed.label}
+                                                            </Text>
+                                                        </Block>
+                                                    )
+                                                }
+
+                                                if (
+                                                    typed.type === 'separator'
+                                                ) {
+                                                    return (
+                                                        <Block
+                                                            height={
+                                                                multiSelectTokens
+                                                                    .dropdown
+                                                                    .seperator
+                                                                    .height
+                                                            }
+                                                            backgroundColor={
+                                                                multiSelectTokens
+                                                                    .dropdown
+                                                                    .seperator
+                                                                    .color
+                                                            }
+                                                            margin={
+                                                                multiSelectTokens
+                                                                    .dropdown
+                                                                    .seperator
+                                                                    .margin
+                                                            }
+                                                        />
+                                                    )
+                                                }
+
+                                                if (
+                                                    typed.type === 'item' &&
+                                                    typed.item
+                                                ) {
+                                                    const isSelected =
+                                                        selectedValues.includes(
+                                                            typed.item.value
+                                                        )
+                                                    return (
+                                                        <MultiSelectItem
+                                                            item={typed.item}
+                                                            isSelected={
+                                                                isSelected
+                                                            }
+                                                            onChange={onChange}
+                                                            maxSelections={
+                                                                maxSelections
+                                                            }
+                                                            selectedCount={
+                                                                selectedValues.length
+                                                            }
+                                                        />
+                                                    )
+                                                }
+
+                                                return null
+                                            }}
+                                        />
+                                    ) : (
+                                        <>
+                                            {enableSelectAll && (
+                                                <SelectAllItem
+                                                    items={filteredItems}
+                                                    selectedValues={
+                                                        selectedValues
+                                                    }
+                                                    onChange={onChange}
+                                                    selectAllText={
+                                                        selectAllText
+                                                    }
+                                                />
                                             )}
-                                            {groupId !==
-                                                filteredItems.length - 1 &&
-                                                group.showSeparator && (
-                                                    <Block
-                                                        height={1}
-                                                        backgroundColor={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[200]
-                                                        }
-                                                        margin="8px 0px"
-                                                    />
-                                                )}
-                                        </React.Fragment>
-                                    ))}
+
+                                            {filteredItems.map(
+                                                (group, groupId) => (
+                                                    <React.Fragment
+                                                        key={groupId}
+                                                    >
+                                                        {group.groupLabel && (
+                                                            <Block
+                                                                padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
+                                                                margin={`0 ${FOUNDATION_THEME.unit[6]}`}
+                                                            >
+                                                                <Text
+                                                                    variant="body.sm"
+                                                                    color={
+                                                                        FOUNDATION_THEME
+                                                                            .colors
+                                                                            .gray[400]
+                                                                    }
+                                                                    textTransform="uppercase"
+                                                                    fontSize={
+                                                                        12
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        group.groupLabel
+                                                                    }
+                                                                </Text>
+                                                            </Block>
+                                                        )}
+                                                        {group.items.map(
+                                                            (
+                                                                item,
+                                                                itemIndex
+                                                            ) => {
+                                                                const isSelected =
+                                                                    selectedValues.includes(
+                                                                        item.value
+                                                                    )
+
+                                                                const isLastItemOverall =
+                                                                    (() => {
+                                                                        const isLastGroup =
+                                                                            groupId ===
+                                                                            filteredItems.length -
+                                                                                1
+                                                                        const isLastItemInGroup =
+                                                                            itemIndex ===
+                                                                            group
+                                                                                .items
+                                                                                .length -
+                                                                                1
+                                                                        return (
+                                                                            isLastGroup &&
+                                                                            isLastItemInGroup
+                                                                        )
+                                                                    })()
+
+                                                                const shouldShowDivider =
+                                                                    showItemDividers &&
+                                                                    !isLastItemOverall
+
+                                                                return (
+                                                                    <React.Fragment
+                                                                        key={`${groupId}-${itemIndex}`}
+                                                                    >
+                                                                        <MultiSelectItem
+                                                                            item={
+                                                                                item
+                                                                            }
+                                                                            isSelected={
+                                                                                isSelected
+                                                                            }
+                                                                            onChange={
+                                                                                onChange
+                                                                            }
+                                                                            maxSelections={
+                                                                                maxSelections
+                                                                            }
+                                                                            selectedCount={
+                                                                                selectedValues.length
+                                                                            }
+                                                                        />
+                                                                        {shouldShowDivider && (
+                                                                            <Block
+                                                                                height={
+                                                                                    1
+                                                                                }
+                                                                                flexShrink={
+                                                                                    0
+                                                                                }
+                                                                                width="auto"
+                                                                                display="block"
+                                                                                style={{
+                                                                                    borderTop: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                                                                                    minHeight:
+                                                                                        '1px',
+                                                                                }}
+                                                                            />
+                                                                        )}
+                                                                    </React.Fragment>
+                                                                )
+                                                            }
+                                                        )}
+                                                        {groupId !==
+                                                            filteredItems.length -
+                                                                1 &&
+                                                            group.showSeparator && (
+                                                                <Block
+                                                                    height={1}
+                                                                    backgroundColor={
+                                                                        FOUNDATION_THEME
+                                                                            .colors
+                                                                            .gray[200]
+                                                                    }
+                                                                    margin="8px 0px"
+                                                                />
+                                                            )}
+                                                    </React.Fragment>
+                                                )
+                                            )}
+                                        </>
+                                    )}
                                 </Block>
 
                                 {showActionButtons &&
@@ -506,9 +795,9 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                     }
                                                     size={ButtonSize.MEDIUM}
                                                     text={secondaryAction.text}
-                                                    onClick={
-                                                        secondaryAction.onClick
-                                                    }
+                                                    onClick={() => {
+                                                        secondaryAction.onClick()
+                                                    }}
                                                     disabled={
                                                         secondaryAction.disabled ||
                                                         selectedValues.length ===
@@ -528,7 +817,9 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                     size={ButtonSize.MEDIUM}
                                                     text={primaryAction.text}
                                                     onClick={() => {
-                                                        primaryAction.onClick()
+                                                        primaryAction.onClick(
+                                                            selectedValues
+                                                        )
                                                         setDrawerOpen(false)
                                                     }}
                                                     disabled={

@@ -1,4 +1,11 @@
-import { EllipsisVertical, TrendingUp, Users, Activity } from 'lucide-react'
+import {
+    EllipsisVertical,
+    TrendingUp,
+    Users,
+    Activity,
+    LoaderCircle,
+    ChartBar,
+} from 'lucide-react'
 import {
     Charts,
     CoreChart,
@@ -21,6 +28,16 @@ import {
     AxisType,
     AxisIntervalType,
 } from '../../../../packages/blend/lib/components/Charts/types'
+import {
+    last1hour15minsData,
+    last1hour5minsData,
+    last24hours15minsData,
+    last24hours30minsData,
+    last24hoursHourlyData,
+    last30DaysDailyData,
+    last7daysDailyData,
+    last7daysHourlyData,
+} from './ChartsData'
 
 const TimezoneDemo = () => {
     const [selectedTimezone, setSelectedTimezone] = useState('UTC')
@@ -32,7 +49,12 @@ const TimezoneDemo = () => {
             data: {
                 activity: {
                     primary: { label: 'User Activity', val: 150 },
-                    aux: [{ label: 'Sessions', val: 45 }],
+                    aux: [
+                        {
+                            label: 'Sessions',
+                            val: 45000,
+                        },
+                    ],
                 },
             },
         },
@@ -41,7 +63,13 @@ const TimezoneDemo = () => {
             data: {
                 activity: {
                     primary: { label: 'User Activity', val: 180 },
-                    aux: [{ label: 'Sessions', val: 52 }],
+                    aux: [
+                        {
+                            label: 'Sessions',
+                            val: 52,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
                 },
             },
         },
@@ -138,13 +166,10 @@ const TimezoneDemo = () => {
                 xAxis={{
                     label: `Time (${timezoneOptions.find((tz) => tz.value === selectedTimezone)?.label})`,
                     type: AxisType.DATE_TIME,
-                    smart: true,
-                    timeZone: selectedTimezone, // 🌍 Dynamic timezone!
-                    hour12: use12HourFormat, // 🕐 Dynamic hour format!
                 }}
                 yAxis={{
                     label: 'Activity Level',
-                    type: AxisType.NUMBER,
+                    type: AxisType.PERCENTAGE,
                 }}
                 chartHeaderSlot={
                     <div className="chart-header">
@@ -223,48 +248,452 @@ const GranularChartsDemo = () => {
     // Sample data for different chart panels
     const dashboardData: NewNestedDataPoint[] = [
         {
-            name: '4 Aug',
+            name: '1756944000000',
             data: {
-                overall: { primary: { label: 'Overall', val: 90 }, aux: [] },
-                visa: { primary: { label: 'VISA', val: 85 }, aux: [] },
-                unknown: { primary: { label: 'Unknown', val: 95 }, aux: [] },
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 76.47,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 76.47,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+                VISA: {
+                    primary: {
+                        label: 'VISA',
+                        val: 0,
+                    },
+                },
+                AMEX: {
+                    primary: {
+                        label: 'AMEX',
+                        val: 0,
+                    },
+                },
+                DISCOVER: {
+                    primary: {
+                        label: 'DISCOVER',
+                        val: 0,
+                    },
+                },
+                JCB: {
+                    primary: {
+                        label: 'JCB',
+                        val: 0,
+                    },
+                },
+                UNIONPAY: {
+                    primary: {
+                        label: 'UNIONPAY',
+                        val: 0,
+                    },
+                },
+                MAESTRO: {
+                    primary: {
+                        label: 'MAESTRO',
+                        val: 0,
+                    },
+                },
+                DINERS: {
+                    primary: {
+                        label: 'DINERS',
+                        val: 0,
+                    },
+                },
+                RUPAY: {
+                    primary: {
+                        label: 'RUPAY',
+                        val: 0,
+                    },
+                },
+                PAYPAL: {
+                    primary: {
+                        label: 'PAYPAL',
+                        val: 0,
+                    },
+                },
+                APPLE_PAY: {
+                    primary: {
+                        label: 'APPLE_PAY',
+                        val: 0,
+                    },
+                },
+                GOOGLE_PAY: {
+                    primary: {
+                        label: 'GOOGLE_PAY',
+                        val: 0,
+                    },
+                },
+                PHONE_PAY: {
+                    primary: {
+                        label: 'PHONE_PAY',
+                        val: 0,
+                    },
+                },
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 0,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 0,
+                    },
+                },
             },
         },
         {
-            name: '8 Aug',
+            name: '1756947600000',
             data: {
-                overall: { primary: { label: 'Overall', val: 75 }, aux: [] },
-                visa: { primary: { label: 'VISA', val: 70 }, aux: [] },
-                unknown: { primary: { label: 'Unknown', val: 80 }, aux: [] },
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 66.67,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 66.67,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
             },
         },
         {
-            name: '12 Aug',
+            name: '1756954800000',
             data: {
-                overall: { primary: { label: 'Overall', val: 85 }, aux: [] },
-                visa: { primary: { label: 'VISA', val: 80 }, aux: [] },
-                unknown: { primary: { label: 'Unknown', val: 90 }, aux: [] },
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 100,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 100,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
             },
         },
         {
-            name: '16 Aug',
+            name: '1756958400000',
             data: {
-                overall: { primary: { label: 'Overall', val: 100 }, aux: [] },
-                visa: { primary: { label: 'VISA', val: 95 }, aux: [] },
-                unknown: { primary: { label: 'Unknown', val: 100 }, aux: [] },
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 100,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 100,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
             },
         },
         {
-            name: '20 Aug',
+            name: '1756962000000',
             data: {
-                overall: { primary: { label: 'Overall', val: 85 }, aux: [] },
-                visa: { primary: { label: 'VISA', val: 80 }, aux: [] },
-                unknown: { primary: { label: 'Unknown', val: 90 }, aux: [] },
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 0,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756965600000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 0,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756969200000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 40,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 40,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756972800000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 7.14,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 7.14,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756976400000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 49.35,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 49.35,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756980000000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 89.86,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 89.86,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756983600000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 79.15,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 80.29,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756987200000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 70.96,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 71.91,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756990800000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 92.36,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 92.44,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756994400000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 97.1,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 97.1,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1756998000000',
+            data: {
+                Overall: {
+                    primary: {
+                        label: 'Overall',
+                        val: 90.83,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Unknown',
+                        val: 90.93,
+                    },
+                },
+                MASTERCARD: {
+                    primary: {
+                        label: 'MASTERCARD',
+                        val: 0,
+                    },
+                },
             },
         },
     ]
 
-    const chartColors = ['#3b82f6', '#10b981', '#f59e0b'] // Blue, Green, Amber
+    const chartColors = [
+        '#3b82f6',
+        '#10b981',
+        '#f59e0b',
+        '#8b5cf6',
+        '#ec4899',
+        '#f43f5e',
+        '#ef4444',
+        '#ff7300',
+        '#ff0077',
+        '#00d492',
+        '#008236',
+        '#016630',
+        '#0d542b',
+        '#052e16',
+    ] // Blue, Green, Amber, Purple, Pink, Red, Orange, Orange, Red, Green, Green, Green, Green, Green
 
     const [hoveredKey, setHoveredKey] = useState<string | null>(null)
     const [selectedKeys, setSelectedKeys] = useState<string[]>([])
@@ -308,10 +737,12 @@ const GranularChartsDemo = () => {
                     <div className="">
                         {/* Header */}
                         <ChartHeader
-                            slot1={<div>Slot 1</div>}
-                            slot2={<div>Slot 2</div>}
-                            slot3={<div>Slot 3</div>}
-                            chartHeaderSlot={<div>Chart Header Slot</div>}
+                            slot1={<p className="text-xs">Slot 1</p>}
+                            slot2={<p className="text-xs">Slot 2</p>}
+                            slot3={<p className="text-xs">Slot 3</p>}
+                            chartHeaderSlot={
+                                <p className="text-xs">Chart Header Slot</p>
+                            }
                             onFullscreen={() => {}}
                             isExpanded={true}
                             setIsExpanded={() => {}}
@@ -319,7 +750,7 @@ const GranularChartsDemo = () => {
                         />
 
                         {/* Interactive Shared Legends */}
-                        <div className="mb-6 p-3">
+                        <div className="mb-6 p-4">
                             <ChartLegends
                                 chartContainerRef={chartContainerRef}
                                 keys={lineKeys}
@@ -337,7 +768,7 @@ const GranularChartsDemo = () => {
                         {/* Interactive Charts Grid */}
                         <div
                             ref={chartContainerRef}
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-3"
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 "
                         >
                             {[
                                 { title: 'MOTO', type: ChartType.LINE },
@@ -355,15 +786,23 @@ const GranularChartsDemo = () => {
                                     title: 'Additional Metric 2',
                                     type: ChartType.LINE,
                                 },
+                                {
+                                    title: 'Additional Metric 3',
+                                    type: ChartType.LINE,
+                                },
+                                {
+                                    title: 'Additional Metric 4',
+                                    type: ChartType.LINE,
+                                },
                             ].map((panel, index) => (
                                 <div
                                     key={index}
-                                    className="p-4 flex flex-col gap-2 items-center justify-center h-full w-full"
+                                    className="flex flex-col gap-2 items-center justify-center h-full w-full"
                                 >
                                     <h4 className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-4">
                                         {panel.title}
                                     </h4>
-                                    <div className="h-48 w-full">
+                                    <div className="h-68 w-full">
                                         <CoreChart
                                             data={dashboardData}
                                             chartType={panel.type}
@@ -375,6 +814,10 @@ const GranularChartsDemo = () => {
                                             xAxis={{
                                                 show: true,
                                                 showLabel: false,
+                                                type: AxisType.DATE_TIME,
+                                                interval:
+                                                    AxisIntervalType.PRESERVE_START,
+                                                timeOnly: true,
                                             }}
                                             yAxis={{
                                                 show: true,
@@ -433,7 +876,7 @@ const ChartDemo = () => {
             name: 'Jan',
             data: {
                 revenue: {
-                    primary: { label: 'Total Revenue', val: 4000 },
+                    primary: { label: 'Total Revenue', val: 40000 },
                     aux: [{ label: 'Growth', val: 12 }],
                 },
                 profit: {
@@ -1567,10 +2010,267 @@ const ChartDemo = () => {
     ]
 
     return (
-        <div className="p-8 gap-12 flex flex-col max-w-7xl mx-auto">
+        <div className="p-8 gap-12 flex flex-col ">
             <h5 className="text-xl font-bold">
                 Charts Playground - All Variations
             </h5>
+
+            {/* Smart Date/Time Format Feature */}
+            <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-emerald-300 rounded-lg shadow-sm mb-6">
+                <h4 className="text-emerald-900 font-bold text-lg mb-3 flex items-center gap-2">
+                    <span className="text-2xl">🎯</span>
+                    Smart Date/Time Format (Like Highcharts!)
+                </h4>
+                <p className="text-emerald-800 text-sm mb-3">
+                    <strong>Enabled by default</strong> - Ticks now
+                    intelligently alternate between showing dates and times:
+                </p>
+                <ul className="ml-6 space-y-2 text-emerald-700 text-sm">
+                    <li>
+                        ✅ Shows <strong>date</strong> (e.g., "1. Oct") when the
+                        day changes
+                    </li>
+                    <li>
+                        ✅ Shows <strong>time</strong> (e.g., "12:00") for
+                        intermediate ticks on the same day
+                    </li>
+                    <li>
+                        ✅ Provides both date and time context without
+                        cluttering the axis
+                    </li>
+                    <li>
+                        ✅ Works automatically with consistent tick intervals
+                    </li>
+                </ul>
+                <div className="mt-4 p-3 bg-white rounded border border-emerald-200">
+                    <p className="text-xs text-emerald-600 font-semibold mb-2">
+                        📊 Example tick pattern:
+                    </p>
+                    <div className="text-sm font-mono text-gray-800">
+                        <span className="text-emerald-700 font-bold">
+                            1. Oct
+                        </span>
+                        {' → '}
+                        <span>08:00</span>
+                        {' → '}
+                        <span>16:00</span>
+                        {' → '}
+                        <span className="text-emerald-700 font-bold">
+                            2. Oct
+                        </span>
+                        {' → '}
+                        <span>08:00</span>
+                        {' → '}
+                        <span>16:00</span>
+                        {' → '}
+                        <span className="text-emerald-700 font-bold">
+                            3. Oct
+                        </span>
+                    </div>
+                </div>
+                <div className="mt-3 text-xs text-emerald-600">
+                    <strong>💡 Tip:</strong> Use{' '}
+                    <code className="bg-emerald-100 px-1.5 py-0.5 rounded">
+                        timeOnly: true
+                    </code>{' '}
+                    or{' '}
+                    <code className="bg-emerald-100 px-1.5 py-0.5 rounded">
+                        dateOnly: true
+                    </code>{' '}
+                    to override this behavior.
+                </div>
+            </div>
+
+            <Charts
+                data={last1hour5minsData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date & Time Together',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                    smartDateTimeFormat: false,
+                    showYear: true,
+                    maxTicks: 4,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Smart Date/Time Ticks (Like Highcharts!)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last1hour15minsData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                    // dateOnly: true,
+                    // timeOnly: true,
+                    // showYear: true,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 1 Hour 15 Mins Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last24hours15minsData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 24 Hours 15 Mins Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last24hours30minsData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 24 Hours 30 Mins Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last24hoursHourlyData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 24 Hours Hourly Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last7daysHourlyData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 7 Days Hourly Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last7daysDailyData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 7 Days Daily Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last30DaysDailyData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                    // maxTicks: 10,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 30 Days Daily Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
 
             {/* Granular Chart Components Demo */}
             <div className="chart-example-container mb-12">
@@ -1697,7 +2397,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 ? 'Device Type'
                                 : 'Period',
                         // show: false,
-                        // showLabel: false,
+                        showLabel: true,
                     }}
                     yAxis={{
                         label:
@@ -1705,7 +2405,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 ? 'Amount ($)'
                                 : 'Value',
                         // show: false,
-                        // showLabel: false,
+                        showLabel: true,
                     }}
                     chartHeaderSlot={
                         <SingleSelect
@@ -1924,6 +2624,16 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 </h4>
                             </div>
                         }
+                        xAxis={{
+                            label: 'Performance Metrics',
+                            // show: true,
+                            // showLabel: true,
+                        }}
+                        yAxis={{
+                            label: 'Score',
+                            // show: true,
+                            // showLabel: true,
+                        }}
                     />
 
                     {/* Bar Chart Example */}
@@ -1961,6 +2671,156 @@ const [selectedKeys, setSelectedKeys] = useState([])
                             </div>
                         }
                     />
+
+                    {/* Scatter Chart Example */}
+
+                    <Charts
+                        data={[
+                            {
+                                name: 'Dataset 1',
+                                data: {
+                                    revenueSeries: {
+                                        primary: {
+                                            label: 'Revenue vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 10 },
+                                            { label: 'y', val: 20 },
+                                        ],
+                                    },
+                                    profitSeries: {
+                                        primary: {
+                                            label: 'Profit vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 12 },
+                                            { label: 'y', val: 15 },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                name: 'Dataset 2',
+                                data: {
+                                    revenueSeries: {
+                                        primary: {
+                                            label: 'Revenue vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 25 },
+                                            { label: 'y', val: 45 },
+                                        ],
+                                    },
+                                    profitSeries: {
+                                        primary: {
+                                            label: 'Profit vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 27 },
+                                            { label: 'y', val: 35 },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                name: 'Dataset 3',
+                                data: {
+                                    revenueSeries: {
+                                        primary: {
+                                            label: 'Revenue vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 40 },
+                                            { label: 'y', val: 75 },
+                                        ],
+                                    },
+                                    profitSeries: {
+                                        primary: {
+                                            label: 'Profit vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 42 },
+                                            { label: 'y', val: 60 },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                name: 'Dataset 4',
+                                data: {
+                                    revenueSeries: {
+                                        primary: {
+                                            label: 'Revenue vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 50 },
+                                            { label: 'y', val: 85 },
+                                        ],
+                                    },
+                                    profitSeries: {
+                                        primary: {
+                                            label: 'Profit vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 48 },
+                                            { label: 'y', val: 70 },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                name: 'Dataset 5',
+                                data: {
+                                    revenueSeries: {
+                                        primary: {
+                                            label: 'Revenue vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 65 },
+                                            { label: 'y', val: 110 },
+                                        ],
+                                    },
+                                    profitSeries: {
+                                        primary: {
+                                            label: 'Profit vs Marketing Spend',
+                                            val: 0,
+                                        },
+                                        aux: [
+                                            { label: 'x', val: 62 },
+                                            { label: 'y', val: 90 },
+                                        ],
+                                    },
+                                },
+                            },
+                        ]}
+                        chartType={ChartType.SCATTER}
+                        colors={['#3b82f6', '#10b981']}
+                        xAxis={{
+                            label: 'Marketing Spend ($K)',
+                            type: AxisType.CURRENCY,
+                        }}
+                        yAxis={{
+                            label: 'Revenue ($K)',
+                            type: AxisType.CURRENCY,
+                        }}
+                        chartHeaderSlot={
+                            <div className="chart-header">
+                                <Activity size={16} className="text-blue-600" />
+                                <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                    Scatter Chart
+                                </h4>
+                            </div>
+                        }
+                    />
                 </div>
             </div>
 
@@ -1982,6 +2842,487 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     </p>
                 </div>
                 <TimezoneDemo />
+            </div>
+
+            {/* Date Only & Time Only Formatting Demo */}
+            <div className="chart-example-container mb-12">
+                <h3 className="text-xl font-bold mb-6">
+                    📅 Date Only & Time Only Formatting
+                </h3>
+                <div className="mb-4 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+                    <h4 className="text-indigo-800 font-semibold mb-2">
+                        ✨ New Feature: Flexible DateTime Display Options!
+                    </h4>
+                    <p className="text-indigo-700 text-sm">
+                        Choose exactly what you want to show: dates only, times
+                        only, or full date+time. Perfect for daily reports,
+                        hourly metrics, or any custom visualization needs!
+                    </p>
+                </div>
+
+                <div className="flex flex-col gap-8">
+                    {/* Date Only WITHOUT Year */}
+                    <div>
+                        <h4 className="text-lg font-semibold mb-3">
+                            📅 Date Only (Without Year)
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                            Perfect for current year data or when year context
+                            is clear. Shows: "1. Oct" "2. Oct" "3. Oct"
+                        </p>
+                        <Charts
+                            data={[
+                                {
+                                    name: '1696118400000', // Oct 1, 2023
+                                    data: {
+                                        sales: {
+                                            primary: {
+                                                label: 'Sales',
+                                                val: 12500,
+                                            },
+                                            aux: [{ label: 'Orders', val: 45 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696204800000', // Oct 2, 2023
+                                    data: {
+                                        sales: {
+                                            primary: {
+                                                label: 'Sales',
+                                                val: 15300,
+                                            },
+                                            aux: [{ label: 'Orders', val: 52 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696291200000', // Oct 3, 2023
+                                    data: {
+                                        sales: {
+                                            primary: {
+                                                label: 'Sales',
+                                                val: 18750,
+                                            },
+                                            aux: [{ label: 'Orders', val: 63 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696377600000', // Oct 4, 2023
+                                    data: {
+                                        sales: {
+                                            primary: {
+                                                label: 'Sales',
+                                                val: 21200,
+                                            },
+                                            aux: [{ label: 'Orders', val: 71 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696464000000', // Oct 5, 2023
+                                    data: {
+                                        sales: {
+                                            primary: {
+                                                label: 'Sales',
+                                                val: 19800,
+                                            },
+                                            aux: [{ label: 'Orders', val: 67 }],
+                                        },
+                                    },
+                                },
+                            ]}
+                            chartType={ChartType.BAR}
+                            colors={['#3b82f6']}
+                            xAxis={{
+                                label: 'Date',
+                                type: AxisType.DATE_TIME,
+                                dateOnly: true, // 📅 Date only without year
+                            }}
+                            yAxis={{
+                                label: 'Sales ($)',
+                                type: AxisType.CURRENCY,
+                            }}
+                            chartHeaderSlot={
+                                <div className="chart-header">
+                                    <Activity
+                                        size={16}
+                                        className="text-blue-600"
+                                    />
+                                    <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                        Daily Sales - October
+                                    </h4>
+                                </div>
+                            }
+                        />
+                        <div className="mt-2 text-xs text-gray-500 bg-blue-50 p-2 rounded">
+                            <strong>Code:</strong>{' '}
+                            <code>
+                                xAxis=&#123;&#123; type: AxisType.DATE_TIME,
+                                dateOnly: true &#125;&#125;
+                            </code>
+                        </div>
+                    </div>
+
+                    {/* Date Only WITH Year */}
+                    <div>
+                        <h4 className="text-lg font-semibold mb-3">
+                            📅 Date Only (With Year)
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                            Ideal for historical data or multi-year comparisons.
+                            Shows: "1. Oct 2023" "2. Oct 2023" "3. Oct 2023"
+                        </p>
+                        <Charts
+                            data={[
+                                {
+                                    name: '1672531200000', // Jan 1, 2023
+                                    data: {
+                                        revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 125000,
+                                            },
+                                            aux: [{ label: 'Growth', val: 15 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1675209600000', // Feb 1, 2023
+                                    data: {
+                                        revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 142000,
+                                            },
+                                            aux: [{ label: 'Growth', val: 18 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1677628800000', // Mar 1, 2023
+                                    data: {
+                                        revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 138000,
+                                            },
+                                            aux: [{ label: 'Growth', val: 12 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1680307200000', // Apr 1, 2023
+                                    data: {
+                                        revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 165000,
+                                            },
+                                            aux: [{ label: 'Growth', val: 22 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1682899200000', // May 1, 2023
+                                    data: {
+                                        revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 178000,
+                                            },
+                                            aux: [{ label: 'Growth', val: 25 }],
+                                        },
+                                    },
+                                },
+                            ]}
+                            chartType={ChartType.LINE}
+                            colors={['#10b981']}
+                            xAxis={{
+                                label: 'Date',
+                                type: AxisType.DATE_TIME,
+                                dateOnly: true, // 📅 Date only
+                                showYear: true, // 📆 Include year
+                            }}
+                            yAxis={{
+                                label: 'Revenue',
+                                type: AxisType.CURRENCY,
+                            }}
+                            chartHeaderSlot={
+                                <div className="chart-header">
+                                    <TrendingUp
+                                        size={16}
+                                        className="text-green-600"
+                                    />
+                                    <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                        Monthly Revenue - 2023
+                                    </h4>
+                                </div>
+                            }
+                        />
+                        <div className="mt-2 text-xs text-gray-500 bg-green-50 p-2 rounded">
+                            <strong>Code:</strong>{' '}
+                            <code>
+                                xAxis=&#123;&#123; type: AxisType.DATE_TIME,
+                                dateOnly: true, showYear: true &#125;&#125;
+                            </code>
+                        </div>
+                    </div>
+
+                    {/* Time Only */}
+                    <div>
+                        <h4 className="text-lg font-semibold mb-3">
+                            🕐 Time Only (24-Hour Format)
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                            Perfect for intraday metrics or hourly data within a
+                            single day. Shows: "00:00" "06:00" "12:00" "18:00"
+                        </p>
+                        <Charts
+                            data={[
+                                {
+                                    name: '1696118400000', // Oct 1, 2023, 00:00
+                                    data: {
+                                        activity: {
+                                            primary: {
+                                                label: 'User Activity',
+                                                val: 120,
+                                            },
+                                            aux: [
+                                                { label: 'Sessions', val: 45 },
+                                            ],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696140000000', // Oct 1, 2023, 06:00
+                                    data: {
+                                        activity: {
+                                            primary: {
+                                                label: 'User Activity',
+                                                val: 280,
+                                            },
+                                            aux: [
+                                                { label: 'Sessions', val: 92 },
+                                            ],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696161600000', // Oct 1, 2023, 12:00
+                                    data: {
+                                        activity: {
+                                            primary: {
+                                                label: 'User Activity',
+                                                val: 450,
+                                            },
+                                            aux: [
+                                                { label: 'Sessions', val: 156 },
+                                            ],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696183200000', // Oct 1, 2023, 18:00
+                                    data: {
+                                        activity: {
+                                            primary: {
+                                                label: 'User Activity',
+                                                val: 380,
+                                            },
+                                            aux: [
+                                                { label: 'Sessions', val: 128 },
+                                            ],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696204800000', // Oct 2, 2023, 00:00
+                                    data: {
+                                        activity: {
+                                            primary: {
+                                                label: 'User Activity',
+                                                val: 95,
+                                            },
+                                            aux: [
+                                                { label: 'Sessions', val: 34 },
+                                            ],
+                                        },
+                                    },
+                                },
+                            ]}
+                            chartType={ChartType.LINE}
+                            colors={['#f59e0b']}
+                            xAxis={{
+                                label: 'Time',
+                                type: AxisType.DATE_TIME,
+                                timeOnly: true, // 🕐 Time only
+                            }}
+                            yAxis={{
+                                label: 'Activity Level',
+                                type: AxisType.NUMBER,
+                            }}
+                            chartHeaderSlot={
+                                <div className="chart-header">
+                                    <Activity
+                                        size={16}
+                                        className="text-amber-600"
+                                    />
+                                    <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                        Hourly User Activity
+                                    </h4>
+                                </div>
+                            }
+                        />
+                        <div className="mt-2 text-xs text-gray-500 bg-amber-50 p-2 rounded">
+                            <strong>Code:</strong>{' '}
+                            <code>
+                                xAxis=&#123;&#123; type: AxisType.DATE_TIME,
+                                timeOnly: true &#125;&#125;
+                            </code>
+                        </div>
+                    </div>
+
+                    {/* Comparison: Default vs Date Only vs Time Only */}
+                    <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                        <h4 className="text-purple-800 font-semibold mb-3">
+                            🔄 Side-by-Side Comparison
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-purple-700">
+                            <div className="bg-white p-3 rounded border border-purple-200">
+                                <div className="font-semibold mb-2">
+                                    📅 Date Only
+                                </div>
+                                <div className="text-xs space-y-1">
+                                    <div>• "1. Oct"</div>
+                                    <div>• "2. Oct"</div>
+                                    <div>• "3. Oct"</div>
+                                </div>
+                                <div className="mt-2 text-xs">
+                                    <code className="bg-purple-100 px-1 rounded">
+                                        dateOnly: true
+                                    </code>
+                                </div>
+                            </div>
+                            <div className="bg-white p-3 rounded border border-purple-200">
+                                <div className="font-semibold mb-2">
+                                    🕐 Time Only
+                                </div>
+                                <div className="text-xs space-y-1">
+                                    <div>• "00:00"</div>
+                                    <div>• "06:00"</div>
+                                    <div>• "12:00"</div>
+                                </div>
+                                <div className="mt-2 text-xs">
+                                    <code className="bg-purple-100 px-1 rounded">
+                                        timeOnly: true
+                                    </code>
+                                </div>
+                            </div>
+                            <div className="bg-white p-3 rounded border border-purple-200">
+                                <div className="font-semibold mb-2">
+                                    📅🕐 Default (Both)
+                                </div>
+                                <div className="text-xs space-y-1">
+                                    <div>• "1 Oct, 12:00"</div>
+                                    <div>• "2 Oct, 14:30"</div>
+                                    <div>• "3 Oct, 09:15"</div>
+                                </div>
+                                <div className="mt-2 text-xs">
+                                    <code className="bg-purple-100 px-1 rounded">
+                                        Default behavior
+                                    </code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* API Reference */}
+                <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <h4 className="font-semibold text-gray-800 mb-3">
+                        📚 API Reference: DateTime Formatting Options
+                    </h4>
+                    <div className="text-sm text-gray-700 space-y-4">
+                        <div>
+                            <strong>Basic Usage:</strong>
+                            <pre className="text-xs mt-1 bg-gray-100 p-3 rounded overflow-x-auto">
+                                {`xAxis={{
+  type: AxisType.DATE_TIME,
+  dateOnly: boolean,    // Show only dates
+  timeOnly: boolean,    // Show only times
+  showYear: boolean,    // Include year (works with dateOnly and default)
+  useUTC: boolean,      // Use UTC timezone (default: true)
+}}`}
+                            </pre>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <strong>📅 Date Only Options:</strong>
+                                <div className="text-xs mt-2 space-y-2">
+                                    <div className="bg-white p-2 rounded border">
+                                        <code>dateOnly: true</code>
+                                        <div className="text-gray-600 mt-1">
+                                            → "1. Oct" "2. Oct"
+                                        </div>
+                                    </div>
+                                    <div className="bg-white p-2 rounded border">
+                                        <code>
+                                            dateOnly: true, showYear: true
+                                        </code>
+                                        <div className="text-gray-600 mt-1">
+                                            → "1. Oct 2024"
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <strong>🕐 Time Only Options:</strong>
+                                <div className="text-xs mt-2 space-y-2">
+                                    <div className="bg-white p-2 rounded border">
+                                        <code>timeOnly: true</code>
+                                        <div className="text-gray-600 mt-1">
+                                            → "12:00" "14:30"
+                                        </div>
+                                    </div>
+                                    <div className="bg-white p-2 rounded border">
+                                        <code className="text-gray-500">
+                                            showYear ignored in timeOnly
+                                        </code>
+                                        <div className="text-gray-600 mt-1">
+                                            Time only, no year
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <strong>💡 Use Cases:</strong>
+                            <ul className="ml-4 mt-2 space-y-1 text-xs">
+                                <li>
+                                    • <strong>dateOnly:</strong> Daily reports,
+                                    weekly summaries, monthly trends
+                                </li>
+                                <li>
+                                    • <strong>timeOnly:</strong> Hourly metrics,
+                                    intraday activity, real-time dashboards
+                                </li>
+                                <li>
+                                    • <strong>showYear:</strong> Historical
+                                    data, year-over-year comparisons
+                                </li>
+                                <li>
+                                    • <strong>Default (both):</strong> Full
+                                    timestamp context needed
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* POSIX and UTC Format Support */}
@@ -2024,7 +3365,6 @@ const [selectedKeys, setSelectedKeys] = useState([])
                             label: 'UTC Formats',
                             show: true,
                             type: AxisType.DATE_TIME,
-                            interval: 0,
                         }}
                         yAxis={{
                             label: 'Requests',
@@ -3264,7 +4604,6 @@ xAxis={{
                             xAxis={{
                                 label: 'Time',
                                 type: AxisType.DATE_TIME,
-                                smart: true, // 🧠 Smart formatting!
                             }}
                             yAxis={{
                                 label: 'Activity Level',
@@ -3449,7 +4788,6 @@ xAxis={{
                                     chartType={ChartType.LINE}
                                     xAxis={{
                                         type: AxisType.DATE_TIME,
-                                        smart: true, // 🧠 Smart formatting
                                     }}
                                     yAxis={{ type: AxisType.NUMBER }}
                                     chartHeaderSlot={<div />}
@@ -3705,6 +5043,132 @@ xAxis={{
                     </div>
                     <div>
                         <strong>Data Points:</strong> {getCurrentData().length}
+                    </div>
+                </div>
+
+                {/* Empty State Examples */}
+                <div className="bg-gray-50 p-6 rounded-lg mt-8">
+                    <h2 className="text-xl font-bold mb-4 text-gray-800">
+                        📊 Empty State Examples
+                    </h2>
+                    <p className="text-sm text-gray-600 mb-6">
+                        Demonstrating how charts handle no-data scenarios with
+                        professional empty states
+                    </p>
+
+                    <div className="flex flex-col gap-6">
+                        {/* Empty Line Chart */}
+                        <div className="">
+                            <h3 className="text-lg font-semibold mb-2 text-gray-700">
+                                Empty Line Chart
+                            </h3>
+                            <div className="">
+                                <Charts
+                                    data={[]} // Empty data array
+                                    chartType={ChartType.LINE}
+                                    colors={['#3b82f6', '#10b981', '#f59e0b']}
+                                    chartHeaderSlot={null}
+                                    xAxis={{
+                                        label: 'Time Period',
+                                        show: true,
+                                        type: AxisType.DATE_TIME,
+                                    }}
+                                    yAxis={{
+                                        label: 'Performance (%)',
+                                        show: true,
+                                        type: AxisType.PERCENTAGE,
+                                    }}
+                                    noData={{
+                                        title: 'Empty data',
+                                        subtitle: 'Add data to see it here',
+                                        button: {
+                                            text: 'Add data',
+                                            onClick: () => {},
+                                            leadingIcon: (
+                                                <LoaderCircle className=" text-gray-400" />
+                                            ),
+                                        },
+                                        slot: (
+                                            <ChartBar className="w-8 h-8 text-gray-400" />
+                                        ),
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Empty Bar Chart */}
+                        <div className="">
+                            <h3 className="text-lg font-semibold mb-2 text-gray-700">
+                                Empty Bar Chart
+                            </h3>
+                            <div className="">
+                                <Charts
+                                    data={[]} // Empty data array for cleaner demo
+                                    chartType={ChartType.BAR}
+                                    colors={['#ef4444', '#8b5cf6']}
+                                    chartHeaderSlot={null}
+                                    xAxis={{
+                                        label: 'Categories',
+                                        show: true,
+                                    }}
+                                    yAxis={{
+                                        label: 'Revenue ($)',
+                                        show: true,
+                                        type: AxisType.CURRENCY,
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Empty Pie Chart */}
+                        <div className="">
+                            <h3 className="text-lg font-semibold mb-2 text-gray-700">
+                                Empty Pie Chart
+                            </h3>
+                            <div className="">
+                                <Charts
+                                    data={[]} // Empty data array
+                                    chartType={ChartType.PIE}
+                                    colors={['#f97316', '#06b6d4', '#84cc16']}
+                                    chartHeaderSlot={null}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Code Examples */}
+                    <div className="mt-6 bg-gray-900 text-green-400 p-4 rounded-lg text-sm font-mono">
+                        <div className="text-white mb-2">
+                            💡 <strong>Usage Examples:</strong>
+                        </div>
+                        <div className="space-y-2">
+                            <div>
+                                <span className="text-blue-300">
+                                    // Empty array:
+                                </span>
+                                <div className="text-gray-300">
+                                    {
+                                        '<Charts data={[]} chartType={ChartType.LINE} />'
+                                    }
+                                </div>
+                            </div>
+                            <div>
+                                <span className="text-blue-300">
+                                    // Missing chartHeaderSlot:
+                                </span>
+                                <div className="text-gray-300">
+                                    {'chartHeaderSlot={null}'}
+                                </div>
+                            </div>
+                            <div>
+                                <span className="text-blue-300">
+                                    // Any chart type:
+                                </span>
+                                <div className="text-gray-300">
+                                    {'chartType={ChartType.LINE | BAR | PIE}'}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

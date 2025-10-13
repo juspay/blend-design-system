@@ -101,9 +101,9 @@ export type SingleSelectProps = {
     alignOffset?: number
 
     // dim
-    minWidth?: number
-    maxWidth?: number
-    maxHeight?: number
+    minMenuWidth?: number
+    maxMenuWidth?: number
+    maxMenuHeight?: number
     inline?: boolean
     onBlur?: () => void
     onFocus?: () => void
@@ -111,4 +111,16 @@ export type SingleSelectProps = {
     // error
     error?: boolean
     errorMessage?: string
+    fullWidth?: boolean
+
+    // virtualization
+    enableVirtualization?: boolean
+    virtualListItemHeight?: number
+    virtualListOverscan?: number
+
+    // infinite scroll
+    onEndReached?: () => void
+    endReachedThreshold?: number
+    hasMore?: boolean
+    loadingComponent?: React.ReactNode
 }

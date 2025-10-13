@@ -31,6 +31,10 @@ import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
 import { getChartTokens } from '../components/Charts/chart.tokens'
 import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 import { getStepperTokens } from '../components/Stepper/stepper.tokens'
+import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
+import { getCardTokens } from '../components/Card/card.tokens'
+import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
+import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -66,6 +70,9 @@ const initTokens = (
             componentTokens.CHECKBOX ?? getCheckboxTokens(foundationTokens),
         TABS: componentTokens.TABS ?? getTabsTokens(foundationTokens),
         BUTTON: componentTokens.BUTTON ?? getButtonTokens(foundationTokens),
+        KEYVALUEPAIR:
+            componentTokens.KEYVALUEPAIR ??
+            getKeyValuePairTokens(foundationTokens),
         MODAL:
             componentTokens.MODAL ?? getModalComponentTokens(foundationTokens),
         BREADCRUMB:
@@ -93,6 +100,11 @@ const initTokens = (
         SNACKBAR:
             componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
         STEPPER: componentTokens.STEPPER ?? getStepperTokens(foundationTokens),
+        CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
+
+        TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
+        SKELETON:
+            componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
     }
 }
 

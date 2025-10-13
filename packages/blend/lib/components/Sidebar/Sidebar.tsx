@@ -1,18 +1,22 @@
-import React, { forwardRef, useState, useEffect } from 'react'
-import { PanelsTopLeft, UserIcon, MoreHorizontal } from 'lucide-react'
+import { forwardRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
 import type { SidebarProps } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
+import { Topbar } from '../Topbar'
+import TenantPanel from './TenantPanel'
+import SidebarHeader from './SidebarHeader'
+import SidebarFooter from './SidebarFooter'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import {
-    SelectMenuVariant,
-    SelectMenuAlignment,
-    SelectMenuSide,
-} from '../Select/types'
-import { SelectMenuSize, SingleSelect } from '../SingleSelect'
-import { Avatar, AvatarShape, AvatarSize } from '../Avatar'
-import Text from '../Text/Text'
+    getSidebarWidth,
+    getSidebarBorder,
+    getTopbarStyles,
+    getDefaultMerchantInfo,
+    useTopbarAutoHide,
+} from './utils'
 
 const DirectoryContainer = styled(Block)`
     flex: 1;
@@ -39,22 +43,6 @@ const MainContentContainer = styled(Block)`
     scrollbar-width: none;
 `
 
-const ToggleButton = styled.button`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background-color: transparent;
-    border-radius: 10px;
-    cursor: pointer;
-    padding: 9px;
-    transition: background-color 0.15s ease;
-
-    &:hover {
-        background-color: ${FOUNDATION_THEME.colors.gray[100]};
-    }
-`
-
 const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
     (
         {
@@ -65,39 +53,73 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             sidebarTopSlot,
             footer,
             sidebarCollapseKey = '/',
+            merchantInfo,
+            rightActions,
+            enableTopbarAutoHide = false,
         },
         ref
     ) => {
+        // Simplified state management
         const [isExpanded, setIsExpanded] = useState<boolean>(true)
         const [showToggleButton, setShowToggleButton] = useState<boolean>(false)
         const [isHovering, setIsHovering] = useState<boolean>(false)
+        const [isScrolled, setIsScrolled] = useState<boolean>(false)
 
+        const { innerWidth } = useBreakpoints()
+        const isMobile = innerWidth < BREAKPOINTS.lg
+
+        // Use custom hook for topbar auto-hide
+        const showTopbar = useTopbarAutoHide(enableTopbarAutoHide)
+
+        // Keyboard shortcut handler
         useEffect(() => {
             const handleKeyPress = (event: KeyboardEvent) => {
-                if (event.key === sidebarCollapseKey) {
+                if (event.key === sidebarCollapseKey && !isMobile) {
                     event.preventDefault()
                     setIsExpanded(!isExpanded)
                 }
             }
-
             document.addEventListener('keydown', handleKeyPress)
+            return () => document.removeEventListener('keydown', handleKeyPress)
+        }, [isExpanded, isMobile, sidebarCollapseKey])
 
-            return () => {
-                document.removeEventListener('keydown', handleKeyPress)
-            }
-        }, [isExpanded])
-
+        // Mobile and toggle button logic
         useEffect(() => {
-            if (!isExpanded) {
-                const timer = setTimeout(() => {
-                    setShowToggleButton(true)
-                }, 50)
-
+            if (isMobile && isExpanded) {
+                setIsExpanded(false)
+                setIsHovering(false)
+                return
+            }
+            if (!isExpanded && !isMobile) {
+                const timer = setTimeout(() => setShowToggleButton(true), 50)
                 return () => clearTimeout(timer)
             } else {
                 setShowToggleButton(false)
             }
-        }, [isExpanded])
+        }, [isExpanded, isMobile])
+
+        // Directory scroll detection
+        useEffect(() => {
+            const directoryContainer = document.querySelector(
+                '[data-directory-container]'
+            )
+            if (!directoryContainer) return
+            const handleScroll = () =>
+                setIsScrolled(directoryContainer.scrollTop > 0)
+            directoryContainer.addEventListener('scroll', handleScroll)
+            return () =>
+                directoryContainer.removeEventListener('scroll', handleScroll)
+        }, [])
+
+        // Helper functions and values
+        const toggleSidebar = () => {
+            setIsExpanded(!isExpanded)
+            setIsHovering(false)
+        }
+        const handleMouseEnter = () => setIsHovering(true)
+        const handleMouseLeave = () => setIsHovering(false)
+        const hasLeftPanel = Boolean(leftPanel?.items?.length)
+        const defaultMerchantInfo = getDefaultMerchantInfo()
 
         return (
             <Block
@@ -107,16 +129,17 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 display="flex"
                 backgroundColor={FOUNDATION_THEME.colors.gray[25]}
                 position="relative"
+                zIndex={99}
             >
-                {!isExpanded && (
+                {!isExpanded && !isMobile && (
                     <Block
                         position="absolute"
                         left="0"
                         top="0"
                         width="20px"
                         height="100%"
-                        zIndex="30"
-                        onMouseEnter={() => setIsHovering(true)}
+                        zIndex="98"
+                        onMouseEnter={handleMouseEnter}
                         style={{
                             backgroundColor: 'transparent',
                         }}
@@ -125,222 +148,35 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
                 <Block
                     backgroundColor={FOUNDATION_THEME.colors.gray[25]}
-                    maxWidth={
-                        isExpanded || isHovering
-                            ? leftPanel
-                                ? '300px'
-                                : '250px'
-                            : '0'
-                    }
+                    maxWidth={getSidebarWidth(
+                        isExpanded,
+                        isHovering,
+                        hasLeftPanel
+                    )}
                     width="100%"
-                    borderRight={
-                        isExpanded || isHovering
-                            ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
-                            : 'none'
-                    }
-                    display="flex"
+                    borderRight={getSidebarBorder(isExpanded, isHovering)}
+                    display={isMobile ? 'none' : 'flex'}
                     position={!isExpanded ? 'absolute' : 'relative'}
-                    zIndex={!isExpanded ? '20' : 'auto'}
+                    zIndex={98}
                     height="100%"
                     style={{
                         willChange: 'transform',
                         transitionDuration: '150ms',
                         animation: 'slide-in-from-left 0.3s ease-out',
                     }}
-                    onMouseLeave={() => setIsHovering(false)}
+                    onMouseLeave={handleMouseLeave}
                 >
-                    {(isExpanded || isHovering) && (
+                    {(isExpanded || isHovering) && !isMobile && (
                         <>
-                            {/* TENANTS SIDE BAR _ SECONDARY SIDE BAR */}
-                            {leftPanel &&
-                                leftPanel.items &&
-                                leftPanel.items.length > 0 && (
-                                    <Block
-                                        width="fit-content"
-                                        height="100%"
-                                        borderRight={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                                        backgroundColor={
-                                            FOUNDATION_THEME.colors.gray[25]
-                                        }
-                                        display="flex"
-                                        flexDirection="column"
-                                        gap={FOUNDATION_THEME.unit[16]}
-                                        alignItems="center"
-                                        padding="10px"
-                                    >
-                                        {(() => {
-                                            const maxVisible =
-                                                leftPanel.maxVisibleItems || 5
-                                            const visibleTenants =
-                                                leftPanel.items.slice(
-                                                    0,
-                                                    maxVisible
-                                                )
-                                            const hiddenTenants =
-                                                leftPanel.items.slice(
-                                                    maxVisible
-                                                )
-                                            const hasMoreTenants =
-                                                hiddenTenants.length > 0
+                            {hasLeftPanel && leftPanel && (
+                                <TenantPanel
+                                    items={leftPanel.items}
+                                    selected={leftPanel.selected}
+                                    onSelect={leftPanel.onSelect}
+                                    maxVisibleItems={leftPanel.maxVisibleItems}
+                                />
+                            )}
 
-                                            return (
-                                                <>
-                                                    {visibleTenants.map(
-                                                        (tenant, index) => (
-                                                            <Block
-                                                                border="none"
-                                                                backgroundColor="transparent"
-                                                                width={
-                                                                    FOUNDATION_THEME
-                                                                        .unit[32]
-                                                                }
-                                                                height={
-                                                                    FOUNDATION_THEME
-                                                                        .unit[32]
-                                                                }
-                                                                borderRadius={
-                                                                    FOUNDATION_THEME
-                                                                        .border
-                                                                        .radius[4]
-                                                                }
-                                                                display="flex"
-                                                                alignItems="center"
-                                                                justifyContent="center"
-                                                                cursor="pointer"
-                                                                style={{
-                                                                    outline: `1px solid ${
-                                                                        leftPanel.selected ===
-                                                                        tenant.label
-                                                                            ? FOUNDATION_THEME
-                                                                                  .colors
-                                                                                  .primary[500]
-                                                                            : FOUNDATION_THEME
-                                                                                  .colors
-                                                                                  .gray[150]
-                                                                    }`,
-                                                                    transitionDuration:
-                                                                        '75ms',
-                                                                }}
-                                                                onClick={() =>
-                                                                    leftPanel.onSelect(
-                                                                        tenant.label
-                                                                    )
-                                                                }
-                                                                key={index}
-                                                            >
-                                                                {tenant.icon}
-                                                            </Block>
-                                                        )
-                                                    )}
-
-                                                    {hasMoreTenants && (
-                                                        <Block position="relative">
-                                                            <SingleSelect
-                                                                placeholder=""
-                                                                variant={
-                                                                    SelectMenuVariant.NO_CONTAINER
-                                                                }
-                                                                side={
-                                                                    SelectMenuSide.RIGHT
-                                                                }
-                                                                alignment={
-                                                                    SelectMenuAlignment.START
-                                                                }
-                                                                sideOffset={4}
-                                                                items={[
-                                                                    {
-                                                                        items: hiddenTenants.map(
-                                                                            (
-                                                                                tenant
-                                                                            ) => ({
-                                                                                label: tenant.label,
-                                                                                value:
-                                                                                    tenant.value ||
-                                                                                    tenant.label,
-                                                                                slot1: tenant.icon,
-                                                                            })
-                                                                        ),
-                                                                    },
-                                                                ]}
-                                                                selected=""
-                                                                onSelect={(
-                                                                    value
-                                                                ) => {
-                                                                    const selectedTenant =
-                                                                        hiddenTenants.find(
-                                                                            (
-                                                                                t
-                                                                            ) =>
-                                                                                (t.value ||
-                                                                                    t.label) ===
-                                                                                value
-                                                                        )
-                                                                    if (
-                                                                        selectedTenant
-                                                                    ) {
-                                                                        leftPanel.onSelect(
-                                                                            selectedTenant.label
-                                                                        )
-                                                                    }
-                                                                }}
-                                                                customTrigger={
-                                                                    <Block
-                                                                        border="none"
-                                                                        backgroundColor="transparent"
-                                                                        width={
-                                                                            FOUNDATION_THEME
-                                                                                .unit[32]
-                                                                        }
-                                                                        height={
-                                                                            FOUNDATION_THEME
-                                                                                .unit[32]
-                                                                        }
-                                                                        borderRadius={
-                                                                            FOUNDATION_THEME
-                                                                                .border
-                                                                                .radius[4]
-                                                                        }
-                                                                        display="flex"
-                                                                        alignItems="center"
-                                                                        justifyContent="center"
-                                                                        cursor="pointer"
-                                                                        style={{
-                                                                            outline: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
-                                                                            transitionDuration:
-                                                                                '75ms',
-                                                                        }}
-                                                                        _hover={{
-                                                                            backgroundColor:
-                                                                                FOUNDATION_THEME
-                                                                                    .colors
-                                                                                    .gray[50],
-                                                                        }}
-                                                                    >
-                                                                        <MoreHorizontal
-                                                                            style={{
-                                                                                width: FOUNDATION_THEME
-                                                                                    .unit[16],
-                                                                                height: FOUNDATION_THEME
-                                                                                    .unit[16],
-                                                                            }}
-                                                                            color={
-                                                                                FOUNDATION_THEME
-                                                                                    .colors
-                                                                                    .gray[600]
-                                                                            }
-                                                                        />
-                                                                    </Block>
-                                                                }
-                                                            />
-                                                        </Block>
-                                                    )}
-                                                </>
-                                            )
-                                        })()}
-                                    </Block>
-                                )}
-
-                            {/* PRIMARY SIDE BAR */}
                             <Block
                                 width="100%"
                                 height="100%"
@@ -348,72 +184,16 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                 flexDirection="column"
                                 position="relative"
                             >
-                                {/* MERCHANT SWITCHER  */}
-                                <Block
-                                    width="100%"
-                                    zIndex="10"
-                                    backgroundColor={
-                                        FOUNDATION_THEME.colors.gray[25]
-                                    }
-                                    display="flex"
-                                    alignItems="center"
-                                    justifyContent="space-between"
-                                    gap="12px"
-                                    padding="12px 8px"
-                                >
-                                    {sidebarTopSlot ? (
-                                        sidebarTopSlot
-                                    ) : (
-                                        <SingleSelect
-                                            helpIconText=""
-                                            required={false}
-                                            placeholder="Select Merchant"
-                                            variant={
-                                                SelectMenuVariant.NO_CONTAINER
-                                            }
-                                            size={SelectMenuSize.SMALL}
-                                            items={[
-                                                {
-                                                    items: [
-                                                        {
-                                                            label: 'zeptomarketplace',
-                                                            value: 'zeptomarketplace',
-                                                            slot1: (
-                                                                <UserIcon
-                                                                    style={{
-                                                                        width: '16px',
-                                                                        height: '16px',
-                                                                    }}
-                                                                />
-                                                            ),
-                                                        },
-                                                    ],
-                                                },
-                                            ]}
-                                            selected={'zeptomarketplace'}
-                                            onSelect={(value) => {
-                                                console.log(value)
-                                            }}
-                                        />
-                                    )}
-                                    <ToggleButton
-                                        onClick={() => {
-                                            setIsExpanded(!isExpanded)
-                                            setIsHovering(false)
-                                        }}
-                                    >
-                                        <PanelsTopLeft
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[600]
-                                            }
-                                            size={14}
-                                        />
-                                    </ToggleButton>
-                                </Block>
+                                <SidebarHeader
+                                    sidebarTopSlot={sidebarTopSlot}
+                                    merchantInfo={merchantInfo}
+                                    isExpanded={isExpanded}
+                                    isScrolled={isScrolled}
+                                    sidebarCollapseKey={sidebarCollapseKey}
+                                    onToggle={toggleSidebar}
+                                />
 
-                                {/* DIRECTORY */}
-                                <DirectoryContainer>
+                                <DirectoryContainer data-directory-container>
                                     <Directory
                                         directoryData={data}
                                         className="pb-20"
@@ -426,81 +206,26 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     )}
                 </Block>
 
-                <MainContentContainer>
-                    {/* TOPBAR  */}
+                <MainContentContainer data-main-content>
                     <Block
-                        width="100%"
-                        height="68px"
                         position="sticky"
                         top="0"
-                        zIndex="10"
-                        borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                        // backgroundColor={FOUNDATION_THEME.colors.gray[0]}
-                        display="flex"
-                        alignItems="center"
-                        gap="16px"
-                        padding="16px 32px"
-                        backgroundColor="hsla(0, 0%, 100%, 0.8)"
-                        style={{
-                            backdropFilter: 'blur(10px)',
-                        }}
-                    >
-                        {isExpanded === false && (
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                gap="16px"
-                                width="fit-content"
-                                flexShrink={0}
-                            >
-                                {showToggleButton && (
-                                    <ToggleButton
-                                        onClick={() =>
-                                            setIsExpanded(!isExpanded)
-                                        }
-                                    >
-                                        <PanelsTopLeft
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[600]
-                                            }
-                                            size={14}
-                                        />
-                                    </ToggleButton>
-                                )}
-                                {sidebarTopSlot ? (
-                                    sidebarTopSlot
-                                ) : (
-                                    <SingleSelect
-                                        placeholder="Select Merchant"
-                                        variant={SelectMenuVariant.NO_CONTAINER}
-                                        items={[
-                                            {
-                                                items: [
-                                                    {
-                                                        label: 'zeptomarketplace',
-                                                        value: 'zeptomarketplace',
-                                                        slot1: (
-                                                            <UserIcon
-                                                                style={{
-                                                                    width: '16px',
-                                                                    height: '16px',
-                                                                }}
-                                                            />
-                                                        ),
-                                                    },
-                                                ],
-                                            },
-                                        ]}
-                                        selected={'zeptomarketplace'}
-                                        onSelect={(value) => {
-                                            console.log(value)
-                                        }}
-                                    />
-                                )}
-                            </Block>
+                        zIndex="90"
+                        style={getTopbarStyles(
+                            enableTopbarAutoHide,
+                            showTopbar
                         )}
-                        <Block flexGrow={1}>{topbar}</Block>
+                    >
+                        <Topbar
+                            isExpanded={isExpanded}
+                            onToggleExpansion={toggleSidebar}
+                            showToggleButton={showToggleButton}
+                            sidebarTopSlot={sidebarTopSlot}
+                            topbar={topbar}
+                            leftPanel={leftPanel}
+                            merchantInfo={merchantInfo || defaultMerchantInfo}
+                            rightActions={rightActions}
+                        />
                     </Block>
 
                     <Block>{children}</Block>
@@ -509,47 +234,6 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         )
     }
 )
-
-const SidebarFooter = ({ footer }: { footer: React.ReactNode }) => {
-    return (
-        <Block
-            width="100%"
-            backgroundColor={FOUNDATION_THEME.colors.gray[25]}
-            height="64px"
-            position="sticky"
-            bottom="0"
-            zIndex="10"
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            gap="12px"
-            padding="12px 8px"
-            borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-        >
-            {footer ? (
-                footer
-            ) : (
-                <Block width="100%">
-                    <div className="flex items-center gap-2">
-                        <Avatar
-                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-                            alt="John Doe"
-                            size={AvatarSize.SM}
-                            shape={AvatarShape.ROUNDED}
-                        />
-                        <Text
-                            variant="body.md"
-                            fontWeight={500}
-                            color={FOUNDATION_THEME.colors.gray[600]}
-                        >
-                            indira.sajeev96@gmail.com
-                        </Text>
-                    </div>
-                </Block>
-            )}
-        </Block>
-    )
-}
 
 Sidebar.displayName = 'Sidebar'
 

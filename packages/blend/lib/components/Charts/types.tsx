@@ -4,6 +4,7 @@ import {
     NameType,
     ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
+import { ButtonV2Props } from '../Button'
 
 export type DataPoint = {
     primary: {
@@ -13,6 +14,11 @@ export type DataPoint = {
     aux?: {
         label: string
         val: number
+        type?: AxisType
+        dateOnly?: boolean
+        smart?: boolean
+        timeZone?: string
+        hour12?: boolean
     }[]
 }
 
@@ -25,6 +31,7 @@ export enum ChartType {
     LINE = 'line',
     BAR = 'bar',
     PIE = 'pie',
+    SCATTER = 'scatter',
 }
 
 export enum LegendsChangeType {
@@ -56,6 +63,13 @@ export type TickProps = {
     [key: string]: unknown
 }
 
+export type NoDataProps = {
+    title?: string
+    subtitle?: string
+    slot?: ReactNode
+    button?: ButtonV2Props
+}
+
 export type AxisConfig = {
     label?: string
     showLabel?: boolean
@@ -65,9 +79,14 @@ export type AxisConfig = {
     tickFormatter?: (value: string | number) => string
     customTick?: React.ComponentType<TickProps>
     dateOnly?: boolean
-    smart?: boolean
-    timeZone?: string
-    hour12?: boolean
+    useUTC?: boolean
+    formatString?: string
+    timeOnly?: boolean
+    showYear?: boolean
+    ticks?: (number | string)[] // Custom tick values for consistent intervals
+    autoConsistentTicks?: boolean // Automatically generate consistent ticks for DATE_TIME axes (default: true)
+    maxTicks?: number // Maximum number of ticks to generate (default: 10)
+    smartDateTimeFormat?: boolean // Alternates between showing date and time like Highcharts (default: true for DATE_TIME)
 }
 
 export type XAxisConfig = AxisConfig
@@ -99,6 +118,7 @@ export type RenderChartProps = {
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    noData?: NoDataProps
 }
 
 export type CoreChartProps = {
@@ -133,6 +153,8 @@ export type ChartsProps = {
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    noData?: NoDataProps
+    height?: number
 }
 
 export type FlattenedDataPoint = {

@@ -20,10 +20,12 @@ const MultiSelectSubMenu = ({
     item,
     onSelect,
     selected,
+    maxSelections,
 }: {
     item: MultiSelectMenuItemType
     onSelect: (value: string) => void
     selected: string[]
+    maxSelections?: number
 }) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -121,7 +123,7 @@ const MultiSelectSubMenu = ({
                     backgroundColor="white"
                     borderRadius={8}
                     padding="8px 0px"
-                    boxShadow={FOUNDATION_THEME.shadows.lg}
+                    boxShadow={FOUNDATION_THEME.shadows.sm}
                     border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
                 >
                     {item.subMenu?.map((subItem, subIdx) => (
@@ -130,6 +132,7 @@ const MultiSelectSubMenu = ({
                             item={subItem}
                             onSelect={onSelect}
                             selected={selected}
+                            maxSelections={maxSelections}
                         />
                     ))}
                 </Block>

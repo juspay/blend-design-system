@@ -39,6 +39,7 @@ export type MultiSelectMenuItemType = {
     slot3?: React.ReactNode
     slot4?: React.ReactNode
     disabled?: boolean
+    alwaysSelected?: boolean
     onClick?: () => void
     subMenu?: MultiSelectMenuItemType[]
     tooltip?: string | React.ReactNode
@@ -83,6 +84,8 @@ export type MultiSelectProps = {
     enableSelectAll?: boolean
     selectAllText?: string
 
+    maxSelections?: number
+
     // custom trigger
     customTrigger?: React.ReactNode
 
@@ -90,9 +93,9 @@ export type MultiSelectProps = {
     useDrawerOnMobile?: boolean
 
     // dim
-    minWidth?: number
-    maxWidth?: number
-    maxHeight?: number
+    minMenuWidth?: number
+    maxMenuWidth?: number
+    maxMenuHeight?: number
 
     // alignment
     alignment?: MultiSelectMenuAlignment
@@ -113,7 +116,7 @@ export type MultiSelectProps = {
     showActionButtons?: boolean
     primaryAction?: {
         text: string
-        onClick: () => void
+        onClick: (selectedValues: string[]) => void
         disabled?: boolean
         loading?: boolean
     }
@@ -125,6 +128,19 @@ export type MultiSelectProps = {
     }
     showItemDividers?: boolean
     showHeaderBorder?: boolean
+    fullWidth?: boolean
+
+    // virtualization
+    enableVirtualization?: boolean
+    virtualListItemHeight?: number
+    virtualListOverscan?: number
+    itemsToRender?: number
+
+    // infinite scroll
+    onEndReached?: () => void
+    endReachedThreshold?: number
+    hasMore?: boolean
+    loadingComponent?: React.ReactNode
 }
 
 // Multi Select Menu Dropdpown
@@ -133,15 +149,17 @@ export type MultiSelectMenuProps = {
     selected: string[]
     onSelect: (value: string) => void
     trigger: React.ReactNode
-    minWidth?: number
-    maxWidth?: number
-    maxHeight?: number
+    minMenuWidth?: number
+    maxMenuWidth?: number
+    maxMenuHeight?: number
     disabled?: boolean
     enableSearch?: boolean
     searchPlaceholder?: string
     enableSelectAll?: boolean
     selectAllText?: string
     onSelectAll?: (selectAll: boolean) => void
+
+    maxSelections?: number
 
     // alignment
     alignment?: MultiSelectMenuAlignment
@@ -157,7 +175,7 @@ export type MultiSelectMenuProps = {
     showActionButtons?: boolean
     primaryAction?: {
         text: string
-        onClick: () => void
+        onClick: (selectedValues: string[]) => void
         disabled?: boolean
         loading?: boolean
     }
@@ -167,4 +185,16 @@ export type MultiSelectMenuProps = {
         disabled?: boolean
         loading?: boolean
     }
+
+    // virtualization
+    enableVirtualization?: boolean
+    virtualListItemHeight?: number
+    virtualListOverscan?: number
+    itemsToRender?: number
+
+    // infinite scroll
+    onEndReached?: () => void
+    endReachedThreshold?: number
+    hasMore?: boolean
+    loadingComponent?: React.ReactNode
 }

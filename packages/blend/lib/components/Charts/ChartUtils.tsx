@@ -1,4 +1,10 @@
-import { NewNestedDataPoint, FlattenedDataPoint, AxisType } from './types'
+import {
+    NewNestedDataPoint,
+    FlattenedDataPoint,
+    AxisType,
+    AxisConfig,
+} from './types'
+import { parseTimestamp, dateFormat } from './DateTimeFormatter'
 
 export function transformNestedData(
     data: NewNestedDataPoint[],
@@ -20,6 +26,63 @@ export function transformNestedData(
 
         return flattened
     })
+}
+
+export function transformScatterData(
+    data: NewNestedDataPoint[],
+    selectedKeys: string[] = []
+): Array<{ name: string; x: number; y: number; seriesKey: string }> {
+    const scatterPoints: Array<{
+        name: string
+        x: number
+        y: number
+        seriesKey: string
+    }> = []
+
+    data.forEach((item) => {
+        const keysToInclude =
+            selectedKeys.length > 0
+                ? Object.keys(item.data).filter((key) =>
+                      selectedKeys.includes(key)
+                  )
+                : Object.keys(item.data)
+
+        keysToInclude.forEach((key) => {
+            const dataPoint = item.data[key]
+
+            // Look for x and y coordinates in aux data
+            const auxData = dataPoint.aux || []
+            const xData = auxData.find((aux) => aux.label.toLowerCase() === 'x')
+            const yData = auxData.find((aux) => aux.label.toLowerCase() === 'y')
+
+            if (xData && yData) {
+                scatterPoints.push({
+                    name: item.name,
+                    x:
+                        typeof xData.val === 'number'
+                            ? xData.val
+                            : parseFloat(String(xData.val)),
+                    y:
+                        typeof yData.val === 'number'
+                            ? yData.val
+                            : parseFloat(String(yData.val)),
+                    seriesKey: key,
+                })
+            } else {
+                // Fallback: use name as x and primary.val as y
+                const x = parseFloat(item.name) || 0
+                const y = dataPoint.primary.val
+                scatterPoints.push({
+                    name: item.name,
+                    x,
+                    y,
+                    seriesKey: key,
+                })
+            }
+        })
+    })
+
+    return scatterPoints
 }
 
 export function lightenHexColor(hex: string, amount: number = 0.3): string {
@@ -130,185 +193,152 @@ export const capitaliseCamelCase = (text: string): string => {
         .join(' ')
 }
 
-export const createSmartDateTimeFormatter = (
-    timeZone?: string,
-    hour12?: boolean
+export type DateTimeFormatterOptions = {
+    useUTC?: boolean
+    formatString?: string
+    dateOnly?: boolean
+    timeOnly?: boolean
+    showYear?: boolean
+    smartDateTimeFormat?: boolean // Alternates between date and time like Highcharts
+}
+
+/**
+ * Creates a DateTime formatter with custom options
+ * @param options - Configuration options for the formatter
+ * @param options.useUTC - Whether to use UTC timezone (default: true)
+ * @param options.formatString - Optional custom format string
+ * @param options.dateOnly - Show only dates (e.g., "1. Oct", "2. Oct")
+ * @param options.timeOnly - Show only times (e.g., "12:00", "13:00")
+ * @param options.showYear - Include year in the output (works with dateOnly and default mode)
+ * @param options.smartDateTimeFormat - Alternates between date and time like Highcharts
+ * @returns A formatter function that handles timestamps from any timezone
+ *
+ * @example
+ * // Date only without year: "1. Oct" "2. Oct" "3. Oct"
+ * createDateTimeFormatter({ dateOnly: true, showYear: false })
+ *
+ * @example
+ * // Date only with year: "1. Oct 2024" "2. Oct 2024"
+ * createDateTimeFormatter({ dateOnly: true, showYear: true })
+ *
+ * @example
+ * // Time only: "00:00" "06:00" "12:00"
+ * createDateTimeFormatter({ timeOnly: true })
+ *
+ * @example
+ * // Smart format (alternates): "1. Oct" "12:00" "2. Oct" "12:00"
+ * createDateTimeFormatter({ smartDateTimeFormat: true })
+ *
+ * @example
+ * // Default with year: "1 Oct 2024, 12:00"
+ * createDateTimeFormatter({ showYear: true })
+ */
+export const createDateTimeFormatter = (
+    options: DateTimeFormatterOptions = {}
 ): ((value: string | number) => string) => {
-    let previousDate: string | null = null
+    const {
+        useUTC = true,
+        formatString,
+        dateOnly = false,
+        timeOnly = false,
+        showYear = false,
+        smartDateTimeFormat = false,
+    } = options
+
+    const dateTimeConfig = { useUTC }
+
+    // Smart format: show date at start of day, time otherwise
+    if (smartDateTimeFormat) {
+        let previousDay: number | null = null
+
+        return (value: string | number) => {
+            const timestamp = parseTimestamp(value)
+            if (timestamp === null) return value.toString()
+
+            // Get the day of this timestamp
+            const currentDay = parseInt(
+                dateFormat('%e', timestamp, dateTimeConfig)
+            )
+
+            // If it's a new day, show the date
+            if (previousDay === null || currentDay !== previousDay) {
+                previousDay = currentDay
+                const formatStr = showYear ? '%e. %b %Y' : '%e. %b'
+                return dateFormat(formatStr, timestamp, dateTimeConfig)
+            }
+
+            // Otherwise, show the time
+            return dateFormat('%H:%M', timestamp, dateTimeConfig)
+        }
+    }
+
+    // Determine the format based on options
+    let finalFormat: string
+
+    if (formatString) {
+        // User provided custom format string, use it directly
+        finalFormat = formatString
+    } else if (dateOnly) {
+        // Date only mode: "1. Oct" or "1. Oct 2024"
+        finalFormat = showYear ? '%e. %b %Y' : '%e. %b'
+    } else if (timeOnly) {
+        // Time only mode: "12:00"
+        finalFormat = '%H:%M'
+    } else {
+        // Default mode: "1 Oct 2024, 12:00" or "1 Oct, 12:00"
+        finalFormat = showYear ? '%e %b %Y, %H:%M' : '%e %b, %H:%M'
+    }
 
     return (value: string | number) => {
-        let date = new Date(value)
-        if (isNaN(date.getTime())) {
-            let timestamp = typeof value === 'string' ? parseInt(value) : value
-            if (timestamp < 946684800000) {
-                timestamp = timestamp * 1000
-            }
-            date = new Date(timestamp)
-            if (isNaN(date.getTime())) {
-                return value.toString()
-            }
-        }
+        const timestamp = parseTimestamp(value)
+        if (timestamp === null) return value.toString()
 
-        const dateOptions: Intl.DateTimeFormatOptions = {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-            timeZone: timeZone || 'UTC',
-        }
-
-        const currentDate = date.toLocaleDateString('en-US', dateOptions)
-
-        if (previousDate === null || previousDate !== currentDate) {
-            previousDate = currentDate
-            const fullOptions: Intl.DateTimeFormatOptions = {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: hour12 || false,
-                timeZone: timeZone || 'UTC',
-            }
-            return date.toLocaleString('en-US', fullOptions)
-        }
-
-        const timeOptions: Intl.DateTimeFormatOptions = {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: hour12 || false,
-            timeZone: timeZone || 'UTC',
-        }
-        return date.toLocaleTimeString('en-US', timeOptions)
+        return dateFormat(finalFormat, timestamp, { useUTC })
     }
 }
 
-export const getAxisFormatterWithConfig = (
-    axisType: AxisType,
-    dateOnly?: boolean,
-    smart?: boolean,
-    timeZone?: string,
-    hour12?: boolean
-): ((value: string | number) => string) => {
-    if (axisType === AxisType.DATE_TIME) {
-        if (smart) {
-            return createSmartDateTimeFormatter(timeZone, hour12)
-        } else if (dateOnly) {
-            return (value: string | number) => {
-                const date = new Date(value)
-                if (isNaN(date.getTime())) {
-                    let timestamp =
-                        typeof value === 'string' ? parseInt(value) : value
-
-                    if (timestamp < 946684800000) {
-                        timestamp = timestamp * 1000
-                    }
-
-                    const timestampDate = new Date(timestamp)
-                    if (isNaN(timestampDate.getTime())) {
-                        return value.toString()
-                    }
-                    const options: Intl.DateTimeFormatOptions = {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                        timeZone: timeZone || 'UTC',
-                    }
-                    return timestampDate.toLocaleDateString('en-US', options)
-                }
-                const options: Intl.DateTimeFormatOptions = {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                    timeZone: timeZone || 'UTC',
-                }
-                return date.toLocaleDateString('en-US', options)
-            }
-        } else {
-            return (value: string | number) => {
-                const date = new Date(value)
-                if (isNaN(date.getTime())) {
-                    let timestamp =
-                        typeof value === 'string' ? parseInt(value) : value
-
-                    if (timestamp < 946684800000) {
-                        timestamp = timestamp * 1000
-                    }
-
-                    const timestampDate = new Date(timestamp)
-                    if (isNaN(timestampDate.getTime())) {
-                        return value.toString()
-                    }
-                    const options: Intl.DateTimeFormatOptions = {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: hour12 || false,
-                    }
-                    options.timeZone = timeZone || 'UTC'
-                    return timestampDate.toLocaleString('en-US', options)
-                }
-                const options: Intl.DateTimeFormatOptions = {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: hour12 || false,
-                }
-                options.timeZone = timeZone || 'UTC'
-                return date.toLocaleString('en-US', options)
-            }
-        }
-    }
-
-    return getAxisFormatter(axisType, timeZone, hour12)
-}
-
+/**
+ * Get a formatter function based on axis type with optional DateTime customization
+ * @param axisType - The type of axis (DATE_TIME, CURRENCY, PERCENTAGE, NUMBER)
+ * @param dateTimeOptions - Options for DateTime formatting (only used when axisType is DATE_TIME)
+ * @returns A formatter function for the specified axis type
+ *
+ * @example
+ * // Simple usage with default UTC
+ * getAxisFormatter(AxisType.DATE_TIME)
+ *
+ * @example
+ * // Date only without year
+ * getAxisFormatter(AxisType.DATE_TIME, { dateOnly: true })
+ *
+ * @example
+ * // Date only with year
+ * getAxisFormatter(AxisType.DATE_TIME, { dateOnly: true, showYear: true })
+ *
+ * @example
+ * // Time only
+ * getAxisFormatter(AxisType.DATE_TIME, { timeOnly: true })
+ *
+ * @example
+ * // Local timezone instead of UTC
+ * getAxisFormatter(AxisType.DATE_TIME, { useUTC: false })
+ */
 export const getAxisFormatter = (
-    axisType: AxisType,
-    timeZone?: string,
-    hour12?: boolean
+    finalAxis: AxisConfig
 ): ((value: string | number) => string) => {
-    switch (axisType) {
-        case AxisType.DATE_TIME:
-            return (value: string | number) => {
-                const date = new Date(value)
-                if (isNaN(date.getTime())) {
-                    let timestamp =
-                        typeof value === 'string' ? parseInt(value) : value
-
-                    if (timestamp < 946684800000) {
-                        timestamp = timestamp * 1000
-                    }
-
-                    const timestampDate = new Date(timestamp)
-                    if (isNaN(timestampDate.getTime())) {
-                        return value.toString()
-                    }
-                    const options: Intl.DateTimeFormatOptions = {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: hour12 || false,
-                    }
-                    options.timeZone = timeZone || 'UTC'
-                    return timestampDate.toLocaleString('en-US', options)
-                }
-                const options: Intl.DateTimeFormatOptions = {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: hour12 || false,
-                }
-                options.timeZone = timeZone || 'UTC'
-                return date.toLocaleString('en-US', options)
-            }
+    const dateTimeOptions = {
+        useUTC: finalAxis.useUTC,
+        formatString: finalAxis.formatString,
+        dateOnly: finalAxis.dateOnly,
+        timeOnly: finalAxis.timeOnly,
+        showYear: finalAxis.showYear,
+        smartDateTimeFormat: finalAxis.smartDateTimeFormat,
+    }
+    switch (finalAxis.type) {
+        case AxisType.DATE_TIME: {
+            // Create a formatter instance with UTC enabled by default
+            return createDateTimeFormatter(dateTimeOptions)
+        }
 
         case AxisType.CURRENCY:
             return (value: string | number) => {
@@ -342,5 +372,146 @@ export const getAxisFormatter = (
 
         default:
             return (value: string | number) => value.toString()
+    }
+}
+
+/**
+ * Suggests an optimal tick interval based on the data range
+ * Automatically determines whether to use minutes, hours, days, etc.
+ */
+export function getSuggestedTickInterval(
+    data: NewNestedDataPoint[],
+    maxTicks: number = 10
+): {
+    interval: number
+    description: string
+    unit: string
+} {
+    if (data.length === 0) {
+        return { interval: 3600000, description: '1 hour', unit: 'hour' }
+    }
+
+    // Parse timestamps
+    const timestamps = data
+        .map((d) => parseTimestamp(d.name))
+        .filter((t): t is number => t !== null)
+        .sort((a, b) => a - b)
+
+    if (timestamps.length < 2) {
+        return { interval: 3600000, description: '1 hour', unit: 'hour' }
+    }
+
+    const minTime = timestamps[0]
+    const maxTime = timestamps[timestamps.length - 1]
+    const range = maxTime - minTime
+
+    // Determine ideal interval based on range and desired tick count
+    const idealInterval = range / maxTicks
+
+    // Define standard intervals in milliseconds
+    const intervals = [
+        { ms: 60 * 1000, desc: '1 minute', unit: 'minute' },
+        { ms: 5 * 60 * 1000, desc: '5 minutes', unit: 'minute' },
+        { ms: 15 * 60 * 1000, desc: '15 minutes', unit: 'minute' },
+        { ms: 30 * 60 * 1000, desc: '30 minutes', unit: 'minute' },
+        { ms: 60 * 60 * 1000, desc: '1 hour', unit: 'hour' },
+        { ms: 2 * 60 * 60 * 1000, desc: '2 hours', unit: 'hour' },
+        { ms: 3 * 60 * 60 * 1000, desc: '3 hours', unit: 'hour' },
+        { ms: 6 * 60 * 60 * 1000, desc: '6 hours', unit: 'hour' },
+        { ms: 12 * 60 * 60 * 1000, desc: '12 hours', unit: 'hour' },
+        { ms: 24 * 60 * 60 * 1000, desc: '1 day', unit: 'day' },
+        { ms: 3 * 24 * 60 * 60 * 1000, desc: '3 days', unit: 'day' },
+        { ms: 5 * 24 * 60 * 60 * 1000, desc: '5 days', unit: 'day' },
+        { ms: 7 * 24 * 60 * 60 * 1000, desc: '1 week', unit: 'week' },
+        { ms: 30 * 24 * 60 * 60 * 1000, desc: '1 month', unit: 'month' },
+    ]
+
+    // Find the closest standard interval
+    let bestInterval = intervals[0]
+    let minDiff = Math.abs(idealInterval - bestInterval.ms)
+
+    for (const interval of intervals) {
+        const diff = Math.abs(idealInterval - interval.ms)
+        if (diff < minDiff) {
+            minDiff = diff
+            bestInterval = interval
+        }
+    }
+
+    return {
+        interval: bestInterval.ms,
+        description: bestInterval.desc,
+        unit: bestInterval.unit,
+    }
+}
+
+/**
+ * Generates consistent, evenly-spaced tick values for datetime axes
+ * This mimics Highcharts behavior where ticks are at regular intervals
+ *
+ * @param data - Chart data with timestamps in 'name' field
+ * @param options - Configuration options
+ * @returns Object containing tick array (as strings to match data format) and formatter function
+ */
+export function generateConsistentDateTimeTicks(
+    data: NewNestedDataPoint[],
+    options: DateTimeFormatterOptions & {
+        maxTicks?: number
+        customInterval?: number
+    } = {}
+): {
+    ticks: string[]
+    formatter: (value: string | number) => string
+} {
+    const { maxTicks = 10, customInterval, ...formatterOptions } = options
+
+    if (data.length === 0) {
+        return {
+            ticks: [],
+            formatter: createDateTimeFormatter(formatterOptions),
+        }
+    }
+
+    // Parse all timestamps
+    const timestamps = data
+        .map((d) => parseTimestamp(d.name))
+        .filter((t): t is number => t !== null)
+        .sort((a, b) => a - b)
+
+    if (timestamps.length === 0) {
+        return {
+            ticks: [],
+            formatter: createDateTimeFormatter(formatterOptions),
+        }
+    }
+
+    const minTime = timestamps[0]
+    const maxTime = timestamps[timestamps.length - 1]
+
+    // Determine interval
+    const interval =
+        customInterval || getSuggestedTickInterval(data, maxTicks).interval
+
+    // Round down minTime to nearest interval boundary
+    const startTick = Math.floor(minTime / interval) * interval
+
+    // Generate ticks
+    const ticksNumbers: number[] = []
+    let currentTick = startTick
+
+    // Generate ticks that cover the data range
+    while (currentTick <= maxTime + interval) {
+        if (currentTick >= minTime - interval) {
+            ticksNumbers.push(currentTick)
+        }
+        currentTick += interval
+    }
+
+    // Convert to strings to match the data format (data.name is a string)
+    const ticks = ticksNumbers.map((tick) => String(tick))
+
+    return {
+        ticks,
+        formatter: createDateTimeFormatter(formatterOptions),
     }
 }

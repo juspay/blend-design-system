@@ -7,21 +7,17 @@ import {
     useMemo,
 } from 'react'
 import styled, { CSSObject } from 'styled-components'
-import { DateRange } from './types'
+import { DateRange, CustomRangeConfig } from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
 import {
-    handleCalendarDateClick,
+    handleCustomRangeCalendarDateClick,
     getDayNames,
     getMonthHeight,
-    getVisibleMonths,
     findCurrentMonthIndex,
-    getScrollToMonth,
-    generateInitialMonths,
-    handleLoadMoreMonths,
-    handleCalendarScroll,
     createCalendarMonthData,
     calculateDayCellProps,
+    shouldHideDateFromCalendar,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -33,12 +29,14 @@ type CalendarGridProps = {
     allowSingleDateSelection?: boolean
     disableFutureDates?: boolean
     disablePastDates?: boolean
+    hideFutureDates?: boolean
+    hidePastDates?: boolean
+    customDisableDates?: (date: Date) => boolean
+    customRangeConfig?: CustomRangeConfig
     showDateTimePicker?: boolean
 }
 
 const CONTAINER_HEIGHT = 340
-const MONTH_HEIGHT = getMonthHeight()
-const LOAD_THRESHOLD = 100
 
 const StyledDayCell = styled(Block)<{
     $cellStyles: CSSObject
@@ -63,6 +61,44 @@ const StyledDayCell = styled(Block)<{
   `}
 `
 
+function generateMonthsList(
+    today: Date,
+    hideFutureDates: boolean = false,
+    hidePastDates: boolean = false
+): { month: number; year: number }[] {
+    const months = []
+    const currentYear = today.getFullYear()
+    const currentMonth = today.getMonth()
+    const startYear = 2012
+    const endYear = currentYear + 5
+
+    for (let year = startYear; year <= endYear; year++) {
+        for (let month = 0; month <= 11; month++) {
+            if (hideFutureDates) {
+                if (
+                    year > currentYear ||
+                    (year === currentYear && month > currentMonth)
+                ) {
+                    continue
+                }
+            }
+
+            if (hidePastDates) {
+                if (
+                    year < currentYear ||
+                    (year === currentYear && month < currentMonth)
+                ) {
+                    continue
+                }
+            }
+
+            months.push({ month, year })
+        }
+    }
+
+    return months
+}
+
 const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
     (
         {
@@ -72,156 +108,95 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             allowSingleDateSelection = false,
             disableFutureDates = false,
             disablePastDates = false,
+            hideFutureDates = false,
+            hidePastDates = false,
+            customDisableDates,
+            customRangeConfig,
             showDateTimePicker = true,
         },
         ref
     ) => {
         const scrollContainerRef = useRef<HTMLDivElement>(null)
         const [scrollTop, setScrollTop] = useState(0)
-        const animationFrameRef = useRef<number | undefined>(undefined)
         const isInitialized = useRef(false)
-        const [isLoadingPast, setIsLoadingPast] = useState(false)
-        const [isLoadingFuture, setIsLoadingFuture] = useState(false)
-        const [months, setMonths] = useState<{ month: number; year: number }[]>(
-            []
-        )
-        const responsiveCalendarTokens =
-            useResponsiveTokens<CalendarTokenType>('CALENDAR')
-        const calendarToken = responsiveCalendarTokens
 
-        useEffect(() => {
-            const initialMonths = generateInitialMonths(today)
-            setMonths(initialMonths)
-        }, [today])
+        const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
+
+        const months = useMemo(
+            () => generateMonthsList(today, hideFutureDates, hidePastDates),
+            [today, hideFutureDates, hidePastDates]
+        )
 
         const dayNames = useMemo(() => getDayNames(), [])
 
-        const { visibleMonths, totalHeight } = getVisibleMonths(
-            scrollTop,
-            CONTAINER_HEIGHT,
-            months,
-            MONTH_HEIGHT,
-            2
-        )
+        const monthData = useMemo(() => {
+            let cumulativeHeight = 0
+            return months.map(({ year, month }, index) => {
+                const height = getMonthHeight(year, month)
+                const topPosition = cumulativeHeight
+                cumulativeHeight += height
 
-        const loadMoreMonths = useCallback(
-            async (direction: 'past' | 'future') => {
-                if (direction === 'past') setIsLoadingPast(true)
-                else setIsLoadingFuture(true)
-
-                const currentScrollTop =
-                    scrollContainerRef.current?.scrollTop || 0
-
-                try {
-                    const newChunk = await handleLoadMoreMonths(
-                        months,
-                        direction,
-                        isLoadingPast,
-                        isLoadingFuture
-                    )
-
-                    if (newChunk) {
-                        setMonths((prevMonths) => {
-                            const newMonths =
-                                direction === 'past'
-                                    ? [...newChunk, ...prevMonths]
-                                    : [...prevMonths, ...newChunk]
-
-                            requestAnimationFrame(() => {
-                                if (
-                                    scrollContainerRef.current &&
-                                    direction === 'past'
-                                ) {
-                                    const addedHeight =
-                                        newChunk.length * MONTH_HEIGHT
-                                    scrollContainerRef.current.scrollTop =
-                                        currentScrollTop + addedHeight
-                                }
-                            })
-
-                            return newMonths
-                        })
-                    }
-                } finally {
-                    if (direction === 'past') setIsLoadingPast(false)
-                    else setIsLoadingFuture(false)
+                return {
+                    year,
+                    month,
+                    index,
+                    height,
+                    topPosition,
                 }
-            },
-            [months, isLoadingPast, isLoadingFuture]
-        )
+            })
+        }, [months])
 
-        const handleScroll = useCallback(
-            (e: React.UIEvent<HTMLDivElement>) => {
-                const newScrollTop = e.currentTarget.scrollTop
-                const scrollHeight = e.currentTarget.scrollHeight
-                const clientHeight = e.currentTarget.clientHeight
+        const totalHeight =
+            monthData.length > 0
+                ? monthData[monthData.length - 1].topPosition +
+                  monthData[monthData.length - 1].height
+                : 0
 
-                if (animationFrameRef.current) {
-                    cancelAnimationFrame(animationFrameRef.current)
-                }
+        const visibleMonths = useMemo(() => {
+            const buffer = 300
+            const startY = Math.max(0, scrollTop - buffer)
+            const endY = scrollTop + CONTAINER_HEIGHT + buffer
 
-                animationFrameRef.current = requestAnimationFrame(() => {
-                    setScrollTop(newScrollTop)
-                })
+            return monthData.filter(({ topPosition, height }) => {
+                const monthBottom = topPosition + height
+                return monthBottom >= startY && topPosition <= endY
+            })
+        }, [monthData, scrollTop])
 
-                const { shouldLoadPast, shouldLoadFuture } =
-                    handleCalendarScroll(
-                        newScrollTop,
-                        scrollHeight,
-                        clientHeight,
-                        LOAD_THRESHOLD
-                    )
-
-                if (shouldLoadPast && !isLoadingPast) {
-                    loadMoreMonths('past')
-                }
-
-                if (shouldLoadFuture && !isLoadingFuture) {
-                    loadMoreMonths('future')
-                }
-            },
-            [loadMoreMonths, isLoadingPast, isLoadingFuture]
-        )
+        const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+            setScrollTop(e.currentTarget.scrollTop)
+        }, [])
 
         useEffect(() => {
             if (
                 !isInitialized.current &&
                 scrollContainerRef.current &&
-                months.length > 0
+                monthData.length > 0
             ) {
+                isInitialized.current = true
+
                 const currentMonthIndex = findCurrentMonthIndex(months, today)
                 if (currentMonthIndex !== -1) {
-                    // Center the current month in the viewport
-                    const scrollPosition = getScrollToMonth(
-                        currentMonthIndex,
-                        MONTH_HEIGHT
-                    )
+                    const monthInfo = monthData[currentMonthIndex]
+                    if (monthInfo) {
+                        const centeredPosition = Math.max(
+                            0,
+                            monthInfo.topPosition -
+                                CONTAINER_HEIGHT / 2 +
+                                monthInfo.height / 2
+                        )
 
-                    // Adjust to center the month in the viewport
-                    const centeredPosition = Math.max(
-                        0,
-                        scrollPosition - CONTAINER_HEIGHT / 2 + MONTH_HEIGHT / 2
-                    )
-
-                    requestAnimationFrame(() => {
-                        if (scrollContainerRef.current) {
-                            scrollContainerRef.current.scrollTop =
-                                centeredPosition
-                            setScrollTop(centeredPosition)
-                            isInitialized.current = true
-                        }
-                    })
+                        requestAnimationFrame(() => {
+                            if (scrollContainerRef.current) {
+                                scrollContainerRef.current.scrollTop =
+                                    centeredPosition
+                                setScrollTop(centeredPosition)
+                            }
+                        })
+                    }
                 }
             }
-        }, [months, today])
-
-        useEffect(() => {
-            return () => {
-                if (animationFrameRef.current) {
-                    cancelAnimationFrame(animationFrameRef.current)
-                }
-            }
-        }, [])
+        }, [monthData, months, today])
 
         const handleDateClick = useCallback(
             (
@@ -231,13 +206,15 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 isDoubleClick: boolean = false
             ) => {
                 const clickedDate = new Date(year, month, day)
-                const newRange = handleCalendarDateClick(
+
+                const newRange = handleCustomRangeCalendarDateClick(
                     clickedDate,
                     selectedRange,
                     allowSingleDateSelection,
                     today,
                     disableFutureDates,
                     disablePastDates,
+                    customRangeConfig,
                     isDoubleClick
                 )
 
@@ -251,50 +228,76 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 today,
                 disableFutureDates,
                 disablePastDates,
+                customRangeConfig,
                 onDateSelect,
             ]
         )
 
-        const renderMonthCalendar = useCallback(
-            (year: number, month: number, monthIndex: number) => {
-                const monthData = createCalendarMonthData(
+        const renderMonth = useCallback(
+            (monthInfo: (typeof monthData)[0]) => {
+                const { year, month, topPosition, height } = monthInfo
+
+                const monthCalendarData = createCalendarMonthData(
                     year,
                     month,
-                    monthIndex,
-                    MONTH_HEIGHT
+                    0,
+                    height
                 )
+
+                const shouldHideEntireMonth = monthCalendarData.weeks.every(
+                    (week) =>
+                        week.every((day) => {
+                            if (day === null) return true
+                            const date = new Date(year, month, day)
+                            return shouldHideDateFromCalendar(
+                                date,
+                                today,
+                                hideFutureDates,
+                                hidePastDates
+                            )
+                        })
+                )
+
+                if (shouldHideEntireMonth) {
+                    return null
+                }
 
                 return (
                     <Block
-                        key={monthData.key}
+                        key={`month-${year}-${month}`}
                         style={{
-                            ...calendarToken.calendar.calendarGrid.month
-                                .container,
-                            top: monthData.topOffset,
+                            position: 'absolute',
+                            top: topPosition,
                             left: 0,
                             right: 0,
-                            height: monthData.monthHeight,
-                            marginBottom:
-                                calendarToken.calendar.calendarGrid.month
-                                    .container.marginBottom,
+                            height: height,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            paddingTop: FOUNDATION_THEME.unit[16],
+                            paddingBottom: FOUNDATION_THEME.unit[16],
                         }}
                     >
+                        {/* Month Header */}
                         <Block
                             style={{
                                 ...calendarToken.calendar.calendarGrid.month
                                     .header,
+                                flexShrink: 0,
+                                marginBottom: FOUNDATION_THEME.unit[16],
                             }}
                         >
-                            {monthData.monthName} {year}
+                            {monthCalendarData.monthName} {year}
                         </Block>
 
+                        {/* Month Grid */}
                         <Block
                             style={{
                                 ...calendarToken.calendar.calendarGrid.week
                                     .container,
+                                flex: 1,
                             }}
                         >
-                            {monthData.weeks.map(
+                            {monthCalendarData.weeks.map(
                                 (
                                     week: (number | null)[],
                                     weekIndex: number
@@ -330,6 +333,29 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                     month,
                                                     day
                                                 )
+
+                                                const shouldHide =
+                                                    shouldHideDateFromCalendar(
+                                                        date,
+                                                        today,
+                                                        hideFutureDates,
+                                                        hidePastDates
+                                                    )
+
+                                                if (shouldHide) {
+                                                    return (
+                                                        <Block
+                                                            style={{
+                                                                ...calendarToken
+                                                                    .calendar
+                                                                    .calendarGrid
+                                                                    .day.empty,
+                                                            }}
+                                                            key={dayIndex}
+                                                        />
+                                                    )
+                                                }
+
                                                 const cellProps =
                                                     calculateDayCellProps(
                                                         date,
@@ -337,7 +363,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                         today,
                                                         disableFutureDates,
                                                         disablePastDates,
-                                                        calendarToken
+                                                        calendarToken,
+                                                        customDisableDates
                                                     )
 
                                                 const isSelected =
@@ -387,9 +414,6 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                             style={{
                                                                 display:
                                                                     'inline-block',
-                                                                // width: '24px',
-                                                                // height: '20px',
-                                                                // lineHeight: '20px',
                                                                 textAlign:
                                                                     'center',
                                                             }}
@@ -423,43 +447,12 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 today,
                 disableFutureDates,
                 disablePastDates,
+                hideFutureDates,
+                hidePastDates,
+                customDisableDates,
                 handleDateClick,
                 calendarToken,
             ]
-        )
-
-        const renderLoader = (position: 'top' | 'bottom') => (
-            <Block
-                style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    position: position === 'top' ? 'sticky' : 'relative',
-                    top: position === 'top' ? 0 : 'auto',
-                    zIndex: 5,
-                    padding: '16px',
-                }}
-            >
-                <Block
-                    style={{
-                        width: FOUNDATION_THEME.unit[20],
-                        height: FOUNDATION_THEME.unit[20],
-                        border: `2px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-                        borderTop: `2px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite',
-                    }}
-                />
-
-                <style>
-                    {`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}
-                </style>
-            </Block>
         )
 
         return (
@@ -470,6 +463,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 }}
                 ref={ref}
             >
+                {/* Day Names Header */}
                 <Block
                     style={{
                         ...calendarToken.calendar.calendarGrid.week.header,
@@ -497,20 +491,20 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
 
                 <Block
                     ref={scrollContainerRef}
-                    style={{ ...calendarToken.calendar.calendarGrid.container }}
+                    style={{
+                        ...calendarToken.calendar.calendarGrid.container,
+                        position: 'relative',
+                    }}
                     onScroll={handleScroll}
                 >
-                    {isLoadingPast && renderLoader('top')}
-
                     <Block
-                        style={{ height: totalHeight, position: 'relative' }}
+                        style={{
+                            height: totalHeight,
+                            position: 'relative',
+                        }}
                     >
-                        {visibleMonths.map(({ year, month, index }) =>
-                            renderMonthCalendar(year, month, index)
-                        )}
+                        {visibleMonths.map(renderMonth)}
                     </Block>
-
-                    {isLoadingFuture && renderLoader('bottom')}
                 </Block>
             </Block>
         )

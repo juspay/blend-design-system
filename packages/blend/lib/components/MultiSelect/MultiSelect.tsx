@@ -43,11 +43,12 @@ const MultiSelect = ({
     searchPlaceholder = 'Search options...',
     enableSelectAll = false,
     selectAllText = 'Select All',
+    maxSelections,
     customTrigger,
     useDrawerOnMobile = true,
-    minWidth,
-    maxWidth,
-    maxHeight,
+    minMenuWidth,
+    maxMenuWidth,
+    maxMenuHeight,
     alignment,
     side,
     sideOffset,
@@ -62,6 +63,15 @@ const MultiSelect = ({
     secondaryAction,
     showItemDividers = false,
     showHeaderBorder = false,
+    fullWidth = false,
+    enableVirtualization = false,
+    virtualListItemHeight = 48,
+    virtualListOverscan = 5,
+    itemsToRender,
+    onEndReached,
+    endReachedThreshold,
+    hasMore,
+    loadingComponent,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -135,21 +145,37 @@ const MultiSelect = ({
                 error={error}
                 errorMessage={errorMessage}
                 showActionButtons={shouldShowActionButtons}
-                primaryAction={primaryAction}
+                primaryAction={
+                    primaryAction
+                        ? {
+                              ...primaryAction,
+                              onClick: () =>
+                                  primaryAction.onClick(selectedValues),
+                          }
+                        : undefined
+                }
                 secondaryAction={secondaryAction}
                 showItemDividers={showItemDividers}
                 showHeaderBorder={showHeaderBorder}
+                enableVirtualization={enableVirtualization}
+                virtualListItemHeight={virtualListItemHeight}
+                virtualListOverscan={virtualListOverscan}
+                itemsToRender={itemsToRender}
+                onEndReached={onEndReached}
+                endReachedThreshold={endReachedThreshold}
+                hasMore={hasMore}
+                loadingComponent={loadingComponent}
             />
         )
     }
 
     return (
         <Block
-            width="100%"
+            width={fullWidth ? '100%' : 'fit-content'}
+            maxWidth={fullWidth ? '100%' : 'fit-content'}
             display="flex"
             flexDirection="column"
             gap={8}
-            maxWidth={'100%'}
         >
             {variant === MultiSelectVariant.CONTAINER &&
                 (!isSmallScreen || size !== MultiSelectMenuSize.LARGE) && (
@@ -172,6 +198,7 @@ const MultiSelect = ({
                 searchPlaceholder={searchPlaceholder}
                 enableSelectAll={enableSelectAll}
                 selectAllText={selectAllText}
+                maxSelections={maxSelections}
                 onSelectAll={
                     enableSelectAll
                         ? (selectAll: boolean) =>
@@ -183,9 +210,9 @@ const MultiSelect = ({
                               )
                         : undefined
                 }
-                minWidth={minWidth}
-                maxWidth={maxWidth}
-                maxHeight={maxHeight}
+                minMenuWidth={minMenuWidth}
+                maxMenuWidth={maxMenuWidth}
+                maxMenuHeight={maxMenuHeight}
                 alignment={alignment}
                 side={side}
                 sideOffset={sideOffset}
@@ -200,8 +227,24 @@ const MultiSelect = ({
                     }
                 }}
                 showActionButtons={shouldShowActionButtons}
-                primaryAction={primaryAction}
+                primaryAction={
+                    primaryAction
+                        ? {
+                              ...primaryAction,
+                              onClick: () =>
+                                  primaryAction.onClick(selectedValues),
+                          }
+                        : undefined
+                }
                 secondaryAction={secondaryAction}
+                enableVirtualization={enableVirtualization}
+                virtualListItemHeight={virtualListItemHeight}
+                virtualListOverscan={virtualListOverscan}
+                itemsToRender={itemsToRender}
+                onEndReached={onEndReached}
+                endReachedThreshold={endReachedThreshold}
+                hasMore={hasMore}
+                loadingComponent={loadingComponent}
                 trigger={
                     customTrigger || (
                         <Block
@@ -217,16 +260,8 @@ const MultiSelect = ({
                             })}
                         >
                             <Block
-                                width={
-                                    variant === MultiSelectVariant.CONTAINER
-                                        ? '100%'
-                                        : 'auto'
-                                }
-                                maxWidth={
-                                    variant === MultiSelectVariant.NO_CONTAINER
-                                        ? '100%'
-                                        : 'auto'
-                                }
+                                width={fullWidth ? '100%' : 'fit-content'}
+                                maxWidth={fullWidth ? '100%' : 'fit-content'}
                                 display="flex"
                                 alignItems="center"
                             >
@@ -242,7 +277,9 @@ const MultiSelect = ({
                                     <PrimitiveButton
                                         type="button"
                                         position="relative"
-                                        width={'100%'}
+                                        width={
+                                            fullWidth ? '100%' : 'fit-content'
+                                        }
                                         display="flex"
                                         alignItems="center"
                                         overflow="hidden"

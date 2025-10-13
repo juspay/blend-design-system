@@ -61,13 +61,13 @@ export type DrawerTokensType = {
 export const drawerTokens: DrawerTokensType = {
     overlay: {
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        zIndex: 9998,
+        zIndex: 1100,
     },
     content: {
         backgroundColor: FOUNDATION_THEME.colors.gray[0],
         borderRadius: FOUNDATION_THEME.border.radius[16],
         boxShadow: FOUNDATION_THEME.shadows.xl,
-        zIndex: 9999,
+        zIndex: 1200,
         border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
     },
     mobileOffset: {
@@ -120,13 +120,13 @@ export const getDrawerComponentTokens = (
     return {
         overlay: {
             backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            zIndex: 9998,
+            zIndex: 1100,
         },
         content: {
             backgroundColor: foundationToken.colors.gray[0],
             borderRadius: foundationToken.border.radius[16],
             boxShadow: foundationToken.shadows.xl,
-            zIndex: 9999,
+            zIndex: 1200,
             border: `1px solid ${foundationToken.colors.gray[200]}`,
         },
         mobileOffset: {

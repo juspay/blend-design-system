@@ -10,6 +10,7 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { type MenuItemStates, type MenuTokensType } from './menu.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { Tooltip } from '../Tooltip'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -89,16 +90,24 @@ const getColor = (
     }
 }
 
-const MenuItem = ({ item, idx }: { item: MenuItemV2Type; idx: number }) => {
+const MenuItem = ({
+    item,
+    idx,
+    maxHeight,
+}: {
+    item: MenuItemV2Type
+    idx: number
+    maxHeight?: number
+}) => {
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
     if (item.subMenu) {
-        return <SubMenu item={item} idx={idx} />
+        return <SubMenu item={item} idx={idx} maxHeight={maxHeight} />
     }
     if (item.variant === undefined) {
         item.variant = MenuItemV2Variant.DEFAULT
     }
 
-    return (
+    const menuItemContent = (
         <RadixMenu.Item
             asChild
             disabled={item.disabled}
@@ -175,6 +184,17 @@ const MenuItem = ({ item, idx }: { item: MenuItemV2Type; idx: number }) => {
             </Block>
         </RadixMenu.Item>
     )
+
+    // Wrap with tooltip if tooltip content is provided
+    if (item.tooltip) {
+        return (
+            <Tooltip content={item.tooltip} {...item.tooltipProps}>
+                {menuItemContent}
+            </Tooltip>
+        )
+    }
+
+    return menuItemContent
 }
 
 MenuItem.displayName = 'MenuItem'

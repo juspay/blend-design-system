@@ -445,6 +445,12 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
             gap={FOUNDATION_THEME.unit[4]}
             width="100%"
             onClick={(e) => e.stopPropagation()}
+            style={{
+                fontSize: 'inherit',
+                fontFamily: 'inherit',
+                fontWeight: 'inherit',
+                lineHeight: 'inherit',
+            }}
         >
             {visibleButtonElements}
 
@@ -586,7 +592,7 @@ const TableBody = forwardRef<
                                                   ...(columnFreeze > 0 && {
                                                       position: 'sticky',
                                                       left: '0px',
-                                                      zIndex: 45,
+                                                      zIndex: 9,
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
                                                           foundationToken.colors
@@ -650,7 +656,7 @@ const TableBody = forwardRef<
                                                       left: enableRowExpansion
                                                           ? '50px'
                                                           : '0px',
-                                                      zIndex: 45,
+                                                      zIndex: 9,
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
                                                           foundationToken.colors
@@ -792,7 +798,7 @@ const TableBody = forwardRef<
                                                           position:
                                                               'sticky' as const,
                                                           left: `${leftOffset}px`,
-                                                          zIndex: 44,
+                                                          zIndex: 8,
                                                           backgroundColor:
                                                               rowStyling.backgroundColor ||
                                                               '#ffffff',
@@ -857,6 +863,10 @@ const TableBody = forwardRef<
                                                           tableToken.dataTable
                                                               .table.body.cell
                                                               .fontSize,
+                                                      fontWeight:
+                                                          tableToken.dataTable
+                                                              .table.body.cell
+                                                              .fontWeight,
                                                   }}
                                               >
                                                   <ActionsCell
@@ -932,7 +942,7 @@ const TableBody = forwardRef<
                                       {/* Column Manager - Always rightmost (empty cell in body, actual manager in header) */}
                                       {enableColumnManager && (
                                           <StyledTableCell
-                                              $width="50px"
+                                              $width="48px"
                                               $customBackgroundColor={
                                                   rowStyling.backgroundColor
                                               }
@@ -940,11 +950,19 @@ const TableBody = forwardRef<
                                                   hasCustomBackground
                                               }
                                               style={{
-                                                  minWidth: '50px',
-                                                  maxWidth: '50px',
+                                                  minWidth:
+                                                      FOUNDATION_THEME.unit[48],
+                                                  maxWidth:
+                                                      FOUNDATION_THEME.unit[48],
                                                   fontSize:
                                                       tableToken.dataTable.table
                                                           .body.cell.fontSize,
+                                                  position: 'sticky',
+                                                  right: 0,
+                                                  backgroundColor:
+                                                      rowStyling.backgroundColor ||
+                                                      foundationToken.colors
+                                                          .gray[0],
                                               }}
                                           />
                                       )}
