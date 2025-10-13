@@ -503,9 +503,7 @@ const SidebarDemo = () => {
                 },
                 {
                     label: 'Skeleton Loading States',
-                    leftSlot: (
-                        <Box style={{ width: '16px', height: '16px' }} />
-                    ),
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
                     onClick: () => setActiveComponent('skeleton'),
                 },
             ],
