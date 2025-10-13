@@ -11,7 +11,16 @@ import { FOUNDATION_THEME } from '../../tokens'
 
 const StepComponent = forwardRef<HTMLDivElement, StepProps>(
     (
-        { step, stepIndex, isCompleted, isCurrent, isLast, onClick, clickable },
+        {
+            step,
+            stepIndex,
+            isCompleted,
+            isCurrent,
+            isLast,
+            onClick,
+            clickable,
+            currentSubsteps,
+        },
         ref
     ) => {
         const stepperTokens = useResponsiveTokens<StepperTokensType>('STEPPER')
@@ -21,9 +30,11 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
         const [descriptionHeight, setDescriptionHeight] = useState<number>(0)
 
         useEffect(() => {
-            if (verticalLineRef.current && descriptionRef.current) {
-                setVerticalLineHeight(verticalLineRef.current?.clientHeight)
-                setDescriptionHeight(descriptionRef.current?.clientHeight)
+            if (verticalLineRef.current || descriptionRef.current) {
+                setVerticalLineHeight(
+                    verticalLineRef.current?.clientHeight || 0
+                )
+                setDescriptionHeight(descriptionRef.current?.clientHeight || 0)
             }
             if (step.isExpanded) {
                 setIsExpanded(true)
@@ -331,26 +342,53 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
                         step &&
                         step?.substeps &&
                         step?.substeps.length > 0 &&
-                        step?.substeps.map((subStep, index) => (
-                            <Block
-                                key={index}
-                                marginTop={
-                                    toPixels(verticalLineHeight) +
-                                    (index === 0 ? 10 : -2) +
-                                    (step?.description && index === 0
-                                        ? -(descriptionHeight ?? 0)
-                                        : 0)
-                                }
-                            >
-                                <Text
-                                    fontSize={12}
-                                    fontWeight={500}
-                                    color={FOUNDATION_THEME.colors.gray[500]}
+                        step?.substeps.map((subStep, index) => {
+                            const substepIndex = index + 1
+                            const currentSubstepIndex =
+                                currentSubsteps?.[step.id] || 1
+
+                            const isSubstepCurrent =
+                                isCurrent &&
+                                substepIndex === currentSubstepIndex
+                            const isSubstepCompleted =
+                                substepIndex < currentSubstepIndex
+                            const isSubstepPending =
+                                substepIndex > currentSubstepIndex
+                            const isSubstepDisabled =
+                                step.disabled || subStep.disabled
+
+                            let textColor = FOUNDATION_THEME.colors.gray[500]
+                            if (isSubstepDisabled) {
+                                textColor = FOUNDATION_THEME.colors.gray[300]
+                            } else if (isSubstepCompleted) {
+                                textColor = FOUNDATION_THEME.colors.primary[500]
+                            } else if (isSubstepCurrent) {
+                                textColor = FOUNDATION_THEME.colors.primary[500]
+                            } else if (isSubstepPending) {
+                                textColor = FOUNDATION_THEME.colors.gray[400]
+                            }
+
+                            return (
+                                <Block
+                                    key={index}
+                                    marginTop={
+                                        toPixels(verticalLineHeight) +
+                                        (index === 0 ? 10 : -2) +
+                                        (step?.description && index === 0
+                                            ? -(descriptionHeight || 0)
+                                            : 0)
+                                    }
                                 >
-                                    {subStep.title}
-                                </Text>
-                            </Block>
-                        ))}
+                                    <Text
+                                        fontSize={12}
+                                        fontWeight={500}
+                                        color={textColor}
+                                    >
+                                        {subStep.title}
+                                    </Text>
+                                </Block>
+                            )
+                        })}
                 </Block>
             </Block>
         )
@@ -358,7 +396,17 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
 )
 
 const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
-    ({ steps, currentStep, onStepChange, clickable, ...htmlProps }, ref) => {
+    (
+        {
+            steps,
+            currentStep,
+            onStepChange,
+            clickable,
+            currentSubsteps,
+            ...htmlProps
+        },
+        ref
+    ) => {
         const handleStepClick = useCallback(
             (stepIndex: number) => {
                 if (onStepChange) {
@@ -390,6 +438,7 @@ const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
                         isLast={index === steps.length - 1}
                         onClick={handleStepClick}
                         clickable={clickable}
+                        currentSubsteps={currentSubsteps}
                     />
                 ))}
             </Block>

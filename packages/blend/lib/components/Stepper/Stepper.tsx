@@ -12,6 +12,7 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
             onStepChange,
             clickable = false,
             stepperType = StepperType.HORIZONTAL,
+            currentSubsteps,
             ...htmlProps
         },
         ref
@@ -33,6 +34,7 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
                     currentStep={currentStep}
                     onStepChange={handleStepClick}
                     clickable={clickable}
+                    currentSubsteps={currentSubsteps}
                     {...htmlProps}
                 />
             )
@@ -45,6 +47,7 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
                 currentStep={currentStep}
                 onStepChange={handleStepClick}
                 clickable={clickable}
+                currentSubsteps={currentSubsteps}
                 {...htmlProps}
             />
         )

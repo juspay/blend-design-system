@@ -22,14 +22,14 @@ export type StepperProps = {
 }
 
 export type SubStep = {
-    id: string
+    id: number
     title: string
     status?: StepState
     disabled?: boolean
 }
 
 export type Step = {
-    id: string
+    id: number
     title: string
     status?: StepState
     disabled?: boolean

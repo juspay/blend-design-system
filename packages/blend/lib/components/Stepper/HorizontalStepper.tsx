@@ -19,6 +19,7 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
             isLast,
             onClick,
             clickable,
+            currentSubsteps,
         },
         ref
     ) => {
@@ -30,6 +31,9 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
             if (isCompleted) return StepState.COMPLETED
             if (isCurrent) return StepState.CURRENT
             return StepState.PENDING
+        }
+        {
+            console.log(currentSubsteps)
         }
 
         const stepState = getStepState()
@@ -246,7 +250,17 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
 )
 
 const HorizontalStepper = forwardRef<HTMLDivElement, StepperProps>(
-    ({ steps, currentStep, onStepChange, clickable, ...htmlProps }, ref) => {
+    (
+        {
+            steps,
+            currentStep,
+            onStepChange,
+            clickable,
+            currentSubsteps,
+            ...htmlProps
+        },
+        ref
+    ) => {
         const handleStepClick = useCallback(
             (stepIndex: number) => {
                 if (onStepChange) {
@@ -271,12 +285,13 @@ const HorizontalStepper = forwardRef<HTMLDivElement, StepperProps>(
                         key={step.id}
                         step={step}
                         stepIndex={index}
-                        isCompleted={index < currentStep}
-                        isCurrent={index === currentStep}
-                        isFirst={index === 0}
-                        isLast={index === steps.length - 1}
+                        isCompleted={index + 1 < currentStep}
+                        isCurrent={index + 1 === currentStep}
+                        isFirst={index + 1 === 0}
+                        isLast={index + 1 === steps.length}
                         onClick={handleStepClick}
                         clickable={clickable}
+                        currentSubsteps={currentSubsteps}
                     />
                 ))}
             </Block>

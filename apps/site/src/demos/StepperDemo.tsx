@@ -2,7 +2,6 @@ import { useState } from 'react'
 import {
     Stepper,
     StepperType,
-    StepState,
     Step,
 } from '../../../../packages/blend/lib/components/Stepper'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
@@ -14,7 +13,7 @@ const StepperDemo = () => {
     // Playground state
     const [playgroundCurrentStep, setPlaygroundCurrentStep] = useState(1)
     const [playgroundClickable, setPlaygroundClickable] = useState(false)
-    const [playgroundStepCount, setPlaygroundStepCount] = useState('5')
+    const [playgroundStepCount, setPlaygroundStepCount] = useState('6')
     const [playgroundStepperType, setPlaygroundStepperType] = useState(
         StepperType.HORIZONTAL
     )
@@ -26,12 +25,6 @@ const StepperDemo = () => {
         { value: StepperType.VERTICAL, label: 'Vertical' },
     ]
 
-    // Example states
-    const [orderStep, setOrderStep] = useState(2)
-    const [accountStep, setAccountStep] = useState(0)
-    const [projectStep, setProjectStep] = useState(3)
-    const [verticalSubstepStep, setVerticalSubstepStep] = useState(3)
-
     // Step count options
     const stepCountOptions = [
         { value: '3', label: '3 Steps' },
@@ -40,67 +33,10 @@ const StepperDemo = () => {
         { value: '6', label: '6 Steps' },
     ]
 
-    // Steps with substeps example
-    const stepsWithSubsteps: Step[] = [
-        {
-            id: '1',
-            title: 'Stepper Title',
-            status: StepState.COMPLETED,
-        },
-        {
-            id: '2',
-            title: 'Stepper Title',
-            status: StepState.COMPLETED,
-        },
-        {
-            id: '3',
-            title: 'Stepper Title',
-            status: StepState.COMPLETED,
-        },
-        {
-            id: '4',
-            title: 'Stepper Title',
-            status: StepState.CURRENT,
-            isExpandable: true,
-            isExpanded: true,
-            substeps: [
-                {
-                    id: '4-1',
-                    title: 'Substep 1',
-                    status: StepState.CURRENT,
-                },
-                {
-                    id: '4-2',
-                    title: 'Substep 2',
-                    status: StepState.PENDING,
-                },
-            ],
-        },
-        {
-            id: '5',
-            title: 'Stepper Title',
-            status: StepState.PENDING,
-        },
-        {
-            id: '6',
-            title: 'Stepper Title',
-            status: StepState.PENDING,
-        },
-        {
-            id: '7',
-            title: 'Stepper Title',
-            status: StepState.PENDING,
-        },
-        {
-            id: '8',
-            title: 'Stepper Title',
-            status: StepState.PENDING,
-        },
-    ]
-
     // Generate playground steps
     const generatePlaygroundSteps = () => {
         const count = parseInt(playgroundStepCount)
+
         const icons = [
             <User size={16} />,
             <Settings size={16} />,
@@ -111,7 +47,7 @@ const StepperDemo = () => {
         ]
 
         const steps: Step[] = Array.from({ length: count }, (_, index) => ({
-            id: `${index + 1}`,
+            id: index + 1,
             title: `${playgroundStepTitle} ${index + 1}`,
             icon: playgroundHasIcons ? icons[index % icons.length] : undefined,
             description: playgroundHasTooltips
@@ -127,9 +63,9 @@ const StepperDemo = () => {
                 isExpandable: true,
                 isExpanded: true,
                 substeps: [
-                    { id: '2-1', title: 'Substep A' },
-                    { id: '2-2', title: 'Substep B' },
-                    { id: '2-3', title: 'Substep C' },
+                    { id: 1, title: 'Substep A' },
+                    { id: 2, title: 'Substep B' },
+                    { id: 3, title: 'Substep C' },
                 ],
             }
             steps[2] = {
@@ -137,19 +73,19 @@ const StepperDemo = () => {
                 isExpandable: true,
                 isExpanded: true,
                 substeps: [
-                    { id: '3-1', title: 'Substep A' },
-                    { id: '3-2', title: 'Substep B' },
-                    { id: '3-3', title: 'Substep C' },
+                    { id: 1, title: 'Substep A' },
+                    { id: 2, title: 'Substep B' },
+                    { id: 3, title: 'Substep C' },
                 ],
             }
             steps[4] = {
-                ...steps[3],
+                ...steps[4],
                 isExpandable: true,
                 isExpanded: true,
                 substeps: [
-                    { id: '4-1', title: 'Substep A' },
-                    { id: '4-2', title: 'Substep B' },
-                    { id: '4-3', title: 'Substep C' },
+                    { id: 1, title: 'Substep A' },
+                    { id: 2, title: 'Substep B' },
+                    { id: 3, title: 'Substep C' },
                 ],
             }
         }
@@ -157,117 +93,32 @@ const StepperDemo = () => {
         return steps
     }
 
-    // Predefined step sets
-    const orderSteps = [
-        {
-            id: '1',
-            title: 'Cart Review',
-            icon: <Package size={16} />,
-            description: 'Review your cart items and quantities',
-        },
-        {
-            id: '2',
-            title: 'Shipping Info',
-            icon: <Truck size={16} />,
-            description: 'Enter shipping address and delivery preferences',
-            isExpandable: true,
-            isExpanded: true,
-            substeps: [
-                { id: '2-1', title: 'Address Details' },
-                { id: '2-2', title: 'Delivery Options' },
-                { id: '2-3', title: 'Contact Preferences' },
-            ],
-        },
-        {
-            id: '3',
-            title: 'Payment',
-            icon: <CreditCard size={16} />,
-            description: 'Choose payment method and billing information',
-        },
-        {
-            id: '4',
-            title: 'Confirmation',
-            icon: <Check size={16} />,
-            description: 'Review and confirm your order',
-        },
-    ]
-
-    const accountSteps = [
-        {
-            id: '1',
-            title: 'Personal Info',
-            icon: <User size={16} />,
-            description: 'Enter your basic personal information',
-        },
-        {
-            id: '2',
-            title: 'Account Setup',
-            icon: <Settings size={16} />,
-            description: 'Set up your account preferences and security',
-        },
-        {
-            id: '3',
-            title: 'Verification',
-            description: 'Verify your email and phone number',
-        },
-    ]
-
-    const projectSteps = [
-        {
-            id: '1',
-            title: 'Project Details',
-            description: 'Define project scope and requirements',
-        },
-        {
-            id: '2',
-            title: 'Team Setup',
-            description: 'Add team members and assign roles',
-        },
-        {
-            id: '3',
-            title: 'Configuration',
-            description: 'Configure project settings and preferences',
-        },
-        {
-            id: '4',
-            title: 'Review',
-            status: StepState.DISABLED,
-            description: 'Review all settings before launching',
-        },
-        {
-            id: '5',
-            title: 'Launch',
-            status: StepState.DISABLED,
-            description: 'Launch your project and start collaborating',
-        },
-    ]
-
     // Simple linear progression with substeps (controller)
     const [linearStep, setLinearStep] = useState(0)
     const [linearSubs, setLinearSubs] = useState<Record<string, number>>({})
     const linearSteps = [
-        { id: '1', title: 'Step 1' },
+        { id: 1, title: 'Step 1' },
         {
-            id: '2',
+            id: 2,
             title: 'Step 2',
             isExpandable: true,
             isExpanded: true,
             substeps: [
-                { id: '2-1', title: 'Substep 2.1' },
-                { id: '2-2', title: 'Substep 2.2' },
-                { id: '2-3', title: 'Substep 2.3' },
+                { id: 1, title: 'Substep 2.1' },
+                { id: 2, title: 'Substep 2.2' },
+                { id: 3, title: 'Substep 2.3' },
             ],
         },
-        { id: '3', title: 'Step 3' },
-        { id: '4', title: 'Step 4' },
+        { id: 3, title: 'Step 3' },
+        { id: 4, title: 'Step 4' },
     ] as Step[]
 
     const handleNext = () => {
         const step = linearSteps[linearStep]
         const subs = step?.substeps || []
         if (subs.length > 0) {
-            const curr = linearSubs[step.id] ?? 0
-            const last = subs.length - 1
+            const curr = linearSubs[step.id] || 1
+            const last = subs.length
             if (curr < last) {
                 setLinearSubs((prev) => ({ ...prev, [step.id]: curr + 1 }))
                 return
@@ -280,14 +131,16 @@ const StepperDemo = () => {
         const step = linearSteps[linearStep]
         const subs = step?.substeps || []
         if (subs.length > 0) {
-            const curr = linearSubs[step.id] ?? 0
-            if (curr > 0) {
+            const curr = linearSubs[step.id] || 1
+            if (curr > 1) {
                 setLinearSubs((prev) => ({ ...prev, [step.id]: curr - 1 }))
                 return
             }
         }
         setLinearStep((s) => Math.max(s - 1, 0))
     }
+
+    console.log({ linearSubs })
 
     return (
         <div className="p-8 space-y-12">
@@ -349,41 +202,48 @@ const StepperDemo = () => {
                         />
                     </div>
 
-                    <div className="min-h-32 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
-                        <Stepper
-                            stepperType={playgroundStepperType}
-                            steps={generatePlaygroundSteps()}
-                            currentStep={playgroundCurrentStep}
-                            onStepChange={(index) =>
-                                setPlaygroundCurrentStep(index)
-                            }
-                            clickable={playgroundClickable}
-                        />
+                    <Stepper
+                        stepperType={playgroundStepperType}
+                        steps={generatePlaygroundSteps()}
+                        currentStep={playgroundCurrentStep}
+                        onStepChange={(index) =>
+                            setPlaygroundCurrentStep(index)
+                        }
+                        clickable={playgroundClickable}
+                    />
+
+                    <div className="rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
+                        {playgroundCurrentStep === 1 && <h1>Step 1</h1>}
+                        {playgroundCurrentStep === 2 && <h1>Step 2</h1>}
+                        {playgroundCurrentStep === 3 && <h1>Step 3</h1>}
+                        {playgroundCurrentStep === 4 && <h1>Step 4</h1>}
+                        {playgroundCurrentStep === 5 && <h1>Step 5</h1>}
+                        {playgroundCurrentStep === 6 && <h1>Step 6</h1>}
+                        {playgroundCurrentStep === 7 && <h1>Completed !</h1>}
                     </div>
 
                     <div className="flex justify-center space-x-4">
                         <button
                             onClick={() =>
-                                setPlaygroundCurrentStep((s) =>
-                                    Math.max(s - 1, 0)
+                                setPlaygroundCurrentStep((index) =>
+                                    Math.max(index - 1, 0)
                                 )
                             }
-                            disabled={playgroundCurrentStep === 0}
+                            disabled={playgroundCurrentStep === 1}
                             className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Previous
                         </button>
                         <button
                             onClick={() =>
-                                setPlaygroundCurrentStep((s) =>
-                                    Math.min(
-                                        s + 1,
-                                        parseInt(playgroundStepCount)
-                                    )
+                                setPlaygroundCurrentStep((index) =>
+                                    parseInt(playgroundStepCount) + 1 > index
+                                        ? index + 1
+                                        : index
                                 )
                             }
                             disabled={
-                                playgroundCurrentStep ===
+                                playgroundCurrentStep - 1 ===
                                 parseInt(playgroundStepCount)
                             }
                             className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
@@ -391,7 +251,7 @@ const StepperDemo = () => {
                             Next
                         </button>
                         <button
-                            onClick={() => setPlaygroundCurrentStep(0)}
+                            onClick={() => setPlaygroundCurrentStep(1)}
                             className="px-4 py-2 bg-gray-500 text-white rounded"
                         >
                             Reset
@@ -410,332 +270,99 @@ const StepperDemo = () => {
                             {JSON.stringify(linearSubs)}
                         </h3>
                         <div className="p-6 border border-gray-200 rounded-lg">
-                            <Stepper
-                                stepperType={StepperType.VERTICAL}
-                                steps={linearSteps}
-                                currentStep={linearStep}
-                                currentSubsteps={linearSubs}
-                                clickable={true}
-                                onStepChange={(next) => setLinearStep(next)}
-                            />
-                            <div className="mt-6 flex gap-3">
-                                <button
-                                    onClick={handlePrev}
-                                    className="px-3 py-2 bg-gray-200 rounded disabled:opacity-50"
-                                    disabled={
-                                        linearStep === 0 &&
-                                        (linearSubs[linearSteps[0].id] ?? 0) ===
-                                            0
-                                    }
-                                >
-                                    Prev
-                                </button>
-                                <button
-                                    onClick={handleNext}
-                                    className="px-3 py-2 bg-blue-600 text-white rounded"
-                                >
-                                    Next
-                                </button>
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <Stepper
+                                        stepperType={StepperType.VERTICAL}
+                                        steps={linearSteps}
+                                        currentStep={linearStep}
+                                        currentSubsteps={linearSubs}
+                                        clickable={true}
+                                        onStepChange={(next) =>
+                                            setLinearStep(next)
+                                        }
+                                    />
+                                    <div className="mt-6 flex gap-3">
+                                        <button
+                                            onClick={handlePrev}
+                                            className="px-3 py-2 bg-gray-200 rounded disabled:opacity-50"
+                                            disabled={
+                                                linearStep === 0 &&
+                                                (linearSubs[
+                                                    linearSteps[0].id
+                                                ] ?? 0) === 0
+                                            }
+                                        >
+                                            Prev
+                                        </button>
+                                        <button
+                                            onClick={handleNext}
+                                            className="px-3 py-2 bg-blue-600 text-white rounded"
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="p-6 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-4 text-lg">
+                                        {linearStep === 0 && 'Step 1 Content'}
+                                        {linearStep === 1 &&
+                                            !linearSubs[2] &&
+                                            'Step 2 - Substep 2.1 Content'}
+                                        {linearStep === 1 &&
+                                            linearSubs[2] === 2 &&
+                                            'Step 2 - Substep 2.2 Content'}
+                                        {linearStep === 1 &&
+                                            linearSubs[2] === 3 &&
+                                            'Step 2 - Substep 2.3 Content'}
+                                        {linearStep === 2 && 'Step 3 Content'}
+                                        {linearStep === 3 && 'Step 4 Content'}
+                                    </h4>
+                                    <div className="text-sm text-gray-600">
+                                        {linearStep === 0 && (
+                                            <p>
+                                                This is the content for Step 1.
+                                                Click any step to view its
+                                                content.
+                                            </p>
+                                        )}
+                                        {linearStep === 1 && !linearSubs[2] && (
+                                            <p>
+                                                This is the content for Substep
+                                                2.1. Use Next/Prev to navigate
+                                                through substeps.
+                                            </p>
+                                        )}
+                                        {linearStep === 1 &&
+                                            linearSubs[2] === 2 && (
+                                                <p>
+                                                    This is the content for
+                                                    Substep 2.2. You can click
+                                                    on any step to jump to it.
+                                                </p>
+                                            )}
+                                        {linearStep === 1 &&
+                                            linearSubs[2] === 3 && (
+                                                <p>
+                                                    This is the content for
+                                                    Substep 2.3. This is the
+                                                    last substep of Step 2.
+                                                </p>
+                                            )}
+                                        {linearStep === 2 && (
+                                            <p>
+                                                This is the content for Step 3.
+                                            </p>
+                                        )}
+                                        {linearStep === 3 && (
+                                            <p>
+                                                This is the content for Step 4.
+                                                This is the final step.
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            E-commerce Order Flow
-                        </h3>
-                        <div className="p-6 border border-gray-200 rounded-lg">
-                            <Stepper
-                                steps={orderSteps}
-                                currentStep={orderStep}
-                                onStepChange={(index) => setOrderStep(index)}
-                                clickable={true}
-                                stepperType={StepperType.VERTICAL}
-                            />
-                            <div className="mt-6 flex space-x-4">
-                                <button
-                                    onClick={() =>
-                                        setOrderStep((s) => Math.max(s - 1, 0))
-                                    }
-                                    disabled={orderStep === 0}
-                                    className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-                                >
-                                    Back
-                                </button>
-                                <button
-                                    onClick={() =>
-                                        setOrderStep((s) =>
-                                            Math.min(
-                                                s + 1,
-                                                orderSteps.length - 1
-                                            )
-                                        )
-                                    }
-                                    disabled={
-                                        orderStep === orderSteps.length - 1
-                                    }
-                                    className="px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50"
-                                >
-                                    Continue
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Account Registration
-                        </h3>
-                        <div className="p-6 border border-gray-200 rounded-lg">
-                            <Stepper
-                                steps={accountSteps}
-                                currentStep={accountStep}
-                                onStepChange={(index) => setAccountStep(index)}
-                                clickable={true}
-                            />
-                            <div className="mt-6 flex space-x-4">
-                                <button
-                                    onClick={() =>
-                                        setAccountStep((s) =>
-                                            Math.max(s - 1, 0)
-                                        )
-                                    }
-                                    disabled={accountStep === 0}
-                                    className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-                                >
-                                    Previous
-                                </button>
-                                <button
-                                    onClick={() =>
-                                        setAccountStep((s) =>
-                                            Math.min(
-                                                s + 1,
-                                                accountSteps.length - 1
-                                            )
-                                        )
-                                    }
-                                    disabled={
-                                        accountStep === accountSteps.length - 1
-                                    }
-                                    className="px-4 py-2 bg-purple-600 text-white rounded disabled:opacity-50"
-                                >
-                                    {accountStep === accountSteps.length - 1
-                                        ? 'Complete'
-                                        : 'Next'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Project Setup with Disabled Steps
-                        </h3>
-                        <div className="p-6 border border-gray-200 rounded-lg">
-                            <Stepper
-                                steps={projectSteps}
-                                currentStep={projectStep}
-                                onStepChange={(index) => setProjectStep(index)}
-                                clickable={false}
-                            />
-                            <div className="mt-6 flex space-x-4">
-                                <button
-                                    onClick={() =>
-                                        setProjectStep((s) =>
-                                            Math.max(s - 1, 0)
-                                        )
-                                    }
-                                    disabled={projectStep === 0}
-                                    className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-                                >
-                                    Back
-                                </button>
-                                <button
-                                    onClick={() =>
-                                        setProjectStep((s) =>
-                                            Math.min(s + 1, 2)
-                                        )
-                                    } // Only allow up to step 2 (Configuration)
-                                    disabled={projectStep >= 2}
-                                    className="px-4 py-2 bg-orange-600 text-white rounded disabled:opacity-50"
-                                >
-                                    Next
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* State Examples */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Step States</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">All Completed</h3>
-                        <div className="p-4 border border-gray-200 rounded-lg">
-                            <Stepper
-                                steps={[
-                                    {
-                                        id: '1',
-                                        title: 'Setup',
-                                        description: 'Initial setup completed',
-                                    },
-                                    {
-                                        id: '2',
-                                        title: 'Configuration',
-                                        description: 'Configuration completed',
-                                    },
-                                    {
-                                        id: '3',
-                                        title: 'Testing',
-                                        description: 'Testing completed',
-                                    },
-                                    {
-                                        id: '4',
-                                        title: 'Launch',
-                                        description: 'Successfully launched',
-                                    },
-                                ]}
-                                currentStep={4}
-                                clickable={true}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Mixed States</h3>
-                        <div className="p-4 border border-gray-200 rounded-lg">
-                            <Stepper
-                                steps={[
-                                    { id: '1', title: 'Planning' },
-                                    { id: '2', title: 'Development' },
-                                    {
-                                        id: '3',
-                                        title: 'Testing',
-                                        status: StepState.DISABLED,
-                                    },
-                                    {
-                                        id: '4',
-                                        title: 'Deployment',
-                                        status: StepState.DISABLED,
-                                    },
-                                ]}
-                                currentStep={1}
-                                clickable={false}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Vertical Stepper with Substeps */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">
-                    Vertical Stepper with Substeps
-                </h2>
-                <div className="border border-gray-200 rounded-lg p-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <h4 className="font-medium mb-3">Example</h4>
-                            <Stepper
-                                steps={stepsWithSubsteps}
-                                currentStep={verticalSubstepStep}
-                                onStepChange={setVerticalSubstepStep}
-                                clickable={false}
-                                stepperType={StepperType.VERTICAL}
-                            />
-                        </div>
-                        <div>
-                            <h4 className="font-medium mb-3">Data Structure</h4>
-                            <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-96">
-                                {`const stepsWithSubsteps: Step[] = [
-  {
-    id: "1",
-    title: "Stepper Title",
-    status: StepState.COMPLETED
-  },
-  {
-    id: "2", 
-    title: "Stepper Title",
-    status: StepState.COMPLETED
-  },
-  {
-    id: "3",
-    title: "Stepper Title", 
-    status: StepState.COMPLETED
-  },
-  {
-    id: "4",
-    title: "Stepper Title",
-    status: StepState.CURRENT,
-    isExpandable: true,
-    isExpanded: true,
-    substeps: [
-      {
-        id: "4-1",
-        title: "Substep 1",
-        status: StepState.CURRENT
-      },
-      {
-        id: "4-2", 
-        title: "Substep 2",
-        status: StepState.PENDING
-      }
-    ]
-  },
-  {
-    id: "5",
-    title: "Stepper Title",
-    status: StepState.PENDING
-  }
-  // ... more steps
-]`}
-                            </pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Usage Guidelines */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Usage Guidelines</h2>
-                <div className="prose max-w-none">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="p-6 bg-green-50 border border-green-200 rounded-lg">
-                            <h4 className="text-green-800 font-semibold mb-3">
-                                ✅ Best Practices
-                            </h4>
-                            <ul className="text-green-700 space-y-2 text-sm">
-                                <li>Use clear, concise step titles</li>
-                                <li>
-                                    Provide helpful tooltips for additional
-                                    context
-                                </li>
-                                <li>
-                                    Enable clickable navigation when appropriate
-                                </li>
-                                <li>
-                                    Use icons to enhance visual understanding
-                                </li>
-                                <li>
-                                    Keep the number of steps reasonable (3-6)
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="p-6 bg-red-50 border border-red-200 rounded-lg">
-                            <h4 className="text-red-800 font-semibold mb-3">
-                                ❌ Avoid
-                            </h4>
-                            <ul className="text-red-700 space-y-2 text-sm">
-                                <li>Too many steps (overwhelming users)</li>
-                                <li>Ambiguous or unclear step titles</li>
-                                <li>Inconsistent step naming conventions</li>
-                                <li>Missing feedback for completed steps</li>
-                                <li>
-                                    Allowing navigation to incomplete
-                                    prerequisites
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>
