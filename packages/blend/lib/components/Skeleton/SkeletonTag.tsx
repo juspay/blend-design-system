@@ -8,17 +8,17 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 const SkeletonTag = forwardRef<HTMLDivElement, SkeletonTagProps>(
     (
         {
-            variant = 'pulse',
+            skeletonVariant = 'pulse',
             loading = true,
-            tagVariant = TagVariant.SUBTLE,
+            text,
+            variant = TagVariant.SUBTLE,
             color = TagColor.PRIMARY,
             size = TagSize.SM,
             shape = TagShape.SQUARICAL,
-            width,
-            text,
-            hasLeftSlot = false,
-            hasRightSlot = false,
+            leftSlot,
+            rightSlot,
             splitTagPosition,
+            width,
             ...rest
         },
         ref
@@ -60,7 +60,7 @@ const SkeletonTag = forwardRef<HTMLDivElement, SkeletonTagProps>(
                 gap: tagTokens.gap[size as keyof typeof tagTokens.gap],
                 height: tagTokens.height[size as keyof typeof tagTokens.height],
                 // Mirror border styling
-                borderWidth: `${tagTokens.borderWidth[tagVariant as keyof typeof tagTokens.borderWidth][color as keyof typeof tagTokens.borderWidth.subtle]}px`,
+                borderWidth: `${tagTokens.borderWidth[variant as keyof typeof tagTokens.borderWidth][color as keyof typeof tagTokens.borderWidth.subtle]}px`,
             }
         }
 
@@ -75,37 +75,51 @@ const SkeletonTag = forwardRef<HTMLDivElement, SkeletonTagProps>(
                 return 'fit-content'
             }
 
-            // Estimate width based on text length and tag size
+            // Get more accurate character width based on font size from tokens
             const getCharacterWidth = () => {
-                switch (size) {
-                    case TagSize.XS:
-                        return 6 // ~6px per character for xs
-                    case TagSize.SM:
-                        return 6 // ~6px per character for sm
-                    case TagSize.MD:
-                        return 7 // ~7px per character for md
-                    case TagSize.LG:
-                        return 7 // ~7px per character for lg
-                    default:
-                        return 6
-                }
+                const fontSize =
+                    tagTokens.font[size as keyof typeof tagTokens.font].fontSize
+                const fontSizeNum = parseInt(String(fontSize).replace('px', ''))
+                // More accurate character width estimation based on actual font size
+                // Using a ratio of ~0.6 (average character width to font size ratio for most fonts)
+                return fontSizeNum * 0.6
             }
 
-            const slotWidth = 12 // Standard slot width from tokens
+            // Get actual slot size from tokens and icon size based on tag size (matching TagDemo)
+            const getSlotWidth = () => {
+                const baseSlotSize = parseInt(
+                    String(
+                        tagTokens.slot.size[
+                            size as keyof typeof tagTokens.slot.size
+                        ]
+                    ).replace('px', '')
+                )
+                // Use icon sizes that match TagDemo: XS=10, SM=12, MD=14, LG=16
+                const iconSizes = {
+                    [TagSize.XS]: 10,
+                    [TagSize.SM]: 12,
+                    [TagSize.MD]: 14,
+                    [TagSize.LG]: 16,
+                }
+                return iconSizes[size] || baseSlotSize
+            }
+
+            const slotWidth = getSlotWidth()
             const slotGap =
-                hasLeftSlot || hasRightSlot
+                leftSlot || rightSlot
                     ? parseInt(
                           String(
                               tagTokens.gap[size as keyof typeof tagTokens.gap]
-                          )
+                          ).replace('px', '')
                       )
                     : 0
 
+            // Calculate text width
             let estimatedWidth = text.length * getCharacterWidth()
 
-            // Add slot widths and gaps
-            if (hasLeftSlot) estimatedWidth += slotWidth + slotGap
-            if (hasRightSlot) estimatedWidth += slotWidth + slotGap
+            // Add slot widths and gaps (more accurate calculation)
+            if (leftSlot) estimatedWidth += slotWidth + slotGap
+            if (rightSlot) estimatedWidth += slotWidth + slotGap
 
             // Extract horizontal padding from padding string
             const paddingValues = String(tagStyles.padding).split(' ')
@@ -117,10 +131,25 @@ const SkeletonTag = forwardRef<HTMLDivElement, SkeletonTagProps>(
             // Add padding to the estimated width
             estimatedWidth += horizontalPadding
 
-            // Ensure minimum width
-            const minWidth = 40 // Minimum tag width
+            // Dynamic minimum width based on tag size
+            const getMinWidth = () => {
+                switch (size) {
+                    case TagSize.XS:
+                        return 32
+                    case TagSize.SM:
+                        return 36
+                    case TagSize.MD:
+                        return 40
+                    case TagSize.LG:
+                        return 48
+                    default:
+                        return 40
+                }
+            }
 
-            return Math.max(estimatedWidth, minWidth) + 'px'
+            const minWidth = getMinWidth()
+
+            return Math.max(Math.round(estimatedWidth), minWidth) + 'px'
         }
 
         const calculatedWidth = calculateDynamicWidth()
@@ -128,7 +157,7 @@ const SkeletonTag = forwardRef<HTMLDivElement, SkeletonTagProps>(
         return (
             <Skeleton
                 ref={ref}
-                variant={variant}
+                variant={skeletonVariant}
                 loading={loading}
                 width={calculatedWidth}
                 height={tagStyles.height}

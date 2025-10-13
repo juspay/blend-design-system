@@ -1,22 +1,20 @@
 import React, { useState } from 'react'
-import { Skeleton } from '../../../../packages/blend/lib/components/Skeleton'
+
 import {
+    Skeleton,
+    Tag,
+    Button,
+    Avatar,
     TagVariant,
     TagSize,
     TagShape,
     TagColor,
-} from '../../../../packages/blend/lib/components/Tags/types'
-import {
     ButtonType,
     ButtonSize,
-} from '../../../../packages/blend/lib/components/Button/types'
-import { Button } from '../../../../packages/blend/lib/components/Button'
-import { Tag } from '../../../../packages/blend/lib/components/Tags'
-import {
-    Avatar,
     AvatarSize,
     AvatarShape,
-} from '../../../../packages/blend/lib/components/Avatar'
+} from '../../../../packages/blend/lib/main'
+
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import { Star, Download, Settings } from 'lucide-react'
 
@@ -96,7 +94,7 @@ const SkeletonDemo: React.FC = () => {
                                 <Skeleton.Tag
                                     loading={loading}
                                     text="Primary Tag"
-                                    tagVariant={TagVariant.SUBTLE}
+                                    variant={TagVariant.SUBTLE}
                                     color={TagColor.PRIMARY}
                                 />
                                 <Tag
@@ -124,7 +122,7 @@ const SkeletonDemo: React.FC = () => {
                                 <Skeleton.Tag
                                     loading={loading}
                                     text="Success Tag"
-                                    tagVariant={TagVariant.ATTENTIVE}
+                                    variant={TagVariant.ATTENTIVE}
                                     color={TagColor.SUCCESS}
                                 />
                                 <Tag
@@ -152,7 +150,7 @@ const SkeletonDemo: React.FC = () => {
                                 <Skeleton.Tag
                                     loading={loading}
                                     text="Error Tag"
-                                    tagVariant={TagVariant.NO_FILL}
+                                    variant={TagVariant.NO_FILL}
                                     color={TagColor.ERROR}
                                 />
                                 <Tag
@@ -201,19 +199,69 @@ const SkeletonDemo: React.FC = () => {
                                             display: 'flex',
                                             gap: '8px',
                                             alignItems: 'center',
+                                            flexDirection: 'column',
                                         }}
                                     >
-                                        <Skeleton.Tag
-                                            loading={loading}
-                                            text={`${size.toUpperCase()} Tag`}
-                                            size={size}
-                                            color={TagColor.PRIMARY}
-                                        />
-                                        <Tag
-                                            text={`${size.toUpperCase()} Tag`}
-                                            size={size}
-                                            color={TagColor.PRIMARY}
-                                        />
+                                        {/* Short text comparison */}
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                gap: '8px',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            <Skeleton.Tag
+                                                loading={loading}
+                                                text="Tag"
+                                                size={size}
+                                                color={TagColor.PRIMARY}
+                                            />
+                                            <Tag
+                                                text="Tag"
+                                                size={size}
+                                                color={TagColor.PRIMARY}
+                                            />
+                                        </div>
+                                        {/* Medium text comparison */}
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                gap: '8px',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            <Skeleton.Tag
+                                                loading={loading}
+                                                text={`${size.toUpperCase()} Tag`}
+                                                size={size}
+                                                color={TagColor.SUCCESS}
+                                            />
+                                            <Tag
+                                                text={`${size.toUpperCase()} Tag`}
+                                                size={size}
+                                                color={TagColor.SUCCESS}
+                                            />
+                                        </div>
+                                        {/* Long text comparison */}
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                gap: '8px',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            <Skeleton.Tag
+                                                loading={loading}
+                                                text="Long Tag Text Example"
+                                                size={size}
+                                                color={TagColor.WARNING}
+                                            />
+                                            <Tag
+                                                text="Long Tag Text Example"
+                                                size={size}
+                                                color={TagColor.WARNING}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             )
@@ -333,7 +381,7 @@ const SkeletonDemo: React.FC = () => {
                                 <Skeleton.Tag
                                     loading={loading}
                                     text="Starred"
-                                    hasLeftSlot={true}
+                                    leftSlot={<Star size={12} />}
                                     color={TagColor.SUCCESS}
                                 />
                                 <Tag
@@ -361,7 +409,7 @@ const SkeletonDemo: React.FC = () => {
                                 <Skeleton.Tag
                                     loading={loading}
                                     text="Download"
-                                    hasRightSlot={true}
+                                    rightSlot={<Download size={12} />}
                                     color={TagColor.PRIMARY}
                                 />
                                 <Tag
@@ -389,8 +437,8 @@ const SkeletonDemo: React.FC = () => {
                                 <Skeleton.Tag
                                     loading={loading}
                                     text="Settings"
-                                    hasLeftSlot={true}
-                                    hasRightSlot={true}
+                                    leftSlot={<Settings size={12} />}
+                                    rightSlot={<Settings size={12} />}
                                     color={TagColor.NEUTRAL}
                                 />
                                 <Tag
@@ -699,27 +747,36 @@ const SkeletonDemo: React.FC = () => {
                         backgroundColor: '#f8f9fa',
                         borderRadius: '8px',
                         fontFamily: 'monospace',
-                        fontSize: '14px',
+                        fontSize: '12px',
                     }}
                 >
-                    <pre>{`// Modern Compound Component API (Recommended)
+                    <pre>{`// Option 1: Main Library Import (Recommended - All from one place)
+import { 
+  Skeleton, Tag, TagVariant, TagColor 
+} from '@blend/components'
+
 <Skeleton.Tag 
   loading={isLoading} 
   text="Primary Tag" 
-  tagVariant={TagVariant.SUBTLE}
+  variant={TagVariant.SUBTLE}
   color={TagColor.PRIMARY}
-  hasLeftSlot={true}
+  leftSlot={<Star size={12} />}
 />
 
-<Skeleton.Button 
+// Option 2: Direct Skeleton Import (Tree-shaking optimized)
+import { SkeletonTag } from '@blend/components/Skeleton'
+import { TagVariant, TagColor } from '@blend/components'
+
+<SkeletonTag 
   loading={isLoading} 
-  text="Download File"
-  hasLeadingIcon={true}
+  text="Success Tag"
+  variant={TagVariant.ATTENTIVE}
+  color={TagColor.SUCCESS}
 />
 
-<Skeleton.Avatar loading={isLoading} size="md" />
-
-<Skeleton.Card loading={isLoading} />`}</pre>
+// Perfect API compatibility - Same props as Tag component!
+<Skeleton.Tag {...tagProps} loading={isLoading} />
+<Tag {...tagProps} />  // Same exact props`}</pre>
                 </div>
             </section>
 
@@ -745,7 +802,7 @@ const SkeletonDemo: React.FC = () => {
                         </Text>
                         <Skeleton.Tag
                             loading={true}
-                            variant="pulse"
+                            skeletonVariant="pulse"
                             text="Pulse Animation"
                             color={TagColor.PRIMARY}
                         />
@@ -760,7 +817,7 @@ const SkeletonDemo: React.FC = () => {
                         </Text>
                         <Skeleton.Tag
                             loading={true}
-                            variant="wave"
+                            skeletonVariant="wave"
                             text="Wave Animation"
                             color={TagColor.SUCCESS}
                         />
@@ -775,7 +832,7 @@ const SkeletonDemo: React.FC = () => {
                         </Text>
                         <Skeleton.Tag
                             loading={true}
-                            variant="shimmer"
+                            skeletonVariant="shimmer"
                             text="Shimmer Animation"
                             color={TagColor.WARNING}
                         />

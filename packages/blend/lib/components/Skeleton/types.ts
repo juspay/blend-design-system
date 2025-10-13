@@ -48,19 +48,20 @@ export type SkeletonCardProps = BaseSkeletonProps &
         padding?: string | number
     }
 
-export type SkeletonTagProps = BaseSkeletonProps &
+export type SkeletonTagProps = Omit<BaseSkeletonProps, 'variant'> &
     Omit<BlockProps, 'children'> & {
         // Mirror exact Tag component props for perfect token matching
-        tagVariant?: TagVariant
+        text?: string
+        variant?: TagVariant
         color?: TagColor
         size?: TagSize
         shape?: TagShape
-        width?: string | number
+        leftSlot?: React.ReactNode
+        rightSlot?: React.ReactNode
         splitTagPosition?: 'left' | 'right'
-        // Content props for dynamic sizing
-        text?: string
-        hasLeftSlot?: boolean
-        hasRightSlot?: boolean
+        width?: string | number
+        // Skeleton-specific props
+        skeletonVariant?: SkeletonVariant
     }
 
 export { SkeletonVariant, SkeletonShape }
