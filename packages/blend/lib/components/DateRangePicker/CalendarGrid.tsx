@@ -53,8 +53,8 @@ const StyledDayCell = styled(Block)<{
         !props.$isDisabled &&
         `
     &:hover {
-      outline: ${props.$calendarToken.calendar.calendarGrid.day.hover.outline};
-      border-radius: ${props.$calendarToken.calendar.calendarGrid.day.hover.borderRadius};
+      outline: 1px solid #3b82f6;
+      border-radius: 8px;
       z-index: 10;
       position: relative;
     }
@@ -280,8 +280,10 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                         {/* Month Header */}
                         <Block
                             style={{
-                                ...calendarToken.calendar.calendarGrid.month
-                                    .header,
+                                fontSize: '18px',
+                                fontWeight: '600',
+                                color: '#374151',
+                                padding: '0 12px',
                                 flexShrink: 0,
                                 marginBottom: FOUNDATION_THEME.unit[16],
                             }}
@@ -292,8 +294,9 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                         {/* Month Grid */}
                         <Block
                             style={{
-                                ...calendarToken.calendar.calendarGrid.week
-                                    .container,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
                                 flex: 1,
                             }}
                         >
@@ -304,8 +307,11 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                 ) => (
                                     <Block
                                         style={{
-                                            ...calendarToken.calendar
-                                                .calendarGrid.week.row,
+                                            display: 'grid',
+                                            gridTemplateColumns:
+                                                'repeat(7, 40px)',
+                                            padding: '0 18px',
+                                            gap: '0',
                                         }}
                                         key={weekIndex}
                                     >
@@ -318,10 +324,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                     return (
                                                         <Block
                                                             style={{
-                                                                ...calendarToken
-                                                                    .calendar
-                                                                    .calendarGrid
-                                                                    .day.empty,
+                                                                padding:
+                                                                    '10px 8px',
                                                             }}
                                                             key={dayIndex}
                                                         />
@@ -346,10 +350,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                     return (
                                                         <Block
                                                             style={{
-                                                                ...calendarToken
-                                                                    .calendar
-                                                                    .calendarGrid
-                                                                    .day.empty,
+                                                                padding:
+                                                                    '10px 8px',
                                                             }}
                                                             key={dayIndex}
                                                         />
@@ -458,15 +460,27 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         return (
             <Block
                 style={{
-                    ...calendarToken.calendar.calendarGrid.container,
-                    overflow: 'hidden',
+                    maxHeight: '340px',
+                    overflowY: 'auto',
+                    overflow: 'auto',
+                    position: 'relative',
                 }}
                 ref={ref}
             >
                 {/* Day Names Header */}
                 <Block
                     style={{
-                        ...calendarToken.calendar.calendarGrid.week.header,
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(7, 1fr)',
+                        textAlign: 'center',
+                        color: calendarToken.calendar.calendarGrid.week.color,
+                        padding: `0 ${calendarToken.calendar.calendarGrid.week.padding.x}`,
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 10,
+                        backgroundColor: FOUNDATION_THEME.colors.gray[0],
+                        boxShadow:
+                            calendarToken.calendar.calendarGrid.week.boxShadow,
                         borderTopLeftRadius: !showDateTimePicker
                             ? FOUNDATION_THEME.border.radius[8]
                             : '0',
@@ -479,8 +493,15 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                     {dayNames.map((day, index) => (
                         <Block
                             style={{
-                                ...calendarToken.calendar.calendarGrid.week
-                                    .dayName,
+                                padding: `${calendarToken.calendar.calendarGrid.week.padding.y} ${calendarToken.calendar.calendarGrid.week.padding.x}`,
+                                fontSize:
+                                    calendarToken.calendar.calendarGrid.week
+                                        .fontSize,
+                                fontWeight:
+                                    calendarToken.calendar.calendarGrid.week
+                                        .fontWeight,
+                                color: calendarToken.calendar.calendarGrid.week
+                                    .color,
                             }}
                             key={index}
                         >
@@ -492,7 +513,9 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 <Block
                     ref={scrollContainerRef}
                     style={{
-                        ...calendarToken.calendar.calendarGrid.container,
+                        maxHeight: '340px',
+                        overflowY: 'auto',
+                        overflow: 'auto',
                         position: 'relative',
                     }}
                     onScroll={handleScroll}

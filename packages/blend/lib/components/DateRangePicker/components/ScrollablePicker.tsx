@@ -13,10 +13,8 @@ import {
     calculateIndexFromScroll,
 } from '../utils'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { CalendarTokenType } from '../dateRangePicker.tokens'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
-import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import type { ScrollablePickerProps } from '../types'
 
 const { ITEM_HEIGHT, VISIBLE_ITEMS, SCROLL_DEBOUNCE } = MOBILE_PICKER_CONSTANTS
@@ -31,10 +29,6 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
         columnId,
         isDisabled = false,
     }) => {
-        const responsiveTokens =
-            useResponsiveTokens<CalendarTokenType>('CALENDAR')
-        const tokens = responsiveTokens
-
         const scrollRef = useRef<HTMLDivElement>(null)
         const isScrollingRef = useRef(false)
         const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -445,7 +439,8 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                     right="0"
                     height={`${ITEM_HEIGHT}px`}
                     style={{
-                        background: tokens.mobileDrawer.picker.gradients.top,
+                        background:
+                            'linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.2) 80%, transparent 100%)',
                         pointerEvents: 'none',
                         zIndex: 3,
                     }}
@@ -458,7 +453,8 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                     right="0"
                     height={`${ITEM_HEIGHT}px`}
                     style={{
-                        background: tokens.mobileDrawer.picker.gradients.bottom,
+                        background:
+                            'linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.2) 80%, transparent 100%)',
                         pointerEvents: 'none',
                         zIndex: 3,
                     }}
@@ -550,17 +546,9 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                         }}
                     >
                         <PrimitiveText
-                            fontSize={
-                                tokens.mobileDrawer.picker.text.unselected
-                                    .fontSize
-                            }
-                            fontWeight={
-                                tokens.mobileDrawer.picker.text.unselected
-                                    .fontWeight
-                            }
-                            color={
-                                tokens.mobileDrawer.picker.text.unselected.color
-                            }
+                            fontSize="16px"
+                            fontWeight="400"
+                            color="#9ca3af"
                             style={{
                                 textAlign: 'center',
                                 opacity:
@@ -714,18 +702,9 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                             />
                         ) : (
                             <PrimitiveText
-                                fontSize={
-                                    tokens.mobileDrawer.picker.text.selected
-                                        .fontSize
-                                }
-                                fontWeight={
-                                    tokens.mobileDrawer.picker.text.selected
-                                        .fontWeight
-                                }
-                                color={
-                                    tokens.mobileDrawer.picker.text.selected
-                                        .color
-                                }
+                                fontSize="16px"
+                                fontWeight="600"
+                                color="#111827"
                                 style={{
                                     textAlign: 'center',
                                     opacity:
@@ -760,17 +739,9 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                         }}
                     >
                         <PrimitiveText
-                            fontSize={
-                                tokens.mobileDrawer.picker.text.unselected
-                                    .fontSize
-                            }
-                            fontWeight={
-                                tokens.mobileDrawer.picker.text.unselected
-                                    .fontWeight
-                            }
-                            color={
-                                tokens.mobileDrawer.picker.text.unselected.color
-                            }
+                            fontSize="16px"
+                            fontWeight="400"
+                            color="#9ca3af"
                             style={{
                                 textAlign: 'center',
                                 opacity:

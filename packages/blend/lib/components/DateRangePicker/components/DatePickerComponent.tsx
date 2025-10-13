@@ -1,7 +1,6 @@
 import React from 'react'
 import { generatePickerData, createSelectionHandler } from '../utils'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { CalendarTokenType } from '../dateRangePicker.tokens'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import {
@@ -12,7 +11,6 @@ import {
     TabsVariant,
     TabsSize,
 } from '../../Tabs'
-import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import ScrollablePicker from './ScrollablePicker'
 import type { DatePickerComponentProps } from '../types'
 
@@ -28,9 +26,6 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
     setEndDate,
     isDisabled = false,
 }) => {
-    const responsiveTokens = useResponsiveTokens<CalendarTokenType>('CALENDAR')
-    const tokens = responsiveTokens
-
     const renderTabContent = (tabType: 'start' | 'end') => {
         const data = generatePickerData(
             tabType,
@@ -41,12 +36,7 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
 
         return (
             <Block>
-                <Block
-                    display="flex"
-                    paddingX={tokens.mobileDrawer.datePicker.container.padding}
-                    width="100%"
-                    gap={tokens.mobileDrawer.datePicker.container.gap}
-                >
+                <Block display="flex" paddingX="0 16px" width="100%" gap="12px">
                     <Block
                         flexGrow={1}
                         display="flex"
@@ -56,24 +46,18 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                         <Block
                             position="sticky"
                             top="0"
-                            zIndex={tokens.mobileDrawer.header.zIndex}
-                            backgroundColor={
-                                tokens.mobileDrawer.header.backgroundColor
-                            }
-                            paddingBottom={tokens.mobileDrawer.header.padding}
+                            zIndex={5}
+                            backgroundColor="#ffffff"
+                            paddingBottom="12px"
                             width="100%"
                             display="flex"
                             justifyContent="center"
                             alignItems="center"
                         >
                             <PrimitiveText
-                                fontSize={
-                                    tokens.mobileDrawer.header.text.fontSize
-                                }
-                                fontWeight={
-                                    tokens.mobileDrawer.header.text.fontWeight
-                                }
-                                color={tokens.mobileDrawer.header.text.color}
+                                fontSize="16px"
+                                fontWeight="400"
+                                color="#6b7280"
                             >
                                 Year
                             </PrimitiveText>

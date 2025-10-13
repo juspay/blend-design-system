@@ -1688,34 +1688,57 @@ export const calculateDayCellProps = (
     )
 
     const getCellStyles = () => {
-        let styles = { ...calendarToken.calendar.calendarGrid.day.cell }
+        // Base cell styles - hardcoded values for consistent styling
+        let styles: Record<string, unknown> = {
+            cursor: 'pointer',
+            textAlign: 'center',
+            padding: '10px 8px',
+            position: 'relative',
+            fontWeight: '500',
+            boxSizing: 'border-box',
+            outline: '1px solid transparent',
+            fontSize: '16px',
+            lineHeight: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        }
 
+        // Apply state-specific styles with hardcoded values
         if (dateStates.isSingleDate) {
             styles = {
                 ...styles,
-                ...calendarToken.calendar.calendarGrid.day.states.singleDate,
+                backgroundColor: '#3b82f6',
+                borderRadius: '8px',
             }
         } else if (dateStates.isStart) {
             styles = {
                 ...styles,
-                ...calendarToken.calendar.calendarGrid.day.states.startDate,
+                backgroundColor: '#3b82f6',
+                borderTopLeftRadius: '8px',
+                borderBottomLeftRadius: '8px',
             }
         } else if (dateStates.isEnd) {
             styles = {
                 ...styles,
-                ...calendarToken.calendar.calendarGrid.day.states.endDate,
+                backgroundColor: '#3b82f6',
+                borderTopRightRadius: '8px',
+                borderBottomRightRadius: '8px',
             }
         } else if (dateStates.isRangeDay) {
             styles = {
                 ...styles,
-                ...calendarToken.calendar.calendarGrid.day.states.rangeDay,
+                backgroundColor: '#dbeafe',
             }
         }
 
+        // Apply disabled state last to override everything
         if (dateStates.isDisabled) {
             styles = {
                 ...styles,
-                ...calendarToken.calendar.calendarGrid.day.states.disabledDay,
+                opacity: 0.4,
+                cursor: 'not-allowed',
+                pointerEvents: 'none',
             }
         }
 
