@@ -86,6 +86,7 @@ import Block from '../../../../packages/blend/lib/components/Primitives/Block/Bl
 import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
 import VirtualListDemo from './VirtualListDemo'
+import SkeletonDemo from './SkeletonDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -138,6 +139,7 @@ const SidebarDemo = () => {
         | 'dataRangePicker'
         | 'allComponents'
         | 'virtualList'
+        | 'skeleton'
     >('dataRangePicker')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -388,6 +390,8 @@ const SidebarDemo = () => {
                 return <AllComponentsDemo />
             case 'virtualList':
                 return <VirtualListDemo />
+            case 'skeleton':
+                return <SkeletonDemo />
             default:
                 return (
                     <div className="p-8">

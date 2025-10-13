@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import type { BlockProps } from '../Primitives/Block/Block'
 import type { SkeletonVariant, SkeletonShape } from './skeleton.tokens'
 import type { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
+import type { TagVariant, TagSize, TagShape, TagColor } from '../Tags/types'
 
 export type SkeletonSize = 'sm' | 'md' | 'lg'
 
@@ -45,6 +46,21 @@ export type SkeletonCardProps = BaseSkeletonProps &
     Omit<BlockProps, 'children'> & {
         children?: ReactNode
         padding?: string | number
+    }
+
+export type SkeletonTagProps = BaseSkeletonProps &
+    Omit<BlockProps, 'children'> & {
+        // Mirror exact Tag component props for perfect token matching
+        tagVariant?: TagVariant
+        color?: TagColor
+        size?: TagSize
+        shape?: TagShape
+        width?: string | number
+        splitTagPosition?: 'left' | 'right'
+        // Content props for dynamic sizing
+        text?: string
+        hasLeftSlot?: boolean
+        hasRightSlot?: boolean
     }
 
 export { SkeletonVariant, SkeletonShape }
