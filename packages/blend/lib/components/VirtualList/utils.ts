@@ -1,332 +1,169 @@
-import { useState, useCallback, useMemo } from 'react'
-import type {
-    VirtualListItem,
-    UseVirtualListParams,
-    UseVirtualListReturn,
-} from './types'
-
-// Throttle utility for scroll performance
-export function throttle<T extends (...args: unknown[]) => unknown>(
-    func: T,
-    wait: number
-): (...args: Parameters<T>) => void {
-    let timeoutId: NodeJS.Timeout | null = null
-    let lastExecTime = 0
-
-    return (...args: Parameters<T>) => {
-        const currentTime = Date.now()
-
-        if (currentTime - lastExecTime > wait) {
-            func(...args)
-            lastExecTime = currentTime
-        } else {
-            if (timeoutId) clearTimeout(timeoutId)
-            timeoutId = setTimeout(
-                () => {
-                    func(...args)
-                    lastExecTime = Date.now()
-                },
-                wait - (currentTime - lastExecTime)
-            )
-        }
-    }
-}
-
-// SSR safety check
 export const isBrowser = typeof window !== 'undefined'
 
-// Binary search for finding the end index efficiently
-export const findEndIndexBinarySearch = (
-    startIndex: number,
-    viewportBottom: number,
+/**
+ * Binary search to find the first visible node
+ */
+export function findStartNode(
+    scrollTop: number,
+    nodePositions: number[],
+    itemCount: number
+): number {
+    let startRange = 0
+    let endRange = itemCount - 1
+
+    while (endRange !== startRange) {
+        const middle = Math.floor((endRange - startRange) / 2 + startRange)
+
+        if (
+            nodePositions[middle] <= scrollTop &&
+            nodePositions[middle + 1] > scrollTop
+        ) {
+            return middle
+        }
+
+        if (middle === startRange) {
+            // Edge case - start and end range are consecutive
+            return endRange
+        } else {
+            if (nodePositions[middle] <= scrollTop) {
+                startRange = middle
+            } else {
+                endRange = middle
+            }
+        }
+    }
+    return 0
+}
+
+/**
+ * Find the last visible node
+ */
+export function findEndNode(
+    nodePositions: number[],
+    startNode: number,
+    itemCount: number,
+    viewportHeight: number
+): number {
+    let endNode
+    for (endNode = startNode; endNode < itemCount; endNode++) {
+        if (
+            nodePositions[endNode] >
+            nodePositions[startNode] + viewportHeight
+        ) {
+            return endNode
+        }
+    }
+    return endNode
+}
+
+/**
+ * Calculate which items should be visible based on scroll position
+ */
+export function calculateVisibleRange(
+    scrollTop: number,
+    containerHeight: number,
     itemOffsets: number[],
     itemsLength: number,
     overscan: number
-): number => {
-    let low = startIndex
-    let high = itemsLength - 1
-    let result = startIndex
-
-    while (low <= high) {
-        const mid = Math.floor((low + high) / 2)
-        const midOffset = itemOffsets[mid] || 0
-
-        if (midOffset < viewportBottom) {
-            result = mid
-            low = mid + 1
-        } else {
-            high = mid - 1
-        }
+): { startIndex: number; endIndex: number } {
+    if (!containerHeight || itemsLength === 0) {
+        return { startIndex: 0, endIndex: Math.min(20, itemsLength - 1) }
     }
 
-    return Math.min(itemsLength - 1, result + overscan)
-}
-
-// Calculate visible range for fixed heights (optimized)
-export const calculateFixedHeightRange = (
-    scrollTop: number,
-    containerHeight: number,
-    itemHeight: number,
-    itemsLength: number,
-    overscan: number
-) => {
-    const startIndex = Math.max(
-        0,
-        Math.floor(scrollTop / itemHeight) - overscan
-    )
-    const visibleCount = Math.ceil(containerHeight / itemHeight) + 2 * overscan
-    const endIndex = Math.min(itemsLength - 1, startIndex + visibleCount)
-    return { startIndex, endIndex }
-}
-
-// Calculate visible range for dynamic heights using binary search
-export const calculateDynamicHeightRange = (
-    scrollTop: number,
-    containerHeight: number,
-    itemOffsets: number[],
-    itemsLength: number,
-    overscan: number
-) => {
-    if (itemsLength === 0) {
-        return { startIndex: 0, endIndex: 0 }
-    }
-
-    // Binary search for start index
-    let startIndex = 0
-    let low = 0
-    let high = itemOffsets.length - 1
-
-    while (low <= high) {
-        const mid = Math.floor((low + high) / 2)
-        if (itemOffsets[mid] <= scrollTop) {
-            startIndex = mid
-            low = mid + 1
-        } else {
-            high = mid - 1
-        }
-    }
-
-    // Apply overscan to start
-    startIndex = Math.max(0, startIndex - overscan)
-
-    // Use optimized binary search for end
+    const viewportTop = scrollTop
     const viewportBottom = scrollTop + containerHeight
-    const endIndex = findEndIndexBinarySearch(
-        startIndex,
-        viewportBottom,
-        itemOffsets,
-        itemsLength,
-        overscan
-    )
+
+    // Find start index
+    let startIndex = 0
+    for (let i = 0; i < itemOffsets.length; i++) {
+        if (itemOffsets[i] >= viewportTop) {
+            startIndex = Math.max(0, i - overscan)
+            break
+        }
+    }
+
+    // Find end index
+    let endIndex = itemsLength - 1
+    for (let i = startIndex; i < itemOffsets.length; i++) {
+        if (itemOffsets[i] > viewportBottom) {
+            endIndex = Math.min(itemsLength - 1, i + overscan)
+            break
+        }
+    }
 
     return { startIndex, endIndex }
 }
 
-// Calculate item heights efficiently
-export const calculateItemHeights = <T extends VirtualListItem>(
-    items: T[],
-    itemHeight?: number | ((item: T, index: number) => number),
-    getItemHeight?: (item: T, index: number) => number
-): number[] => {
-    if (typeof itemHeight === 'number') {
-        // Fixed height - fastest path
-        return new Array(items.length).fill(itemHeight)
+/**
+ * Calculate child positions for virtual list items
+ */
+export function calculateChildPositions(
+    itemsLength: number,
+    itemHeight: number | undefined,
+    defaultHeight: number = 50
+): number[] {
+    if (!itemsLength) return [0]
+
+    const results = new Array(itemsLength)
+    results[0] = 0
+    const height = itemHeight || defaultHeight
+
+    for (let i = 1; i < itemsLength; i++) {
+        results[i] = results[i - 1] + height
     }
 
-    // Dynamic heights - cache for performance
-    return items.map((item, index) => {
-        if (getItemHeight) {
-            return getItemHeight(item, index)
-        }
-        if (typeof itemHeight === 'function') {
-            return itemHeight(item, index)
-        }
-        return item.height || 40
-    })
+    return results
 }
 
-// Calculate offsets efficiently
-export const calculateItemOffsets = (itemHeights: number[]) => {
+/**
+ * Calculate total height based on child positions and item height
+ */
+export function calculateTotalHeight(
+    childPositions: number[],
+    itemsLength: number,
+    itemHeight: number | undefined,
+    defaultHeight: number = 50
+): number {
+    if (!childPositions.length || !itemsLength) return 0
+    return childPositions[itemsLength - 1] + (itemHeight || defaultHeight)
+}
+
+/**
+ * Calculate visible range with overscan
+ */
+export function calculateVisibleNodes(
+    firstVisibleNode: number,
+    lastVisibleNode: number,
+    itemsLength: number,
+    overscan: number
+): { startNode: number; endNode: number; visibleNodeCount: number } {
+    const startNode = Math.max(0, firstVisibleNode - overscan)
+    const endNode = Math.min(itemsLength - 1, lastVisibleNode + overscan)
+    const visibleNodeCount = Math.max(0, endNode - startNode + 1)
+
+    return { startNode, endNode, visibleNodeCount }
+}
+
+/**
+ * Calculate total height and offsets for all items
+ */
+export function calculateItemPositions(
+    itemsLength: number,
+    itemHeight: number | undefined,
+    measuredHeights: Map<number, number>,
+    defaultHeight: number = 50
+): { totalHeight: number; itemOffsets: number[] } {
     const offsets: number[] = []
-    let total = 0
+    let currentOffset = 0
 
-    for (let i = 0; i < itemHeights.length; i++) {
-        offsets[i] = total
-        total += itemHeights[i]
+    for (let i = 0; i < itemsLength; i++) {
+        offsets.push(currentOffset)
+        const height = itemHeight || measuredHeights.get(i) || defaultHeight
+        currentOffset += height
     }
-
-    return { totalHeight: total, itemOffsets: offsets }
-}
-
-// Main virtual list hook with all production features
-export function useVirtualList<T extends VirtualListItem>({
-    items,
-    itemHeight,
-    containerHeight,
-    overscan = 5,
-    getItemHeight,
-    ssrMode = false,
-}: UseVirtualListParams<T>): UseVirtualListReturn {
-    const [scrollTop, setScrollTop] = useState(0)
-    const [forceRecalculate, setForceRecalculate] = useState(0)
-
-    // SSR safety - ensure initial render is consistent
-    const safeScrollTop = ssrMode && !isBrowser ? 0 : scrollTop
-
-    // Ultra-fast height calculation with dynamic height support
-    const itemHeights = useMemo(() => {
-        return calculateItemHeights(items, itemHeight, getItemHeight)
-    }, [items, itemHeight, getItemHeight, forceRecalculate])
-
-    // Efficient offset calculation
-    const { totalHeight, itemOffsets } = useMemo(() => {
-        return calculateItemOffsets(itemHeights)
-    }, [itemHeights])
-
-    // Ultra-fast visible range calculation
-    const visibleRange = useMemo(() => {
-        if (items.length === 0) {
-            return { startIndex: 0, endIndex: 0 }
-        }
-
-        // Fixed heights - simple math (ultra-fast)
-        if (typeof itemHeight === 'number') {
-            return calculateFixedHeightRange(
-                safeScrollTop,
-                containerHeight,
-                itemHeight,
-                items.length,
-                overscan
-            )
-        }
-
-        // Dynamic heights - optimized binary search
-        return calculateDynamicHeightRange(
-            safeScrollTop,
-            containerHeight,
-            itemOffsets,
-            items.length,
-            overscan
-        )
-    }, [
-        safeScrollTop,
-        containerHeight,
-        itemHeight,
-        itemOffsets,
-        items.length,
-        overscan,
-    ])
-
-    // Force recalculation method for dynamic heights
-    const recalculateHeights = useCallback(() => {
-        setForceRecalculate((prev) => prev + 1)
-    }, [])
 
     return {
-        scrollTop: safeScrollTop,
-        setScrollTop,
-        totalHeight,
-        itemOffsets,
-        itemHeights,
-        recalculateHeights,
-        ...visibleRange,
-    }
-}
-
-// Keyboard navigation utilities
-export const handleVirtualListKeyDown = (
-    e: React.KeyboardEvent<HTMLDivElement>,
-    ariaRole: string,
-    totalHeight: number,
-    containerRef: React.RefObject<HTMLDivElement | null>,
-    onKeyDown?: (event: React.KeyboardEvent) => void
-) => {
-    onKeyDown?.(e)
-
-    // Basic keyboard navigation for accessibility
-    if (ariaRole === 'listbox' || ariaRole === 'menu') {
-        switch (e.key) {
-            case 'ArrowDown':
-                e.preventDefault()
-                // Could implement focus management here
-                break
-            case 'ArrowUp':
-                e.preventDefault()
-                // Could implement focus management here
-                break
-            case 'Home':
-                e.preventDefault()
-                if (containerRef.current) {
-                    containerRef.current.scrollTop = 0
-                }
-                break
-            case 'End':
-                e.preventDefault()
-                if (containerRef.current) {
-                    containerRef.current.scrollTop = totalHeight
-                }
-                break
-        }
-    }
-}
-
-// Scroll utilities
-export const scrollToPosition = (
-    containerRef: React.RefObject<HTMLDivElement | null>,
-    scrollTop: number
-) => {
-    if (containerRef.current) {
-        containerRef.current.scrollTop = scrollTop
-    }
-}
-
-export const scrollToIndex = (
-    containerRef: React.RefObject<HTMLDivElement | null>,
-    index: number,
-    itemOffsets: number[],
-    itemsLength: number
-) => {
-    if (containerRef.current && index >= 0 && index < itemsLength) {
-        const offset = itemOffsets[index] || 0
-        containerRef.current.scrollTop = offset
-    }
-}
-
-// Render optimization utilities
-export const createVirtualItemStyle = (
-    top: number,
-    height: number
-): React.CSSProperties => ({
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height,
-    transform: `translateY(${top}px)`,
-})
-
-// ResizeObserver setup for dynamic heights
-export const setupResizeObserver = (
-    dynamicHeight: boolean,
-    isMounted: boolean,
-    containerRef: React.RefObject<HTMLDivElement | null>,
-    recalculateHeights: () => void
-) => {
-    if (!dynamicHeight || !isBrowser || !isMounted) return
-
-    const resizeObserver = new ResizeObserver(() => {
-        // Recalculate heights when any item resizes
-        recalculateHeights()
-    })
-
-    const container = containerRef.current
-    if (container) {
-        // Observe all visible items
-        const items = container.querySelectorAll('[data-virtual-item]')
-        items.forEach((item) => resizeObserver.observe(item))
-    }
-
-    return () => {
-        resizeObserver.disconnect()
+        totalHeight: currentOffset,
+        itemOffsets: offsets,
     }
 }

@@ -318,74 +318,158 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                         </Block>
                                     )}
 
-                                    <Block
-                                        display="flex"
-                                        flexDirection="column"
-                                        gap={4}
-                                    >
-                                        {filteredItems.map((group, groupId) => (
-                                            <React.Fragment key={groupId}>
-                                                {group.groupLabel && (
-                                                    <Block
-                                                        padding="6px 8px"
-                                                        margin="0px 6px"
+                                    {items.length === 0 ? (
+                                        <Block
+                                            display="flex"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            padding={
+                                                singleSelectTokens.dropdown.item
+                                                    .padding
+                                            }
+                                        >
+                                            <Text
+                                                variant="body.md"
+                                                color={
+                                                    singleSelectTokens.dropdown
+                                                        .item.label.color
+                                                        .disabled
+                                                }
+                                                textAlign="center"
+                                            >
+                                                No items available
+                                            </Text>
+                                        </Block>
+                                    ) : filteredItems.length === 0 &&
+                                      searchText.length > 0 ? (
+                                        <Block
+                                            display="flex"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            padding={
+                                                singleSelectTokens.dropdown.item
+                                                    .padding
+                                            }
+                                        >
+                                            <Text
+                                                variant="body.md"
+                                                color={
+                                                    singleSelectTokens.dropdown
+                                                        .item.label.color
+                                                        .disabled
+                                                }
+                                                textAlign="center"
+                                            >
+                                                No results found
+                                            </Text>
+                                        </Block>
+                                    ) : (
+                                        <Block
+                                            display="flex"
+                                            flexDirection="column"
+                                            gap={4}
+                                        >
+                                            {filteredItems.map(
+                                                (group, groupId) => (
+                                                    <React.Fragment
+                                                        key={groupId}
                                                     >
-                                                        <Text
-                                                            variant="body.sm"
-                                                            color={
-                                                                FOUNDATION_THEME
-                                                                    .colors
-                                                                    .gray[400]
-                                                            }
-                                                            textTransform="uppercase"
-                                                            fontSize={12}
-                                                        >
-                                                            {group.groupLabel}
-                                                        </Text>
-                                                    </Block>
-                                                )}
-                                                {group.items.map(
-                                                    (item, itemIndex) => {
-                                                        const isSelected =
-                                                            selected ===
-                                                            item.value
-                                                        return (
-                                                            <SingleSelectItem
-                                                                key={`${groupId}-${itemIndex}`}
-                                                                item={item}
-                                                                isSelected={
-                                                                    isSelected
+                                                        {group.groupLabel && (
+                                                            <Block
+                                                                padding={`${singleSelectTokens.dropdown.item.gap} ${singleSelectTokens.dropdown.item.padding}`}
+                                                                margin={
+                                                                    singleSelectTokens
+                                                                        .dropdown
+                                                                        .item
+                                                                        .margin
                                                                 }
-                                                                onSelect={(
-                                                                    value
-                                                                ) => {
-                                                                    onSelect(
-                                                                        value
-                                                                    )
-                                                                    setDrawerOpen(
-                                                                        false
-                                                                    )
-                                                                }}
-                                                            />
-                                                        )
-                                                    }
-                                                )}
-                                                {groupId !==
-                                                    filteredItems.length - 1 &&
-                                                    group.showSeparator && (
-                                                        <Block
-                                                            height={1}
-                                                            backgroundColor={
-                                                                FOUNDATION_THEME
-                                                                    .colors
-                                                                    .gray[200]
+                                                            >
+                                                                <Text
+                                                                    variant="body.sm"
+                                                                    color={
+                                                                        singleSelectTokens
+                                                                            .dropdown
+                                                                            .item
+                                                                            .label
+                                                                            .color
+                                                                            .disabled
+                                                                    }
+                                                                    textTransform="uppercase"
+                                                                    fontSize={
+                                                                        singleSelectTokens
+                                                                            .dropdown
+                                                                            .item
+                                                                            .subLabel
+                                                                            .fontSize
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        group.groupLabel
+                                                                    }
+                                                                </Text>
+                                                            </Block>
+                                                        )}
+                                                        {group.items.map(
+                                                            (
+                                                                item,
+                                                                itemIndex
+                                                            ) => {
+                                                                const isSelected =
+                                                                    selected ===
+                                                                    item.value
+                                                                return (
+                                                                    <SingleSelectItem
+                                                                        key={`${groupId}-${itemIndex}`}
+                                                                        item={
+                                                                            item
+                                                                        }
+                                                                        isSelected={
+                                                                            isSelected
+                                                                        }
+                                                                        onSelect={(
+                                                                            value
+                                                                        ) => {
+                                                                            onSelect(
+                                                                                value
+                                                                            )
+                                                                            setDrawerOpen(
+                                                                                false
+                                                                            )
+                                                                        }}
+                                                                    />
+                                                                )
                                                             }
-                                                            margin="8px 0px"
-                                                        />
-                                                    )}
-                                            </React.Fragment>
-                                        ))}
-                                    </Block>
+                                                        )}
+                                                        {groupId !==
+                                                            filteredItems.length -
+                                                                1 &&
+                                                            group.showSeparator && (
+                                                                <Block
+                                                                    height={
+                                                                        singleSelectTokens
+                                                                            .dropdown
+                                                                            .seperator
+                                                                            .height
+                                                                    }
+                                                                    backgroundColor={
+                                                                        singleSelectTokens
+                                                                            .dropdown
+                                                                            .seperator
+                                                                            .color
+                                                                    }
+                                                                    margin={
+                                                                        singleSelectTokens
+                                                                            .dropdown
+                                                                            .seperator
+                                                                            .margin
+                                                                    }
+                                                                />
+                                                            )}
+                                                    </React.Fragment>
+                                                )
+                                            )}
+                                        </Block>
+                                    )}
                                 </Block>
                             </Block>
                         </DrawerBody>

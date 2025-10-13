@@ -1986,11 +1986,19 @@ export const formatDateRangeWithConfig = (
             const endDay = endDate.getDate()
             const year = includeYear ? ` ${startDate.getFullYear()}` : ''
 
-            if (isSameDate) {
-                const timeStr = includeTime
-                    ? `, ${formatTimeString(startDate)}`
-                    : ''
-                return `${startMonth} ${startDay}${year}${timeStr}`
+            if (isSameDate && !includeTime) {
+                return `${startMonth} ${startDay}${year}`
+            }
+
+            if (isSameDate && includeTime) {
+                const startTimeStr = formatTimeString(startDate)
+                const endTimeStr = formatTimeString(endDate)
+
+                if (startTimeStr === endTimeStr) {
+                    return `${startMonth} ${startDay}${year}, ${startTimeStr}`
+                } else {
+                    return `${startMonth} ${startDay}${year}, ${startTimeStr} - ${endTimeStr}`
+                }
             }
 
             if (
@@ -2020,10 +2028,18 @@ export const formatDateRangeWithConfig = (
             const year = includeYear ? ` ${startDate.getFullYear()}` : ''
 
             if (isSameDate) {
-                const timeStr = includeTime
-                    ? `, ${formatTimeString(startDate)}`
-                    : ''
-                return `${startMonth} ${startDay}${year}${timeStr}`
+                if (!includeTime) {
+                    return `${startMonth} ${startDay}${year}`
+                } else {
+                    const startTimeStr = formatTimeString(startDate)
+                    const endTimeStr = formatTimeString(endDate)
+
+                    if (startTimeStr === endTimeStr) {
+                        return `${startMonth} ${startDay}${year}, ${startTimeStr}`
+                    } else {
+                        return `${startMonth} ${startDay}${year}, ${startTimeStr} - ${endTimeStr}`
+                    }
+                }
             }
 
             const endMonth = getMonthAbbr(endDate)
@@ -2043,20 +2059,32 @@ export const formatDateRangeWithConfig = (
             const startDay = startDate.getDate()
             const startYear = includeYear ? ` ${startDate.getFullYear()}` : ''
 
-            if (isSameDate) {
-                const timeStr = includeTime
-                    ? `, ${formatTimeString(startDate)}`
-                    : ''
-                return `${startMonth} ${startDay}${startYear}${timeStr}`
+            if (isSameDate && !includeTime) {
+                return `${startMonth} ${startDay}${startYear}`
+            }
+
+            if (isSameDate && includeTime) {
+                const startTimeStr = formatTimeString(startDate)
+                const endTimeStr = formatTimeString(endDate)
+
+                if (startTimeStr === endTimeStr) {
+                    return `${startMonth} ${startDay}${startYear}, ${startTimeStr}`
+                } else {
+                    return `${startMonth} ${startDay}${startYear}, ${startTimeStr}${separator}${startMonth} ${startDay}${startYear}, ${endTimeStr}`
+                }
             }
 
             const endMonth = getMonthAbbr(endDate)
             const endDay = endDate.getDate()
             const endYear = includeYear ? ` ${endDate.getFullYear()}` : ''
-            const timeStr = includeTime
-                ? `, ${formatTimeString(startDate)} - ${formatTimeString(endDate)}`
-                : ''
-            return `${startMonth} ${startDay}${startYear}${separator}${endMonth} ${endDay}${endYear}${timeStr}`
+
+            if (includeTime) {
+                const startTimeStr = formatTimeString(startDate)
+                const endTimeStr = formatTimeString(endDate)
+                return `${startMonth} ${startDay}${startYear}, ${startTimeStr}${separator}${endMonth} ${endDay}${endYear}, ${endTimeStr}`
+            }
+
+            return `${startMonth} ${startDay}${startYear}${separator}${endMonth} ${endDay}${endYear}`
         }
 
         case DateFormatPreset.SHORT_SINGLE: {
@@ -2145,13 +2173,7 @@ export const formatTriggerDisplay = (
         return placeholder
     }
 
-    const enhancedConfig = {
-        ...config,
-        includeTime:
-            config.includeTime !== undefined ? config.includeTime : true, // Default to showing time
-    }
-
-    return formatDateRangeWithConfig(range, enhancedConfig)
+    return formatDateRangeWithConfig(range, config)
 }
 
 /**
@@ -3090,6 +3112,74 @@ export const matchesTomorrowPreset = (range: DateRange): boolean => {
 }
 
 /**
+ * Checks if a date range matches "This Month" preset
+ */
+export const matchesThisMonthPreset = (range: DateRange): boolean => {
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+    const startOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        1,
+        0,
+        0,
+        0,
+        0
+    )
+
+    const startMatches =
+        Math.abs(range.startDate.getTime() - startOfMonth.getTime()) <=
+        DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS * 60 * 60 * 1000
+
+    const endInCurrentMonth =
+        range.endDate.getFullYear() === now.getFullYear() &&
+        range.endDate.getMonth() === now.getMonth()
+
+    return startMatches && endInCurrentMonth
+}
+
+/**
+ * Checks if a date range matches "Last Month" preset
+ */
+export const matchesLastMonthPreset = (range: DateRange): boolean => {
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+    const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+
+    const startOfLastMonth = new Date(
+        lastMonth.getFullYear(),
+        lastMonth.getMonth(),
+        1,
+        0,
+        0,
+        0,
+        0
+    )
+
+    const endOfLastMonth = new Date(
+        lastMonth.getFullYear(),
+        lastMonth.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+        999
+    )
+
+    const startMatches =
+        Math.abs(range.startDate.getTime() - startOfLastMonth.getTime()) <=
+        DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS * 60 * 60 * 1000
+
+    const endMatches =
+        Math.abs(range.endDate.getTime() - endOfLastMonth.getTime()) <=
+        DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS * 60 * 60 * 1000
+
+    return startMatches && endMatches
+}
+
+/**
  * Robust preset detection that works with both UTC and local timezone dates
  */
 export const detectPresetFromRange = (range: DateRange): DateRangePreset => {
@@ -3108,6 +3198,14 @@ export const detectPresetFromRange = (range: DateRange): DateRangePreset => {
 
     if (matchesTomorrowPreset(range)) {
         return DateRangePreset.TOMORROW
+    }
+
+    if (matchesThisMonthPreset(range)) {
+        return DateRangePreset.THIS_MONTH
+    }
+
+    if (matchesLastMonthPreset(range)) {
+        return DateRangePreset.LAST_MONTH
     }
 
     // Check time-based presets with tolerance
