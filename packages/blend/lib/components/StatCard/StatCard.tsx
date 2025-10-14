@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
     BarChart,
     Bar,
@@ -19,7 +19,12 @@ import {
 } from '../ProgressBar'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import { ChangeType, StatCardVariant, type StatCardProps } from './types'
+import {
+    ChangeType,
+    StatCardDirection,
+    StatCardVariant,
+    type StatCardProps,
+} from './types'
 import type { StatCardTokenType } from './statcard.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
@@ -51,13 +56,53 @@ const StatCard = ({
     yAxis,
     valueFormatter,
     height = 'auto',
+    direction = StatCardDirection.VERTICAL,
 }: StatCardProps) => {
+    const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
+
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const titleIconRef = useRef<HTMLDivElement>(null)
     const titleIconWidth = titleIconRef.current?.offsetWidth || 0
+    const numberVariantContainerRef = useRef<HTMLDivElement>(null!)
+    const [numberVariantContainerHeight, setNumberVariantContainerHeight] =
+        useState(0)
 
-    const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
+    const numberVariantTitleContainerRef = useRef<HTMLDivElement>(null!)
+    const [
+        numberVariantTitleContainerHeight,
+        setNumberVariantTitleContainerHeight,
+    ] = useState(0)
+    const numberVariantStatsContainerRef = useRef<HTMLDivElement>(null!)
+    const [
+        numberVariantStatsContainerHeight,
+        setNumberVariantStatsContainerHeight,
+    ] = useState(0)
+
+    const actionIconDynamciPostition =
+        (numberVariantContainerHeight -
+            (numberVariantTitleContainerHeight +
+                numberVariantStatsContainerHeight +
+                toPixels(statCardToken.textContainer.gap))) /
+        2
+
+    useEffect(() => {
+        if (numberVariantContainerRef.current) {
+            setNumberVariantContainerHeight(
+                numberVariantContainerRef.current?.offsetHeight || 0
+            )
+            setNumberVariantTitleContainerHeight(
+                numberVariantTitleContainerRef.current?.offsetHeight || 0
+            )
+            setNumberVariantStatsContainerHeight(
+                numberVariantStatsContainerRef.current?.offsetHeight || 0
+            )
+        }
+    }, [
+        numberVariantContainerRef.current?.offsetHeight,
+        numberVariantTitleContainerRef.current?.offsetHeight,
+        numberVariantStatsContainerRef.current?.offsetHeight,
+    ])
 
     const formatTooltipLabel = (label: string | number): string => {
         if (!xAxis) return String(label)
@@ -431,24 +476,28 @@ const StatCard = ({
                     display="flex"
                     gap={statCardToken.textContainer.header.gap}
                 >
-                    {titleIcon && !isSmallScreen && (
-                        <Block
-                            width={
-                                statCardToken.textContainer.header.titleIcon
-                                    .width
-                            }
-                            height={
-                                statCardToken.textContainer.header.titleIcon
-                                    .width
-                            }
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            flexShrink={0}
-                            ref={titleIconRef}
-                        >
-                            {titleIcon}
-                        </Block>
+                    {direction === StatCardDirection.VERTICAL && (
+                        <>
+                            {titleIcon && !isSmallScreen && (
+                                <Block
+                                    width={
+                                        statCardToken.textContainer.header
+                                            .titleIcon.width
+                                    }
+                                    height={
+                                        statCardToken.textContainer.header
+                                            .titleIcon.width
+                                    }
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    flexShrink={0}
+                                    ref={titleIconRef}
+                                >
+                                    {titleIcon}
+                                </Block>
+                            )}
+                        </>
                     )}
 
                     <Block
@@ -460,69 +509,76 @@ const StatCard = ({
                         <Block
                             display="flex"
                             alignItems="center"
-                            justifyContent="space-between"
+                            justifyContent={
+                                direction === StatCardDirection.VERTICAL
+                                    ? 'space-between'
+                                    : 'flex-end'
+                            }
                             width="100%"
                             gap={statCardToken.textContainer.header.gap}
                         >
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                gap={statCardToken.textContainer.header.gap}
-                            >
-                                <Tooltip content={title}>
-                                    <Text
-                                        as="span"
-                                        fontSize={
-                                            statCardToken.textContainer.header
-                                                .title.fontSize
-                                        }
-                                        fontWeight={
-                                            statCardToken.textContainer.header
-                                                .title.fontWeight
-                                        }
-                                        color={
-                                            statCardToken.textContainer.header
-                                                .title.color
-                                        }
-                                        style={{
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 1,
-                                            WebkitBoxOrient: 'vertical',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            wordBreak: 'break-word',
-                                        }}
-                                    >
-                                        {title}
-                                    </Text>
-                                </Tooltip>
-                                {helpIconText && (
-                                    <Block
-                                        flexShrink={0}
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                    >
-                                        <Tooltip content={helpIconText}>
-                                            <CircleHelp
-                                                width={parseInt(
-                                                    statCardToken.textContainer.header.helpIcon.width?.toString() ||
-                                                        '16'
-                                                )}
-                                                height={parseInt(
-                                                    statCardToken.textContainer.header.helpIcon.width?.toString() ||
-                                                        '16'
-                                                )}
-                                                color={
-                                                    statCardToken.textContainer
-                                                        .header.helpIcon.color
-                                                        .default
-                                                }
-                                            />
-                                        </Tooltip>
-                                    </Block>
-                                )}
-                            </Block>
+                            {direction === StatCardDirection.VERTICAL && (
+                                <Block
+                                    display="flex"
+                                    alignItems="center"
+                                    gap={statCardToken.textContainer.header.gap}
+                                >
+                                    <Tooltip content={title}>
+                                        <Text
+                                            as="span"
+                                            fontSize={
+                                                statCardToken.textContainer
+                                                    .header.title.fontSize
+                                            }
+                                            fontWeight={
+                                                statCardToken.textContainer
+                                                    .header.title.fontWeight
+                                            }
+                                            color={
+                                                statCardToken.textContainer
+                                                    .header.title.color
+                                            }
+                                            style={{
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 1,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                wordBreak: 'break-word',
+                                            }}
+                                        >
+                                            {title}
+                                        </Text>
+                                    </Tooltip>
+                                    {helpIconText && (
+                                        <Block
+                                            flexShrink={0}
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                        >
+                                            <Tooltip content={helpIconText}>
+                                                <CircleHelp
+                                                    width={parseInt(
+                                                        statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                            '16'
+                                                    )}
+                                                    height={parseInt(
+                                                        statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                            '16'
+                                                    )}
+                                                    color={
+                                                        statCardToken
+                                                            .textContainer
+                                                            .header.helpIcon
+                                                            .color.default
+                                                    }
+                                                />
+                                            </Tooltip>
+                                        </Block>
+                                    )}
+                                </Block>
+                            )}
                             {actionIcon && !isSmallScreen && (
                                 <Block
                                     display="flex"
@@ -538,12 +594,112 @@ const StatCard = ({
                         <Block
                             display="flex"
                             flexDirection="column"
-                            alignItems="flex-start"
+                            alignItems={
+                                direction === StatCardDirection.VERTICAL
+                                    ? 'flex-start'
+                                    : 'center'
+                            }
                             gap={statCardToken.textContainer.stats.gap}
                         >
+                            {direction === StatCardDirection.HORIZONTAL && (
+                                <Block
+                                    display="flex"
+                                    alignItems="center"
+                                    gap={8}
+                                >
+                                    {titleIcon && (
+                                        <Block
+                                            width={
+                                                statCardToken.textContainer
+                                                    .header.titleIcon.width
+                                            }
+                                            height={
+                                                statCardToken.textContainer
+                                                    .header.titleIcon.width
+                                            }
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            flexShrink={0}
+                                            ref={titleIconRef}
+                                        >
+                                            {titleIcon}
+                                        </Block>
+                                    )}
+                                    <Block
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={
+                                            statCardToken.textContainer.header
+                                                .gap
+                                        }
+                                    >
+                                        <Tooltip content={title}>
+                                            <Text
+                                                as="span"
+                                                fontSize={
+                                                    statCardToken.textContainer
+                                                        .header.title.fontSize
+                                                }
+                                                fontWeight={
+                                                    statCardToken.textContainer
+                                                        .header.title.fontWeight
+                                                }
+                                                color={
+                                                    statCardToken.textContainer
+                                                        .header.title.color
+                                                }
+                                                style={{
+                                                    display: '-webkit-box',
+                                                    WebkitLineClamp: 1,
+                                                    WebkitBoxOrient: 'vertical',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    wordBreak: 'break-word',
+                                                }}
+                                            >
+                                                {title}
+                                            </Text>
+                                        </Tooltip>
+                                        {helpIconText && (
+                                            <Block
+                                                flexShrink={0}
+                                                display="flex"
+                                                alignItems="center"
+                                                justifyContent="center"
+                                            >
+                                                <Tooltip content={helpIconText}>
+                                                    <CircleHelp
+                                                        width={parseInt(
+                                                            statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                '16'
+                                                        )}
+                                                        height={parseInt(
+                                                            statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                '16'
+                                                        )}
+                                                        color={
+                                                            statCardToken
+                                                                .textContainer
+                                                                .header.helpIcon
+                                                                .color.default
+                                                        }
+                                                    />
+                                                </Tooltip>
+                                            </Block>
+                                        )}
+                                    </Block>
+                                </Block>
+                            )}
+
                             <Block
                                 width="100%"
                                 display="flex"
+                                justifyContent={
+                                    direction === StatCardDirection.VERTICAL
+                                        ? 'flex-start'
+                                        : 'center'
+                                }
                                 alignItems="center"
                                 gap={4}
                             >
@@ -614,14 +770,31 @@ const StatCard = ({
 
             {variant === StatCardVariant.NUMBER && (
                 <Block
+                    ref={numberVariantContainerRef}
                     display="flex"
                     flexDirection="column"
                     height="100%"
                     alignItems={isSmallScreen ? 'flex-start' : 'center'}
                     justifyContent="center"
                     gap={statCardToken.textContainer.gap}
+                    style={{ flex: 1 }}
+                    position="relative"
                 >
+                    {actionIcon && !isSmallScreen && (
+                        <Block
+                            display="flex"
+                            alignItems="flex-start"
+                            justifyContent="center"
+                            position="absolute"
+                            right={0}
+                            top={actionIconDynamciPostition}
+                            flexShrink={0}
+                        >
+                            {actionIcon}
+                        </Block>
+                    )}
                     <Block
+                        ref={numberVariantTitleContainerRef}
                         display="flex"
                         flexDirection="column"
                         alignItems={'center'}
@@ -637,6 +810,7 @@ const StatCard = ({
                                 {titleIcon}
                             </Block>
                         )}
+
                         <Block
                             width="100%"
                             display="flex"
@@ -700,9 +874,10 @@ const StatCard = ({
                     </Block>
 
                     <Block
+                        ref={numberVariantStatsContainerRef}
                         display="flex"
                         flexDirection="column"
-                        alignItems="center"
+                        alignItems={isSmallScreen ? 'flex-start' : 'center'}
                         gap={8}
                     >
                         <Block

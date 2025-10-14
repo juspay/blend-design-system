@@ -2109,6 +2109,7 @@ const ChartDemo = () => {
             />
 
             <Charts
+                height={200}
                 data={last1hour15minsData}
                 chartType={ChartType.LINE}
                 xAxis={{

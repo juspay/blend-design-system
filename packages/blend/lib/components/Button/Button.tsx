@@ -28,7 +28,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         },
         ref
     ) => {
-        console.log('Button state:', state)
         const buttonTokens = useResponsiveTokens<ButtonTokensType>('BUTTON')
 
         const getBorderRadius = () => {
