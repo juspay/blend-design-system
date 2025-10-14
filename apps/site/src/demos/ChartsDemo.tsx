@@ -2388,6 +2388,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
             {/* Main Interactive Chart */}
             <div className="chart-example-container mb-12">
                 <Charts
+                    height={300}
                     stackedLegends={true}
                     stackedLegendsData={stackedLegendsData}
                     data={getCurrentData()}
@@ -2642,6 +2643,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     {/* Bar Chart Example */}
 
                     <Charts
+                        height={200}
                         data={performanceData}
                         chartType={ChartType.BAR}
                         colors={['#8b5cf6', '#06b6d4', '#f59e0b']}
@@ -2661,6 +2663,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     {/* Pie Chart Example */}
 
                     <Charts
+                        height={200}
                         data={analyticsData}
                         chartType={ChartType.PIE}
                         legendPosition={ChartLegendPosition.RIGHT}

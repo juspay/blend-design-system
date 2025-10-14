@@ -15,6 +15,7 @@ import { Button, ButtonSize, ButtonSubType, ButtonType } from '../Button'
 import { ChevronDown } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import useScrollLock from '../../hooks/useScrollLock'
+import { toPixels } from '../../global-utils/GlobalUtils'
 
 const Charts: React.FC<ChartsProps> = ({
     chartType = ChartType.LINE,
@@ -60,6 +61,9 @@ const Charts: React.FC<ChartsProps> = ({
     const [selectedKeys, setSelectedKeys] = useState<string[]>([])
     const [showLegend, setShowLegend] = useState(false)
     const [isFullscreen, setIsFullscreen] = useState(false)
+
+    const legendContainerRef = useRef<HTMLDivElement>(null!)
+    const [legendContainerHeight, setLegendContainerHeight] = useState(0)
 
     useScrollLock(isFullscreen)
 
@@ -206,6 +210,14 @@ const Charts: React.FC<ChartsProps> = ({
         }
     }, [])
 
+    useEffect(() => {
+        if (legendContainerRef.current) {
+            setLegendContainerHeight(
+                legendContainerRef.current?.offsetHeight || 0
+            )
+        }
+    }, [showLegend])
+
     const renderFullscreenChart = () => (
         <Block
             position={'fixed'}
@@ -319,7 +331,7 @@ const Charts: React.FC<ChartsProps> = ({
                               <Block style={{ flex: 1, width: '100%' }}>
                                   <ResponsiveContainer
                                       width="100%"
-                                      height={400}
+                                      height={300}
                                   >
                                       {renderChart({
                                           flattenedData,
@@ -436,9 +448,16 @@ const Charts: React.FC<ChartsProps> = ({
                               display="flex"
                               flexDirection="column"
                               gap={chartTokens.content.gap}
+                              height={
+                                  (height || 400) +
+                                  legendContainerHeight +
+                                  toPixels(chartTokens.content.gap) +
+                                  toPixels(chartTokens.content.padding.top) +
+                                  toPixels(chartTokens.content.padding.bottom)
+                              }
                           >
                               {!isSmallScreen && (
-                                  <Block>
+                                  <Block ref={legendContainerRef}>
                                       <ChartLegends
                                           chartContainerRef={chartContainerRef}
                                           keys={lineKeys}
@@ -458,10 +477,11 @@ const Charts: React.FC<ChartsProps> = ({
                                   display="flex"
                                   flexDirection="column"
                                   alignItems="center"
+                                  height={height || 400}
                               >
                                   <ResponsiveContainer
                                       width="100%"
-                                      height={height || 400}
+                                      height={'100%'}
                                       //   height="100%"
                                       //   height={'auto'}
                                   >
@@ -495,6 +515,7 @@ const Charts: React.FC<ChartsProps> = ({
                                           flexDirection="column"
                                           gap={chartTokens.content.legend.gap}
                                           width={'100%'}
+                                          ref={legendContainerRef}
                                       >
                                           {(showLegend || !stackedLegends) && (
                                               <ChartLegends
@@ -584,10 +605,16 @@ const Charts: React.FC<ChartsProps> = ({
                               display="flex"
                               gap={chartTokens.content.gap}
                           >
-                              <Block style={{ flex: 1, width: '100%' }}>
+                              <Block
+                                  style={{
+                                      flex: 1,
+                                      width: '100%',
+                                      height: height || 400,
+                                  }}
+                              >
                                   <ResponsiveContainer
                                       width="100%"
-                                      height={400}
+                                      height={'100%'}
                                   >
                                       {renderChart({
                                           flattenedData,
