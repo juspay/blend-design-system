@@ -16,6 +16,7 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
     isSmallScreen = false,
     isExpanded,
     setIsExpanded,
+    showCollapseIcon,
 }) => {
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
     const headerTokens = chartTokens.header
@@ -98,18 +99,20 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                         )}
                     </>
                 )}
-                <Block
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    onClick={() => setIsExpanded(!isExpanded)}
-                >
-                    <ChevronsDownUp
-                        size={20}
-                        color={FOUNDATION_THEME.colors.gray[400]}
-                        cursor="pointer"
-                    />
-                </Block>
+                {showCollapseIcon && (
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        onClick={() => setIsExpanded(!isExpanded)}
+                    >
+                        <ChevronsDownUp
+                            size={20}
+                            color={FOUNDATION_THEME.colors.gray[400]}
+                            cursor="pointer"
+                        />
+                    </Block>
+                )}
                 {slot3}
             </Block>
         </Block>

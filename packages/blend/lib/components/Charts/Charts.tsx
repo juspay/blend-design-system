@@ -32,6 +32,8 @@ const Charts: React.FC<ChartsProps> = ({
     yAxis,
     noData,
     height = 400,
+    showHeader = true,
+    showCollapseIcon = true,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -213,17 +215,20 @@ const Charts: React.FC<ChartsProps> = ({
                 borderRadius={chartTokens.borderRadius}
                 backgroundColor={chartTokens.content.backgroundColor}
             >
-                <ChartHeader
-                    slot1={slot1}
-                    slot2={slot2}
-                    slot3={slot3}
-                    chartHeaderSlot={chartHeaderSlot}
-                    onFullscreen={handleFullscreen}
-                    onExitFullscreen={handleExitFullscreen}
-                    isFullscreen={isFullscreen}
-                    isExpanded={isExpanded}
-                    setIsExpanded={setIsExpanded}
-                />
+                {showHeader && (
+                    <ChartHeader
+                        slot1={slot1}
+                        slot2={slot2}
+                        slot3={slot3}
+                        chartHeaderSlot={chartHeaderSlot}
+                        onFullscreen={handleFullscreen}
+                        onExitFullscreen={handleExitFullscreen}
+                        isFullscreen={isFullscreen}
+                        isExpanded={isExpanded}
+                        setIsExpanded={setIsExpanded}
+                        showCollapseIcon={showCollapseIcon}
+                    />
+                )}
                 {showHorizontallyStackedLegends()
                     ? isExpanded && (
                           <Block
@@ -393,16 +398,19 @@ const Charts: React.FC<ChartsProps> = ({
                 border={chartTokens.border}
                 borderRadius={chartTokens.borderRadius}
             >
-                <ChartHeader
-                    slot1={slot1}
-                    slot2={slot2}
-                    slot3={slot3}
-                    chartHeaderSlot={chartHeaderSlot}
-                    onFullscreen={handleFullscreen}
-                    isSmallScreen={isSmallScreen}
-                    isExpanded={isExpanded}
-                    setIsExpanded={setIsExpanded}
-                />
+                {showHeader && (
+                    <ChartHeader
+                        slot1={slot1}
+                        slot2={slot2}
+                        slot3={slot3}
+                        chartHeaderSlot={chartHeaderSlot}
+                        onFullscreen={handleFullscreen}
+                        isSmallScreen={isSmallScreen}
+                        isExpanded={isExpanded}
+                        setIsExpanded={setIsExpanded}
+                        showCollapseIcon={showCollapseIcon}
+                    />
+                )}
                 {showHorizontallyStackedLegends()
                     ? isExpanded && (
                           <Block
