@@ -812,12 +812,8 @@ const GranularChartsDemo = () => {
                                             selectedKeys={selectedKeys}
                                             enableHover={true}
                                             xAxis={{
-                                                show: true,
-                                                showLabel: false,
                                                 type: AxisType.DATE_TIME,
-                                                interval:
-                                                    AxisIntervalType.PRESERVE_START,
-                                                timeOnly: true,
+                                                maxTicks: 3,
                                             }}
                                             yAxis={{
                                                 show: true,
@@ -2082,6 +2078,7 @@ const ChartDemo = () => {
             </div>
 
             <Charts
+                showHeader={false}
                 data={last1hour5minsData}
                 chartType={ChartType.LINE}
                 xAxis={{
@@ -2090,12 +2087,14 @@ const ChartDemo = () => {
                     type: AxisType.DATE_TIME,
                     smartDateTimeFormat: false,
                     showYear: true,
-                    maxTicks: 4,
+                    maxTicks: last1hour5minsData.length / 2,
+                    showLabel: true,
                 }}
                 yAxis={{
                     label: 'Currency',
                     show: true,
                     type: AxisType.CURRENCY,
+                    showLabel: true,
                 }}
                 chartHeaderSlot={
                     <div className="chart-header">
@@ -2113,6 +2112,7 @@ const ChartDemo = () => {
                 xAxis={{
                     label: 'Date (Timestamp)',
                     show: true,
+                    showLabel: true,
                     type: AxisType.DATE_TIME,
                     // dateOnly: true,
                     // timeOnly: true,
@@ -2121,6 +2121,7 @@ const ChartDemo = () => {
                 yAxis={{
                     label: 'Currency',
                     show: true,
+                    showLabel: true,
                     type: AxisType.CURRENCY,
                 }}
                 chartHeaderSlot={
