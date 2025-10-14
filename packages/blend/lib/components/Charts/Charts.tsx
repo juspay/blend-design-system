@@ -34,11 +34,26 @@ const Charts: React.FC<ChartsProps> = ({
     height = 400,
     showHeader = true,
     showCollapseIcon = true,
+    isExpanded: isExpandedProp,
+    onExpandedChange,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
-    const [isExpanded, setIsExpanded] = useState(true)
+    const [isExpandedState, setIsExpandedState] = useState(true)
+
+    const isExpanded =
+        isExpandedProp !== undefined ? isExpandedProp : isExpandedState
+
+    const setIsExpanded = useCallback(
+        (value: boolean) => {
+            if (isExpandedProp === undefined) {
+                setIsExpandedState(value)
+            }
+            onExpandedChange?.(value)
+        },
+        [isExpandedProp, onExpandedChange]
+    )
 
     const chartContainerRef = useRef<HTMLDivElement>(null!)
     const [hoveredKey, setHoveredKey] = useState<string | null>(null)
