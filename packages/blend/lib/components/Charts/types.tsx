@@ -157,6 +157,8 @@ export type ChartsProps = {
     height?: number
     showHeader?: boolean
     showCollapseIcon?: boolean
+    isExpanded?: boolean
+    onExpandedChange?: (isExpanded: boolean) => void
 }
 
 export type FlattenedDataPoint = {

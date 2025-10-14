@@ -2078,7 +2078,6 @@ const ChartDemo = () => {
             </div>
 
             <Charts
-                showHeader={false}
                 data={last1hour5minsData}
                 chartType={ChartType.LINE}
                 xAxis={{
