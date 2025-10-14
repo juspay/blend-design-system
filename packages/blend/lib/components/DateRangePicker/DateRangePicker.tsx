@@ -744,7 +744,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 triggerConfig?.showIcon === false
                     ? null
                     : triggerConfig?.icon || (
-                          <Calendar size={calendarToken?.trigger?.iconSize} />
+                          <Calendar
+                              size={calendarToken?.trigger?.dateInput?.iconSize}
+                          />
                       )
 
             return (
@@ -752,29 +754,33 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     display="flex"
                     alignItems="center"
                     justifyContent="space-between"
-                    backgroundColor={calendarToken?.trigger?.backgroundColor}
-                    color={calendarToken?.trigger?.text?.color}
+                    backgroundColor={
+                        calendarToken?.trigger?.dateInput?.backgroundColor
+                    }
+                    color={calendarToken?.trigger?.dateInput?.text?.color}
                     cursor={isDisabled ? 'not-allowed' : 'pointer'}
                     paddingX={
-                        calendarToken?.trigger?.padding?.[
-                            size as keyof CalendarTokenType['trigger']['padding']
+                        calendarToken?.trigger?.dateInput?.padding?.[
+                            size as keyof CalendarTokenType['trigger']['dateInput']['padding']
                         ]?.x
                     }
                     paddingY={
-                        calendarToken?.trigger?.padding?.[
-                            size as keyof CalendarTokenType['trigger']['padding']
+                        calendarToken?.trigger?.dateInput?.padding?.[
+                            size as keyof CalendarTokenType['trigger']['dateInput']['padding']
                         ]?.y
                     }
                     borderRadius={
                         showPresets
-                            ? calendarToken?.trigger?.borderRadius?.quickRange
-                            : calendarToken?.trigger?.borderRadius
-                                  ?.withoutQuickRange
+                            ? calendarToken?.trigger?.dateInput?.borderRadius
+                                  ?.withQuickSelector
+                            : calendarToken?.trigger?.dateInput?.borderRadius
+                                  ?.withoutQuickSelector
                     }
                     border={
                         isDisabled
-                            ? calendarToken?.trigger?.border?.disabled
-                            : calendarToken?.trigger?.border?.default
+                            ? calendarToken?.trigger?.dateInput?.border
+                                  ?.disabled
+                            : calendarToken?.trigger?.dateInput?.border?.default
                     }
                     boxShadow={FOUNDATION_THEME.shadows.xs}
                     aria-expanded={isOpen}
@@ -788,19 +794,22 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         alignItems="center"
                         justifyContent="space-between"
                         style={{
-                            color: calendarToken?.trigger?.text?.color,
+                            color: calendarToken?.trigger?.dateInput?.text
+                                ?.color,
                             fontWeight:
-                                calendarToken?.trigger?.text?.fontWeight,
+                                calendarToken?.trigger?.dateInput?.text
+                                    ?.fontWeight,
                             fontSize:
-                                calendarToken?.trigger?.text?.fontSize?.[
-                                    size as keyof CalendarTokenType['trigger']['text']['fontSize']
+                                calendarToken?.trigger?.dateInput?.text
+                                    ?.fontSize?.[
+                                    size as keyof CalendarTokenType['trigger']['dateInput']['text']['fontSize']
                                 ],
                         }}
                     >
                         <Block
                             display="flex"
                             alignItems="center"
-                            gap={calendarToken?.trigger?.gap}
+                            gap={calendarToken?.trigger?.dateInput?.gap}
                         >
                             {iconElement}
                             <span style={{ whiteSpace: 'nowrap' }}>
@@ -809,16 +818,22 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         </Block>
                         {isOpen ? (
                             <ChevronUp
-                                size={calendarToken?.trigger?.iconSize}
+                                size={
+                                    calendarToken?.trigger?.dateInput?.iconSize
+                                }
                                 style={{
-                                    marginLeft: calendarToken?.trigger?.gap,
+                                    marginLeft:
+                                        calendarToken?.trigger?.dateInput?.gap,
                                 }}
                             />
                         ) : (
                             <ChevronDown
-                                size={calendarToken?.trigger?.iconSize}
+                                size={
+                                    calendarToken?.trigger?.dateInput?.iconSize
+                                }
                                 style={{
-                                    marginLeft: calendarToken?.trigger?.gap,
+                                    marginLeft:
+                                        calendarToken?.trigger?.dateInput?.gap,
                                 }}
                             />
                         )}

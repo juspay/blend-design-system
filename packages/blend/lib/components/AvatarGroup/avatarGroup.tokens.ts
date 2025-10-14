@@ -17,16 +17,12 @@ export type AvatarGroupTokensType = {
 
     container: {
         // Pattern: container.spacing.[size]
-        spacing: {
+        marginLeft: {
             [key in AvatarSize]: CSSObject['margin']
         }
     }
 
     avatar: {
-        // Pattern: avatar.stacking
-        stacking: {
-            zIndex: number
-        }
         // Pattern: avatar.selected
         selected: {
             ringColor: CSSObject['borderColor']
@@ -71,8 +67,7 @@ export type AvatarGroupTokensType = {
     }
 
     menu: {
-        spacing: CSSObject['margin']
-        zIndex: number
+        marginTop: CSSObject['margin']
     }
 }
 
@@ -88,7 +83,7 @@ export const getAvatarGroupTokens = (
             gap: foundationToken.unit[2],
 
             container: {
-                spacing: {
+                marginLeft: {
                     [AvatarSize.XS]: foundationToken.unit[4],
                     [AvatarSize.SM]: foundationToken.unit[6],
                     [AvatarSize.MD]: foundationToken.unit[8],
@@ -98,9 +93,6 @@ export const getAvatarGroupTokens = (
             },
 
             avatar: {
-                stacking: {
-                    zIndex: 1,
-                },
                 selected: {
                     ringColor: foundationToken.colors.primary[500],
                     ringWidth: '2px',
@@ -159,15 +151,14 @@ export const getAvatarGroupTokens = (
             },
 
             menu: {
-                spacing: foundationToken.unit[4],
-                zIndex: 50,
+                marginTop: foundationToken.unit[4],
             },
         },
         lg: {
             gap: foundationToken.unit[2],
 
             container: {
-                spacing: {
+                marginLeft: {
                     [AvatarSize.XS]: foundationToken.unit[3],
                     [AvatarSize.SM]: foundationToken.unit[4],
                     [AvatarSize.MD]: foundationToken.unit[6],
@@ -177,9 +168,6 @@ export const getAvatarGroupTokens = (
             },
 
             avatar: {
-                stacking: {
-                    zIndex: 1,
-                },
                 selected: {
                     ringColor: foundationToken.colors.primary[500],
                     ringWidth: '2px',
@@ -238,8 +226,7 @@ export const getAvatarGroupTokens = (
             },
 
             menu: {
-                spacing: foundationToken.unit[4],
-                zIndex: 50,
+                marginTop: foundationToken.unit[4],
             },
         },
     }

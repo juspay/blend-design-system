@@ -101,19 +101,21 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
         const getContainerStyle = () => {
             const baseStyle = {
                 backgroundColor:
-                    calendarToken?.quickRange?.trigger?.backgroundColor,
+                    calendarToken?.trigger?.quickSelector?.backgroundColor,
             }
 
             if (isStandalone) {
                 const borderColor = isDisabled
-                    ? calendarToken?.quickRange?.trigger?.border?.disabled?.left
-                    : calendarToken?.quickRange?.trigger?.border?.default?.left
+                    ? calendarToken?.trigger?.quickSelector?.border?.disabled
+                          ?.left
+                    : calendarToken?.trigger?.quickSelector?.border?.default
+                          ?.left
 
                 return {
                     ...baseStyle,
                     border: borderColor,
                     borderRadius:
-                        calendarToken?.quickRange?.trigger?.borderRadius
+                        calendarToken?.trigger?.quickSelector?.borderRadius
                             ?.topLeft,
                 }
             } else {
@@ -121,19 +123,22 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                 return {
                     ...baseStyle,
                     borderLeft:
-                        calendarToken?.quickRange?.trigger?.border?.[stateKey]
-                            ?.left,
+                        calendarToken?.trigger?.quickSelector?.border?.[
+                            stateKey
+                        ]?.left,
                     borderTop:
-                        calendarToken?.quickRange?.trigger?.border?.[stateKey]
-                            ?.top,
+                        calendarToken?.trigger?.quickSelector?.border?.[
+                            stateKey
+                        ]?.top,
                     borderBottom:
-                        calendarToken?.quickRange?.trigger?.border?.[stateKey]
-                            ?.bottom,
+                        calendarToken?.trigger?.quickSelector?.border?.[
+                            stateKey
+                        ]?.bottom,
                     borderTopLeftRadius:
-                        calendarToken?.quickRange?.trigger?.borderRadius
+                        calendarToken?.trigger?.quickSelector?.borderRadius
                             ?.topLeft,
                     borderBottomLeftRadius:
-                        calendarToken?.quickRange?.trigger?.borderRadius
+                        calendarToken?.trigger?.quickSelector?.borderRadius
                             ?.bottomLeft,
                 }
             }
@@ -164,10 +169,10 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                                 cursor: isDisabled ? 'not-allowed' : 'pointer',
                                 width: '100%',
                                 backgroundColor:
-                                    calendarToken?.quickRange?.trigger
+                                    calendarToken?.trigger?.quickSelector
                                         ?.backgroundColor,
-                                padding: `${calendarToken?.quickRange?.trigger?.padding?.[size as keyof CalendarTokenType['quickRange']['trigger']['padding']]?.y} ${calendarToken?.quickRange?.trigger?.padding?.[size as keyof CalendarTokenType['quickRange']['trigger']['padding']]?.x}`,
-                                gap: calendarToken?.quickRange?.trigger?.gap,
+                                padding: `${calendarToken?.trigger?.quickSelector?.padding?.[size as keyof CalendarTokenType['trigger']['quickSelector']['padding']]?.y} ${calendarToken?.trigger?.quickSelector?.padding?.[size as keyof CalendarTokenType['trigger']['quickSelector']['padding']]?.x}`,
+                                gap: calendarToken?.trigger?.quickSelector?.gap,
                                 opacity: isDisabled ? 0.5 : 1,
                                 border: 'none',
                                 borderRadius: 0,
@@ -176,17 +181,17 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                             <Block
                                 as="span"
                                 color={
-                                    calendarToken?.quickRange?.trigger?.text
+                                    calendarToken?.trigger?.quickSelector?.text
                                         ?.color
                                 }
                                 fontSize={
-                                    calendarToken?.quickRange?.trigger?.text
+                                    calendarToken?.trigger?.quickSelector?.text
                                         ?.fontSize?.[
-                                        size as keyof CalendarTokenType['quickRange']['trigger']['text']['fontSize']
+                                        size as keyof CalendarTokenType['trigger']['quickSelector']['text']['fontSize']
                                     ]
                                 }
                                 fontWeight={
-                                    calendarToken?.quickRange?.trigger?.text
+                                    calendarToken?.trigger?.quickSelector?.text
                                         ?.fontWeight
                                 }
                                 style={{
@@ -202,10 +207,11 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                             </Block>
                             <ChevronDown
                                 size={
-                                    calendarToken?.quickRange?.trigger?.iconSize
+                                    calendarToken?.trigger?.quickSelector
+                                        ?.iconSize
                                 }
                                 color={
-                                    calendarToken?.quickRange?.trigger?.text
+                                    calendarToken?.trigger?.quickSelector?.text
                                         ?.color
                                 }
                             />

@@ -25,8 +25,8 @@ export const StyledAvatarWrapper = styled.div<StyledAvatarWrapperProps>`
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            margin-left: ${props.$index === 0 ? '0' : `-${tokens.container.spacing[props.$size]}`};
-            z-index: ${tokens.avatar.stacking.zIndex + (props.$total - props.$index)};
+            margin-left: ${props.$index === 0 ? '0' : `-${tokens.container.marginLeft[props.$size]}`};
+            z-index: ${1 + (props.$total - props.$index)};
 
             /* Border ring around avatar */
             & > div {
@@ -63,7 +63,7 @@ export const StyledOverflowCounter = styled.button<StyledOverflowCounterProps>`
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            margin-left: -${tokens.container.spacing[props.$size]};
+            margin-left: -${tokens.container.marginLeft[props.$size]};
 
             width: ${tokens.overflowCounter.size[props.$size].width};
             height: ${tokens.overflowCounter.size[props.$size].height};
@@ -81,7 +81,7 @@ export const StyledOverflowCounter = styled.button<StyledOverflowCounterProps>`
             border: ${tokens.overflowCounter.border.width} solid ${tokens.overflowCounter.border.color};
 
             transition: background-color 0.2s ease, box-shadow 0.2s ease;
-            z-index: ${tokens.avatar.stacking.zIndex};
+            z-index: ${1};
 
             &:hover {
                 background-color: ${tokens.overflowCounter.background.hover};
@@ -111,8 +111,8 @@ export const StyledMenuContainer = styled.div`
 
         return `
             position: fixed;
-            z-index: ${tokens.menu.zIndex};
-            margin-top: ${tokens.menu.spacing};
+            z-index: ${50};
+            margin-top: ${tokens.menu.marginTop};
         `
     }}
 `

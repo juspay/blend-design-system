@@ -19,39 +19,10 @@ export type CalendarSize = 'sm' | 'md' | 'lg'
  * - target.padding.x/y (for consistent padding structure)
  */
 export type CalendarTokenType = {
-    // Main trigger element (date input field)
+    // Trigger elements - both quick selector and date input
     trigger: {
-        // Border radius for different configurations
-        borderRadius: {
-            quickRange: CSSObject['borderRadius'] // Combined radius when presets are shown
-            withoutQuickRange: CSSObject['borderRadius'] // Combined radius when no presets
-        }
-        // Size-dependent padding broken into x/y axis
-        padding: {
-            [key in CalendarSize]: {
-                x: CSSObject['padding'] // Horizontal padding
-                y: CSSObject['padding'] // Vertical padding
-            }
-        }
-        // Text styling
-        text: {
-            color: CSSObject['color'] // Text color
-            fontSize: {
-                [key in CalendarSize]: CSSObject['fontSize'] // Font size for each size
-            }
-            fontWeight: CSSObject['fontWeight'] // Text font weight
-        }
-        // State-dependent border styling
-        border: {
-            [key in CalendarState]: CSSObject['border'] // Border for each state
-        }
-        backgroundColor: CSSObject['backgroundColor'] // Background color
-        iconSize: CSSObject['width'] // Icon size
-        gap: CSSObject['gap'] // Gap between elements
-    }
-    // Quick range selector (preset dropdown)
-    quickRange: {
-        trigger: {
+        // Quick selector (left side preset dropdown)
+        quickSelector: {
             // Border radius for individual corners
             borderRadius: {
                 topLeft: CSSObject['borderTopLeftRadius'] // Top left corner
@@ -87,6 +58,37 @@ export type CalendarTokenType = {
                 }
             }
             iconSize: CSSObject['width'] // Icon size
+        }
+
+        // Date input (right side main input field)
+        dateInput: {
+            // Border radius for different configurations
+            borderRadius: {
+                withQuickSelector: CSSObject['borderRadius'] // Radius when quick selector is shown
+                withoutQuickSelector: CSSObject['borderRadius'] // Radius when no quick selector
+            }
+            // Size-dependent padding broken into x/y axis
+            padding: {
+                [key in CalendarSize]: {
+                    x: CSSObject['padding'] // Horizontal padding
+                    y: CSSObject['padding'] // Vertical padding
+                }
+            }
+            // Text styling
+            text: {
+                color: CSSObject['color'] // Text color
+                fontSize: {
+                    [key in CalendarSize]: CSSObject['fontSize'] // Font size for each size
+                }
+                fontWeight: CSSObject['fontWeight'] // Text font weight
+            }
+            // State-dependent border styling
+            border: {
+                [key in CalendarState]: CSSObject['border'] // Border for each state
+            }
+            backgroundColor: CSSObject['backgroundColor'] // Background color
+            iconSize: CSSObject['width'] // Icon size
+            gap: CSSObject['gap'] // Gap between elements
         }
     }
     calendar: {
@@ -247,45 +249,7 @@ export const getCalendarToken = (
 ): ResponsiveCalendarTokens => {
     const baseTokens: CalendarTokenType = {
         trigger: {
-            borderRadius: {
-                quickRange: '0 8px 8px 0',
-                withoutQuickRange: foundationToken.border.radius[8],
-            },
-            padding: {
-                sm: {
-                    x: foundationToken.unit[14],
-                    y: foundationToken.unit[5],
-                },
-                md: {
-                    x: foundationToken.unit[14],
-                    y: '4.5px',
-                },
-                lg: {
-                    x: foundationToken.unit[14],
-                    y: '8.5px',
-                },
-            },
-            text: {
-                color: foundationToken.colors.gray[600],
-                fontSize: {
-                    sm: foundationToken.font.size.body.sm.fontSize,
-                    md: foundationToken.font.size.body.md.fontSize,
-                    lg: foundationToken.font.size.body.md.fontSize,
-                },
-                fontWeight: foundationToken.font.weight[500],
-            },
-            border: {
-                default: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
-                hover: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
-                active: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
-                disabled: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
-            },
-            backgroundColor: foundationToken.colors.gray[0],
-            iconSize: foundationToken.unit[16],
-            gap: foundationToken.unit[8],
-        },
-        quickRange: {
-            trigger: {
+            quickSelector: {
                 borderRadius: {
                     topLeft: foundationToken.border.radius[8],
                     topRight: foundationToken.border.radius[0],
@@ -344,6 +308,45 @@ export const getCalendarToken = (
                     },
                 },
                 iconSize: foundationToken.unit[16],
+            },
+
+            dateInput: {
+                borderRadius: {
+                    withQuickSelector: '0 8px 8px 0',
+                    withoutQuickSelector: foundationToken.border.radius[8],
+                },
+                padding: {
+                    sm: {
+                        x: foundationToken.unit[14],
+                        y: foundationToken.unit[5],
+                    },
+                    md: {
+                        x: foundationToken.unit[14],
+                        y: '4.5px',
+                    },
+                    lg: {
+                        x: foundationToken.unit[14],
+                        y: '8.5px',
+                    },
+                },
+                text: {
+                    color: foundationToken.colors.gray[600],
+                    fontSize: {
+                        sm: foundationToken.font.size.body.sm.fontSize,
+                        md: foundationToken.font.size.body.md.fontSize,
+                        lg: foundationToken.font.size.body.md.fontSize,
+                    },
+                    fontWeight: foundationToken.font.weight[500],
+                },
+                border: {
+                    default: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                    hover: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                    active: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                    disabled: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
+                },
+                backgroundColor: foundationToken.colors.gray[0],
+                iconSize: foundationToken.unit[16],
+                gap: foundationToken.unit[8],
             },
         },
         calendar: {

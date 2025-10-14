@@ -6,7 +6,7 @@ import {
     formatTimeInput,
     triggerHapticFeedback,
     AppleCalendarHapticManager,
-    APPLE_CALENDAR_CONSTANTS,
+    MOBILE_CALENDAR_CONSTANTS,
     getPickerVisibleItems,
     clampPickerIndex,
     calculateScrollPosition,
@@ -16,6 +16,7 @@ import { FOUNDATION_THEME } from '../../../tokens'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import type { ScrollablePickerProps } from '../types'
+import { getMobileToken } from './mobile.tokens'
 
 const { ITEM_HEIGHT, VISIBLE_ITEMS, SCROLL_DEBOUNCE } = MOBILE_PICKER_CONSTANTS
 const CONTAINER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS
@@ -29,6 +30,7 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
         columnId,
         isDisabled = false,
     }) => {
+        const tokens = getMobileToken(FOUNDATION_THEME).sm
         const scrollRef = useRef<HTMLDivElement>(null)
         const isScrollingRef = useRef(false)
         const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -129,7 +131,7 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                 }
 
                 const duration = Math.min(
-                    APPLE_CALENDAR_CONSTANTS.SNAP_DURATION,
+                    MOBILE_CALENDAR_CONSTANTS.SNAP_DURATION,
                     Math.abs(distance) * 1.5
                 )
                 const startTime = performance.now()
@@ -140,7 +142,7 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
 
                     if (
                         frameCountRef.current >
-                        APPLE_CALENDAR_CONSTANTS.ANIMATION_FRAME_LIMIT
+                        MOBILE_CALENDAR_CONSTANTS.ANIMATION_FRAME_LIMIT
                     ) {
                         if (scrollRef.current) {
                             scrollRef.current.scrollTop = targetScrollTop
@@ -200,12 +202,13 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                 if (timeDelta > 0 && timeDelta < 100) {
                     const rawVelocity = scrollDelta / timeDelta
                     const resistedVelocity =
-                        rawVelocity * APPLE_CALENDAR_CONSTANTS.SCROLL_RESISTANCE
+                        rawVelocity *
+                        MOBILE_CALENDAR_CONSTANTS.SCROLL_RESISTANCE
 
                     velocityHistoryRef.current.push(resistedVelocity)
                     if (
                         velocityHistoryRef.current.length >
-                        APPLE_CALENDAR_CONSTANTS.VELOCITY_HISTORY_SIZE
+                        MOBILE_CALENDAR_CONSTANTS.VELOCITY_HISTORY_SIZE
                     ) {
                         velocityHistoryRef.current.shift()
                     }
@@ -217,9 +220,9 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                         ) / velocityHistoryRef.current.length
                     smoothedVelocityRef.current =
                         smoothedVelocityRef.current *
-                            APPLE_CALENDAR_CONSTANTS.VELOCITY_SMOOTHING +
+                            MOBILE_CALENDAR_CONSTANTS.VELOCITY_SMOOTHING +
                         avgVelocity *
-                            (1 - APPLE_CALENDAR_CONSTANTS.VELOCITY_SMOOTHING)
+                            (1 - MOBILE_CALENDAR_CONSTANTS.VELOCITY_SMOOTHING)
                     velocityRef.current = smoothedVelocityRef.current
                 }
 
@@ -260,7 +263,7 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
 
                     if (
                         finalVelocity >
-                        APPLE_CALENDAR_CONSTANTS.MOMENTUM_THRESHOLD
+                        MOBILE_CALENDAR_CONSTANTS.MOMENTUM_THRESHOLD
                     ) {
                         const currentScrollTop =
                             scrollRef.current?.scrollTop || 0
@@ -272,10 +275,10 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                         const velocityDirection =
                             velocityRef.current > 0 ? 1 : -1
                         const momentumDistance = Math.min(
-                            APPLE_CALENDAR_CONSTANTS.MAX_MOMENTUM_DISTANCE,
+                            MOBILE_CALENDAR_CONSTANTS.MAX_MOMENTUM_DISTANCE,
                             Math.ceil(
                                 finalVelocity *
-                                    APPLE_CALENDAR_CONSTANTS.VELOCITY_MULTIPLIER
+                                    MOBILE_CALENDAR_CONSTANTS.VELOCITY_MULTIPLIER
                             )
                         )
 
@@ -292,7 +295,7 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                         const startScrollTop = currentScrollTop
                         const distance = targetScrollTop - startScrollTop
                         const duration = Math.min(
-                            APPLE_CALENDAR_CONSTANTS.SNAP_DURATION * 1.2,
+                            MOBILE_CALENDAR_CONSTANTS.SNAP_DURATION * 1.2,
                             Math.abs(distance) * 2
                         )
                         const startTime = performance.now()
@@ -303,7 +306,7 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
 
                             if (
                                 frameCountRef.current >
-                                APPLE_CALENDAR_CONSTANTS.ANIMATION_FRAME_LIMIT
+                                MOBILE_CALENDAR_CONSTANTS.ANIMATION_FRAME_LIMIT
                             ) {
                                 snapToNearestItem(targetScrollTop)
                                 return
@@ -536,8 +539,8 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                                     ? 'pointer'
                                     : 'default',
                             userSelect: 'none',
-                            transform: `scale(${APPLE_CALENDAR_CONSTANTS.SCALE_UNSELECTED})`,
-                            transition: `transform ${APPLE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${APPLE_CALENDAR_CONSTANTS.EASING}`,
+                            transform: `scale(${MOBILE_CALENDAR_CONSTANTS.SCALE_UNSELECTED})`,
+                            transition: `transform ${MOBILE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${MOBILE_CALENDAR_CONSTANTS.EASING}`,
                         }}
                         onClick={(e) => {
                             if (visibleItems.hasTopItem && !isDisabled) {
@@ -546,15 +549,16 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                         }}
                     >
                         <PrimitiveText
-                            fontSize="16px"
-                            fontWeight="400"
-                            color="#9ca3af"
+                            fontSize={tokens.picker.text.unselected.fontSize}
+                            fontWeight={
+                                tokens.picker.text.unselected.fontWeight
+                            }
+                            color={tokens.picker.text.unselected.color}
                             style={{
                                 textAlign: 'center',
-                                opacity:
-                                    APPLE_CALENDAR_CONSTANTS.OPACITY_UNSELECTED,
+                                opacity: tokens.picker.text.unselected.opacity,
                                 userSelect: 'none',
-                                transition: `opacity ${APPLE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${APPLE_CALENDAR_CONSTANTS.EASING}`,
+                                transition: `opacity ${MOBILE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${MOBILE_CALENDAR_CONSTANTS.EASING}`,
                             }}
                         >
                             {visibleItems.topItem || ''}
@@ -576,8 +580,8 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                                   : 'pointer',
                             userSelect: isTimeColumn ? 'text' : 'none',
                             zIndex: isTimeColumn ? 10 : 1,
-                            transform: `scale(${APPLE_CALENDAR_CONSTANTS.SCALE_SELECTED})`,
-                            transition: `transform ${APPLE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${APPLE_CALENDAR_CONSTANTS.EASING}`,
+                            transform: `scale(${MOBILE_CALENDAR_CONSTANTS.SCALE_SELECTED})`,
+                            transition: `transform ${MOBILE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${MOBILE_CALENDAR_CONSTANTS.EASING}`,
                         }}
                     >
                         {isTimeColumn ? (
@@ -607,7 +611,7 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                                     position: 'relative',
                                     zIndex: 10,
                                     fontFamily: 'inherit',
-                                    transition: `opacity ${APPLE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${APPLE_CALENDAR_CONSTANTS.EASING}`,
+                                    transition: `opacity ${MOBILE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${MOBILE_CALENDAR_CONSTANTS.EASING}`,
                                 }}
                                 onFocus={(e) => {
                                     if (isDisabled) return
@@ -702,15 +706,17 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                             />
                         ) : (
                             <PrimitiveText
-                                fontSize="16px"
-                                fontWeight="600"
-                                color="#111827"
+                                fontSize={tokens.picker.text.selected.fontSize}
+                                fontWeight={
+                                    tokens.picker.text.selected.fontWeight
+                                }
+                                color={tokens.picker.text.selected.color}
                                 style={{
                                     textAlign: 'center',
                                     opacity:
-                                        APPLE_CALENDAR_CONSTANTS.OPACITY_SELECTED,
+                                        tokens.picker.text.selected.opacity,
                                     userSelect: 'none',
-                                    transition: `opacity ${APPLE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${APPLE_CALENDAR_CONSTANTS.EASING}`,
+                                    transition: `opacity ${MOBILE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${MOBILE_CALENDAR_CONSTANTS.EASING}`,
                                 }}
                             >
                                 {visibleItems.centerItem || ''}
@@ -729,8 +735,8 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                                     ? 'pointer'
                                     : 'default',
                             userSelect: 'none',
-                            transform: `scale(${APPLE_CALENDAR_CONSTANTS.SCALE_UNSELECTED})`,
-                            transition: `transform ${APPLE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${APPLE_CALENDAR_CONSTANTS.EASING}`,
+                            transform: `scale(${MOBILE_CALENDAR_CONSTANTS.SCALE_UNSELECTED})`,
+                            transition: `transform ${MOBILE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${MOBILE_CALENDAR_CONSTANTS.EASING}`,
                         }}
                         onClick={(e) => {
                             if (visibleItems.hasBottomItem && !isDisabled) {
@@ -739,15 +745,16 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                         }}
                     >
                         <PrimitiveText
-                            fontSize="16px"
-                            fontWeight="400"
-                            color="#9ca3af"
+                            fontSize={tokens.picker.text.unselected.fontSize}
+                            fontWeight={
+                                tokens.picker.text.unselected.fontWeight
+                            }
+                            color={tokens.picker.text.unselected.color}
                             style={{
                                 textAlign: 'center',
-                                opacity:
-                                    APPLE_CALENDAR_CONSTANTS.OPACITY_UNSELECTED,
+                                opacity: tokens.picker.text.unselected.opacity,
                                 userSelect: 'none',
-                                transition: `opacity ${APPLE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${APPLE_CALENDAR_CONSTANTS.EASING}`,
+                                transition: `opacity ${MOBILE_CALENDAR_CONSTANTS.TRANSITION_DURATION} ${MOBILE_CALENDAR_CONSTANTS.EASING}`,
                             }}
                         >
                             {visibleItems.bottomItem || ''}

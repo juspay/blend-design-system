@@ -2471,7 +2471,7 @@ export class AppleCalendarHapticManager {
     }
 }
 
-export const APPLE_CALENDAR_CONSTANTS = {
+export const MOBILE_CALENDAR_CONSTANTS = {
     // Scroll behavior - optimized for smoothness
     SNAP_DURATION: 300, // Slightly faster snap
     MOMENTUM_THRESHOLD: 0.03, // Lower threshold for better responsiveness

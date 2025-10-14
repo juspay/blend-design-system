@@ -34,7 +34,6 @@ const DirectoryContainer = styled(Block)`
 const MainContentContainer = styled(Block)`
     width: 100%;
     height: 100%;
-    background-color: #f9fafb;
     position: relative;
     overflow-y: auto;
 
@@ -210,10 +209,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                     <DirectoryContainer
                                         data-directory-container
                                     >
-                                        <Directory
-                                            directoryData={data}
-                                            className="pb-20"
-                                        />
+                                        <Directory directoryData={data} />
                                     </DirectoryContainer>
 
                                     <SidebarFooter footer={footer} />
