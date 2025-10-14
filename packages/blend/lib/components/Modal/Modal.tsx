@@ -206,6 +206,22 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         }, [])
 
         useEffect(() => {
+            const handleEscapeKey = (event: KeyboardEvent) => {
+                if (event.key === 'Escape' && isOpen) {
+                    onClose()
+                }
+            }
+
+            if (isOpen) {
+                document.addEventListener('keydown', handleEscapeKey)
+            }
+
+            return () => {
+                document.removeEventListener('keydown', handleEscapeKey)
+            }
+        }, [isOpen, onClose])
+
+        useEffect(() => {
             if (isMounted && isOpen) {
                 const container = getPortalContainer()
                 setPortalContainer(container)
