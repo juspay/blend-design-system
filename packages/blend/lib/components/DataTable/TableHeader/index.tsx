@@ -198,6 +198,9 @@ const TableHeader = forwardRef<
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                                 boxSizing: 'border-box',
+                                borderBottom:
+                                    tableToken.dataTable.table.header
+                                        .borderBottom,
                                 ...(columnFreeze > 0 && {
                                     position: 'sticky',
                                     left: '0px',
@@ -227,6 +230,9 @@ const TableHeader = forwardRef<
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                                 boxSizing: 'border-box',
+                                borderBottom:
+                                    tableToken.dataTable.table.header
+                                        .borderBottom,
                                 ...(columnFreeze > 0 && {
                                     position: 'sticky',
                                     left: enableRowExpansion ? '50px' : '0px',
@@ -280,6 +286,10 @@ const TableHeader = forwardRef<
                                             .sortable),
                                     ...columnStyles,
                                     ...frozenStyles,
+                                    // Ensure border bottom is always present
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
                                 }}
                             >
                                 <Block
@@ -644,6 +654,9 @@ const TableHeader = forwardRef<
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     boxSizing: 'border-box',
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
                                 }}
                             >
                                 <Block
@@ -678,6 +691,9 @@ const TableHeader = forwardRef<
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     boxSizing: 'border-box',
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
                                 }}
                             ></th>
                         )}
@@ -698,6 +714,9 @@ const TableHeader = forwardRef<
                                 width: FOUNDATION_THEME.unit[48],
                                 minWidth: FOUNDATION_THEME.unit[48],
                                 maxWidth: FOUNDATION_THEME.unit[48],
+                                borderBottom:
+                                    tableToken.dataTable.table.header
+                                        .borderBottom,
                             }}
                         >
                             <Block position="relative">
