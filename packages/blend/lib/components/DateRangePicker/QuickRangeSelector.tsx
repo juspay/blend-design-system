@@ -10,6 +10,7 @@ import {
     getPresetLabelWithCustom,
     getFilteredPresets,
 } from './utils'
+import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
 import SingleSelect from '../SingleSelect/SingleSelect'
 import {
@@ -32,6 +33,7 @@ type QuickRangeSelectorProps = {
     size?: DateRangePickerSize
     maxMenuHeight?: number
     isStandalone?: boolean
+    calendarToken?: CalendarTokenType
 }
 
 const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
@@ -48,6 +50,7 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
             size = DateRangePickerSize.MEDIUM,
             maxMenuHeight = 200,
             isStandalone = false,
+            calendarToken,
         },
         ref
     ) => {
@@ -97,33 +100,41 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
 
         const getContainerStyle = () => {
             const baseStyle = {
-                backgroundColor: 'transparent',
+                backgroundColor:
+                    calendarToken?.quickRange?.trigger?.backgroundColor,
             }
 
             if (isStandalone) {
-                const border = isDisabled
-                    ? '1px solid #e5e7eb'
-                    : '1px solid #d1d5db'
+                const borderColor = isDisabled
+                    ? calendarToken?.quickRange?.trigger?.border?.disabled?.left
+                    : calendarToken?.quickRange?.trigger?.border?.default?.left
 
                 return {
                     ...baseStyle,
-                    border: border,
-                    borderRadius: '8px',
+                    border: borderColor,
+                    borderRadius:
+                        calendarToken?.quickRange?.trigger?.borderRadius
+                            ?.topLeft,
                 }
             } else {
+                const stateKey = isDisabled ? 'disabled' : 'default'
                 return {
                     ...baseStyle,
-                    borderLeft: isDisabled
-                        ? '1px solid #e5e7eb'
-                        : '1px solid #d1d5db',
-                    borderTop: isDisabled
-                        ? '1px solid #e5e7eb'
-                        : '1px solid #d1d5db',
-                    borderBottom: isDisabled
-                        ? '1px solid #e5e7eb'
-                        : '1px solid #d1d5db',
-                    borderTopLeftRadius: '8px',
-                    borderBottomLeftRadius: '8px',
+                    borderLeft:
+                        calendarToken?.quickRange?.trigger?.border?.[stateKey]
+                            ?.left,
+                    borderTop:
+                        calendarToken?.quickRange?.trigger?.border?.[stateKey]
+                            ?.top,
+                    borderBottom:
+                        calendarToken?.quickRange?.trigger?.border?.[stateKey]
+                            ?.bottom,
+                    borderTopLeftRadius:
+                        calendarToken?.quickRange?.trigger?.borderRadius
+                            ?.topLeft,
+                    borderBottomLeftRadius:
+                        calendarToken?.quickRange?.trigger?.borderRadius
+                            ?.bottomLeft,
                 }
             }
         }
@@ -152,14 +163,11 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                                 alignItems: 'center',
                                 cursor: isDisabled ? 'not-allowed' : 'pointer',
                                 width: '100%',
-                                backgroundColor: 'transparent',
-                                padding:
-                                    size === 'sm'
-                                        ? '6px 14px'
-                                        : size === 'lg'
-                                          ? '8.5px 14px'
-                                          : '6.5px 14px',
-                                gap: '8px',
+                                backgroundColor:
+                                    calendarToken?.quickRange?.trigger
+                                        ?.backgroundColor,
+                                padding: `${calendarToken?.quickRange?.trigger?.padding?.[size as keyof CalendarTokenType['quickRange']['trigger']['padding']]?.y} ${calendarToken?.quickRange?.trigger?.padding?.[size as keyof CalendarTokenType['quickRange']['trigger']['padding']]?.x}`,
+                                gap: calendarToken?.quickRange?.trigger?.gap,
                                 opacity: isDisabled ? 0.5 : 1,
                                 border: 'none',
                                 borderRadius: 0,
@@ -167,9 +175,20 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                         >
                             <Block
                                 as="span"
-                                color="#6b7280"
-                                fontSize={size === 'sm' ? '14px' : '16px'}
-                                fontWeight="500"
+                                color={
+                                    calendarToken?.quickRange?.trigger?.text
+                                        ?.color
+                                }
+                                fontSize={
+                                    calendarToken?.quickRange?.trigger?.text
+                                        ?.fontSize?.[
+                                        size as keyof CalendarTokenType['quickRange']['trigger']['text']['fontSize']
+                                    ]
+                                }
+                                fontWeight={
+                                    calendarToken?.quickRange?.trigger?.text
+                                        ?.fontWeight
+                                }
                                 style={{
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
@@ -181,7 +200,15 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                                     presetConfigs
                                 )}
                             </Block>
-                            <ChevronDown size={16} color="#6b7280" />
+                            <ChevronDown
+                                size={
+                                    calendarToken?.quickRange?.trigger?.iconSize
+                                }
+                                color={
+                                    calendarToken?.quickRange?.trigger?.text
+                                        ?.color
+                                }
+                            />
                         </Block>
                     }
                     maxMenuHeight={maxMenuHeight}

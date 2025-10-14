@@ -15,6 +15,7 @@ import {
     MenuAlignment,
     MenuSide,
 } from '../Menu/types'
+import { CalendarTokenType } from './dateRangePicker.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 
 type TimeSelectorProps = {
@@ -23,6 +24,7 @@ type TimeSelectorProps = {
     className?: string
     autoFocus?: boolean
     tabIndex?: number
+    calendarToken?: CalendarTokenType
 }
 
 const formatTimeFor12Hour = (hour: number, minute: number): string => {
@@ -130,7 +132,7 @@ const generateTimeOptions = (
 }
 
 const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
-    ({ value, onChange, autoFocus = true, tabIndex }, ref) => {
+    ({ value, onChange, autoFocus = true, tabIndex, calendarToken }, ref) => {
         const [isOpen, setIsOpen] = useState(false)
         const [inputValue, setInputValue] = useState('')
         const [isValidTime, setIsValidTime] = useState(true)
@@ -268,35 +270,37 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                 placeholder="12:00 PM"
                 width="118px"
                 height="32px"
-                paddingX={FOUNDATION_THEME.unit[10]}
+                paddingX={calendarToken?.calendar?.inputs?.dateInput?.gap}
                 paddingY={FOUNDATION_THEME.unit[6]}
-                fontSize={FOUNDATION_THEME.font.size.body.md.fontSize}
-                fontWeight={500}
+                fontSize={calendarToken?.calendar?.inputs?.dateInput?.fontSize}
+                fontWeight={
+                    calendarToken?.calendar?.inputs?.dateInput?.fontWeight
+                }
                 lineHeight={FOUNDATION_THEME.unit[20]}
-                borderRadius={FOUNDATION_THEME.unit[10]}
+                borderRadius={FOUNDATION_THEME.border.radius[6]}
                 border="none"
                 tabIndex={tabIndex}
                 outline={
                     isValidTime
-                        ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
-                        : `1px solid ${FOUNDATION_THEME.colors.red[500]}`
+                        ? `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`
+                        : `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.red[500]}`
                 }
                 boxShadow={FOUNDATION_THEME.shadows.sm}
                 backgroundColor={FOUNDATION_THEME.colors.gray[0]}
                 color={FOUNDATION_THEME.colors.gray[800]}
                 cursor="text"
                 _hover={{
-                    outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
+                    outline: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[400]}`,
                     boxShadow: FOUNDATION_THEME.shadows.sm,
                 }}
                 _focus={{
-                    outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                    outline: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.primary[500]}`,
                     boxShadow: FOUNDATION_THEME.shadows.focusPrimary,
                 }}
                 _disabled={{
                     backgroundColor: FOUNDATION_THEME.colors.gray[50],
                     color: FOUNDATION_THEME.colors.gray[300],
-                    outline: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                    outline: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
                     cursor: 'not-allowed',
                 }}
             />
