@@ -155,6 +155,8 @@ export type ChartsProps = {
     yAxis?: YAxisConfig
     noData?: NoDataProps
     height?: number
+    showHeader?: boolean
+    showCollapseIcon?: boolean
 }
 
 export type FlattenedDataPoint = {
@@ -173,6 +175,7 @@ export type ChartHeaderProps = {
     isSmallScreen?: boolean
     isExpanded: boolean
     setIsExpanded: (isExpanded: boolean) => void
+    showCollapseIcon?: boolean
 }
 
 export type ChartLegendsProps = {

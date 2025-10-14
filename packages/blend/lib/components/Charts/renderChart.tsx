@@ -65,14 +65,13 @@ export const renderChart = ({
         !finalXAxis.ticks &&
         originalData.length > 0
     ) {
-        // Responsive tick count: aggressively reduce ticks on small screens to prevent overlap
-        const defaultMaxTicks = isSmallScreen ? 4 : 10
+        // Only apply maxTicks if explicitly set, otherwise let the formatter decide
         const { ticks } = generateConsistentDateTimeTicks(originalData, {
             maxTicks: finalXAxis.maxTicks
                 ? isSmallScreen
                     ? Math.max(3, Math.floor(finalXAxis.maxTicks / 2))
                     : finalXAxis.maxTicks
-                : defaultMaxTicks,
+                : undefined, // Don't limit ticks when maxTicks is not explicitly set
             dateOnly: finalXAxis.dateOnly,
             timeOnly: finalXAxis.timeOnly,
             showYear: finalXAxis.showYear,
