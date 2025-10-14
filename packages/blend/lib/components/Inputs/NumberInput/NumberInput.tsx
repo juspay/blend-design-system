@@ -260,9 +260,9 @@ const NumberInput = ({
                             fill={
                                 disabled
                                     ? numberInputTokens.inputContainer
-                                          .stepperButton.icon.fill.disabled
+                                          .stepperButton.icon.color.disabled
                                     : numberInputTokens.inputContainer
-                                          .stepperButton.icon.fill.default
+                                          .stepperButton.icon.color.default
                             }
                             size={
                                 numberInputTokens.inputContainer.stepperButton
@@ -331,9 +331,9 @@ const NumberInput = ({
                             fill={
                                 disabled
                                     ? numberInputTokens.inputContainer
-                                          .stepperButton.icon.fill.disabled
+                                          .stepperButton.icon.color.disabled
                                     : numberInputTokens.inputContainer
-                                          .stepperButton.icon.fill.default
+                                          .stepperButton.icon.color.default
                             }
                             size={
                                 numberInputTokens.inputContainer.stepperButton

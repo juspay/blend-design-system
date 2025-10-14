@@ -93,9 +93,6 @@ export type NumberInputTokensType = {
                 color: {
                     [key in NumberInputState]: CSSObject['color']
                 }
-                fill: {
-                    [key in NumberInputState]: CSSObject['fill']
-                }
                 width: {
                     [key in TextInputSize]: CSSObject['width']
                 }
@@ -230,14 +227,6 @@ export const getNumberInputTokens = (
                             focus: foundationToken.colors.gray[400],
                             error: foundationToken.colors.gray[400],
                         },
-
-                        fill: {
-                            default: foundationToken.colors.gray[400],
-                            disabled: foundationToken.colors.gray[300],
-                            hover: foundationToken.colors.gray[400],
-                            focus: foundationToken.colors.gray[400],
-                            error: foundationToken.colors.gray[400],
-                        },
                         width: {
                             md: foundationToken.unit[6],
                             lg: foundationToken.unit[6],
@@ -366,13 +355,6 @@ export const getNumberInputTokens = (
                             error: foundationToken.colors.gray[400],
                         },
 
-                        fill: {
-                            default: foundationToken.colors.gray[400],
-                            disabled: foundationToken.colors.gray[300],
-                            hover: foundationToken.colors.gray[400],
-                            focus: foundationToken.colors.gray[400],
-                            error: foundationToken.colors.gray[400],
-                        },
                         width: {
                             md: foundationToken.unit[6],
                             lg: foundationToken.unit[6],
