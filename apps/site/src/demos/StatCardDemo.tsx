@@ -3,6 +3,7 @@ import {
     StatCard,
     StatCardVariant,
     ChangeType,
+    StatCardDirection,
 } from '../../../../packages/blend/lib/components/StatCard'
 import { AxisType } from '../../../../packages/blend/lib/components/Charts'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
@@ -22,6 +23,7 @@ import {
     Target,
     Star,
     Info,
+    EllipsisVertical,
 } from 'lucide-react'
 import { Popover } from '../../../../packages/blend/lib/main'
 
@@ -300,7 +302,8 @@ const StatCardDemo = () => {
                             Number Variant
                         </h3>
                         <StatCard
-                            height="190px"
+                            actionIcon={<EllipsisVertical size={16} />}
+                            height="250px"
                             title="Total Revenue"
                             value="$12,345"
                             subtitle="vs last month"
@@ -332,7 +335,8 @@ const StatCardDemo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Line Chart</h3>
                         <StatCard
-                            height="160px"
+                            direction={StatCardDirection.HORIZONTAL}
+                            // height="200px"
                             dropdownProps={{
                                 label: 'Currency',
                                 placeholder: 'Currency',
@@ -349,7 +353,7 @@ const StatCardDemo = () => {
                                 selected: dropdownValue,
                                 onSelect: handleDropdownSelect,
                             }}
-                            title="GMV Trend via internal retry to get ur api calls done"
+                            title="GMV Trend "
                             value="$8,234"
                             subtitle="last 7 days"
                             variant={StatCardVariant.LINE}
@@ -358,7 +362,7 @@ const StatCardDemo = () => {
                                 valueType: ChangeType.INCREASE,
                             }}
                             helpIconText="This is a help icon"
-                            // titleIcon={<TrendingUp size={16} />}
+                            titleIcon={<TrendingUp size={16} />}
                             chartData={sampleLineData}
                             actionIcon={<InfoPopoverExample />}
                         />

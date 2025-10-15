@@ -4,7 +4,7 @@ import {
     NameType,
     ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
-import { ButtonV2Props } from '../Button'
+import { ButtonProps } from '../Button'
 
 export type DataPoint = {
     primary: {
@@ -67,7 +67,7 @@ export type NoDataProps = {
     title?: string
     subtitle?: string
     slot?: ReactNode
-    button?: ButtonV2Props
+    button?: ButtonProps
 }
 
 export type AxisConfig = {
@@ -155,6 +155,10 @@ export type ChartsProps = {
     yAxis?: YAxisConfig
     noData?: NoDataProps
     height?: number
+    showHeader?: boolean
+    showCollapseIcon?: boolean
+    isExpanded?: boolean
+    onExpandedChange?: (isExpanded: boolean) => void
 }
 
 export type FlattenedDataPoint = {
@@ -173,6 +177,7 @@ export type ChartHeaderProps = {
     isSmallScreen?: boolean
     isExpanded: boolean
     setIsExpanded: (isExpanded: boolean) => void
+    showCollapseIcon?: boolean
 }
 
 export type ChartLegendsProps = {

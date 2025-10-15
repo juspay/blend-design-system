@@ -812,12 +812,8 @@ const GranularChartsDemo = () => {
                                             selectedKeys={selectedKeys}
                                             enableHover={true}
                                             xAxis={{
-                                                show: true,
-                                                showLabel: false,
                                                 type: AxisType.DATE_TIME,
-                                                interval:
-                                                    AxisIntervalType.PRESERVE_START,
-                                                timeOnly: true,
+                                                maxTicks: 3,
                                             }}
                                             yAxis={{
                                                 show: true,
@@ -2084,18 +2080,23 @@ const ChartDemo = () => {
             <Charts
                 data={last1hour5minsData}
                 chartType={ChartType.LINE}
+                slot1={<div>Hello</div>}
+                slot2={<div>World</div>}
+                slot3={<div>World</div>}
                 xAxis={{
                     label: 'Date & Time Together',
                     show: true,
                     type: AxisType.DATE_TIME,
                     smartDateTimeFormat: false,
                     showYear: true,
-                    maxTicks: 4,
+                    maxTicks: last1hour5minsData.length / 2,
+                    showLabel: true,
                 }}
                 yAxis={{
                     label: 'Currency',
                     show: true,
                     type: AxisType.CURRENCY,
+                    showLabel: true,
                 }}
                 chartHeaderSlot={
                     <div className="chart-header">
@@ -2108,11 +2109,13 @@ const ChartDemo = () => {
             />
 
             <Charts
+                height={200}
                 data={last1hour15minsData}
                 chartType={ChartType.LINE}
                 xAxis={{
                     label: 'Date (Timestamp)',
                     show: true,
+                    showLabel: true,
                     type: AxisType.DATE_TIME,
                     // dateOnly: true,
                     // timeOnly: true,
@@ -2121,6 +2124,7 @@ const ChartDemo = () => {
                 yAxis={{
                     label: 'Currency',
                     show: true,
+                    showLabel: true,
                     type: AxisType.CURRENCY,
                 }}
                 chartHeaderSlot={
@@ -2385,6 +2389,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
             {/* Main Interactive Chart */}
             <div className="chart-example-container mb-12">
                 <Charts
+                    height={300}
                     stackedLegends={true}
                     stackedLegendsData={stackedLegendsData}
                     data={getCurrentData()}
@@ -2639,6 +2644,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     {/* Bar Chart Example */}
 
                     <Charts
+                        height={200}
                         data={performanceData}
                         chartType={ChartType.BAR}
                         colors={['#8b5cf6', '#06b6d4', '#f59e0b']}
@@ -2658,6 +2664,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     {/* Pie Chart Example */}
 
                     <Charts
+                        height={200}
                         data={analyticsData}
                         chartType={ChartType.PIE}
                         legendPosition={ChartLegendPosition.RIGHT}

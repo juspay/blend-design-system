@@ -27,10 +27,13 @@ const BreadcrumbItem = ({
                 height={'full'}
                 gap={breadcrumbTokens.item.gap}
                 color={
-                    breadcrumbTokens.item.color[
-                        isActive ? 'active' : 'inactive'
+                    breadcrumbTokens.item.text.color[
+                        isActive ? 'active' : 'default'
                     ]
                 }
+                _hover={{
+                    color: breadcrumbTokens.item.text.color.hover,
+                }}
                 href={isActive ? undefined : item.href}
                 textDecoration="none"
             >
@@ -39,16 +42,8 @@ const BreadcrumbItem = ({
                 )}
                 <PrimitiveText
                     as="span"
-                    fontWeight={
-                        breadcrumbTokens.item.fontWeight[
-                            isActive ? 'active' : 'inactive'
-                        ]
-                    }
-                    fontSize={
-                        breadcrumbTokens.item.fontSize[
-                            isActive ? 'active' : 'inactive'
-                        ]
-                    }
+                    fontWeight={breadcrumbTokens.item.text.fontWeight}
+                    fontSize={breadcrumbTokens.item.text.fontSize}
                 >
                     {item.label}
                 </PrimitiveText>
@@ -90,8 +85,8 @@ const Breadcrumb = ({ items }: { items: BreadcrumbItemType[] }) => {
         <Block
             width={'full'}
             display="flex"
-            height={breadcrumbTokens.height}
             alignItems="center"
+            gap={breadcrumbTokens.gap}
         >
             {baseItem && (
                 <BreadcrumbItem

@@ -5,9 +5,9 @@ import { PopoverProps, PopoverSize } from './types'
 import PopoverHeader from './PopoverHeader'
 import PopoverFooter from './PopoverFooter'
 import { PopoverTokenType } from './popover.tokens'
-import { useComponentToken } from '../../context/useComponentToken'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobilePopover from './MobilePopover'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const Popover = ({
     heading,
@@ -38,7 +38,7 @@ const Popover = ({
     avoidCollisions = true,
 }: PopoverProps) => {
     const [isOpen, setIsOpen] = useState(open || false)
-    const popoverTokens = useComponentToken('POPOVER') as PopoverTokenType
+    const popoverTokens = useResponsiveTokens<PopoverTokenType>('POPOVER')
     const { innerWidth } = useBreakpoints()
     const isMobile = innerWidth < 1024
 
@@ -110,7 +110,7 @@ const Popover = ({
                         popoverTokens.shadow?.[shadow] ||
                         popoverTokens.shadow?.lg
                     }
-                    borderRadius={popoverTokens.borderRadius}
+                    borderRadius={popoverTokens.borderRadius[size]}
                     border={popoverTokens.border}
                     width={width}
                     minWidth={minWidth}
@@ -120,16 +120,18 @@ const Popover = ({
                     maxHeight={maxHeight}
                     display="flex"
                     flexDirection="column"
-                    gap={popoverTokens.gap}
+                    gap={popoverTokens.gap[size]}
                     paddingLeft={
-                        isCustomPopover ? 0 : popoverTokens.padding.horizontal
+                        isCustomPopover ? 0 : popoverTokens.padding.left[size]
                     }
                     paddingRight={
-                        isCustomPopover ? 0 : popoverTokens.padding.horizontal
+                        isCustomPopover ? 0 : popoverTokens.padding.right[size]
                     }
-                    paddingTop={isCustomPopover ? 0 : popoverTokens.padding.top}
+                    paddingTop={
+                        isCustomPopover ? 0 : popoverTokens.padding.top[size]
+                    }
                     paddingBottom={
-                        isCustomPopover ? 0 : popoverTokens.padding.bottom
+                        isCustomPopover ? 0 : popoverTokens.padding.bottom[size]
                     }
                 >
                     <PopoverHeader
@@ -148,6 +150,7 @@ const Popover = ({
                     <PopoverFooter
                         primaryAction={primaryAction}
                         secondaryAction={secondaryAction}
+                        size={size}
                     />
                 </Block>
             </RadixPopover.Content>

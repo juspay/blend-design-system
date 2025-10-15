@@ -16,6 +16,7 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
     isSmallScreen = false,
     isExpanded,
     setIsExpanded,
+    showCollapseIcon,
 }) => {
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
     const headerTokens = chartTokens.header
@@ -31,31 +32,30 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
             display="flex"
             alignItems="center"
             justifyContent="space-between"
-            gap={headerTokens.gap}
-            padding={headerTokens.padding[isSmallScreen ? 'sm' : 'lg']}
-            paddingLeft={headerTokens.padding[isSmallScreen ? 'sm' : 'lg']}
-            paddingRight={headerTokens.padding[isSmallScreen ? 'sm' : 'lg']}
+            gap={FOUNDATION_THEME.unit[12]}
+            paddingX={headerTokens.padding.x}
+            paddingY={headerTokens.padding.y}
             backgroundColor={headerTokens.backgroundColor}
             {...(isExpanded && {
                 borderBottom: headerTokens.borderBottom,
             })}
-            borderRadius={FOUNDATION_THEME.border.radius[8]}
+            borderRadius={headerTokens.borderRadius}
             borderBottomLeftRadius={
                 isExpanded
                     ? FOUNDATION_THEME.border.radius[0]
-                    : FOUNDATION_THEME.border.radius[8]
+                    : headerTokens.borderRadius
             }
             borderBottomRightRadius={
                 isExpanded
                     ? FOUNDATION_THEME.border.radius[0]
-                    : FOUNDATION_THEME.border.radius[8]
+                    : headerTokens.borderRadius
             }
         >
             <Block>{chartHeaderSlot}</Block>
             <Block
                 display="flex"
                 alignItems="center"
-                gap={headerTokens.gap}
+                gap={headerTokens.slots.gap}
                 flexShrink={0}
             >
                 {isSmallScreen ? (
@@ -99,18 +99,20 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                         )}
                     </>
                 )}
-                <Block
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    onClick={() => setIsExpanded(!isExpanded)}
-                >
-                    <ChevronsDownUp
-                        size={20}
-                        color={FOUNDATION_THEME.colors.gray[400]}
-                        cursor="pointer"
-                    />
-                </Block>
+                {showCollapseIcon && (
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        onClick={() => setIsExpanded(!isExpanded)}
+                    >
+                        <ChevronsDownUp
+                            size={20}
+                            color={FOUNDATION_THEME.colors.gray[400]}
+                            cursor="pointer"
+                        />
+                    </Block>
+                )}
                 {slot3}
             </Block>
         </Block>

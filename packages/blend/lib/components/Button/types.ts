@@ -20,7 +20,13 @@ export enum ButtonSubType {
     INLINE = 'inline',
 }
 
-export type ButtonV2Props = {
+export enum ButtonState {
+    DEFAULT = 'default',
+    HOBVER = 'hover',
+    ACTIVE = 'active',
+    DISABLED = 'disabled',
+}
+export type ButtonProps = {
     buttonType?: ButtonType
     size?: ButtonSize
     subType?: ButtonSubType
@@ -35,4 +41,5 @@ export type ButtonV2Props = {
     buttonGroupPosition?: 'center' | 'left' | 'right'
     fullWidth?: boolean
     justifyContent?: CSSObject['justifyContent']
+    state?: ButtonState
 } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style' | 'className'>
