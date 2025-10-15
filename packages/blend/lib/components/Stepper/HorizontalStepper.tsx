@@ -19,7 +19,6 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
             isLast,
             onClick,
             clickable,
-            currentSubsteps,
         },
         ref
     ) => {
@@ -31,9 +30,6 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
             if (isCompleted) return StepState.COMPLETED
             if (isCurrent) return StepState.CURRENT
             return StepState.PENDING
-        }
-        {
-            console.log(currentSubsteps)
         }
 
         const stepState = getStepState()
@@ -84,6 +80,7 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
                     )
                 case StepState.CURRENT:
                 case StepState.PENDING:
+                case StepState.SKIPPED:
                     return (
                         <Text
                             fontSize={12}
@@ -120,7 +117,9 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
                           ? ', current'
                           : stepState === StepState.DISABLED
                             ? ', disabled'
-                            : ', pending'
+                            : stepState === StepState.SKIPPED
+                              ? ', skipped'
+                              : ', pending'
                 }`}
                 cursor={isClickable ? 'pointer' : 'default'}
                 onClick={handleClick}
@@ -250,24 +249,21 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
 )
 
 const HorizontalStepper = forwardRef<HTMLDivElement, StepperProps>(
-    (
-        {
-            steps,
-            currentStep,
-            onStepChange,
-            clickable,
-            currentSubsteps,
-            ...htmlProps
-        },
-        ref
-    ) => {
+    ({ steps, onStepClick, clickable, ...htmlProps }, ref) => {
+        const derivedIndex = (() => {
+            const explicit = steps.findIndex(
+                (s) => s.status === StepState.CURRENT
+            )
+            if (explicit >= 0) return explicit
+            return 0
+        })()
         const handleStepClick = useCallback(
             (stepIndex: number) => {
-                if (onStepChange) {
-                    onStepChange(stepIndex)
+                if (onStepClick) {
+                    onStepClick(stepIndex)
                 }
             },
-            [onStepChange]
+            [onStepClick]
         )
 
         return (
@@ -276,7 +272,7 @@ const HorizontalStepper = forwardRef<HTMLDivElement, StepperProps>(
                 display="flex"
                 width="100%"
                 role="group"
-                aria-label={`Progress indicator: step ${currentStep + 1} of ${steps.length}`}
+                aria-label={`Progress indicator: step ${derivedIndex + 1} of ${steps.length}`}
                 aria-orientation="horizontal"
                 {...htmlProps}
             >
@@ -285,13 +281,12 @@ const HorizontalStepper = forwardRef<HTMLDivElement, StepperProps>(
                         key={step.id}
                         step={step}
                         stepIndex={index}
-                        isCompleted={index + 1 < currentStep}
-                        isCurrent={index + 1 === currentStep}
-                        isFirst={index + 1 === 0}
-                        isLast={index + 1 === steps.length}
+                        isCompleted={index < derivedIndex}
+                        isCurrent={index === derivedIndex}
+                        isFirst={index === 0}
+                        isLast={index === steps.length - 1}
                         onClick={handleStepClick}
                         clickable={clickable}
-                        currentSubsteps={currentSubsteps}
                     />
                 ))}
             </Block>

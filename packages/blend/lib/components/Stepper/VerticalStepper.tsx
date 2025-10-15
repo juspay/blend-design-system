@@ -18,8 +18,8 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
             isCurrent,
             isLast,
             onClick,
+            onSubstepClick,
             clickable,
-            currentSubsteps,
         },
         ref
     ) => {
@@ -107,6 +107,7 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
                     )
                 case StepState.CURRENT:
                 case StepState.PENDING:
+                case StepState.SKIPPED:
                     return (
                         <Text
                             fontSize={12}
@@ -142,7 +143,9 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
                           ? ', current'
                           : stepState === StepState.DISABLED
                             ? ', disabled'
-                            : ', pending'
+                            : stepState === StepState.SKIPPED
+                              ? ', skipped'
+                              : ', pending'
                 }`}
                 cursor={isClickable ? 'pointer' : 'default'}
                 onClick={handleClick}
@@ -343,17 +346,15 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
                         step?.substeps &&
                         step?.substeps.length > 0 &&
                         step?.substeps.map((subStep, index) => {
-                            const substepIndex = index + 1
-                            const currentSubstepIndex =
-                                currentSubsteps?.[step.id] || 1
-
+                            const explicitStatus = subStep.status
                             const isSubstepCurrent =
-                                isCurrent &&
-                                substepIndex === currentSubstepIndex
+                                explicitStatus === StepState.CURRENT
                             const isSubstepCompleted =
-                                substepIndex < currentSubstepIndex
+                                explicitStatus === StepState.COMPLETED
                             const isSubstepPending =
-                                substepIndex > currentSubstepIndex
+                                explicitStatus === StepState.PENDING
+                            const isSubstepSkipped =
+                                explicitStatus === StepState.SKIPPED
                             const isSubstepDisabled =
                                 step.disabled || subStep.disabled
 
@@ -365,6 +366,8 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
                             } else if (isSubstepCurrent) {
                                 textColor = FOUNDATION_THEME.colors.primary[500]
                             } else if (isSubstepPending) {
+                                textColor = FOUNDATION_THEME.colors.gray[400]
+                            } else if (isSubstepSkipped) {
                                 textColor = FOUNDATION_THEME.colors.gray[400]
                             }
 
@@ -379,13 +382,53 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
                                             : 0)
                                     }
                                 >
-                                    <Text
-                                        fontSize={12}
-                                        fontWeight={500}
-                                        color={textColor}
+                                    <Block
+                                        role={
+                                            clickable
+                                                ? 'button'
+                                                : 'presentation'
+                                        }
+                                        tabIndex={clickable ? 0 : -1}
+                                        style={{
+                                            cursor: clickable
+                                                ? 'pointer'
+                                                : 'default',
+                                        }}
+                                        onClick={
+                                            clickable && onSubstepClick
+                                                ? (e: React.MouseEvent) => {
+                                                      e.preventDefault()
+                                                      e.stopPropagation()
+                                                      onSubstepClick(
+                                                          stepIndex,
+                                                          index
+                                                      )
+                                                  }
+                                                : undefined
+                                        }
+                                        onKeyDown={(
+                                            event: React.KeyboardEvent
+                                        ) => {
+                                            if (
+                                                clickable &&
+                                                onSubstepClick &&
+                                                (event.key === 'Enter' ||
+                                                    event.key === ' ')
+                                            ) {
+                                                event.preventDefault()
+                                                event.stopPropagation()
+                                                onSubstepClick(stepIndex, index)
+                                            }
+                                        }}
                                     >
-                                        {subStep.title}
-                                    </Text>
+                                        <Text
+                                            fontSize={12}
+                                            fontWeight={500}
+                                            color={textColor}
+                                        >
+                                            {subStep.title}
+                                        </Text>
+                                    </Block>
                                 </Block>
                             )
                         })}
@@ -396,25 +439,24 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
 )
 
 const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
-    (
-        {
-            steps,
-            currentStep,
-            onStepChange,
-            clickable,
-            currentSubsteps,
-            ...htmlProps
-        },
-        ref
-    ) => {
+    ({ steps, onStepClick, onSubstepClick, clickable, ...htmlProps }, ref) => {
         const handleStepClick = useCallback(
             (stepIndex: number) => {
-                if (onStepChange) {
-                    onStepChange(stepIndex)
+                if (onStepClick) {
+                    onStepClick(stepIndex)
                 }
             },
-            [onStepChange]
+            [onStepClick]
         )
+
+        const derivedIndex = (() => {
+            const explicit = steps.findIndex(
+                (s) => s.status === StepState.CURRENT
+            )
+            if (explicit >= 0) return explicit
+
+            return 0
+        })()
 
         return (
             <Block
@@ -423,7 +465,7 @@ const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
                 display="flex"
                 flexDirection="column"
                 role="group"
-                aria-label={`Progress indicator: step ${currentStep + 1} of ${steps.length}`}
+                aria-label={`Progress indicator: step ${derivedIndex + 1} of ${steps.length}`}
                 aria-orientation="vertical"
                 {...htmlProps}
             >
@@ -432,13 +474,21 @@ const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
                         key={step.id}
                         step={step}
                         stepIndex={index}
-                        isCompleted={index < currentStep}
-                        isCurrent={index === currentStep}
+                        isCompleted={index < derivedIndex}
+                        isCurrent={index === derivedIndex}
                         isFirst={index === 0}
                         isLast={index === steps.length - 1}
                         onClick={handleStepClick}
+                        onSubstepClick={
+                            onSubstepClick
+                                ? (stepIdx, subIdx) =>
+                                      onSubstepClick(
+                                          steps[stepIdx].id,
+                                          subIdx + 1
+                                      )
+                                : undefined
+                        }
                         clickable={clickable}
-                        currentSubsteps={currentSubsteps}
                     />
                 ))}
             </Block>

@@ -8,22 +8,21 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
     (
         {
             steps,
-            currentStep,
-            onStepChange,
+            onStepClick,
+            onSubstepClick,
             clickable = false,
             stepperType = StepperType.HORIZONTAL,
-            currentSubsteps,
             ...htmlProps
         },
         ref
     ) => {
         const handleStepClick = useCallback(
             (stepIndex: number) => {
-                if (onStepChange) {
-                    onStepChange(stepIndex)
+                if (onStepClick) {
+                    onStepClick(stepIndex)
                 }
             },
-            [onStepChange]
+            [onStepClick]
         )
 
         if (stepperType === StepperType.VERTICAL) {
@@ -31,10 +30,9 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
                 <VerticalStepper
                     ref={ref}
                     steps={steps}
-                    currentStep={currentStep}
-                    onStepChange={handleStepClick}
+                    onStepClick={handleStepClick}
+                    onSubstepClick={onSubstepClick}
                     clickable={clickable}
-                    currentSubsteps={currentSubsteps}
                     {...htmlProps}
                 />
             )
@@ -44,10 +42,9 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
             <HorizontalStepper
                 ref={ref}
                 steps={steps}
-                currentStep={currentStep}
-                onStepChange={handleStepClick}
+                onStepClick={handleStepClick}
+                onSubstepClick={onSubstepClick}
                 clickable={clickable}
-                currentSubsteps={currentSubsteps}
                 {...htmlProps}
             />
         )

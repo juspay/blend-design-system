@@ -5,6 +5,7 @@ export enum StepState {
     CURRENT = 'current',
     PENDING = 'pending',
     DISABLED = 'disabled',
+    SKIPPED = 'skipped',
 }
 
 export enum StepperType {
@@ -14,11 +15,10 @@ export enum StepperType {
 
 export type StepperProps = {
     steps: Step[]
-    currentStep: number
-    onStepChange?: (stepIndex: number) => void
+    onStepClick?: (stepIndex: number) => void
+    onSubstepClick?: (stepId: number, substepIndex: number) => void
     clickable?: boolean
     stepperType?: StepperType
-    currentSubsteps?: Record<string, number>
 }
 
 export type SubStep = {
@@ -48,6 +48,7 @@ export type StepProps = {
     isLast: boolean
     isFirst: boolean
     onClick?: (stepIndex: number) => void
+    onSubstepClick?: (stepIndex: number, substepIndex: number) => void
     clickable?: boolean
     currentSubsteps?: Record<string, number>
 }

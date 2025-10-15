@@ -1,369 +1,454 @@
 import { useState } from 'react'
 import {
+    Step,
     Stepper,
     StepperType,
-    Step,
-} from '../../../../packages/blend/lib/components/Stepper'
-import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
-import { Switch } from '../../../../packages/blend/lib/components/Switch'
-import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
-import { Check, Settings, User, CreditCard, Package, Truck } from 'lucide-react'
+    StepState,
+} from '../../../../packages/blend/lib/main'
 
 const StepperDemo = () => {
-    // Playground state
-    const [playgroundCurrentStep, setPlaygroundCurrentStep] = useState(1)
-    const [playgroundClickable, setPlaygroundClickable] = useState(false)
-    const [playgroundStepCount, setPlaygroundStepCount] = useState('6')
-    const [playgroundStepperType, setPlaygroundStepperType] = useState(
-        StepperType.HORIZONTAL
-    )
-    const [playgroundStepTitle, setPlaygroundStepTitle] = useState('Step Title')
-    const [playgroundHasTooltips, setPlaygroundHasTooltips] = useState(true)
-    const [playgroundHasIcons, setPlaygroundHasIcons] = useState(false)
-    const stepperTypeOptions = [
-        { value: StepperType.HORIZONTAL, label: 'Horizontal' },
-        { value: StepperType.VERTICAL, label: 'Vertical' },
-    ]
+    const [horizontalSteps, setHorizontalSteps] = useState<Step[]>([
+        { id: 1, title: 'Step 1', status: StepState.CURRENT },
+        { id: 2, title: 'Step 2', status: StepState.PENDING },
+        { id: 3, title: 'Step 3', status: StepState.PENDING },
+        { id: 4, title: 'Step 4', status: StepState.PENDING },
+    ])
 
-    // Step count options
-    const stepCountOptions = [
-        { value: '3', label: '3 Steps' },
-        { value: '4', label: '4 Steps' },
-        { value: '5', label: '5 Steps' },
-        { value: '6', label: '6 Steps' },
-    ]
-
-    // Generate playground steps
-    const generatePlaygroundSteps = () => {
-        const count = parseInt(playgroundStepCount)
-
-        const icons = [
-            <User size={16} />,
-            <Settings size={16} />,
-            <CreditCard size={16} />,
-            <Package size={16} />,
-            <Truck size={16} />,
-            <Check size={16} />,
-        ]
-
-        const steps: Step[] = Array.from({ length: count }, (_, index) => ({
-            id: index + 1,
-            title: `${playgroundStepTitle} ${index + 1}`,
-            icon: playgroundHasIcons ? icons[index % icons.length] : undefined,
-            description: playgroundHasTooltips
-                ? `This is ${playgroundStepTitle} ${index + 1} with additional information`
-                : undefined,
-            disabled: false,
-        }))
-
-        // Add sample substeps to step 2 if available
-        if (steps.length >= 2) {
-            steps[1] = {
-                ...steps[1],
-                isExpandable: true,
-                isExpanded: true,
-                substeps: [
-                    { id: 1, title: 'Substep A' },
-                    { id: 2, title: 'Substep B' },
-                    { id: 3, title: 'Substep C' },
-                ],
-            }
-            steps[2] = {
-                ...steps[2],
-                isExpandable: true,
-                isExpanded: true,
-                substeps: [
-                    { id: 1, title: 'Substep A' },
-                    { id: 2, title: 'Substep B' },
-                    { id: 3, title: 'Substep C' },
-                ],
-            }
-            steps[4] = {
-                ...steps[4],
-                isExpandable: true,
-                isExpanded: true,
-                substeps: [
-                    { id: 1, title: 'Substep A' },
-                    { id: 2, title: 'Substep B' },
-                    { id: 3, title: 'Substep C' },
-                ],
-            }
-        }
-
-        return steps
-    }
-
-    // Simple linear progression with substeps (controller)
-    const [linearStep, setLinearStep] = useState(0)
-    const [linearSubs, setLinearSubs] = useState<Record<string, number>>({})
-    const linearSteps = [
-        { id: 1, title: 'Step 1' },
+    const [verticalSteps, setVerticalSteps] = useState<Step[]>([
+        { id: 1, title: 'Step 1', status: StepState.CURRENT },
         {
             id: 2,
             title: 'Step 2',
-            isExpandable: true,
-            isExpanded: true,
+            status: StepState.PENDING,
             substeps: [
-                { id: 1, title: 'Substep 2.1' },
-                { id: 2, title: 'Substep 2.2' },
-                { id: 3, title: 'Substep 2.3' },
+                { id: 1, title: 'Substep 2.1', status: StepState.PENDING },
+                { id: 2, title: 'Substep 2.2', status: StepState.PENDING },
+                { id: 3, title: 'Substep 2.3', status: StepState.PENDING },
             ],
         },
-        { id: 3, title: 'Step 3' },
-        { id: 4, title: 'Step 4' },
-    ] as Step[]
+        { id: 3, title: 'Step 3', status: StepState.PENDING },
+        { id: 4, title: 'Step 4', status: StepState.PENDING },
 
-    const handleNext = () => {
-        const step = linearSteps[linearStep]
-        const subs = step?.substeps || []
-        if (subs.length > 0) {
-            const curr = linearSubs[step.id] || 1
-            const last = subs.length
-            if (curr < last) {
-                setLinearSubs((prev) => ({ ...prev, [step.id]: curr + 1 }))
-                return
-            }
-        }
-        setLinearStep((s) => Math.min(s + 1, linearSteps.length - 1))
+        {
+            id: 5,
+            title: 'Step 5',
+            status: StepState.PENDING,
+            substeps: [
+                { id: 1, title: 'Substep 5.1', status: StepState.PENDING },
+                { id: 2, title: 'Substep 5.2', status: StepState.PENDING },
+                { id: 3, title: 'Substep 5.3', status: StepState.PENDING },
+            ],
+        },
+    ])
+
+    const handleHorizontalStepClick = (index: number) => {
+        console.log('horizontal step clicked', index)
+        setHorizontalSteps((prev) =>
+            prev.map((step, i) => {
+                if (i < index) {
+                    return {
+                        ...step,
+                        status:
+                            step.status === StepState.COMPLETED
+                                ? StepState.COMPLETED
+                                : StepState.SKIPPED,
+                    }
+                }
+                if (i > index) {
+                    return {
+                        ...step,
+                        status:
+                            step.status === StepState.COMPLETED
+                                ? StepState.COMPLETED
+                                : StepState.PENDING,
+                    }
+                }
+                if (i === index) {
+                    return {
+                        ...step,
+                        status: StepState.CURRENT,
+                    }
+                }
+
+                return step
+            })
+        )
     }
 
-    const handlePrev = () => {
-        const step = linearSteps[linearStep]
-        const subs = step?.substeps || []
-        if (subs.length > 0) {
-            const curr = linearSubs[step.id] || 1
-            if (curr > 1) {
-                setLinearSubs((prev) => ({ ...prev, [step.id]: curr - 1 }))
-                return
-            }
-        }
-        setLinearStep((s) => Math.max(s - 1, 0))
+    console.log({ horizontalSteps })
+
+    const handleVerticalStepClick = (stepIndex: number) => {
+        console.log('vertical step clicked', stepIndex)
+    }
+    const handleVerticalSubstepClick = (
+        stepIndex: number,
+        substepIndex: number
+    ) => {
+        console.log('vertical substep clicked', stepIndex, substepIndex)
     }
 
-    console.log({ linearSubs })
+    const getCurrentIndex = () => {
+        const idx = horizontalSteps.findIndex(
+            (s) => s.status === StepState.CURRENT
+        )
+        return idx >= 0 ? idx : 0
+    }
+
+    const handleHorizontalNext = () => {
+        const curr = getCurrentIndex()
+        const next = Math.min(curr + 1, horizontalSteps.length - 1)
+        setHorizontalSteps((prev) =>
+            prev.map((s, i) =>
+                i < next
+                    ? { ...s, status: StepState.COMPLETED }
+                    : i === next
+                      ? { ...s, status: StepState.CURRENT }
+                      : { ...s, status: StepState.PENDING }
+            )
+        )
+    }
+
+    const handleHorizontalPrev = () => {
+        const curr = getCurrentIndex()
+        const prevIdx = Math.max(curr - 1, 0)
+        setHorizontalSteps((prev) =>
+            prev.map((s, i) =>
+                i < prevIdx
+                    ? { ...s, status: StepState.COMPLETED }
+                    : i === prevIdx
+                      ? { ...s, status: StepState.CURRENT }
+                      : { ...s, status: StepState.PENDING }
+            )
+        )
+    }
+
+    const handleVerticalNext = () => {
+        setVerticalSteps((prev) => {
+            const steps = prev.map((s) => ({
+                ...s,
+                substeps: s.substeps
+                    ? s.substeps.map((ss) => ({ ...ss }))
+                    : s.substeps,
+            }))
+            type Entry =
+                | { kind: 'step'; si: number }
+                | { kind: 'sub'; si: number; subi: number }
+            const entries: Entry[] = []
+            steps.forEach((s, si) => {
+                entries.push({ kind: 'step', si })
+                if (s.substeps)
+                    s.substeps.forEach((_, subi) =>
+                        entries.push({ kind: 'sub', si, subi })
+                    )
+            })
+            const findCurrent = (): number => {
+                // Prefer CURRENT substep over step when both are CURRENT
+                for (let i = 0; i < entries.length; i++) {
+                    const e = entries[i]
+                    if (e.kind === 'sub') {
+                        const sub = steps[e.si].substeps![e.subi]
+                        if (sub.status === StepState.CURRENT) return i
+                    }
+                }
+                for (let i = 0; i < entries.length; i++) {
+                    const e = entries[i]
+                    if (e.kind === 'step') {
+                        if (steps[e.si].status === StepState.CURRENT) return i
+                    }
+                }
+                return 0
+            }
+            const cur = findCurrent()
+            const currEntry = entries[cur]
+
+            const setStepStatus = (si: number, status: StepState) => {
+                steps[si].status = status
+            }
+            const setSubStatus = (
+                si: number,
+                subi: number,
+                status: StepState
+            ) => {
+                if (steps[si].substeps)
+                    steps[si].substeps![subi].status = status
+            }
+
+            const setFuturePending = (fromIndex: number) => {
+                for (let i = fromIndex; i < entries.length; i++) {
+                    const e = entries[i]
+                    if (e.kind === 'sub')
+                        setSubStatus(e.si, e.subi, StepState.PENDING)
+                    else setStepStatus(e.si, StepState.PENDING)
+                }
+            }
+
+            if (currEntry.kind === 'step') {
+                const s = steps[currEntry.si]
+                if (s.substeps && s.substeps.length > 0) {
+                    // Enter first substep; keep step CURRENT
+                    setSubStatus(currEntry.si, 0, StepState.CURRENT)
+                    // Mark earlier items as completed where applicable
+                    for (let i = 0; i < cur; i++) {
+                        const e = entries[i]
+                        if (e.kind === 'sub')
+                            setSubStatus(e.si, e.subi, StepState.COMPLETED)
+                        else setStepStatus(e.si, StepState.COMPLETED)
+                    }
+                    // Set future pending
+                    setFuturePending(cur + 2) // we set current sub explicitly below
+                } else {
+                    // Complete simple step and move on
+                    setStepStatus(currEntry.si, StepState.COMPLETED)
+                }
+            } else {
+                // substep
+                setSubStatus(currEntry.si, currEntry.subi, StepState.COMPLETED)
+                const s = steps[currEntry.si]
+                const isLastSub =
+                    s.substeps && currEntry.subi === s.substeps.length - 1
+                if (isLastSub) {
+                    setStepStatus(currEntry.si, StepState.COMPLETED)
+                } else {
+                    // Next sub becomes current
+                    setSubStatus(
+                        currEntry.si,
+                        currEntry.subi + 1,
+                        StepState.CURRENT
+                    )
+                    // Keep step CURRENT while substeps in progress
+                    setStepStatus(currEntry.si, StepState.CURRENT)
+                    // Mark previous entries completed
+                    for (let i = 0; i < cur; i++) {
+                        const e = entries[i]
+                        if (e.kind === 'sub')
+                            setSubStatus(e.si, e.subi, StepState.COMPLETED)
+                        else if (steps[e.si].substeps) {
+                            // Steps with substeps complete only when last sub done; before that keep CURRENT or COMPLETED if already
+                            // no-op
+                        } else setStepStatus(e.si, StepState.COMPLETED)
+                    }
+                    setFuturePending(cur + 2)
+                    return steps
+                }
+            }
+
+            // Determine next current after handling completion
+            const afterCur = Math.min(cur + 1, entries.length - 1)
+            const nextE = entries[afterCur]
+            // Set next current appropriately
+            if (nextE.kind === 'step') {
+                const ns = steps[nextE.si]
+                setStepStatus(nextE.si, StepState.CURRENT)
+                if (ns.substeps && ns.substeps.length > 0) {
+                    // First substep should also be CURRENT on entering a step with substeps
+                    ns.substeps.forEach((_, idx) =>
+                        setSubStatus(
+                            nextE.si,
+                            idx,
+                            idx === 0 ? StepState.CURRENT : StepState.PENDING
+                        )
+                    )
+                }
+            } else {
+                setStepStatus(nextE.si, StepState.CURRENT)
+                setSubStatus(nextE.si, nextE.subi, StepState.CURRENT)
+            }
+            // Set all in-between before nextE as completed respecting rule #2
+            for (let i = 0; i < afterCur; i++) {
+                const e = entries[i]
+                if (e.kind === 'sub')
+                    setSubStatus(e.si, e.subi, StepState.COMPLETED)
+                else {
+                    const subs = steps[e.si].substeps
+                    if (
+                        !subs ||
+                        subs.every((ss) => ss.status === StepState.COMPLETED)
+                    ) {
+                        setStepStatus(e.si, StepState.COMPLETED)
+                    }
+                }
+            }
+            // Set after nextE pending
+            setFuturePending(afterCur + 1)
+
+            return steps
+        })
+    }
+
+    const handleVerticalPrev = () => {
+        setVerticalSteps((prev) => {
+            const steps = prev.map((s) => ({
+                ...s,
+                substeps: s.substeps
+                    ? s.substeps.map((ss) => ({ ...ss }))
+                    : s.substeps,
+            }))
+            type Entry =
+                | { kind: 'step'; si: number }
+                | { kind: 'sub'; si: number; subi: number }
+            const entries: Entry[] = []
+            steps.forEach((s, si) => {
+                entries.push({ kind: 'step', si })
+                if (s.substeps)
+                    s.substeps.forEach((_, subi) =>
+                        entries.push({ kind: 'sub', si, subi })
+                    )
+            })
+            const findCurrent = (): number => {
+                // Prefer CURRENT substep over step when both are CURRENT
+                for (let i = 0; i < entries.length; i++) {
+                    const e = entries[i]
+                    if (e.kind === 'sub') {
+                        const sub = steps[e.si].substeps![e.subi]
+                        if (sub.status === StepState.CURRENT) return i
+                    }
+                }
+                for (let i = 0; i < entries.length; i++) {
+                    const e = entries[i]
+                    if (e.kind === 'step') {
+                        if (steps[e.si].status === StepState.CURRENT) return i
+                    }
+                }
+                return 0
+            }
+            const cur = findCurrent()
+            const prevIndex = Math.max(cur - 1, 0)
+            const prevE = entries[prevIndex]
+
+            const setStepStatus = (si: number, status: StepState) => {
+                steps[si].status = status
+            }
+            const setSubStatus = (
+                si: number,
+                subi: number,
+                status: StepState
+            ) => {
+                if (steps[si].substeps)
+                    steps[si].substeps![subi].status = status
+            }
+
+            // Set later items pending
+            for (let i = prevIndex + 1; i < entries.length; i++) {
+                const e = entries[i]
+                if (e.kind === 'sub')
+                    setSubStatus(e.si, e.subi, StepState.PENDING)
+                else setStepStatus(e.si, StepState.PENDING)
+            }
+            // Keep earlier items completed if they already are
+            for (let i = 0; i < prevIndex; i++) {
+                const e = entries[i]
+                if (e.kind === 'sub') {
+                    if (
+                        steps[e.si].substeps![e.subi].status !==
+                        StepState.COMPLETED
+                    ) {
+                        setSubStatus(e.si, e.subi, StepState.COMPLETED)
+                    }
+                } else {
+                    const subs = steps[e.si].substeps
+                    if (subs) {
+                        if (
+                            subs.every(
+                                (ss) => ss.status === StepState.COMPLETED
+                            )
+                        ) {
+                            setStepStatus(e.si, StepState.COMPLETED)
+                        }
+                    } else setStepStatus(e.si, StepState.COMPLETED)
+                }
+            }
+
+            // Set previous as current
+            if (prevE.kind === 'step') {
+                setStepStatus(prevE.si, StepState.CURRENT)
+            } else {
+                setStepStatus(prevE.si, StepState.CURRENT)
+                setSubStatus(prevE.si, prevE.subi, StepState.CURRENT)
+            }
+
+            return steps
+        })
+    }
+
+    // Derive current vertical step and substep for panel display
+    const currentVerticalStep =
+        verticalSteps.find((s) => s.status === StepState.CURRENT) ||
+        verticalSteps[0]
+    const currentVerticalSubstep = currentVerticalStep?.substeps?.find(
+        (ss) => ss.status === StepState.CURRENT
+    )
 
     return (
-        <div className="p-8 space-y-12">
-            {/* Playground Section */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Playground</h2>
-                <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <TextInput
-                            label="Step Title"
-                            value={playgroundStepTitle}
-                            onChange={(e) =>
-                                setPlaygroundStepTitle(e.target.value)
-                            }
-                            placeholder="Enter step title"
-                        />
-                        <SingleSelect
-                            label="Number of Steps"
-                            items={[{ items: stepCountOptions }]}
-                            selected={playgroundStepCount}
-                            onSelect={(value) => {
-                                setPlaygroundStepCount(value as string)
-                                setPlaygroundCurrentStep(0) // Reset to first step
-                            }}
-                            placeholder="Select step count"
-                        />
-                        <SingleSelect
-                            label="Stepper Type"
-                            items={[{ items: stepperTypeOptions }]}
-                            selected={playgroundStepperType}
-                            onSelect={(value) => {
-                                setPlaygroundStepperType(value as StepperType)
-                            }}
-                            placeholder="Select stepper type"
-                        />
-                    </div>
-
-                    <div className="flex items-center gap-6 flex-wrap">
-                        <Switch
-                            label="Clickable"
-                            checked={playgroundClickable}
-                            onChange={() =>
-                                setPlaygroundClickable(!playgroundClickable)
-                            }
-                        />
-                        <Switch
-                            label="Show Tooltips"
-                            checked={playgroundHasTooltips}
-                            onChange={() =>
-                                setPlaygroundHasTooltips(!playgroundHasTooltips)
-                            }
-                        />
-                        <Switch
-                            label="Show Icons"
-                            checked={playgroundHasIcons}
-                            onChange={() =>
-                                setPlaygroundHasIcons(!playgroundHasIcons)
-                            }
-                        />
-                    </div>
-
+        <div className="p-8">
+            <div className="flex gap-8 flex-col">
+                <div className="space-y-6 border border-gray-300 p-6 rounded-2xl">
+                    <h2 className="text-xl font-semibold">
+                        Horizontal Stepper
+                    </h2>
                     <Stepper
-                        stepperType={playgroundStepperType}
-                        steps={generatePlaygroundSteps()}
-                        currentStep={playgroundCurrentStep}
-                        onStepChange={(index) =>
-                            setPlaygroundCurrentStep(index)
-                        }
-                        clickable={playgroundClickable}
+                        steps={horizontalSteps}
+                        clickable={true}
+                        onStepClick={handleHorizontalStepClick}
                     />
-
                     <div className="rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
-                        {playgroundCurrentStep === 1 && <h1>Step 1</h1>}
-                        {playgroundCurrentStep === 2 && <h1>Step 2</h1>}
-                        {playgroundCurrentStep === 3 && <h1>Step 3</h1>}
-                        {playgroundCurrentStep === 4 && <h1>Step 4</h1>}
-                        {playgroundCurrentStep === 5 && <h1>Step 5</h1>}
-                        {playgroundCurrentStep === 6 && <h1>Step 6</h1>}
-                        {playgroundCurrentStep === 7 && <h1>Completed !</h1>}
-                    </div>
-
-                    <div className="flex justify-center space-x-4">
-                        <button
-                            onClick={() =>
-                                setPlaygroundCurrentStep((index) =>
-                                    Math.max(index - 1, 0)
+                        {horizontalSteps.map(
+                            (step) =>
+                                step.status === StepState.CURRENT && (
+                                    <h1>Step {step.id}</h1>
                                 )
-                            }
-                            disabled={playgroundCurrentStep === 1}
-                            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                        )}
+                    </div>
+                    <div className="mt-4 flex gap-3">
+                        <button
+                            onClick={handleHorizontalPrev}
+                            className="px-3 py-2 bg-gray-200 rounded"
                         >
                             Previous
                         </button>
                         <button
-                            onClick={() =>
-                                setPlaygroundCurrentStep((index) =>
-                                    parseInt(playgroundStepCount) + 1 > index
-                                        ? index + 1
-                                        : index
-                                )
-                            }
-                            disabled={
-                                playgroundCurrentStep - 1 ===
-                                parseInt(playgroundStepCount)
-                            }
-                            className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={handleHorizontalNext}
+                            className="px-3 py-2 bg-blue-600 text-white rounded"
                         >
                             Next
                         </button>
-                        <button
-                            onClick={() => setPlaygroundCurrentStep(1)}
-                            className="px-4 py-2 bg-gray-500 text-white rounded"
-                        >
-                            Reset
-                        </button>
                     </div>
                 </div>
-            </div>
 
-            {/* Basic Examples */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Examples</h2>
-                <div className="grid grid-cols-1 gap-8">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Simple linear progression (substeps first){' '}
-                            {JSON.stringify(linearSubs)}
-                        </h3>
-                        <div className="p-6 border border-gray-200 rounded-lg">
-                            <div className="grid md:grid-cols-2 gap-6">
-                                <div>
-                                    <Stepper
-                                        stepperType={StepperType.VERTICAL}
-                                        steps={linearSteps}
-                                        currentStep={linearStep}
-                                        currentSubsteps={linearSubs}
-                                        clickable={true}
-                                        onStepChange={(next) =>
-                                            setLinearStep(next)
-                                        }
-                                    />
-                                    <div className="mt-6 flex gap-3">
-                                        <button
-                                            onClick={handlePrev}
-                                            className="px-3 py-2 bg-gray-200 rounded disabled:opacity-50"
-                                            disabled={
-                                                linearStep === 0 &&
-                                                (linearSubs[
-                                                    linearSteps[0].id
-                                                ] ?? 0) === 0
-                                            }
-                                        >
-                                            Prev
-                                        </button>
-                                        <button
-                                            onClick={handleNext}
-                                            className="px-3 py-2 bg-blue-600 text-white rounded"
-                                        >
-                                            Next
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="p-6 bg-gray-50 rounded-lg">
-                                    <h4 className="font-semibold mb-4 text-lg">
-                                        {linearStep === 0 && 'Step 1 Content'}
-                                        {linearStep === 1 &&
-                                            !linearSubs[2] &&
-                                            'Step 2 - Substep 2.1 Content'}
-                                        {linearStep === 1 &&
-                                            linearSubs[2] === 2 &&
-                                            'Step 2 - Substep 2.2 Content'}
-                                        {linearStep === 1 &&
-                                            linearSubs[2] === 3 &&
-                                            'Step 2 - Substep 2.3 Content'}
-                                        {linearStep === 2 && 'Step 3 Content'}
-                                        {linearStep === 3 && 'Step 4 Content'}
-                                    </h4>
-                                    <div className="text-sm text-gray-600">
-                                        {linearStep === 0 && (
-                                            <p>
-                                                This is the content for Step 1.
-                                                Click any step to view its
-                                                content.
-                                            </p>
-                                        )}
-                                        {linearStep === 1 && !linearSubs[2] && (
-                                            <p>
-                                                This is the content for Substep
-                                                2.1. Use Next/Prev to navigate
-                                                through substeps.
-                                            </p>
-                                        )}
-                                        {linearStep === 1 &&
-                                            linearSubs[2] === 2 && (
-                                                <p>
-                                                    This is the content for
-                                                    Substep 2.2. You can click
-                                                    on any step to jump to it.
-                                                </p>
-                                            )}
-                                        {linearStep === 1 &&
-                                            linearSubs[2] === 3 && (
-                                                <p>
-                                                    This is the content for
-                                                    Substep 2.3. This is the
-                                                    last substep of Step 2.
-                                                </p>
-                                            )}
-                                        {linearStep === 2 && (
-                                            <p>
-                                                This is the content for Step 3.
-                                            </p>
-                                        )}
-                                        {linearStep === 3 && (
-                                            <p>
-                                                This is the content for Step 4.
-                                                This is the final step.
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
+                <div className="space-y-6 border border-gray-300 p-6 rounded-2xl">
+                    <h2 className="text-xl font-semibold">Vertical Stepper</h2>
+                    <div className="w-full flex items-stretch gap-8">
+                        <Stepper
+                            steps={verticalSteps}
+                            clickable={true}
+                            onStepClick={handleVerticalStepClick}
+                            onSubstepClick={handleVerticalSubstepClick}
+                            stepperType={StepperType.VERTICAL}
+                        />
+                        <div className="rounded-2xl w-full flex-1 self-stretch flex justify-center items-center outline-1 outline-gray-200 p-8">
+                            {currentVerticalSubstep ? (
+                                <h1>
+                                    Step {currentVerticalStep?.id} - Substep{' '}
+                                    {currentVerticalStep?.id}.
+                                    {currentVerticalSubstep.id}
+                                </h1>
+                            ) : (
+                                <h1>Step {currentVerticalStep?.id}</h1>
+                            )}
                         </div>
+                    </div>
+                    <div className="mt-4 flex gap-3">
+                        <button
+                            onClick={handleVerticalPrev}
+                            className="px-3 py-2 bg-gray-200 rounded"
+                        >
+                            Previous
+                        </button>
+                        <button
+                            onClick={handleVerticalNext}
+                            className="px-3 py-2 bg-blue-600 text-white rounded"
+                        >
+                            Next
+                        </button>
                     </div>
                 </div>
             </div>
