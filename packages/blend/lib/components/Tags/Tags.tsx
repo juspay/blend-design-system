@@ -5,6 +5,7 @@ import Text from '../Text/Text'
 import { TagColor, type TagProps, TagShape, TagSize, TagVariant } from './types'
 import type { TagTokensType } from './tag.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useRipple, RippleContainer } from '../animations/Ripple'
 
 const Tag = forwardRef<HTMLDivElement, TagProps>(
     (
@@ -23,6 +24,14 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
         ref
     ) => {
         const tagTokens = useResponsiveTokens<TagTokensType>('TAGS')
+        const { ripples, createRipple } = useRipple()
+
+        const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+            if (onClick) {
+                createRipple(event)
+                onClick()
+            }
+        }
 
         const isSplitTag = splitTagPosition !== undefined
         let borderRadius = tagTokens.borderRadius[size][shape]
@@ -49,7 +58,9 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
                 border={tagTokens.border[variant][color]}
                 borderRadius={borderRadius}
                 cursor={onClick ? 'pointer' : 'default'}
-                onClick={onClick}
+                position={onClick ? 'relative' : undefined}
+                overflow={onClick ? 'hidden' : undefined}
+                onClick={onClick ? handleClick : undefined}
             >
                 {leftSlot && <Block contentCentered>{leftSlot}</Block>}
                 <Text
@@ -59,6 +70,7 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
                     {text}
                 </Text>
                 {rightSlot && <Block contentCentered>{rightSlot}</Block>}
+                {onClick && <RippleContainer ripples={ripples} />}
             </Block>
         )
     }
