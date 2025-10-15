@@ -1337,10 +1337,205 @@ const loadMore = async () => {
                 </div>
             </div>
 
-            {/* Demo 12: MultiSelect with API Infinite Scroll */}
+            {/* Demo 12: Empty Data Cases */}
+            <div style={styles.demoSection}>
+                <h2 style={styles.sectionTitle}>12. Empty Data Cases</h2>
+                <p style={styles.sectionDescription}>
+                    Demonstrating how SingleSelect and MultiSelect handle empty
+                    data with proper "No items available" messaging.
+                </p>
+                <div style={styles.demoGrid}>
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                SingleSelect with Empty Data
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                0 options • Shows "No items available"
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <SingleSelect
+                                placeholder="Select an option..."
+                                items={[]}
+                                selected=""
+                                onSelect={() => {}}
+                                enableSearch
+                                searchPlaceholder="Search options..."
+                                size={SelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                            />
+                            <div
+                                style={{
+                                    marginTop: '12px',
+                                    fontSize: '12px',
+                                    color: '#999',
+                                }}
+                            >
+                                💡 Open the dropdown to see "No items available"
+                                message
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                MultiSelect with Empty Data
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                0 options • Shows "No items available"
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <MultiSelect
+                                label="Select Multiple Options"
+                                placeholder="Choose options..."
+                                items={[]}
+                                selectedValues={[]}
+                                onChange={() => {}}
+                                enableSearch
+                                searchPlaceholder="Search options..."
+                                size={MultiSelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                                enableSelectAll
+                            />
+                            <div
+                                style={{
+                                    marginTop: '12px',
+                                    fontSize: '12px',
+                                    color: '#999',
+                                }}
+                            >
+                                💡 Open the dropdown to see "No items available"
+                                message
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style={styles.demoGrid}>
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                SingleSelect Empty with Virtualization
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                0 options • Virtualized • Shows "No items
+                                available"
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <SingleSelect
+                                placeholder="Select an option..."
+                                items={[]}
+                                selected=""
+                                onSelect={() => {}}
+                                enableSearch
+                                searchPlaceholder="Search options..."
+                                size={SelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                                enableVirtualization={true}
+                                virtualListItemHeight={48}
+                                virtualListOverscan={2}
+                            />
+                            <div
+                                style={{
+                                    marginTop: '12px',
+                                    fontSize: '12px',
+                                    color: '#999',
+                                }}
+                            >
+                                💡 Even with virtualization enabled, empty data
+                                is handled correctly
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                MultiSelect Empty with Virtualization
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                0 options • Virtualized • Shows "No items
+                                available"
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <MultiSelect
+                                label="Select Multiple Options"
+                                placeholder="Choose options..."
+                                items={[]}
+                                selectedValues={[]}
+                                onChange={() => {}}
+                                enableSearch
+                                searchPlaceholder="Search options..."
+                                size={MultiSelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                                enableSelectAll
+                                enableVirtualization={true}
+                                virtualListItemHeight={44}
+                                virtualListOverscan={2}
+                            />
+                            <div
+                                style={{
+                                    marginTop: '12px',
+                                    fontSize: '12px',
+                                    color: '#999',
+                                }}
+                            >
+                                💡 Virtualization with empty data works
+                                seamlessly
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Code Example */}
+                <div
+                    style={{
+                        marginTop: '24px',
+                        padding: '20px',
+                        background: '#1e293b',
+                        borderRadius: '8px',
+                        color: '#e2e8f0',
+                        fontSize: '13px',
+                        fontFamily: 'monospace',
+                        overflowX: 'auto',
+                    }}
+                >
+                    <div style={{ marginBottom: '12px', color: '#94a3b8' }}>
+                        // Empty Data Handling Example:
+                    </div>
+                    <pre
+                        style={{ margin: 0, whiteSpace: 'pre-wrap' }}
+                    >{`// When no data is available
+const emptyItems: SelectMenuGroupType[] = []
+
+<SingleSelect
+  placeholder="Select an option..."
+  items={emptyItems}  // Empty array
+  selected=""
+  onSelect={() => {}}
+  enableSearch
+/>
+
+<MultiSelect
+  label="Select Options"
+  placeholder="Choose options..."
+  items={emptyItems}  // Empty array
+  selectedValues={[]}
+  onChange={() => {}}
+  enableSearch
+/>`}</pre>
+                </div>
+            </div>
+
+            {/* Demo 13: MultiSelect with API Infinite Scroll */}
             <div style={styles.demoSection}>
                 <h2 style={styles.sectionTitle}>
-                    12. MultiSelect with API Infinite Scroll
+                    13. MultiSelect with API Infinite Scroll
                 </h2>
                 <p style={styles.sectionDescription}>
                     MultiSelect that loads more data from an API as you scroll.

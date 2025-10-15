@@ -1,8 +1,10 @@
 import React from 'react'
-import { FOUNDATION_THEME } from '../../../tokens'
 import Block from '../../Primitives/Block/Block'
 import { ButtonType, ButtonSize, Button, Tooltip } from '../../../main'
 import type { ActionButtonsProps } from '../types'
+import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import { getMobileToken } from './mobile.tokens'
+import { FOUNDATION_THEME } from '../../../tokens'
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
     onCancel,
@@ -11,11 +13,17 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
     isApplyDisabled = false,
     applyDisabledMessage,
 }) => {
+    const { innerWidth } = useBreakpoints()
+    const tokens =
+        getMobileToken(FOUNDATION_THEME)[innerWidth >= 1024 ? 'lg' : 'sm']
+
     return (
         <Block
             display="flex"
-            gap={FOUNDATION_THEME.unit[12]}
-            padding={FOUNDATION_THEME.unit[16]}
+            gap={tokens.footer.gap}
+            paddingX={tokens.footer.padding.x}
+            paddingY={tokens.footer.padding.y}
+            borderTop={tokens.footer.borderTop}
             backgroundColor="white"
         >
             <Block

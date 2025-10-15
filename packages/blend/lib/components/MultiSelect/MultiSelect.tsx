@@ -107,13 +107,17 @@ const MultiSelect = ({
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === MultiSelectMenuSize.LARGE
 
-    const borderRadius = multiSelectTokens.trigger.borderRadius[size]
+    const borderRadius = multiSelectTokens.trigger.borderRadius[size][variant]
     const appliedBorderRadius = showCancelButton
         ? `${borderRadius} 0px 0px ${borderRadius}`
         : borderRadius
 
-    const paddingX = toPixels(multiSelectTokens.trigger.paddingX[size])
-    const paddingY = toPixels(multiSelectTokens.trigger.paddingY[size])
+    const paddingX = toPixels(
+        multiSelectTokens.trigger.padding[size][variant].x
+    )
+    const paddingY = toPixels(
+        multiSelectTokens.trigger.padding[size][variant].y
+    )
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
@@ -175,7 +179,7 @@ const MultiSelect = ({
             maxWidth={fullWidth ? '100%' : 'fit-content'}
             display="flex"
             flexDirection="column"
-            gap={8}
+            gap={multiSelectTokens.gap}
         >
             {variant === MultiSelectVariant.CONTAINER &&
                 (!isSmallScreen || size !== MultiSelectMenuSize.LARGE) && (
@@ -186,6 +190,7 @@ const MultiSelect = ({
                         helpIconHintText={helpIconHintText}
                         name={name}
                         required={required}
+                        tokens={multiSelectTokens}
                     />
                 )}
 
@@ -252,10 +257,14 @@ const MultiSelect = ({
                             {...((!inline ||
                                 variant === MultiSelectVariant.CONTAINER) && {
                                 height: toPixels(
-                                    multiSelectTokens.trigger.height[size]
+                                    multiSelectTokens.trigger.height[size][
+                                        variant
+                                    ]
                                 ),
                                 maxHeight: toPixels(
-                                    multiSelectTokens.trigger.height[size]
+                                    multiSelectTokens.trigger.height[size][
+                                        variant
+                                    ]
                                 ),
                             })}
                         >
@@ -306,15 +315,13 @@ const MultiSelect = ({
                                             variant ===
                                                 MultiSelectVariant.CONTAINER) && {
                                             height: multiSelectTokens.trigger
-                                                .height[size],
+                                                .height[size][variant],
 
                                             maxHeight:
                                                 multiSelectTokens.trigger
-                                                    .height[size],
+                                                    .height[size][variant],
 
-                                            paddingX:
-                                                multiSelectTokens.trigger
-                                                    .paddingX[size],
+                                            paddingX: paddingX,
 
                                             paddingY: paddingY,
                                             backgroundColor:
@@ -404,10 +411,17 @@ const MultiSelect = ({
                                                     as="span"
                                                     variant="body.md"
                                                     color={
-                                                        FOUNDATION_THEME.colors
-                                                            .gray[700]
+                                                        multiSelectTokens.label
+                                                            .color.default
                                                     }
-                                                    fontWeight={500}
+                                                    fontWeight={
+                                                        multiSelectTokens.label
+                                                            .fontWeight
+                                                    }
+                                                    fontSize={
+                                                        multiSelectTokens.label
+                                                            .fontSize
+                                                    }
                                                 >
                                                     {label}
                                                 </Text>
@@ -470,13 +484,21 @@ const MultiSelect = ({
                                                         MultiSelectMenuSize.LARGE) && (
                                                     <Text
                                                         as="span"
-                                                        variant="body.md"
+                                                        // variant="body.md"
                                                         color={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[700]
+                                                            multiSelectTokens
+                                                                .label.color
+                                                                .default
                                                         }
-                                                        fontWeight={500}
+                                                        fontWeight={
+                                                            multiSelectTokens
+                                                                .label
+                                                                .fontWeight
+                                                        }
+                                                        fontSize={
+                                                            multiSelectTokens
+                                                                .label.fontSize
+                                                        }
                                                     >
                                                         {placeholder}
                                                     </Text>
@@ -594,6 +616,7 @@ const MultiSelect = ({
                     hintText={hintText}
                     error={error}
                     errorMessage={errorMessage}
+                    tokens={multiSelectTokens}
                 />
             )}
         </Block>
