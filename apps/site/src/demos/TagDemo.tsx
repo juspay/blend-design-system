@@ -301,7 +301,6 @@ const TagDemo = () => {
                     <SkeletonTag
                         text={skeletonText}
                         color={skeletonColor}
-                        variant={skeletonVariant}
                         size={skeletonSize}
                         shape={skeletonShape}
                         leftSlot={

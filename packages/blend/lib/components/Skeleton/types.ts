@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import type { BlockProps } from '../Primitives/Block/Block'
 import type { SkeletonVariant, SkeletonShape } from './skeleton.tokens'
 import type { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
-import type { TagVariant, TagSize, TagShape, TagColor } from '../Tags/types'
+import type { TagSize, TagShape } from '../Tags/types'
 
 export type SkeletonSize = 'sm' | 'md' | 'lg'
 
@@ -50,17 +50,13 @@ export type SkeletonCardProps = BaseSkeletonProps &
 
 export type SkeletonTagProps = Omit<BaseSkeletonProps, 'variant'> &
     Omit<BlockProps, 'children'> & {
-        // Mirror exact Tag component props for perfect token matching
         text?: string
-        variant?: TagVariant
-        color?: TagColor
         size?: TagSize
         shape?: TagShape
         leftSlot?: React.ReactNode
         rightSlot?: React.ReactNode
         splitTagPosition?: 'left' | 'right'
         width?: string | number
-        // Skeleton-specific props
         skeletonVariant?: SkeletonVariant
     }
 
