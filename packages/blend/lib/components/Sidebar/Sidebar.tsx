@@ -3,13 +3,14 @@ import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
 import type { SidebarProps } from './types'
-import { FOUNDATION_THEME } from '../../tokens'
+import type { SidebarTokenType } from './sidebar.tokens'
 import { Topbar } from '../Topbar'
 import TenantPanel from './TenantPanel'
 import SidebarHeader from './SidebarHeader'
 import SidebarFooter from './SidebarFooter'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import {
     getSidebarWidth,
     getSidebarBorder,
@@ -17,6 +18,7 @@ import {
     getDefaultMerchantInfo,
     useTopbarAutoHide,
 } from './utils'
+import { FOUNDATION_THEME } from '../../tokens'
 
 const DirectoryContainer = styled(Block)`
     flex: 1;
@@ -32,7 +34,6 @@ const DirectoryContainer = styled(Block)`
 const MainContentContainer = styled(Block)`
     width: 100%;
     height: 100%;
-    background-color: ${FOUNDATION_THEME.colors.gray[0]};
     position: relative;
     overflow-y: auto;
 
@@ -120,6 +121,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const handleMouseLeave = () => setIsHovering(false)
         const hasLeftPanel = Boolean(leftPanel?.items?.length)
         const defaultMerchantInfo = getDefaultMerchantInfo()
+        const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
         return (
             <Block
@@ -127,7 +129,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 width="100%"
                 height="100%"
                 display="flex"
-                backgroundColor={FOUNDATION_THEME.colors.gray[25]}
+                backgroundColor={tokens.backgroundColor}
                 position="relative"
                 zIndex={99}
             >
@@ -136,7 +138,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         position="absolute"
                         left="0"
                         top="0"
-                        width="20px"
+                        width={FOUNDATION_THEME.unit[24]}
                         height="100%"
                         zIndex="98"
                         onMouseEnter={handleMouseEnter}
@@ -147,61 +149,72 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 )}
 
                 <Block
-                    backgroundColor={FOUNDATION_THEME.colors.gray[25]}
+                    backgroundColor={tokens.backgroundColor}
                     maxWidth={getSidebarWidth(
                         isExpanded,
                         isHovering,
-                        hasLeftPanel
+                        hasLeftPanel,
+                        tokens
                     )}
                     width="100%"
-                    borderRight={getSidebarBorder(isExpanded, isHovering)}
+                    borderRight={getSidebarBorder(
+                        isExpanded,
+                        isHovering,
+                        tokens
+                    )}
                     display={isMobile ? 'none' : 'flex'}
                     position={!isExpanded ? 'absolute' : 'relative'}
-                    zIndex={98}
+                    zIndex="98"
                     height="100%"
                     style={{
                         willChange: 'transform',
                         transitionDuration: '150ms',
                         animation: 'slide-in-from-left 0.3s ease-out',
+                        overflow: 'hidden',
                     }}
                     onMouseLeave={handleMouseLeave}
                 >
-                    {(isExpanded || isHovering) && !isMobile && (
+                    {!isMobile && (
                         <>
-                            {hasLeftPanel && leftPanel && (
-                                <TenantPanel
-                                    items={leftPanel.items}
-                                    selected={leftPanel.selected}
-                                    onSelect={leftPanel.onSelect}
-                                    maxVisibleItems={leftPanel.maxVisibleItems}
-                                />
-                            )}
-
-                            <Block
-                                width="100%"
-                                height="100%"
-                                display="flex"
-                                flexDirection="column"
-                                position="relative"
-                            >
-                                <SidebarHeader
-                                    sidebarTopSlot={sidebarTopSlot}
-                                    merchantInfo={merchantInfo}
-                                    isExpanded={isExpanded}
-                                    isScrolled={isScrolled}
-                                    sidebarCollapseKey={sidebarCollapseKey}
-                                    onToggle={toggleSidebar}
-                                />
-
-                                <DirectoryContainer data-directory-container>
-                                    <Directory
-                                        directoryData={data}
-                                        className="pb-20"
+                            {hasLeftPanel &&
+                                leftPanel &&
+                                (isExpanded || isHovering) && (
+                                    <TenantPanel
+                                        items={leftPanel.items}
+                                        selected={leftPanel.selected}
+                                        onSelect={leftPanel.onSelect}
+                                        maxVisibleItems={
+                                            leftPanel.maxVisibleItems
+                                        }
                                     />
-                                </DirectoryContainer>
+                                )}
 
-                                <SidebarFooter footer={footer} />
-                            </Block>
+                            {(isExpanded || isHovering) && (
+                                <Block
+                                    width="100%"
+                                    height="100%"
+                                    display="flex"
+                                    flexDirection="column"
+                                    position="relative"
+                                >
+                                    <SidebarHeader
+                                        sidebarTopSlot={sidebarTopSlot}
+                                        merchantInfo={merchantInfo}
+                                        isExpanded={isExpanded}
+                                        isScrolled={isScrolled}
+                                        sidebarCollapseKey={sidebarCollapseKey}
+                                        onToggle={toggleSidebar}
+                                    />
+
+                                    <DirectoryContainer
+                                        data-directory-container
+                                    >
+                                        <Directory directoryData={data} />
+                                    </DirectoryContainer>
+
+                                    <SidebarFooter footer={footer} />
+                                </Block>
+                            )}
                         </>
                     )}
                 </Block>

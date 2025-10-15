@@ -1,177 +1,141 @@
-import { FOUNDATION_THEME } from '../../tokens'
 import type { CSSObject } from 'styled-components'
 import type { FoundationTokenType } from '../../tokens/theme.token'
+import { BreakpointType } from '../../breakpoints/breakPoints'
+import FOUNDATION_THEME from '../../tokens/theme.token'
 
+export type DrawerDirection = 'top' | 'bottom' | 'left' | 'right'
+
+/**
+ * Drawer Tokens following the pattern: [target].CSSProp.[variant].[state]
+ *
+ * Structure:
+ * - target: overlay | content | handle | header | body | footer | mobileOffset (defines what element the token applies to)
+ * - CSSProp: backgroundColor | borderRadius | boxShadow | zIndex | border | padding | fontSize | fontWeight | color | gap | etc.
+ * - variant: top | bottom | left | right (drawer direction)
+ * - state: default (interaction state)
+ *
+ * Pattern examples:
+ * - overlay.backgroundColor.[state]
+ * - overlay.zIndex (no variant dependency)
+ * - content.backgroundColor.[variant].[state]
+ * - content.borderRadius.[variant]
+ * - handle.backgroundColor.[variant].[state]
+ * - header.padding.[variant]
+ * - header.text.title.fontSize (no variant dependency)
+ * - body.padding.[variant]
+ * - footer.gap.[variant]
+ * - mobileOffset.top.[variant]
+ */
 export type DrawerTokensType = {
+    // Base properties (shared)
+    borderRadius: {
+        topLeft: CSSObject['borderTopLeftRadius']
+        topRight: CSSObject['borderTopRightRadius']
+        bottomLeft: CSSObject['borderBottomLeftRadius']
+        bottomRight: CSSObject['borderBottomRightRadius']
+    }
+
+    // Overlay section
     overlay: {
         backgroundColor: CSSObject['backgroundColor']
-        zIndex: CSSObject['zIndex']
     }
-    content: {
-        backgroundColor: CSSObject['backgroundColor']
-        borderRadius: CSSObject['borderRadius']
-        boxShadow: CSSObject['boxShadow']
-        zIndex: CSSObject['zIndex']
-        border: CSSObject['border']
-    }
-    mobileOffset: {
+
+    offset: {
         top: CSSObject['top']
         bottom: CSSObject['bottom']
         left: CSSObject['left']
         right: CSSObject['right']
     }
-    handle: {
+
+    // Content section (main drawer container)
+    content: {
         backgroundColor: CSSObject['backgroundColor']
-        borderRadius: CSSObject['borderRadius']
-        width: CSSObject['width']
-        height: CSSObject['height']
-    }
-    header: {
-        padding: CSSObject['padding']
-        borderBottom: CSSObject['borderBottom']
-        backgroundColor: CSSObject['backgroundColor']
-        title: {
-            color: CSSObject['color']
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            lineHeight: CSSObject['lineHeight']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
         }
-        description: {
-            color: CSSObject['color']
-            fontSize: CSSObject['fontSize']
-            lineHeight: CSSObject['lineHeight']
+        handle: {
+            backgroundColor: CSSObject['backgroundColor']
+            borderRadius: CSSObject['borderRadius']
+            width: CSSObject['width']
+            height: CSSObject['height']
         }
-    }
-    body: {
-        padding: CSSObject['padding']
-        backgroundColor: CSSObject['backgroundColor']
-        overflowY: CSSObject['overflowY']
-        borderRadius: CSSObject['borderRadius']
-    }
-    footer: {
-        padding: CSSObject['padding']
-        borderTop: CSSObject['borderTop']
-        backgroundColor: CSSObject['backgroundColor']
-        gap: CSSObject['gap']
-        alignItems: CSSObject['alignItems']
-        justifyContent: CSSObject['justifyContent']
     }
 }
 
-export const drawerTokens: DrawerTokensType = {
-    overlay: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        zIndex: 1100,
-    },
-    content: {
-        backgroundColor: FOUNDATION_THEME.colors.gray[0],
-        borderRadius: FOUNDATION_THEME.border.radius[16],
-        boxShadow: FOUNDATION_THEME.shadows.xl,
-        zIndex: 1200,
-        border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-    },
-    mobileOffset: {
-        top: '74px',
-        bottom: '16px',
-        left: '16px',
-        right: '16px',
-    },
-    handle: {
-        backgroundColor: FOUNDATION_THEME.colors.gray[400],
-        borderRadius: FOUNDATION_THEME.border.radius.full,
-        width: '48px',
-        height: '6px',
-    },
-    header: {
-        padding: FOUNDATION_THEME.unit[16],
-        borderBottom: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-        backgroundColor: FOUNDATION_THEME.colors.gray[0],
-        title: {
-            color: FOUNDATION_THEME.colors.gray[900],
-            fontSize: FOUNDATION_THEME.font.size.heading.md.fontSize,
-            fontWeight: FOUNDATION_THEME.font.weight[600],
-            lineHeight: FOUNDATION_THEME.font.size.heading.md.lineHeight,
-        },
-        description: {
-            color: FOUNDATION_THEME.colors.gray[600],
-            fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-            lineHeight: FOUNDATION_THEME.font.size.body.md.lineHeight,
-        },
-    },
-    body: {
-        padding: FOUNDATION_THEME.unit[16],
-        backgroundColor: FOUNDATION_THEME.colors.gray[0],
-        overflowY: 'auto',
-        borderRadius: '14px',
-    },
-    footer: {
-        padding: FOUNDATION_THEME.unit[16],
-        borderTop: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-        backgroundColor: FOUNDATION_THEME.colors.gray[0],
-        gap: FOUNDATION_THEME.unit[12],
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-    },
+export type ResponsiveDrawerTokens = {
+    [key in keyof BreakpointType]: DrawerTokensType
 }
 
 export const getDrawerComponentTokens = (
     foundationToken: FoundationTokenType
-): DrawerTokensType => {
+): ResponsiveDrawerTokens => {
     return {
-        overlay: {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            zIndex: 1100,
-        },
-        content: {
-            backgroundColor: foundationToken.colors.gray[0],
-            borderRadius: foundationToken.border.radius[16],
-            boxShadow: foundationToken.shadows.xl,
-            zIndex: 1200,
-            border: `1px solid ${foundationToken.colors.gray[200]}`,
-        },
-        mobileOffset: {
-            top: '74px',
-            bottom: '16px',
-            left: '16px',
-            right: '16px',
-        },
-        handle: {
-            backgroundColor: foundationToken.colors.gray[300],
-            borderRadius: foundationToken.border.radius.full,
-            width: '48px',
-            height: '6px',
-        },
-        header: {
-            padding: foundationToken.unit[16],
-            borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-            backgroundColor: foundationToken.colors.gray[0],
-            title: {
-                color: foundationToken.colors.gray[900],
-                fontSize: foundationToken.font.size.heading.md.fontSize,
-                fontWeight: foundationToken.font.weight[600],
-                lineHeight: foundationToken.font.size.heading.md.lineHeight,
+        sm: {
+            // Base properties (shared)
+            borderRadius: {
+                topLeft: foundationToken.border.radius[16],
+                topRight: foundationToken.border.radius[16],
+                bottomLeft: foundationToken.border.radius[16],
+                bottomRight: foundationToken.border.radius[16],
             },
-            description: {
-                color: foundationToken.colors.gray[600],
-                fontSize: foundationToken.font.size.body.md.fontSize,
-                lineHeight: foundationToken.font.size.body.md.lineHeight,
+            // border: `1px solid ${foundationToken.colors.gray[200]}`,
+
+            overlay: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            },
+            offset: {
+                top: '74px',
+                bottom: FOUNDATION_THEME.unit[16],
+                left: FOUNDATION_THEME.unit[16],
+                right: FOUNDATION_THEME.unit[16],
+            },
+            content: {
+                backgroundColor: foundationToken.colors.gray[0],
+                padding: {
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[16],
+                },
+                handle: {
+                    backgroundColor: foundationToken.colors.gray[300],
+                    borderRadius: foundationToken.border.radius.full,
+                    width: FOUNDATION_THEME.unit[48],
+                    height: FOUNDATION_THEME.unit[6],
+                },
             },
         },
-        body: {
-            padding: foundationToken.unit[16],
-            backgroundColor: foundationToken.colors.gray[0],
-            overflowY: 'auto',
-            borderRadius: '14px',
-        },
-        footer: {
-            padding: foundationToken.unit[16],
-            borderTop: `1px solid ${foundationToken.colors.gray[200]}`,
-            backgroundColor: foundationToken.colors.gray[0],
-            gap: foundationToken.unit[12],
-            alignItems: 'center',
-            justifyContent: 'flex-end',
+        lg: {
+            // Base properties (shared)
+            borderRadius: {
+                topLeft: foundationToken.border.radius[16],
+                topRight: foundationToken.border.radius[16],
+                bottomLeft: foundationToken.border.radius[16],
+                bottomRight: foundationToken.border.radius[16],
+            },
+            // border: `1px solid ${foundationToken.colors.gray[200]}`,
+
+            overlay: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            },
+            offset: {
+                top: '74px',
+                bottom: FOUNDATION_THEME.unit[16],
+                left: FOUNDATION_THEME.unit[16],
+                right: FOUNDATION_THEME.unit[16],
+            },
+            content: {
+                backgroundColor: foundationToken.colors.gray[0],
+                padding: {
+                    x: foundationToken.unit[20],
+                    y: foundationToken.unit[20],
+                },
+                handle: {
+                    backgroundColor: foundationToken.colors.gray[300],
+                    borderRadius: foundationToken.border.radius.full,
+                    width: FOUNDATION_THEME.unit[48],
+                    height: FOUNDATION_THEME.unit[6],
+                },
+            },
         },
     }
 }
-
-export default drawerTokens

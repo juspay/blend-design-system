@@ -25,6 +25,11 @@ export type StatCardChange = {
     tooltip?: ReactNode
 }
 
+export enum StatCardDirection {
+    VERTICAL = 'vertical',
+    HORIZONTAL = 'horizontal',
+}
+
 export type StatCardAxisConfig = {
     type?: AxisType
     tickFormatter?: (value: string | number) => string
@@ -54,4 +59,5 @@ export type StatCardProps = {
     yAxis?: StatCardAxisConfig
     valueFormatter?: AxisType
     height?: string
+    direction?: StatCardDirection
 }

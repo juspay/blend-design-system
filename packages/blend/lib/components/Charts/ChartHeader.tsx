@@ -32,31 +32,30 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
             display="flex"
             alignItems="center"
             justifyContent="space-between"
-            gap={headerTokens.gap}
-            padding={headerTokens.padding[isSmallScreen ? 'sm' : 'lg']}
-            paddingLeft={headerTokens.padding[isSmallScreen ? 'sm' : 'lg']}
-            paddingRight={headerTokens.padding[isSmallScreen ? 'sm' : 'lg']}
+            gap={FOUNDATION_THEME.unit[12]}
+            paddingX={headerTokens.padding.x}
+            paddingY={headerTokens.padding.y}
             backgroundColor={headerTokens.backgroundColor}
             {...(isExpanded && {
                 borderBottom: headerTokens.borderBottom,
             })}
-            borderRadius={FOUNDATION_THEME.border.radius[8]}
+            borderRadius={headerTokens.borderRadius}
             borderBottomLeftRadius={
                 isExpanded
                     ? FOUNDATION_THEME.border.radius[0]
-                    : FOUNDATION_THEME.border.radius[8]
+                    : headerTokens.borderRadius
             }
             borderBottomRightRadius={
                 isExpanded
                     ? FOUNDATION_THEME.border.radius[0]
-                    : FOUNDATION_THEME.border.radius[8]
+                    : headerTokens.borderRadius
             }
         >
             <Block>{chartHeaderSlot}</Block>
             <Block
                 display="flex"
                 alignItems="center"
-                gap={headerTokens.gap}
+                gap={headerTokens.slots.gap}
                 flexShrink={0}
             >
                 {isSmallScreen ? (

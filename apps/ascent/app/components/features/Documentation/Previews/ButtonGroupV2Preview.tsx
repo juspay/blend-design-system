@@ -3,19 +3,19 @@ import { ButtonGroup, Button, ButtonType } from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
-const ButtonGroupV2Preview = () => {
-    const tsCode = `import { ButtonGroupV2, Button, ButtonType } from "@juspay/blend-design-system";
+const ButtonGroupPreview = () => {
+    const tsCode = `import { ButtonGroup, Button, ButtonType } from "@juspay/blend-design-system";
 
 function MyComponent() {
   return (
-    <ButtonGroupV2 stacked={true}>
+    <ButtonGroup stacked={true}>
       <Button text="Cancel" buttonType={ButtonType.SUCCESS} />
       <Button text="Save" buttonType={ButtonType.PRIMARY} />
-    </ButtonGroupV2>
+    </ButtonGroup>
   );
 }`
 
-    const reCode = `type buttonGroupV2Props = {
+    const reCode = `type ButtonGroupProps = {
   stacked: option<bool>,
   children: React.element,
 }
@@ -25,16 +25,16 @@ let make = (
   ~stacked: option<bool>=?,
   ~children: React.element,
 ) => {
-  <ButtonGroupV2Binding ?stacked>
+  <ButtonGroupBinding ?stacked>
     {children}
-  </ButtonGroupV2Binding>
+  </ButtonGroupBinding>
 }`
 
     const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~stacked: bool=?,
   ~children: React.element,
-) => React.element = "ButtonGroupV2"`
+) => React.element = "ButtonGroup"`
 
     return (
         <ComponentPreview
@@ -50,4 +50,4 @@ external make: (
     )
 }
 
-export default ButtonGroupV2Preview
+export default ButtonGroupPreview

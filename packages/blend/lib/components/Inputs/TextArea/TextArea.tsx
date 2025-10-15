@@ -39,14 +39,14 @@ const TextArea = ({
 
     const inputFocusedOrWithValue = isFocused || value.length > 0
 
-    const paddingX = toPixels(textAreaTokens.paddingX)
-    const paddingY = toPixels(textAreaTokens.paddingY)
+    const paddingX = toPixels(textAreaTokens.inputContainer.padding.x)
+    const paddingY = toPixels(textAreaTokens.inputContainer.padding.y)
 
     return (
         <Block
             display="flex"
             flexDirection="column"
-            gap={8}
+            gap={textAreaTokens.gap}
             width="100%"
             position="relative"
         >
@@ -101,7 +101,7 @@ const TextArea = ({
                 required={required}
                 cols={cols}
                 wrap={wrap}
-                borderRadius={textAreaTokens.borderRadius}
+                borderRadius={textAreaTokens.inputContainer.borderRadius}
                 resize={resize}
                 paddingX={paddingX}
                 paddingTop={
@@ -112,25 +112,35 @@ const TextArea = ({
                 paddingBottom={
                     isSmallScreen && inputFocusedOrWithValue ? 0 : paddingY
                 }
-                boxShadow={textAreaTokens.boxShadow.default}
-                fontFamily={textAreaTokens.fontFamily}
-                border={textAreaTokens.border[error ? 'error' : 'default']}
-                fontSize={'14px'}
-                fontWeight={500}
-                outline={textAreaTokens.outline[error ? 'error' : 'default']}
+                boxShadow={textAreaTokens.inputContainer.boxShadow}
+                border={
+                    textAreaTokens.inputContainer.border[
+                        error ? 'error' : 'default'
+                    ]
+                }
+                fontSize={textAreaTokens.inputContainer.fontSize}
+                fontWeight={textAreaTokens.inputContainer.fontWeight}
                 _hover={{
-                    border: textAreaTokens.border[error ? 'error' : 'hover'],
+                    border: textAreaTokens.inputContainer.border[
+                        error ? 'error' : 'hover'
+                    ],
                 }}
-                color={textAreaTokens.color[disabled ? 'disabled' : 'default']}
+                color={
+                    textAreaTokens.inputContainer.color[
+                        disabled ? 'disabled' : 'default'
+                    ]
+                }
                 _focus={{
-                    border: textAreaTokens.border[error ? 'error' : 'focus'],
-                    boxShadow:
-                        textAreaTokens.boxShadow[error ? 'error' : 'focus'],
+                    border: textAreaTokens.inputContainer.border[
+                        error ? 'error' : 'focus'
+                    ],
+                    boxShadow: textAreaTokens.inputContainer.boxShadow,
                 }}
                 disabled={disabled}
                 _disabled={{
-                    backgroundColor: textAreaTokens.backgroundColor.disabled,
-                    border: textAreaTokens.border.disabled,
+                    backgroundColor:
+                        textAreaTokens.inputContainer.backgroundColor.disabled,
+                    border: textAreaTokens.inputContainer.border.disabled,
                     cursor: 'not-allowed',
                 }}
                 {...rest}

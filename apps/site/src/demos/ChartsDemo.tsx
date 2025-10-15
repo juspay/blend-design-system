@@ -2078,9 +2078,11 @@ const ChartDemo = () => {
             </div>
 
             <Charts
-                showHeader={false}
                 data={last1hour5minsData}
                 chartType={ChartType.LINE}
+                slot1={<div>Hello</div>}
+                slot2={<div>World</div>}
+                slot3={<div>World</div>}
                 xAxis={{
                     label: 'Date & Time Together',
                     show: true,
@@ -2107,6 +2109,7 @@ const ChartDemo = () => {
             />
 
             <Charts
+                height={200}
                 data={last1hour15minsData}
                 chartType={ChartType.LINE}
                 xAxis={{
@@ -2386,6 +2389,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
             {/* Main Interactive Chart */}
             <div className="chart-example-container mb-12">
                 <Charts
+                    height={300}
                     stackedLegends={true}
                     stackedLegendsData={stackedLegendsData}
                     data={getCurrentData()}
@@ -2640,6 +2644,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     {/* Bar Chart Example */}
 
                     <Charts
+                        height={200}
                         data={performanceData}
                         chartType={ChartType.BAR}
                         colors={['#8b5cf6', '#06b6d4', '#f59e0b']}
@@ -2659,6 +2664,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     {/* Pie Chart Example */}
 
                     <Charts
+                        height={200}
                         data={analyticsData}
                         chartType={ChartType.PIE}
                         legendPosition={ChartLegendPosition.RIGHT}

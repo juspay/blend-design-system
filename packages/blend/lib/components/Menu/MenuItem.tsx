@@ -1,10 +1,5 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
-import { FOUNDATION_THEME } from '../../tokens'
-import {
-    MenuItemV2ActionType,
-    type MenuItemV2Type,
-    MenuItemV2Variant,
-} from './types'
+import { MenuItemActionType, type MenuItemType, MenuItemVariant } from './types'
 import { SubMenu } from './SubMenu'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
@@ -23,12 +18,12 @@ const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
 const getBgColor = (
     state: MenuItemStates,
     menuTokens: MenuTokensType,
-    item: MenuItemV2Type
+    item: MenuItemType
 ) => {
     const bg = menuTokens.item.backgroundColor
 
     // check for variant
-    if (item.variant === MenuItemV2Variant.DEFAULT) {
+    if (item.variant === MenuItemVariant.DEFAULT) {
         if (!item.disabled) {
             return bg.default.enabled[state]
         } else {
@@ -37,9 +32,9 @@ const getBgColor = (
     } else {
         // check for action type
         if (item.actionType === undefined) {
-            item.actionType = MenuItemV2ActionType.PRIMARY
+            item.actionType = MenuItemActionType.PRIMARY
         }
-        if (item.actionType === MenuItemV2ActionType.PRIMARY) {
+        if (item.actionType === MenuItemActionType.PRIMARY) {
             if (!item.disabled) {
                 return bg.action.primary.enabled[state]
             } else {
@@ -58,12 +53,12 @@ const getBgColor = (
 const getColor = (
     state: MenuItemStates,
     menuTokens: MenuTokensType,
-    item: MenuItemV2Type
+    item: MenuItemType
 ) => {
-    const bg = menuTokens.item.label.color
+    const bg = menuTokens.item.option.color
 
     // check for variant
-    if (item.variant === MenuItemV2Variant.DEFAULT) {
+    if (item.variant === MenuItemVariant.DEFAULT) {
         if (!item.disabled) {
             return bg.default.enabled[state]
         } else {
@@ -72,9 +67,9 @@ const getColor = (
     } else {
         // check for action type
         if (item.actionType === undefined) {
-            item.actionType = MenuItemV2ActionType.PRIMARY
+            item.actionType = MenuItemActionType.PRIMARY
         }
-        if (item.actionType === MenuItemV2ActionType.PRIMARY) {
+        if (item.actionType === MenuItemActionType.PRIMARY) {
             if (!item.disabled) {
                 return bg.action.primary.enabled[state]
             } else {
@@ -95,7 +90,7 @@ const MenuItem = ({
     idx,
     maxHeight,
 }: {
-    item: MenuItemV2Type
+    item: MenuItemType
     idx: number
     maxHeight?: number
 }) => {
@@ -104,7 +99,7 @@ const MenuItem = ({
         return <SubMenu item={item} idx={idx} maxHeight={maxHeight} />
     }
     if (item.variant === undefined) {
-        item.variant = MenuItemV2Variant.DEFAULT
+        item.variant = MenuItemVariant.DEFAULT
     }
 
     const menuItemContent = (
@@ -116,8 +111,10 @@ const MenuItem = ({
             <Block
                 key={idx}
                 display="flex"
-                padding={menuTokens.item.padding}
-                margin={menuTokens.item.margin}
+                paddingX={menuTokens.item.padding.x}
+                paddingY={menuTokens.item.padding.y}
+                marginY={menuTokens.item.margin.y}
+                marginX={menuTokens.item.margin.x}
                 borderRadius={menuTokens.item.borderRadius}
                 onClick={item.disabled ? undefined : item.onClick}
                 cursor={item.disabled ? 'not-allowed' : 'pointer'}
@@ -158,9 +155,9 @@ const MenuItem = ({
                         overflow="hidden"
                     >
                         <Text
-                            variant="body.md"
                             color={getColor('default', menuTokens, item)}
-                            fontWeight={500}
+                            fontWeight={menuTokens.item.option.fontWeight}
+                            fontSize={menuTokens.item.option.fontSize}
                             truncate
                         >
                             {item.label}
@@ -173,9 +170,9 @@ const MenuItem = ({
                 {item.subLabel && (
                     <Block display="flex" alignItems="center" width="100%">
                         <Text
-                            variant="body.sm"
-                            color={FOUNDATION_THEME.colors.gray[400]}
-                            fontWeight={400}
+                            color={getColor('default', menuTokens, item)}
+                            fontWeight={menuTokens.item.description.fontWeight}
+                            fontSize={menuTokens.item.description.fontSize}
                         >
                             {item.subLabel}
                         </Text>

@@ -324,16 +324,16 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                             justifyContent="center"
                                             alignItems="center"
                                             padding={
-                                                singleSelectTokens.dropdown.item
+                                                singleSelectTokens.menu.item
                                                     .padding
                                             }
                                         >
                                             <Text
                                                 variant="body.md"
                                                 color={
-                                                    singleSelectTokens.dropdown
-                                                        .item.label.color
-                                                        .disabled
+                                                    singleSelectTokens.menu.item
+                                                        .optionsLabel.color
+                                                        .default
                                                 }
                                                 textAlign="center"
                                             >
@@ -347,16 +347,16 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                             justifyContent="center"
                                             alignItems="center"
                                             padding={
-                                                singleSelectTokens.dropdown.item
+                                                singleSelectTokens.menu.item
                                                     .padding
                                             }
                                         >
                                             <Text
                                                 variant="body.md"
                                                 color={
-                                                    singleSelectTokens.dropdown
-                                                        .item.label.color
-                                                        .disabled
+                                                    singleSelectTokens.menu.item
+                                                        .optionsLabel.color
+                                                        .default
                                                 }
                                                 textAlign="center"
                                             >
@@ -376,10 +376,15 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                                     >
                                                         {group.groupLabel && (
                                                             <Block
-                                                                padding={`${singleSelectTokens.dropdown.item.gap} ${singleSelectTokens.dropdown.item.padding}`}
+                                                                padding={
+                                                                    singleSelectTokens
+                                                                        .menu
+                                                                        .item
+                                                                        .padding
+                                                                }
                                                                 margin={
                                                                     singleSelectTokens
-                                                                        .dropdown
+                                                                        .menu
                                                                         .item
                                                                         .margin
                                                                 }
@@ -388,18 +393,18 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                                                     variant="body.sm"
                                                                     color={
                                                                         singleSelectTokens
-                                                                            .dropdown
+                                                                            .menu
                                                                             .item
-                                                                            .label
+                                                                            .optionsLabel
                                                                             .color
-                                                                            .disabled
+                                                                            .default
                                                                     }
                                                                     textTransform="uppercase"
                                                                     fontSize={
                                                                         singleSelectTokens
-                                                                            .dropdown
+                                                                            .menu
                                                                             .item
-                                                                            .subLabel
+                                                                            .optionsLabel
                                                                             .fontSize
                                                                     }
                                                                 >
@@ -447,19 +452,22 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                                                 <Block
                                                                     height={
                                                                         singleSelectTokens
-                                                                            .dropdown
+                                                                            .menu
+                                                                            .item
                                                                             .seperator
                                                                             .height
                                                                     }
                                                                     backgroundColor={
                                                                         singleSelectTokens
-                                                                            .dropdown
+                                                                            .menu
+                                                                            .item
                                                                             .seperator
                                                                             .color
                                                                     }
                                                                     margin={
                                                                         singleSelectTokens
-                                                                            .dropdown
+                                                                            .menu
+                                                                            .item
                                                                             .seperator
                                                                             .margin
                                                                     }
