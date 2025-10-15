@@ -24,8 +24,7 @@ const StyledAccordionItem = styled(RadixAccordion.Item)<{
     $accordionToken: AccordionTokenType
     $isSmallScreen: boolean
 }>((props) => ({
-    border: props.$accordionToken.item.trigger.border[props.$accordionType]
-        .default,
+    border: props.$accordionToken.trigger.border[props.$accordionType].default,
 
     borderRadius: props.$accordionToken.borderRadius[props.$accordionType],
     overflow:
@@ -33,7 +32,7 @@ const StyledAccordionItem = styled(RadixAccordion.Item)<{
     ...(props.$isDisabled &&
         props.$accordionType === AccordionType.BORDER && {
             backgroundColor:
-                props.$accordionToken.item.trigger.backgroundColor[
+                props.$accordionToken.trigger.backgroundColor[
                     props.$accordionType
                 ].disabled,
         }),
@@ -62,9 +61,8 @@ const StyledAccordionItem = styled(RadixAccordion.Item)<{
                 border: 'none',
                 borderRadius: 'unset',
                 borderBottom:
-                    props.$accordionToken.item.trigger.border[
-                        props.$accordionType
-                    ].default,
+                    props.$accordionToken.trigger.border[props.$accordionType]
+                        .default,
             },
             '&:last-child': {
                 ...(props.$isDisabled && {
@@ -94,30 +92,33 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
     cursor: 'pointer',
     border: 'none',
     outline: 'none',
-    padding: props.$accordionToken.item.trigger.padding[props.$accordionType],
+    padding: props.$accordionToken.trigger.padding[props.$accordionType],
     borderRadius: props.$accordionToken.borderRadius[props.$accordionType],
     backgroundColor:
-        props.$accordionToken.item.trigger.backgroundColor[props.$accordionType]
+        props.$accordionToken.trigger.backgroundColor[props.$accordionType]
             .default,
     ...(props.$isDisabled && {
         backgroundColor:
-            props.$accordionToken.item.trigger.backgroundColor[
-                props.$accordionType
-            ].disabled,
+            props.$accordionToken.trigger.backgroundColor[props.$accordionType]
+                .disabled,
         cursor: 'not-allowed',
     }),
     ...(!props.$isSmallScreen && {
         '&[data-state="open"]': {
             backgroundColor:
-                props.$accordionToken.item.trigger.backgroundColor[
+                props.$accordionToken.trigger.backgroundColor[
                     props.$accordionType
                 ].open,
+            ...(props.$accordionType === AccordionType.BORDER && {
+                borderBottomLeftRadius: '0',
+                borderBottomRightRadius: '0',
+            }),
         },
     }),
     ...(!props.$isSmallScreen && {
         '&:hover:not(:disabled)': {
             backgroundColor:
-                props.$accordionToken.item.trigger.backgroundColor[
+                props.$accordionToken.trigger.backgroundColor[
                     props.$accordionType
                 ].hover,
         },
@@ -156,12 +157,16 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
 const StyledAccordionContent = styled(RadixAccordion.Content)<{
     $accordionType: AccordionType
     $accordionToken: AccordionTokenType
-}>(() => ({
+}>((props) => ({
     overflow: 'hidden',
     transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
 
     '&[data-state="open"]': {
         animation: 'accordion-down 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        ...(props.$accordionType === AccordionType.BORDER && {
+            borderTopLeftRadius: '0',
+            borderTopRightRadius: '0',
+        }),
     },
 
     '&[data-state="closed"]': {
@@ -204,9 +209,8 @@ const StyledSeparator = styled.hr<{
     border: 'none',
     height: foundationToken.borderWidth[1],
     backgroundColor:
-        props.$accordionToken.item.separator.color[props.$accordionType],
+        props.$accordionToken.separator.color[props.$accordionType],
 }))
-
 const AccordionItem = forwardRef<
     HTMLDivElement,
     AccordionItemProps & {
@@ -353,20 +357,20 @@ const AccordionItem = forwardRef<
                                     >
                                         <PrimitiveText
                                             fontSize={
-                                                accordionToken.item.trigger
+                                                accordionToken.trigger.text
                                                     .title.fontSize
                                             }
                                             fontWeight={
-                                                accordionToken.item.trigger
+                                                accordionToken.trigger.text
                                                     .title.fontWeight
                                             }
                                             color={
                                                 isDisabled
-                                                    ? accordionToken.item
-                                                          .trigger.title.color
+                                                    ? accordionToken.trigger
+                                                          .text.title.color
                                                           .disabled
-                                                    : accordionToken.item
-                                                          .trigger.title.color
+                                                    : accordionToken.trigger
+                                                          .text.title.color
                                                           .default
                                             }
                                         >
@@ -390,25 +394,25 @@ const AccordionItem = forwardRef<
                                             display="flex"
                                             alignItems="center"
                                             gap={
-                                                accordionToken.item.trigger
+                                                accordionToken.trigger.text
                                                     .subtext.gap
                                             }
                                         >
                                             {subtext && !isSmallScreen && (
                                                 <PrimitiveText
                                                     fontSize={
-                                                        accordionToken.item
-                                                            .trigger.subtext
+                                                        accordionToken.trigger
+                                                            .text.subtext
                                                             .fontSize
                                                     }
                                                     color={
                                                         isDisabled
                                                             ? accordionToken
-                                                                  .item.trigger
+                                                                  .trigger.text
                                                                   .subtext.color
                                                                   .disabled
                                                             : accordionToken
-                                                                  .item.trigger
+                                                                  .trigger.text
                                                                   .subtext.color
                                                                   .default
                                                     }

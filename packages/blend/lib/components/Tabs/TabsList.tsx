@@ -123,7 +123,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         position: 'relative',
                         borderBottom:
                             variant === TabsVariant.UNDERLINE
-                                ? tabsToken.list.borderBottom[variant]
+                                ? tabsToken.borderBottom[variant]
                                 : 'none',
                         paddingTop:
                             variant === TabsVariant.UNDERLINE
@@ -253,7 +253,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                     position: 'relative',
                     borderBottom:
                         variant === TabsVariant.UNDERLINE
-                            ? tabsToken.list.borderBottom[variant]
+                            ? tabsToken.borderBottom[variant]
                             : 'none',
                 }}
             >

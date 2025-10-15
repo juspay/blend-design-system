@@ -1,10 +1,6 @@
 import styled from 'styled-components'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
-import {
-    MenuItemV2ActionType,
-    type MenuItemV2Type,
-    MenuItemV2Variant,
-} from './types'
+import { MenuItemActionType, type MenuItemType, MenuItemVariant } from './types'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { contentBaseStyle } from './Menu'
@@ -33,13 +29,13 @@ const SubContent = styled(RadixMenu.SubContent)(() => ({
 const getBgColor = (
     state: MenuItemStates,
     menuTokens: MenuTokensType,
-    item: MenuItemV2Type
+    item: MenuItemType
 ) => {
     const bg = menuTokens.item.backgroundColor
 
     // check for variant
     if (
-        item.variant === MenuItemV2Variant.DEFAULT ||
+        item.variant === MenuItemVariant.DEFAULT ||
         (item.subMenu && item.subMenu.length > 0)
     ) {
         if (!item.disabled) {
@@ -50,9 +46,9 @@ const getBgColor = (
     } else {
         // check for action type
         if (item.actionType === undefined) {
-            item.actionType = MenuItemV2ActionType.PRIMARY
+            item.actionType = MenuItemActionType.PRIMARY
         }
-        if (item.actionType === MenuItemV2ActionType.PRIMARY) {
+        if (item.actionType === MenuItemActionType.PRIMARY) {
             if (!item.disabled) {
                 return bg.action.primary.enabled[state]
             } else {
@@ -71,13 +67,13 @@ const getBgColor = (
 const getLabelColor = (
     state: MenuItemStates,
     menuTokens: MenuTokensType,
-    item: MenuItemV2Type
+    item: MenuItemType
 ) => {
-    const bg = menuTokens.item.label.color
+    const bg = menuTokens.item.option.color
 
     // check for variant
     if (
-        item.variant === MenuItemV2Variant.DEFAULT ||
+        item.variant === MenuItemVariant.DEFAULT ||
         (item.subMenu && item.subMenu.length > 0)
     ) {
         if (!item.disabled) {
@@ -88,9 +84,9 @@ const getLabelColor = (
     } else {
         // check for action type
         if (item.actionType === undefined) {
-            item.actionType = MenuItemV2ActionType.PRIMARY
+            item.actionType = MenuItemActionType.PRIMARY
         }
-        if (item.actionType === MenuItemV2ActionType.PRIMARY) {
+        if (item.actionType === MenuItemActionType.PRIMARY) {
             if (!item.disabled) {
                 return bg.action.primary.enabled[state]
             } else {
@@ -109,13 +105,13 @@ const getLabelColor = (
 const getSubLabelColor = (
     state: MenuItemStates,
     menuTokens: MenuTokensType,
-    item: MenuItemV2Type
+    item: MenuItemType
 ) => {
-    const bg = menuTokens.item.subLabel.color
+    const bg = menuTokens.item.description.color
 
     // check for variant
     if (
-        item.variant === MenuItemV2Variant.DEFAULT ||
+        item.variant === MenuItemVariant.DEFAULT ||
         (item.subMenu && item.subMenu.length > 0)
     ) {
         if (!item.disabled) {
@@ -126,9 +122,9 @@ const getSubLabelColor = (
     } else {
         // check for action type
         if (item.actionType === undefined) {
-            item.actionType = MenuItemV2ActionType.PRIMARY
+            item.actionType = MenuItemActionType.PRIMARY
         }
-        if (item.actionType === MenuItemV2ActionType.PRIMARY) {
+        if (item.actionType === MenuItemActionType.PRIMARY) {
             if (!item.disabled) {
                 return bg.action.primary.enabled[state]
             } else {
@@ -149,7 +145,7 @@ export const SubMenu = ({
     idx,
     maxHeight,
 }: {
-    item: MenuItemV2Type
+    item: MenuItemType
     idx: number
     maxHeight?: number
 }) => {
@@ -164,7 +160,7 @@ export const SubMenu = ({
         const lower = searchText.toLowerCase()
         return item.subMenu
             .map((subItem) => filterMenuItem(subItem, lower))
-            .filter(Boolean) as MenuItemV2Type[]
+            .filter(Boolean) as MenuItemType[]
     }, [item.subMenu, searchText, item.enableSubMenuSearch])
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,8 +178,10 @@ export const SubMenu = ({
                     flexDirection="column"
                     gap={menuTokens.item.gap}
                     width="calc(100% - 12px)"
-                    padding={menuTokens.item.padding}
-                    margin={menuTokens.item.margin}
+                    paddingX={menuTokens.item.padding.x}
+                    paddingY={menuTokens.item.padding.y}
+                    marginY={menuTokens.item.margin.y}
+                    marginX={menuTokens.item.margin.x}
                     borderRadius={menuTokens.item.borderRadius}
                     color={getLabelColor('default', menuTokens, item)}
                     _hover={{
@@ -220,8 +218,10 @@ export const SubMenu = ({
                         >
                             <Text
                                 variant="body.md"
-                                fontWeight={menuTokens.item.label.fontWeight}
-                                fontSize={menuTokens.item.label.fontSize}
+                                fontWeight={
+                                    menuTokens.item.optionsLabel.fontWeight
+                                }
+                                fontSize={menuTokens.item.optionsLabel.fontSize}
                                 truncate
                                 color={getLabelColor(
                                     'default',
@@ -248,8 +248,10 @@ export const SubMenu = ({
                                     menuTokens,
                                     item
                                 )}
-                                fontWeight={menuTokens.item.subLabel.fontWeight}
-                                fontSize={menuTokens.item.subLabel.fontSize}
+                                fontWeight={
+                                    menuTokens.item.description.fontWeight
+                                }
+                                fontSize={menuTokens.item.description.fontSize}
                             >
                                 {item.subLabel}
                             </PrimitiveText>
@@ -262,8 +264,10 @@ export const SubMenu = ({
                     style={{
                         paddingTop: item.enableSubMenuSearch
                             ? 0
-                            : menuTokens.paddingTop,
-                        paddingBottom: menuTokens.paddingBottom,
+                            : menuTokens.padding.y,
+                        paddingBottom: menuTokens.padding.y,
+                        paddingRight: menuTokens.padding.x,
+                        paddingLeft: menuTokens.padding.x,
                         borderRadius: menuTokens.borderRadius,
                         minWidth: '200px',
                         maxWidth: '280px',

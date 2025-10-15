@@ -3,16 +3,20 @@ import Block from '../Primitives/Block/Block'
 import { Avatar, AvatarShape, AvatarSize } from '../Avatar'
 import Text from '../Text/Text'
 import { FOUNDATION_THEME } from '../../tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import type { SidebarTokenType } from './sidebar.tokens'
 
 type SidebarFooterProps = {
     footer?: React.ReactNode
 }
 
 const SidebarFooter: React.FC<SidebarFooterProps> = ({ footer }) => {
+    const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+
     return (
         <Block
             width="100%"
-            backgroundColor={FOUNDATION_THEME.colors.gray[25]}
+            backgroundColor={tokens.footer.backgroundColor}
             height="64px"
             position="sticky"
             bottom="0"
@@ -21,8 +25,8 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({ footer }) => {
             alignItems="center"
             justifyContent="space-between"
             gap="12px"
-            padding="12px 8px"
-            borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+            padding={`${tokens.footer.padding.y} ${tokens.footer.padding.x}`}
+            borderTop={tokens.footer.borderTop}
         >
             {footer ? (
                 footer

@@ -1289,6 +1289,234 @@ const SimpleDataTableExample = () => {
     )
 }
 
+// Simple Empty DataTable Examples
+const EmptyDataTableExamples = () => {
+    // First empty table - Simple User Table
+    const simpleUserColumns: ColumnDefinition<Record<string, unknown>>[] = [
+        {
+            field: 'name',
+            header: 'User Name',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '150px',
+            maxWidth: '200px',
+        },
+        {
+            field: 'email',
+            header: 'Email Address',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '180px',
+            maxWidth: '250px',
+        },
+        {
+            field: 'role',
+            header: 'Role',
+            type: ColumnType.SELECT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '120px',
+            maxWidth: '160px',
+        },
+        {
+            field: 'status',
+            header: 'Status',
+            type: ColumnType.TAG,
+            isSortable: true,
+            isEditable: false,
+            minWidth: '100px',
+            maxWidth: '140px',
+        },
+    ]
+
+    // Second empty table - Simple Product Table
+    const simpleProductColumns: ColumnDefinition<Record<string, unknown>>[] = [
+        {
+            field: 'productName',
+            header: 'Product Name',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '150px',
+            maxWidth: '200px',
+        },
+        {
+            field: 'category',
+            header: 'Category',
+            type: ColumnType.DROPDOWN,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '120px',
+            maxWidth: '160px',
+        },
+        {
+            field: 'price',
+            header: 'Price',
+            type: ColumnType.NUMBER,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '100px',
+            maxWidth: '150px',
+        },
+        {
+            field: 'inStock',
+            header: 'In Stock',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '80px',
+            maxWidth: '120px',
+        },
+    ]
+
+    return (
+        <div style={{ marginTop: '40px' }}>
+            {/* First Empty Table */}
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#fef7f0',
+                    borderRadius: '8px',
+                    border: '1px solid #fed7aa',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#c2410c',
+                    }}
+                >
+                    📋 Empty User Management Table
+                </h3>
+                <p style={{ margin: 0, fontSize: '14px', color: '#9a3412' }}>
+                    🎯 <strong>EMPTY STATE DEMO:</strong> This table shows how
+                    the DataTable component looks when there's no data to
+                    display. Notice the "No data available" message and how the
+                    table structure is maintained with proper headers and
+                    borders.
+                </p>
+            </div>
+
+            <DataTable
+                data={[]} // Empty data array
+                columns={simpleUserColumns}
+                idField="id"
+                title="User Management"
+                description="This table has no data to demonstrate the empty state"
+                enableSearch={true}
+                enableFiltering={true}
+                enableAdvancedFilter={false}
+                enableInlineEdit={false}
+                enableRowExpansion={false}
+                enableRowSelection={true}
+                enableColumnManager={true}
+                showSettings={true}
+                columnFreeze={0}
+                pagination={{
+                    currentPage: 1,
+                    pageSize: 10,
+                    totalRows: 0,
+                    pageSizeOptions: [5, 10, 20],
+                }}
+                headerSlot1={
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        leadingIcon={<RefreshCw size={16} />}
+                        size={ButtonSize.SMALL}
+                        onClick={() => console.log('Refresh clicked')}
+                    >
+                        Refresh
+                    </Button>
+                }
+                headerSlot2={
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        leadingIcon={<Package size={16} />}
+                        size={ButtonSize.SMALL}
+                        onClick={() => console.log('Add User clicked')}
+                    >
+                        Add User
+                    </Button>
+                }
+            />
+
+            {/* Second Empty Table */}
+            <div style={{ marginTop: '40px' }}>
+                <div
+                    style={{
+                        marginBottom: '20px',
+                        padding: '16px',
+                        backgroundColor: '#f0f4ff',
+                        borderRadius: '8px',
+                        border: '1px solid #c7d2fe',
+                    }}
+                >
+                    <h3
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#3730a3',
+                        }}
+                    >
+                        🛍️ Empty Product Catalog Table
+                    </h3>
+                    <p
+                        style={{
+                            margin: 0,
+                            fontSize: '14px',
+                            color: '#312e81',
+                        }}
+                    >
+                        🎯 <strong>MINIMAL CONFIGURATION DEMO:</strong> This is
+                        a simpler empty table with fewer features enabled. Shows
+                        how the table adapts to different configurations while
+                        maintaining the empty state properly.
+                    </p>
+                </div>
+
+                <DataTable
+                    data={[]} // Empty data array
+                    columns={simpleProductColumns}
+                    idField="productId"
+                    title="Product Catalog"
+                    description="Browse and manage your product inventory"
+                    enableSearch={true}
+                    enableFiltering={false}
+                    enableAdvancedFilter={false}
+                    enableInlineEdit={false}
+                    enableRowExpansion={false}
+                    enableRowSelection={false}
+                    enableColumnManager={false}
+                    showSettings={false}
+                    columnFreeze={1}
+                    pagination={{
+                        currentPage: 1,
+                        pageSize: 5,
+                        totalRows: 0,
+                        pageSizeOptions: [5, 10, 15],
+                    }}
+                    headerSlot1={
+                        <Button
+                            buttonType={ButtonType.PRIMARY}
+                            leadingIcon={<Package size={16} />}
+                            size={ButtonSize.SMALL}
+                            onClick={() => console.log('Add Product clicked')}
+                        >
+                            Add Product
+                        </Button>
+                    }
+                />
+            </div>
+        </div>
+    )
+}
+
 const DataTableDemo = () => {
     // Demo mode toggle
     const [isServerSideMode, setIsServerSideMode] = useState(false)
@@ -2776,6 +3004,7 @@ const DataTableDemo = () => {
             />
 
             <SimpleDataTableExample />
+            <EmptyDataTableExamples />
         </div>
     )
 }

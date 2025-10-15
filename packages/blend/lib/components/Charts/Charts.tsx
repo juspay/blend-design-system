@@ -15,6 +15,7 @@ import { Button, ButtonSize, ButtonSubType, ButtonType } from '../Button'
 import { ChevronDown } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import useScrollLock from '../../hooks/useScrollLock'
+import { toPixels } from '../../global-utils/GlobalUtils'
 
 const Charts: React.FC<ChartsProps> = ({
     chartType = ChartType.LINE,
@@ -34,17 +35,35 @@ const Charts: React.FC<ChartsProps> = ({
     height = 400,
     showHeader = true,
     showCollapseIcon = true,
+    isExpanded: isExpandedProp,
+    onExpandedChange,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
-    const [isExpanded, setIsExpanded] = useState(true)
+    const [isExpandedState, setIsExpandedState] = useState(true)
+
+    const isExpanded =
+        isExpandedProp !== undefined ? isExpandedProp : isExpandedState
+
+    const setIsExpanded = useCallback(
+        (value: boolean) => {
+            if (isExpandedProp === undefined) {
+                setIsExpandedState(value)
+            }
+            onExpandedChange?.(value)
+        },
+        [isExpandedProp, onExpandedChange]
+    )
 
     const chartContainerRef = useRef<HTMLDivElement>(null!)
     const [hoveredKey, setHoveredKey] = useState<string | null>(null)
     const [selectedKeys, setSelectedKeys] = useState<string[]>([])
     const [showLegend, setShowLegend] = useState(false)
     const [isFullscreen, setIsFullscreen] = useState(false)
+
+    const legendContainerRef = useRef<HTMLDivElement>(null!)
+    const [legendContainerHeight, setLegendContainerHeight] = useState(0)
 
     useScrollLock(isFullscreen)
 
@@ -191,32 +210,37 @@ const Charts: React.FC<ChartsProps> = ({
         }
     }, [])
 
+    useEffect(() => {
+        if (legendContainerRef.current) {
+            setLegendContainerHeight(
+                legendContainerRef.current?.offsetHeight || 0
+            )
+        }
+    }, [showLegend])
+
     const renderFullscreenChart = () => (
         <Block
-            position={chartTokens.fullscreen.container.position}
-            top={chartTokens.fullscreen.container.top}
-            left={chartTokens.fullscreen.container.left}
-            width={chartTokens.fullscreen.container.width}
-            height={chartTokens.fullscreen.container.height}
-            zIndex={chartTokens.fullscreen.container.zIndex}
+            position={'fixed'}
+            top={'0'}
+            left={'0'}
+            width={'100vw'}
+            height={'100vh'}
+            zIndex={9999}
             display="flex"
             flexDirection="column"
-            backgroundColor={chartTokens.fullscreen.container.backgroundColor}
+            backgroundColor={chartTokens.content.backgroundColor}
             style={{
-                transform: chartTokens.fullscreen.container.transform,
-                transformOrigin:
-                    chartTokens.fullscreen.container.transformOrigin,
+                transform: 'rotate(0deg)',
+                transformOrigin: '0 0',
             }}
         >
             <Block
                 ref={chartContainerRef}
                 width="100%"
                 height="100%"
-                border={chartTokens.container.border.container.fullscreen}
-                borderRadius={chartTokens.container.borderRadius.fullscreen}
-                backgroundColor={
-                    chartTokens.container.backgroundColor.fullscreen
-                }
+                border={chartTokens.border}
+                borderRadius={chartTokens.borderRadius}
+                backgroundColor={chartTokens.content.backgroundColor}
             >
                 {showHeader && (
                     <ChartHeader
@@ -235,10 +259,13 @@ const Charts: React.FC<ChartsProps> = ({
                 {showHorizontallyStackedLegends()
                     ? isExpanded && (
                           <Block
-                              padding={chartTokens.content.padding}
+                              paddingTop={chartTokens.content.padding.top}
+                              paddingRight={chartTokens.content.padding.right}
+                              paddingBottom={chartTokens.content.padding.bottom}
+                              paddingLeft={chartTokens.content.padding.left}
                               display="flex"
                               flexDirection="column"
-                              gap={chartTokens.content.gap.lg}
+                              gap={chartTokens.content.gap}
                           >
                               {
                                   <ChartLegends
@@ -258,14 +285,12 @@ const Charts: React.FC<ChartsProps> = ({
                               <Block
                                   display="flex"
                                   flexDirection="column"
-                                  gap={chartTokens.content.gap.lg}
+                                  gap={chartTokens.content.gap}
                                   alignItems="center"
                               >
                                   <ResponsiveContainer
                                       width="100%"
-                                      height={
-                                          chartTokens.fullscreen.content.height
-                                      }
+                                      height={250}
                                   >
                                       {renderChart({
                                           flattenedData,
@@ -296,16 +321,17 @@ const Charts: React.FC<ChartsProps> = ({
                       )
                     : isExpanded && (
                           <Block
-                              padding={chartTokens.content.padding}
+                              paddingTop={chartTokens.content.padding.top}
+                              paddingRight={chartTokens.content.padding.right}
+                              paddingBottom={chartTokens.content.padding.bottom}
+                              paddingLeft={chartTokens.content.padding.left}
                               display="flex"
-                              gap={chartTokens.content.gap.lg}
+                              gap={chartTokens.content.gap}
                           >
                               <Block style={{ flex: 1, width: '100%' }}>
                                   <ResponsiveContainer
                                       width="100%"
-                                      height={
-                                          chartTokens.content.height.default
-                                      }
+                                      height={300}
                                   >
                                       {renderChart({
                                           flattenedData,
@@ -333,11 +359,7 @@ const Charts: React.FC<ChartsProps> = ({
                                   </ResponsiveContainer>
                               </Block>
                               <Block
-                                  width={
-                                      chartTokens.legend.width[
-                                          ChartLegendPosition.RIGHT
-                                      ]
-                                  }
+                                  width={'25%'}
                                   display="flex"
                                   alignItems="center"
                                   justifyContent="center"
@@ -400,9 +422,8 @@ const Charts: React.FC<ChartsProps> = ({
                 ref={chartContainerRef}
                 width="100%"
                 height="100%"
-                border={chartTokens.container.border.container.default}
-                borderRadius={chartTokens.container.borderRadius.default}
-                backgroundColor={chartTokens.container.backgroundColor.default}
+                border={chartTokens.border}
+                borderRadius={chartTokens.borderRadius}
             >
                 {showHeader && (
                     <ChartHeader
@@ -420,17 +441,23 @@ const Charts: React.FC<ChartsProps> = ({
                 {showHorizontallyStackedLegends()
                     ? isExpanded && (
                           <Block
-                              padding={chartTokens.content.padding}
+                              paddingTop={chartTokens.content.padding.top}
+                              paddingRight={chartTokens.content.padding.right}
+                              paddingBottom={chartTokens.content.padding.bottom}
+                              paddingLeft={chartTokens.content.padding.left}
                               display="flex"
                               flexDirection="column"
-                              gap={
-                                  chartTokens.content.gap[
-                                      isSmallScreen ? 'sm' : 'lg'
-                                  ]
+                              gap={chartTokens.content.gap}
+                              height={
+                                  (height || 400) +
+                                  legendContainerHeight +
+                                  toPixels(chartTokens.content.gap) +
+                                  toPixels(chartTokens.content.padding.top) +
+                                  toPixels(chartTokens.content.padding.bottom)
                               }
                           >
                               {!isSmallScreen && (
-                                  <Block>
+                                  <Block ref={legendContainerRef}>
                                       <ChartLegends
                                           chartContainerRef={chartContainerRef}
                                           keys={lineKeys}
@@ -450,13 +477,11 @@ const Charts: React.FC<ChartsProps> = ({
                                   display="flex"
                                   flexDirection="column"
                                   alignItems="center"
+                                  height={height || 400}
                               >
                                   <ResponsiveContainer
                                       width="100%"
-                                      height={
-                                          height ||
-                                          chartTokens.content.height.default
-                                      }
+                                      height={'100%'}
                                       //   height="100%"
                                       //   height={'auto'}
                                   >
@@ -488,8 +513,9 @@ const Charts: React.FC<ChartsProps> = ({
                                       <Block
                                           display="flex"
                                           flexDirection="column"
-                                          gap={chartTokens.legend.gap.lg}
+                                          gap={chartTokens.content.legend.gap}
                                           width={'100%'}
+                                          ref={legendContainerRef}
                                       >
                                           {(showLegend || !stackedLegends) && (
                                               <ChartLegends
@@ -572,20 +598,23 @@ const Charts: React.FC<ChartsProps> = ({
                       )
                     : isExpanded && (
                           <Block
-                              padding={chartTokens.content.padding}
+                              paddingTop={chartTokens.content.padding.top}
+                              paddingRight={chartTokens.content.padding.right}
+                              paddingBottom={chartTokens.content.padding.bottom}
+                              paddingLeft={chartTokens.content.padding.left}
                               display="flex"
-                              gap={
-                                  chartTokens.content.gap[
-                                      isSmallScreen ? 'sm' : 'lg'
-                                  ]
-                              }
+                              gap={chartTokens.content.gap}
                           >
-                              <Block style={{ flex: 1, width: '100%' }}>
+                              <Block
+                                  style={{
+                                      flex: 1,
+                                      width: '100%',
+                                      height: height || 400,
+                                  }}
+                              >
                                   <ResponsiveContainer
                                       width="100%"
-                                      height={
-                                          chartTokens.content.height.default
-                                      }
+                                      height={'100%'}
                                   >
                                       {renderChart({
                                           flattenedData,
@@ -613,11 +642,7 @@ const Charts: React.FC<ChartsProps> = ({
                                   </ResponsiveContainer>
                               </Block>
                               <Block
-                                  width={
-                                      chartTokens.legend.width[
-                                          ChartLegendPosition.RIGHT
-                                      ]
-                                  }
+                                  width={'25%'}
                                   display="flex"
                                   alignItems="center"
                                   justifyContent="center"
