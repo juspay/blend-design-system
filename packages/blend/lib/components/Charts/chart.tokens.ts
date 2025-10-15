@@ -1,108 +1,44 @@
 import type { CSSObject } from 'styled-components'
-import { ChartLegendPosition } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 
-export type ChartState =
-    | 'default'
-    | 'hover'
-    | 'active'
-    | 'fullscreen'
-    | 'collapsed'
-export type ChartSize = 'sm' | 'md' | 'lg'
-export type ChartVariant = 'container' | 'no-container'
-
+export type ChartState = 'default' | 'hover' | 'active'
 export type ChartHeight = 'default' | 'fullscreen' | 'small'
 export type ChartTokensType = {
-    container: {
-        backgroundColor: {
-            [key in ChartState]: CSSObject['backgroundColor']
-        }
-        border: {
-            [key in ChartVariant]: {
-                [key in ChartState]: CSSObject['border']
-            }
-        }
-        borderRadius: {
-            [key in ChartState]: CSSObject['borderRadius']
-        }
-        padding: {
-            [key in ChartSize]: CSSObject['padding']
-        }
-        gap: {
-            [key in ChartSize]: CSSObject['gap']
-        }
-        shadow: {
-            [key in ChartVariant]: CSSObject['boxShadow']
-        }
-    }
+    border: CSSObject['border']
+    borderRadius: CSSObject['borderRadius']
     header: {
         padding: {
-            [key in ChartSize]: CSSObject['padding']
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        backgroundColor: CSSObject['backgroundColor']
+        borderBottom: CSSObject['borderBottom']
+        borderRadius: CSSObject['borderRadius']
+        slots: {
+            gap: CSSObject['gap']
+        }
+    }
+    content: {
+        legend: {
+            gap: CSSObject['gap']
+            item: {
+                gap: CSSObject['gap']
+                color: {
+                    [key in ChartState]: CSSObject['color']
+                }
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+            }
+        }
+        padding: {
+            top: CSSObject['padding']
+            right: CSSObject['padding']
+            bottom: CSSObject['padding']
+            left: CSSObject['padding']
         }
         gap: CSSObject['gap']
         backgroundColor: CSSObject['backgroundColor']
-        borderBottom: CSSObject['borderBottom']
-        minHeight: CSSObject['minHeight']
-    }
-    content: {
-        padding: CSSObject['padding']
-        gap: {
-            [key in ChartSize]: CSSObject['gap']
-        }
-        height: {
-            [key in ChartHeight]: CSSObject['height']
-        }
-    }
-    legend: {
-        gap: {
-            [key in ChartSize]: CSSObject['gap']
-        }
-        padding: {
-            [key in ChartSize]: CSSObject['padding']
-        }
-        width: {
-            [key in ChartLegendPosition]: CSSObject['width']
-        }
-        item: {
-            padding: CSSObject['padding']
-            gap: CSSObject['gap']
-            borderRadius: CSSObject['borderRadius']
-            backgroundColor: {
-                [key in ChartState]: CSSObject['backgroundColor']
-            }
-            color: {
-                [key in ChartState]: CSSObject['color']
-            }
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-        }
-        button: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            color: CSSObject['color']
-            backgroundColor: CSSObject['backgroundColor']
-            border: CSSObject['border']
-            borderRadius: CSSObject['borderRadius']
-            padding: CSSObject['padding']
-        }
-    }
-    fullscreen: {
-        container: {
-            position: CSSObject['position']
-            top: CSSObject['top']
-            left: CSSObject['left']
-            width: CSSObject['width']
-            height: CSSObject['height']
-            zIndex: CSSObject['zIndex']
-            backgroundColor: CSSObject['backgroundColor']
-            transform: CSSObject['transform']
-            transformOrigin: CSSObject['transformOrigin']
-        }
-        content: {
-            height: CSSObject['height']
-            padding: CSSObject['padding']
-        }
     }
 }
 
@@ -115,273 +51,82 @@ export const getChartTokens = (
 ): ResponsiveChartTokens => {
     return {
         sm: {
-            container: {
-                backgroundColor: {
-                    default: foundationToken.colors.gray[0],
-                    hover: foundationToken.colors.gray[0],
-                    active: foundationToken.colors.gray[0],
-                    fullscreen: foundationToken.colors.gray[0],
-                    collapsed: foundationToken.colors.gray[0],
-                },
-                border: {
-                    container: {
-                        default: `1px solid ${foundationToken.colors.gray[300]}`,
-                        hover: `1px solid ${foundationToken.colors.gray[300]}`,
-                        active: `1px solid ${foundationToken.colors.gray[300]}`,
-                        fullscreen: `1px solid ${foundationToken.colors.gray[300]}`,
-                        collapsed: `1px solid ${foundationToken.colors.gray[300]}`,
-                    },
-                    'no-container': {
-                        default: 'none',
-                        hover: 'none',
-                        active: 'none',
-                        fullscreen: 'none',
-                        collapsed: 'none',
-                    },
-                },
-                borderRadius: {
-                    default: foundationToken.border.radius[8],
-                    hover: foundationToken.border.radius[8],
-                    active: foundationToken.border.radius[8],
-                    fullscreen: foundationToken.border.radius[8],
-                    collapsed: foundationToken.border.radius[8],
-                },
-                padding: {
-                    sm: foundationToken.unit[12],
-                    md: foundationToken.unit[16],
-                    lg: foundationToken.unit[20],
-                },
-                gap: {
-                    sm: foundationToken.unit[16],
-                    md: foundationToken.unit[20],
-                    lg: foundationToken.unit[24],
-                },
-                shadow: {
-                    container: foundationToken.shadows.xs,
-                    'no-container': 'none',
-                },
-            },
+            border: `1px solid ${foundationToken.colors.gray[200]}`,
+            borderRadius: foundationToken.border.radius[8],
             header: {
                 padding: {
-                    sm: ` ${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
-                    md: ` ${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
-                    lg: ` ${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[8],
                 },
-                gap: foundationToken.unit[12],
                 backgroundColor: foundationToken.colors.gray[25],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                minHeight: foundationToken.unit[48],
+                borderRadius: foundationToken.border.radius[8],
+                slots: {
+                    gap: foundationToken.unit[12],
+                },
             },
             content: {
-                padding: `${String(foundationToken.unit[0])}  ${String(foundationToken.unit[12])}   ${String(foundationToken.unit[8])} ${String(foundationToken.unit[12])} `,
-                gap: {
-                    sm: foundationToken.unit[16],
-                    md: foundationToken.unit[20],
-                    lg: foundationToken.unit[24],
+                legend: {
+                    gap: foundationToken.unit[16],
+                    item: {
+                        gap: foundationToken.unit[8],
+                        color: {
+                            default: foundationToken.colors.gray[600],
+                            hover: foundationToken.colors.gray[700],
+                            active: foundationToken.colors.gray[800],
+                        },
+                        fontSize: 12,
+                        fontWeight: 500,
+                    },
                 },
-                height: {
-                    default: 300,
-                    fullscreen: 250,
-                    small: 250,
-                },
-            },
-            legend: {
-                gap: {
-                    sm: foundationToken.unit[8],
-                    md: foundationToken.unit[12],
-                    lg: foundationToken.unit[16],
-                },
+                backgroundColor: foundationToken.colors.gray[0],
                 padding: {
-                    sm: foundationToken.unit[8],
-                    md: foundationToken.unit[12],
-                    lg: foundationToken.unit[16],
+                    top: foundationToken.unit[0],
+                    right: foundationToken.unit[12],
+                    bottom: foundationToken.unit[8],
+                    left: foundationToken.unit[12],
                 },
-                width: {
-                    [ChartLegendPosition.TOP]: '100%',
-                    [ChartLegendPosition.RIGHT]: '25%',
-                },
-                item: {
-                    padding: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
-                    gap: foundationToken.unit[8],
-                    borderRadius: foundationToken.border.radius[6],
-                    backgroundColor: {
-                        default: 'transparent',
-                        hover: foundationToken.colors.gray[50],
-                        active: foundationToken.colors.gray[100],
-                        fullscreen: 'transparent',
-                        collapsed: 'transparent',
-                    },
-                    color: {
-                        default: foundationToken.colors.gray[600],
-                        hover: foundationToken.colors.gray[700],
-                        active: foundationToken.colors.gray[800],
-                        fullscreen: foundationToken.colors.gray[600],
-                        collapsed: foundationToken.colors.gray[400],
-                    },
-                    fontSize: 12,
-                    fontWeight: 500,
-                },
-                button: {
-                    fontSize: 12,
-                    fontWeight: 500,
-                    color: foundationToken.colors.gray[600],
-                    backgroundColor: 'transparent',
-                    border: `1px solid ${foundationToken.colors.gray[300]}`,
-                    borderRadius: foundationToken.border.radius[6],
-                    padding: `${foundationToken.unit[6]} ${foundationToken.unit[10]}`,
-                },
-            },
-            fullscreen: {
-                container: {
-                    position: 'fixed',
-                    top: '0',
-                    left: '0',
-                    width: '100vw',
-                    height: '100vh',
-                    zIndex: 9999,
-                    backgroundColor: foundationToken.colors.gray[0],
-                    transform: 'rotate(0deg)',
-                    transformOrigin: '0 0',
-                },
-                content: {
-                    height: 250,
-                    padding: foundationToken.unit[12],
-                },
+                gap: foundationToken.unit[16],
             },
         },
         lg: {
-            container: {
-                backgroundColor: {
-                    default: foundationToken.colors.gray[0],
-                    hover: foundationToken.colors.gray[0],
-                    active: foundationToken.colors.gray[0],
-                    fullscreen: foundationToken.colors.gray[0],
-                    collapsed: foundationToken.colors.gray[0],
-                },
-                border: {
-                    container: {
-                        default: `1px solid ${foundationToken.colors.gray[300]}`,
-                        hover: `1px solid ${foundationToken.colors.gray[300]}`,
-                        active: `1px solid ${foundationToken.colors.gray[300]}`,
-                        fullscreen: `1px solid ${foundationToken.colors.gray[300]}`,
-                        collapsed: `1px solid ${foundationToken.colors.gray[300]}`,
-                    },
-                    'no-container': {
-                        default: 'none',
-                        hover: 'none',
-                        active: 'none',
-                        fullscreen: 'none',
-                        collapsed: 'none',
-                    },
-                },
-                borderRadius: {
-                    default: foundationToken.border.radius[8],
-                    hover: foundationToken.border.radius[8],
-                    active: foundationToken.border.radius[8],
-                    fullscreen: foundationToken.border.radius[8],
-                    collapsed: foundationToken.border.radius[8],
-                },
-                padding: {
-                    sm: foundationToken.unit[12],
-                    md: foundationToken.unit[16],
-                    lg: foundationToken.unit[20],
-                },
-                gap: {
-                    sm: foundationToken.unit[16],
-                    md: foundationToken.unit[20],
-                    lg: foundationToken.unit[24],
-                },
-                shadow: {
-                    container: foundationToken.shadows.sm,
-                    'no-container': 'none',
-                },
-            },
+            border: `1px solid ${foundationToken.colors.gray[200]}`,
+            borderRadius: foundationToken.border.radius[8],
             header: {
                 padding: {
-                    sm: ` ${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
-                    md: ` ${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
-                    lg: ` ${foundationToken.unit[8]} ${foundationToken.unit[16]}`,
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[8],
                 },
-                gap: foundationToken.unit[12],
+
                 backgroundColor: foundationToken.colors.gray[25],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                minHeight: foundationToken.unit[48],
+                borderRadius: foundationToken.border.radius[8],
+                slots: {
+                    gap: foundationToken.unit[12],
+                },
             },
             content: {
-                padding: `${String(foundationToken.unit[20])}  ${String(foundationToken.unit[16])}   ${String(foundationToken.unit[16])} ${String(foundationToken.unit[16])} `,
-                gap: {
-                    sm: foundationToken.unit[16],
-                    md: foundationToken.unit[20],
-                    lg: foundationToken.unit[24],
+                legend: {
+                    gap: foundationToken.unit[16],
+                    item: {
+                        gap: foundationToken.unit[8],
+                        color: {
+                            default: foundationToken.colors.gray[600],
+                            hover: foundationToken.colors.gray[700],
+                            active: foundationToken.colors.gray[800],
+                        },
+                        fontSize: 12,
+                        fontWeight: 500,
+                    },
                 },
-                height: {
-                    default: 400,
-                    fullscreen: 250,
-                    small: 300,
-                },
-            },
-            legend: {
-                gap: {
-                    sm: foundationToken.unit[8],
-                    md: foundationToken.unit[12],
-                    lg: foundationToken.unit[16],
-                },
+                backgroundColor: foundationToken.colors.gray[0],
                 padding: {
-                    sm: foundationToken.unit[8],
-                    md: foundationToken.unit[12],
-                    lg: foundationToken.unit[16],
+                    top: foundationToken.unit[20],
+                    right: foundationToken.unit[16],
+                    bottom: foundationToken.unit[16],
+                    left: foundationToken.unit[16],
                 },
-                width: {
-                    [ChartLegendPosition.TOP]: '100%',
-                    [ChartLegendPosition.RIGHT]: '25%',
-                },
-                item: {
-                    padding: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
-                    gap: foundationToken.unit[8],
-                    borderRadius: foundationToken.border.radius[6],
-                    backgroundColor: {
-                        default: 'transparent',
-                        hover: foundationToken.colors.gray[50],
-                        active: foundationToken.colors.gray[100],
-                        fullscreen: 'transparent',
-                        collapsed: 'transparent',
-                    },
-                    color: {
-                        default: foundationToken.colors.gray[600],
-                        hover: foundationToken.colors.gray[700],
-                        active: foundationToken.colors.gray[800],
-                        fullscreen: foundationToken.colors.gray[600],
-                        collapsed: foundationToken.colors.gray[400],
-                    },
-                    fontSize: 12,
-                    fontWeight: 500,
-                },
-                button: {
-                    fontSize: 14,
-                    fontWeight: 500,
-                    color: foundationToken.colors.gray[600],
-                    backgroundColor: 'transparent',
-                    border: `1px solid ${foundationToken.colors.gray[300]}`,
-                    borderRadius: foundationToken.border.radius[6],
-                    padding: `${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
-                },
-            },
-            fullscreen: {
-                container: {
-                    position: 'fixed',
-                    top: '0',
-                    left: '0',
-                    width: '100vw',
-                    height: '100vh',
-                    zIndex: 9999,
-                    backgroundColor: foundationToken.colors.gray[0],
-                    transform: 'rotate(0deg)',
-                    transformOrigin: '0 0',
-                },
-                content: {
-                    height: 250,
-                    padding: foundationToken.unit[16],
-                },
+                gap: foundationToken.unit[16],
             },
         },
     }

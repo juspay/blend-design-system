@@ -1,11 +1,13 @@
 import React from 'react'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Check } from 'lucide-react'
 import { DateRangePreset, HapticFeedbackType } from '../types'
 import { getPresetDisplayLabel, triggerHapticFeedback } from '../utils'
+import { PresetItemProps } from '../types'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import type { SingleSelectTokensType } from '../../SingleSelect/singleSelect.tokens'
 import { FOUNDATION_THEME } from '../../../tokens'
 import Block from '../../Primitives/Block/Block'
-import Text from '../../Text/Text'
-import { PresetItemProps } from '../types'
+import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 
 const PresetItem: React.FC<PresetItemProps> = ({
     preset,
@@ -17,6 +19,7 @@ const PresetItem: React.FC<PresetItemProps> = ({
     isDisabled = false,
 }) => {
     const isCustom = preset === DateRangePreset.CUSTOM
+    const tokens = useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
 
     const handleClick = () => {
         if (isDisabled) return
@@ -63,7 +66,7 @@ const PresetItem: React.FC<PresetItemProps> = ({
             display="flex"
             alignItems="center"
             justifyContent="space-between"
-            padding="16px 20px"
+            padding={`${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]}`}
             borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[150]}`}
             cursor={isDisabled ? 'not-allowed' : 'pointer'}
             backgroundColor="transparent"
@@ -78,41 +81,38 @@ const PresetItem: React.FC<PresetItemProps> = ({
             onTouchEnd={handleTouchEnd}
             onTouchCancel={handleTouchCancel}
         >
-            <Text
-                variant="body.md"
-                fontWeight={isActive ? 600 : 500}
+            <PrimitiveText
+                fontSize={tokens?.menu?.item?.option?.fontSize}
+                fontWeight={
+                    isActive
+                        ? tokens?.menu?.item?.option?.fontWeight
+                        : tokens?.menu?.item?.option?.fontWeight
+                }
                 color={
                     isDisabled
-                        ? FOUNDATION_THEME.colors.gray[400]
+                        ? tokens?.menu?.item?.option?.color?.disabled
                         : isActive
-                          ? FOUNDATION_THEME.colors.gray[700]
-                          : FOUNDATION_THEME.colors.gray[600]
+                          ? tokens?.menu?.item?.option?.color?.selected
+                          : tokens?.menu?.item?.option?.color?.default
                 }
             >
                 {getPresetDisplayLabel(preset)}
-            </Text>
+            </PrimitiveText>
 
             {isActive && !isCustom && (
                 <Block
-                    width="20px"
-                    height="20px"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path
-                            d="M13.5 4.5L6 12L2.5 8.5"
-                            stroke={
-                                isDisabled
-                                    ? FOUNDATION_THEME.colors.gray[400]
-                                    : FOUNDATION_THEME.colors.gray[700]
-                            }
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
+                    <Check
+                        size={16}
+                        color={
+                            isDisabled
+                                ? tokens?.menu?.item?.option?.color?.disabled
+                                : tokens?.menu?.item?.option?.color?.selected
+                        }
+                    />
                 </Block>
             )}
 
@@ -121,8 +121,8 @@ const PresetItem: React.FC<PresetItemProps> = ({
                     size={16}
                     color={
                         isDisabled
-                            ? FOUNDATION_THEME.colors.gray[500]
-                            : FOUNDATION_THEME.colors.gray[500]
+                            ? tokens?.menu?.item?.option?.color?.disabled
+                            : tokens?.menu?.item?.option?.color?.default
                     }
                     style={{
                         transform: isCustomExpanded

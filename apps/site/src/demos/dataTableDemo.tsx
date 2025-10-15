@@ -36,10 +36,15 @@ import {
     Tablet,
     Smartphone,
     Watch,
+    Settings,
 } from 'lucide-react'
+import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import AdvancedFilterComponent, { FilterRule } from './AdvancedFilterComponent'
 
 const SimpleDataTableExample = () => {
+    // Modal state for table demo
+    const [isTableModalOpen, setIsTableModalOpen] = useState(false)
+
     type ProductRow = {
         id: number
         name: string
@@ -58,7 +63,7 @@ const SimpleDataTableExample = () => {
     const productData: ProductRow[] = [
         {
             id: 1,
-            name: 'MacBook Pro',
+            name: 'Apple Watch Series 9 Ultra Pro Max with Extended Battery Life and Advanced Health Monitoring Features',
             category: {
                 options: [
                     {
@@ -768,7 +773,7 @@ const SimpleDataTableExample = () => {
                 }}
                 idField="id"
                 title="Product Inventory (Mobile: 2 Columns + Overflow)"
-                description="Simple product management table demonstrating DROPDOWN and DATE column types with smart row actions. On desktop, actions appear in a fixed 200px column with overflow menu when needed. On mobile, actions appear in the overflow drawer footer for better UX."
+                description="" // Test case: Empty description to verify SearchInput border-bottom visibility
                 enableSearch={true}
                 enableFiltering={true}
                 enableAdvancedFilter={false}
@@ -954,7 +959,7 @@ const SimpleDataTableExample = () => {
                             color: '#92400e',
                         }}
                     >
-                        🔄 Column Sorting Control Demo
+                        🔄 Column Sorting Control Demo (Modal)
                     </h3>
                     <p
                         style={{
@@ -964,265 +969,546 @@ const SimpleDataTableExample = () => {
                         }}
                     >
                         🎯 <strong>NEW FEATURE:</strong> This table demonstrates
-                        the new <code>isSortable</code> property that allows you
-                        to enable/disable sorting at the column level. Notice
-                        that the <strong>Product Tags</strong> column (React
-                        elements) is not sortable, and the{' '}
-                        <strong>Launch Date</strong> column has been explicitly
-                        disabled for sorting. Try clicking on column headers -
-                        you'll see that some columns don't show sort options in
-                        the filter dropdown, and clicking the header won't
-                        trigger sorting for disabled columns.
+                        the new <code>isSortable</code> property inside a modal.
+                        Click the button below to open the table in a modal and
+                        see how sorting can be enabled/disabled at the column
+                        level.
+                    </p>
+                </div>
+
+                <Button
+                    buttonType={ButtonType.PRIMARY}
+                    leadingIcon={<Settings size={16} />}
+                    size={ButtonSize.MEDIUM}
+                    onClick={() => setIsTableModalOpen(true)}
+                >
+                    Open Column Sorting Demo Table
+                </Button>
+
+                {/* Modal with Table */}
+                <Modal
+                    isOpen={isTableModalOpen}
+                    onClose={() => setIsTableModalOpen(false)}
+                    // title="Column Sorting Control Demo"
+                    // subtitle="Table with configurable column sorting properties"
+                    primaryAction={{
+                        text: 'Done',
+                        onClick: () => setIsTableModalOpen(false),
+                        buttonType: ButtonType.PRIMARY,
+                    }}
+                    showCloseButton={true}
+                    closeOnBackdropClick={false}
+                    showDivider={true}
+                >
+                    <div style={{ padding: '0', overflow: 'auto' }}>
+                        {/* <div
+                            style={{
+                                marginBottom: '16px',
+                                padding: '12px',
+                                backgroundColor: '#f0fdf4',
+                                borderRadius: '6px',
+                                border: '1px solid #bbf7d0',
+                            }}
+                        >
+                            <p
+                                style={{
+                                    margin: 0,
+                                    fontSize: '13px',
+                                    color: '#15803d',
+                                }}
+                            >
+                                🎯 <strong>isSortable Feature Demo:</strong> This table shows how to control sorting at the column level.
+                                Notice that the <strong>Product Tags</strong> column (React elements) is not sortable,
+                                and the <strong>Launch Date</strong> and <strong>Rating</strong> columns have been explicitly
+                                disabled for sorting. Try clicking on column headers or using the filter dropdown to see the difference!
+                            </p>
+                        </div> */}
+
+                        <DataTable
+                            data={productTableData.map((product) => ({
+                                ...product,
+                                specialNote: `Product #${product.id} - Sorting demo`,
+                            }))}
+                            columns={
+                                [
+                                    {
+                                        field: 'name',
+                                        header: 'Product Name',
+                                        type: ColumnType.TEXT,
+                                        isSortable: true,
+                                        isEditable: false,
+                                        minWidth: '120px',
+                                        maxWidth: '150px',
+                                    },
+                                    {
+                                        field: 'price',
+                                        header: 'Price (Sortable)',
+                                        type: ColumnType.NUMBER,
+                                        isSortable: true,
+                                        isEditable: false,
+                                        renderCell: (value: number) => (
+                                            <span
+                                                style={{
+                                                    fontWeight: 500,
+                                                    color:
+                                                        value > 2000
+                                                            ? '#dc2626'
+                                                            : value > 1000
+                                                              ? '#d97706'
+                                                              : '#16a34a',
+                                                }}
+                                            >
+                                                ${value.toLocaleString()}
+                                            </span>
+                                        ),
+                                        minWidth: '150px',
+                                        maxWidth: '200px',
+                                    },
+                                    {
+                                        field: 'launchDate',
+                                        header: 'Launch Date (NOT Sortable)',
+                                        headerSubtext:
+                                            'Sorting disabled for this column',
+                                        type: ColumnType.DATE,
+                                        isSortable: false,
+                                        isEditable: false,
+                                        renderCell: (
+                                            value: unknown
+                                        ): React.ReactNode => {
+                                            const dateValue =
+                                                value as DateColumnProps
+                                            const date = new Date(
+                                                dateValue.date
+                                            )
+                                            return (
+                                                <span
+                                                    style={{ color: '#6b7280' }}
+                                                >
+                                                    {date.toLocaleDateString(
+                                                        'en-US',
+                                                        {
+                                                            year: 'numeric',
+                                                            month: 'short',
+                                                            day: 'numeric',
+                                                        }
+                                                    )}
+                                                    <br />
+                                                    <small
+                                                        style={{
+                                                            fontSize: '11px',
+                                                        }}
+                                                    >
+                                                        (No sorting)
+                                                    </small>
+                                                </span>
+                                            )
+                                        },
+                                        minWidth: '140px',
+                                        maxWidth: '180px',
+                                    },
+                                    {
+                                        field: 'status',
+                                        header: 'Status (Sortable)',
+                                        type: ColumnType.TAG,
+                                        isSortable: true,
+                                        isEditable: false,
+                                        renderCell: (value: TagColumnProps) => (
+                                            <Tag
+                                                text={value.text}
+                                                variant={TagVariant.SUBTLE}
+                                                color={
+                                                    value.color === 'success'
+                                                        ? TagColor.SUCCESS
+                                                        : value.color ===
+                                                            'error'
+                                                          ? TagColor.ERROR
+                                                          : value.color ===
+                                                              'warning'
+                                                            ? TagColor.WARNING
+                                                            : TagColor.NEUTRAL
+                                                }
+                                                size={TagSize.SM}
+                                            />
+                                        ),
+                                        minWidth: '100px',
+                                        maxWidth: '140px',
+                                    },
+                                    {
+                                        field: 'rating',
+                                        header: 'Rating (NOT Sortable)',
+                                        headerSubtext: 'Sorting disabled',
+                                        type: ColumnType.NUMBER,
+                                        isSortable: false,
+                                        isEditable: false,
+                                        renderCell: (value: unknown) => {
+                                            const numValue =
+                                                typeof value === 'number'
+                                                    ? value
+                                                    : parseFloat(
+                                                          String(value)
+                                                      ) || 0
+                                            return (
+                                                <span
+                                                    style={{
+                                                        fontWeight: 500,
+                                                        color: '#6b7280',
+                                                    }}
+                                                >
+                                                    ⭐ {numValue.toFixed(1)}
+                                                    <br />
+                                                    <small
+                                                        style={{
+                                                            fontSize: '11px',
+                                                        }}
+                                                    >
+                                                        (No sorting)
+                                                    </small>
+                                                </span>
+                                            )
+                                        },
+                                        minWidth: '120px',
+                                        maxWidth: '150px',
+                                    },
+                                    {
+                                        field: 'tags',
+                                        header: 'Product Tags (React Elements)',
+                                        headerSubtext:
+                                            'Cannot be sorted (React elements)',
+                                        type: ColumnType.REACT_ELEMENT,
+                                        isSortable: false,
+                                        renderCell: (value: unknown) => {
+                                            const tagsData = value as {
+                                                values: string[]
+                                                labels: string[]
+                                            }
+                                            const getTagColor = (
+                                                tag: string
+                                            ): TagColor => {
+                                                switch (tag.toLowerCase()) {
+                                                    case 'premium':
+                                                    case 'flagship':
+                                                        return TagColor.SUCCESS
+                                                    case 'professional':
+                                                    case 'powerful':
+                                                        return TagColor.WARNING
+                                                    case 'creative':
+                                                    case 'health':
+                                                        return TagColor.NEUTRAL
+                                                    default:
+                                                        return TagColor.NEUTRAL
+                                                }
+                                            }
+
+                                            return (
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        flexWrap: 'nowrap',
+                                                        gap: '4px',
+                                                        overflow: 'auto',
+                                                        whiteSpace: 'nowrap',
+                                                        minWidth: '150px',
+                                                        maxWidth: '100%',
+                                                        scrollbarWidth: 'thin',
+                                                    }}
+                                                >
+                                                    {tagsData.values.map(
+                                                        (tag, index) => (
+                                                            <Tag
+                                                                key={index}
+                                                                text={
+                                                                    tagsData
+                                                                        .labels?.[
+                                                                        index
+                                                                    ] || tag
+                                                                }
+                                                                variant={
+                                                                    TagVariant.SUBTLE
+                                                                }
+                                                                color={getTagColor(
+                                                                    tag
+                                                                )}
+                                                                size={
+                                                                    TagSize.SM
+                                                                }
+                                                            />
+                                                        )
+                                                    )}
+                                                </div>
+                                            )
+                                        },
+                                        minWidth: '150px',
+                                        maxWidth: '250px',
+                                    },
+                                    {
+                                        field: 'specialNote',
+                                        header: 'Special Note (Sortable)',
+                                        type: ColumnType.TEXT,
+                                        isSortable: true,
+                                        isEditable: false,
+                                        renderCell: (value: unknown) => (
+                                            <span
+                                                style={{
+                                                    fontSize: '12px',
+                                                    color: '#059669',
+                                                }}
+                                            >
+                                                {String(value)}
+                                            </span>
+                                        ),
+                                        minWidth: '180px',
+                                        maxWidth: '220px',
+                                    },
+                                ] as unknown as ColumnDefinition<
+                                    Record<string, unknown>
+                                >[]
+                            }
+                            idField="id"
+                            // title="Column Sorting Control Demo"
+                            description=""
+                            enableSearch={true}
+                            enableFiltering={true}
+                            enableAdvancedFilter={false}
+                            enableInlineEdit={false}
+                            enableRowExpansion={false}
+                            enableRowSelection={false}
+                            enableColumnManager={true}
+                            showSettings={false}
+                            columnFreeze={0}
+                            pagination={{
+                                currentPage: 1,
+                                pageSize: 10,
+                                totalRows: productTableData.length,
+                                pageSizeOptions: [5, 10, 20],
+                            }}
+                        />
+                    </div>
+                </Modal>
+            </div>
+        </div>
+    )
+}
+
+// Simple Empty DataTable Examples
+const EmptyDataTableExamples = () => {
+    // First empty table - Simple User Table
+    const simpleUserColumns: ColumnDefinition<Record<string, unknown>>[] = [
+        {
+            field: 'name',
+            header: 'User Name',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '150px',
+            maxWidth: '200px',
+        },
+        {
+            field: 'email',
+            header: 'Email Address',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '180px',
+            maxWidth: '250px',
+        },
+        {
+            field: 'role',
+            header: 'Role',
+            type: ColumnType.SELECT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '120px',
+            maxWidth: '160px',
+        },
+        {
+            field: 'status',
+            header: 'Status',
+            type: ColumnType.TAG,
+            isSortable: true,
+            isEditable: false,
+            minWidth: '100px',
+            maxWidth: '140px',
+        },
+    ]
+
+    // Second empty table - Simple Product Table
+    const simpleProductColumns: ColumnDefinition<Record<string, unknown>>[] = [
+        {
+            field: 'productName',
+            header: 'Product Name',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '150px',
+            maxWidth: '200px',
+        },
+        {
+            field: 'category',
+            header: 'Category',
+            type: ColumnType.DROPDOWN,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '120px',
+            maxWidth: '160px',
+        },
+        {
+            field: 'price',
+            header: 'Price',
+            type: ColumnType.NUMBER,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '100px',
+            maxWidth: '150px',
+        },
+        {
+            field: 'inStock',
+            header: 'In Stock',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '80px',
+            maxWidth: '120px',
+        },
+    ]
+
+    return (
+        <div style={{ marginTop: '40px' }}>
+            {/* First Empty Table */}
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#fef7f0',
+                    borderRadius: '8px',
+                    border: '1px solid #fed7aa',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#c2410c',
+                    }}
+                >
+                    📋 Empty User Management Table
+                </h3>
+                <p style={{ margin: 0, fontSize: '14px', color: '#9a3412' }}>
+                    🎯 <strong>EMPTY STATE DEMO:</strong> This table shows how
+                    the DataTable component looks when there's no data to
+                    display. Notice the "No data available" message and how the
+                    table structure is maintained with proper headers and
+                    borders.
+                </p>
+            </div>
+
+            <DataTable
+                data={[]} // Empty data array
+                columns={simpleUserColumns}
+                idField="id"
+                title="User Management"
+                description="This table has no data to demonstrate the empty state"
+                enableSearch={true}
+                enableFiltering={true}
+                enableAdvancedFilter={false}
+                enableInlineEdit={false}
+                enableRowExpansion={false}
+                enableRowSelection={true}
+                enableColumnManager={true}
+                showSettings={true}
+                columnFreeze={0}
+                pagination={{
+                    currentPage: 1,
+                    pageSize: 10,
+                    totalRows: 0,
+                    pageSizeOptions: [5, 10, 20],
+                }}
+                headerSlot1={
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        leadingIcon={<RefreshCw size={16} />}
+                        size={ButtonSize.SMALL}
+                        onClick={() => console.log('Refresh clicked')}
+                    >
+                        Refresh
+                    </Button>
+                }
+                headerSlot2={
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        leadingIcon={<Package size={16} />}
+                        size={ButtonSize.SMALL}
+                        onClick={() => console.log('Add User clicked')}
+                    >
+                        Add User
+                    </Button>
+                }
+            />
+
+            {/* Second Empty Table */}
+            <div style={{ marginTop: '40px' }}>
+                <div
+                    style={{
+                        marginBottom: '20px',
+                        padding: '16px',
+                        backgroundColor: '#f0f4ff',
+                        borderRadius: '8px',
+                        border: '1px solid #c7d2fe',
+                    }}
+                >
+                    <h3
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#3730a3',
+                        }}
+                    >
+                        🛍️ Empty Product Catalog Table
+                    </h3>
+                    <p
+                        style={{
+                            margin: 0,
+                            fontSize: '14px',
+                            color: '#312e81',
+                        }}
+                    >
+                        🎯 <strong>MINIMAL CONFIGURATION DEMO:</strong> This is
+                        a simpler empty table with fewer features enabled. Shows
+                        how the table adapts to different configurations while
+                        maintaining the empty state properly.
                     </p>
                 </div>
 
                 <DataTable
-                    data={productTableData.map((product) => ({
-                        ...product,
-                        specialNote: `Product #${product.id} - Sorting demo`,
-                    }))}
-                    columns={
-                        [
-                            {
-                                field: 'name',
-                                header: 'Product Name',
-                                type: ColumnType.TEXT,
-                                isSortable: true,
-                                isEditable: false,
-                                minWidth: '120px',
-                                maxWidth: '150px',
-                            },
-                            {
-                                field: 'price',
-                                header: 'Price (Sortable)',
-                                type: ColumnType.NUMBER,
-                                isSortable: true,
-                                isEditable: false,
-                                renderCell: (value: number) => (
-                                    <span
-                                        style={{
-                                            fontWeight: 500,
-                                            color:
-                                                value > 2000
-                                                    ? '#dc2626'
-                                                    : value > 1000
-                                                      ? '#d97706'
-                                                      : '#16a34a',
-                                        }}
-                                    >
-                                        ${value.toLocaleString()}
-                                    </span>
-                                ),
-                                minWidth: '150px',
-                                maxWidth: '200px',
-                            },
-                            {
-                                field: 'launchDate',
-                                header: 'Launch Date (NOT Sortable)',
-                                headerSubtext:
-                                    'Sorting disabled for this column',
-                                type: ColumnType.DATE,
-                                isSortable: false,
-                                isEditable: false,
-                                renderCell: (
-                                    value: unknown
-                                ): React.ReactNode => {
-                                    const dateValue = value as DateColumnProps
-                                    const date = new Date(dateValue.date)
-                                    return (
-                                        <span style={{ color: '#6b7280' }}>
-                                            {date.toLocaleDateString('en-US', {
-                                                year: 'numeric',
-                                                month: 'short',
-                                                day: 'numeric',
-                                            })}
-                                            <br />
-                                            <small style={{ fontSize: '11px' }}>
-                                                (No sorting)
-                                            </small>
-                                        </span>
-                                    )
-                                },
-                                minWidth: '140px',
-                                maxWidth: '180px',
-                            },
-                            {
-                                field: 'status',
-                                header: 'Status (Sortable)',
-                                type: ColumnType.TAG,
-                                isSortable: true,
-                                isEditable: false,
-                                renderCell: (value: TagColumnProps) => (
-                                    <Tag
-                                        text={value.text}
-                                        variant={TagVariant.SUBTLE}
-                                        color={
-                                            value.color === 'success'
-                                                ? TagColor.SUCCESS
-                                                : value.color === 'error'
-                                                  ? TagColor.ERROR
-                                                  : value.color === 'warning'
-                                                    ? TagColor.WARNING
-                                                    : TagColor.NEUTRAL
-                                        }
-                                        size={TagSize.SM}
-                                    />
-                                ),
-                                minWidth: '100px',
-                                maxWidth: '140px',
-                            },
-                            {
-                                field: 'rating',
-                                header: 'Rating (NOT Sortable)',
-                                headerSubtext: 'Sorting disabled',
-                                type: ColumnType.NUMBER,
-                                isSortable: false,
-                                isEditable: false,
-                                renderCell: (value: unknown) => {
-                                    const numValue =
-                                        typeof value === 'number'
-                                            ? value
-                                            : parseFloat(String(value)) || 0
-                                    return (
-                                        <span
-                                            style={{
-                                                fontWeight: 500,
-                                                color: '#6b7280',
-                                            }}
-                                        >
-                                            ⭐ {numValue.toFixed(1)}
-                                            <br />
-                                            <small style={{ fontSize: '11px' }}>
-                                                (No sorting)
-                                            </small>
-                                        </span>
-                                    )
-                                },
-                                minWidth: '120px',
-                                maxWidth: '150px',
-                            },
-                            {
-                                field: 'tags',
-                                header: 'Product Tags (React Elements)',
-                                headerSubtext:
-                                    'Cannot be sorted (React elements)',
-                                type: ColumnType.REACT_ELEMENT,
-                                isSortable: false,
-                                renderCell: (value: unknown) => {
-                                    const tagsData = value as {
-                                        values: string[]
-                                        labels: string[]
-                                    }
-                                    const getTagColor = (
-                                        tag: string
-                                    ): TagColor => {
-                                        switch (tag.toLowerCase()) {
-                                            case 'premium':
-                                            case 'flagship':
-                                                return TagColor.SUCCESS
-                                            case 'professional':
-                                            case 'powerful':
-                                                return TagColor.WARNING
-                                            case 'creative':
-                                            case 'health':
-                                                return TagColor.NEUTRAL
-                                            default:
-                                                return TagColor.NEUTRAL
-                                        }
-                                    }
-
-                                    return (
-                                        <div
-                                            style={{
-                                                display: 'flex',
-                                                flexWrap: 'nowrap',
-                                                gap: '4px',
-                                                overflow: 'auto',
-                                                whiteSpace: 'nowrap',
-                                                minWidth: '150px',
-                                                maxWidth: '100%',
-                                                scrollbarWidth: 'thin',
-                                            }}
-                                        >
-                                            {tagsData.values.map(
-                                                (tag, index) => (
-                                                    <Tag
-                                                        key={index}
-                                                        text={
-                                                            tagsData.labels?.[
-                                                                index
-                                                            ] || tag
-                                                        }
-                                                        variant={
-                                                            TagVariant.SUBTLE
-                                                        }
-                                                        color={getTagColor(tag)}
-                                                        size={TagSize.SM}
-                                                    />
-                                                )
-                                            )}
-                                        </div>
-                                    )
-                                },
-                                minWidth: '150px',
-                                maxWidth: '250px',
-                            },
-                            {
-                                field: 'specialNote',
-                                header: 'Special Note (Sortable)',
-                                type: ColumnType.TEXT,
-                                isSortable: true,
-                                isEditable: false,
-                                renderCell: (value: unknown) => (
-                                    <span
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#059669',
-                                        }}
-                                    >
-                                        {String(value)}
-                                    </span>
-                                ),
-                                minWidth: '180px',
-                                maxWidth: '220px',
-                            },
-                        ] as unknown as ColumnDefinition<
-                            Record<string, unknown>
-                        >[]
-                    }
-                    idField="id"
-                    title="Column Sorting Control Demo"
-                    description="This table demonstrates the isSortable property. Some columns can be sorted (click headers or use filter dropdown), while others cannot. Notice the visual indicators and disabled sorting behavior."
+                    data={[]} // Empty data array
+                    columns={simpleProductColumns}
+                    idField="productId"
+                    title="Product Catalog"
+                    description="Browse and manage your product inventory"
                     enableSearch={true}
-                    enableFiltering={true}
+                    enableFiltering={false}
                     enableAdvancedFilter={false}
                     enableInlineEdit={false}
                     enableRowExpansion={false}
                     enableRowSelection={false}
-                    enableColumnManager={true}
+                    enableColumnManager={false}
                     showSettings={false}
-                    columnFreeze={0}
+                    columnFreeze={1}
                     pagination={{
                         currentPage: 1,
-                        pageSize: 10,
-                        totalRows: productTableData.length,
-                        pageSizeOptions: [5, 10, 20],
+                        pageSize: 5,
+                        totalRows: 0,
+                        pageSizeOptions: [5, 10, 15],
                     }}
                     headerSlot1={
                         <Button
-                            buttonType={ButtonType.SECONDARY}
-                            leadingIcon={<Package />}
+                            buttonType={ButtonType.PRIMARY}
+                            leadingIcon={<Package size={16} />}
                             size={ButtonSize.SMALL}
-                            onClick={() =>
-                                alert(
-                                    'This demo shows how isSortable works:\n\n' +
-                                        '✅ Sortable columns: Product Name, Price, Status, Special Note\n' +
-                                        '❌ Non-sortable columns: Launch Date, Rating, Product Tags\n\n' +
-                                        'Try clicking on column headers or using the filter dropdown to see the difference!'
-                                )
-                            }
+                            onClick={() => console.log('Add Product clicked')}
                         >
-                            Sorting Info
+                            Add Product
                         </Button>
                     }
                 />
@@ -2607,7 +2893,7 @@ const DataTableDemo = () => {
                         console.log('Reset')
                     },
                 }}
-                description={`Complete overview of system users with ${isServerSideMode ? 'server-side' : 'local'} search, filtering, inline editing, expandable rows, clickable rows, dynamic row styling, and intelligent row actions with overflow menu.`}
+                description=""
                 isHoverable
                 enableSearch
                 searchPlaceholder={`Search users... ${isServerSideMode ? '(server-side)' : '(local)'}`}
@@ -2718,6 +3004,7 @@ const DataTableDemo = () => {
             />
 
             <SimpleDataTableExample />
+            <EmptyDataTableExamples />
         </div>
     )
 }

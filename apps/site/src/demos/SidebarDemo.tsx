@@ -85,6 +85,8 @@ import Text from '../../../../packages/blend/lib/components/Text/Text'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
+import SearchInputDemo from './SearchInputDemo'
+import VirtualListDemo from './VirtualListDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -113,6 +115,7 @@ const SidebarDemo = () => {
         | 'statCard'
         | 'modal'
         | 'input'
+        | 'searchInput'
         | 'unitInput'
         | 'numberInput'
         | 'textArea'
@@ -136,6 +139,7 @@ const SidebarDemo = () => {
         | 'card'
         | 'dataRangePicker'
         | 'allComponents'
+        | 'virtualList'
     >('dataRangePicker')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -324,6 +328,8 @@ const SidebarDemo = () => {
                 return <BreadcrumbDemo />
             case 'input':
                 return <InputDemo />
+            case 'searchInput':
+                return <SearchInputDemo />
             case 'unitInput':
                 return <UnitInputDemo />
             case 'numberInput':
@@ -384,6 +390,8 @@ const SidebarDemo = () => {
                 return <CardDemo />
             case 'allComponents':
                 return <AllComponentsDemo />
+            case 'virtualList':
+                return <VirtualListDemo />
             default:
                 return (
                     <div className="p-8">
@@ -486,6 +494,13 @@ const SidebarDemo = () => {
                     ),
                     onClick: () => setActiveComponent('breadcrumb'),
                 },
+                {
+                    label: 'Virtual List',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('virtualList'),
+                },
             ],
         },
         {
@@ -493,11 +508,18 @@ const SidebarDemo = () => {
             isCollapsible: false,
             items: [
                 {
-                    label: 'Text Input',
+                    label: 'Text Input777',
                     leftSlot: (
                         <FormInput style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('input'),
+                },
+                {
+                    label: 'Search Input',
+                    leftSlot: (
+                        <Search style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('searchInput'),
                 },
                 {
                     label: 'OTP Input',

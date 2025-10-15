@@ -17,11 +17,13 @@ const StyledTableCell = styled.td<{
     width?: React.CSSProperties
     $hasCustomContent?: boolean
     $tableToken?: TableTokenType
+    $isFirstRow?: boolean
 }>`
     ${(props) =>
         props.$tableToken ? props.$tableToken.dataTable.table.body.cell : ''}
     box-sizing: border-box;
     max-width: 0;
+    ${({ $isFirstRow }) => $isFirstRow && 'border-top: none'}
 `
 
 const TruncatedTextWithTooltip = ({
@@ -93,6 +95,7 @@ const TableCell = forwardRef<
             currentValue,
             width,
             frozenStyles,
+            isFirstRow,
             onFieldChange,
             getDisplayValue,
         },
@@ -322,6 +325,7 @@ const TableCell = forwardRef<
                     column.type === ColumnType.REACT_ELEMENT ||
                     (isEditing && column.isEditable)
                 }
+                $isFirstRow={isFirstRow}
                 style={{
                     ...width,
                     ...frozenStyles,

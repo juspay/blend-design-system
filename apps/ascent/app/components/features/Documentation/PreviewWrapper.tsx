@@ -12,10 +12,9 @@ const previewComponents = {
         ssr: false,
     }),
     TagPreview: dynamic(() => import('./Previews/TagPreview'), { ssr: false }),
-    ButtonGroupV2Preview: dynamic(
-        () => import('./Previews/ButtonGroupV2Preview'),
-        { ssr: false }
-    ),
+    ButtonGroupPreview: dynamic(() => import('./Previews/ButtonGroupPreview'), {
+        ssr: false,
+    }),
     TabsPreview: dynamic(() => import('./Previews/TabsPreview'), {
         ssr: false,
     }),
@@ -72,9 +71,6 @@ const previewComponents = {
         ssr: false,
     }),
     DataTablePreview: dynamic(() => import('./Previews/DataTablePreview'), {
-        ssr: false,
-    }),
-    ButtonGroupPreview: dynamic(() => import('./Previews/ButtonGroupPreview'), {
         ssr: false,
     }),
     DrawerPreview: dynamic(() => import('./Previews/DrawerPreview'), {

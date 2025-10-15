@@ -3,10 +3,10 @@ import Menu from '../../../../packages/blend/lib/components/Menu/Menu'
 import {
     MenuAlignment,
     MenuSide,
-    MenuItemV2Variant,
-    MenuItemV2ActionType,
+    MenuItemVariant,
+    MenuItemActionType,
 } from '../../../../packages/blend/lib/components/Menu/types'
-import type { MenuV2GroupType } from '../../../../packages/blend/lib/components/Menu/types'
+import type { MenuGroupType } from '../../../../packages/blend/lib/components/Menu/types'
 import {
     TooltipSide,
     TooltipSize,
@@ -54,7 +54,7 @@ import {
 } from 'lucide-react'
 
 // Sample data for comprehensive testing
-const basicMenuItems: MenuV2GroupType[] = [
+const basicMenuItems: MenuGroupType[] = [
     {
         items: [
             {
@@ -75,15 +75,15 @@ const basicMenuItems: MenuV2GroupType[] = [
             {
                 label: 'Sign Out',
                 slot1: <LogOut size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.DANGER,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.DANGER,
                 onClick: () => console.log('Sign out clicked'),
             },
         ],
     },
 ]
 
-const actionMenuItems: MenuV2GroupType[] = [
+const actionMenuItems: MenuGroupType[] = [
     {
         label: 'Primary Actions',
         items: [
@@ -91,16 +91,16 @@ const actionMenuItems: MenuV2GroupType[] = [
                 label: 'Create New',
                 subLabel: 'Start a new project',
                 slot1: <Plus size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.PRIMARY,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.PRIMARY,
                 onClick: () => console.log('Create new clicked'),
             },
             {
                 label: 'Save Project',
                 subLabel: 'Save current work',
                 slot1: <Save size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.PRIMARY,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.PRIMARY,
                 onClick: () => console.log('Save clicked'),
             },
         ],
@@ -113,23 +113,23 @@ const actionMenuItems: MenuV2GroupType[] = [
                 label: 'Delete',
                 subLabel: 'Permanently remove',
                 slot1: <Trash2 size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.DANGER,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.DANGER,
                 onClick: () => console.log('Delete clicked'),
             },
             {
                 label: 'Reset All',
                 subLabel: 'Clear all data',
                 slot1: <RefreshCw size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.DANGER,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.DANGER,
                 onClick: () => console.log('Reset clicked'),
             },
         ],
     },
 ]
 
-const nestedMenuItems: MenuV2GroupType[] = [
+const nestedMenuItems: MenuGroupType[] = [
     {
         items: [
             {
@@ -205,7 +205,7 @@ const nestedMenuItems: MenuV2GroupType[] = [
     },
 ]
 
-const searchableMenuItems: MenuV2GroupType[] = [
+const searchableMenuItems: MenuGroupType[] = [
     {
         label: 'Navigation',
         items: [
@@ -495,7 +495,7 @@ const searchableMenuItems: MenuV2GroupType[] = [
     },
 ]
 
-const disabledMenuItems: MenuV2GroupType[] = [
+const disabledMenuItems: MenuGroupType[] = [
     {
         label: 'Available Actions',
         items: [
@@ -527,8 +527,8 @@ const disabledMenuItems: MenuV2GroupType[] = [
                 subLabel: 'Permanent action',
                 slot1: <Trash2 size={16} />,
                 disabled: true,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.DANGER,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.DANGER,
                 onClick: () => console.log('Should not fire'),
             },
             {
@@ -542,7 +542,7 @@ const disabledMenuItems: MenuV2GroupType[] = [
     },
 ]
 
-const slotVariationItems: MenuV2GroupType[] = [
+const slotVariationItems: MenuGroupType[] = [
     {
         label: 'Single Slot Examples',
         items: [
@@ -596,7 +596,7 @@ const slotVariationItems: MenuV2GroupType[] = [
     },
 ]
 
-const longContentItems: MenuV2GroupType[] = [
+const longContentItems: MenuGroupType[] = [
     {
         label: 'Long Content Examples',
         items: [
@@ -618,7 +618,7 @@ const longContentItems: MenuV2GroupType[] = [
     },
 ]
 
-const tooltipMenuItems: MenuV2GroupType[] = [
+const tooltipMenuItems: MenuGroupType[] = [
     {
         label: 'Basic Tooltips',
         items: [
@@ -671,8 +671,8 @@ const tooltipMenuItems: MenuV2GroupType[] = [
                 label: 'Data Export',
                 subLabel: 'Export your data',
                 slot1: <Download size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.PRIMARY,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.PRIMARY,
                 onClick: () => console.log('Data export'),
                 tooltip:
                     'Download all your data in various formats (JSON, CSV, PDF)',
@@ -685,8 +685,8 @@ const tooltipMenuItems: MenuV2GroupType[] = [
                 label: 'Delete Account',
                 subLabel: 'Permanently remove',
                 slot1: <Trash2 size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.DANGER,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.DANGER,
                 onClick: () => console.log('Delete account'),
                 tooltip: 'All your data will be permanently deleted',
                 tooltipProps: {
@@ -1214,11 +1214,220 @@ export const MenuDemo: React.FC = () => {
                 </Block>
             </Block>
 
-            {/* 5.1. MaxHeight Scrolling Demo */}
+            {/* 5.1. Virtual Scrolling Demo - NEW FEATURE */}
             <Block marginBottom="48px">
                 <Block marginBottom="16px">
                     <Text fontSize={28} fontWeight="semibold">
-                        🆕 5.1. MaxHeight Scrolling Demonstration
+                        🚀 5.1. Virtual Scrolling Performance Demo
+                    </Text>
+                </Block>
+                <Block marginBottom="24px">
+                    <Text fontSize={14} color="gray.600">
+                        NEW FEATURE: High-performance virtual scrolling for
+                        large datasets (1000+ items)
+                    </Text>
+                </Block>
+
+                <Block display="flex" gap="16px" flexWrap="wrap">
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                text="🎯 Virtual List (1000 items)"
+                            />
+                        }
+                        items={[
+                            {
+                                label: 'Large Dataset Performance Test',
+                                items: Array.from({ length: 1000 }, (_, i) => ({
+                                    label: `Performance Item ${i + 1}`,
+                                    subLabel: `Item ${i + 1} of 1000 - Virtual scrolling demo`,
+                                    slot1: <FileText size={16} />,
+                                    onClick: () =>
+                                        console.log(`Clicked item ${i + 1}`),
+                                })),
+                            },
+                        ]}
+                        enableVirtualScrolling={true}
+                        virtualItemHeight={50}
+                        virtualScrollThreshold={50}
+                        virtualOverscan={10}
+                        maxHeight={400}
+                        enableSearch={true}
+                        searchPlaceholder="Search 1000 items..."
+                        minWidth={350}
+                    />
+
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                text="📊 Dynamic Heights (500 items)"
+                            />
+                        }
+                        items={[
+                            {
+                                label: 'Dynamic Height Test',
+                                items: Array.from({ length: 500 }, (_, i) => ({
+                                    label: `Dynamic Item ${i + 1}`,
+                                    subLabel:
+                                        i % 3 === 0
+                                            ? `Long description for item ${i + 1} that demonstrates variable height content in virtual scrolling`
+                                            : i % 3 === 1
+                                              ? `Medium description for item ${i + 1}`
+                                              : `Short ${i + 1}`,
+                                    slot1: <Settings size={16} />,
+                                    onClick: () =>
+                                        console.log(`Dynamic item ${i + 1}`),
+                                })),
+                            },
+                        ]}
+                        enableVirtualScrolling={true}
+                        virtualItemHeight={(item) => {
+                            const subLabelLength = item.subLabel?.length || 0
+                            return subLabelLength > 80
+                                ? 70
+                                : subLabelLength > 40
+                                  ? 55
+                                  : 45
+                        }}
+                        virtualScrollThreshold={20}
+                        virtualOverscan={5}
+                        maxHeight={350}
+                        enableSearch={true}
+                        searchPlaceholder="Search dynamic heights..."
+                        minWidth={380}
+                    />
+
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.SUCCESS}
+                                text="⚡ Virtual List (2000 items)"
+                            />
+                        }
+                        items={[
+                            {
+                                label: 'Virtual Scrolling (Fast)',
+                                items: Array.from({ length: 2000 }, (_, i) => ({
+                                    label: `Fast Item ${i + 1}`,
+                                    subLabel: `Optimized virtual rendering ${i + 1}/2000`,
+                                    slot1: <Star size={16} />,
+                                    onClick: () =>
+                                        console.log(`Fast item ${i + 1}`),
+                                })),
+                            },
+                        ]}
+                        enableVirtualScrolling={true}
+                        virtualItemHeight={42}
+                        virtualScrollThreshold={10}
+                        virtualOverscan={15}
+                        maxHeight={450}
+                        enableSearch={true}
+                        searchPlaceholder="Search 2000 items instantly..."
+                        minWidth={320}
+                    />
+
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.DANGER}
+                                text="🐌 Regular List (1000 items) - SLOW!"
+                            />
+                        }
+                        items={[
+                            {
+                                label: 'Regular Scrolling (Slow)',
+                                items: Array.from({ length: 1000 }, (_, i) => ({
+                                    label: `Slow Item ${i + 1}`,
+                                    subLabel: `Regular rendering ${i + 1}/1000 - DOM heavy`,
+                                    slot1: <Settings size={16} />,
+                                    onClick: () =>
+                                        console.log(`Slow item ${i + 1}`),
+                                })),
+                            },
+                        ]}
+                        enableVirtualScrolling={false}
+                        maxHeight={450}
+                        enableSearch={true}
+                        searchPlaceholder="Search 1000 items (will be slow)..."
+                        minWidth={320}
+                    />
+                </Block>
+
+                <Block
+                    marginTop="16px"
+                    padding="16px"
+                    backgroundColor="green.50"
+                    borderRadius="8px"
+                >
+                    <Block marginBottom="8px">
+                        <Text
+                            fontSize={14}
+                            fontWeight="medium"
+                            color="green.700"
+                        >
+                            🚀 Virtual Scrolling Performance Benefits:
+                        </Text>
+                    </Block>
+                    <Text fontSize={12} color="green.600" lineHeight="1.6">
+                        1. <strong>Memory Efficient:</strong> Only renders
+                        visible items (DOM contains ~20 items instead of 1000+)
+                        <br />
+                        2. <strong>Smooth Scrolling:</strong> 60fps performance
+                        even with massive datasets
+                        <br />
+                        3. <strong>Instant Search:</strong> Search functionality
+                        works instantly across all items
+                        <br />
+                        4. <strong>Dynamic Heights:</strong> Supports variable
+                        item heights with binary search optimization
+                        <br />
+                        5. <strong>Automatic Activation:</strong> Enables
+                        automatically when item count exceeds threshold
+                        <br />
+                        6. <strong>Seamless Integration:</strong> Works with all
+                        existing Menu features (search, submenus, etc.)
+                    </Text>
+                </Block>
+
+                <Block
+                    marginTop="16px"
+                    padding="16px"
+                    backgroundColor="blue.50"
+                    borderRadius="8px"
+                >
+                    <Block marginBottom="8px">
+                        <Text
+                            fontSize={14}
+                            fontWeight="medium"
+                            color="blue.700"
+                        >
+                            ⚙️ Virtual Scrolling Configuration:
+                        </Text>
+                    </Block>
+                    <Text fontSize={12} color="blue.600" lineHeight="1.6">
+                        • <strong>enableVirtualScrolling:</strong>{' '}
+                        Enable/disable virtual scrolling
+                        <br />• <strong>virtualItemHeight:</strong> Fixed height
+                        or function for dynamic heights
+                        <br />• <strong>virtualScrollThreshold:</strong> Item
+                        count threshold to activate (default: 50)
+                        <br />• <strong>virtualOverscan:</strong> Extra items to
+                        render for smooth scrolling (default: 5)
+                        <br />• <strong>Automatic Detection:</strong> Activates
+                        when total items greater then = threshold
+                        <br />• <strong>Binary Search:</strong> O(log n)
+                        performance for finding visible items
+                    </Text>
+                </Block>
+            </Block>
+
+            {/* 5.2. MaxHeight Scrolling Demo */}
+            <Block marginBottom="48px">
+                <Block marginBottom="16px">
+                    <Text fontSize={28} fontWeight="semibold">
+                        📜 5.2. MaxHeight Scrolling Demonstration
                     </Text>
                 </Block>
                 <Block marginBottom="24px">
@@ -2311,7 +2520,7 @@ export const MenuDemo: React.FC = () => {
                         </Block>
                         <Block marginBottom="12px">
                             <Text fontWeight="medium">
-                                items: MenuV2GroupType[]
+                                items: MenuGroupType[]
                             </Text>
                             <Text fontSize={14} color="gray.600">
                                 Array of menu groups containing menu items
@@ -2423,7 +2632,7 @@ export const MenuDemo: React.FC = () => {
                     <Block marginLeft="16px">
                         <Block marginBottom="12px">
                             <Text fontWeight="medium">
-                                variant: MenuItemV2Variant
+                                variant: MenuItemVariant
                             </Text>
                             <Text fontSize={14} color="gray.600">
                                 DEFAULT | ACTION - Visual styling variant
@@ -2431,7 +2640,7 @@ export const MenuDemo: React.FC = () => {
                         </Block>
                         <Block marginBottom="12px">
                             <Text fontWeight="medium">
-                                actionType: MenuItemV2ActionType
+                                actionType: MenuItemActionType
                             </Text>
                             <Text fontSize={14} color="gray.600">
                                 PRIMARY | DANGER - Color scheme for actions
@@ -2445,7 +2654,7 @@ export const MenuDemo: React.FC = () => {
                         </Block>
                         <Block marginBottom="12px">
                             <Text fontWeight="medium">
-                                subMenu: MenuItemV2Type[]
+                                subMenu: MenuItemType[]
                             </Text>
                             <Text fontSize={14} color="gray.600">
                                 Creates nested submenu (supports multiple
