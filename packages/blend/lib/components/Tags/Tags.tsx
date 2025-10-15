@@ -5,7 +5,7 @@ import Text from '../Text/Text'
 import { TagColor, type TagProps, TagShape, TagSize, TagVariant } from './types'
 import type { TagTokensType } from './tag.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { useRipple, RippleContainer } from '../Ripple'
+import { useRipple, RippleContainer } from '../animations/Ripple'
 
 const Tag = forwardRef<HTMLDivElement, TagProps>(
     (

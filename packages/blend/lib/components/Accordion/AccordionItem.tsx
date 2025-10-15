@@ -11,6 +11,12 @@ import { foundationToken } from '../../foundationToken'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import {
+    ChevronAnimation,
+    ChevronAnimationDirection,
+    ChevronAnimationVariant,
+    ChevronAnimationSize,
+} from '../animations/ChevronAnimation'
 
 const StyledAccordionItem = styled(RadixAccordion.Item)<{
     $accordionType: AccordionType
@@ -84,7 +90,7 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
     display: 'flex',
     width: '100%',
     textAlign: 'left',
-    transition: 'all 0.2s ease',
+    transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
     cursor: 'pointer',
     border: 'none',
     outline: 'none',
@@ -152,7 +158,42 @@ const StyledAccordionContent = styled(RadixAccordion.Content)<{
     $accordionToken: AccordionTokenType
 }>(() => ({
     overflow: 'hidden',
-    transition: 'all 0.2s ease',
+    transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+
+    '&[data-state="open"]': {
+        animation: 'accordion-down 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    },
+
+    '&[data-state="closed"]': {
+        animation: 'accordion-up 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    },
+
+    '@keyframes accordion-down': {
+        from: {
+            height: 0,
+            opacity: 0,
+        },
+        to: {
+            height: 'var(--radix-accordion-content-height)',
+            opacity: 1,
+        },
+    },
+
+    '@keyframes accordion-up': {
+        from: {
+            height: 'var(--radix-accordion-content-height)',
+            opacity: 1,
+        },
+        to: {
+            height: 0,
+            opacity: 0,
+        },
+    },
+
+    '@media (prefers-reduced-motion: reduce)': {
+        transition: 'none',
+        animation: 'none',
+    },
 }))
 
 const StyledSeparator = styled.hr<{
@@ -164,25 +205,6 @@ const StyledSeparator = styled.hr<{
     height: foundationToken.borderWidth[1],
     backgroundColor:
         props.$accordionToken.item.separator.color[props.$accordionType],
-}))
-
-const ChevronIcon = styled(Block)<{
-    $chevronPosition: AccordionChevronPosition
-}>((props) => ({
-    transition: 'transform 200ms ease',
-    transformOrigin: 'center',
-
-    ...(props.$chevronPosition === AccordionChevronPosition.RIGHT && {
-        '[data-state="open"] &': {
-            transform: 'rotate(180deg)',
-        },
-    }),
-
-    ...(props.$chevronPosition === AccordionChevronPosition.LEFT && {
-        '[data-state="open"] &': {
-            transform: 'rotate(90deg)',
-        },
-    }),
 }))
 
 const AccordionItem = forwardRef<
@@ -221,18 +243,26 @@ const AccordionItem = forwardRef<
         const isSmallScreen = breakPointLabel === 'sm'
 
         const getChevronIcon = () => {
-            const iconStyles = {
-                width: foundationToken.spacing[16],
-                height: foundationToken.spacing[16],
-                color: isDisabled
-                    ? foundationToken.colors.gray[300]
-                    : foundationToken.colors.gray[500],
-            }
+            const iconColor = isDisabled
+                ? foundationToken.colors.gray[300]
+                : foundationToken.colors.gray[500]
 
             return (
-                <ChevronIcon
-                    $chevronPosition={chevronPosition}
-                    style={iconStyles}
+                <ChevronAnimation
+                    isOpen={false} // This will be controlled by Radix UI's data-state
+                    direction={
+                        chevronPosition === AccordionChevronPosition.RIGHT
+                            ? ChevronAnimationDirection.DOWN
+                            : ChevronAnimationDirection.RIGHT
+                    }
+                    variant={
+                        chevronPosition === AccordionChevronPosition.RIGHT
+                            ? ChevronAnimationVariant.ROTATE_180
+                            : ChevronAnimationVariant.ROTATE_90
+                    }
+                    size={ChevronAnimationSize.MEDIUM}
+                    disabled={isDisabled}
+                    color={iconColor}
                 >
                     {chevronPosition === AccordionChevronPosition.RIGHT ? (
                         <ChevronDown
@@ -243,7 +273,7 @@ const AccordionItem = forwardRef<
                             style={{ width: '100%', height: '100%' }}
                         />
                     )}
-                </ChevronIcon>
+                </ChevronAnimation>
             )
         }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import Block from '../Primitives/Block/Block'
-import type { RippleElement } from '../../hooks/useRipple'
+import Block from '../../Primitives/Block/Block'
+import type { RippleElement } from '../../../hooks/useRipple'
 
 const rippleAnimation = keyframes`
   to {

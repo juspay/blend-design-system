@@ -1,2 +1,2 @@
 export { default as RippleContainer } from './RippleContainer'
-export * from '../../hooks/useRipple'
+export * from '../../../hooks/useRipple'
