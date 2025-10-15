@@ -317,11 +317,9 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     enableVirtualization = false,
     virtualListItemHeight = 56,
     virtualListOverscan = 5,
-    itemsToRender,
     onEndReached,
     endReachedThreshold,
     hasMore,
-    loadingComponent,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -465,16 +463,16 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                             justifyContent="center"
                                             alignItems="center"
                                             padding={
-                                                multiSelectTokens.dropdown.item
+                                                multiSelectTokens.menu.item
                                                     .padding
                                             }
                                         >
                                             <Text
                                                 variant="body.md"
                                                 color={
-                                                    multiSelectTokens.dropdown
-                                                        .item.label.color
-                                                        .disabled
+                                                    multiSelectTokens.menu.item
+                                                        .optionsLabel.color
+                                                        .default
                                                 }
                                                 textAlign="center"
                                             >
@@ -488,16 +486,16 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                             justifyContent="center"
                                             alignItems="center"
                                             padding={
-                                                multiSelectTokens.dropdown.item
+                                                multiSelectTokens.menu.item
                                                     .padding
                                             }
                                         >
                                             <Text
                                                 variant="body.md"
                                                 color={
-                                                    multiSelectTokens.dropdown
-                                                        .item.label.color
-                                                        .disabled
+                                                    multiSelectTokens.menu.item
+                                                        .optionsLabel.color
+                                                        .default
                                                 }
                                                 textAlign="center"
                                             >
@@ -508,24 +506,14 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                       flattenedItems.length > 0 ? (
                                         <VirtualList
                                             items={flattenedItems}
+                                            height={600}
                                             itemHeight={virtualListItemHeight}
-                                            maxHeight={600}
                                             overscan={virtualListOverscan}
-                                            dynamicHeight={true}
-                                            estimatedItemHeight={
-                                                virtualListItemHeight
-                                            }
-                                            itemsToRender={itemsToRender}
                                             onEndReached={onEndReached}
                                             endReachedThreshold={
                                                 endReachedThreshold
                                             }
                                             hasMore={hasMore}
-                                            loadingComponent={loadingComponent}
-                                            style={{
-                                                height: 'auto',
-                                                maxHeight: 600,
-                                            }}
                                             renderItem={({
                                                 item: flatItem,
                                             }) => {
@@ -562,31 +550,24 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                 if (typed.type === 'label') {
                                                     return (
                                                         <Block
-                                                            padding={`${multiSelectTokens.dropdown.item.gap} ${multiSelectTokens.dropdown.item.padding}`}
+                                                            padding={`${multiSelectTokens.menu.item.gap} ${multiSelectTokens.menu.item.padding}`}
                                                             margin={
                                                                 multiSelectTokens
-                                                                    .dropdown
-                                                                    .item.margin
+                                                                    .menu.item
+                                                                    .margin
                                                             }
                                                         >
                                                             <Text
                                                                 variant="body.sm"
                                                                 color={
                                                                     multiSelectTokens
-                                                                        .dropdown
+                                                                        .menu
                                                                         .item
-                                                                        .label
+                                                                        .optionsLabel
                                                                         .color
-                                                                        .disabled
+                                                                        .default
                                                                 }
                                                                 textTransform="uppercase"
-                                                                fontSize={
-                                                                    multiSelectTokens
-                                                                        .dropdown
-                                                                        .item
-                                                                        .subLabel
-                                                                        .fontSize
-                                                                }
                                                             >
                                                                 {typed.label}
                                                             </Text>
@@ -601,19 +582,19 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                         <Block
                                                             height={
                                                                 multiSelectTokens
-                                                                    .dropdown
+                                                                    .menu.item
                                                                     .seperator
                                                                     .height
                                                             }
                                                             backgroundColor={
                                                                 multiSelectTokens
-                                                                    .dropdown
+                                                                    .menu.item
                                                                     .seperator
                                                                     .color
                                                             }
                                                             margin={
                                                                 multiSelectTokens
-                                                                    .dropdown
+                                                                    .menu.item
                                                                     .seperator
                                                                     .margin
                                                             }

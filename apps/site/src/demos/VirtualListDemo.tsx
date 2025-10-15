@@ -1,9 +1,6 @@
 import { useState, useCallback, useRef, CSSProperties } from 'react'
 import VirtualList from '../../../../packages/blend/lib/components/VirtualList/VirtualList'
-import type {
-    VirtualListItem,
-    VirtualListRef,
-} from '../../../../packages/blend/lib/components/VirtualList/types'
+import type { VirtualListRef } from '../../../../packages/blend/lib/components/VirtualList/types'
 import { User, Mail, Phone, MapPin, Star, Database, Zap } from 'lucide-react'
 import SingleSelect from '../../../../packages/blend/lib/components/SingleSelect/SingleSelect'
 import MultiSelect from '../../../../packages/blend/lib/components/MultiSelect/MultiSelect'
@@ -149,11 +146,13 @@ const styles = {
 }
 
 // Types
-interface UserItem extends VirtualListItem {
+interface UserItem {
+    id: string | number
     name: string
     email: string
     role: string
     status: 'active' | 'inactive'
+    [key: string]: unknown
 }
 // Helpers
 const generateUsers = (count: number, startId: number = 0): UserItem[] => {
@@ -294,19 +293,19 @@ const VirtualListDemo = () => {
     const [scrollControlItems] = useState(() => generateUsers(1000))
 
     const scrollToTop = () => {
-        virtualListRef.current?.scrollTo(0, true)
+        virtualListRef.current?.scrollTo(0)
     }
 
     const scrollToMiddle = () => {
-        virtualListRef.current?.scrollToIndex(500, 'center', true)
+        virtualListRef.current?.scrollToIndex(500)
     }
 
     const scrollToBottom = () => {
-        virtualListRef.current?.scrollToIndex(999, 'end', true)
+        virtualListRef.current?.scrollToIndex(999)
     }
 
     // Demo 5: Range Change Callback
-    const [visibleRange, setVisibleRange] = useState({
+    const [visibleRange] = useState({
         startIndex: 0,
         endIndex: 0,
     })
@@ -314,7 +313,6 @@ const VirtualListDemo = () => {
 
     // Demo 6: Limited Render Count
     const [limitedItems] = useState(() => generateUsers(10000))
-    const [itemsToRender, setItemsToRender] = useState(50)
 
     // Demo 7: SingleSelect with Virtualization
     const [selectItems] = useState(() => generateSelectItems(1000))
@@ -322,12 +320,9 @@ const VirtualListDemo = () => {
     const [selectedVirtualized, setSelectedVirtualized] = useState('')
 
     // Demo 8: SingleSelect with Infinite Scroll + API Calls
-    const [infiniteSelectItems, setInfiniteSelectItems] = useState<
-        SelectMenuGroupType[]
-    >(() => generateSelectItems(50))
-    const [selectLoading, setSelectLoading] = useState(false)
-    const [selectHasMore, setSelectHasMore] = useState(true)
-    const [selectPage, setSelectPage] = useState(1)
+    const [infiniteSelectItems] = useState<SelectMenuGroupType[]>(() =>
+        generateSelectItems(1000)
+    )
     const [selectedInfinite, setSelectedInfinite] = useState('')
 
     // Demo 9: MultiSelect with Virtualization
@@ -350,83 +345,102 @@ const VirtualListDemo = () => {
     }
 
     // Demo 10: MultiSelect with Infinite Scroll
-    const [infiniteMultiSelectItems, setInfiniteMultiSelectItems] = useState<
-        MultiSelectMenuGroupType[]
-    >(() => generateMultiSelectItems(50))
-    const [multiSelectLoading, setMultiSelectLoading] = useState(false)
-    const [multiSelectHasMore, setMultiSelectHasMore] = useState(true)
-    const [multiSelectPage, setMultiSelectPage] = useState(1)
+    const [infiniteMultiSelectItems] = useState<MultiSelectMenuGroupType[]>(
+        () => generateMultiSelectItems(50)
+    )
     const [selectedInfiniteMulti, setSelectedInfiniteMulti] = useState<
         string[]
     >([])
 
-    const loadMoreMultiSelectOptions = useCallback(async () => {
-        if (multiSelectLoading) return
+    // Demo 11: SingleSelect with API Infinite Scroll
+    const [apiSelectItems, setApiSelectItems] = useState<SelectMenuGroupType[]>(
+        () => generateSelectItems(50)
+    )
+    const [selectedApiSelect, setSelectedApiSelect] = useState('')
+    const [apiSelectLoading, setApiSelectLoading] = useState(false)
+    const [apiSelectHasMore, setApiSelectHasMore] = useState(true)
+    const [apiSelectPage, setApiSelectPage] = useState(1)
 
-        setMultiSelectLoading(true)
+    const loadMoreApiSelectItems = useCallback(async () => {
+        if (apiSelectLoading) return
 
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        setApiSelectLoading(true)
+        const nextPage = apiSelectPage + 1
 
-        const newPage = multiSelectPage + 1
-        const newItems = generateMultiSelectItems(50)
+        try {
+            // Simulate API call
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+            const newItems = generateSelectItems(50)
 
-        setInfiniteMultiSelectItems((prev) => {
-            const combined: MultiSelectMenuGroupType[] = [...prev]
-            newItems.forEach((newGroup, index) => {
-                if (combined[index]) {
-                    combined[index] = {
-                        ...combined[index],
-                        items: [...combined[index].items, ...newGroup.items],
-                    }
-                } else {
-                    combined.push(newGroup)
-                }
-            })
-            return combined
-        })
+            setApiSelectItems((prev) => [
+                ...prev,
+                ...newItems.map((group) => ({
+                    ...group,
+                    items: group.items.map((item) => ({
+                        ...item,
+                        value: `${item.value}-page${nextPage}`,
+                        label: `${item.label} (Page ${nextPage})`,
+                    })),
+                })),
+            ])
+            setApiSelectPage(nextPage)
 
-        setMultiSelectPage(newPage)
-
-        if (newPage >= 10) {
-            setMultiSelectHasMore(false)
+            // Stop after 5 pages (250 items)
+            if (nextPage >= 5) {
+                setApiSelectHasMore(false)
+            }
+        } catch (error) {
+            console.error('Error loading items:', error)
+        } finally {
+            setApiSelectLoading(false)
         }
+    }, [apiSelectPage, apiSelectLoading])
 
-        setMultiSelectLoading(false)
-    }, [multiSelectLoading, multiSelectPage])
+    // Demo 12: MultiSelect with API Infinite Scroll
+    const [apiMultiSelectItems, setApiMultiSelectItems] = useState<
+        MultiSelectMenuGroupType[]
+    >(() => generateMultiSelectItems(50))
+    const [selectedApiMultiSelect, setSelectedApiMultiSelect] = useState<
+        string[]
+    >([])
+    const [apiMultiSelectLoading, setApiMultiSelectLoading] = useState(false)
+    const [apiMultiSelectHasMore, setApiMultiSelectHasMore] = useState(true)
+    const [apiMultiSelectPage, setApiMultiSelectPage] = useState(1)
 
-    const loadMoreSelectOptions = useCallback(async () => {
-        if (selectLoading) return
+    const loadMoreApiMultiSelectItems = useCallback(async () => {
+        if (apiMultiSelectLoading) return
 
-        setSelectLoading(true)
+        setApiMultiSelectLoading(true)
+        const nextPage = apiMultiSelectPage + 1
 
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        try {
+            // Simulate API call
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+            const newItems = generateMultiSelectItems(50)
 
-        const newPage = selectPage + 1
-        const newItems = generateSelectItems(50)
+            setApiMultiSelectItems((prev) => [
+                ...prev,
+                ...newItems.map((group) => ({
+                    ...group,
+                    items: group.items.map((item) => ({
+                        ...item,
+                        value: `${item.value}-page${nextPage}`,
+                        label: `${item.label} (Page ${nextPage})`,
+                    })),
+                })),
+            ])
+            setApiMultiSelectPage(nextPage)
 
-        setInfiniteSelectItems((prev) => {
-            const combined: SelectMenuGroupType[] = [...prev]
-            newItems.forEach((newGroup, index) => {
-                if (combined[index]) {
-                    combined[index] = {
-                        ...combined[index],
-                        items: [...combined[index].items, ...newGroup.items],
-                    }
-                } else {
-                    combined.push(newGroup)
-                }
-            })
-            return combined
-        })
-
-        setSelectPage(newPage)
-
-        if (newPage >= 10) {
-            setSelectHasMore(false)
+            // Stop after 5 pages (250 items)
+            if (nextPage >= 5) {
+                setApiMultiSelectHasMore(false)
+            }
+        } catch (error) {
+            console.error('Error loading items:', error)
+        } finally {
+            setApiMultiSelectLoading(false)
         }
-
-        setSelectLoading(false)
-    }, [selectLoading, selectPage])
+    }, [apiMultiSelectPage, apiMultiSelectLoading])
 
     return (
         <div style={styles.demoContainer}>
@@ -472,8 +486,8 @@ const VirtualListDemo = () => {
                         <div style={styles.cardContent}>
                             <VirtualList
                                 items={basicItems}
+                                height={400}
                                 itemHeight={60}
-                                containerHeight={400}
                                 overscan={5}
                                 renderItem={({ item }) => {
                                     const user = item as UserItem
@@ -532,8 +546,8 @@ const VirtualListDemo = () => {
                         <div style={styles.cardContent}>
                             <VirtualList
                                 items={infiniteItems}
+                                height={400}
                                 itemHeight={60}
-                                containerHeight={400}
                                 overscan={5}
                                 onEndReached={loadMore}
                                 endReachedThreshold={300}
@@ -594,8 +608,8 @@ const VirtualListDemo = () => {
                             <VirtualList
                                 ref={virtualListRef}
                                 items={scrollControlItems}
+                                height={400}
                                 itemHeight={60}
-                                containerHeight={400}
                                 overscan={5}
                                 renderItem={({ item, index }) => {
                                     const user = item as UserItem
@@ -673,10 +687,9 @@ const VirtualListDemo = () => {
                         <div style={styles.cardContent}>
                             <VirtualList
                                 items={rangeItems}
+                                height={400}
                                 itemHeight={60}
-                                containerHeight={400}
                                 overscan={5}
-                                onRangeChange={setVisibleRange}
                                 renderItem={({ index }) => {
                                     const isVisible =
                                         index >= visibleRange.startIndex &&
@@ -736,16 +749,15 @@ const VirtualListDemo = () => {
                                 10,000 Items with Render Limit
                             </h3>
                             <p style={styles.cardSubtitle}>
-                                Rendering max {itemsToRender} items at once
+                                10,000 items with automatic optimization
                             </p>
                         </div>
                         <div style={styles.cardContent}>
                             <VirtualList
                                 items={limitedItems}
+                                height={400}
                                 itemHeight={60}
-                                containerHeight={400}
                                 overscan={5}
-                                itemsToRender={itemsToRender}
                                 renderItem={({ item, index }) => {
                                     const user = item as UserItem
                                     return (
@@ -772,37 +784,9 @@ const VirtualListDemo = () => {
                                 }}
                             />
                         </div>
-                        <div style={styles.controlPanel}>
-                            <button
-                                style={styles.button(
-                                    itemsToRender === 20
-                                        ? 'primary'
-                                        : 'secondary'
-                                )}
-                                onClick={() => setItemsToRender(20)}
-                            >
-                                20 items
-                            </button>
-                            <button
-                                style={styles.button(
-                                    itemsToRender === 50
-                                        ? 'primary'
-                                        : 'secondary'
-                                )}
-                                onClick={() => setItemsToRender(50)}
-                            >
-                                50 items
-                            </button>
-                            <button
-                                style={styles.button(
-                                    itemsToRender === 100
-                                        ? 'primary'
-                                        : 'secondary'
-                                )}
-                                onClick={() => setItemsToRender(100)}
-                            >
-                                100 items
-                            </button>
+                        <div style={styles.stats}>
+                            💡 VirtualList automatically optimizes rendering for
+                            10,000+ items
                         </div>
                     </div>
                 </div>
@@ -881,7 +865,7 @@ const VirtualListDemo = () => {
                                 maxMenuHeight={400}
                                 enableVirtualization={true}
                                 virtualListItemHeight={48}
-                                virtualListOverscan={5}
+                                virtualListOverscan={2}
                             />
                             {selectedVirtualized && (
                                 <div
@@ -903,29 +887,27 @@ const VirtualListDemo = () => {
                 </div>
             </div>
 
-            {/* Demo 8: Infinite Scroll SingleSelect */}
+            {/* Demo 8: SingleSelect with Large Dataset */}
             <div style={styles.demoSection}>
                 <h2 style={styles.sectionTitle}>
-                    8. SingleSelect with Infinite Scroll & API Calls
+                    8. SingleSelect with Large Dataset (Virtualized)
                 </h2>
                 <p style={styles.sectionDescription}>
-                    Load options on demand as you scroll! Perfect for dropdowns
-                    with thousands of options from an API. Only loads 50 items
-                    at a time.
+                    SingleSelect with 1000 options using virtualization. Opens
+                    instantly with smooth scrolling.
                 </p>
                 <div style={styles.demoGrid}>
                     <div style={styles.demoCard}>
                         <div style={styles.cardHeader}>
                             <h3 style={styles.cardTitle}>
-                                Infinite Scroll SingleSelect
+                                Large Dataset SingleSelect
                             </h3>
                             <p style={styles.cardSubtitle}>
                                 {infiniteSelectItems.reduce(
                                     (acc, group) => acc + group.items.length,
                                     0
                                 )}{' '}
-                                options loaded
-                                {selectHasMore && ' • More available'}
+                                options available
                             </p>
                         </div>
                         <div style={{ ...styles.cardContent, padding: '20px' }}>
@@ -940,10 +922,7 @@ const VirtualListDemo = () => {
                                 maxMenuHeight={400}
                                 enableVirtualization={true}
                                 virtualListItemHeight={48}
-                                onEndReached={loadMoreSelectOptions}
-                                endReachedThreshold={200}
-                                hasMore={selectHasMore}
-                                itemsToRender={50}
+                                virtualListOverscan={2}
                             />
                             {selectedInfinite && (
                                 <div
@@ -963,23 +942,13 @@ const VirtualListDemo = () => {
                                     color: '#999',
                                 }}
                             >
-                                💡 Scroll to bottom to load more options
-                                automatically
+                                💡 Search through{' '}
+                                {infiniteSelectItems.reduce(
+                                    (acc, g) => acc + g.items.length,
+                                    0
+                                )}{' '}
+                                options
                             </div>
-                        </div>
-                        <div
-                            style={{
-                                ...styles.stats,
-                                background: '#dbeafe',
-                                borderBottom: '1px solid #93c5fd',
-                                color: '#1e40af',
-                            }}
-                        >
-                            🔄{' '}
-                            {selectLoading
-                                ? 'Loading more options...'
-                                : `${infiniteSelectItems.reduce((acc, g) => acc + g.items.length, 0)} options loaded`}
-                            {!selectHasMore && ' • All data loaded'}
                         </div>
                     </div>
                 </div>
@@ -1003,23 +972,13 @@ const VirtualListDemo = () => {
                     <pre
                         style={{ margin: 0, whiteSpace: 'pre-wrap' }}
                     >{`const [items, setItems] = useState(initialItems)
-const [hasMore, setHasMore] = useState(true)
-
-const loadMore = async () => {
-  const newItems = await fetchFromAPI()
-  setItems(prev => [...prev, ...newItems])
-  if (newItems.length === 0) setHasMore(false)
-}
 
 <SingleSelect
   items={items}
   selected={value}
   onSelect={setValue}
-  enableVirtualization={true}
-  onEndReached={loadMore}      // Load more on scroll
-  endReachedThreshold={200}     // Trigger 200px before end
-  hasMore={hasMore}             // Show loading state
-  itemsToRender={50}            // Render max 50 at once
+  enableSearch
+  maxMenuHeight={400}
 />`}</pre>
                 </div>
             </div>
@@ -1104,8 +1063,8 @@ const loadMore = async () => {
                                 maxMenuHeight={400}
                                 enableSelectAll
                                 enableVirtualization={true}
-                                virtualListItemHeight={48}
-                                virtualListOverscan={5}
+                                virtualListItemHeight={44}
+                                virtualListOverscan={2}
                             />
                             {selectedMultiVirtualized.length > 0 && (
                                 <div
@@ -1128,30 +1087,27 @@ const loadMore = async () => {
                 </div>
             </div>
 
-            {/* Demo 10: Infinite Scroll MultiSelect */}
+            {/* Demo 10: MultiSelect with Large Dataset */}
             <div style={styles.demoSection}>
                 <h2 style={styles.sectionTitle}>
-                    10. MultiSelect with Infinite Scroll & API Calls
+                    10. MultiSelect with Large Dataset (Virtualized)
                 </h2>
                 <p style={styles.sectionDescription}>
-                    Load options on demand as you scroll in a multi-select
-                    dropdown! Perfect for selecting from thousands of options
-                    loaded incrementally. Includes "Select All" for the loaded
-                    items.
+                    MultiSelect with 50 options using virtualization. Opens
+                    instantly with smooth multi-selection.
                 </p>
                 <div style={styles.demoGrid}>
                     <div style={styles.demoCard}>
                         <div style={styles.cardHeader}>
                             <h3 style={styles.cardTitle}>
-                                Infinite Scroll MultiSelect
+                                Large Dataset MultiSelect
                             </h3>
                             <p style={styles.cardSubtitle}>
                                 {infiniteMultiSelectItems.reduce(
                                     (acc, group) => acc + group.items.length,
                                     0
                                 )}{' '}
-                                options loaded
-                                {multiSelectHasMore && ' • More available'}
+                                options available
                             </p>
                         </div>
                         <div style={{ ...styles.cardContent, padding: '20px' }}>
@@ -1169,11 +1125,8 @@ const loadMore = async () => {
                                 maxMenuHeight={400}
                                 enableSelectAll
                                 enableVirtualization={true}
-                                virtualListItemHeight={48}
-                                onEndReached={loadMoreMultiSelectOptions}
-                                endReachedThreshold={200}
-                                hasMore={multiSelectHasMore}
-                                itemsToRender={50}
+                                virtualListItemHeight={44}
+                                virtualListOverscan={2}
                             />
                             {selectedInfiniteMulti.length > 0 && (
                                 <div
@@ -1194,23 +1147,13 @@ const loadMore = async () => {
                                     color: '#999',
                                 }}
                             >
-                                💡 Scroll to bottom to load more options • Use
-                                "Select All" to select all loaded items
+                                💡 Search through{' '}
+                                {infiniteMultiSelectItems.reduce(
+                                    (acc, g) => acc + g.items.length,
+                                    0
+                                )}{' '}
+                                options • Use "Select All" to select all items
                             </div>
-                        </div>
-                        <div
-                            style={{
-                                ...styles.stats,
-                                background: '#dbeafe',
-                                borderBottom: '1px solid #93c5fd',
-                                color: '#1e40af',
-                            }}
-                        >
-                            🔄{' '}
-                            {multiSelectLoading
-                                ? 'Loading more options...'
-                                : `${infiniteMultiSelectItems.reduce((acc, g) => acc + g.items.length, 0)} options loaded`}
-                            {!multiSelectHasMore && ' • All data loaded'}
                         </div>
                     </div>
                 </div>
@@ -1235,13 +1178,6 @@ const loadMore = async () => {
                         style={{ margin: 0, whiteSpace: 'pre-wrap' }}
                     >{`const [items, setItems] = useState(initialItems)
 const [selectedValues, setSelectedValues] = useState<string[]>([])
-const [hasMore, setHasMore] = useState(true)
-
-const loadMore = async () => {
-  const newItems = await fetchFromAPI()
-  setItems(prev => [...prev, ...newItems])
-  if (newItems.length === 0) setHasMore(false)
-}
 
 const handleChange = (value: string) => {
   setSelectedValues(prev =>
@@ -1257,12 +1193,487 @@ const handleChange = (value: string) => {
   items={items}
   selectedValues={selectedValues}
   onChange={handleChange}
-  enableVirtualization={true}
-  onEndReached={loadMore}           // Load more on scroll
-  endReachedThreshold={200}          // Trigger 200px before end
-  hasMore={hasMore}                  // Show loading state
-  itemsToRender={50}                 // Render max 50 at once
-  enableSelectAll={true}             // Allow select all
+  enableSearch
+  maxMenuHeight={400}
+  enableSelectAll
+/>`}</pre>
+                </div>
+            </div>
+
+            {/* Demo 11: SingleSelect with API Infinite Scroll */}
+            <div style={styles.demoSection}>
+                <h2 style={styles.sectionTitle}>
+                    11. SingleSelect with API Infinite Scroll
+                </h2>
+                <p style={styles.sectionDescription}>
+                    SingleSelect that loads more data from an API as you scroll.
+                    Perfect for large datasets that need pagination.
+                </p>
+                <div style={styles.demoGrid}>
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                API Infinite Scroll SingleSelect
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                {apiSelectItems.reduce(
+                                    (acc, group) => acc + group.items.length,
+                                    0
+                                )}{' '}
+                                items loaded •{' '}
+                                {apiSelectHasMore
+                                    ? 'Scroll for more'
+                                    : 'All loaded'}
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <SingleSelect
+                                placeholder="Select an option..."
+                                items={apiSelectItems}
+                                selected={selectedApiSelect}
+                                onSelect={setSelectedApiSelect}
+                                enableSearch
+                                searchPlaceholder="Search options..."
+                                size={SelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                                enableVirtualization={true}
+                                virtualListItemHeight={48}
+                                virtualListOverscan={2}
+                                onEndReached={loadMoreApiSelectItems}
+                                endReachedThreshold={200}
+                                hasMore={apiSelectHasMore}
+                                loadingComponent={
+                                    apiSelectLoading ? (
+                                        <div
+                                            style={{
+                                                padding: '16px',
+                                                textAlign: 'center',
+                                            }}
+                                        >
+                                            Loading more...
+                                        </div>
+                                    ) : null
+                                }
+                            />
+                            {selectedApiSelect && (
+                                <div
+                                    style={{
+                                        marginTop: '12px',
+                                        fontSize: '14px',
+                                        color: '#666',
+                                    }}
+                                >
+                                    Selected: {selectedApiSelect}
+                                </div>
+                            )}
+                            <div
+                                style={{
+                                    marginTop: '12px',
+                                    fontSize: '12px',
+                                    color: '#999',
+                                }}
+                            >
+                                💡 Scroll to the bottom to load more items from
+                                API
+                            </div>
+                        </div>
+                        <div style={styles.stats}>
+                            {apiSelectLoading ? '⏳ Loading...' : '✅ Ready'}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Code Example */}
+                <div
+                    style={{
+                        marginTop: '24px',
+                        padding: '20px',
+                        background: '#1e293b',
+                        borderRadius: '8px',
+                        color: '#e2e8f0',
+                        fontSize: '13px',
+                        fontFamily: 'monospace',
+                        overflowX: 'auto',
+                    }}
+                >
+                    <div style={{ marginBottom: '12px', color: '#94a3b8' }}>
+                        // API Infinite Scroll Example:
+                    </div>
+                    <pre
+                        style={{ margin: 0, whiteSpace: 'pre-wrap' }}
+                    >{`const [items, setItems] = useState(initialItems)
+const [loading, setLoading] = useState(false)
+const [hasMore, setHasMore] = useState(true)
+const [page, setPage] = useState(1)
+
+const loadMore = async () => {
+  if (loading) return
+  setLoading(true)
+  
+  try {
+    const response = await fetch(\`/api/items?page=\${page + 1}\`)
+    const newItems = await response.json()
+    
+    setItems(prev => [...prev, ...newItems])
+    setPage(prev => prev + 1)
+    
+    if (newItems.length === 0) {
+      setHasMore(false)
+    }
+  } finally {
+    setLoading(false)
+  }
+}
+
+<SingleSelect
+  items={items}
+  selected={value}
+  onSelect={setValue}
+  enableVirtualization
+  onEndReached={loadMore}
+  hasMore={hasMore}
+  endReachedThreshold={200}
+/>`}</pre>
+                </div>
+            </div>
+
+            {/* Demo 12: Empty Data Cases */}
+            <div style={styles.demoSection}>
+                <h2 style={styles.sectionTitle}>12. Empty Data Cases</h2>
+                <p style={styles.sectionDescription}>
+                    Demonstrating how SingleSelect and MultiSelect handle empty
+                    data with proper "No items available" messaging.
+                </p>
+                <div style={styles.demoGrid}>
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                SingleSelect with Empty Data
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                0 options • Shows "No items available"
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <SingleSelect
+                                placeholder="Select an option..."
+                                items={[]}
+                                selected=""
+                                onSelect={() => {}}
+                                enableSearch
+                                searchPlaceholder="Search options..."
+                                size={SelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                            />
+                            <div
+                                style={{
+                                    marginTop: '12px',
+                                    fontSize: '12px',
+                                    color: '#999',
+                                }}
+                            >
+                                💡 Open the dropdown to see "No items available"
+                                message
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                MultiSelect with Empty Data
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                0 options • Shows "No items available"
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <MultiSelect
+                                label="Select Multiple Options"
+                                placeholder="Choose options..."
+                                items={[]}
+                                selectedValues={[]}
+                                onChange={() => {}}
+                                enableSearch
+                                searchPlaceholder="Search options..."
+                                size={MultiSelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                                enableSelectAll
+                            />
+                            <div
+                                style={{
+                                    marginTop: '12px',
+                                    fontSize: '12px',
+                                    color: '#999',
+                                }}
+                            >
+                                💡 Open the dropdown to see "No items available"
+                                message
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style={styles.demoGrid}>
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                SingleSelect Empty with Virtualization
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                0 options • Virtualized • Shows "No items
+                                available"
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <SingleSelect
+                                placeholder="Select an option..."
+                                items={[]}
+                                selected=""
+                                onSelect={() => {}}
+                                enableSearch
+                                searchPlaceholder="Search options..."
+                                size={SelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                                enableVirtualization={true}
+                                virtualListItemHeight={48}
+                                virtualListOverscan={2}
+                            />
+                            <div
+                                style={{
+                                    marginTop: '12px',
+                                    fontSize: '12px',
+                                    color: '#999',
+                                }}
+                            >
+                                💡 Even with virtualization enabled, empty data
+                                is handled correctly
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                MultiSelect Empty with Virtualization
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                0 options • Virtualized • Shows "No items
+                                available"
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <MultiSelect
+                                label="Select Multiple Options"
+                                placeholder="Choose options..."
+                                items={[]}
+                                selectedValues={[]}
+                                onChange={() => {}}
+                                enableSearch
+                                searchPlaceholder="Search options..."
+                                size={MultiSelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                                enableSelectAll
+                                enableVirtualization={true}
+                                virtualListItemHeight={44}
+                                virtualListOverscan={2}
+                            />
+                            <div
+                                style={{
+                                    marginTop: '12px',
+                                    fontSize: '12px',
+                                    color: '#999',
+                                }}
+                            >
+                                💡 Virtualization with empty data works
+                                seamlessly
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Code Example */}
+                <div
+                    style={{
+                        marginTop: '24px',
+                        padding: '20px',
+                        background: '#1e293b',
+                        borderRadius: '8px',
+                        color: '#e2e8f0',
+                        fontSize: '13px',
+                        fontFamily: 'monospace',
+                        overflowX: 'auto',
+                    }}
+                >
+                    <div style={{ marginBottom: '12px', color: '#94a3b8' }}>
+                        // Empty Data Handling Example:
+                    </div>
+                    <pre
+                        style={{ margin: 0, whiteSpace: 'pre-wrap' }}
+                    >{`// When no data is available
+const emptyItems: SelectMenuGroupType[] = []
+
+<SingleSelect
+  placeholder="Select an option..."
+  items={emptyItems}  // Empty array
+  selected=""
+  onSelect={() => {}}
+  enableSearch
+/>
+
+<MultiSelect
+  label="Select Options"
+  placeholder="Choose options..."
+  items={emptyItems}  // Empty array
+  selectedValues={[]}
+  onChange={() => {}}
+  enableSearch
+/>`}</pre>
+                </div>
+            </div>
+
+            {/* Demo 13: MultiSelect with API Infinite Scroll */}
+            <div style={styles.demoSection}>
+                <h2 style={styles.sectionTitle}>
+                    13. MultiSelect with API Infinite Scroll
+                </h2>
+                <p style={styles.sectionDescription}>
+                    MultiSelect that loads more data from an API as you scroll.
+                    Supports multi-selection with infinite scrolling.
+                </p>
+                <div style={styles.demoGrid}>
+                    <div style={styles.demoCard}>
+                        <div style={styles.cardHeader}>
+                            <h3 style={styles.cardTitle}>
+                                API Infinite Scroll MultiSelect
+                            </h3>
+                            <p style={styles.cardSubtitle}>
+                                {apiMultiSelectItems.reduce(
+                                    (acc, group) => acc + group.items.length,
+                                    0
+                                )}{' '}
+                                items loaded •{' '}
+                                {apiMultiSelectHasMore
+                                    ? 'Scroll for more'
+                                    : 'All loaded'}
+                            </p>
+                        </div>
+                        <div style={{ ...styles.cardContent, padding: '20px' }}>
+                            <MultiSelect
+                                label="Select Multiple Options"
+                                placeholder="Choose options..."
+                                items={apiMultiSelectItems}
+                                selectedValues={selectedApiMultiSelect}
+                                onChange={handleMultiSelectChange(
+                                    setSelectedApiMultiSelect
+                                )}
+                                enableSearch
+                                searchPlaceholder="Search options..."
+                                size={MultiSelectMenuSize.MEDIUM}
+                                maxMenuHeight={400}
+                                enableSelectAll
+                                enableVirtualization={true}
+                                virtualListItemHeight={44}
+                                virtualListOverscan={2}
+                                onEndReached={loadMoreApiMultiSelectItems}
+                                endReachedThreshold={200}
+                                hasMore={apiMultiSelectHasMore}
+                                loadingComponent={
+                                    apiMultiSelectLoading ? (
+                                        <div
+                                            style={{
+                                                padding: '16px',
+                                                textAlign: 'center',
+                                            }}
+                                        >
+                                            Loading more...
+                                        </div>
+                                    ) : null
+                                }
+                            />
+                            {selectedApiMultiSelect.length > 0 && (
+                                <div
+                                    style={{
+                                        marginTop: '12px',
+                                        fontSize: '14px',
+                                        color: '#666',
+                                    }}
+                                >
+                                    Selected: {selectedApiMultiSelect.length}{' '}
+                                    items
+                                </div>
+                            )}
+                            <div
+                                style={{
+                                    marginTop: '12px',
+                                    fontSize: '12px',
+                                    color: '#999',
+                                }}
+                            >
+                                💡 Scroll to the bottom to load more items from
+                                API
+                            </div>
+                        </div>
+                        <div style={styles.stats}>
+                            {apiMultiSelectLoading
+                                ? '⏳ Loading...'
+                                : '✅ Ready'}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Code Example */}
+                <div
+                    style={{
+                        marginTop: '24px',
+                        padding: '20px',
+                        background: '#1e293b',
+                        borderRadius: '8px',
+                        color: '#e2e8f0',
+                        fontSize: '13px',
+                        fontFamily: 'monospace',
+                        overflowX: 'auto',
+                    }}
+                >
+                    <div style={{ marginBottom: '12px', color: '#94a3b8' }}>
+                        // MultiSelect API Infinite Scroll Example:
+                    </div>
+                    <pre
+                        style={{ margin: 0, whiteSpace: 'pre-wrap' }}
+                    >{`const [items, setItems] = useState(initialItems)
+const [selectedValues, setSelectedValues] = useState<string[]>([])
+const [loading, setLoading] = useState(false)
+const [hasMore, setHasMore] = useState(true)
+
+const loadMore = async () => {
+  if (loading) return
+  setLoading(true)
+  
+  try {
+    const response = await fetch(\`/api/items?page=\${page + 1}\`)
+    const newItems = await response.json()
+    setItems(prev => [...prev, ...newItems])
+    
+    if (newItems.length === 0) setHasMore(false)
+  } finally {
+    setLoading(false)
+  }
+}
+
+<MultiSelect
+  items={items}
+  selectedValues={selectedValues}
+  onChange={(value) => {
+    setSelectedValues(prev =>
+      prev.includes(value)
+        ? prev.filter(v => v !== value)
+        : [...prev, value]
+    )
+  }}
+  enableVirtualization
+  onEndReached={loadMore}
+  hasMore={hasMore}
+  enableSelectAll
 />`}</pre>
                 </div>
             </div>
@@ -1284,7 +1695,7 @@ const handleChange = (value: string) => {
                         color: '#0369a1',
                     }}
                 >
-                    🎯 Key Features Summary
+                    🎯 Simplified VirtualList Features
                 </h2>
                 <div
                     style={{
@@ -1297,10 +1708,9 @@ const handleChange = (value: string) => {
                     }}
                 >
                     <div>
-                        <strong>✨ Fixed & Dynamic Heights</strong>
+                        <strong>✨ Simple API</strong>
                         <p style={{ margin: '4px 0 0 0' }}>
-                            Handles both fixed and variable height items
-                            seamlessly
+                            Just pass items, height, and renderItem - that's it!
                         </p>
                     </div>
                     <div>
@@ -1312,32 +1722,32 @@ const handleChange = (value: string) => {
                     <div>
                         <strong>🎮 Programmatic Control</strong>
                         <p style={{ margin: '4px 0 0 0' }}>
-                            Scroll to any position or item with animations
+                            Scroll to any position or item with smooth
+                            animations
                         </p>
                     </div>
                     <div>
-                        <strong>👁️ Range Tracking</strong>
+                        <strong>⚡ Performance</strong>
                         <p style={{ margin: '4px 0 0 0' }}>
-                            Know which items are visible in real-time
+                            Only renders visible items + overscan buffer
                         </p>
                     </div>
                     <div>
-                        <strong>⚙️ Render Control</strong>
+                        <strong>🎯 Zero UI Interference</strong>
                         <p style={{ margin: '4px 0 0 0' }}>
-                            Limit items rendered for extreme performance
+                            Pure virtualization wrapper - no styling imposed
                         </p>
                     </div>
                     <div>
-                        <strong>🎯 SingleSelect Integration</strong>
+                        <strong>📱 Responsive</strong>
                         <p style={{ margin: '4px 0 0 0' }}>
-                            Eliminates lag in dropdowns with 1000+ options
+                            Works with any height - fixed or dynamic
                         </p>
                     </div>
                     <div>
-                        <strong>✅ MultiSelect Support</strong>
+                        <strong>🔧 Easy Integration</strong>
                         <p style={{ margin: '4px 0 0 0' }}>
-                            Smooth multi-selection with virtualization &
-                            infinite scroll
+                            Drop-in replacement for any list component
                         </p>
                     </div>
                 </div>

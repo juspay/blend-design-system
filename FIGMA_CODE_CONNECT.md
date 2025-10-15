@@ -29,7 +29,7 @@
 ### Existing Code Connect Components
 
 1. Button - `apps/storybook/stories/components/Button/Button.figma.tsx`
-2. ButtonGroupV2 - `apps/storybook/stories/components/Button/ButtonGroupV2.figma.tsx`
+2. ButtonGroup - `apps/storybook/stories/components/Button/ButtonGroup.figma.tsx`
 3. Breadcrumb - `apps/storybook/stories/components/Breadcrumb/Breadcrumb.figma.tsx`
 4. Tags - `apps/storybook/stories/components/Tags/Tags.figma.tsx`
 5. SplitTag - `apps/storybook/stories/components/Tags/SplitTag.figma.tsx`

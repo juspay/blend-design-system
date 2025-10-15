@@ -135,11 +135,9 @@ const MultiSelectMenu = ({
     enableVirtualization = false,
     virtualListItemHeight = 48,
     virtualListOverscan = 5,
-    itemsToRender,
     onEndReached,
     endReachedThreshold,
     hasMore,
-    loadingComponent,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -280,7 +278,7 @@ const MultiSelectMenu = ({
                         availableValues.length > 0 && (
                             <Block
                                 borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                                padding={`0 ${multiSelectTokens.dropdown.item.gap}`}
+                                padding={`0 ${multiSelectTokens.menu.item.gap}`}
                             >
                                 <SelectAllItem
                                     selected={selected}
@@ -297,9 +295,6 @@ const MultiSelectMenu = ({
                         maxHeight: maxMenuHeight
                             ? `${maxMenuHeight - 80}px`
                             : '320px',
-                        padding: enableVirtualization
-                            ? 0
-                            : FOUNDATION_THEME.unit[6],
                     }}
                 >
                     {items.length === 0 ? (
@@ -307,13 +302,13 @@ const MultiSelectMenu = ({
                             display="flex"
                             justifyContent="center"
                             alignItems="center"
-                            padding={multiSelectTokens.dropdown.item.padding}
+                            padding={multiSelectTokens.menu.item.padding}
                         >
                             <PrimitiveText
                                 fontSize={14}
                                 color={
-                                    multiSelectTokens.dropdown.item.label.color
-                                        .disabled
+                                    multiSelectTokens.menu.item.optionsLabel
+                                        .color.default
                                 }
                                 textAlign="center"
                             >
@@ -325,7 +320,7 @@ const MultiSelectMenu = ({
                             display="flex"
                             justifyContent="center"
                             alignItems="center"
-                            padding={FOUNDATION_THEME.unit[6]}
+                            padding={multiSelectTokens.menu.item.padding}
                         >
                             <PrimitiveText
                                 fontSize={14}
@@ -346,20 +341,12 @@ const MultiSelectMenu = ({
                         >
                             <VirtualList
                                 items={flattenedItems}
+                                height={(maxMenuHeight || 400) - 80}
                                 itemHeight={virtualListItemHeight}
-                                maxHeight={(maxMenuHeight || 400) - 80}
                                 overscan={virtualListOverscan}
-                                dynamicHeight={true}
-                                estimatedItemHeight={virtualListItemHeight}
-                                itemsToRender={itemsToRender}
                                 onEndReached={onEndReached}
                                 endReachedThreshold={endReachedThreshold}
                                 hasMore={hasMore}
-                                loadingComponent={loadingComponent}
-                                style={{
-                                    height: 'auto',
-                                    maxHeight: (maxMenuHeight || 400) - 80,
-                                }}
                                 renderItem={({ item: flatItem }) => {
                                     const typed =
                                         flatItem as FlattenedMultiSelectItem
@@ -369,13 +356,16 @@ const MultiSelectMenu = ({
                                             <RadixMenu.Label asChild>
                                                 <PrimitiveText
                                                     fontSize={12}
-                                                    padding={`${multiSelectTokens.dropdown.item.gap} ${multiSelectTokens.dropdown.item.padding}`}
+                                                    padding={
+                                                        multiSelectTokens.menu
+                                                            .item.padding
+                                                    }
                                                     userSelect="none"
                                                     textTransform="uppercase"
                                                     color={
-                                                        multiSelectTokens
-                                                            .dropdown.item.label
-                                                            .color.disabled
+                                                        multiSelectTokens.menu
+                                                            .item.optionsLabel
+                                                            .color.default
                                                     }
                                                 >
                                                     {typed.label}
@@ -389,18 +379,18 @@ const MultiSelectMenu = ({
                                             <RadixMenu.Separator asChild>
                                                 <Block
                                                     height={
-                                                        multiSelectTokens
-                                                            .dropdown.seperator
+                                                        multiSelectTokens.menu
+                                                            .item.seperator
                                                             .height
                                                     }
                                                     backgroundColor={
-                                                        multiSelectTokens
-                                                            .dropdown.seperator
+                                                        multiSelectTokens.menu
+                                                            .item.seperator
                                                             .color
                                                     }
                                                     margin={
-                                                        multiSelectTokens
-                                                            .dropdown.seperator
+                                                        multiSelectTokens.menu
+                                                            .item.seperator
                                                             .margin
                                                     }
                                                 />
@@ -436,13 +426,21 @@ const MultiSelectMenu = ({
                                     {group.groupLabel && (
                                         <RadixMenu.Label asChild>
                                             <PrimitiveText
-                                                fontSize={12}
+                                                fontSize={
+                                                    multiSelectTokens.menu.item
+                                                        .optionsLabel.fontSize
+                                                }
+                                                fontWeight={
+                                                    multiSelectTokens.menu.item
+                                                        .optionsLabel.fontWeight
+                                                }
                                                 padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
                                                 userSelect="none"
                                                 textTransform="uppercase"
                                                 color={
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[400]
+                                                    multiSelectTokens.menu.item
+                                                        .optionsLabel.color
+                                                        .default
                                                 }
                                             >
                                                 {group.groupLabel}
@@ -471,18 +469,18 @@ const MultiSelectMenu = ({
                                             <RadixMenu.Separator asChild>
                                                 <Block
                                                     height={
-                                                        multiSelectTokens
-                                                            .dropdown.seperator
+                                                        multiSelectTokens.menu
+                                                            .item.seperator
                                                             .height
                                                     }
                                                     backgroundColor={
-                                                        multiSelectTokens
-                                                            .dropdown.seperator
+                                                        multiSelectTokens.menu
+                                                            .item.seperator
                                                             .color
                                                     }
                                                     margin={
-                                                        multiSelectTokens
-                                                            .dropdown.seperator
+                                                        multiSelectTokens.menu
+                                                            .item.seperator
                                                             .margin
                                                     }
                                                 ></Block>
