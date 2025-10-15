@@ -1,14 +1,14 @@
 import { forwardRef } from 'react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
-import type { ButtonV2Props } from './types'
-import { ButtonSize, ButtonSubType, ButtonType } from './types'
+import type { ButtonProps } from './types'
+import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
 import type { ButtonTokensType } from './button.tokens'
 import Text from '../Text/Text'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
-const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
         {
             buttonType = ButtonType.PRIMARY,
@@ -23,6 +23,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
             buttonGroupPosition,
             fullWidth,
             justifyContent = 'center',
+            state = ButtonState.DEFAULT,
             ...htmlProps
         },
         ref
@@ -31,7 +32,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
 
         const getBorderRadius = () => {
             const variantBorderRadius =
-                buttonTokens.borderRadius[buttonType][subType].default
+                buttonTokens.borderRadius[size][buttonType][subType].default
             if (buttonGroupPosition === undefined) return variantBorderRadius
             if (buttonGroupPosition === 'left') {
                 return `${variantBorderRadius} 0 0 ${variantBorderRadius}`
@@ -57,9 +58,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                     buttonTokens.backgroundColor[buttonType][subType].default
                 }
                 disabled={disabled}
-                color={buttonTokens.color[buttonType][subType].default}
+                color={buttonTokens.text.color[buttonType][subType].default}
                 borderRadius={getBorderRadius()}
-                padding={buttonTokens.padding[size][subType]}
+                padding={buttonTokens.padding[size][buttonType][subType]}
                 border={buttonTokens.border[buttonType][subType].default}
                 outline={buttonTokens.outline[buttonType][subType].default}
                 _active={
@@ -82,7 +83,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                     background:
                         buttonTokens.backgroundColor[buttonType][subType].hover,
                     outline: buttonTokens.outline[buttonType][subType].hover,
-                    color: buttonTokens.color[buttonType][subType].hover,
+                    color: buttonTokens.text.color[buttonType][subType].hover,
                 }}
                 _focusVisible={{
                     border: buttonTokens.border[buttonType][subType].default,
@@ -93,7 +94,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                         buttonTokens.backgroundColor[buttonType][subType]
                             .disabled,
                     border: buttonTokens.border[buttonType][subType].disabled,
-                    color: buttonTokens.color[buttonType][subType].disabled,
                     cursor: 'not-allowed',
                 }}
                 {...htmlProps}
@@ -101,7 +101,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                 {loading ? (
                     <LoaderCircle
                         size={16}
-                        color={buttonTokens.color[buttonType][subType].default}
+                        color={
+                            buttonTokens.text.color[buttonType][subType].default
+                        }
                         style={{
                             animation: 'spin 1s linear infinite',
                         }}
@@ -119,12 +121,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                         )}
                         {text && (
                             <Text
-                                variant="body.md"
-                                style={{
-                                    fontWeight: 500,
-                                }}
+                                fontSize={buttonTokens.text.fontSize[size]}
+                                fontWeight={buttonTokens.text.fontWeight[size]}
                                 as="span"
-                                color="inherit"
+                                color={
+                                    buttonTokens.text.color[buttonType][
+                                        subType
+                                    ][state]
+                                }
                                 data-button-text={text}
                             >
                                 {text}

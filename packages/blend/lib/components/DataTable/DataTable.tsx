@@ -32,7 +32,7 @@ import Button from '../Button/Button'
 import { ButtonSize, ButtonType } from '../Button/types'
 import { Settings, Check } from 'lucide-react'
 import Menu from '../Menu/Menu'
-import { MenuV2GroupType, MenuAlignment } from '../Menu/types'
+import { MenuGroupType, MenuAlignment } from '../Menu/types'
 
 import { foundationToken } from '../../foundationToken'
 import { useMobileDataTable } from './hooks/useMobileDataTable'
@@ -235,7 +235,7 @@ const DataTable = forwardRef(
 
         const totalRows = pagination?.totalRows || data.length
 
-        const formatOptions: MenuV2GroupType[] = [
+        const formatOptions: MenuGroupType[] = [
             {
                 items: [
                     {
@@ -696,7 +696,7 @@ const DataTable = forwardRef(
                     position: tableToken.position,
                     padding: tableToken.padding,
                     width: tableToken.width,
-                    height: tableToken.height,
+                    maxHeight: tableToken.height,
                     display: tableToken.display,
                     flexDirection: tableToken.flexDirection,
                 }}
@@ -769,7 +769,10 @@ const DataTable = forwardRef(
                             flex: 1,
                             position: 'relative',
                             minHeight: 0,
-                            maxHeight: 'calc(100vh - 280px)',
+                            maxHeight:
+                                currentData.length > 0
+                                    ? tableToken.dataTable.maxHeight
+                                    : 'auto',
                             overflow: 'hidden',
                         }}
                     >

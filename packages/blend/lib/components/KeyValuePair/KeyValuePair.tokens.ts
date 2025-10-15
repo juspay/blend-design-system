@@ -1,5 +1,4 @@
 import type { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME } from '../../tokens'
 import { KeyValuePairSize } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
@@ -53,8 +52,8 @@ export const getKeyValuePairTokens = (
     return {
         sm: {
             gap: {
-                vertical: FOUNDATION_THEME.unit[4], // 4px
-                horizontal: FOUNDATION_THEME.unit[0], // 0px
+                vertical: foundationToken.unit[4], // 4px
+                horizontal: foundationToken.unit[0], // 0px
             },
             // Pattern: key.color (size-independent)
             key: {
@@ -62,7 +61,7 @@ export const getKeyValuePairTokens = (
                 // Pattern: key.fontSize (size-independent)
                 fontSize: foundationToken.font.size.body.md.fontSize, // 14px
                 fontWeight: foundationToken.font.weight[400], // 400
-                gap: FOUNDATION_THEME.unit[4], // 4px
+                gap: foundationToken.unit[4], // 4px
             },
             // Pattern: value.color (size-independent)
             // Pattern: value.fontSize.[size].[state] (size-dependent)
@@ -76,13 +75,13 @@ export const getKeyValuePairTokens = (
                     [KeyValuePairSize.LARGE]: 18, // 18px
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
-                gap: FOUNDATION_THEME.unit[4], // 4px
+                gap: foundationToken.unit[4], // 4px
             },
         },
         lg: {
             gap: {
-                vertical: FOUNDATION_THEME.unit[4], // 4px
-                horizontal: FOUNDATION_THEME.unit[0], // 0px
+                vertical: foundationToken.unit[4], // 4px
+                horizontal: foundationToken.unit[0], // 0px
             },
             // Pattern: key.color (size-independent)
             key: {
@@ -90,7 +89,7 @@ export const getKeyValuePairTokens = (
                 // Pattern: key.fontSize (size-independent) - Fixed to 14px instead of 16px
                 fontSize: foundationToken.font.size.body.md.fontSize, // 14px (was lg.fontSize which is 16px)
                 fontWeight: foundationToken.font.weight[400], // 400
-                gap: FOUNDATION_THEME.unit[4], // 4px
+                gap: foundationToken.unit[4], // 4px
             },
             // Pattern: value.color (size-independent)
             // Pattern: value.fontSize.[size].[state] (size-dependent)
@@ -105,7 +104,7 @@ export const getKeyValuePairTokens = (
                         foundationToken.font.size.heading.sm.fontSize, // 18px
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
-                gap: FOUNDATION_THEME.unit[4], // 4px
+                gap: foundationToken.unit[4], // 4px
             },
         },
     }

@@ -27,8 +27,8 @@ type SnackbarIconProps = {
 const SnackbarIcon: React.FC<SnackbarIconProps> = ({ variant }) => {
     const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
     const props = {
-        color: snackbarTokens.container.infoIcon[variant].color,
-        size: snackbarTokens.container.infoIcon[variant].size as number,
+        color: snackbarTokens.infoIcon.color[variant],
+        size: snackbarTokens.infoIcon.height,
     }
     if (variant == SnackbarVariant.SUCCESS) return <CircleCheckBig {...props} />
     else if (variant == SnackbarVariant.WARNING)
@@ -59,48 +59,49 @@ export const StyledToast: React.FC<CustomToastProps> = ({
             maxWidth={snackbarTokens.maxWidth}
             boxShadow={snackbarTokens.boxShadow}
         >
-            <Block display="flex" gap={snackbarTokens.container.gap}>
-                <Block paddingTop={'4px'}>
-                    <SnackbarIcon variant={variant} />
-                </Block>
+            {' '}
+            <Block>
+                <SnackbarIcon variant={variant} />
+            </Block>
+            <Block display="flex" gap={snackbarTokens.gap}>
                 <Block
                     display="flex"
                     flexDirection="column"
-                    gap={snackbarTokens.container.content.gap}
+                    gap={snackbarTokens.content.gap}
                 >
                     <Block
                         display="flex"
-                        gap={snackbarTokens.container.content.textContainer.gap}
+                        gap={snackbarTokens.content.textContainer.gap}
                         flexDirection="column"
                     >
                         <Text
                             color={
-                                snackbarTokens.container.content.textContainer
-                                    .header.color
+                                snackbarTokens.content.textContainer.header
+                                    .color[variant]
                             }
                             fontSize={
-                                snackbarTokens.container.content.textContainer
-                                    .header.fontSize
+                                snackbarTokens.content.textContainer.header
+                                    .fontSize
                             }
                             fontWeight={
-                                snackbarTokens.container.content.textContainer
-                                    .header.fontWeight
+                                snackbarTokens.content.textContainer.header
+                                    .fontWeight
                             }
                         >
                             {header}
                         </Text>
                         <Text
                             color={
-                                snackbarTokens.container.content.textContainer
-                                    .description.color
+                                snackbarTokens.content.textContainer.description
+                                    .color[variant]
                             }
                             fontSize={
-                                snackbarTokens.container.content.textContainer
-                                    .description.fontSize
+                                snackbarTokens.content.textContainer.description
+                                    .fontSize
                             }
                             fontWeight={
-                                snackbarTokens.container.content.textContainer
-                                    .description.fontWeight
+                                snackbarTokens.content.textContainer.description
+                                    .fontWeight
                             }
                         >
                             {description}
@@ -109,13 +110,10 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                     {actionButton && (
                         <PrimitiveButton
                             backgroundColor="transparent"
-                            paddingX={
-                                snackbarTokens.container.content.actionButton
-                                    .padding
-                            }
                             color={
-                                snackbarTokens.container.content.actionButton
-                                    .color
+                                snackbarTokens.actions.primaryAction.color[
+                                    variant
+                                ]
                             }
                             onClick={() => {
                                 actionButton.onClick()
@@ -129,16 +127,17 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                         >
                             <Text
                                 color={
-                                    snackbarTokens.container.content
-                                        .actionButton.color
+                                    snackbarTokens.actions.primaryAction.color[
+                                        variant
+                                    ]
                                 }
                                 fontSize={
-                                    snackbarTokens.container.content
-                                        .actionButton.fontSize
+                                    snackbarTokens.actions.primaryAction
+                                        .fontSize
                                 }
                                 fontWeight={
-                                    snackbarTokens.container.content
-                                        .actionButton.fontWeight
+                                    snackbarTokens.actions.primaryAction
+                                        .fontWeight
                                 }
                             >
                                 {actionButton.label}
@@ -147,7 +146,6 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                     )}
                 </Block>
             </Block>
-
             <Block>
                 {' '}
                 <PrimitiveButton
@@ -156,8 +154,10 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                     onClick={onClose}
                 >
                     <X
-                        size={snackbarTokens.crossIcon.size}
-                        color={snackbarTokens.crossIcon.color}
+                        size={snackbarTokens.actions.closeButton.height}
+                        color={
+                            snackbarTokens.actions.closeButton.color[variant]
+                        }
                     />
                 </PrimitiveButton>
             </Block>

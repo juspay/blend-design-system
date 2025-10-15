@@ -63,10 +63,14 @@ export const Tooltip = ({
                                 )}
                             <Block flexGrow={1} overflow="hidden">
                                 <PrimitiveText
-                                    color={tooltipTokens.color}
-                                    fontSize={tooltipTokens.fontSize[size]}
-                                    fontWeight={tooltipTokens.fontWeight[size]}
-                                    lineHeight={tooltipTokens.lineHeight[size]}
+                                    color={tooltipTokens.text.color}
+                                    fontSize={tooltipTokens.text.fontSize[size]}
+                                    fontWeight={
+                                        tooltipTokens.text.fontWeight[size]
+                                    }
+                                    lineHeight={
+                                        tooltipTokens.text.lineHeight[size]
+                                    }
                                 >
                                     {content}
                                 </PrimitiveText>

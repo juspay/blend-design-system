@@ -50,137 +50,157 @@ const SingleSelectTrigger = ({
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
 
-    const borderRadius = singleSelectTokens.trigger.borderRadius[size]
-    const paddingX = toPixels(singleSelectTokens.trigger.paddingX[size])
-    const paddingY = toPixels(singleSelectTokens.trigger.paddingY[size])
+    const borderRadius = singleSelectTokens.trigger.borderRadius[size][variant]
+    const paddingX = toPixels(
+        singleSelectTokens.trigger.padding[size][variant].x
+    )
+    const paddingY = toPixels(
+        singleSelectTokens.trigger.padding[size][variant].y
+    )
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
     return (
-        <PrimitiveButton
-            position="relative"
-            width={'100%'}
-            display="flex"
-            alignItems="center"
-            overflow="hidden"
-            justifyContent={inline ? 'flex-start' : 'space-between'}
-            gap={8}
-            borderRadius={borderRadius}
-            boxShadow={singleSelectTokens.trigger.boxShadow[variant]}
-            outline={
-                singleSelectTokens.trigger.outline[variant][
-                    error ? 'error' : open ? 'open' : 'closed'
-                ]
-            }
-            {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
-                paddingX: paddingX,
-                paddingY: paddingY,
-                backgroundColor:
-                    singleSelectTokens.trigger.backgroundColor[variant][
-                        open ? 'open' : 'closed'
-                    ],
-                height: singleSelectTokens.trigger.height[size],
-                maxHeight: singleSelectTokens.trigger.height[size],
-                _hover: {
-                    outline:
-                        singleSelectTokens.trigger.outline[variant][
-                            error ? 'error' : 'hover'
-                        ],
+        <>
+            <PrimitiveButton
+                onClick={onClick}
+                type="button"
+                name={name}
+                position="relative"
+                width={'100%'}
+                display="flex"
+                alignItems="center"
+                overflow="hidden"
+                justifyContent="space-between"
+                gap={8}
+                borderRadius={borderRadius}
+                boxShadow={singleSelectTokens.trigger.boxShadow[variant]}
+                outline={
+                    singleSelectTokens.trigger.outline[variant][
+                        error ? 'error' : open ? 'open' : 'closed'
+                    ]
+                }
+                {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
+                    paddingX: paddingX,
+                    paddingY: paddingY,
                     backgroundColor:
-                        singleSelectTokens.trigger.backgroundColor.container[
-                            error ? 'error' : 'hover'
+                        singleSelectTokens.trigger.backgroundColor[variant][
+                            error ? 'error' : open ? 'open' : 'closed'
                         ],
-                },
-                _focus: {
-                    outline: singleSelectTokens.trigger.outline[variant].focus,
-                    backgroundColor:
-                        singleSelectTokens.trigger.backgroundColor.container
-                            .focus,
-                },
-            })}
-            onClick={onClick}
-        >
-            <Block display="flex" alignItems="center" gap={8}>
-                {slot && (
-                    <Block ref={slotRef} contentCentered>
-                        {slot}
-                    </Block>
-                )}
-                {isSmallScreenWithLargeSize &&
-                variant === SelectMenuVariant.CONTAINER ? (
-                    <Block
-                        as="span"
-                        textAlign="left"
-                        paddingTop={
-                            isSmallScreenWithLargeSize && isItemSelected
-                                ? paddingY * 1.5
-                                : 0
-                        }
-                        style={{
-                            textAlign: 'left',
-                            flexGrow: 1,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                        }}
-                    >
+                    height: singleSelectTokens.trigger.height[size][variant],
+                    maxHeight: singleSelectTokens.trigger.height[size][variant],
+                    _hover: {
+                        outline:
+                            singleSelectTokens.trigger.outline[variant][
+                                error ? 'error' : 'hover'
+                            ],
+                        backgroundColor:
+                            singleSelectTokens.trigger.backgroundColor
+                                .container[error ? 'error' : 'hover'],
+                    },
+                    _focus: {
+                        outline:
+                            singleSelectTokens.trigger.outline[variant][
+                                error ? 'error' : 'focus'
+                            ],
+                        backgroundColor:
+                            singleSelectTokens.trigger.backgroundColor
+                                .container[error ? 'error' : 'focus'],
+                    },
+                })}
+            >
+                <Block display="flex" alignItems="center" gap={8}>
+                    {slot && (
+                        <Block ref={slotRef} contentCentered>
+                            {slot}
+                        </Block>
+                    )}
+                    {isSmallScreenWithLargeSize &&
+                    variant === SelectMenuVariant.CONTAINER ? (
                         <Block
-                            position="absolute"
-                            top={
-                                isItemSelected
-                                    ? toPixels(paddingY - paddingY / 1.3) +
-                                      (!required ? 3 : 0)
-                                    : '50%'
+                            as="span"
+                            textAlign="left"
+                            paddingTop={
+                                isSmallScreenWithLargeSize && isItemSelected
+                                    ? paddingY * 1.5
+                                    : 0
                             }
-                            left={toPixels(paddingInlineStart)}
-                            height={'max-content'}
                             style={{
-                                transition: 'all 0.2s ease-in-out',
-                                transform: isItemSelected
-                                    ? 'scale(0.95)'
-                                    : 'translateY(-50%) scale(1)',
-                                transformOrigin: 'left center',
-                                pointerEvents: 'none',
-                                zIndex: 1,
+                                textAlign: 'left',
+                                flexGrow: 1,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
                             }}
                         >
-                            <FloatingLabels
-                                label={label}
-                                required={required || false}
-                                name={name || ''}
-                                isFocused={isItemSelected}
-                            />
-                        </Block>
-                        {selected && (
-                            <Text
-                                variant="body.md"
-                                color={FOUNDATION_THEME.colors.gray[600]}
+                            <Block
+                                position="absolute"
+                                top={
+                                    isItemSelected
+                                        ? toPixels(paddingY - paddingY / 1.3) +
+                                          (!required ? 3 : 0)
+                                        : '50%'
+                                }
+                                left={toPixels(paddingInlineStart)}
+                                height={'max-content'}
+                                style={{
+                                    transition: 'all 0.2s ease-in-out',
+                                    transform: isItemSelected
+                                        ? 'scale(0.95)'
+                                        : 'translateY(-50%) scale(1)',
+                                    transformOrigin: 'left center',
+                                    pointerEvents: 'none',
+                                    zIndex: 1,
+                                }}
                             >
-                                {valueLabelMap[selected]}
-                            </Text>
-                        )}
-                    </Block>
-                ) : (
-                    <Text
-                        variant="body.md"
-                        color={
-                            selected
-                                ? FOUNDATION_THEME.colors.gray[700]
-                                : FOUNDATION_THEME.colors.gray[600]
-                        }
-                        fontWeight={500}
-                    >
-                        {selected ? valueLabelMap[selected] : placeholder}
-                    </Text>
-                )}
-            </Block>
-            <Block contentCentered>
-                <ChevronDown
-                    size={16}
-                    color={FOUNDATION_THEME.colors.gray[500]}
-                />
-            </Block>
-        </PrimitiveButton>
+                                <FloatingLabels
+                                    label={label || ''}
+                                    required={required || false}
+                                    name={name || ''}
+                                    isFocused={isItemSelected}
+                                />
+                            </Block>
+                            {selected && (
+                                <Text
+                                    variant="body.md"
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    style={{
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {valueLabelMap[selected]}
+                                </Text>
+                            )}
+                        </Block>
+                    ) : (
+                        <Text
+                            variant="body.md"
+                            color={
+                                selected
+                                    ? FOUNDATION_THEME.colors.gray[700]
+                                    : FOUNDATION_THEME.colors.gray[600]
+                            }
+                            fontWeight={500}
+                            style={{
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                            }}
+                        >
+                            {selected ? valueLabelMap[selected] : placeholder}
+                        </Text>
+                    )}
+                </Block>
+                <Block contentCentered>
+                    <ChevronDown
+                        size={16}
+                        color={FOUNDATION_THEME.colors.gray[500]}
+                    />
+                </Block>
+            </PrimitiveButton>
+        </>
     )
 }
 

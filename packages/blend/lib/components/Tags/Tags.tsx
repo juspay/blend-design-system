@@ -25,9 +25,9 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
         const tagTokens = useResponsiveTokens<TagTokensType>('TAGS')
 
         const isSplitTag = splitTagPosition !== undefined
-        let borderRadius = tagTokens.borderRadius[shape][size]
+        let borderRadius = tagTokens.borderRadius[size][shape]
         if (isSplitTag) {
-            const radius = tagTokens.borderRadius[shape][size]
+            const radius = tagTokens.borderRadius[size][shape]
             borderRadius =
                 splitTagPosition === 'left'
                     ? `${radius} 0 0 ${radius}`
@@ -42,20 +42,19 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
                 alignItems="center"
                 justifyContent="center"
                 width="fit-content"
-                gap={tagTokens.gap[size]}
-                height={tagTokens.height[size]}
+                gap={tagTokens.gap}
                 padding={tagTokens.padding[size]}
-                backgroundColor={tagTokens.background[variant][color]}
-                color={tagTokens.color[variant][color]}
-                border={`${tagTokens.borderWidth[variant][color]}px solid ${tagTokens.borderColor[variant][color]}`}
+                backgroundColor={tagTokens.backgroundColor[variant][color]}
+                color={tagTokens.text.color[variant][color]}
+                border={tagTokens.border[variant][color]}
                 borderRadius={borderRadius}
                 cursor={onClick ? 'pointer' : 'default'}
                 onClick={onClick}
             >
                 {leftSlot && <Block contentCentered>{leftSlot}</Block>}
                 <Text
-                    fontSize={tagTokens.font[size].fontSize}
-                    fontWeight={tagTokens.font[size].fontWeight}
+                    fontSize={tagTokens.text.fontSize[size]}
+                    fontWeight={tagTokens.text.fontWeight[size]}
                 >
                     {text}
                 </Text>

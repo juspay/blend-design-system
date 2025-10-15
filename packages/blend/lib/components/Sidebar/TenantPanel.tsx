@@ -12,6 +12,8 @@ import { arrangeTenants } from './utils'
 import type { TenantItem } from './types'
 import { Tooltip } from '../Tooltip'
 import { TooltipSide, TooltipSize } from '../Tooltip/types'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import type { SidebarTokenType } from './sidebar.tokens'
 
 type TenantPanelProps = {
     items: TenantItem[]
@@ -26,6 +28,7 @@ const TenantPanel: React.FC<TenantPanelProps> = ({
     onSelect,
     maxVisibleItems = 5,
 }) => {
+    const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
     const { visibleTenants, hiddenTenants, hasMoreTenants } = arrangeTenants(
         items,
         selected,
@@ -34,15 +37,15 @@ const TenantPanel: React.FC<TenantPanelProps> = ({
 
     return (
         <Block
-            width="fit-content"
+            width={tokens.leftPanel.width}
             height="100%"
-            borderRight={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-            backgroundColor={FOUNDATION_THEME.colors.gray[25]}
+            borderRight={tokens.leftPanel.borderRight}
+            backgroundColor={tokens.leftPanel.backgroundColor}
             display="flex"
             flexDirection="column"
-            gap={FOUNDATION_THEME.unit[16]}
+            gap={tokens.leftPanel.gap}
             alignItems="center"
-            padding="10px"
+            padding={`${tokens.leftPanel.padding.y} ${tokens.leftPanel.padding.x}`}
         >
             {visibleTenants.map((tenant, index) => (
                 <TenantItem
@@ -67,116 +70,124 @@ const TenantItem: React.FC<{
     tenant: TenantItem
     isSelected: boolean
     onSelect: () => void
-}> = ({ tenant, isSelected, onSelect }) => (
-    <Tooltip
-        content={tenant.label}
-        side={TooltipSide.RIGHT}
-        delayDuration={500}
-        size={TooltipSize.SMALL}
-    >
-        <Block
-            border="none"
-            backgroundColor="transparent"
-            width={FOUNDATION_THEME.unit[32]}
-            height={FOUNDATION_THEME.unit[32]}
-            borderRadius={FOUNDATION_THEME.border.radius[4]}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            cursor="pointer"
-            style={{
-                outline: `1px solid ${
-                    isSelected
-                        ? FOUNDATION_THEME.colors.primary[500]
-                        : FOUNDATION_THEME.colors.gray[150]
-                }`,
-                transitionDuration: '75ms',
-            }}
-            _hover={{
-                backgroundColor: FOUNDATION_THEME.colors.gray[50],
-                outline: `1px solid ${
-                    isSelected
-                        ? FOUNDATION_THEME.colors.primary[600]
-                        : FOUNDATION_THEME.colors.gray[200]
-                }`,
-            }}
-            onClick={onSelect}
+}> = ({ tenant, isSelected, onSelect }) => {
+    const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+
+    return (
+        <Tooltip
+            content={tenant.label}
+            side={TooltipSide.RIGHT}
+            delayDuration={500}
+            size={TooltipSize.SMALL}
         >
-            {tenant.icon}
-        </Block>
-    </Tooltip>
-)
+            <Block
+                border="none"
+                backgroundColor={tokens.leftPanel.item.backgroundColor.default}
+                width={tokens.leftPanel.item.width}
+                height={tokens.leftPanel.item.width}
+                borderRadius={tokens.leftPanel.item.borderRadius}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                cursor="pointer"
+                style={{
+                    outline: isSelected
+                        ? tokens.leftPanel.item.border.active
+                        : tokens.leftPanel.item.border.default,
+                    transitionDuration: '75ms',
+                }}
+                _hover={{
+                    backgroundColor:
+                        tokens.leftPanel.item.backgroundColor.hover,
+                    outline: isSelected
+                        ? tokens.leftPanel.item.border.active
+                        : tokens.leftPanel.item.border.hover,
+                }}
+                onClick={onSelect}
+            >
+                {tenant.icon}
+            </Block>
+        </Tooltip>
+    )
+}
 
 const TenantOverflowMenu: React.FC<{
     hiddenTenants: TenantItem[]
     onSelect: (label: string) => void
-}> = ({ hiddenTenants, onSelect }) => (
-    <Block position="relative">
-        <SingleSelect
-            placeholder=""
-            variant={SelectMenuVariant.NO_CONTAINER}
-            side={SelectMenuSide.RIGHT}
-            alignment={SelectMenuAlignment.START}
-            sideOffset={4}
-            maxMenuHeight={300}
-            minMenuWidth={200}
-            enableSearch={true}
-            searchPlaceholder="Search tenants..."
-            items={[
-                {
-                    items: hiddenTenants.map((tenant) => ({
-                        label: tenant.label,
-                        value: tenant.value || tenant.label,
-                        slot1: tenant.icon,
-                        tooltip: tenant.label,
-                        tooltipProps: {
-                            side: TooltipSide.RIGHT,
-                            size: TooltipSize.SMALL,
-                            delayDuration: 500,
-                        },
-                    })),
-                },
-            ]}
-            selected=""
-            onSelect={(value) => {
-                const selectedTenant = hiddenTenants.find(
-                    (t) => (t.value || t.label) === value
-                )
-                if (selectedTenant) {
-                    onSelect(selectedTenant.label)
-                }
-            }}
-            customTrigger={
-                <Block
-                    border="none"
-                    backgroundColor="transparent"
-                    width={FOUNDATION_THEME.unit[32]}
-                    height={FOUNDATION_THEME.unit[32]}
-                    borderRadius={FOUNDATION_THEME.border.radius[4]}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    cursor="pointer"
-                    title="More tenants"
-                    style={{
-                        outline: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
-                        transitionDuration: '75ms',
-                    }}
-                    _hover={{
-                        backgroundColor: FOUNDATION_THEME.colors.gray[50],
-                    }}
-                >
-                    <MoreHorizontal
+}> = ({ hiddenTenants, onSelect }) => {
+    const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+
+    return (
+        <Block position="relative">
+            <SingleSelect
+                placeholder=""
+                variant={SelectMenuVariant.NO_CONTAINER}
+                side={SelectMenuSide.RIGHT}
+                alignment={SelectMenuAlignment.START}
+                sideOffset={4}
+                maxMenuHeight={300}
+                minMenuWidth={200}
+                enableSearch={true}
+                searchPlaceholder="Search tenants..."
+                items={[
+                    {
+                        items: hiddenTenants.map((tenant) => ({
+                            label: tenant.label,
+                            value: tenant.value || tenant.label,
+                            slot1: tenant.icon,
+                            tooltip: tenant.label,
+                            tooltipProps: {
+                                side: TooltipSide.RIGHT,
+                                size: TooltipSize.SMALL,
+                                delayDuration: 500,
+                            },
+                        })),
+                    },
+                ]}
+                selected=""
+                onSelect={(value) => {
+                    const selectedTenant = hiddenTenants.find(
+                        (t) => (t.value || t.label) === value
+                    )
+                    if (selectedTenant) {
+                        onSelect(selectedTenant.label)
+                    }
+                }}
+                customTrigger={
+                    <Block
+                        border="none"
+                        backgroundColor={
+                            tokens.leftPanel.item.backgroundColor.default
+                        }
+                        width={tokens.leftPanel.item.width}
+                        height={tokens.leftPanel.item.width}
+                        borderRadius={tokens.leftPanel.item.borderRadius}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        cursor="pointer"
+                        title="More tenants"
                         style={{
-                            width: FOUNDATION_THEME.unit[16],
-                            height: FOUNDATION_THEME.unit[16],
+                            outline: tokens.leftPanel.item.border.default,
+                            transitionDuration: '75ms',
                         }}
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                    />
-                </Block>
-            }
-        />
-    </Block>
-)
+                        _hover={{
+                            backgroundColor:
+                                tokens.leftPanel.item.backgroundColor.hover,
+                        }}
+                    >
+                        <MoreHorizontal
+                            style={{
+                                width: FOUNDATION_THEME.unit[16],
+                                height: FOUNDATION_THEME.unit[16],
+                            }}
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                        />
+                    </Block>
+                }
+            />
+        </Block>
+    )
+}
 
 export default TenantPanel

@@ -3,10 +3,10 @@ import Menu from '../../../../packages/blend/lib/components/Menu/Menu'
 import {
     MenuAlignment,
     MenuSide,
-    MenuItemV2Variant,
-    MenuItemV2ActionType,
+    MenuItemVariant,
+    MenuItemActionType,
 } from '../../../../packages/blend/lib/components/Menu/types'
-import type { MenuV2GroupType } from '../../../../packages/blend/lib/components/Menu/types'
+import type { MenuGroupType } from '../../../../packages/blend/lib/components/Menu/types'
 import {
     TooltipSide,
     TooltipSize,
@@ -54,7 +54,7 @@ import {
 } from 'lucide-react'
 
 // Sample data for comprehensive testing
-const basicMenuItems: MenuV2GroupType[] = [
+const basicMenuItems: MenuGroupType[] = [
     {
         items: [
             {
@@ -75,15 +75,15 @@ const basicMenuItems: MenuV2GroupType[] = [
             {
                 label: 'Sign Out',
                 slot1: <LogOut size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.DANGER,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.DANGER,
                 onClick: () => console.log('Sign out clicked'),
             },
         ],
     },
 ]
 
-const actionMenuItems: MenuV2GroupType[] = [
+const actionMenuItems: MenuGroupType[] = [
     {
         label: 'Primary Actions',
         items: [
@@ -91,16 +91,16 @@ const actionMenuItems: MenuV2GroupType[] = [
                 label: 'Create New',
                 subLabel: 'Start a new project',
                 slot1: <Plus size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.PRIMARY,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.PRIMARY,
                 onClick: () => console.log('Create new clicked'),
             },
             {
                 label: 'Save Project',
                 subLabel: 'Save current work',
                 slot1: <Save size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.PRIMARY,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.PRIMARY,
                 onClick: () => console.log('Save clicked'),
             },
         ],
@@ -113,23 +113,23 @@ const actionMenuItems: MenuV2GroupType[] = [
                 label: 'Delete',
                 subLabel: 'Permanently remove',
                 slot1: <Trash2 size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.DANGER,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.DANGER,
                 onClick: () => console.log('Delete clicked'),
             },
             {
                 label: 'Reset All',
                 subLabel: 'Clear all data',
                 slot1: <RefreshCw size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.DANGER,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.DANGER,
                 onClick: () => console.log('Reset clicked'),
             },
         ],
     },
 ]
 
-const nestedMenuItems: MenuV2GroupType[] = [
+const nestedMenuItems: MenuGroupType[] = [
     {
         items: [
             {
@@ -205,7 +205,7 @@ const nestedMenuItems: MenuV2GroupType[] = [
     },
 ]
 
-const searchableMenuItems: MenuV2GroupType[] = [
+const searchableMenuItems: MenuGroupType[] = [
     {
         label: 'Navigation',
         items: [
@@ -495,7 +495,7 @@ const searchableMenuItems: MenuV2GroupType[] = [
     },
 ]
 
-const disabledMenuItems: MenuV2GroupType[] = [
+const disabledMenuItems: MenuGroupType[] = [
     {
         label: 'Available Actions',
         items: [
@@ -527,8 +527,8 @@ const disabledMenuItems: MenuV2GroupType[] = [
                 subLabel: 'Permanent action',
                 slot1: <Trash2 size={16} />,
                 disabled: true,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.DANGER,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.DANGER,
                 onClick: () => console.log('Should not fire'),
             },
             {
@@ -542,7 +542,7 @@ const disabledMenuItems: MenuV2GroupType[] = [
     },
 ]
 
-const slotVariationItems: MenuV2GroupType[] = [
+const slotVariationItems: MenuGroupType[] = [
     {
         label: 'Single Slot Examples',
         items: [
@@ -596,7 +596,7 @@ const slotVariationItems: MenuV2GroupType[] = [
     },
 ]
 
-const longContentItems: MenuV2GroupType[] = [
+const longContentItems: MenuGroupType[] = [
     {
         label: 'Long Content Examples',
         items: [
@@ -618,7 +618,7 @@ const longContentItems: MenuV2GroupType[] = [
     },
 ]
 
-const tooltipMenuItems: MenuV2GroupType[] = [
+const tooltipMenuItems: MenuGroupType[] = [
     {
         label: 'Basic Tooltips',
         items: [
@@ -671,8 +671,8 @@ const tooltipMenuItems: MenuV2GroupType[] = [
                 label: 'Data Export',
                 subLabel: 'Export your data',
                 slot1: <Download size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.PRIMARY,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.PRIMARY,
                 onClick: () => console.log('Data export'),
                 tooltip:
                     'Download all your data in various formats (JSON, CSV, PDF)',
@@ -685,8 +685,8 @@ const tooltipMenuItems: MenuV2GroupType[] = [
                 label: 'Delete Account',
                 subLabel: 'Permanently remove',
                 slot1: <Trash2 size={16} />,
-                variant: MenuItemV2Variant.ACTION,
-                actionType: MenuItemV2ActionType.DANGER,
+                variant: MenuItemVariant.ACTION,
+                actionType: MenuItemActionType.DANGER,
                 onClick: () => console.log('Delete account'),
                 tooltip: 'All your data will be permanently deleted',
                 tooltipProps: {
@@ -2520,7 +2520,7 @@ export const MenuDemo: React.FC = () => {
                         </Block>
                         <Block marginBottom="12px">
                             <Text fontWeight="medium">
-                                items: MenuV2GroupType[]
+                                items: MenuGroupType[]
                             </Text>
                             <Text fontSize={14} color="gray.600">
                                 Array of menu groups containing menu items
@@ -2632,7 +2632,7 @@ export const MenuDemo: React.FC = () => {
                     <Block marginLeft="16px">
                         <Block marginBottom="12px">
                             <Text fontWeight="medium">
-                                variant: MenuItemV2Variant
+                                variant: MenuItemVariant
                             </Text>
                             <Text fontSize={14} color="gray.600">
                                 DEFAULT | ACTION - Visual styling variant
@@ -2640,7 +2640,7 @@ export const MenuDemo: React.FC = () => {
                         </Block>
                         <Block marginBottom="12px">
                             <Text fontWeight="medium">
-                                actionType: MenuItemV2ActionType
+                                actionType: MenuItemActionType
                             </Text>
                             <Text fontSize={14} color="gray.600">
                                 PRIMARY | DANGER - Color scheme for actions
@@ -2654,7 +2654,7 @@ export const MenuDemo: React.FC = () => {
                         </Block>
                         <Block marginBottom="12px">
                             <Text fontWeight="medium">
-                                subMenu: MenuItemV2Type[]
+                                subMenu: MenuItemType[]
                             </Text>
                             <Text fontSize={14} color="gray.600">
                                 Creates nested submenu (supports multiple

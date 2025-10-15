@@ -5,7 +5,8 @@ import type {
     StyledAvatarWrapperProps,
     StyledOverflowCounterProps,
 } from './types'
-import avatarGroupTokens from './avatarGroup.tokens'
+import type { AvatarGroupTokensType } from './avatarGroup.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const StyledAvatarGroupContainer = styled.div<StyledAvatarGroupContainerProps>`
     display: flex;
@@ -14,97 +15,106 @@ export const StyledAvatarGroupContainer = styled.div<StyledAvatarGroupContainerP
 `
 
 export const StyledAvatarWrapper = styled.div<StyledAvatarWrapperProps>`
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    margin-left: -${(props) => avatarGroupTokens.container.spacing[props.$size]};
-    z-index: ${(props) =>
-        avatarGroupTokens.avatar.stacking.zIndex +
-        (props.$total - props.$index)};
+    ${(props) => {
+        const tokens =
+            useResponsiveTokens<AvatarGroupTokensType>('AVATAR_GROUP')
 
-    /* First avatar doesn't need negative margin */
-    ${(props) =>
-        props.$index === 0 &&
+        return `
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: ${props.$index === 0 ? '0' : `-${tokens.container.marginLeft[props.$size]}`};
+            z-index: ${1 + (props.$total - props.$index)};
+
+            /* Border ring around avatar */
+            & > div {
+                border: ${tokens.avatar.border.width} solid ${tokens.avatar.border.color};
+            }
+
+            ${
+                props.$isSelected
+                    ? `
+                & > div {
+                    box-shadow: 0 0 0 ${tokens.avatar.selected.ringWidth} ${tokens.avatar.selected.ringColor};
+                    outline: ${tokens.avatar.selected.ringOffset} solid ${foundationToken.colors.gray[0]};
+                }
+            `
+                    : ''
+            }
+
+            &:focus-visible {
+                outline: 2px solid ${foundationToken.colors.primary[500]};
+                outline-offset: 2px;
+            }
         `
-    margin-left: 0;
-  `}
-
-    /* Border ring around avatar */
-  & > div {
-        border: ${avatarGroupTokens.avatar.border.width} solid
-            ${avatarGroupTokens.avatar.border.color};
-    }
-
-    ${(props) =>
-        props.$isSelected &&
-        `
-    & > div {
-      box-shadow: 0 0 0 ${avatarGroupTokens.avatar.selected.ringWidth} ${avatarGroupTokens.avatar.selected.ringColor};
-      outline: ${avatarGroupTokens.avatar.selected.ringOffset} solid ${foundationToken.colors.gray[0]};
-    }
-  `}
-
-    &:focus-visible {
-        outline: 2px solid ${foundationToken.colors.primary[500]};
-        outline-offset: 2px;
-    }
+    }}
 `
 
 export const StyledOverflowCounter = styled.button<StyledOverflowCounterProps>`
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    margin-left: -${(props) => avatarGroupTokens.container.spacing[props.$size]};
+    ${(props) => {
+        const tokens =
+            useResponsiveTokens<AvatarGroupTokensType>('AVATAR_GROUP')
 
-    width: ${(props) =>
-        avatarGroupTokens.overflowCounter.sizes[props.$size].width};
-    height: ${(props) =>
-        avatarGroupTokens.overflowCounter.sizes[props.$size].height};
-    font-size: ${(props) =>
-        avatarGroupTokens.overflowCounter.sizes[props.$size].fontSize};
-    font-weight: ${foundationToken.fontWeight[500]};
+        return `
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: -${tokens.container.marginLeft[props.$size]};
 
-    color: ${avatarGroupTokens.overflowCounter.text.color};
-    background-color: ${(props) =>
-        props.$isOpen
-            ? avatarGroupTokens.overflowCounter.background.active
-            : avatarGroupTokens.overflowCounter.background.default};
+            width: ${tokens.overflowCounter.size[props.$size].width};
+            height: ${tokens.overflowCounter.size[props.$size].height};
+            font-size: ${tokens.overflowCounter.size[props.$size].fontSize};
+            font-weight: ${foundationToken.fontWeight[500]};
 
-    border-radius: ${(props) =>
-        avatarGroupTokens.overflowCounter.shapes[props.$shape].borderRadius};
-    border: ${avatarGroupTokens.overflowCounter.border.width} solid
-        ${avatarGroupTokens.overflowCounter.border.color};
+            color: ${tokens.overflowCounter.text.color};
+            background-color: ${
+                props.$isOpen
+                    ? tokens.overflowCounter.background.active
+                    : tokens.overflowCounter.background.default
+            };
 
-    transition:
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
-    z-index: ${avatarGroupTokens.avatar.stacking.zIndex};
+            border-radius: ${tokens.overflowCounter.borderRadius[props.$shape]};
+            border: ${tokens.overflowCounter.border.width} solid ${tokens.overflowCounter.border.color};
 
-    &:hover {
-        background-color: ${avatarGroupTokens.overflowCounter.background.hover};
-    }
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            z-index: ${1};
 
-    &:focus-visible {
-        outline: 2px solid ${foundationToken.colors.primary[500]};
-        outline-offset: 2px;
-    }
+            &:hover {
+                background-color: ${tokens.overflowCounter.background.hover};
+            }
 
-    ${(props) =>
-        props.$isOpen &&
+            &:focus-visible {
+                outline: 2px solid ${foundationToken.colors.primary[500]};
+                outline-offset: 2px;
+            }
+
+            ${
+                props.$isOpen
+                    ? `
+                box-shadow: 0 0 0 ${tokens.avatar.selected.ringWidth} ${tokens.avatar.selected.ringColor};
+                outline: ${tokens.avatar.selected.ringOffset} solid ${foundationToken.colors.gray[0]};
+            `
+                    : ''
+            }
         `
-    box-shadow: 0 0 0 ${avatarGroupTokens.avatar.selected.ringWidth} ${avatarGroupTokens.avatar.selected.ringColor};
-    outline: ${avatarGroupTokens.avatar.selected.ringOffset} solid ${foundationToken.colors.gray[0]};
-  `}
+    }}
 `
 
 export const StyledMenuContainer = styled.div`
-    position: fixed;
-    z-index: ${avatarGroupTokens.menu.zIndex};
-    margin-top: ${avatarGroupTokens.menu.spacing};
+    ${() => {
+        const tokens =
+            useResponsiveTokens<AvatarGroupTokensType>('AVATAR_GROUP')
+
+        return `
+            position: fixed;
+            z-index: ${50};
+            margin-top: ${tokens.menu.marginTop};
+        `
+    }}
 `
 
 export const VisuallyHidden = styled.span`

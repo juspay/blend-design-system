@@ -624,6 +624,59 @@ const CardDemo = () => {
                             size: ButtonSize.SMALL,
                         }}
                     />
+
+                    {/* No Header Card - Shows direct body spacing */}
+                    <Card
+                        bodySlot1={
+                            <div
+                                style={{
+                                    padding: '12px',
+                                    backgroundColor: '#fef3c7',
+                                    borderRadius: '6px',
+                                    border: '1px solid #fbbf24',
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: '14px',
+                                        color: '#92400e',
+                                    }}
+                                >
+                                    ⚠️ No Header Example - 14px gaps throughout
+                                </Text>
+                            </div>
+                        }
+                        bodyTitle="No Header Card"
+                        content="This card demonstrates proper 14px spacing between body elements when no header is present. Shows bodySlot1 → bodyTitle → content → bodySlot2 → actionButton flow."
+                        bodySlot2={
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    gap: '8px',
+                                    flexWrap: 'wrap',
+                                }}
+                            >
+                                <Tag
+                                    text="No Header"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.PRIMARY}
+                                    size={TagSize.SM}
+                                />
+                                <Tag
+                                    text="14px Gaps"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.SUCCESS}
+                                    size={TagSize.SM}
+                                />
+                            </div>
+                        }
+                        actionButton={{
+                            text: 'Test Action',
+                            buttonType: ButtonType.SECONDARY,
+                            subType: ButtonSubType.INLINE,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
                 </div>
             </div>
 
