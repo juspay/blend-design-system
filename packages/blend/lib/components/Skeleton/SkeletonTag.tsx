@@ -30,37 +30,23 @@ const SkeletonTag = forwardRef<HTMLDivElement, SkeletonTagProps>(
             return null
         }
 
-        // Perfect token mirroring - use exact tag token values
         const getMirroredTagStyles = () => {
-            // Get exact padding from tag tokens
-            const padding =
-                tagTokens.padding[size as keyof typeof tagTokens.padding]
-
-            // Get exact border radius from tag tokens based on shape and split position
-            const getBorderRadius = () => {
-                const baseRadius =
-                    tagTokens.borderRadius[
-                        shape as keyof typeof tagTokens.borderRadius
-                    ][size as keyof typeof tagTokens.borderRadius.squarical]
-
-                if (splitTagPosition !== undefined) {
-                    // Handle split tag border radius (same logic as real Tag component)
-                    return splitTagPosition === 'left'
-                        ? `${baseRadius} 0 0 ${baseRadius}`
-                        : `0 ${baseRadius} ${baseRadius} 0`
-                }
-
-                return baseRadius
+            const isSplitTag = splitTagPosition !== undefined
+            let borderRadius = tagTokens.borderRadius[shape][size]
+            if (isSplitTag) {
+                const radius = tagTokens.borderRadius[shape][size]
+                borderRadius =
+                    splitTagPosition === 'left'
+                        ? `${radius} 0 0 ${radius}`
+                        : `0 ${radius} ${radius} 0`
             }
 
             return {
-                padding,
-                borderRadius: getBorderRadius(),
-                // Use tag gap for internal spacing
-                gap: tagTokens.gap[size as keyof typeof tagTokens.gap],
-                height: tagTokens.height[size as keyof typeof tagTokens.height],
-                // Mirror border styling
-                borderWidth: `${tagTokens.borderWidth[variant as keyof typeof tagTokens.borderWidth][color as keyof typeof tagTokens.borderWidth.subtle]}px`,
+                padding: tagTokens.padding[size],
+                borderRadius,
+                gap: tagTokens.gap[size],
+                height: tagTokens.height[size],
+                borderWidth: `${tagTokens.borderWidth[variant][color]}px`,
             }
         }
 
@@ -163,7 +149,6 @@ const SkeletonTag = forwardRef<HTMLDivElement, SkeletonTagProps>(
                 height={tagStyles.height}
                 padding={tagStyles.padding}
                 borderRadius={tagStyles.borderRadius}
-                shape="rectangle"
                 display="inline-flex"
                 alignItems="center"
                 justifyContent="center"
