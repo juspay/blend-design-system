@@ -69,8 +69,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                 color={buttonTokens.color[buttonType][subType].default}
                 borderRadius={getBorderRadius()}
                 padding={buttonTokens.padding[size][subType]}
+                border={buttonTokens.border[buttonType][subType].default}
                 outline={buttonTokens.border[buttonType][subType].default}
-                // outline={buttonTokens.outline[buttonType][subType].default}
                 position="relative"
                 overflow="hidden"
                 _active={
@@ -80,9 +80,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                                   buttonTokens.backgroundColor[buttonType][
                                       subType
                                   ].active,
-                              outline:
-                                  buttonTokens.border[buttonType][subType]
-                                      .active,
+                              border: buttonTokens.border[buttonType][subType]
+                                  .active,
                               boxShadow:
                                   buttonTokens.shadow[buttonType][subType]
                                       .active,
@@ -90,21 +89,21 @@ const Button = forwardRef<HTMLButtonElement, ButtonV2Props>(
                         : undefined
                 }
                 _hover={{
-                    // border: buttonTokens.border[buttonType][subType].hover,
+                    border: buttonTokens.border[buttonType][subType].hover,
                     background:
                         buttonTokens.backgroundColor[buttonType][subType].hover,
                     outline: buttonTokens.outline[buttonType][subType].hover,
                     color: buttonTokens.color[buttonType][subType].hover,
                 }}
                 _focusVisible={{
-                    // border: buttonTokens.border[buttonType][subType].default,
+                    border: buttonTokens.border[buttonType][subType].default,
                     outline: buttonTokens.outline[buttonType][subType].active,
                 }}
                 _disabled={{
                     background:
                         buttonTokens.backgroundColor[buttonType][subType]
                             .disabled,
-                    outline: buttonTokens.border[buttonType][subType].disabled,
+                    border: buttonTokens.border[buttonType][subType].disabled,
                     color: buttonTokens.color[buttonType][subType].disabled,
                     cursor: 'not-allowed',
                 }}
