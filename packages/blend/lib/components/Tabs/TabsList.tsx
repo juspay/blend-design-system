@@ -174,7 +174,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                         flexShrink: 0,
                                         whiteSpace: 'nowrap',
                                     }}
-                                    data-tabs={item.value}
+                                    data-tabs={item.label}
                                     data-tab-selected={item.value === activeTab}
                                     // data-tabs-disabled={item.disabled}
                                 >
