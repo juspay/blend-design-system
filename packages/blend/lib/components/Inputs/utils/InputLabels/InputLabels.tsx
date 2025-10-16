@@ -55,6 +55,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
         label && (
             <Block display="flex" alignItems="center" gap={4} width={'100%'}>
                 <Text
+                    data-form-label={label}
                     as="label"
                     htmlFor={name}
                     // variant="body.md"

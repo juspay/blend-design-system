@@ -36,6 +36,7 @@ const InputFooter = ({
                 {error && errorMessage && (
                     <Text
                         // variant="body.md"
+                        data-form-error={errorMessage}
                         color={
                             tokens?.errorMessage?.color ||
                             FOUNDATION_THEME.colors.red[600]
@@ -55,6 +56,7 @@ const InputFooter = ({
                 {hintText && !error && (
                     <Text
                         // variant="body.md"
+                        data-desc-text={hintText}
                         fontWeight={
                             tokens?.hintText?.fontWeight ||
                             FOUNDATION_THEME.font.weight[400]
