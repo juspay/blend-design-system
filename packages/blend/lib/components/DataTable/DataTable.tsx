@@ -696,7 +696,6 @@ const DataTable = forwardRef(
                     position: tableToken.position,
                     padding: tableToken.padding,
                     width: tableToken.width,
-                    maxHeight: tableToken.height,
                     display: tableToken.display,
                     flexDirection: tableToken.flexDirection,
                 }}
@@ -749,11 +748,8 @@ const DataTable = forwardRef(
                     style={{
                         borderRadius: tableToken.dataTable.borderRadius,
                         border: tableToken.dataTable.border,
-                        maxHeight: tableToken.dataTable.maxHeight,
-                        minHeight: 'auto',
                         display: 'flex',
                         flexDirection: 'column',
-                        overflow: 'hidden',
                         position: 'relative',
                     }}
                 >
@@ -769,10 +765,6 @@ const DataTable = forwardRef(
                             flex: 1,
                             position: 'relative',
                             minHeight: 0,
-                            maxHeight:
-                                currentData.length > 0
-                                    ? tableToken.dataTable.maxHeight
-                                    : 'auto',
                             overflow: 'hidden',
                         }}
                     >
@@ -780,7 +772,10 @@ const DataTable = forwardRef(
                             ref={scrollContainerRef}
                             style={{
                                 height: '100%',
-                                maxHeight: '100%',
+                                maxHeight:
+                                    currentData.length > 0
+                                        ? tableToken.dataTable.maxHeight
+                                        : 'none',
                                 position: 'relative',
                             }}
                         >
@@ -798,7 +793,6 @@ const DataTable = forwardRef(
                                             .borderSpacing,
                                     position:
                                         tableToken.dataTable.table.position,
-                                    overflow: 'auto',
                                 }}
                             >
                                 <TableHeader
