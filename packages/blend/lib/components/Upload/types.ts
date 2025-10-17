@@ -13,6 +13,14 @@ export enum UploadSize {
     LARGE = 'lg',
 }
 
+export type FileRejection = {
+    file: File
+    errors: Array<{
+        code: string
+        message: string
+    }>
+}
+
 export type UploadFile = {
     file: File
     progress: number
@@ -21,20 +29,36 @@ export type UploadFile = {
 }
 
 export type UploadProps = {
+    // Basic configuration
     size?: UploadSize
-    state?: UploadState
     multiple?: boolean
-    acceptedFileTypes?: string[]
-    maxFileSize?: number // in bytes
-    description?: string // Custom description text for file constraints
-    onFileSelect?: (files: File[]) => void
-    onUploadProgress?: (fileId: string, progress: number) => void
-    onUploadComplete?: (fileId: string, success: boolean) => void
-    uploadingFiles?: UploadFile[]
-    uploadedFiles?: File[] // Files that have been successfully uploaded
-    className?: string
-    children?: React.ReactNode
+    accept?: string[]
+    maxSize?: number // in bytes
+    maxFiles?: number
     disabled?: boolean
+
+    // Content and styling
+    children?: React.ReactNode
+    description?: string
+    className?: string
+
+    // Upload state management
+    state?: UploadState
+    uploadingFiles?: UploadFile[]
+    uploadedFiles?: File[]
+
+    // Callbacks - file selection and upload management
+    onDrop?: (acceptedFiles: File[], fileRejections: FileRejection[]) => void
+    onDropAccepted?: (files: File[]) => void
+    onDropRejected?: (fileRejections: FileRejection[]) => void
+
+    // Visual state - controlled by consumer
+    isDragActive?: boolean
+    isDragAccept?: boolean
+    isDragReject?: boolean
+
+    // Validation
+    validator?: (file: File) => FileRejection['errors'][0] | null
 } & Omit<
     React.HTMLAttributes<HTMLDivElement>,
     'onDrop' | 'onDragOver' | 'onDragLeave'

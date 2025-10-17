@@ -3,39 +3,30 @@ import {
     Upload,
     UploadSize,
     UploadState,
+    FileRejection,
     UploadFile,
 } from '../../../../packages/blend/lib/components/Upload'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
-import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
-import {
-    Button,
-    ButtonType,
-    ButtonSize,
-} from '../../../../packages/blend/lib/components/Button'
-import { Upload as UploadIcon, File, Image, FileText, X } from 'lucide-react'
+import { Upload as UploadIcon, Image, FileText } from 'lucide-react'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
-import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
-import Text from '../../../../packages/blend/lib/components/Text/Text'
 
 const UploadDemo = () => {
     // Playground state
     const [playgroundSize, setPlaygroundSize] = useState<UploadSize>(
         UploadSize.MEDIUM
     )
-    const [playgroundState, setPlaygroundState] = useState<UploadState>(
-        UploadState.IDLE
-    )
     const [playgroundMultiple, setPlaygroundMultiple] = useState(false)
     const [playgroundDisabled, setPlaygroundDisabled] = useState(false)
     const [playgroundCustomSlot, setPlaygroundCustomSlot] = useState(false)
-    const [playgroundMaxFileSize, setPlaygroundMaxFileSize] =
-        useState('5000000')
-    const [playgroundAcceptedTypes, setPlaygroundAcceptedTypes] = useState(
-        'image/*,application/pdf'
-    )
 
-    // Upload files state for demo
+    // Selected files for display
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+
+    // Upload state demo
+    const [componentState, setComponentState] = useState<UploadState>(
+        UploadState.IDLE
+    )
     const [uploadingFiles, setUploadingFiles] = useState<UploadFile[]>([])
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
 
@@ -46,92 +37,80 @@ const UploadDemo = () => {
         { value: UploadSize.LARGE, label: 'Large' },
     ]
 
-    const stateOptions = [
-        { value: UploadState.IDLE, label: 'Idle' },
-        { value: UploadState.UPLOADING, label: 'Uploading' },
-        { value: UploadState.SUCCESS, label: 'Success' },
-        { value: UploadState.ERROR, label: 'Error' },
-    ]
+    const handleFilesAccepted = (files: File[]) => {
+        setSelectedFiles((prev) => [...prev, ...files])
 
-    // Simulate file upload progress
-    const simulateUpload = (file: File) => {
-        const uploadFile: UploadFile = {
-            id: Math.random().toString(36).substr(2, 9),
-            file,
-            progress: 0,
-            status: UploadState.UPLOADING,
+        // Simulate upload for first file
+        const file = files[0]
+        if (file) {
+            const uploadFile: UploadFile = {
+                id: Math.random().toString(36).substr(2, 9),
+                file,
+                progress: 0,
+                status: UploadState.UPLOADING,
+            }
+
+            setUploadingFiles([uploadFile])
+            setComponentState(UploadState.UPLOADING)
+
+            const interval = setInterval(() => {
+                setUploadingFiles((prev) =>
+                    prev.map((f) => {
+                        if (f.id === uploadFile.id) {
+                            const newProgress = f.progress + Math.random() * 15
+                            if (newProgress >= 100) {
+                                clearInterval(interval)
+                                setTimeout(() => {
+                                    setUploadingFiles([])
+                                    setUploadedFiles([file])
+                                    setComponentState(UploadState.SUCCESS)
+                                    addSnackbar({
+                                        header: 'Upload Complete!',
+                                        description: `${file.name} has been uploaded successfully.`,
+                                    })
+                                }, 500)
+                                return {
+                                    ...f,
+                                    progress: 100,
+                                    status: UploadState.SUCCESS,
+                                }
+                            }
+                            return { ...f, progress: newProgress }
+                        }
+                        return f
+                    })
+                )
+            }, 200)
         }
 
-        setUploadingFiles((prev) => [...prev, uploadFile])
-
-        const interval = setInterval(() => {
-            setUploadingFiles((prev) =>
-                prev.map((f) => {
-                    if (f.id === uploadFile.id) {
-                        const newProgress = f.progress + Math.random() * 30
-                        if (newProgress >= 100) {
-                            clearInterval(interval)
-                            setTimeout(() => {
-                                setUploadingFiles((prev) =>
-                                    prev.filter(
-                                        (uploadingFile) =>
-                                            uploadingFile.id !== uploadFile.id
-                                    )
-                                )
-                                setUploadedFiles((prev) => [...prev, file])
-                                addSnackbar({
-                                    header: 'Upload Complete!',
-                                    description: `${file.name} has been uploaded successfully.`,
-                                })
-                            }, 1000)
-                            return {
-                                ...f,
-                                progress: 100,
-                                status: UploadState.SUCCESS,
-                            }
-                        }
-                        return { ...f, progress: newProgress }
-                    }
-                    return f
-                })
-            )
-        }, 500)
-    }
-
-    const handleFileSelect = (files: File[]) => {
         addSnackbar({
             header: 'Files Selected',
             description: `Selected ${files.length} file(s): ${files.map((f) => f.name).join(', ')}`,
         })
-
-        // Simulate upload for demo
-        files.forEach(simulateUpload)
     }
 
-    const removeUploadingFile = (id: string) => {
-        setUploadingFiles((prev) => prev.filter((file) => file.id !== id))
-        addSnackbar({
-            header: 'Upload Cancelled',
-            description: 'File upload has been cancelled.',
+    const handleFilesRejected = (rejections: FileRejection[]) => {
+        rejections.forEach((rejection) => {
+            addSnackbar({
+                header: 'File Rejected',
+                description: `${rejection.file.name}: ${rejection.errors[0]?.message}`,
+            })
         })
     }
 
-    const renderCustomSlot = () => (
-        <Block
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            gap="12px"
-        >
-            <UploadIcon size={32} color="#6366f1" />
-            <Text as="span" fontWeight={600} textAlign="center">
-                Drop your files here
-            </Text>
-            <Text as="span" color="#6b7280" textAlign="center">
-                or click to browse from your device
-            </Text>
-        </Block>
-    )
+    const handleDrop = (
+        acceptedFiles: File[],
+        rejectedFiles: FileRejection[]
+    ) => {
+        if (acceptedFiles.length > 0) {
+            handleFilesAccepted(acceptedFiles)
+        }
+        if (rejectedFiles.length > 0) {
+            handleFilesRejected(rejectedFiles)
+        }
+    }
+
+    const renderCustomSlot = () => <UploadIcon size={32} color="#6366f1" />
 
     return (
         <div className="p-8 space-y-12">
@@ -148,34 +127,6 @@ const UploadDemo = () => {
                                 setPlaygroundSize(value as UploadSize)
                             }
                             placeholder="Select size"
-                        />
-
-                        <SingleSelect
-                            label="State"
-                            items={[{ items: stateOptions }]}
-                            selected={playgroundState}
-                            onSelect={(value) =>
-                                setPlaygroundState(value as UploadState)
-                            }
-                            placeholder="Select state"
-                        />
-
-                        <TextInput
-                            label="Max File Size (bytes)"
-                            value={playgroundMaxFileSize}
-                            onChange={(e) =>
-                                setPlaygroundMaxFileSize(e.target.value)
-                            }
-                            placeholder="5000000"
-                        />
-
-                        <TextInput
-                            label="Accepted File Types"
-                            value={playgroundAcceptedTypes}
-                            onChange={(e) =>
-                                setPlaygroundAcceptedTypes(e.target.value)
-                            }
-                            placeholder="image/*,application/pdf"
                         />
                     </div>
 
@@ -206,20 +157,17 @@ const UploadDemo = () => {
                     <div className="min-h-[200px] rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
                         <Upload
                             size={playgroundSize}
-                            state={playgroundState}
                             multiple={playgroundMultiple}
                             disabled={playgroundDisabled}
-                            acceptedFileTypes={playgroundAcceptedTypes
-                                .split(',')
-                                .map((s) => s.trim())
-                                .filter(Boolean)}
-                            maxFileSize={
-                                parseInt(playgroundMaxFileSize) || undefined
-                            }
                             description=".csv only | Max size 8 MB"
-                            onFileSelect={handleFileSelect}
+                            accept={['.csv']}
+                            maxSize={8 * 1024 * 1024} // 8MB
+                            state={componentState}
                             uploadingFiles={uploadingFiles}
                             uploadedFiles={uploadedFiles}
+                            onDrop={handleDrop}
+                            onDropAccepted={handleFilesAccepted}
+                            onDropRejected={handleFilesRejected}
                         >
                             {playgroundCustomSlot
                                 ? renderCustomSlot()
@@ -227,56 +175,49 @@ const UploadDemo = () => {
                         </Upload>
                     </div>
 
-                    {uploadingFiles.length > 0 && (
-                        <div className="space-y-3">
-                            <h4 className="font-semibold">Active Uploads:</h4>
-                            {uploadingFiles.map((file) => (
-                                <div
-                                    key={file.id}
-                                    className="flex items-center gap-3 p-3 border rounded-lg"
-                                >
-                                    <File size={16} />
-                                    <span className="flex-1">
-                                        {file.file.name}
-                                    </span>
-                                    <span className="text-sm text-gray-500">
-                                        {Math.round(file.progress)}%
-                                    </span>
-                                    <Button
-                                        buttonType={ButtonType.DANGER}
-                                        size={ButtonSize.SMALL}
-                                        onClick={() =>
-                                            removeUploadingFile(file.id)
-                                        }
-                                        leadingIcon={<X size={12} />}
-                                    />
-                                </div>
-                            ))}
+                    {/* Selected Files Display */}
+                    {selectedFiles.length > 0 && (
+                        <div className="p-4 bg-gray-50 rounded-lg">
+                            <h3 className="font-medium mb-2">
+                                Selected Files:
+                            </h3>
+                            <ul className="space-y-1">
+                                {selectedFiles.map((file, index) => (
+                                    <li
+                                        key={index}
+                                        className="text-sm text-gray-600"
+                                    >
+                                        {file.name} (
+                                        {Math.round(file.size / 1024)} KB)
+                                    </li>
+                                ))}
+                            </ul>
+                            <button
+                                onClick={() => setSelectedFiles([])}
+                                className="mt-2 text-sm text-red-600 hover:underline"
+                            >
+                                Clear all
+                            </button>
                         </div>
                     )}
-                </div>
-            </div>
 
-            {/* States */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">States</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {Object.values(UploadState).map((state) => (
-                        <div key={state} className="space-y-3">
-                            <h3 className="text-sm font-medium uppercase">
-                                {state}
-                            </h3>
-                            <Upload
-                                state={state}
-                                onFileSelect={(files) =>
-                                    addSnackbar({
-                                        header: `${state} Upload`,
-                                        description: `Selected ${files.length} file(s) in ${state} state`,
-                                    })
-                                }
-                            />
+                    {/* Reset Upload State Button */}
+                    {(componentState !== UploadState.IDLE ||
+                        uploadingFiles.length > 0 ||
+                        uploadedFiles.length > 0) && (
+                        <div className="flex justify-center">
+                            <button
+                                onClick={() => {
+                                    setComponentState(UploadState.IDLE)
+                                    setUploadingFiles([])
+                                    setUploadedFiles([])
+                                }}
+                                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                            >
+                                Reset Upload State
+                            </button>
                         </div>
-                    ))}
+                    )}
                 </div>
             </div>
 
@@ -291,93 +232,87 @@ const UploadDemo = () => {
                             </h3>
                             <Upload
                                 size={size}
-                                onFileSelect={(files) =>
+                                description=".csv only | Max size 8 MB"
+                                accept={['.csv']}
+                                maxSize={8 * 1024 * 1024}
+                                onDropAccepted={(files) =>
                                     addSnackbar({
                                         header: `${size} Upload`,
-                                        description: `Selected ${files.length} file(s) with ${size} size`,
+                                        description: `Selected ${files.length} file(s)`,
                                     })
                                 }
-                            />
+                            >
+                                <UploadIcon size={32} color="#6366f1" />
+                            </Upload>
                         </div>
                     ))}
                 </div>
             </div>
 
-            {/* File Type Restrictions */}
+            {/* Different File Types */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">File Type Restrictions</h2>
+                <h2 className="text-2xl font-bold">File Type Examples</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-3">
-                        <h3 className="text-sm font-medium">Images Only</h3>
+                        <h3 className="text-sm font-medium">Any File</h3>
                         <Upload
-                            acceptedFileTypes={['image/*']}
-                            onFileSelect={(files) =>
+                            description="Any file type allowed"
+                            onDropAccepted={(files) =>
                                 addSnackbar({
-                                    header: 'Images Selected',
-                                    description: `Selected ${files.length} image(s)`,
+                                    header: 'Files Selected',
+                                    description: `${files.length} file(s) selected`,
                                 })
                             }
                         >
-                            <Block
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="center"
-                                gap="8px"
-                            >
-                                <Image size={24} color="#10b981" />
-                                <Text as="span" textAlign="center">
-                                    Drop images here
-                                </Text>
-                            </Block>
+                            <UploadIcon size={32} color="#6366f1" />
+                        </Upload>
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">Images Only</h3>
+                        <Upload
+                            description="Images only"
+                            accept={['image/*']}
+                            onDropAccepted={(files) =>
+                                addSnackbar({
+                                    header: 'Images Selected',
+                                    description: `${files.length} image(s) selected`,
+                                })
+                            }
+                            onDropRejected={(rejections) =>
+                                addSnackbar({
+                                    header: 'Invalid File',
+                                    description:
+                                        rejections[0]?.errors[0]?.message ||
+                                        'Invalid file type',
+                                })
+                            }
+                        >
+                            <Image size={32} color="#10b981" />
                         </Upload>
                     </div>
 
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">PDFs Only</h3>
                         <Upload
-                            acceptedFileTypes={['application/pdf']}
-                            onFileSelect={(files) =>
+                            description="PDFs only"
+                            accept={['application/pdf']}
+                            onDropAccepted={(files) =>
                                 addSnackbar({
                                     header: 'PDFs Selected',
-                                    description: `Selected ${files.length} PDF(s)`,
+                                    description: `${files.length} PDF(s) selected`,
                                 })
                             }
-                        >
-                            <Block
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="center"
-                                gap="8px"
-                            >
-                                <FileText size={24} color="#ef4444" />
-                                <Text as="span" textAlign="center">
-                                    Drop PDFs here
-                                </Text>
-                            </Block>
-                        </Upload>
-                    </div>
-
-                    <div className="space-y-3">
-                        <h3 className="text-sm font-medium">Any File</h3>
-                        <Upload
-                            onFileSelect={(files) =>
+                            onDropRejected={(rejections) =>
                                 addSnackbar({
-                                    header: 'Files Selected',
-                                    description: `Selected ${files.length} file(s)`,
+                                    header: 'Invalid File',
+                                    description:
+                                        rejections[0]?.errors[0]?.message ||
+                                        'Only PDF files allowed',
                                 })
                             }
                         >
-                            <Block
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="center"
-                                gap="8px"
-                            >
-                                <File size={24} color="#6366f1" />
-                                <Text as="span" textAlign="center">
-                                    Drop any file here
-                                </Text>
-                            </Block>
+                            <FileText size={32} color="#ef4444" />
                         </Upload>
                     </div>
                 </div>
@@ -390,172 +325,148 @@ const UploadDemo = () => {
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Single File</h3>
                         <Upload
+                            description="Single file only"
                             multiple={false}
-                            onFileSelect={(files) =>
+                            onDropAccepted={(files) =>
                                 addSnackbar({
-                                    header: 'Single File Selected',
+                                    header: 'File Selected',
                                     description: `Selected: ${files[0]?.name}`,
                                 })
                             }
-                        />
+                        >
+                            <UploadIcon size={32} color="#6366f1" />
+                        </Upload>
                     </div>
 
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Multiple Files</h3>
                         <Upload
+                            description="Multiple files allowed"
                             multiple={true}
-                            onFileSelect={(files) =>
+                            onDropAccepted={(files) =>
                                 addSnackbar({
-                                    header: 'Multiple Files Selected',
-                                    description: `Selected ${files.length} files: ${files.map((f) => f.name).join(', ')}`,
+                                    header: 'Files Selected',
+                                    description: `Selected ${files.length} file(s)`,
                                 })
                             }
-                        />
+                        >
+                            <UploadIcon size={32} color="#6366f1" />
+                        </Upload>
                     </div>
                 </div>
             </div>
 
-            {/* Custom Slot Examples */}
+            {/* Upload States Demo */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Custom Slot Examples</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div className="space-y-3">
-                        <h3 className="text-sm font-medium">Icon with Text</h3>
+                <h2 className="text-2xl font-bold">
+                    Upload States with Progress
+                </h2>
+                <div className="space-y-4">
+                    <p className="text-gray-600">
+                        This demo shows the upload component with simulated
+                        upload progress:
+                    </p>
+
+                    <div className="max-w-md">
                         <Upload
-                            onFileSelect={(files) =>
-                                addSnackbar({
-                                    header: 'Files Uploaded',
-                                    description: `${files.length} files selected`,
-                                })
-                            }
+                            description=".csv only | Max size 8 MB"
+                            accept={['.csv']}
+                            maxSize={8 * 1024 * 1024}
+                            state={componentState}
+                            uploadingFiles={uploadingFiles}
+                            uploadedFiles={uploadedFiles}
+                            onDropAccepted={(files) => {
+                                // Simulate upload for first file
+                                const file = files[0]
+                                if (file) {
+                                    const uploadFile: UploadFile = {
+                                        id: Math.random()
+                                            .toString(36)
+                                            .substr(2, 9),
+                                        file,
+                                        progress: 0,
+                                        status: UploadState.UPLOADING,
+                                    }
+
+                                    setUploadingFiles([uploadFile])
+                                    setComponentState(UploadState.UPLOADING)
+
+                                    const interval = setInterval(() => {
+                                        setUploadingFiles((prev) =>
+                                            prev.map((f) => {
+                                                if (f.id === uploadFile.id) {
+                                                    const newProgress =
+                                                        f.progress +
+                                                        Math.random() * 15
+                                                    if (newProgress >= 100) {
+                                                        clearInterval(interval)
+                                                        setTimeout(() => {
+                                                            setUploadingFiles(
+                                                                []
+                                                            )
+                                                            setUploadedFiles([
+                                                                file,
+                                                            ])
+                                                            setComponentState(
+                                                                UploadState.SUCCESS
+                                                            )
+                                                            addSnackbar({
+                                                                header: 'Upload Complete!',
+                                                                description: `${file.name} has been uploaded successfully.`,
+                                                            })
+                                                        }, 500)
+                                                        return {
+                                                            ...f,
+                                                            progress: 100,
+                                                            status: UploadState.SUCCESS,
+                                                        }
+                                                    }
+                                                    return {
+                                                        ...f,
+                                                        progress: newProgress,
+                                                    }
+                                                }
+                                                return f
+                                            })
+                                        )
+                                    }, 200)
+                                }
+                            }}
                         >
-                            <Block
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="center"
-                                gap="12px"
-                            >
-                                <UploadIcon size={28} color="#6366f1" />
-                                <Block
-                                    display="flex"
-                                    flexDirection="column"
-                                    alignItems="center"
-                                    gap="4px"
-                                >
-                                    <Text as="span" fontWeight={600}>
-                                        Upload Files
-                                    </Text>
-                                    <Text
-                                        as="span"
-                                        color="#6b7280"
-                                        fontSize="14px"
-                                    >
-                                        Drag & drop or click to select
-                                    </Text>
-                                </Block>
-                            </Block>
+                            <UploadIcon size={32} color="#6366f1" />
                         </Upload>
                     </div>
 
-                    <div className="space-y-3">
-                        <h3 className="text-sm font-medium">
-                            Detailed Instructions
-                        </h3>
-                        <Upload
-                            size={UploadSize.LARGE}
-                            acceptedFileTypes={['image/*']}
-                            maxFileSize={5000000}
-                            onFileSelect={(files) =>
-                                addSnackbar({
-                                    header: 'Images Uploaded',
-                                    description: `${files.length} images selected`,
-                                })
-                            }
-                        >
-                            <Block
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="center"
-                                gap="16px"
-                            >
-                                <Image size={40} color="#10b981" />
-                                <Block
-                                    display="flex"
-                                    flexDirection="column"
-                                    alignItems="center"
-                                    gap="8px"
-                                >
-                                    <Text
-                                        as="span"
-                                        fontWeight={600}
-                                        fontSize="16px"
-                                    >
-                                        Upload Images
-                                    </Text>
-                                    <Text
-                                        as="span"
-                                        color="#6b7280"
-                                        textAlign="center"
-                                    >
-                                        PNG, JPG, GIF up to 5MB
-                                    </Text>
-                                    <Text
-                                        as="span"
-                                        color="#9ca3af"
-                                        fontSize="12px"
-                                        textAlign="center"
-                                    >
-                                        Drag and drop your files here or click
-                                        to browse
-                                    </Text>
-                                </Block>
-                            </Block>
-                        </Upload>
-                    </div>
-
-                    <div className="space-y-3">
-                        <h3 className="text-sm font-medium">Minimal Design</h3>
-                        <Upload
-                            size={UploadSize.SMALL}
-                            onFileSelect={(files) =>
-                                addSnackbar({
-                                    header: 'Files Selected',
-                                    description: `${files.length} files ready`,
-                                })
-                            }
-                        >
-                            <Block display="flex" alignItems="center" gap="8px">
-                                <File size={16} color="#6b7280" />
-                                <Text as="span" color="#6b7280">
-                                    Choose file
-                                </Text>
-                            </Block>
-                        </Upload>
-                    </div>
+                    {/* Reset button */}
+                    <button
+                        onClick={() => {
+                            setComponentState(UploadState.IDLE)
+                            setUploadingFiles([])
+                            setUploadedFiles([])
+                        }}
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                    >
+                        Reset Demo
+                    </button>
                 </div>
             </div>
 
             {/* Disabled State */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Disabled State</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {Object.values(UploadSize).map((size) => (
-                        <div key={size} className="space-y-3">
-                            <h3 className="text-sm font-medium">
-                                Disabled {size}
-                            </h3>
-                            <Upload
-                                size={size}
-                                disabled={true}
-                                onFileSelect={() =>
-                                    addSnackbar({
-                                        header: 'Upload Disabled',
-                                        description: 'This upload is disabled',
-                                    })
-                                }
-                            />
-                        </div>
-                    ))}
+                <div className="max-w-md">
+                    <Upload
+                        description="This upload is disabled"
+                        disabled={true}
+                        onDropAccepted={() =>
+                            addSnackbar({
+                                header: 'Should not trigger',
+                                description: 'This should not happen',
+                            })
+                        }
+                    >
+                        <UploadIcon size={32} color="#6366f1" />
+                    </Upload>
                 </div>
             </div>
         </div>
