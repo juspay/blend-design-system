@@ -81,6 +81,8 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                             color:
                                 tokens?.required?.color ||
                                 FOUNDATION_THEME.colors.red[600],
+                            top: '-1px',
+                            left: '-1px',
                         }}
                     >
                         *
