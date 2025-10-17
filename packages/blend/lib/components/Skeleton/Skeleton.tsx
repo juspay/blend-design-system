@@ -45,6 +45,7 @@ const StyledSkeleton = styled(Block)<{
     $shape: string
     $animate: boolean
     $skeletonTokens: SkeletonTokensType
+    $hasCustomBorderRadius?: boolean
 }>`
     position: relative;
     overflow: hidden;
@@ -98,19 +99,22 @@ const StyledSkeleton = styled(Block)<{
             `}
         `}
 
-    ${({ $shape, $skeletonTokens }) =>
+    ${({ $shape, $skeletonTokens, $hasCustomBorderRadius }) =>
+        !$hasCustomBorderRadius &&
         $shape === 'circle' &&
         css`
             border-radius: ${$skeletonTokens.borderRadius.circle};
         `}
 
-    ${({ $shape, $skeletonTokens }) =>
+    ${({ $shape, $skeletonTokens, $hasCustomBorderRadius }) =>
+        !$hasCustomBorderRadius &&
         $shape === 'rounded' &&
         css`
             border-radius: ${$skeletonTokens.borderRadius.rounded};
         `}
 
-    ${({ $shape, $skeletonTokens }) =>
+    ${({ $shape, $skeletonTokens, $hasCustomBorderRadius }) =>
+        !$hasCustomBorderRadius &&
         $shape === 'rectangle' &&
         css`
             border-radius: ${$skeletonTokens.borderRadius.rectangle};
@@ -128,6 +132,7 @@ const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
             shape = 'rectangle',
             children,
             backgroundColor,
+            borderRadius,
             ...rest
         },
         ref
@@ -152,8 +157,10 @@ const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
                 $shape={shape}
                 $animate={shouldAnimate}
                 $skeletonTokens={skeletonTokens!}
+                $hasCustomBorderRadius={!!borderRadius}
                 width={width}
                 height={height}
+                borderRadius={borderRadius}
                 backgroundColor={
                     backgroundColor ||
                     (variant === 'shimmer'

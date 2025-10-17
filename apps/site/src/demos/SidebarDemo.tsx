@@ -140,6 +140,7 @@ const SidebarDemo = () => {
         | 'dataRangePicker'
         | 'allComponents'
         | 'virtualList'
+        | 'skeleton'
     >('dataRangePicker')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
