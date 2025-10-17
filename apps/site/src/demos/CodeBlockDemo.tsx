@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Code } from 'lucide-react'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
@@ -30,19 +29,11 @@ const CodeBlockDemo = () => {
     const [showLineNumbers, setShowLineNumbers] = useState(true)
     const [showHeader, setShowHeader] = useState(true)
     const [headerText, setHeaderText] = useState('payment.js')
-    const [selectedExample, setSelectedExample] = useState('payment')
 
     // Modal state
     const [isCodeBlockModalOpen, setIsCodeBlockModalOpen] = useState(false)
     const [isCodeDiffModalOpen, setIsCodeDiffModalOpen] = useState(false)
 
-    // Smooth scroll to section
-    const scrollToSection = (sectionId: string) => {
-        const element = document.getElementById(sectionId)
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }
-    }
 
     // Code examples
     const codeExamples = {
@@ -234,22 +225,6 @@ fibonacci n
         { value: CodeBlockVariant.NO_GUTTER, label: 'No Gutter' },
         { value: CodeBlockVariant.DIFF, label: 'Diff (side-by-side)' },
     ]
-
-    const exampleOptions = [
-        { value: 'payment', label: 'Payment Priority (JS)' },
-        { value: 'react', label: 'React Component' },
-        { value: 'typescript', label: 'TypeScript Interface' },
-        { value: 'python', label: 'Python' },
-        { value: 'rust', label: 'Rust' },
-        { value: 'haskell', label: 'Haskell' },
-        { value: 'algorithm', label: 'Quick Sort Algorithm' },
-        { value: 'api', label: 'API Client Class' },
-    ]
-
-    const handleExampleChange = (value: string) => {
-        setSelectedExample(value)
-        setCustomCode(codeExamples[value as keyof typeof codeExamples])
-    }
 
     return (
         <div className="p-8 space-y-12">
@@ -764,7 +739,6 @@ fibonacci n
                 showCloseButton={true}
                 closeOnBackdropClick={true}
                 minWidth="600px"
-                maxWidth="800px"
                 headerRightSlot={
                     <div style={{ display: 'flex' }}>
                         <Tag
