@@ -46,7 +46,7 @@ export const validateFile =
                         .toLowerCase()
                         .endsWith(acceptedType.toLowerCase())
                 }
-                return file.type.match(acceptedType.replace('*', '.*'))
+                return file.type.match(acceptedType.replace(/\*/g, '.*'))
             })
             if (!isAccepted) {
                 errors.push({
