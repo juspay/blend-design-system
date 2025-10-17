@@ -32,6 +32,7 @@ export * from './components/Drawer'
 export * from './components/Skeleton'
 export * from './components/KeyValuePair'
 export * from './components/VirtualList'
+export * from './components/Upload'
 
 // V2 Components with Theme Support
 export * from './components/ButtonGroup'
