@@ -135,6 +135,7 @@ const OTPInputDemo = () => {
                                 name={playgroundValue}
                                 label={playgroundLabel}
                                 sublabel={playgroundSublabel}
+                                placeholder={'otp field'}
                                 value={playgroundValue}
                                 length={playgroundLength}
                                 autoFocus={hasAutoFocus}
