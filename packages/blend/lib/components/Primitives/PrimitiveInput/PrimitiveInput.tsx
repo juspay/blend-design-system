@@ -423,7 +423,7 @@ const PrimitiveInput: React.FC<InputProps> = forwardRef<
         <StyledInput
             as={as}
             name={props.name}
-            id={props.id}
+            id={props.id ?? (props.name as string | undefined)}
             {...props}
             ref={ref}
         />
