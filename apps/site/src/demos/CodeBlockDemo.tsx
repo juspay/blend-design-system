@@ -34,7 +34,6 @@ const CodeBlockDemo = () => {
     const [isCodeBlockModalOpen, setIsCodeBlockModalOpen] = useState(false)
     const [isCodeDiffModalOpen, setIsCodeDiffModalOpen] = useState(false)
 
-
     // Code examples
     const codeExamples = {
         payment: `function getPaymentPriority(order) {
