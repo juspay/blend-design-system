@@ -85,6 +85,7 @@ const ModalHeader = ({
                 >
                     {title && (
                         <Text
+                            data-modal-title={title}
                             variant="heading.sm"
                             fontWeight={600}
                             color={modalTokens.header.text.title.color}
@@ -96,6 +97,7 @@ const ModalHeader = ({
                 </Block>
                 {subtitle && (
                     <Text
+                        data-modal-subtitle={subtitle}
                         variant="code.lg"
                         color={modalTokens.header.text.subtitle.color}
                         fontWeight={400}
@@ -189,6 +191,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             showDivider = true,
             minWidth = '500px',
             useDrawerOnMobile = true,
+            ...props
         },
         ref
     ) => {
@@ -273,6 +276,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     overflow="auto"
                     padding={FOUNDATION_THEME.unit[16]}
                     boxShadow={modalTokens.boxShadow}
+                    {...props}
                 >
                     <Block
                         onClick={handleBackdropClick}

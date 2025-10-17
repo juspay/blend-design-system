@@ -833,6 +833,7 @@ const ModalDemo = () => {
 
             {/* Modal with current configuration */}
             <Modal
+                data-component="popUpConfirm Some PopUp6"
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 title={config.title}
