@@ -147,20 +147,43 @@ const sampleAvatars = [
     },
 ]
 
-// Default story
+// Default story with interactive controls
 export const Default: Story = {
     args: {
         avatars: sampleAvatars.slice(0, 5),
         maxCount: 3,
         size: AvatarSize.MD,
         shape: AvatarShape.CIRCULAR,
+        selectedAvatarIds: [],
     },
+    render: (args: any) => (
+        <AvatarGroup
+            {...args}
+            onSelectionChange={args.onSelectionChange}
+        />
+    ),
 }
 
 // Different sizes
 export const Sizes: Story = {
     render: () => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+                <h4
+                    style={{
+                        margin: '0 0 12px 0',
+                        fontSize: '14px',
+                        color: '#666',
+                    }}
+                >
+                    Extra Small (20px)
+                </h4>
+                <AvatarGroup
+                    avatars={sampleAvatars}
+                    maxCount={5}
+                    size={AvatarSize.XS}
+                />
+            </div>
             <div>
                 <h4
                     style={{
@@ -230,7 +253,7 @@ export const Sizes: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Avatar groups in different sizes to match various UI contexts.',
+                story: 'Avatar groups in different sizes: Extra Small (20px), Small (24px), Medium (32px), Large (40px), and Extra Large (48px).',
             },
         },
     },
