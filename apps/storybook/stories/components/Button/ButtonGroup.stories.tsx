@@ -92,8 +92,15 @@ export const ButtonGroupPositioning: Story = {
                 >
                     Manual Position (Individual Buttons)
                 </h4>
-                <p style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
-                    Using buttonGroupPosition prop manually on individual buttons
+                <p
+                    style={{
+                        fontSize: '12px',
+                        color: '#666',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Using buttonGroupPosition prop manually on individual
+                    buttons
                 </p>
                 <div style={{ display: 'flex' }}>
                     <Button
@@ -124,8 +131,15 @@ export const ButtonGroupPositioning: Story = {
                 >
                     Automatic Position (ButtonGroup stacked=true)
                 </h4>
-                <p style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
-                    ButtonGroup automatically applies buttonGroupPosition to children
+                <p
+                    style={{
+                        fontSize: '12px',
+                        color: '#666',
+                        marginBottom: '12px',
+                    }}
+                >
+                    ButtonGroup automatically applies buttonGroupPosition to
+                    children
                 </p>
                 <ButtonGroup stacked={true}>
                     <Button text="Left" buttonType={ButtonType.SECONDARY} />
@@ -144,7 +158,13 @@ export const ButtonGroupPositioning: Story = {
                 >
                     Two Button Group
                 </h4>
-                <p style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
+                <p
+                    style={{
+                        fontSize: '12px',
+                        color: '#666',
+                        marginBottom: '12px',
+                    }}
+                >
                     First button gets 'left', last button gets 'right' position
                 </p>
                 <ButtonGroup stacked={true}>
@@ -163,8 +183,15 @@ export const ButtonGroupPositioning: Story = {
                 >
                     Five Button Group
                 </h4>
-                <p style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
-                    First gets 'left', last gets 'right', middle buttons get 'center'
+                <p
+                    style={{
+                        fontSize: '12px',
+                        color: '#666',
+                        marginBottom: '12px',
+                    }}
+                >
+                    First gets 'left', last gets 'right', middle buttons get
+                    'center'
                 </p>
                 <ButtonGroup stacked={true}>
                     <Button text="1" buttonType={ButtonType.SECONDARY} />

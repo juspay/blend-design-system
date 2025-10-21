@@ -108,12 +108,30 @@ import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
         },
         leadingIcon: {
             control: 'select',
-            options: ['none', 'plus', 'download', 'settings', 'heart', 'star', 'search', 'edit'],
+            options: [
+                'none',
+                'plus',
+                'download',
+                'settings',
+                'heart',
+                'star',
+                'search',
+                'edit',
+            ],
             description: 'Icon to display before the button text',
         },
         trailingIcon: {
             control: 'select',
-            options: ['none', 'plus', 'download', 'settings', 'heart', 'star', 'search', 'edit'],
+            options: [
+                'none',
+                'plus',
+                'download',
+                'settings',
+                'heart',
+                'star',
+                'search',
+                'edit',
+            ],
             description: 'Icon to display after the button text',
         },
         onClick: {
@@ -130,15 +148,23 @@ type Story = StoryObj<typeof Button>
 // Helper function to render icons based on control selection
 const getIcon = (iconType: string) => {
     switch (iconType) {
-        case 'plus': return <Plus size={16} />
-        case 'download': return <Download size={16} />
-        case 'settings': return <Settings size={16} />
-        case 'heart': return <Heart size={16} />
-        case 'star': return <Star size={16} />
-        case 'search': return <Search size={16} />
-        case 'edit': return <Edit size={16} />
+        case 'plus':
+            return <Plus size={16} />
+        case 'download':
+            return <Download size={16} />
+        case 'settings':
+            return <Settings size={16} />
+        case 'heart':
+            return <Heart size={16} />
+        case 'star':
+            return <Star size={16} />
+        case 'search':
+            return <Search size={16} />
+        case 'edit':
+            return <Edit size={16} />
         case 'none':
-        default: return undefined
+        default:
+            return undefined
     }
 }
 
@@ -685,7 +711,8 @@ export const Interactive: Story = {
                 trailingIcon={getIcon(args.trailingIcon)}
             />
             <div style={{ marginTop: '16px', fontSize: '14px', color: '#666' }}>
-                Use the controls below to experiment with different button configurations
+                Use the controls below to experiment with different button
+                configurations
             </div>
         </div>
     ),
