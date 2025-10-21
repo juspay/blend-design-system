@@ -157,10 +157,7 @@ export const Default: Story = {
         selectedAvatarIds: [],
     },
     render: (args: any) => (
-        <AvatarGroup
-            {...args}
-            onSelectionChange={args.onSelectionChange}
-        />
+        <AvatarGroup {...args} onSelectionChange={args.onSelectionChange} />
     ),
 }
 

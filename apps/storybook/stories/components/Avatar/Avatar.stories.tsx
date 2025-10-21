@@ -74,7 +74,7 @@ import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system';
             description: 'Content to display before the avatar',
         },
         trailingSlot: {
-            control: 'select', 
+            control: 'select',
             options: ['none', 'star', 'checkCircle', 'settings'],
             description: 'Content to display after the avatar',
         },
@@ -88,13 +88,19 @@ type Story = StoryObj<typeof Avatar>
 // Helper functions to render slots based on control selection
 const getSlotContent = (slotType: string) => {
     switch (slotType) {
-        case 'crown': return <Crown size={16} color="#FFD700" />
-        case 'star': return <Star size={16} color="#FFD700" />
-        case 'user': return <User size={16} color="#666" />
-        case 'checkCircle': return <CheckCircle size={16} color="#22C55E" />
-        case 'settings': return <Settings size={16} color="#666" />
+        case 'crown':
+            return <Crown size={16} color="#FFD700" />
+        case 'star':
+            return <Star size={16} color="#FFD700" />
+        case 'user':
+            return <User size={16} color="#666" />
+        case 'checkCircle':
+            return <CheckCircle size={16} color="#22C55E" />
+        case 'settings':
+            return <Settings size={16} color="#666" />
         case 'none':
-        default: return undefined
+        default:
+            return undefined
     }
 }
 
@@ -120,7 +126,7 @@ export const Default: Story = {
     ),
 }
 
-// Avatar sizes  
+// Avatar sizes
 export const AvatarSizes: Story = {
     render: () => (
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
@@ -483,7 +489,8 @@ export const Interactive: Story = {
                 trailingSlot={getSlotContent(args.trailingSlot)}
             />
             <div style={{ marginTop: '16px', fontSize: '14px', color: '#666' }}>
-                Use the controls below to experiment with different avatar configurations
+                Use the controls below to experiment with different avatar
+                configurations
             </div>
         </div>
     ),
