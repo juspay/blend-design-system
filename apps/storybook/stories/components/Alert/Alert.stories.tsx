@@ -83,6 +83,11 @@ import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system';
             action: 'closed',
             description: 'Callback function called when the alert is closed',
         },
+        icon: {
+            control: 'select',
+            options: ['none', 'checkCircle', 'alertTriangle', 'xCircle', 'info', 'settings'],
+            description: 'Icon to display alongside the alert heading',
+        },
         primaryAction: {
             control: 'object',
             description: 'Primary action button configuration',
@@ -98,7 +103,20 @@ import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system';
 export default meta
 type Story = StoryObj<typeof Alert>
 
-// Default story
+// Helper function to render icons based on control selection
+const getIcon = (iconType: string) => {
+    switch (iconType) {
+        case 'checkCircle': return <CheckCircle size={16} />
+        case 'alertTriangle': return <AlertTriangle size={16} />
+        case 'xCircle': return <XCircle size={16} />
+        case 'info': return <Info size={16} />
+        case 'settings': return <Settings size={16} />
+        case 'none':
+        default: return undefined
+    }
+}
+
+// Default story with interactive controls
 export const Default: Story = {
     args: {
         heading: 'Alert Heading',
@@ -106,6 +124,61 @@ export const Default: Story = {
             'This is the alert description providing more context about the notification.',
         variant: AlertVariant.PRIMARY,
         style: AlertStyle.SUBTLE,
+        actionPlacement: AlertActionPlacement.RIGHT,
+        icon: 'info',
+        primaryAction: {
+            label: 'Primary Action',
+            onClick: () => console.log('Primary action clicked'),
+        },
+        secondaryAction: {
+            label: 'Secondary Action', 
+            onClick: () => console.log('Secondary action clicked'),
+        },
+    },
+    render: (args: any) => (
+        <div style={{ maxWidth: '600px' }}>
+            <Alert
+                {...args}
+                icon={getIcon(args.icon)}
+                onClose={args.onClose}
+            />
+        </div>
+    ),
+}
+
+// Interactive playground
+export const Interactive: Story = {
+    args: {
+        heading: 'Interactive Alert',
+        description: 'Use the controls below to customize this alert and see how different props affect its appearance and behavior.',
+        variant: AlertVariant.SUCCESS,
+        style: AlertStyle.SUBTLE,
+        actionPlacement: AlertActionPlacement.RIGHT,
+        icon: 'checkCircle',
+        primaryAction: {
+            label: 'Confirm',
+            onClick: () => alert('Primary action clicked!'),
+        },
+        secondaryAction: {
+            label: 'Cancel',
+            onClick: () => alert('Secondary action clicked!'),
+        },
+    },
+    render: (args: any) => (
+        <div style={{ maxWidth: '600px' }}>
+            <Alert
+                {...args}
+                icon={getIcon(args.icon)}
+                onClose={args.onClose ? () => alert('Alert closed!') : undefined}
+            />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interactive playground to experiment with all Alert props using the controls panel.',
+            },
+        },
     },
 }
 
