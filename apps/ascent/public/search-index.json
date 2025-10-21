@@ -1773,7 +1773,7 @@
             {
                 "title": "MenuItemType",
                 "level": 3,
-                "id": "MenuItemType"
+                "id": "menuitemtype"
             },
             {
                 "title": "Features",
@@ -1878,12 +1878,12 @@
             {
                 "title": "MenuItemVariant",
                 "level": 3,
-                "id": "MenuItemVariant"
+                "id": "menuitemvariant"
             },
             {
                 "title": "MenuItemActionType",
                 "level": 3,
-                "id": "MenuItemActionType"
+                "id": "menuitemactiontype"
             },
             {
                 "title": "Best Practices",
