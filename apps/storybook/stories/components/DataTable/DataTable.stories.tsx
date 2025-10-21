@@ -81,6 +81,350 @@ const columns: ColumnDefinition<User>[] = [
             },
         },
     },
+    argTypes: {
+        // Basic Props
+        data: {
+            control: false,
+            description: 'Array of data objects to display in the table',
+            table: {
+                type: { summary: 'T[]' },
+                category: 'Data',
+            },
+        },
+        columns: {
+            control: false,
+            description:
+                'Column definitions with type, header, and rendering options',
+            table: {
+                type: { summary: 'ColumnDefinition<T>[]' },
+                category: 'Data',
+            },
+        },
+        idField: {
+            control: { type: 'text' },
+            description: 'Field name to use as unique identifier for rows',
+            table: {
+                type: { summary: 'keyof T' },
+                category: 'Data',
+            },
+        },
+        title: {
+            control: { type: 'text' },
+            description: 'Title displayed at the top of the table',
+            table: {
+                type: { summary: 'string' },
+                category: 'Basic',
+            },
+        },
+        description: {
+            control: { type: 'text' },
+            description: 'Description text displayed below the title',
+            table: {
+                type: { summary: 'string' },
+                category: 'Basic',
+            },
+        },
+        className: {
+            control: { type: 'text' },
+            description: 'CSS class name for custom styling',
+            table: {
+                type: { summary: 'string' },
+                category: 'Basic',
+            },
+        },
+        isHoverable: {
+            control: { type: 'boolean' },
+            description: 'Enable hover effects on table rows',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Basic',
+            },
+        },
+        mobileColumnsToShow: {
+            control: { type: 'number', min: 1, max: 10 },
+            description: 'Number of columns to show on mobile devices',
+            table: {
+                type: { summary: 'number' },
+                category: 'Mobile',
+            },
+        },
+
+        // Sorting Props
+        defaultSort: {
+            control: false,
+            description: 'Default sort configuration on load',
+            table: {
+                type: { summary: 'SortConfig' },
+                category: 'Sorting',
+            },
+        },
+        onSortChange: {
+            action: 'sort-changed',
+            description: 'Callback fired when sort configuration changes',
+            table: {
+                type: { summary: '(sortConfig: SortConfig) => void' },
+                category: 'Sorting',
+            },
+        },
+
+        // Search Props
+        enableSearch: {
+            control: { type: 'boolean' },
+            description: 'Enable global search functionality',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Search',
+            },
+        },
+        searchPlaceholder: {
+            control: { type: 'text' },
+            description: 'Placeholder text for search input',
+            table: {
+                type: { summary: 'string' },
+                defaultValue: { summary: 'Search...' },
+                category: 'Search',
+            },
+        },
+        serverSideSearch: {
+            control: { type: 'boolean' },
+            description: 'Handle search on server side instead of client side',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Search',
+            },
+        },
+        onSearchChange: {
+            action: 'search-changed',
+            description: 'Callback fired when search query changes',
+            table: {
+                type: { summary: '(searchConfig: SearchConfig) => void' },
+                category: 'Search',
+            },
+        },
+
+        // Filtering Props
+        enableFiltering: {
+            control: { type: 'boolean' },
+            description: 'Enable column-level filtering',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Filtering',
+            },
+        },
+        enableAdvancedFilter: {
+            control: { type: 'boolean' },
+            description: 'Enable advanced filtering interface',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Filtering',
+            },
+        },
+        serverSideFiltering: {
+            control: { type: 'boolean' },
+            description:
+                'Handle filtering on server side instead of client side',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Filtering',
+            },
+        },
+        onFilterChange: {
+            action: 'filter-changed',
+            description: 'Callback fired when column filters change',
+            table: {
+                type: { summary: '(filters: ColumnFilter[]) => void' },
+                category: 'Filtering',
+            },
+        },
+        onAdvancedFiltersChange: {
+            action: 'advanced-filters-changed',
+            description: 'Callback fired when advanced filters change',
+            table: {
+                type: { summary: '(filters: unknown[]) => void' },
+                category: 'Filtering',
+            },
+        },
+
+        // Column Management Props
+        columnFreeze: {
+            control: { type: 'number', min: 0, max: 5 },
+            description: 'Number of columns to freeze on the left side',
+            table: {
+                type: { summary: 'number' },
+                defaultValue: { summary: '0' },
+                category: 'Column Management',
+            },
+        },
+        enableColumnManager: {
+            control: { type: 'boolean' },
+            description: 'Enable column visibility management',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'Column Management',
+            },
+        },
+        columnManagerMaxSelections: {
+            control: { type: 'number', min: 1, max: 20 },
+            description: 'Maximum number of columns that can be selected',
+            table: {
+                type: { summary: 'number' },
+                category: 'Column Management',
+            },
+        },
+        columnManagerWidth: {
+            control: { type: 'number', min: 200, max: 800 },
+            description: 'Width of the column manager dropdown',
+            table: {
+                type: { summary: 'number' },
+                category: 'Column Management',
+            },
+        },
+
+        // Pagination Props
+        serverSidePagination: {
+            control: { type: 'boolean' },
+            description:
+                'Handle pagination on server side instead of client side',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Pagination',
+            },
+        },
+        onPageChange: {
+            action: 'page-changed',
+            description: 'Callback fired when current page changes',
+            table: {
+                type: { summary: '(page: number) => void' },
+                category: 'Pagination',
+            },
+        },
+        onPageSizeChange: {
+            action: 'page-size-changed',
+            description: 'Callback fired when page size changes',
+            table: {
+                type: { summary: '(pageSize: number) => void' },
+                category: 'Pagination',
+            },
+        },
+
+        // UI/Loading Props
+        isLoading: {
+            control: { type: 'boolean' },
+            description: 'Show loading state in the table',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'UI State',
+            },
+        },
+        showToolbar: {
+            control: { type: 'boolean' },
+            description: 'Show the header toolbar with search and actions',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'UI State',
+            },
+        },
+        showSettings: {
+            control: { type: 'boolean' },
+            description: 'Show settings menu in the toolbar',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'UI State',
+            },
+        },
+
+        // Inline Edit Props
+        enableInlineEdit: {
+            control: { type: 'boolean' },
+            description: 'Enable inline editing of cell values',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Inline Edit',
+            },
+        },
+        onRowSave: {
+            action: 'row-saved',
+            description: 'Callback fired when a row is saved after editing',
+            table: {
+                type: { summary: '(rowId: unknown, updatedRow: T) => void' },
+                category: 'Inline Edit',
+            },
+        },
+        onRowCancel: {
+            action: 'row-cancelled',
+            description: 'Callback fired when row editing is cancelled',
+            table: {
+                type: { summary: '(rowId: unknown) => void' },
+                category: 'Inline Edit',
+            },
+        },
+        onFieldChange: {
+            action: 'field-changed',
+            description: 'Callback fired when a field value changes',
+            table: {
+                type: {
+                    summary:
+                        '(rowId: unknown, fieldName: keyof T, value: unknown) => void',
+                },
+                category: 'Inline Edit',
+            },
+        },
+
+        // Row Interaction Props
+        onRowClick: {
+            action: 'row-clicked',
+            description: 'Callback fired when a row is clicked',
+            table: {
+                type: { summary: '(row: T, index: number) => void' },
+                category: 'Row Interaction',
+            },
+        },
+
+        // Row Expansion Props
+        enableRowExpansion: {
+            control: { type: 'boolean' },
+            description: 'Enable expandable rows for detailed views',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Row Expansion',
+            },
+        },
+        onRowExpansionChange: {
+            action: 'row-expansion-changed',
+            description: 'Callback fired when row expansion state changes',
+            table: {
+                type: {
+                    summary:
+                        '(rowId: unknown, isExpanded: boolean, rowData: T) => void',
+                },
+                category: 'Row Expansion',
+            },
+        },
+
+        // Selection/Bulk Actions Props
+        enableRowSelection: {
+            control: { type: 'boolean' },
+            description: 'Enable row selection with checkboxes',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Selection',
+            },
+        },
+    },
     tags: ['autodocs'],
 }
 
