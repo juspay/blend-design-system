@@ -85,7 +85,14 @@ import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system';
         },
         icon: {
             control: 'select',
-            options: ['none', 'checkCircle', 'alertTriangle', 'xCircle', 'info', 'settings'],
+            options: [
+                'none',
+                'checkCircle',
+                'alertTriangle',
+                'xCircle',
+                'info',
+                'settings',
+            ],
             description: 'Icon to display alongside the alert heading',
         },
         primaryAction: {
@@ -106,13 +113,19 @@ type Story = StoryObj<typeof Alert>
 // Helper function to render icons based on control selection
 const getIcon = (iconType: string) => {
     switch (iconType) {
-        case 'checkCircle': return <CheckCircle size={16} />
-        case 'alertTriangle': return <AlertTriangle size={16} />
-        case 'xCircle': return <XCircle size={16} />
-        case 'info': return <Info size={16} />
-        case 'settings': return <Settings size={16} />
+        case 'checkCircle':
+            return <CheckCircle size={16} />
+        case 'alertTriangle':
+            return <AlertTriangle size={16} />
+        case 'xCircle':
+            return <XCircle size={16} />
+        case 'info':
+            return <Info size={16} />
+        case 'settings':
+            return <Settings size={16} />
         case 'none':
-        default: return undefined
+        default:
+            return undefined
     }
 }
 
@@ -131,17 +144,13 @@ export const Default: Story = {
             onClick: () => console.log('Primary action clicked'),
         },
         secondaryAction: {
-            label: 'Secondary Action', 
+            label: 'Secondary Action',
             onClick: () => console.log('Secondary action clicked'),
         },
     },
     render: (args: any) => (
         <div style={{ maxWidth: '600px' }}>
-            <Alert
-                {...args}
-                icon={getIcon(args.icon)}
-                onClose={args.onClose}
-            />
+            <Alert {...args} icon={getIcon(args.icon)} onClose={args.onClose} />
         </div>
     ),
 }
@@ -150,7 +159,8 @@ export const Default: Story = {
 export const Interactive: Story = {
     args: {
         heading: 'Interactive Alert',
-        description: 'Use the controls below to customize this alert and see how different props affect its appearance and behavior.',
+        description:
+            'Use the controls below to customize this alert and see how different props affect its appearance and behavior.',
         variant: AlertVariant.SUCCESS,
         style: AlertStyle.SUBTLE,
         actionPlacement: AlertActionPlacement.RIGHT,
@@ -169,7 +179,9 @@ export const Interactive: Story = {
             <Alert
                 {...args}
                 icon={getIcon(args.icon)}
-                onClose={args.onClose ? () => alert('Alert closed!') : undefined}
+                onClose={
+                    args.onClose ? () => alert('Alert closed!') : undefined
+                }
             />
         </div>
     ),
