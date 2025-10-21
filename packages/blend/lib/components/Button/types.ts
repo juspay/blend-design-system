@@ -22,7 +22,7 @@ export enum ButtonSubType {
 
 export enum ButtonState {
     DEFAULT = 'default',
-    HOBVER = 'hover',
+    HOVER = 'hover',
     ACTIVE = 'active',
     DISABLED = 'disabled',
 }
