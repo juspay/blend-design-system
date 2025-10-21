@@ -98,7 +98,15 @@ import { Accordion, AccordionItem, AccordionType } from '@juspay/blend-design-sy
         leftSlot: {
             table: { category: 'AccordionItem' },
             control: 'select',
-            options: ['none', 'user', 'shield', 'bell', 'creditCard', 'helpCircle', 'lock'],
+            options: [
+                'none',
+                'user',
+                'shield',
+                'bell',
+                'creditCard',
+                'helpCircle',
+                'lock',
+            ],
             description: 'Icon to display on the left side',
         },
         rightSlot: {
@@ -144,60 +152,117 @@ type Story = StoryObj<typeof Accordion>
 // Helper functions to render slots based on control selection
 const getLeftSlot = (slotType: string) => {
     switch (slotType) {
-        case 'user': return <User size={20} color="#666" />
-        case 'shield': return <Shield size={20} color="#666" />
-        case 'bell': return <Bell size={20} color="#666" />
-        case 'creditCard': return <CreditCard size={20} color="#666" />
-        case 'helpCircle': return <HelpCircle size={20} color="#666" />
-        case 'lock': return <Lock size={20} color="#666" />
+        case 'user':
+            return <User size={20} color="#666" />
+        case 'shield':
+            return <Shield size={20} color="#666" />
+        case 'bell':
+            return <Bell size={20} color="#666" />
+        case 'creditCard':
+            return <CreditCard size={20} color="#666" />
+        case 'helpCircle':
+            return <HelpCircle size={20} color="#666" />
+        case 'lock':
+            return <Lock size={20} color="#666" />
         case 'none':
-        default: return undefined
+        default:
+            return undefined
     }
 }
 
 const getRightSlot = (slotType: string) => {
     switch (slotType) {
-        case 'status': return <span style={{ fontSize: '12px', color: '#22c55e' }}>Active</span>
-        case 'badge': return <span style={{ 
-            fontSize: '10px', 
-            padding: '2px 6px', 
-            backgroundColor: '#3b82f6', 
-            color: 'white', 
-            borderRadius: '4px' 
-        }}>NEW</span>
-        case 'button': return <span style={{ 
-            fontSize: '12px', 
-            color: '#3b82f6', 
-            cursor: 'pointer',
-            textDecoration: 'underline'
-        }}>Edit</span>
+        case 'status':
+            return (
+                <span style={{ fontSize: '12px', color: '#22c55e' }}>
+                    Active
+                </span>
+            )
+        case 'badge':
+            return (
+                <span
+                    style={{
+                        fontSize: '10px',
+                        padding: '2px 6px',
+                        backgroundColor: '#3b82f6',
+                        color: 'white',
+                        borderRadius: '4px',
+                    }}
+                >
+                    NEW
+                </span>
+            )
+        case 'button':
+            return (
+                <span
+                    style={{
+                        fontSize: '12px',
+                        color: '#3b82f6',
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                    }}
+                >
+                    Edit
+                </span>
+            )
         case 'none':
-        default: return undefined
+        default:
+            return undefined
     }
 }
 
 const getSubtextSlot = (slotType: string) => {
     switch (slotType) {
-        case 'progressBar': return (
-            <div style={{ width: '80px', height: '4px', backgroundColor: '#e5e5e5', borderRadius: '2px', overflow: 'hidden' }}>
-                <div style={{ width: '60%', height: '100%', backgroundColor: '#3b82f6' }} />
-            </div>
-        )
-        case 'chip': return <span style={{ 
-            fontSize: '10px', 
-            padding: '2px 6px', 
-            backgroundColor: '#f3f4f6', 
-            color: '#374151', 
-            borderRadius: '12px',
-            border: '1px solid #d1d5db'
-        }}>Premium</span>
-        case 'counter': return <span style={{ 
-            fontSize: '11px', 
-            fontWeight: '600',
-            color: '#ef4444'
-        }}>3 items</span>
+        case 'progressBar':
+            return (
+                <div
+                    style={{
+                        width: '80px',
+                        height: '4px',
+                        backgroundColor: '#e5e5e5',
+                        borderRadius: '2px',
+                        overflow: 'hidden',
+                    }}
+                >
+                    <div
+                        style={{
+                            width: '60%',
+                            height: '100%',
+                            backgroundColor: '#3b82f6',
+                        }}
+                    />
+                </div>
+            )
+        case 'chip':
+            return (
+                <span
+                    style={{
+                        fontSize: '10px',
+                        padding: '2px 6px',
+                        backgroundColor: '#f3f4f6',
+                        color: '#374151',
+                        borderRadius: '12px',
+                        border: '1px solid #d1d5db',
+                    }}
+                >
+                    Premium
+                </span>
+            )
+        case 'counter':
+            return (
+                <span
+                    style={{
+                        fontSize: '11px',
+                        fontWeight: '600',
+                        color: '#ef4444',
+                    }}
+                >
+                    3 items
+                </span>
+            )
         case 'none':
-        default: return undefined
+        default:
+            return undefined
     }
 }
 
@@ -214,19 +279,20 @@ export const Default: Story = {
         subtextSlot: 'none',
         isDisabled: false,
         chevronPosition: AccordionChevronPosition.RIGHT,
-        children: 'An accordion is a vertically stacked list of interactive headings that each reveal an associated section of content.',
+        children:
+            'An accordion is a vertically stacked list of interactive headings that each reveal an associated section of content.',
         className: '',
     },
     render: (args: any) => (
         <div style={{ width: '600px' }}>
-            <Accordion 
+            <Accordion
                 accordionType={args.accordionType}
                 isMultiple={args.isMultiple}
                 defaultValue={args.isMultiple ? [] : undefined}
                 onValueChange={args.onValueChange}
             >
-                <AccordionItem 
-                    value="item-1" 
+                <AccordionItem
+                    value="item-1"
                     title={args.title}
                     subtext={args.subtext}
                     leftSlot={getLeftSlot(args.leftSlot)}
@@ -236,9 +302,7 @@ export const Default: Story = {
                     chevronPosition={args.chevronPosition}
                     className={args.className}
                 >
-                    <div style={{ padding: '16px' }}>
-                        {args.children}
-                    </div>
+                    <div style={{ padding: '16px' }}>{args.children}</div>
                 </AccordionItem>
                 <AccordionItem value="item-2" title="When should I use it?">
                     <div style={{ padding: '16px' }}>
@@ -921,8 +985,9 @@ export const WithCustomStyling: Story = {
                     data-testid="custom-accordion-item-1"
                 >
                     <div className="custom-content" style={{ padding: '16px' }}>
-                        This accordion item has custom CSS styling applied through
-                        the className prop and additional HTML attributes.
+                        This accordion item has custom CSS styling applied
+                        through the className prop and additional HTML
+                        attributes.
                     </div>
                 </AccordionItem>
                 <AccordionItem
@@ -933,8 +998,9 @@ export const WithCustomStyling: Story = {
                     data-testid="custom-accordion-item-2"
                 >
                     <div className="custom-content" style={{ padding: '16px' }}>
-                        You can pass any valid HTML div attributes to AccordionItem
-                        components for enhanced functionality and styling.
+                        You can pass any valid HTML div attributes to
+                        AccordionItem components for enhanced functionality and
+                        styling.
                     </div>
                 </AccordionItem>
                 <AccordionItem
@@ -945,8 +1011,9 @@ export const WithCustomStyling: Story = {
                     data-testid="custom-accordion-item-3"
                 >
                     <div className="custom-content" style={{ padding: '16px' }}>
-                        The className prop allows for complete visual customization
-                        while maintaining all accordion functionality.
+                        The className prop allows for complete visual
+                        customization while maintaining all accordion
+                        functionality.
                     </div>
                 </AccordionItem>
             </Accordion>
@@ -963,7 +1030,7 @@ export const WithCustomStyling: Story = {
 
 // Controlled example
 export const Controlled: Story = {
-    render: () => {
+    render: function ControlledExample() {
         const [value, setValue] = React.useState<string>('item-2')
 
         return (
@@ -1007,5 +1074,3 @@ export const Controlled: Story = {
         },
     },
 }
-
-
