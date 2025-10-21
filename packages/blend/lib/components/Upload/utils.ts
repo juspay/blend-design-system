@@ -234,22 +234,46 @@ export const createFileInputChangeHandler =
 
 export const getUploadContent = (
     uploadingFiles: UploadFile[],
-    uploadedFiles: File[],
-    state: UploadState
+    uploadedFiles: {
+        id: string
+        file: File
+        status: 'success' | 'error'
+        error?: string
+    }[],
+    failedFiles: {
+        id: string
+        file: File
+        status: 'success' | 'error'
+        error?: string
+    }[],
+    state: UploadState,
+    multiple?: boolean
 ) => {
     const hasUploadingFiles =
         uploadingFiles.length > 0 &&
         uploadingFiles.some((f) => f.status === UploadState.UPLOADING)
+
     const uploadingFile = uploadingFiles.find(
         (f) => f.status === UploadState.UPLOADING
     )
-    const uploadedFile = uploadedFiles.length > 0 ? uploadedFiles[0] : null
+
+    const successfulFiles =
+        uploadedFiles?.filter((f) => f.status === 'success') || []
+    const errorFiles = failedFiles?.filter((f) => f.status === 'error') || []
+
+    const hasSuccessfulFiles = successfulFiles.length > 0
+    const hasErrorFiles = errorFiles.length > 0
 
     return {
         hasUploadingFiles,
         uploadingFile,
-        uploadedFile,
-        isSuccess: state === UploadState.SUCCESS && uploadedFile,
+        successfulFiles,
+        errorFiles,
+        hasSuccessfulFiles,
+        hasErrorFiles,
+        isSuccess: state === UploadState.SUCCESS && hasSuccessfulFiles,
+        isError: state === UploadState.ERROR && hasErrorFiles,
+        multiple: multiple || false,
     }
 }
 
@@ -261,4 +285,89 @@ export const getMainTitle = (
         return isDragAccept ? 'Drop files here' : 'Invalid file type'
     }
     return 'Choose a file or drag & drop it here'
+}
+
+export const getUploadStateTitle = (
+    state: UploadState,
+    multiple: boolean,
+    hasSuccessfulFiles: boolean,
+    hasErrorFiles: boolean,
+    fileName?: string
+): string => {
+    switch (state) {
+        case UploadState.UPLOADING:
+            return fileName
+                ? `Uploading '${fileName}'...`
+                : 'Uploading files...'
+        case UploadState.SUCCESS:
+            if (multiple && hasSuccessfulFiles) {
+                return 'Files successfully added'
+            }
+            return 'File successfully added'
+        case UploadState.ERROR:
+            if (multiple && hasErrorFiles) {
+                return 'Failed to upload multiple files'
+            }
+            return 'File upload failed'
+        default:
+            return getMainTitle(false, false)
+    }
+}
+
+export const getUploadStateDescription = (
+    state: UploadState,
+    multiple: boolean,
+    successfulFiles: { id: string; file: File; status: string }[],
+    errorFiles: { id: string; file: File; status: string }[],
+    userDescription?: string,
+    fileName?: string
+): string => {
+    switch (state) {
+        case UploadState.UPLOADING:
+            return userDescription || 'Please wait while uploading your file'
+        case UploadState.SUCCESS:
+            if (multiple && successfulFiles.length > 0) {
+                return "We've successfully uploaded the following files"
+            }
+            return fileName || 'File uploaded successfully'
+        case UploadState.ERROR:
+            if (multiple && errorFiles.length > 0) {
+                return `${errorFiles.length} files failed`
+            }
+            return 'Upload failed. Please try again.'
+        default:
+            return userDescription || ''
+    }
+}
+
+export const getVisualUploadState = (
+    disabled: boolean,
+    isDragReject: boolean,
+    isDragAccept: boolean,
+    isDragActive: boolean,
+    state: UploadState
+): string => {
+    if (disabled) return 'error'
+    if (isDragActive) {
+        if (isDragReject) return 'error'
+        if (isDragAccept) return 'dragActive'
+        return 'dragActive'
+    }
+    return state
+}
+
+export const truncateFileList = (
+    files: { id: string; file: File; status: string }[]
+): {
+    displayFiles: { id: string; file: File; status: string }[]
+    truncatedCount: number
+} => {
+    const maxFiles = 2 * 2 // Assume 2 files per row
+    if (files.length <= maxFiles) {
+        return { displayFiles: files, truncatedCount: 0 }
+    }
+    return {
+        displayFiles: files.slice(0, maxFiles),
+        truncatedCount: files.length - maxFiles,
+    }
 }

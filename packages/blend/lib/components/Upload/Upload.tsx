@@ -3,13 +3,15 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { Button, ButtonType, ButtonSize } from '../Button'
 import { ProgressBar, ProgressBarSize } from '../ProgressBar'
-import { UploadSize, UploadState } from './types'
-import type { UploadProps } from './types'
+import Tag from '../Tags/Tags'
+import { TagColor, TagVariant, TagShape } from '../Tags/types'
+import { UploadState } from './types'
+import type { UploadProps, UploadedFileWithStatus } from './types'
 import type { UploadTokenType } from './upload.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { Repeat2, X } from 'lucide-react'
 import {
     useUploadState,
-    getVisualState,
     validateFile,
     processFiles,
     updateDragState,
@@ -18,24 +20,84 @@ import {
     createFileInputChangeHandler,
     getUploadContent,
     getMainTitle,
+    getVisualUploadState,
+    truncateFileList,
 } from './utils'
+
+const FileListDisplay: React.FC<{
+    files: UploadedFileWithStatus[]
+    onFileRemove?: (fileId: string) => void
+    uploadTokens: UploadTokenType
+}> = ({ files, onFileRemove, uploadTokens }) => {
+    const { displayFiles, truncatedCount } = truncateFileList(files)
+
+    return (
+        <Block
+            display="flex"
+            flexDirection="column"
+            gap={uploadTokens.fileList.gap}
+            marginTop={uploadTokens.fileList.marginTop}
+        >
+            <Block
+                display="flex"
+                flexWrap="wrap"
+                gap={uploadTokens.fileList.gap}
+            >
+                {displayFiles.map((file) => (
+                    <Tag
+                        key={file.id}
+                        text={file.file.name}
+                        variant={TagVariant.SUBTLE}
+                        color={
+                            file.status === 'error'
+                                ? TagColor.ERROR
+                                : TagColor.NEUTRAL
+                        }
+                        shape={TagShape.ROUNDED}
+                        rightSlot={
+                            onFileRemove ? (
+                                <X
+                                    size={12}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        onFileRemove(file.id)
+                                    }}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                            ) : undefined
+                        }
+                    />
+                ))}
+            </Block>
+            {truncatedCount > 0 && (
+                <Text
+                    fontSize={uploadTokens.text.description.fontSize}
+                    fontWeight={uploadTokens.text.description.fontWeight}
+                    color={uploadTokens.text.description.color.idle}
+                >
+                    +{truncatedCount} more files
+                </Text>
+            )}
+        </Block>
+    )
+}
 
 const UploadingState: React.FC<{
     uploadingFile: { file: File; progress: number }
     children?: React.ReactNode
-    size: UploadSize
+    description?: string
     uploadTokens: UploadTokenType
-}> = ({ uploadingFile, children, size, uploadTokens }) => (
+}> = ({ uploadingFile, children, description, uploadTokens }) => (
     <Block
         display="flex"
         flexDirection="column"
         alignItems="center"
-        gap={uploadTokens?.slot?.gap?.[size]}
+        gap={uploadTokens.container.gap}
     >
         {children && (
             <Block
-                width="32px"
-                height="32px"
+                width={uploadTokens.slot.width}
+                height={uploadTokens.slot.width}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -46,36 +108,34 @@ const UploadingState: React.FC<{
 
         <Text
             as="span"
-            fontSize={uploadTokens?.text?.title?.fontSize?.[size]}
-            fontWeight={uploadTokens?.text?.title?.fontWeight?.[size]}
-            color={uploadTokens?.text?.filename?.color?.[UploadState.IDLE]}
+            fontSize={uploadTokens.text.title.fontSize}
+            fontWeight={uploadTokens.text.title.fontWeight}
+            color={uploadTokens.text.title.color.idle}
             textAlign="center"
         >
             Uploading{' '}
             <Text
                 as="span"
-                fontSize={uploadTokens?.text?.title?.fontSize?.[size]}
-                fontWeight={uploadTokens?.text?.title?.fontWeight?.[size]}
-                color={
-                    uploadTokens?.text?.title?.color?.[UploadState.UPLOADING]
-                }
+                fontSize={uploadTokens.text.filename.fontSize}
+                fontWeight={uploadTokens.text.filename.fontWeight}
+                color={uploadTokens.text.filename.primaryColor}
             >
                 '{uploadingFile.file.name}'
             </Text>
             ...
         </Text>
 
-        <Text
-            as="span"
-            fontSize={uploadTokens?.text?.description?.fontSize?.[size]}
-            fontWeight={uploadTokens?.text?.description?.fontWeight?.[size]}
-            color={
-                uploadTokens?.text?.description?.color?.[UploadState.UPLOADING]
-            }
-            textAlign="center"
-        >
-            Please wait while you're uploading your file
-        </Text>
+        {description && (
+            <Text
+                as="span"
+                fontSize={uploadTokens.text.description.fontSize}
+                fontWeight={uploadTokens.text.description.fontWeight}
+                color={uploadTokens.text.description.color.uploading}
+                textAlign="center"
+            >
+                {description}
+            </Text>
+        )}
 
         <Block width="100%">
             <ProgressBar
@@ -88,21 +148,30 @@ const UploadingState: React.FC<{
 )
 
 const SuccessState: React.FC<{
-    uploadedFile: File
+    successfulFiles: UploadedFileWithStatus[]
+    multiple: boolean
     children?: React.ReactNode
-    size: UploadSize
+    onReplaceFile?: () => void
+    onFileRemove?: (fileId: string) => void
     uploadTokens: UploadTokenType
-}> = ({ uploadedFile, children, size, uploadTokens }) => (
+}> = ({
+    successfulFiles,
+    multiple,
+    children,
+    onReplaceFile,
+    onFileRemove,
+    uploadTokens,
+}) => (
     <Block
         display="flex"
         flexDirection="column"
         alignItems="center"
-        gap={uploadTokens?.slot?.gap?.[size]}
+        gap={uploadTokens.container.gap}
     >
         {children && (
             <Block
-                width="32px"
-                height="32px"
+                width={uploadTokens.slot.width}
+                height={uploadTokens.slot.width}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -111,22 +180,144 @@ const SuccessState: React.FC<{
             </Block>
         )}
 
-        <Text
-            as="span"
-            fontSize={uploadTokens?.text?.title?.fontSize?.[size]}
-            fontWeight={uploadTokens?.text?.title?.fontWeight?.[size]}
-            color={uploadTokens?.text?.title?.color?.[UploadState.SUCCESS]}
-            textAlign="center"
+        <Block
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            gap={uploadTokens.text.gap}
         >
-            Uploaded '{uploadedFile.name}'
-        </Text>
+            <Text
+                as="span"
+                fontSize={uploadTokens.text.title.fontSize}
+                fontWeight={uploadTokens.text.title.fontWeight}
+                color={uploadTokens.text.title.color.success}
+                textAlign="center"
+            >
+                {multiple
+                    ? 'Files successfully added'
+                    : 'File successfully added'}
+            </Text>
+
+            <Text
+                as="span"
+                fontSize={uploadTokens.text.description.fontSize}
+                fontWeight={uploadTokens.text.description.fontWeight}
+                color={uploadTokens.text.description.color.success}
+                textAlign="center"
+            >
+                {multiple
+                    ? "We've successfully uploaded the following files"
+                    : successfulFiles[0]?.file.name || ''}
+            </Text>
+        </Block>
+
+        {multiple ? (
+            <FileListDisplay
+                files={successfulFiles}
+                onFileRemove={onFileRemove}
+                uploadTokens={uploadTokens}
+            />
+        ) : (
+            onReplaceFile && (
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.MEDIUM}
+                    leadingIcon={<Repeat2 />}
+                    text="Replace file"
+                    onClick={onReplaceFile}
+                />
+            )
+        )}
+    </Block>
+)
+
+const ErrorState: React.FC<{
+    errorFiles: UploadedFileWithStatus[]
+    multiple: boolean
+    children?: React.ReactNode
+    errorText?: string
+    onFileRemove?: (fileId: string) => void
+    uploadTokens: UploadTokenType
+}> = ({
+    errorFiles,
+    multiple,
+    children,
+    errorText,
+    onFileRemove,
+    uploadTokens,
+}) => (
+    <Block
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={uploadTokens.container.gap}
+    >
+        {children && (
+            <Block
+                width={uploadTokens.slot.width}
+                height={uploadTokens.slot.width}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+            >
+                {children}
+            </Block>
+        )}
+
+        <Block
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            gap={uploadTokens.text.gap}
+        >
+            <Text
+                as="span"
+                fontSize={uploadTokens.text.title.fontSize}
+                fontWeight={uploadTokens.text.title.fontWeight}
+                color={uploadTokens.text.title.color.error}
+                textAlign="center"
+            >
+                {multiple
+                    ? 'Failed to upload multiple files'
+                    : 'File upload failed'}
+            </Text>
+
+            <Text
+                as="span"
+                fontSize={uploadTokens.text.description.fontSize}
+                fontWeight={uploadTokens.text.description.fontWeight}
+                color={uploadTokens.text.description.color.error}
+                textAlign="center"
+            >
+                {multiple
+                    ? `${errorFiles.length} files failed`
+                    : 'Upload failed. Please try again.'}
+            </Text>
+        </Block>
+
+        {multiple ? (
+            <FileListDisplay
+                files={errorFiles}
+                onFileRemove={onFileRemove}
+                uploadTokens={uploadTokens}
+            />
+        ) : (
+            errorText && (
+                <Text
+                    fontSize={uploadTokens.text.error.fontSize}
+                    fontWeight={uploadTokens.text.error.fontWeight}
+                    color={uploadTokens.text.error.color}
+                    textAlign="center"
+                >
+                    {errorText}
+                </Text>
+            )
+        )}
     </Block>
 )
 
 const DefaultState: React.FC<{
     children?: React.ReactNode
-    size: UploadSize
-    state: UploadState
     description?: string
     isDragActive: boolean
     isDragAccept: boolean
@@ -134,8 +325,6 @@ const DefaultState: React.FC<{
     uploadTokens: UploadTokenType
 }> = ({
     children,
-    size,
-    state,
     description,
     isDragActive,
     isDragAccept,
@@ -146,12 +335,12 @@ const DefaultState: React.FC<{
         display="flex"
         flexDirection="column"
         alignItems="center"
-        gap={uploadTokens?.slot?.gap?.[size]}
+        gap={uploadTokens.container.gap}
     >
         {children && (
             <Block
-                width="32px"
-                height="32px"
+                width={uploadTokens.slot.width}
+                height={uploadTokens.slot.width}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -160,27 +349,34 @@ const DefaultState: React.FC<{
             </Block>
         )}
 
-        <Text
-            as="span"
-            fontSize={uploadTokens?.text?.title?.fontSize?.[size]}
-            fontWeight={uploadTokens?.text?.title?.fontWeight?.[size]}
-            color={uploadTokens?.text?.filename?.color?.[state]}
-            textAlign="center"
+        <Block
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            gap={uploadTokens.text.gap}
         >
-            {getMainTitle(isDragActive, isDragAccept)}
-        </Text>
-
-        {description && !isDragActive && (
             <Text
                 as="span"
-                fontSize={uploadTokens?.text?.description?.fontSize?.[size]}
-                fontWeight={uploadTokens?.text?.description?.fontWeight?.[size]}
-                color={uploadTokens?.text?.description?.color?.[state]}
+                fontSize={uploadTokens.text.title.fontSize}
+                fontWeight={uploadTokens.text.title.fontWeight}
+                color={uploadTokens.text.title.color.idle}
                 textAlign="center"
             >
-                {description}
+                {getMainTitle(isDragActive, isDragAccept)}
             </Text>
-        )}
+
+            {description && !isDragActive && (
+                <Text
+                    as="span"
+                    fontSize={uploadTokens.text.description.fontSize}
+                    fontWeight={uploadTokens.text.description.fontWeight}
+                    color={uploadTokens.text.description.color.idle}
+                    textAlign="center"
+                >
+                    {description}
+                </Text>
+            )}
+        </Block>
 
         {!isDragActive && (
             <Button
@@ -194,21 +390,27 @@ const DefaultState: React.FC<{
 )
 
 const Upload: React.FC<UploadProps> = ({
-    size = UploadSize.MEDIUM,
     multiple = false,
     accept = [],
     maxSize,
     maxFiles = multiple ? undefined : 1,
     disabled = false,
+    required = false,
+    label,
+    subLabel,
     children,
     description,
     className,
+    errorText,
     state = UploadState.IDLE,
     uploadingFiles = [],
     uploadedFiles = [],
+    failedFiles = [],
     onDrop,
     onDropAccepted,
     onDropRejected,
+    onFileRemove,
+    onReplaceFile,
     isDragActive: controlledIsDragActive,
     isDragAccept: controlledIsDragAccept,
     isDragReject: controlledIsDragReject,
@@ -228,11 +430,12 @@ const Upload: React.FC<UploadProps> = ({
     const isDragReject =
         controlledIsDragReject ?? internalDragState.isDragReject
 
-    const visualState = getVisualState(
+    const visualState = getVisualUploadState(
         disabled,
         isDragReject,
         isDragAccept,
-        isDragActive
+        isDragActive,
+        state
     )
 
     const validateFileFn = validateFile(accept, maxSize, validator)
@@ -262,27 +465,47 @@ const Upload: React.FC<UploadProps> = ({
     )
     const handleFileInputChange = createFileInputChangeHandler(processFilesFn)
 
-    const { hasUploadingFiles, uploadingFile, uploadedFile, isSuccess } =
-        getUploadContent(uploadingFiles, uploadedFiles, state)
+    const uploadContent = getUploadContent(
+        uploadingFiles,
+        uploadedFiles,
+        failedFiles,
+        state,
+        multiple
+    )
 
     const renderContent = () => {
-        if (hasUploadingFiles && uploadingFile) {
+        if (uploadContent.hasUploadingFiles && uploadContent.uploadingFile) {
             return (
                 <UploadingState
-                    uploadingFile={uploadingFile}
+                    uploadingFile={uploadContent.uploadingFile}
                     children={children}
-                    size={size}
+                    description={description}
                     uploadTokens={uploadTokens}
                 />
             )
         }
 
-        if (isSuccess && uploadedFile) {
+        if (uploadContent.isSuccess && uploadContent.hasSuccessfulFiles) {
             return (
                 <SuccessState
-                    uploadedFile={uploadedFile}
+                    successfulFiles={uploadContent.successfulFiles}
+                    multiple={uploadContent.multiple}
                     children={children}
-                    size={size}
+                    onReplaceFile={onReplaceFile}
+                    onFileRemove={onFileRemove}
+                    uploadTokens={uploadTokens}
+                />
+            )
+        }
+
+        if (uploadContent.isError && uploadContent.hasErrorFiles) {
+            return (
+                <ErrorState
+                    errorFiles={uploadContent.errorFiles}
+                    multiple={uploadContent.multiple}
+                    children={children}
+                    errorText={errorText}
+                    onFileRemove={onFileRemove}
                     uploadTokens={uploadTokens}
                 />
             )
@@ -291,8 +514,6 @@ const Upload: React.FC<UploadProps> = ({
         return (
             <DefaultState
                 children={children}
-                size={size}
-                state={state}
                 description={description}
                 isDragActive={isDragActive}
                 isDragAccept={isDragAccept}
@@ -303,24 +524,67 @@ const Upload: React.FC<UploadProps> = ({
     }
 
     return (
-        <Block className={className} {...rest}>
+        <Block className={className} padding={uploadTokens.padding} {...rest}>
+            {/* Label Section */}
+            {label && (
+                <Block
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    marginBottom={uploadTokens.label.marginBottom}
+                >
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        gap={uploadTokens.label.gap}
+                    >
+                        <Text
+                            fontSize={uploadTokens.label.text.fontSize}
+                            fontWeight={uploadTokens.label.text.fontWeight}
+                            color={uploadTokens.label.text.color}
+                        >
+                            {label}
+                        </Text>
+                        {required && (
+                            <Text
+                                fontSize={uploadTokens.label.text.fontSize}
+                                fontWeight={uploadTokens.label.text.fontWeight}
+                                color={uploadTokens.required.text.color}
+                            >
+                                *
+                            </Text>
+                        )}
+                    </Block>
+                    {subLabel && (
+                        <Text
+                            fontSize={uploadTokens.subLabel.text.fontSize}
+                            fontWeight={uploadTokens.subLabel.text.fontWeight}
+                            color={uploadTokens.subLabel.text.color}
+                        >
+                            {subLabel}
+                        </Text>
+                    )}
+                </Block>
+            )}
+
+            {/* Upload Container */}
             <Block
                 display="flex"
                 flexDirection="column"
                 border={
-                    uploadTokens?.container?.border?.[
+                    uploadTokens.container.border[
                         visualState as keyof typeof uploadTokens.container.border
                     ]
                 }
-                borderRadius={uploadTokens?.container?.borderRadius?.[size]}
+                borderRadius={uploadTokens.container.borderRadius}
                 backgroundColor={
-                    uploadTokens?.container?.backgroundColor?.[
+                    uploadTokens.container.backgroundColor[
                         visualState as keyof typeof uploadTokens.container.backgroundColor
                     ]
                 }
-                padding={uploadTokens?.container?.padding?.[size]}
+                padding={uploadTokens.container.padding}
                 cursor={disabled ? 'not-allowed' : 'pointer'}
-                style={{ transition: uploadTokens?.transition }}
+                style={{ transition: 'all 0.2s ease-in-out' }}
                 onClick={handleClick}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
