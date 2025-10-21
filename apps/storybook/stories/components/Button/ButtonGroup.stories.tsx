@@ -35,6 +35,7 @@ A modern container component for grouping Button components with automatic posit
 - Stacked and non-stacked layouts
 - Works seamlessly with Button components
 - Automatic border radius adjustment for connected buttons
+- Automatically applies buttonGroupPosition prop to Button children when stacked=true
 - Simple and clean API
 
 ## Usage
@@ -75,6 +76,113 @@ export const Default: Story = {
             <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
         </ButtonGroup>
     ),
+}
+
+// Button group positioning demonstration
+export const ButtonGroupPositioning: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Manual Position (Individual Buttons)
+                </h4>
+                <p style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
+                    Using buttonGroupPosition prop manually on individual buttons
+                </p>
+                <div style={{ display: 'flex' }}>
+                    <Button
+                        text="Left"
+                        buttonType={ButtonType.SECONDARY}
+                        buttonGroupPosition="left"
+                    />
+                    <Button
+                        text="Center"
+                        buttonType={ButtonType.SECONDARY}
+                        buttonGroupPosition="center"
+                    />
+                    <Button
+                        text="Right"
+                        buttonType={ButtonType.SECONDARY}
+                        buttonGroupPosition="right"
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Automatic Position (ButtonGroup stacked=true)
+                </h4>
+                <p style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
+                    ButtonGroup automatically applies buttonGroupPosition to children
+                </p>
+                <ButtonGroup stacked={true}>
+                    <Button text="Left" buttonType={ButtonType.SECONDARY} />
+                    <Button text="Center" buttonType={ButtonType.SECONDARY} />
+                    <Button text="Right" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Two Button Group
+                </h4>
+                <p style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
+                    First button gets 'left', last button gets 'right' position
+                </p>
+                <ButtonGroup stacked={true}>
+                    <Button text="Save" buttonType={ButtonType.PRIMARY} />
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Five Button Group
+                </h4>
+                <p style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
+                    First gets 'left', last gets 'right', middle buttons get 'center'
+                </p>
+                <ButtonGroup stacked={true}>
+                    <Button text="1" buttonType={ButtonType.SECONDARY} />
+                    <Button text="2" buttonType={ButtonType.SECONDARY} />
+                    <Button text="3" buttonType={ButtonType.PRIMARY} />
+                    <Button text="4" buttonType={ButtonType.SECONDARY} />
+                    <Button text="5" buttonType={ButtonType.SECONDARY} />
+                </ButtonGroup>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates how ButtonGroup automatically applies buttonGroupPosition prop to its children when stacked=true. This creates seamless connected buttons with proper border radius handling.',
+            },
+        },
+    },
 }
 
 // Stacked vs Non-stacked

@@ -5,6 +5,7 @@ import {
     ButtonType,
     ButtonSize,
     ButtonSubType,
+    ButtonState,
 } from '@juspay/blend-design-system'
 import {
     Plus,
@@ -100,6 +101,21 @@ import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
             options: ['flex-start', 'center', 'flex-end', 'space-between'],
             description: 'Content alignment within the button',
         },
+        state: {
+            control: 'select',
+            options: Object.values(ButtonState),
+            description: 'Visual state of the button',
+        },
+        leadingIcon: {
+            control: 'select',
+            options: ['none', 'plus', 'download', 'settings', 'heart', 'star', 'search', 'edit'],
+            description: 'Icon to display before the button text',
+        },
+        trailingIcon: {
+            control: 'select',
+            options: ['none', 'plus', 'download', 'settings', 'heart', 'star', 'search', 'edit'],
+            description: 'Icon to display after the button text',
+        },
         onClick: {
             action: 'clicked',
             description: 'Click handler function',
@@ -111,15 +127,42 @@ import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
 export default meta
 type Story = StoryObj<typeof Button>
 
+// Helper function to render icons based on control selection
+const getIcon = (iconType: string) => {
+    switch (iconType) {
+        case 'plus': return <Plus size={16} />
+        case 'download': return <Download size={16} />
+        case 'settings': return <Settings size={16} />
+        case 'heart': return <Heart size={16} />
+        case 'star': return <Star size={16} />
+        case 'search': return <Search size={16} />
+        case 'edit': return <Edit size={16} />
+        case 'none':
+        default: return undefined
+    }
+}
+
 // Default story
 export const Default: Story = {
     args: {
         buttonType: ButtonType.PRIMARY,
         size: ButtonSize.MEDIUM,
+        subType: ButtonSubType.DEFAULT,
         text: 'Button',
         loading: false,
         disabled: false,
+        fullWidth: false,
+        state: ButtonState.DEFAULT,
+        leadingIcon: 'none',
+        trailingIcon: 'none',
     },
+    render: (args: any) => (
+        <Button
+            {...args}
+            leadingIcon={getIcon(args.leadingIcon)}
+            trailingIcon={getIcon(args.trailingIcon)}
+        />
+    ),
 }
 
 // Button types
@@ -443,7 +486,7 @@ export const ButtonGroupPositioning: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Button group positioning affects border radius to create seamless button groups.',
+                story: 'Manual usage of buttonGroupPosition prop on individual buttons. For automatic positioning, use the ButtonGroup component instead.',
             },
         },
     },
@@ -614,6 +657,42 @@ export const Showcase: Story = {
         docs: {
             description: {
                 story: 'A comprehensive showcase of Button capabilities and variations.',
+            },
+        },
+    },
+}
+
+// Interactive playground
+export const Interactive: Story = {
+    args: {
+        buttonType: ButtonType.PRIMARY,
+        size: ButtonSize.MEDIUM,
+        subType: ButtonSubType.DEFAULT,
+        text: 'Interactive Button',
+        loading: false,
+        disabled: false,
+        fullWidth: false,
+        state: ButtonState.DEFAULT,
+        leadingIcon: 'plus',
+        trailingIcon: 'none',
+        justifyContent: 'center',
+    },
+    render: (args: any) => (
+        <div style={{ padding: '20px', textAlign: 'center' }}>
+            <Button
+                {...args}
+                leadingIcon={getIcon(args.leadingIcon)}
+                trailingIcon={getIcon(args.trailingIcon)}
+            />
+            <div style={{ marginTop: '16px', fontSize: '14px', color: '#666' }}>
+                Use the controls below to experiment with different button configurations
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interactive playground to experiment with all Button props using the controls panel.',
             },
         },
     },
