@@ -86,13 +86,13 @@ if (typeof window !== 'undefined') {
     }
   `
     document.head.appendChild(style)
-    
+
     // Also disable animations at the global level for Recharts
     if (window.requestAnimationFrame) {
         const originalRAF = window.requestAnimationFrame
-        window.requestAnimationFrame = function(callback) {
+        window.requestAnimationFrame = function (callback) {
             // For Recharts animations, execute immediately
-            return originalRAF.call(this, function() {
+            return originalRAF.call(this, function () {
                 callback(Date.now())
             })
         }
@@ -152,7 +152,8 @@ const data = [
         chartType: {
             control: 'select',
             options: Object.values(ChartType),
-            description: 'The type of chart to render (Line, Bar, Pie, Scatter)',
+            description:
+                'The type of chart to render (Line, Bar, Pie, Scatter)',
         },
         data: {
             control: 'object',
@@ -173,7 +174,8 @@ const data = [
         },
         stackedLegendsData: {
             control: 'object',
-            description: 'Data for stacked legends with value, delta, and change type',
+            description:
+                'Data for stacked legends with value, delta, and change type',
         },
         barsize: {
             control: 'number',
@@ -181,15 +183,18 @@ const data = [
         },
         xAxis: {
             control: 'object',
-            description: 'X-axis configuration with label, type, formatting options',
+            description:
+                'X-axis configuration with label, type, formatting options',
         },
         yAxis: {
             control: 'object',
-            description: 'Y-axis configuration with label, type, formatting options',
+            description:
+                'Y-axis configuration with label, type, formatting options',
         },
         noData: {
             control: 'object',
-            description: 'Configuration for no-data state with title, subtitle, slot, and button',
+            description:
+                'Configuration for no-data state with title, subtitle, slot, and button',
         },
         height: {
             control: 'number',
@@ -889,9 +894,7 @@ export const InteractivePlayground: Story = {
             </div>
         ),
         slot1: (
-            <span style={{ color: '#10b981', fontSize: '14px' }}>
-                +12.5%
-            </span>
+            <span style={{ color: '#10b981', fontSize: '14px' }}>+12.5%</span>
         ),
     },
     parameters: {

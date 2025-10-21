@@ -1,7 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
 import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system'
-import { CreditCard, DollarSign, Smartphone, Shield, Star, Info, Settings } from 'lucide-react'
+import {
+    CreditCard,
+    DollarSign,
+    Smartphone,
+    Shield,
+    Star,
+    Info,
+    Settings,
+} from 'lucide-react'
 
 // Helper function for slot content rendering
 const getSlotContent = (slotType: string) => {
@@ -110,7 +118,14 @@ import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system';
         },
         slot: {
             control: 'select',
-            options: ['none', 'star', 'info', 'settings', 'creditCard', 'dollar'],
+            options: [
+                'none',
+                'star',
+                'info',
+                'settings',
+                'creditCard',
+                'dollar',
+            ],
             description: 'Additional content slot displayed next to the label',
         },
         onChange: {

@@ -1,7 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
 import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system'
-import { Settings, Wifi, Bluetooth, Bell, Moon, Star, Info, Shield } from 'lucide-react'
+import {
+    Settings,
+    Wifi,
+    Bluetooth,
+    Bell,
+    Moon,
+    Star,
+    Info,
+    Shield,
+} from 'lucide-react'
 
 // Helper function for slot content rendering
 const getSlotContent = (slotType: string) => {
@@ -115,7 +124,17 @@ import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system';
         },
         slot: {
             control: 'select',
-            options: ['none', 'star', 'info', 'settings', 'wifi', 'bluetooth', 'bell', 'moon', 'shield'],
+            options: [
+                'none',
+                'star',
+                'info',
+                'settings',
+                'wifi',
+                'bluetooth',
+                'bell',
+                'moon',
+                'shield',
+            ],
             description: 'Additional content slot displayed next to the label',
         },
         onChange: {

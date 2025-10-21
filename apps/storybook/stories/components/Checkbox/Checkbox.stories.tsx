@@ -64,7 +64,8 @@ import { Checkbox, CheckboxSize } from '@juspay/blend-design-system';
         },
         value: {
             control: 'text',
-            description: 'Value attribute for the checkbox input (useful in forms)',
+            description:
+                'Value attribute for the checkbox input (useful in forms)',
         },
         checked: {
             control: { type: 'select' },
