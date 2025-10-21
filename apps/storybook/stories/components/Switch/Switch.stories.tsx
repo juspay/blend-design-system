@@ -1,7 +1,32 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
 import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system'
-import { Settings, Wifi, Bluetooth, Bell, Moon, Star } from 'lucide-react'
+import { Settings, Wifi, Bluetooth, Bell, Moon, Star, Info, Shield } from 'lucide-react'
+
+// Helper function for slot content rendering
+const getSlotContent = (slotType: string) => {
+    switch (slotType) {
+        case 'star':
+            return <Star size={16} color="#ffd700" />
+        case 'info':
+            return <Info size={16} color="#0ea5e9" />
+        case 'settings':
+            return <Settings size={16} color="#6b7280" />
+        case 'wifi':
+            return <Wifi size={16} color="#10b981" />
+        case 'bluetooth':
+            return <Bluetooth size={16} color="#3b82f6" />
+        case 'bell':
+            return <Bell size={16} color="#f59e0b" />
+        case 'moon':
+            return <Moon size={16} color="#6366f1" />
+        case 'shield':
+            return <Shield size={16} color="#ef4444" />
+        case 'none':
+        default:
+            return undefined
+    }
+}
 
 const meta: Meta<typeof Switch> = {
     title: 'Components/Switch',
@@ -43,6 +68,10 @@ import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system';
         },
     },
     argTypes: {
+        id: {
+            control: 'text',
+            description: 'Unique identifier for the switch element',
+        },
         checked: {
             control: 'boolean',
             description: 'Controlled checked state of the switch',
@@ -84,6 +113,11 @@ import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system';
             control: 'text',
             description: 'Name attribute for form submission',
         },
+        slot: {
+            control: 'select',
+            options: ['none', 'star', 'info', 'settings', 'wifi', 'bluetooth', 'bell', 'moon', 'shield'],
+            description: 'Additional content slot displayed next to the label',
+        },
         onChange: {
             action: 'changed',
             description: 'Callback fired when the switch state changes',
@@ -97,6 +131,18 @@ type Story = StoryObj<typeof Switch>
 
 // Default story
 export const Default: Story = {
+    render: function DefaultSwitch(args) {
+        const [checked, setChecked] = useState(args.defaultChecked || false)
+
+        return (
+            <Switch
+                {...args}
+                checked={checked}
+                onChange={(newChecked) => setChecked(newChecked)}
+                slot={getSlotContent(args.slot)}
+            />
+        )
+    },
     args: {
         label: 'Default switch',
         size: SwitchSize.MEDIUM,
@@ -104,6 +150,10 @@ export const Default: Story = {
         disabled: false,
         required: false,
         error: false,
+        id: '',
+        value: '',
+        name: '',
+        slot: 'none',
     },
 }
 
@@ -758,6 +808,42 @@ export const UncontrolledSwitch: Story = {
         docs: {
             description: {
                 story: 'Demonstrates switches with different initial states but full interactivity. Click to toggle - the labels show current state values.',
+            },
+        },
+    },
+}
+
+// Interactive playground
+export const Interactive: Story = {
+    render: function InteractiveSwitch(args) {
+        const [checked, setChecked] = useState(args.defaultChecked || false)
+
+        return (
+            <Switch
+                {...args}
+                checked={checked}
+                onChange={(newChecked) => setChecked(newChecked)}
+                slot={getSlotContent(args.slot)}
+            />
+        )
+    },
+    args: {
+        label: 'Interactive switch playground',
+        size: SwitchSize.MEDIUM,
+        defaultChecked: false,
+        disabled: false,
+        required: false,
+        error: false,
+        subtext: 'Customize all props using controls',
+        id: 'interactive-switch',
+        value: 'interactive-value',
+        name: 'interactive-group',
+        slot: 'none',
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interactive playground to test all switch props and combinations. Use the controls panel to modify any property.',
             },
         },
     },
