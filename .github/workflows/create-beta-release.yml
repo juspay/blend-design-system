@@ -130,20 +130,18 @@ jobs:
             - name: Generate Changelog
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
-                  LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
 
-                  # Create docs directory if it doesn't exist
-                  mkdir -p docs
+                  # Make the changelog generator executable
+                  chmod +x scripts/generate-changelog.js
 
-                  echo "# Changelog for v$VERSION (Beta)" > docs/CHANGELOG.md
-                  echo "" >> docs/CHANGELOG.md
-                  echo "This is a beta release from the staging branch. Changes since last tag:" >> docs/CHANGELOG.md
-                  echo "" >> docs/CHANGELOG.md
-                  if [[ -n "$LAST_TAG" ]]; then
-                    git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
-                  else
-                    git log -n 20 --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
-                  fi
+                  # Generate changelog using the new script
+                  node scripts/generate-changelog.js "$VERSION" beta
+
+                  echo "✅ Changelog generated successfully"
+
+                  # Show preview
+                  echo "📋 Changelog preview:"
+                  head -20 docs/CHANGELOG.md
 
             - name: Format Generated Files
               run: |
