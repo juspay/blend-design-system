@@ -41,8 +41,7 @@ export const tokenizeLine = (line: string): SyntaxToken[] => {
         /\b(u8|u16|u32|u64|u128|usize|i8|i16|i32|i64|i128|isize|f32|f64|bool|char|str|String|Vec|Option|Result|Box|Rc|Arc|Cell|RefCell|HashMap|HashSet|BTreeMap|BTreeSet)\b/g
 
     // Rust-specific: Qualified paths and enum variants (Type::Variant, module::path::Item)
-    const rustQualifiedPaths =
-        /\b([A-Z][a-zA-Z0-9_]*)(::)([A-Z][a-zA-Z0-9_]*)/g
+    const rustQualifiedPaths = /\b([A-Z][a-zA-Z0-9_]*)(::)([A-Z][a-zA-Z0-9_]*)/g
 
     // Python-specific: Built-in functions
     const pythonBuiltins =
@@ -78,8 +77,7 @@ export const tokenizeLine = (line: string): SyntaxToken[] => {
     const operators = /[(){}[\],.%+\-=*/&|<>!?:;]/g
 
     // Comments - Multi-language support (JS/TS //, Python #, Haskell --, Rust //)
-    const comments =
-        /(\/\/.*$|\/\*[\s\S]*?\*\/|#.*$|--.*$|{-[\s\S]*?-})/g
+    const comments = /(\/\/.*$|\/\*[\s\S]*?\*\/|#.*$|--.*$|{-[\s\S]*?-})/g
 
     let currentIndex = 0
     const allMatches: TokenMatch[] = []
@@ -157,7 +155,10 @@ export const tokenizeLine = (line: string): SyntaxToken[] => {
 /**
  * Gets the color for a token type based on syntax highlighting rules
  */
-export const getTokenColor = (type: string, syntaxTokens: CodeBlockTokenType['syntax']): string => {
+export const getTokenColor = (
+    type: string,
+    syntaxTokens: CodeBlockTokenType['syntax']
+): string => {
     switch (type) {
         case 'keyword':
             return syntaxTokens.keyword ?? '#9810FA'
@@ -257,6 +258,10 @@ export const createCopyToClipboard = (
 /**
  * Processes lines for diff or normal mode
  */
-export const processLines = (isDiffMode: boolean, diffLines: DiffLine[] | undefined, code: string) => {
+export const processLines = (
+    isDiffMode: boolean,
+    diffLines: DiffLine[] | undefined,
+    code: string
+) => {
     return isDiffMode ? diffLines?.map((d) => d.content) : code.split('\n')
 }

@@ -15,10 +15,10 @@ import { DiffLineType } from './types'
  * Size-independent properties: all properties are size-independent for CodeBlock
  */
 export type CodeBlockTokenType = {
-        backgroundColor: CSSObject['backgroundColor']
-        border: CSSObject['border']
-        borderRadius: CSSObject['borderRadius']
-        boxShadow: CSSObject['boxShadow']
+    backgroundColor: CSSObject['backgroundColor']
+    border: CSSObject['border']
+    borderRadius: CSSObject['borderRadius']
+    boxShadow: CSSObject['boxShadow']
     // Header tokens
     header: {
         backgroundColor: CSSObject['backgroundColor']
@@ -127,10 +127,10 @@ export const getCodeBlockTokens = (
 ): ResponsiveCodeBlockTokens => {
     return {
         sm: {
-                backgroundColor: foundationToken.colors.gray[25],
-                border: `1px solid ${foundationToken.colors.gray[200]}`,
-                borderRadius: foundationToken.border.radius[8],
-                boxShadow: '0px 2px 3px 0px rgba(5, 5, 6, 0.05)',
+            backgroundColor: foundationToken.colors.gray[25],
+            border: `1px solid ${foundationToken.colors.gray[200]}`,
+            borderRadius: foundationToken.border.radius[8],
+            boxShadow: '0px 2px 3px 0px rgba(5, 5, 6, 0.05)',
             header: {
                 backgroundColor: foundationToken.colors.gray[50],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
@@ -232,10 +232,10 @@ export const getCodeBlockTokens = (
             },
         },
         lg: {
-                backgroundColor: foundationToken.colors.gray[25],
-                border: `1px solid ${foundationToken.colors.gray[200]}`,
-                borderRadius: foundationToken.border.radius[8],
-                boxShadow: '0px 2px 3px 0px rgba(5, 5, 6, 0.05)',
+            backgroundColor: foundationToken.colors.gray[25],
+            border: `1px solid ${foundationToken.colors.gray[200]}`,
+            borderRadius: foundationToken.border.radius[8],
+            boxShadow: '0px 2px 3px 0px rgba(5, 5, 6, 0.05)',
             header: {
                 backgroundColor: foundationToken.colors.gray[50],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,

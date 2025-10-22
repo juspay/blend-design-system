@@ -34,20 +34,25 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
         const [isCopied, setIsCopied] = useState(false)
 
         // Determine if line numbers should be shown based on variant or explicit prop
-        const shouldShowLineNumbers = shouldShowLineNumbersUtil(showLineNumbers, variant)
+        const shouldShowLineNumbers = shouldShowLineNumbersUtil(
+            showLineNumbers,
+            variant
+        )
 
         // Use diffLines if variant is diff, otherwise use code
-        const isDiffMode = variant === CodeBlockVariant.DIFF && Boolean(diffLines)
+        const isDiffMode =
+            variant === CodeBlockVariant.DIFF && Boolean(diffLines)
         const lines = processLines(isDiffMode, diffLines, code)
 
         const copyToClipboard = createCopyToClipboard(code, setIsCopied)
 
         // Use utility functions
         const tokenizeLineLocal = (line: string) => tokenizeLine(line)
-        const getTokenColorLocal = (type: string) => getTokenColor(type, tokens.syntax)
-        const getDiffGutterStyleLocal = (lineType?: DiffLineType) => 
+        const getTokenColorLocal = (type: string) =>
+            getTokenColor(type, tokens.syntax)
+        const getDiffGutterStyleLocal = (lineType?: DiffLineType) =>
             getDiffGutterStyle(lineType, isDiffMode, tokens.gutter)
-        const getDiffLineBackgroundLocal = (lineType?: DiffLineType) => 
+        const getDiffLineBackgroundLocal = (lineType?: DiffLineType) =>
             getDiffLineBackground(lineType, isDiffMode, tokens.line)
 
         return (
@@ -57,7 +62,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                 width="100%"
                 borderRadius={tokens.borderRadius}
                 border={tokens.border}
-                overflow='hidden'
+                overflow="hidden"
                 backgroundColor={tokens.backgroundColor}
                 boxShadow={tokens.boxShadow}
             >
@@ -246,7 +251,9 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                                                       .paddingLeft,
                                                     }}
                                                 >
-                                                    {tokenizeLineLocal(line.content).map(
+                                                    {tokenizeLineLocal(
+                                                        line.content
+                                                    ).map(
                                                         (token, tokenIndex) => (
                                                             <Block
                                                                 key={tokenIndex}
@@ -372,7 +379,9 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                                                       .paddingLeft,
                                                     }}
                                                 >
-                                                    {tokenizeLineLocal(line.content).map(
+                                                    {tokenizeLineLocal(
+                                                        line.content
+                                                    ).map(
                                                         (token, tokenIndex) => (
                                                             <Block
                                                                 key={tokenIndex}
@@ -418,7 +427,9 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                                 ? '0'
                                                 : tokens.line.paddingLeft
                                         }
-                                        style={getDiffLineBackgroundLocal(lineType)}
+                                        style={getDiffLineBackgroundLocal(
+                                            lineType
+                                        )}
                                     >
                                         {shouldShowLineNumbers && (
                                             <Block
@@ -445,7 +456,8 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                                 flex: 1,
                                                 whiteSpace: 'pre-wrap',
                                                 wordBreak: 'break-word',
-                                                paddingLeft: tokens.code.paddingLeft,
+                                                paddingLeft:
+                                                    tokens.code.paddingLeft,
                                             }}
                                         >
                                             {tokenizeLineLocal(line).map(
