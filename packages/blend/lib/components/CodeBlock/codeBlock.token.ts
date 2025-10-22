@@ -15,14 +15,10 @@ import { DiffLineType } from './types'
  * Size-independent properties: all properties are size-independent for CodeBlock
  */
 export type CodeBlockTokenType = {
-    // Container tokens
-    container: {
         backgroundColor: CSSObject['backgroundColor']
         border: CSSObject['border']
         borderRadius: CSSObject['borderRadius']
         boxShadow: CSSObject['boxShadow']
-        overflow: CSSObject['overflow']
-    }
     // Header tokens
     header: {
         backgroundColor: CSSObject['backgroundColor']
@@ -83,8 +79,6 @@ export type CodeBlockTokenType = {
         lineHeight: CSSObject['lineHeight']
         paddingLeft: CSSObject['paddingLeft']
         paddingLeftWithIcon: CSSObject['paddingLeft']
-        whiteSpace: CSSObject['whiteSpace']
-        wordBreak: CSSObject['wordBreak']
     }
     // Line tokens
     line: {
@@ -133,13 +127,10 @@ export const getCodeBlockTokens = (
 ): ResponsiveCodeBlockTokens => {
     return {
         sm: {
-            container: {
                 backgroundColor: foundationToken.colors.gray[25],
                 border: `1px solid ${foundationToken.colors.gray[200]}`,
                 borderRadius: foundationToken.border.radius[8],
                 boxShadow: '0px 2px 3px 0px rgba(5, 5, 6, 0.05)',
-                overflow: 'hidden',
-            },
             header: {
                 backgroundColor: foundationToken.colors.gray[50],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
@@ -203,8 +194,6 @@ export const getCodeBlockTokens = (
                 lineHeight: '1.5',
                 paddingLeft: '10px',
                 paddingLeftWithIcon: '4px',
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word',
             },
             line: {
                 paddingRight: '32px',
@@ -243,13 +232,10 @@ export const getCodeBlockTokens = (
             },
         },
         lg: {
-            container: {
                 backgroundColor: foundationToken.colors.gray[25],
                 border: `1px solid ${foundationToken.colors.gray[200]}`,
                 borderRadius: foundationToken.border.radius[8],
                 boxShadow: '0px 2px 3px 0px rgba(5, 5, 6, 0.05)',
-                overflow: 'hidden',
-            },
             header: {
                 backgroundColor: foundationToken.colors.gray[50],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
@@ -313,8 +299,6 @@ export const getCodeBlockTokens = (
                 lineHeight: '1.6',
                 paddingLeft: '12px',
                 paddingLeftWithIcon: '4px',
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word',
             },
             line: {
                 paddingRight: '40px',
