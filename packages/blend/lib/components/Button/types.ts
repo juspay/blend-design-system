@@ -33,8 +33,6 @@ export type ButtonProps = {
     text?: string
     leadingIcon?: React.ReactNode
     trailingIcon?: React.ReactNode
-    isLoading?: boolean
-    isDisabled?: boolean
     disabled?: boolean
     onClick?: () => void
     loading?: boolean
