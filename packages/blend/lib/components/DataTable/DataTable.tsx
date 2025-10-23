@@ -82,6 +82,7 @@ const DataTable = forwardRef(
             columnManagerPrimaryAction,
             columnManagerSecondaryAction,
             columnManagerWidth,
+            showHeader = true,
             showToolbar = true,
             showSettings = false,
             enableInlineEdit = false,
@@ -703,6 +704,7 @@ const DataTable = forwardRef(
                 <DataTableHeader
                     title={title}
                     description={description}
+                    showHeader={showHeader}
                     showToolbar={showToolbar}
                     enableSearch={enableSearch}
                     searchPlaceholder={searchPlaceholder}

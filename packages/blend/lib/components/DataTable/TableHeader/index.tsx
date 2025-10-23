@@ -119,6 +119,70 @@ const TableHeader = forwardRef<
         }, [visibleColumns])
 
         useEffect(() => {
+            const handleScroll = (_event: Event) => {
+                setOpenPopovers({})
+            }
+
+            const handleWheel = (_event: Event) => {
+                setOpenPopovers({})
+            }
+
+            const scrollContainers: Element[] = []
+
+            if (ref && typeof ref === 'object' && ref.current) {
+                const thead = ref.current
+                const table = thead.closest('table')
+
+                if (table) {
+                    let parent = table.parentElement
+                    while (parent && parent !== document.body) {
+                        const styles = window.getComputedStyle(parent)
+                        if (
+                            styles.overflow === 'auto' ||
+                            styles.overflow === 'scroll' ||
+                            styles.overflowX === 'auto' ||
+                            styles.overflowX === 'scroll' ||
+                            styles.overflowY === 'auto' ||
+                            styles.overflowY === 'scroll'
+                        ) {
+                            scrollContainers.push(parent)
+                        }
+                        parent = parent.parentElement
+                    }
+                }
+            }
+            const listeners: (() => void)[] = []
+
+            scrollContainers.forEach((container, _index) => {
+                container.addEventListener('scroll', handleScroll, {
+                    passive: true,
+                })
+                container.addEventListener('wheel', handleWheel, {
+                    passive: true,
+                })
+                listeners.push(() => {
+                    container.removeEventListener('scroll', handleScroll)
+                    container.removeEventListener('wheel', handleWheel)
+                })
+            })
+
+            document.addEventListener('scroll', handleScroll, { passive: true })
+            document.addEventListener('wheel', handleWheel, { passive: true })
+            window.addEventListener('scroll', handleScroll, { passive: true })
+            window.addEventListener('wheel', handleWheel, { passive: true })
+
+            listeners.push(() => {
+                document.removeEventListener('scroll', handleScroll)
+                document.removeEventListener('wheel', handleWheel)
+                window.removeEventListener('scroll', handleScroll)
+                window.removeEventListener('wheel', handleWheel)
+            })
+            return () => {
+                listeners.forEach((cleanup) => cleanup())
+            }
+        }, [ref])
+
+        useEffect(() => {
             if (editingField && editableRef.current) {
                 editableRef.current.focus()
                 const range = document.createRange()
