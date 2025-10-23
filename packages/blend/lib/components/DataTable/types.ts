@@ -319,6 +319,7 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     onPageSizeChange?: (pageSize: number) => void
 
     isLoading?: boolean
+    showHeader?: boolean
     showToolbar?: boolean
     showSettings?: boolean
     headerSlot1?: ReactNode
