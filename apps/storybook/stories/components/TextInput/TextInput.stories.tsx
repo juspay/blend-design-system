@@ -1,22 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import {
-    TextInput,
-    NumberInput,
-    SearchInput,
-    TextArea,
-    TextInputSize,
-    NumberInputSize,
-    Button,
-    ButtonType,
-} from '@juspay/blend-design-system'
+import { TextInput, TextInputSize } from '@juspay/blend-design-system'
 import {
     User,
     Mail,
     Lock,
-    Globe,
-    Search,
-    MapPin,
     Eye,
     EyeOff,
     AlertCircle,
@@ -25,26 +13,22 @@ import {
 } from 'lucide-react'
 
 const meta: Meta<typeof TextInput> = {
-    title: 'Components/Inputs',
+    title: 'Components/Inputs/TextInput',
     component: TextInput,
     parameters: {
         layout: 'padded',
         docs: {
             description: {
                 component: `
-A comprehensive collection of input components for form building including TextInput, NumberInput, SearchInput, and TextArea with support for validation, error handling, and custom slots.
+A flexible text input component with support for labels, validation, error handling, and customizable slots for icons and actions.
 
 ## Features
-- **TextInput**: Basic text input with validation and slots
-- **NumberInput**: Numeric input with min/max validation
-- **SearchInput**: Search-specific input with filtering
-- **TextArea**: Multi-line text input with resize options
-- Two sizes (Medium, Large) for most components
+- Three sizes (Small, Medium, Large)
+- Label, sublabel, and hint text support
 - Error state handling with custom messages
 - Required field indication
-- Label, sublabel, and hint text support
-- Help tooltips with additional information
 - Left and right slot content for icons and actions
+- Help tooltips with additional information
 - Disabled state support
 - Form integration ready
 - Accessible design with proper labeling
@@ -52,41 +36,16 @@ A comprehensive collection of input components for form building including TextI
 ## Usage
 
 \`\`\`tsx
-import { TextInput, NumberInput, SearchInput, TextArea, TextInputSize } from '@juspay/blend-design-system';
+import { TextInput, TextInputSize } from '@juspay/blend-design-system';
 
-// Basic text input
-<TextInput 
-  label="Full Name"
-  value={name}
-  onChange={(e) => setName(e.target.value)}
-  placeholder="Enter your name"
-/>
-
-// Number input with validation
-<NumberInput
-  label="Age"
-  value={age}
-  onChange={(e) => setAge(parseInt(e.target.value))}
-  min={18}
-  max={120}
-  size={NumberInputSize.LARGE}
-/>
-
-// Search input
-<SearchInput
-  placeholder="Search..."
-  value={query}
-  onChange={(e) => setQuery(e.target.value)}
-  leftSlot={<SearchIcon />}
-/>
-
-// Text area
-<TextArea
-  label="Description"
-  value={description}
-  onChange={(e) => setDescription(e.target.value)}
-  placeholder="Enter description..."
-  rows={4}
+<TextInput
+  label="Email Address"
+  placeholder="Enter your email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  size={TextInputSize.MEDIUM}
+  leftSlot={<Mail size={16} />}
+  required
 />
 \`\`\`
         `,
@@ -95,49 +54,162 @@ import { TextInput, NumberInput, SearchInput, TextArea, TextInputSize } from '@j
     },
     argTypes: {
         label: {
-            control: 'text',
-            description: 'Label text for the input',
-        },
-        value: {
-            control: 'text',
-            description: 'Current value of the input',
-        },
-        placeholder: {
-            control: 'text',
-            description: 'Placeholder text',
-        },
-        size: {
-            control: 'select',
-            options: Object.values(TextInputSize),
-            description: 'Size of the input',
-        },
-        required: {
-            control: 'boolean',
-            description: 'Whether the input is required',
-        },
-        error: {
-            control: 'boolean',
-            description: 'Whether the input has an error',
-        },
-        disabled: {
-            control: 'boolean',
-            description: 'Whether the input is disabled',
+            control: { type: 'text' },
+            description: 'Label text displayed above the input',
+            table: {
+                type: { summary: 'string' },
+                category: 'Labels',
+            },
         },
         sublabel: {
-            control: 'text',
-            description: 'Additional label text',
+            control: { type: 'text' },
+            description: 'Secondary label text displayed below the main label',
+            table: {
+                type: { summary: 'string' },
+                category: 'Labels',
+            },
         },
         hintText: {
-            control: 'text',
-            description: 'Hint text below the input',
+            control: { type: 'text' },
+            description: 'Hint text displayed below the input',
+            table: {
+                type: { summary: 'string' },
+                category: 'Labels',
+            },
         },
         helpIconHintText: {
-            control: 'text',
-            description: 'Help tooltip text',
+            control: { type: 'text' },
+            description: 'Tooltip text for the help icon',
+            table: {
+                type: { summary: 'string' },
+                category: 'Labels',
+            },
+        },
+        value: {
+            control: { type: 'text' },
+            description: 'Current value of the input',
+            table: {
+                type: { summary: 'string' },
+                category: 'Core',
+            },
+        },
+        onChange: {
+            action: 'changed',
+            description: 'Callback fired when the input value changes',
+            table: {
+                type: {
+                    summary: '(e: React.ChangeEvent<HTMLInputElement>) => void',
+                },
+                category: 'Core',
+            },
+        },
+        onBlur: {
+            action: 'blurred',
+            description: 'Callback fired when the input loses focus',
+            table: {
+                type: {
+                    summary: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                },
+                category: 'Events',
+            },
+        },
+        onFocus: {
+            action: 'focused',
+            description: 'Callback fired when the input receives focus',
+            table: {
+                type: {
+                    summary: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                },
+                category: 'Events',
+            },
+        },
+        size: {
+            control: { type: 'select' },
+            options: Object.values(TextInputSize),
+            description: 'Size variant of the input',
+            table: {
+                type: { summary: 'TextInputSize' },
+                defaultValue: { summary: 'TextInputSize.MEDIUM' },
+                category: 'Appearance',
+            },
+        },
+        error: {
+            control: { type: 'boolean' },
+            description: 'Whether the input is in error state',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Validation',
+            },
         },
         errorMessage: {
-            control: 'text',
-            description: 'Error message when error is true',
+            control: { type: 'text' },
+            description: 'Error message displayed when in error state',
+            table: {
+                type: { summary: 'string' },
+                category: 'Validation',
+            },
+        },
+        disabled: {
+            control: { type: 'boolean' },
+            description: 'Whether the input is disabled',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'State',
+            },
+        },
+        required: {
+            control: { type: 'boolean' },
+            description: 'Whether the input is required (shows asterisk)',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Validation',
+            },
+        },
+        placeholder: {
+            control: { type: 'text' },
+            description: 'Placeholder text shown when input is empty',
+            table: {
+                type: { summary: 'string' },
+                defaultValue: { summary: 'Enter' },
+                category: 'Content',
+            },
+        },
+        name: {
+            control: { type: 'text' },
+            description: 'Name attribute for form submission',
+            table: {
+                type: { summary: 'string' },
+                category: 'Form',
+            },
+        },
+        cursor: {
+            control: { type: 'select' },
+            options: ['text', 'pointer', 'default', 'not-allowed'],
+            description: 'CSS cursor style for the input',
+            table: {
+                type: { summary: 'string' },
+                defaultValue: { summary: 'text' },
+                category: 'Appearance',
+            },
+        },
+        leftSlot: {
+            control: false,
+            description: 'Content displayed on the left side of the input',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Slots',
+            },
+        },
+        rightSlot: {
+            control: false,
+            description: 'Content displayed on the right side of the input',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Slots',
+            },
         },
     },
     tags: ['autodocs'],
@@ -148,297 +220,79 @@ type Story = StoryObj<typeof TextInput>
 
 // Default story
 export const Default: Story = {
-    render: () => {
+    render: function DefaultTextInput(args) {
         const [value, setValue] = useState('')
 
         return (
             <TextInput
-                label="Full Name"
+                {...args}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                placeholder="Enter your full name"
-                hintText="This will be displayed on your profile"
             />
         )
     },
+    args: {
+        label: 'Default Text Input',
+        placeholder: 'Enter text',
+        size: TextInputSize.MEDIUM,
+        disabled: false,
+        required: false,
+        error: false,
+    },
 }
 
-// All input types showcase
-export const InputTypes: Story = {
+// Different sizes
+export const Sizes: Story = {
     render: () => {
-        const [textValue, setTextValue] = useState('')
-        const [numberValue, setNumberValue] = useState(0)
-        const [searchValue, setSearchValue] = useState('')
-        const [textareaValue, setTextareaValue] = useState('')
+        const [values, setValues] = useState({
+            small: '',
+            medium: '',
+            large: '',
+        })
 
         return (
             <div
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '24px',
-                    maxWidth: '500px',
-                }}
-            >
-                <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        TextInput
-                    </h4>
-                    <TextInput
-                        label="Email Address"
-                        value={textValue}
-                        onChange={(e) => setTextValue(e.target.value)}
-                        placeholder="you@example.com"
-                        leftSlot={<Mail size={18} />}
-                        hintText="We'll never share your email"
-                    />
-                </div>
-
-                <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        NumberInput
-                    </h4>
-                    <NumberInput
-                        label="Age"
-                        value={numberValue}
-                        onChange={(e) =>
-                            setNumberValue(parseInt(e.target.value) || 0)
-                        }
-                        placeholder="Enter your age"
-                        min={18}
-                        max={120}
-                        hintText="Must be 18 or older"
-                    />
-                </div>
-
-                <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        SearchInput
-                    </h4>
-                    <SearchInput
-                        placeholder="Search products..."
-                        value={searchValue}
-                        onChange={(e) => setSearchValue(e.target.value)}
-                        leftSlot={<Search size={18} />}
-                        rightSlot={
-                            searchValue && (
-                                <Button
-                                    buttonType={ButtonType.SECONDARY}
-                                    text=""
-                                    leadingIcon={X}
-                                    onClick={() => setSearchValue('')}
-                                />
-                            )
-                        }
-                    />
-                </div>
-
-                <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        TextArea
-                    </h4>
-                    <TextArea
-                        label="Description"
-                        value={textareaValue}
-                        onChange={(e) => setTextareaValue(e.target.value)}
-                        placeholder="Enter a detailed description..."
-                        rows={4}
-                        hintText="Provide as much detail as possible"
-                    />
-                </div>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Showcase of all available input types: TextInput, NumberInput, SearchInput, and TextArea with their specific features and use cases.',
-            },
-        },
-    },
-}
-
-// Input sizes
-export const InputSizes: Story = {
-    render: () => {
-        const [mediumValue, setMediumValue] = useState('')
-        const [largeValue, setLargeValue] = useState('')
-        const [mediumNumber, setMediumNumber] = useState(0)
-        const [largeNumber, setLargeNumber] = useState(0)
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    maxWidth: '500px',
-                }}
-            >
-                <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        TextInput Sizes
-                    </h4>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                        }}
-                    >
-                        <TextInput
-                            label="Medium Size (Default)"
-                            value={mediumValue}
-                            onChange={(e) => setMediumValue(e.target.value)}
-                            placeholder="Medium input..."
-                            size={TextInputSize.MEDIUM}
-                            leftSlot={<User size={18} />}
-                        />
-                        <TextInput
-                            label="Large Size"
-                            value={largeValue}
-                            onChange={(e) => setLargeValue(e.target.value)}
-                            placeholder="Large input..."
-                            size={TextInputSize.LARGE}
-                            leftSlot={<User size={20} />}
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        NumberInput Sizes
-                    </h4>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                        }}
-                    >
-                        <NumberInput
-                            label="Medium Size (Default)"
-                            value={mediumNumber}
-                            onChange={(e) =>
-                                setMediumNumber(parseInt(e.target.value) || 0)
-                            }
-                            placeholder="0"
-                            size={NumberInputSize.MEDIUM}
-                        />
-                        <NumberInput
-                            label="Large Size"
-                            value={largeNumber}
-                            onChange={(e) =>
-                                setLargeNumber(parseInt(e.target.value) || 0)
-                            }
-                            placeholder="0"
-                            size={NumberInputSize.LARGE}
-                        />
-                    </div>
-                </div>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Different sizes available for TextInput and NumberInput components. Both support Medium (default) and Large sizes.',
-            },
-        },
-    },
-}
-
-// Input states and validation
-export const InputStates: Story = {
-    render: () => {
-        const [normalValue, setNormalValue] = useState('')
-        const [errorValue, setErrorValue] = useState('invalid-email')
-        const [disabledValue] = useState('Disabled input')
-        const [requiredValue, setRequiredValue] = useState('')
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    maxWidth: '500px',
+                    gap: '20px',
                 }}
             >
                 <TextInput
-                    label="Normal State"
-                    value={normalValue}
-                    onChange={(e) => setNormalValue(e.target.value)}
-                    placeholder="Type something..."
-                    hintText="This is a normal input field"
-                    leftSlot={<User size={18} />}
+                    label="Small Size"
+                    placeholder="Small input"
+                    size={TextInputSize.SMALL}
+                    value={values.small}
+                    onChange={(e) =>
+                        setValues((prev) => ({
+                            ...prev,
+                            small: e.target.value,
+                        }))
+                    }
                 />
-
                 <TextInput
-                    label="Error State"
-                    value={errorValue}
-                    onChange={(e) => setErrorValue(e.target.value)}
-                    placeholder="Enter valid email"
-                    error={true}
-                    errorMessage="Please enter a valid email address"
-                    leftSlot={<Mail size={18} />}
-                    rightSlot={<AlertCircle size={18} color="#dc2626" />}
+                    label="Medium Size"
+                    placeholder="Medium input"
+                    size={TextInputSize.MEDIUM}
+                    value={values.medium}
+                    onChange={(e) =>
+                        setValues((prev) => ({
+                            ...prev,
+                            medium: e.target.value,
+                        }))
+                    }
                 />
-
                 <TextInput
-                    label="Required Field"
-                    value={requiredValue}
-                    onChange={(e) => setRequiredValue(e.target.value)}
-                    placeholder="This field is required"
-                    required={true}
-                    hintText="Required fields are marked with an asterisk"
-                    leftSlot={<Lock size={18} />}
-                />
-
-                <TextInput
-                    label="Disabled State"
-                    value={disabledValue}
-                    onChange={() => {}}
-                    placeholder="Cannot edit this"
-                    disabled={true}
-                    hintText="This field is currently disabled"
-                    leftSlot={<User size={18} />}
+                    label="Large Size"
+                    placeholder="Large input"
+                    size={TextInputSize.LARGE}
+                    value={values.large}
+                    onChange={(e) =>
+                        setValues((prev) => ({
+                            ...prev,
+                            large: e.target.value,
+                        }))
+                    }
                 />
             </div>
         )
@@ -446,18 +300,20 @@ export const InputStates: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Different input states: normal, error, required, and disabled. Error state shows custom error messages and visual indicators.',
+                story: 'TextInput in different sizes: Small, Medium, and Large.',
             },
         },
     },
 }
 
-// Input with slots and help
-export const WithSlotsAndHelp: Story = {
+// With slots
+export const WithSlots: Story = {
     render: () => {
-        const [passwordValue, setPasswordValue] = useState('')
-        const [priceValue, setPriceValue] = useState(0)
-        const [urlValue, setUrlValue] = useState('')
+        const [values, setValues] = useState({
+            email: '',
+            password: '',
+            search: '',
+        })
         const [showPassword, setShowPassword] = useState(false)
 
         return (
@@ -465,17 +321,35 @@ export const WithSlotsAndHelp: Story = {
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '24px',
-                    maxWidth: '500px',
+                    gap: '20px',
                 }}
             >
                 <TextInput
+                    label="Email"
+                    placeholder="Enter your email"
+                    type="email"
+                    value={values.email}
+                    onChange={(e) =>
+                        setValues((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                        }))
+                    }
+                    leftSlot={<Mail size={16} />}
+                    required
+                />
+                <TextInput
                     label="Password"
-                    sublabel="Choose a strong password"
-                    value={passwordValue}
-                    onChange={(e) => setPasswordValue(e.target.value)}
-                    placeholder="Enter password"
-                    leftSlot={<Lock size={18} />}
+                    placeholder="Enter your password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={values.password}
+                    onChange={(e) =>
+                        setValues((prev) => ({
+                            ...prev,
+                            password: e.target.value,
+                        }))
+                    }
+                    leftSlot={<Lock size={16} />}
                     rightSlot={
                         <button
                             type="button"
@@ -484,53 +358,31 @@ export const WithSlotsAndHelp: Story = {
                                 background: 'none',
                                 border: 'none',
                                 cursor: 'pointer',
-                                display: 'flex',
                             }}
                         >
                             {showPassword ? (
-                                <EyeOff size={18} />
+                                <EyeOff size={16} />
                             ) : (
-                                <Eye size={18} />
+                                <Eye size={16} />
                             )}
                         </button>
                     }
-                    helpIconHintText="Password must be at least 8 characters with uppercase, lowercase, numbers, and special characters"
-                    hintText="Use a mix of letters, numbers, and symbols"
+                    required
                 />
-
-                <NumberInput
-                    label="Product Price"
-                    sublabel="USD"
-                    value={priceValue}
-                    onChange={(e) =>
-                        setPriceValue(parseFloat(e.target.value) || 0)
-                    }
-                    placeholder="0.00"
-                    min={0}
-                    step={0.01}
-                    helpIconHintText="This is the selling price that customers will see"
-                    hintText="Enter price in US dollars"
-                />
-
                 <TextInput
-                    label="Website URL"
-                    sublabel="Your portfolio or company website"
-                    value={urlValue}
-                    onChange={(e) => setUrlValue(e.target.value)}
-                    placeholder="https://example.com"
-                    leftSlot={<Globe size={18} />}
-                    rightSlot={
-                        urlValue && (
-                            <Button
-                                buttonType={ButtonType.SECONDARY}
-                                text="Verify"
-                                trailingIcon={Check}
-                                onClick={() => alert('URL verified!')}
-                            />
-                        )
+                    label="Username"
+                    placeholder="Enter username"
+                    value={values.search}
+                    onChange={(e) =>
+                        setValues((prev) => ({
+                            ...prev,
+                            search: e.target.value,
+                        }))
                     }
-                    helpIconHintText="We'll use this to verify your business or portfolio"
-                    hintText="Include https:// for external links"
+                    leftSlot={<User size={16} />}
+                    rightSlot={
+                        values.search ? <Check size={16} color="green" /> : null
+                    }
                 />
             </div>
         )
@@ -538,161 +390,139 @@ export const WithSlotsAndHelp: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Inputs with left and right slots for icons and interactive elements, plus help tooltips and sublabels for additional context.',
+                story: 'TextInput with left and right slots for icons and interactive elements.',
             },
         },
     },
 }
 
-// Search input variations
-export const SearchInputVariations: Story = {
+// Error and validation states
+export const ErrorStates: Story = {
     render: () => {
-        const [basicSearch, setBasicSearch] = useState('')
-        const [productSearch, setProductSearch] = useState('')
-        const [locationSearch, setLocationSearch] = useState('')
+        const [values, setValues] = useState({
+            required: '',
+            invalid: 'invalid-email',
+            valid: 'user@example.com',
+        })
 
         return (
             <div
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '24px',
-                    maxWidth: '500px',
+                    gap: '20px',
                 }}
             >
-                <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Basic Search
-                    </h4>
-                    <SearchInput
-                        placeholder="Search..."
-                        value={basicSearch}
-                        onChange={(e) => setBasicSearch(e.target.value)}
-                        leftSlot={<Search size={18} />}
-                    />
-                </div>
-
-                <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Product Search
-                    </h4>
-                    <SearchInput
-                        placeholder="Search products, brands, categories..."
-                        value={productSearch}
-                        onChange={(e) => setProductSearch(e.target.value)}
-                        leftSlot={<Search size={18} />}
-                        rightSlot={
-                            productSearch && (
-                                <div style={{ display: 'flex', gap: '4px' }}>
-                                    <Button
-                                        buttonType={ButtonType.SECONDARY}
-                                        text=""
-                                        leadingIcon={X}
-                                        onClick={() => setProductSearch('')}
-                                    />
-                                </div>
-                            )
-                        }
-                    />
-                </div>
-
-                <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Location Search
-                    </h4>
-                    <SearchInput
-                        placeholder="Search cities, states, countries..."
-                        value={locationSearch}
-                        onChange={(e) => setLocationSearch(e.target.value)}
-                        leftSlot={<MapPin size={18} />}
-                        rightSlot={
-                            locationSearch && (
-                                <Button
-                                    buttonType={ButtonType.SECONDARY}
-                                    text="Clear"
-                                    onClick={() => setLocationSearch('')}
-                                />
-                            )
-                        }
-                    />
-                </div>
+                <TextInput
+                    label="Required Field"
+                    placeholder="This field is required"
+                    value={values.required}
+                    onChange={(e) =>
+                        setValues((prev) => ({
+                            ...prev,
+                            required: e.target.value,
+                        }))
+                    }
+                    required
+                    error={values.required === ''}
+                    errorMessage={
+                        values.required === '' ? 'This field is required' : ''
+                    }
+                />
+                <TextInput
+                    label="Invalid Email"
+                    placeholder="Enter valid email"
+                    type="email"
+                    value={values.invalid}
+                    onChange={(e) =>
+                        setValues((prev) => ({
+                            ...prev,
+                            invalid: e.target.value,
+                        }))
+                    }
+                    leftSlot={<Mail size={16} />}
+                    rightSlot={<AlertCircle size={16} color="red" />}
+                    error
+                    errorMessage="Please enter a valid email address"
+                />
+                <TextInput
+                    label="Valid Email"
+                    placeholder="Enter valid email"
+                    type="email"
+                    value={values.valid}
+                    onChange={(e) =>
+                        setValues((prev) => ({
+                            ...prev,
+                            valid: e.target.value,
+                        }))
+                    }
+                    leftSlot={<Mail size={16} />}
+                    rightSlot={<Check size={16} color="green" />}
+                />
             </div>
         )
     },
     parameters: {
         docs: {
             description: {
-                story: 'Different SearchInput configurations for various use cases: basic search, product search, and location search.',
+                story: 'TextInput showing different validation states: required, error, and valid.',
             },
         },
     },
 }
 
-// TextArea variations
-export const TextAreaVariations: Story = {
+// Disabled state
+export const DisabledState: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <TextInput
+                label="Disabled Empty"
+                placeholder="This input is disabled"
+                value=""
+                onChange={() => {}}
+                disabled
+            />
+            <TextInput
+                label="Disabled With Value"
+                value="This input is disabled with content"
+                onChange={() => {}}
+                leftSlot={<User size={16} />}
+                disabled
+            />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'TextInput in disabled state, both empty and with content.',
+            },
+        },
+    },
+}
+
+// With labels and hints
+export const WithLabelsAndHints: Story = {
     render: () => {
-        const [description, setDescription] = useState('')
-        const [feedback, setFeedback] = useState('')
-        const [notes, setNotes] = useState('')
+        const [value, setValue] = useState('')
 
         return (
             <div
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '24px',
-                    maxWidth: '500px',
+                    gap: '20px',
                 }}
             >
-                <TextArea
-                    label="Product Description"
-                    sublabel="Detailed description for customers"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Describe your product features, benefits, and specifications..."
-                    rows={4}
-                    hintText="Include key features and benefits"
-                    helpIconHintText="A good description helps customers understand your product better"
-                />
-
-                <TextArea
-                    label="Customer Feedback"
-                    value={feedback}
-                    onChange={(e) => setFeedback(e.target.value)}
-                    placeholder="Share your experience..."
-                    rows={6}
-                    resize="vertical"
-                    hintText="Your feedback helps us improve"
-                />
-
-                <TextArea
-                    label="Internal Notes"
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Add internal notes..."
-                    rows={3}
-                    resize="none"
-                    disabled={false}
-                    hintText="These notes are only visible to team members"
-                    required={false}
+                <TextInput
+                    label="Full Name"
+                    sublabel="As it appears on your ID"
+                    hintText="Enter your first and last name"
+                    helpIconHintText="This will be used for official documentation"
+                    placeholder="John Doe"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    leftSlot={<User size={16} />}
+                    required
                 />
             </div>
         )
@@ -700,7 +530,7 @@ export const TextAreaVariations: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'TextArea component with different configurations: varying rows, resize options, and use cases for different content types.',
+                story: 'TextInput with comprehensive labeling: main label, sublabel, hint text, and help tooltip.',
             },
         },
     },
