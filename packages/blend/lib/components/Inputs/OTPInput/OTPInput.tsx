@@ -16,6 +16,7 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const OTPInput = ({
     label,
+    placeholder,
     sublabel,
     disabled,
     helpIconHintText,
@@ -144,6 +145,7 @@ const OTPInput = ({
 
     return (
         <Block
+            data-component={'otp-input'}
             display="flex"
             flexDirection="column"
             gap={otpInputTokens.gap}
@@ -165,6 +167,8 @@ const OTPInput = ({
             >
                 {otp.map((digit, index) => (
                     <PrimitiveInput
+                        placeholder={placeholder}
+                        placeholderColor={'transparent'}
                         form={form}
                         width={otpInputTokens.inputContainer.input.width}
                         height={otpInputTokens.inputContainer.input.height}

@@ -36,6 +36,7 @@ import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
 import { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
+import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -76,7 +77,8 @@ export const useComponentToken = (
     | ResponsiveTopbarTokens
     | ResponsiveAvatarTokens
     | ResponsiveAvatarGroupTokens
-    | ResponsiveSidebarTokens => {
+    | ResponsiveSidebarTokens
+    | ResponsiveCodeBlockTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -154,6 +156,8 @@ export const useComponentToken = (
             return componentTokens.AVATAR_GROUP
         case 'SIDEBAR':
             return componentTokens.SIDEBAR
+        case 'CODE_BLOCK':
+            return componentTokens.CODE_BLOCK
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

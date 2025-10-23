@@ -130,8 +130,12 @@ const OTPInputDemo = () => {
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
                         <div className="w-full max-w-md">
                             <OTPInput
+                                data-id={'Enter OTP Code'}
+                                data-input-name={playgroundValue}
+                                name={playgroundValue}
                                 label={playgroundLabel}
                                 sublabel={playgroundSublabel}
+                                placeholder={'otp field'}
                                 value={playgroundValue}
                                 length={playgroundLength}
                                 autoFocus={hasAutoFocus}
@@ -149,7 +153,6 @@ const OTPInputDemo = () => {
                                 hintText={playgroundHintText}
                                 helpIconHintText={playgroundHelpText}
                                 required={isRequired}
-                                name="playground-otp"
                                 onKeyDown={(e) => {
                                     console.log('onKeyDown', e)
                                 }}

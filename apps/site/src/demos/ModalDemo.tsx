@@ -842,7 +842,7 @@ const ModalDemo = () => {
                         ? {
                               text: config.primaryButtonText,
                               onClick: () => alert('Primary action clicked!'),
-                              isDisabled: config.primaryButtonDisabled,
+                              disabled: config.primaryButtonDisabled,
                               buttonType: config.primaryButtonType,
                           }
                         : undefined
@@ -852,7 +852,7 @@ const ModalDemo = () => {
                         ? {
                               text: config.secondaryButtonText,
                               onClick: () => alert('Secondary action clicked!'),
-                              isDisabled: config.secondaryButtonDisabled,
+                              disabled: config.secondaryButtonDisabled,
                               buttonType: config.secondaryButtonType,
                           }
                         : undefined

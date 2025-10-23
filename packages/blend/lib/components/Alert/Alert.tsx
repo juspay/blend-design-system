@@ -74,6 +74,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                             </Block>
                         )}
                         <Text
+                            data-alert-heading={heading}
                             color={alertTokens.text.heading.color[variant]}
                             fontWeight={alertTokens.text.heading.fontWeight}
                             fontSize={alertTokens.text.heading.fontSize}
@@ -112,6 +113,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                     gap={FOUNDATION_THEME.unit[18]}
                 >
                     <Text
+                        data-alert-description={description}
                         fontWeight={alertTokens.text.description.fontWeight}
                         fontSize={alertTokens.text.description.fontSize}
                         lineHeight={alertTokens.text.description.lineHeight}

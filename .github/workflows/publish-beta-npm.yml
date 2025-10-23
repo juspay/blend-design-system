@@ -108,48 +108,53 @@ jobs:
                   echo "stable_version=$STABLE_VERSION" >> $GITHUB_OUTPUT
                   echo "Stable version will be: $STABLE_VERSION"
 
-            - name: Create Promotion PR to Dev First
+            - name: Create Success Summary
               if: steps.check_published.outputs.already_published != 'true'
-              uses: peter-evans/create-pull-request@v6
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  head: release
-                  base: dev
-                  branch: promote/beta-to-stable-${{ steps.verify_version.outputs.version }}
-                  title: 'feat: promote beta ${{ steps.verify_version.outputs.version }} to stable'
-                  body: |
-                      **Promote Beta to Stable Release**
+              run: |
+                  echo "## 🎉 Beta Release Published Successfully!" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "**Package**: \`@juspay/blend-design-system\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**Version**: \`${{ steps.verify_version.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**NPM Tag**: \`beta\`" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Installation" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+                  echo "npm install @juspay/blend-design-system@beta" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+                  echo "- ✅ Beta version is now live on NPM" >> $GITHUB_STEP_SUMMARY
+                  echo "- ✅ GitHub beta release is available" >> $GITHUB_STEP_SUMMARY
+                  echo "- 🔄 Test the beta version thoroughly" >> $GITHUB_STEP_SUMMARY
+                  echo "- 🔄 When ready, promote to stable using 'Create Stable Release' workflow" >> $GITHUB_STEP_SUMMARY
 
-                      Beta version `${{ steps.verify_version.outputs.version }}` has been published to NPM from the staging branch and is ready for promotion to stable.
+            - name: Verify NPM Package After Publish
+              if: steps.check_published.outputs.already_published != 'true'
+              run: |
+                  cd packages/blend
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  VERSION="${{ steps.verify_version.outputs.version }}"
 
-                      **Current Status:**
-                      - ✅ Beta version published to NPM with `beta` tag
-                      - ✅ GitHub beta release created
-                      - 🔄 Ready for stable release process
+                  echo "Verifying published beta package..."
+                  sleep 10  # Wait for NPM to propagate
 
-                      **Next Steps:**
-                      1. Review and merge this PR to dev branch first
-                      2. Manually create PR from dev → staging and merge
-                      3. Manually create PR from staging → main and merge
-                      4. Trigger "Create Stable Release" workflow to create stable GitHub release
-                      5. Trigger "Publish Stable to NPM" workflow to publish with `latest` tag
+                  PUBLISHED_VERSION=$(npm view "$PACKAGE_NAME@beta" version 2>/dev/null || echo "")
+                  if [[ "$PUBLISHED_VERSION" == "$VERSION" ]]; then
+                    echo "✅ Successfully verified: $PACKAGE_NAME@$VERSION is live on NPM with beta tag"
+                  else
+                    echo "⚠️  Warning: Expected $VERSION but NPM shows $PUBLISHED_VERSION for beta tag"
+                    echo "This might be due to NPM propagation delay"
+                  fi
 
-                      **Version Info:**
-                      - Beta: `${{ steps.verify_version.outputs.version }}`
-                      - Stable: `${{ steps.stable_version.outputs.stable_version }}` (will be created when promoted)
+                  # Also check if we can download and list the package
+                  echo "📦 Testing package download..."
+                  npm view "$PACKAGE_NAME@beta" --json > /tmp/package-info.json || echo "Could not download package info"
 
-                      **staging Branch Strategy:**
-                      - Beta was published from `staging` branch
-                      - All automatic PRs go to `dev` first, then manually merged to `staging` and `main`
-                      - This prevents issues with ongoing development in `dev` branch
-
-                      ---
-                      *This PR was automatically created after successful beta NPM publish*
-                  labels: |
-                      automated
-                      release
-                      stable-promotion
-                  assignees: ${{ github.actor }}
+                  if [[ -f /tmp/package-info.json ]]; then
+                    echo "✅ Package info downloaded successfully"
+                    echo "📋 Package details:"
+                    cat /tmp/package-info.json | jq -r '.name, .version, .description' 2>/dev/null || echo "Basic package info verified"
+                  fi
 
             - name: Skip Publishing (Already Published)
               if: steps.check_published.outputs.already_published == 'true'

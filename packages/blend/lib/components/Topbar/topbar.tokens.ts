@@ -106,7 +106,7 @@ export const getTopbarTokens = (
             borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             backgroundColor: 'hsla(0, 0%, 100%, 0.8)',
             backdropFilter: 'blur(10px)',
-            padding: `${foundationToken.unit[12]} ${foundationToken.unit[16]}`,
+            padding: `12.5px ${foundationToken.unit[16]}`,
             gap: foundationToken.unit[12],
 
             toggleButton: {
@@ -199,7 +199,7 @@ export const getTopbarTokens = (
             borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             backgroundColor: 'hsla(0, 0%, 100%, 0.8)',
             backdropFilter: 'blur(10px)',
-            padding: `${foundationToken.unit[12]} ${foundationToken.unit[32]}`,
+            padding: `12.5px ${foundationToken.unit[32]}`,
             gap: foundationToken.unit[16],
 
             toggleButton: {

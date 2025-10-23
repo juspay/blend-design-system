@@ -3,6 +3,21 @@ import React, { useState } from 'react'
 import { Checkbox, CheckboxSize } from '@juspay/blend-design-system'
 import { Star, Info, Settings } from 'lucide-react'
 
+// Helper function for slot content rendering
+const getSlotContent = (slotType: string) => {
+    switch (slotType) {
+        case 'star':
+            return <Star size={16} color="#ffd700" />
+        case 'info':
+            return <Info size={16} color="#0ea5e9" />
+        case 'settings':
+            return <Settings size={16} color="#6b7280" />
+        case 'none':
+        default:
+            return undefined
+    }
+}
+
 const meta: Meta<typeof Checkbox> = {
     title: 'Components/Checkbox',
     component: Checkbox,
@@ -43,6 +58,15 @@ import { Checkbox, CheckboxSize } from '@juspay/blend-design-system';
         },
     },
     argTypes: {
+        id: {
+            control: 'text',
+            description: 'Unique identifier for the checkbox input element',
+        },
+        value: {
+            control: 'text',
+            description:
+                'Value attribute for the checkbox input (useful in forms)',
+        },
         checked: {
             control: { type: 'select' },
             options: [undefined, true, false, 'indeterminate'],
@@ -77,6 +101,11 @@ import { Checkbox, CheckboxSize } from '@juspay/blend-design-system';
             control: 'text',
             description: 'Additional descriptive text below the checkbox',
         },
+        slot: {
+            control: 'select',
+            options: ['none', 'star', 'info', 'settings'],
+            description: 'Additional content slot displayed next to the label',
+        },
         onCheckedChange: {
             action: 'checked changed',
             description: 'Callback fired when the checked state changes',
@@ -90,8 +119,8 @@ type Story = StoryObj<typeof Checkbox>
 
 // Default story
 export const Default: Story = {
-    render: (args) => {
-        const [checked, setChecked] = useState(false)
+    render: function DefaultCheckbox(args) {
+        const [checked, setChecked] = useState(args.defaultChecked || false)
 
         return (
             <Checkbox
@@ -100,6 +129,7 @@ export const Default: Story = {
                 onCheckedChange={(newChecked) =>
                     setChecked(newChecked === true)
                 }
+                slot={getSlotContent(args.slot)}
             />
         )
     },
@@ -109,6 +139,9 @@ export const Default: Story = {
         disabled: false,
         required: false,
         error: false,
+        id: '',
+        value: '',
+        slot: 'none',
     },
 }
 
@@ -650,6 +683,42 @@ export const UncontrolledCheckbox: Story = {
         docs: {
             description: {
                 story: 'Demonstrates checkboxes with different initial states but full interactivity. Click to toggle - the labels show current state values.',
+            },
+        },
+    },
+}
+
+// Interactive playground
+export const Interactive: Story = {
+    render: function InteractiveCheckbox(args) {
+        const [checked, setChecked] = useState(args.defaultChecked || false)
+
+        return (
+            <Checkbox
+                {...args}
+                checked={checked}
+                onCheckedChange={(newChecked) =>
+                    setChecked(newChecked === true)
+                }
+                slot={getSlotContent(args.slot)}
+            />
+        )
+    },
+    args: {
+        children: 'Interactive checkbox playground',
+        size: CheckboxSize.MEDIUM,
+        disabled: false,
+        required: false,
+        error: false,
+        subtext: 'Customize all props using controls',
+        id: 'interactive-checkbox',
+        value: 'interactive-value',
+        slot: 'none',
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interactive playground to test all checkbox props and combinations. Use the controls panel to modify any property.',
             },
         },
     },

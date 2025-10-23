@@ -77,7 +77,13 @@ const TextInput = ({
     }, [leftSlot, rightSlot])
 
     return (
-        <Block display="flex" flexDirection="column" gap={8} width={'100%'}>
+        <Block
+            display="flex"
+            flexDirection="column"
+            gap={8}
+            width={'100%'}
+            data-component-field-wrapper={`field-${name}`}
+        >
             {(!isSmallScreen || size !== TextInputSize.LARGE) && (
                 <InputLabels
                     label={label}

@@ -126,6 +126,9 @@ const InputDemo = () => {
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
                         <div className="w-full max-w-md">
                             <TextInput
+                                data-id={'Enter text here...'}
+                                data-input-name={playgroundText}
+                                name={playgroundText}
                                 label={playgroundText}
                                 value={playgroundValue}
                                 onChange={(e) =>

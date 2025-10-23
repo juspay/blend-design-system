@@ -10,6 +10,7 @@ export type OTPProps = {
     autoFocus?: boolean
     onChange?: (value: string) => void
     form?: string
+    placeholder?: string
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
     'size' | 'style' | 'className' | 'onChange'

@@ -68,6 +68,16 @@ import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system';
             control: 'text',
             description: 'Custom fallback content when image is not available',
         },
+        leadingSlot: {
+            control: 'select',
+            options: ['none', 'crown', 'star', 'user', 'checkCircle'],
+            description: 'Content to display before the avatar',
+        },
+        trailingSlot: {
+            control: 'select',
+            options: ['none', 'star', 'checkCircle', 'settings'],
+            description: 'Content to display after the avatar',
+        },
     },
     tags: ['autodocs'],
 }
@@ -75,7 +85,26 @@ import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system';
 export default meta
 type Story = StoryObj<typeof Avatar>
 
-// Default story
+// Helper functions to render slots based on control selection
+const getSlotContent = (slotType: string) => {
+    switch (slotType) {
+        case 'crown':
+            return <Crown size={16} color="#FFD700" />
+        case 'star':
+            return <Star size={16} color="#FFD700" />
+        case 'user':
+            return <User size={16} color="#666" />
+        case 'checkCircle':
+            return <CheckCircle size={16} color="#22C55E" />
+        case 'settings':
+            return <Settings size={16} color="#666" />
+        case 'none':
+        default:
+            return undefined
+    }
+}
+
+// Default story with interactive controls
 export const Default: Story = {
     args: {
         src: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face',
@@ -83,13 +112,29 @@ export const Default: Story = {
         size: AvatarSize.MD,
         shape: AvatarShape.CIRCULAR,
         online: false,
+        fallback: '',
+        leadingSlot: 'none',
+        trailingSlot: 'none',
     },
+    render: (args: any) => (
+        <Avatar
+            {...args}
+            fallback={args.fallback || undefined}
+            leadingSlot={getSlotContent(args.leadingSlot)}
+            trailingSlot={getSlotContent(args.trailingSlot)}
+        />
+    ),
 }
 
 // Avatar sizes
 export const AvatarSizes: Story = {
     render: () => (
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <Avatar
+                src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=20&h=20&fit=crop&crop=face"
+                alt="Alex Wilson"
+                size={AvatarSize.XS}
+            />
             <Avatar
                 src="https://images.unsplash.com/photo-1494790108755-2616b612b1e0?w=24&h=24&fit=crop&crop=face"
                 alt="Sarah Wilson"
@@ -115,7 +160,7 @@ export const AvatarSizes: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Different avatar sizes: Small (24px), Medium (32px), Large (40px), and Extra Large (48px).',
+                story: 'Different avatar sizes: Extra Small (20px), Small (24px), Medium (32px), Large (40px), and Extra Large (48px).',
             },
         },
     },
@@ -355,6 +400,11 @@ export const SizeShapeCombinations: Story = {
                     Circular:
                 </span>
                 <Avatar
+                    alt="XS"
+                    size={AvatarSize.XS}
+                    shape={AvatarShape.CIRCULAR}
+                />
+                <Avatar
                     alt="SM"
                     size={AvatarSize.SM}
                     shape={AvatarShape.CIRCULAR}
@@ -382,6 +432,11 @@ export const SizeShapeCombinations: Story = {
                     Rounded:
                 </span>
                 <Avatar
+                    alt="XS"
+                    size={AvatarSize.XS}
+                    shape={AvatarShape.ROUNDED}
+                />
+                <Avatar
                     alt="SM"
                     size={AvatarSize.SM}
                     shape={AvatarShape.ROUNDED}
@@ -408,6 +463,41 @@ export const SizeShapeCombinations: Story = {
         docs: {
             description: {
                 story: 'All size and shape combinations showcasing the flexibility of the avatar component.',
+            },
+        },
+    },
+}
+
+// Interactive playground
+export const Interactive: Story = {
+    args: {
+        src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face',
+        alt: 'Interactive User',
+        size: AvatarSize.LG,
+        shape: AvatarShape.CIRCULAR,
+        online: true,
+        fallback: '',
+        leadingSlot: 'crown',
+        trailingSlot: 'star',
+    },
+    render: (args: any) => (
+        <div style={{ padding: '20px', textAlign: 'center' }}>
+            <Avatar
+                {...args}
+                fallback={args.fallback || undefined}
+                leadingSlot={getSlotContent(args.leadingSlot)}
+                trailingSlot={getSlotContent(args.trailingSlot)}
+            />
+            <div style={{ marginTop: '16px', fontSize: '14px', color: '#666' }}>
+                Use the controls below to experiment with different avatar
+                configurations
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interactive playground to experiment with all Avatar props using the controls panel.',
             },
         },
     },
