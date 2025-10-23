@@ -57,6 +57,13 @@ const ResponsiveText = ({
         return () => window.removeEventListener('resize', checkTruncation)
     }, [children, textOverflow, maxLines])
 
+    // Shared ellipsis styles for truncate mode
+    const ellipsisStyles: CSSObject = {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+    }
+
     // Get styles based on overflow mode
     const getTextStyles = (): CSSObject => {
         const baseStyles: CSSObject = {
@@ -67,9 +74,7 @@ const ResponsiveText = ({
             case 'truncate':
                 return {
                     ...baseStyles,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
+                    ...ellipsisStyles,
                 }
             case 'wrap':
                 return {
@@ -78,18 +83,13 @@ const ResponsiveText = ({
                     wordBreak: 'break-word',
                 }
             case 'wrap-clamp':
-                // Note: line clamping is not supported in all browsers (notably older Firefox).
-                // This style provides both standard and WebKit-prefixed properties for best compatibility.
-                // Consider documenting browser requirements if full support is needed.
                 return {
                     ...baseStyles,
                     display: '-webkit-box',
+                    WebkitLineClamp: maxLines,
+                    WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                     wordBreak: 'break-word',
-                    WebkitLineClamp: maxLines,
-                    lineClamp: maxLines,
-                    WebkitBoxOrient: 'vertical',
-                    boxOrient: 'vertical',
                 }
             default:
                 return baseStyles
@@ -105,9 +105,7 @@ const ResponsiveText = ({
         if (textOverflow === 'truncate') {
             return {
                 ...baseStyles,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
+                ...ellipsisStyles,
             }
         }
 
