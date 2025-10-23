@@ -55,7 +55,7 @@ const ResponsiveText = ({
         checkTruncation()
         window.addEventListener('resize', checkTruncation)
         return () => window.removeEventListener('resize', checkTruncation)
-    }, [children, textOverflow])
+    }, [children, textOverflow, maxLines])
 
     // Get styles based on overflow mode
     const getTextStyles = (): CSSObject => {
