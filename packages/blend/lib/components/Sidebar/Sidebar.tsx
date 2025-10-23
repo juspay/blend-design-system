@@ -164,7 +164,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     )}
                     display={isMobile ? 'none' : 'flex'}
                     position={!isExpanded ? 'absolute' : 'relative'}
-                    zIndex="98"
+                    zIndex="48"
                     height="100%"
                     style={{
                         willChange: 'transform',

@@ -157,7 +157,7 @@ export const tokenizeLine = (line: string): SyntaxToken[] => {
  */
 export const getTokenColor = (
     type: string,
-    syntaxTokens: CodeBlockTokenType['syntax']
+    syntaxTokens: CodeBlockTokenType['body']['syntax']
 ): string => {
     switch (type) {
         case 'keyword':
@@ -199,8 +199,8 @@ export const getTokenColor = (
 export const getDiffGutterStyle = (
     lineType: DiffLineType | undefined,
     isDiffMode: boolean,
-    gutterTokens: CodeBlockTokenType['gutter']
-) => {
+    gutterTokens: CodeBlockTokenType['body']['gutter']
+): React.CSSProperties => {
     if (!isDiffMode || !lineType || lineType === DiffLineType.UNCHANGED) {
         return {}
     }
@@ -213,19 +213,19 @@ export const getDiffGutterStyle = (
 }
 
 /**
- * Gets the line background styling for diff mode
+ * Gets the highlighted line background styling for diff mode
  */
 export const getDiffLineBackground = (
     lineType: DiffLineType | undefined,
     isDiffMode: boolean,
-    lineTokens: CodeBlockTokenType['line']
-) => {
+    highlightedLineTokens: CodeBlockTokenType['body']['highlightedLine']
+): React.CSSProperties => {
     if (!isDiffMode || !lineType || lineType === DiffLineType.UNCHANGED) {
         return {}
     }
 
     return {
-        background: lineTokens.backgroundColor[lineType],
+        background: highlightedLineTokens.backgroundColor[lineType],
     }
 }
 

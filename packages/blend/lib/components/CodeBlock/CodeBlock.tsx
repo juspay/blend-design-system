@@ -1,5 +1,5 @@
 import { forwardRef, useState } from 'react'
-import { Check, Copy, FileCode, Minus, Plus } from 'lucide-react'
+import { Check, Copy, FileCode } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
 import { ButtonSize, ButtonSubType, ButtonType } from '../Button/types'
@@ -8,13 +8,136 @@ import type { CodeBlockTokenType } from './codeBlock.token'
 import { CodeBlockVariant, DiffLineType, type CodeBlockProps } from './types'
 import {
     tokenizeLine,
+    getDiffLineBackground,
     getTokenColor,
     getDiffGutterStyle,
-    getDiffLineBackground,
     shouldShowLineNumbers as shouldShowLineNumbersUtil,
     createCopyToClipboard,
     processLines,
+    type SyntaxToken,
 } from './utils'
+import { FOUNDATION_THEME } from '../../tokens'
+
+// Reusable Line Number Gutter Component
+type LineNumberGutterProps = {
+    lineIndex: number
+    width: string | number | undefined
+    color: string | undefined
+    style?: React.CSSProperties
+}
+
+const LineNumberGutter: React.FC<LineNumberGutterProps> = ({
+    lineIndex,
+    width,
+    color,
+    style,
+}) => (
+    <Block
+        width={width}
+        padding={FOUNDATION_THEME.unit[0] + ' ' + FOUNDATION_THEME.unit[10]}
+        color={color}
+        style={{
+            userSelect: 'none',
+            ...style,
+        }}
+        flexShrink="0"
+        textAlign="right"
+        alignSelf="stretch"
+    >
+        {lineIndex + 1}
+    </Block>
+)
+
+// Reusable Tokenized Code Content Component
+type TokenizedCodeLineProps = {
+    tokens: SyntaxToken[]
+    getTokenColor: (type: string) => string
+    paddingTop?: string | number
+    paddingBottom?: string | number
+    paddingLeft?: string | number
+    paddingRight?: string | number
+}
+
+const TokenizedCodeLine: React.FC<TokenizedCodeLineProps> = ({
+    tokens,
+    getTokenColor,
+    paddingTop,
+    paddingBottom,
+    paddingLeft,
+    paddingRight,
+}) => (
+    <code
+        style={{
+            flex: 1,
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            paddingTop:
+                typeof paddingTop === 'number' ? `${paddingTop}px` : paddingTop,
+            paddingBottom:
+                typeof paddingBottom === 'number'
+                    ? `${paddingBottom}px`
+                    : paddingBottom,
+            paddingLeft:
+                typeof paddingLeft === 'number'
+                    ? `${paddingLeft}px`
+                    : paddingLeft,
+            paddingRight:
+                typeof paddingRight === 'number'
+                    ? `${paddingRight}px`
+                    : paddingRight,
+        }}
+    >
+        {tokens.map((token, tokenIndex) => (
+            <Block key={tokenIndex} as="span" color={getTokenColor(token.type)}>
+                {token.value}
+            </Block>
+        ))}
+    </code>
+)
+
+// Reusable Code Line Wrapper Component
+type CodeLineWrapperProps = {
+    children: React.ReactNode
+    style?: React.CSSProperties
+}
+
+const CodeLineWrapper: React.FC<CodeLineWrapperProps> = ({
+    children,
+    style,
+}) => (
+    <Block display="flex" alignItems="flex-start" style={style}>
+        {children}
+    </Block>
+)
+
+// Reusable Pre Element Component
+type PreElementProps = {
+    children: React.ReactNode
+    fontFamily: string | undefined
+    fontSize: string | number | undefined
+    lineHeight: string | number | undefined
+}
+
+const PreElement: React.FC<PreElementProps> = ({
+    children,
+    fontFamily,
+    fontSize,
+    lineHeight,
+}) => (
+    <pre
+        style={{
+            margin: 0,
+            fontFamily: fontFamily || 'monospace',
+            fontSize: typeof fontSize === 'number' ? `${fontSize}px` : fontSize,
+            lineHeight:
+                typeof lineHeight === 'number'
+                    ? lineHeight.toString()
+                    : lineHeight || '1.5',
+        }}
+    >
+        {children}
+    </pre>
+)
 
 const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
     (
@@ -49,11 +172,15 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
         // Use utility functions
         const tokenizeLineLocal = (line: string) => tokenizeLine(line)
         const getTokenColorLocal = (type: string) =>
-            getTokenColor(type, tokens.syntax)
+            getTokenColor(type, tokens.body.syntax)
         const getDiffGutterStyleLocal = (lineType?: DiffLineType) =>
-            getDiffGutterStyle(lineType, isDiffMode, tokens.gutter)
+            getDiffGutterStyle(lineType, isDiffMode, tokens.body.gutter)
         const getDiffLineBackgroundLocal = (lineType?: DiffLineType) =>
-            getDiffLineBackground(lineType, isDiffMode, tokens.line)
+            getDiffLineBackground(
+                lineType,
+                isDiffMode,
+                tokens.body.highlightedLine
+            )
 
         return (
             <Block
@@ -84,11 +211,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                             style={{ flex: 1 }}
                         >
                             {headerLeftSlot || (
-                                <FileCode
-                                    size={tokens.header.icon.size}
-                                    color={tokens.header.icon.color}
-                                    style={{ flexShrink: 0 }}
-                                />
+                                <FileCode style={{ flexShrink: 0 }} />
                             )}
                             <Block
                                 as="span"
@@ -96,9 +219,6 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                 fontWeight={tokens.header.text.fontWeight}
                                 lineHeight={tokens.header.text.lineHeight}
                                 color={tokens.header.text.color}
-                                style={{
-                                    fontFamily: tokens.header.text.fontFamily,
-                                }}
                             >
                                 {header}
                             </Block>
@@ -130,9 +250,9 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
 
                 {/* Code content */}
                 <Block
-                    padding={isDiffMode ? '0' : tokens.content.padding}
-                    backgroundColor={tokens.content.backgroundColor}
-                    overflow={isDiffMode ? 'hidden' : tokens.content.overflow}
+                    padding={isDiffMode ? '0' : tokens.body.padding}
+                    backgroundColor={tokens.body.backgroundColor}
+                    overflow={isDiffMode ? 'hidden' : 'auto'}
                 >
                     {isDiffMode ? (
                         // Side-by-side diff layout
@@ -146,18 +266,15 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                             <Block
                                 style={{ flex: 1 }}
                                 minWidth="0"
-                                borderRight={`1px solid ${tokens.diff.borderColor}`}
-                                padding={tokens.diff.padding}
+                                borderRight={tokens.border}
+                                padding={tokens.body.padding}
                                 alignSelf="stretch"
-                                backgroundColor={tokens.diff.oldBackground}
+                                backgroundColor={tokens.backgroundColor}
                             >
-                                <pre
-                                    style={{
-                                        margin: 0,
-                                        fontFamily: tokens.code.fontFamily,
-                                        fontSize: tokens.code.fontSize,
-                                        lineHeight: tokens.code.lineHeight,
-                                    }}
+                                <PreElement
+                                    fontFamily={tokens.body.code.fontFamily}
+                                    fontSize={tokens.body.code.fontSize}
+                                    lineHeight={tokens.body.code.lineHeight}
                                 >
                                     {diffLines
                                         ?.filter(
@@ -168,125 +285,69 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                                     DiffLineType.UNCHANGED
                                         )
                                         .map((line, lineIndex) => (
-                                            <Block
+                                            <CodeLineWrapper
                                                 key={lineIndex}
-                                                display="flex"
-                                                alignItems="flex-start"
-                                                paddingRight={
-                                                    tokens.line.paddingRight
-                                                }
-                                                paddingLeft={
-                                                    shouldShowLineNumbers
-                                                        ? '0'
-                                                        : tokens.line
-                                                              .paddingLeft
-                                                }
                                                 style={getDiffLineBackgroundLocal(
                                                     line.type
                                                 )}
                                             >
                                                 {shouldShowLineNumbers && (
-                                                    <Block
+                                                    <LineNumberGutter
+                                                        lineIndex={lineIndex}
                                                         width={
-                                                            tokens.gutter.width
-                                                        }
-                                                        padding={
-                                                            tokens.gutter
-                                                                .padding
+                                                            tokens.body.gutter
+                                                                .width
                                                         }
                                                         color={
-                                                            tokens.gutter.color
+                                                            tokens.body.gutter
+                                                                .color
                                                         }
-                                                        style={{
-                                                            userSelect: 'none',
-                                                            ...getDiffGutterStyleLocal(
-                                                                line.type
-                                                            ),
-                                                        }}
-                                                        flexShrink="0"
-                                                        textAlign={
-                                                            tokens.gutter
-                                                                .textAlign
-                                                        }
-                                                        alignSelf="stretch"
-                                                    >
-                                                        {lineIndex + 1}
-                                                    </Block>
+                                                        style={getDiffGutterStyleLocal(
+                                                            line.type
+                                                        )}
+                                                    />
                                                 )}
-                                                {line.type ===
-                                                    DiffLineType.REMOVED && (
-                                                    <Block
-                                                        flexShrink="0"
-                                                        display="flex"
-                                                        alignItems="flex-start"
-                                                        paddingTop={
-                                                            tokens.diff.icon
-                                                                .paddingTop
-                                                        }
-                                                    >
-                                                        <Minus
-                                                            size={
-                                                                tokens.diff.icon
-                                                                    .size
-                                                            }
-                                                            color={
-                                                                tokens.diff.icon
-                                                                    .removed
-                                                                    .color
-                                                            }
-                                                        />
-                                                    </Block>
-                                                )}
-                                                <code
-                                                    style={{
-                                                        flex: 1,
-                                                        whiteSpace: 'pre-wrap',
-                                                        wordBreak: 'break-word',
-                                                        paddingLeft:
-                                                            line.type ===
-                                                            DiffLineType.REMOVED
-                                                                ? tokens.code
-                                                                      .paddingLeftWithIcon
-                                                                : tokens.code
-                                                                      .paddingLeft,
-                                                    }}
-                                                >
-                                                    {tokenizeLineLocal(
+                                                <TokenizedCodeLine
+                                                    tokens={tokenizeLineLocal(
                                                         line.content
-                                                    ).map(
-                                                        (token, tokenIndex) => (
-                                                            <Block
-                                                                key={tokenIndex}
-                                                                as="span"
-                                                                color={getTokenColorLocal(
-                                                                    token.type
-                                                                )}
-                                                            >
-                                                                {token.value}
-                                                            </Block>
-                                                        )
                                                     )}
-                                                </code>
-                                            </Block>
+                                                    getTokenColor={
+                                                        getTokenColorLocal
+                                                    }
+                                                    paddingTop={
+                                                        tokens.body.code
+                                                            .paddingTop
+                                                    }
+                                                    paddingBottom={
+                                                        tokens.body.code
+                                                            .paddingBottom
+                                                    }
+                                                    paddingLeft={
+                                                        tokens.body.code
+                                                            .paddingLeft
+                                                    }
+                                                    paddingRight={
+                                                        tokens.body.code
+                                                            .paddingRight
+                                                    }
+                                                />
+                                            </CodeLineWrapper>
                                         ))}
-                                </pre>
+                                </PreElement>
                             </Block>
 
                             {/* Right side - New code (added) */}
                             <Block
                                 style={{ flex: 1 }}
                                 minWidth="0"
-                                padding={tokens.diff.padding}
+                                padding={tokens.body.padding}
                                 alignSelf="stretch"
-                                backgroundColor={tokens.diff.newBackground}
+                                backgroundColor={tokens.backgroundColor}
                             >
-                                <pre
-                                    style={{
-                                        margin: 0,
-                                        fontFamily: tokens.code.fontFamily,
-                                        fontSize: tokens.code.fontSize,
-                                        lineHeight: tokens.code.lineHeight,
-                                    }}
+                                <PreElement
+                                    fontFamily={tokens.body.code.fontFamily}
+                                    fontSize={tokens.body.code.fontSize}
+                                    lineHeight={tokens.body.code.lineHeight}
                                 >
                                     {diffLines
                                         ?.filter(
@@ -297,118 +358,63 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                                     DiffLineType.UNCHANGED
                                         )
                                         .map((line, lineIndex) => (
-                                            <Block
+                                            <CodeLineWrapper
                                                 key={lineIndex}
-                                                display="flex"
-                                                alignItems="flex-start"
-                                                paddingRight={
-                                                    tokens.line.paddingRight
-                                                }
-                                                paddingLeft={
-                                                    shouldShowLineNumbers
-                                                        ? '0'
-                                                        : tokens.line
-                                                              .paddingLeft
-                                                }
                                                 style={getDiffLineBackgroundLocal(
                                                     line.type
                                                 )}
                                             >
                                                 {shouldShowLineNumbers && (
-                                                    <Block
+                                                    <LineNumberGutter
+                                                        lineIndex={lineIndex}
                                                         width={
-                                                            tokens.gutter.width
-                                                        }
-                                                        padding={
-                                                            tokens.gutter
-                                                                .padding
+                                                            tokens.body.gutter
+                                                                .width
                                                         }
                                                         color={
-                                                            tokens.gutter.color
+                                                            tokens.body.gutter
+                                                                .color
                                                         }
-                                                        style={{
-                                                            userSelect: 'none',
-                                                            ...getDiffGutterStyleLocal(
-                                                                line.type
-                                                            ),
-                                                        }}
-                                                        flexShrink="0"
-                                                        textAlign={
-                                                            tokens.gutter
-                                                                .textAlign
-                                                        }
-                                                        alignSelf="stretch"
-                                                    >
-                                                        {lineIndex + 1}
-                                                    </Block>
+                                                        style={getDiffGutterStyleLocal(
+                                                            line.type
+                                                        )}
+                                                    />
                                                 )}
-                                                {line.type ===
-                                                    DiffLineType.ADDED && (
-                                                    <Block
-                                                        flexShrink="0"
-                                                        display="flex"
-                                                        alignItems="flex-start"
-                                                        paddingTop={
-                                                            tokens.diff.icon
-                                                                .paddingTop
-                                                        }
-                                                    >
-                                                        <Plus
-                                                            size={
-                                                                tokens.diff.icon
-                                                                    .size
-                                                            }
-                                                            color={
-                                                                tokens.diff.icon
-                                                                    .added.color
-                                                            }
-                                                        />
-                                                    </Block>
-                                                )}
-                                                <code
-                                                    style={{
-                                                        flex: 1,
-                                                        whiteSpace: 'pre-wrap',
-                                                        wordBreak: 'break-word',
-                                                        paddingLeft:
-                                                            line.type ===
-                                                            DiffLineType.ADDED
-                                                                ? tokens.code
-                                                                      .paddingLeftWithIcon
-                                                                : tokens.code
-                                                                      .paddingLeft,
-                                                    }}
-                                                >
-                                                    {tokenizeLineLocal(
+                                                <TokenizedCodeLine
+                                                    tokens={tokenizeLineLocal(
                                                         line.content
-                                                    ).map(
-                                                        (token, tokenIndex) => (
-                                                            <Block
-                                                                key={tokenIndex}
-                                                                as="span"
-                                                                color={getTokenColorLocal(
-                                                                    token.type
-                                                                )}
-                                                            >
-                                                                {token.value}
-                                                            </Block>
-                                                        )
                                                     )}
-                                                </code>
-                                            </Block>
+                                                    getTokenColor={
+                                                        getTokenColorLocal
+                                                    }
+                                                    paddingTop={
+                                                        tokens.body.code
+                                                            .paddingTop
+                                                    }
+                                                    paddingBottom={
+                                                        tokens.body.code
+                                                            .paddingBottom
+                                                    }
+                                                    paddingLeft={
+                                                        tokens.body.code
+                                                            .paddingLeft
+                                                    }
+                                                    paddingRight={
+                                                        tokens.body.code
+                                                            .paddingRight
+                                                    }
+                                                />
+                                            </CodeLineWrapper>
                                         ))}
-                                </pre>
+                                </PreElement>
                             </Block>
                         </Block>
                     ) : (
                         // Standard single column layout
-                        <pre
-                            style={{
-                                margin: 0,
-                                fontFamily: tokens.code.fontFamily,
-                                fontSize: tokens.code.fontSize,
-                                lineHeight: tokens.code.lineHeight,
-                            }}
+                        <PreElement
+                            fontFamily={tokens.body.code.fontFamily}
+                            fontSize={tokens.body.code.fontSize}
+                            lineHeight={tokens.body.code.lineHeight}
                         >
                             {lines?.map((line, lineIndex) => {
                                 const lineType =
@@ -417,67 +423,42 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                         : undefined
 
                                 return (
-                                    <Block
+                                    <CodeLineWrapper
                                         key={lineIndex}
-                                        display="flex"
-                                        alignItems="flex-start"
-                                        paddingRight={tokens.line.paddingRight}
-                                        paddingLeft={
-                                            shouldShowLineNumbers
-                                                ? '0'
-                                                : tokens.line.paddingLeft
-                                        }
                                         style={getDiffLineBackgroundLocal(
                                             lineType
                                         )}
                                     >
                                         {shouldShowLineNumbers && (
-                                            <Block
-                                                width={tokens.gutter.width}
-                                                padding={tokens.gutter.padding}
-                                                color={tokens.gutter.color}
-                                                style={{
-                                                    userSelect: 'none',
-                                                    ...getDiffGutterStyleLocal(
-                                                        lineType
-                                                    ),
-                                                }}
-                                                flexShrink="0"
-                                                textAlign={
-                                                    tokens.gutter.textAlign
-                                                }
-                                                alignSelf="stretch"
-                                            >
-                                                {lineIndex + 1}
-                                            </Block>
+                                            <LineNumberGutter
+                                                lineIndex={lineIndex}
+                                                width={tokens.body.gutter.width}
+                                                color={tokens.body.gutter.color}
+                                                style={getDiffGutterStyleLocal(
+                                                    lineType
+                                                )}
+                                            />
                                         )}
-                                        <code
-                                            style={{
-                                                flex: 1,
-                                                whiteSpace: 'pre-wrap',
-                                                wordBreak: 'break-word',
-                                                paddingLeft:
-                                                    tokens.code.paddingLeft,
-                                            }}
-                                        >
-                                            {tokenizeLineLocal(line).map(
-                                                (token, tokenIndex) => (
-                                                    <Block
-                                                        key={tokenIndex}
-                                                        as="span"
-                                                        color={getTokenColorLocal(
-                                                            token.type
-                                                        )}
-                                                    >
-                                                        {token.value}
-                                                    </Block>
-                                                )
-                                            )}
-                                        </code>
-                                    </Block>
+                                        <TokenizedCodeLine
+                                            tokens={tokenizeLineLocal(line)}
+                                            getTokenColor={getTokenColorLocal}
+                                            paddingTop={
+                                                tokens.body.code.paddingTop
+                                            }
+                                            paddingBottom={
+                                                tokens.body.code.paddingBottom
+                                            }
+                                            paddingLeft={
+                                                tokens.body.code.paddingLeft
+                                            }
+                                            paddingRight={
+                                                tokens.body.code.paddingRight
+                                            }
+                                        />
+                                    </CodeLineWrapper>
                                 )
                             })}
-                        </pre>
+                        </PreElement>
                     )}
                 </Block>
             </Block>
