@@ -199,7 +199,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                         display="flex"
                         justifyContent="space-between"
                         alignItems="center"
-                        padding={tokens.header.padding}
+                        padding={`${tokens.header.padding.y} ${tokens.header.padding.x}`}
                         backgroundColor={tokens.header.backgroundColor}
                         borderBottom={tokens.header.borderBottom}
                         gap={tokens.header.gap}
@@ -250,7 +250,11 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
 
                 {/* Code content */}
                 <Block
-                    padding={isDiffMode ? '0' : tokens.body.padding}
+                    padding={
+                        isDiffMode
+                            ? '0'
+                            : `${tokens.body.padding.y} ${tokens.body.padding.x}`
+                    }
                     backgroundColor={tokens.body.backgroundColor}
                     overflow={isDiffMode ? 'hidden' : 'auto'}
                 >
@@ -267,7 +271,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                 style={{ flex: 1 }}
                                 minWidth="0"
                                 borderRight={tokens.border}
-                                padding={tokens.body.padding}
+                                padding={`${tokens.body.padding.y} ${tokens.body.padding.x}`}
                                 alignSelf="stretch"
                                 backgroundColor={tokens.backgroundColor}
                             >
@@ -315,20 +319,20 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                                         getTokenColorLocal
                                                     }
                                                     paddingTop={
-                                                        tokens.body.code
-                                                            .paddingTop
+                                                        tokens.body.code.padding
+                                                            .y
                                                     }
                                                     paddingBottom={
-                                                        tokens.body.code
-                                                            .paddingBottom
+                                                        tokens.body.code.padding
+                                                            .y
                                                     }
                                                     paddingLeft={
-                                                        tokens.body.code
-                                                            .paddingLeft
+                                                        tokens.body.code.padding
+                                                            .x.left
                                                     }
                                                     paddingRight={
-                                                        tokens.body.code
-                                                            .paddingRight
+                                                        tokens.body.code.padding
+                                                            .x.right
                                                     }
                                                 />
                                             </CodeLineWrapper>
@@ -340,7 +344,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                             <Block
                                 style={{ flex: 1 }}
                                 minWidth="0"
-                                padding={tokens.body.padding}
+                                padding={`${tokens.body.padding.y} ${tokens.body.padding.x}`}
                                 alignSelf="stretch"
                                 backgroundColor={tokens.backgroundColor}
                             >
@@ -388,20 +392,20 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                                         getTokenColorLocal
                                                     }
                                                     paddingTop={
-                                                        tokens.body.code
-                                                            .paddingTop
+                                                        tokens.body.code.padding
+                                                            .y
                                                     }
                                                     paddingBottom={
-                                                        tokens.body.code
-                                                            .paddingBottom
+                                                        tokens.body.code.padding
+                                                            .y
                                                     }
                                                     paddingLeft={
-                                                        tokens.body.code
-                                                            .paddingLeft
+                                                        tokens.body.code.padding
+                                                            .x.left
                                                     }
                                                     paddingRight={
-                                                        tokens.body.code
-                                                            .paddingRight
+                                                        tokens.body.code.padding
+                                                            .x.right
                                                     }
                                                 />
                                             </CodeLineWrapper>
@@ -443,16 +447,16 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                             tokens={tokenizeLineLocal(line)}
                                             getTokenColor={getTokenColorLocal}
                                             paddingTop={
-                                                tokens.body.code.paddingTop
+                                                tokens.body.code.padding.y
                                             }
                                             paddingBottom={
-                                                tokens.body.code.paddingBottom
+                                                tokens.body.code.padding.y
                                             }
                                             paddingLeft={
-                                                tokens.body.code.paddingLeft
+                                                tokens.body.code.padding.x.left
                                             }
                                             paddingRight={
-                                                tokens.body.code.paddingRight
+                                                tokens.body.code.padding.x.right
                                             }
                                         />
                                     </CodeLineWrapper>

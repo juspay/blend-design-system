@@ -23,7 +23,10 @@ export type CodeBlockTokenType = {
     header: {
         backgroundColor: CSSObject['backgroundColor']
         borderBottom: CSSObject['borderBottom']
-        padding: CSSObject['padding']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
         gap: CSSObject['gap']
         icon: {
             width: CSSObject['width']
@@ -37,7 +40,10 @@ export type CodeBlockTokenType = {
     }
     // Content area tokens
     body: {
-        padding: CSSObject['padding']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
         backgroundColor: CSSObject['backgroundColor']
 
         // Gutter (line numbers) tokens
@@ -59,10 +65,13 @@ export type CodeBlockTokenType = {
             fontFamily: CSSObject['fontFamily']
             fontSize: CSSObject['fontSize']
             lineHeight: CSSObject['lineHeight']
-            paddingTop: CSSObject['paddingTop']
-            paddingBottom: CSSObject['paddingBottom']
-            paddingLeft: CSSObject['paddingLeft']
-            paddingRight: CSSObject['paddingRight']
+            padding: {
+                x: {
+                    left: CSSObject['paddingLeft']
+                    right: CSSObject['paddingRight']
+                }
+                y: CSSObject['padding']
+            }
         }
         // Highlighted line tokens (for diff mode and code highlighting)
         highlightedLine: {
@@ -100,7 +109,10 @@ export const getCodeBlockTokens = (
             header: {
                 backgroundColor: foundationToken.colors.gray[50],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                padding: '12px 16px',
+                padding: {
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[12],
+                },
                 gap: foundationToken.unit[8],
                 icon: {
                     width: 16,
@@ -113,7 +125,10 @@ export const getCodeBlockTokens = (
                 },
             },
             body: {
-                padding: '12px 0',
+                padding: {
+                    x: foundationToken.unit[0],
+                    y: foundationToken.unit[12],
+                },
                 backgroundColor: foundationToken.colors.gray[25],
 
                 gutter: {
@@ -139,10 +154,13 @@ export const getCodeBlockTokens = (
                     fontFamily: "'JetBrains Mono'",
                     fontSize: '11px',
                     lineHeight: '1.5',
-                    paddingTop: foundationToken.unit[4],
-                    paddingBottom: foundationToken.unit[4],
-                    paddingLeft: foundationToken.unit[12],
-                    paddingRight: foundationToken.unit[32],
+                    padding: {
+                        x: {
+                            left: foundationToken.unit[12],
+                            right: foundationToken.unit[32],
+                        },
+                        y: foundationToken.unit[4],
+                    },
                 },
                 highlightedLine: {
                     backgroundColor: {
@@ -171,7 +189,10 @@ export const getCodeBlockTokens = (
             header: {
                 backgroundColor: foundationToken.colors.gray[50],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                padding: '16px 20px',
+                padding: {
+                    x: foundationToken.unit[20],
+                    y: foundationToken.unit[16],
+                },
                 gap: foundationToken.unit[12],
                 icon: {
                     width: 20,
@@ -184,7 +205,10 @@ export const getCodeBlockTokens = (
                 },
             },
             body: {
-                padding: '16px 0',
+                padding: {
+                    x: foundationToken.unit[0],
+                    y: foundationToken.unit[16],
+                },
                 backgroundColor: foundationToken.colors.gray[25],
 
                 gutter: {
@@ -210,10 +234,13 @@ export const getCodeBlockTokens = (
                     fontFamily: "'JetBrains Mono'",
                     fontSize: '12px',
                     lineHeight: '1.6',
-                    paddingTop: foundationToken.unit[4],
-                    paddingBottom: foundationToken.unit[4],
-                    paddingLeft: foundationToken.unit[12],
-                    paddingRight: foundationToken.unit[32],
+                    padding: {
+                        x: {
+                            left: foundationToken.unit[12],
+                            right: foundationToken.unit[32],
+                        },
+                        y: foundationToken.unit[4],
+                    },
                 },
                 highlightedLine: {
                     backgroundColor: {
