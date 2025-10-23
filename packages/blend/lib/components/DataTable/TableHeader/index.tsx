@@ -119,11 +119,11 @@ const TableHeader = forwardRef<
         }, [visibleColumns])
 
         useEffect(() => {
-            const handleScroll = (_event: Event) => {
+            const handleScroll = () => {
                 setOpenPopovers({})
             }
 
-            const handleWheel = (_event: Event) => {
+            const handleWheel = () => {
                 setOpenPopovers({})
             }
 
@@ -153,7 +153,7 @@ const TableHeader = forwardRef<
             }
             const listeners: (() => void)[] = []
 
-            scrollContainers.forEach((container, _index) => {
+            scrollContainers.forEach((container) => {
                 container.addEventListener('scroll', handleScroll, {
                     passive: true,
                 })
@@ -265,6 +265,8 @@ const TableHeader = forwardRef<
                                 borderBottom:
                                     tableToken.dataTable.table.header
                                         .borderBottom,
+                                borderTopLeftRadius:
+                                    tableToken.dataTable.borderRadius,
                                 ...(columnFreeze > 0 && {
                                     position: 'sticky',
                                     left: '0px',
@@ -297,6 +299,10 @@ const TableHeader = forwardRef<
                                 borderBottom:
                                     tableToken.dataTable.table.header
                                         .borderBottom,
+                                ...(!enableRowExpansion && {
+                                    borderTopLeftRadius:
+                                        tableToken.dataTable.borderRadius,
+                                }),
                                 ...(columnFreeze > 0 && {
                                     position: 'sticky',
                                     left: enableRowExpansion ? '50px' : '0px',
@@ -312,6 +318,14 @@ const TableHeader = forwardRef<
                                 alignItems="center"
                                 justifyContent="center"
                                 width={FOUNDATION_THEME.unit[40]}
+                                style={{
+                                    height: '100%',
+                                    ...(!enableRowExpansion && {
+                                        borderTopLeftRadius:
+                                            tableToken.dataTable.borderRadius,
+                                    }),
+                                    overflow: 'hidden',
+                                }}
                             >
                                 <Checkbox
                                     checked={selectAll}
@@ -340,6 +354,21 @@ const TableHeader = forwardRef<
                                 '#ffffff'
                         )
 
+                        const isLastColumn =
+                            !enableColumnManager &&
+                            !(
+                                (enableInlineEdit || rowActions) &&
+                                !(
+                                    mobileConfig?.isMobile &&
+                                    mobileConfig?.enableColumnOverflow
+                                )
+                            ) &&
+                            !(
+                                mobileConfig?.enableColumnOverflow &&
+                                mobileOverflowColumns.length > 0
+                            ) &&
+                            index === localColumns.length - 1
+
                         return (
                             <th
                                 key={String(column.field)}
@@ -354,6 +383,10 @@ const TableHeader = forwardRef<
                                     borderBottom:
                                         tableToken.dataTable.table.header
                                             .borderBottom,
+                                    ...(isLastColumn && {
+                                        borderTopRightRadius:
+                                            tableToken.dataTable.borderRadius,
+                                    }),
                                 }}
                             >
                                 <Block
@@ -721,6 +754,15 @@ const TableHeader = forwardRef<
                                     borderBottom:
                                         tableToken.dataTable.table.header
                                             .borderBottom,
+                                    ...(!enableColumnManager &&
+                                        !(
+                                            mobileConfig?.enableColumnOverflow &&
+                                            mobileOverflowColumns.length > 0
+                                        ) && {
+                                            borderTopRightRadius:
+                                                tableToken.dataTable
+                                                    .borderRadius,
+                                        }),
                                 }}
                             >
                                 <Block
@@ -758,6 +800,10 @@ const TableHeader = forwardRef<
                                     borderBottom:
                                         tableToken.dataTable.table.header
                                             .borderBottom,
+                                    ...(!enableColumnManager && {
+                                        borderTopRightRadius:
+                                            tableToken.dataTable.borderRadius,
+                                    }),
                                 }}
                             ></th>
                         )}
@@ -781,6 +827,8 @@ const TableHeader = forwardRef<
                                 borderBottom:
                                     tableToken.dataTable.table.header
                                         .borderBottom,
+                                borderTopRightRadius:
+                                    tableToken.dataTable.borderRadius,
                             }}
                         >
                             <Block position="relative">
