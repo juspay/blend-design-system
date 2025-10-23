@@ -46,15 +46,37 @@ const ResponsiveText = ({
 
         const checkTruncation = () => {
             if (textOverflow === 'truncate') {
-                setIsTruncated(element.scrollWidth > element.clientWidth)
+                // For truncate mode, check if scrollWidth exceeds clientWidth
+                // We need to check the first child (PrimitiveText) as that's where text lives
+                const textElement = element.firstElementChild as HTMLElement
+                if (textElement) {
+                    const isOverflowing =
+                        textElement.scrollWidth > textElement.clientWidth
+                    // Debug logging
+                    if (process.env.NODE_ENV === 'development') {
+                        console.log('[KeyValuePair] Truncation check:', {
+                            text: children,
+                            scrollWidth: textElement.scrollWidth,
+                            clientWidth: textElement.clientWidth,
+                            isOverflowing,
+                        })
+                    }
+                    setIsTruncated(isOverflowing)
+                }
             } else if (textOverflow === 'wrap-clamp') {
+                // For wrap-clamp, check scrollHeight vs clientHeight
                 setIsTruncated(element.scrollHeight > element.clientHeight)
             }
         }
 
-        checkTruncation()
+        // Use setTimeout to ensure DOM is fully rendered
+        const timeoutId = setTimeout(checkTruncation, 0)
+
         window.addEventListener('resize', checkTruncation)
-        return () => window.removeEventListener('resize', checkTruncation)
+        return () => {
+            clearTimeout(timeoutId)
+            window.removeEventListener('resize', checkTruncation)
+        }
     }, [children, textOverflow, maxLines])
 
     // Shared ellipsis styles for truncate mode
