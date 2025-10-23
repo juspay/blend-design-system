@@ -83,6 +83,12 @@ const ResponsiveText = ({
                     wordBreak: 'break-word',
                 }
             case 'wrap-clamp':
+                // Multi-line text clamping with ellipsis
+                // Browser Support Notes:
+                // - Chrome/Edge/Safari: Full support via -webkit-line-clamp
+                // - Firefox 68+: Supports -webkit-line-clamp
+                // - Older browsers: Falls back to wrapping without line limit
+                // The overflow/word-break properties ensure graceful degradation
                 return {
                     ...baseStyles,
                     display: '-webkit-box',
@@ -90,6 +96,8 @@ const ResponsiveText = ({
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                     wordBreak: 'break-word',
+                    // Fallback for browsers without -webkit-line-clamp support
+                    // Text will wrap naturally without line limit but still be contained
                 }
             default:
                 return baseStyles
@@ -174,6 +182,12 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         keyValuePairState === KeyValuePairStateType.vertical
                             ? keyValuePairTokens.gap.vertical
                             : keyValuePairTokens.gap.horizontal,
+                    // Width strategy differs based on overflow mode:
+                    // - 'wrap' mode: Use width: 100% with maxWidth constraint
+                    //   This allows the component to be responsive and fill parent container
+                    //   while still respecting maxWidth limit. Essential for grid layouts.
+                    // - 'truncate'/'wrap-clamp': Use fixed width for consistent sizing
+                    //   This ensures predictable layout and proper ellipsis truncation.
                     width: textOverflow === 'wrap' ? '100%' : maxWidth,
                     maxWidth: textOverflow === 'wrap' ? maxWidth : undefined,
                 }}

@@ -22,9 +22,13 @@ export type KeyValuePairPropTypes = {
     maxWidth?: string
     /**
      * Controls how text overflow is handled for both key and value
-     * - 'truncate': Single line with ellipsis (default)
-     * - 'wrap': Allow natural text wrapping
-     * - 'wrap-clamp': Wrap with line limit and ellipsis
+     * - 'truncate': Single line with ellipsis (default, all browsers)
+     * - 'wrap': Allow natural text wrapping (all browsers)
+     * - 'wrap-clamp': Wrap with line limit and ellipsis (Chrome/Edge/Safari/Firefox 68+, graceful fallback for older browsers)
+     *
+     * Note: 'wrap-clamp' uses -webkit-line-clamp which is widely supported but non-standard.
+     * In unsupported browsers, text will wrap naturally without the line limit.
+     *
      * @default 'truncate'
      */
     textOverflow?: TextOverflowMode

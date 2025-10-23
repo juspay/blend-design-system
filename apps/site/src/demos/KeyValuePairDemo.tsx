@@ -716,6 +716,12 @@ const KeyValuePairDemo = () => {
                         Best of both worlds - shows more text but keeps height
                         controlled.
                     </p>
+                    <div className="text-xs text-gray-600 bg-purple-50 p-3 rounded-lg border border-purple-100">
+                        <strong>Browser Support:</strong> Supported in Chrome,
+                        Edge, Safari, and Firefox 68+. Older browsers will show
+                        natural wrapping without line limit (graceful
+                        degradation).
+                    </div>
 
                     {/* 2 Lines Example */}
                     <div className="space-y-2">
