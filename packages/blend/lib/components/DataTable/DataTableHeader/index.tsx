@@ -530,7 +530,7 @@ const DataTableHeader = forwardRef<
                                                 alignOffset={-20}
                                                 secondaryAction={{
                                                     onClick: onClearAllFilters,
-                                                    isDisabled:
+                                                    disabled:
                                                         !searchConfig.query.trim() &&
                                                         advancedFilters.length ===
                                                             0,
