@@ -78,13 +78,18 @@ const ResponsiveText = ({
                     wordBreak: 'break-word',
                 }
             case 'wrap-clamp':
+                // Note: line clamping is not supported in all browsers (notably older Firefox).
+                // This style provides both standard and WebKit-prefixed properties for best compatibility.
+                // Consider documenting browser requirements if full support is needed.
                 return {
                     ...baseStyles,
                     display: '-webkit-box',
-                    WebkitLineClamp: maxLines,
-                    WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                     wordBreak: 'break-word',
+                    WebkitLineClamp: maxLines,
+                    lineClamp: maxLines,
+                    WebkitBoxOrient: 'vertical',
+                    boxOrient: 'vertical',
                 }
             default:
                 return baseStyles
