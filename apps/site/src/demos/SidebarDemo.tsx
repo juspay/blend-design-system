@@ -5,6 +5,7 @@ import {
     Menu as MenuIcon,
     BarChart2,
     Type,
+    Code,
     Calendar as CalendarIcon,
     ListFilter,
     User as UserIcon,
@@ -87,6 +88,7 @@ import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
 import SearchInputDemo from './SearchInputDemo'
 import VirtualListDemo from './VirtualListDemo'
+import CodeBlockDemo from './CodeBlockDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -140,6 +142,7 @@ const SidebarDemo = () => {
         | 'dataRangePicker'
         | 'allComponents'
         | 'virtualList'
+        | 'codeBlock'
     >('dataRangePicker')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -392,6 +395,8 @@ const SidebarDemo = () => {
                 return <AllComponentsDemo />
             case 'virtualList':
                 return <VirtualListDemo />
+            case 'codeBlock':
+                return <CodeBlockDemo />
             default:
                 return (
                     <div className="p-8">
@@ -800,6 +805,13 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'dataRangePicker',
                     onClick: () => setActiveComponent('dataRangePicker'),
+                },
+                {
+                    label: 'Code Block',
+                    leftSlot: (
+                        <Code style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('codeBlock'),
                 },
             ],
         },

@@ -73,8 +73,17 @@
     font-display: swap;
 }
 
+/* Smooth scrolling for the entire app */
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+    scroll-behavior: smooth;
+}
+
 :root {
-    --background: #fcfcfc;
+    --background: #fcfcfd;
     --foreground: #171717;
     font-family: 'InterDisplay', sans-serif;
     line-height: 1.5;
