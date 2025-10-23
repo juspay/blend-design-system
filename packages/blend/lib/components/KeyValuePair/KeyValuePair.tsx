@@ -52,15 +52,6 @@ const ResponsiveText = ({
                 if (textElement) {
                     const isOverflowing =
                         textElement.scrollWidth > textElement.clientWidth
-                    // Debug logging
-                    if (process.env.NODE_ENV === 'development') {
-                        console.log('[KeyValuePair] Truncation check:', {
-                            text: children,
-                            scrollWidth: textElement.scrollWidth,
-                            clientWidth: textElement.clientWidth,
-                            isOverflowing,
-                        })
-                    }
                     setIsTruncated(isOverflowing)
                 }
             } else if (textOverflow === 'wrap-clamp') {
