@@ -922,3 +922,270 @@ export const ComprehensiveShowcase: Story = {
         },
     },
 }
+
+// Advanced SplitTag Patterns
+export const AdvancedPatterns: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    Multi-level Information Hierarchy
+                </h3>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <SplitTag
+                        primaryTag={{
+                            text: 'API',
+                            color: TagColor.NEUTRAL,
+                            leftSlot: <Server size={12} />,
+                        }}
+                        secondaryTag={{
+                            text: 'v3.2.1-stable',
+                            color: TagColor.SUCCESS,
+                        }}
+                        size={TagSize.SM}
+                    />
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Database',
+                            color: TagColor.NEUTRAL,
+                            leftSlot: <Database size={12} />,
+                        }}
+                        secondaryTag={{
+                            text: 'MongoDB 6.0.4',
+                            color: TagColor.PRIMARY,
+                        }}
+                        size={TagSize.SM}
+                    />
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Cache',
+                            color: TagColor.NEUTRAL,
+                            leftSlot: <Activity size={12} />,
+                        }}
+                        secondaryTag={{
+                            text: 'Redis 7.0.8',
+                            color: TagColor.WARNING,
+                        }}
+                        size={TagSize.SM}
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    Complex Key-Value Relationships
+                </h3>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Memory Usage',
+                            color: TagColor.NEUTRAL,
+                        }}
+                        secondaryTag={{
+                            text: '2.4GB / 8.0GB',
+                            color: TagColor.SUCCESS,
+                            leftSlot: <TrendingUp size={12} />,
+                        }}
+                        size={TagSize.MD}
+                    />
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Response Time',
+                            color: TagColor.NEUTRAL,
+                        }}
+                        secondaryTag={{
+                            text: '~145ms avg',
+                            color: TagColor.WARNING,
+                            leftSlot: <Clock size={12} />,
+                        }}
+                        size={TagSize.MD}
+                    />
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Error Rate',
+                            color: TagColor.NEUTRAL,
+                        }}
+                        secondaryTag={{
+                            text: '0.003%',
+                            color: TagColor.SUCCESS,
+                            leftSlot: <Check size={12} />,
+                        }}
+                        size={TagSize.MD}
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    Conditional State Display
+                </h3>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Deployment',
+                            color: TagColor.NEUTRAL,
+                            leftSlot: <Package size={12} />,
+                        }}
+                        secondaryTag={{
+                            text: 'In Progress',
+                            color: TagColor.WARNING,
+                            leftSlot: <Activity size={12} />,
+                        }}
+                        size={TagSize.SM}
+                    />
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Health Check',
+                            color: TagColor.NEUTRAL,
+                            leftSlot: <Activity size={12} />,
+                        }}
+                        secondaryTag={{
+                            text: 'Passing',
+                            color: TagColor.SUCCESS,
+                            leftSlot: <Check size={12} />,
+                        }}
+                        size={TagSize.SM}
+                    />
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Backup',
+                            color: TagColor.NEUTRAL,
+                            leftSlot: <Database size={12} />,
+                        }}
+                        secondaryTag={{
+                            text: 'Failed',
+                            color: TagColor.ERROR,
+                            leftSlot: <X size={12} />,
+                        }}
+                        size={TagSize.SM}
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    Financial & E-commerce Data
+                </h3>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Revenue',
+                            color: TagColor.NEUTRAL,
+                            leftSlot: <DollarSign size={12} />,
+                        }}
+                        secondaryTag={{
+                            text: '$847.2K',
+                            color: TagColor.SUCCESS,
+                        }}
+                        size={TagSize.MD}
+                    />
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Growth',
+                            color: TagColor.NEUTRAL,
+                            leftSlot: <TrendingUp size={12} />,
+                        }}
+                        secondaryTag={{
+                            text: '+23.4%',
+                            color: TagColor.SUCCESS,
+                        }}
+                        size={TagSize.MD}
+                    />
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Conversion',
+                            color: TagColor.NEUTRAL,
+                            leftSlot: <Percent size={12} />,
+                        }}
+                        secondaryTag={{
+                            text: '3.47%',
+                            color: TagColor.WARNING,
+                        }}
+                        size={TagSize.MD}
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    Team & Resource Allocation
+                </h3>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Assigned',
+                            color: TagColor.NEUTRAL,
+                            leftSlot: <User size={12} />,
+                        }}
+                        secondaryTag={{
+                            text: 'Sarah Chen',
+                            color: TagColor.PRIMARY,
+                        }}
+                        size={TagSize.SM}
+                    />
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Team',
+                            color: TagColor.NEUTRAL,
+                            leftSlot: <User size={12} />,
+                        }}
+                        secondaryTag={{
+                            text: 'Frontend (5)',
+                            color: TagColor.SUCCESS,
+                        }}
+                        size={TagSize.SM}
+                    />
+                    <SplitTag
+                        primaryTag={{
+                            text: 'Workload',
+                            color: TagColor.NEUTRAL,
+                            leftSlot: <Activity size={12} />,
+                        }}
+                        secondaryTag={{
+                            text: '85% Capacity',
+                            color: TagColor.WARNING,
+                        }}
+                        size={TagSize.SM}
+                    />
+                </div>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Advanced SplitTag patterns for complex data relationships, conditional states, and multi-level information hierarchies.',
+            },
+        },
+    },
+}

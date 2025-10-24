@@ -44,6 +44,7 @@ const TextArea = ({
 
     return (
         <Block
+            data-component-field-wrapper={`field-textarea`}
             display="flex"
             flexDirection="column"
             gap={textAreaTokens.gap}

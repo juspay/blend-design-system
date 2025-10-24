@@ -130,6 +130,9 @@ const SearchInputDemo = () => {
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
                         <div className="w-full max-w-md">
                             <SearchInput
+                                data-id={'Enter search query'}
+                                data-input-name={playgroundValue}
+                                name={playgroundValue}
                                 value={playgroundValue}
                                 onChange={(e) =>
                                     setPlaygroundValue(e.target.value)

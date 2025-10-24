@@ -38,6 +38,7 @@ import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.toke
 import { getProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
 import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
+import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -114,6 +115,8 @@ const initTokens = (
             getAvatarGroupTokens(foundationTokens),
         SIDEBAR: componentTokens.SIDEBAR ?? getSidebarTokens(foundationTokens),
         UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
+        CODE_BLOCK:
+            componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
     }
 }
 

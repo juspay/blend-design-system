@@ -3,6 +3,10 @@ import React, { useState } from 'react'
 import {
     MultiSelect,
     MultiSelectSelectionTagType,
+    MultiSelectVariant,
+    MultiSelectMenuSize,
+    MultiSelectMenuAlignment,
+    MultiSelectMenuSide,
 } from '@juspay/blend-design-system'
 import {
     Palette,
@@ -44,68 +48,90 @@ import {
     LayoutDashboard,
     Bell,
     Printer,
+    CheckSquare,
+    Filter,
+    Globe,
+    Search,
 } from 'lucide-react'
 
-// Define types locally
-type MultiSelectMenuGroupType = {
-    label?: string
-    groupLabel?: string
-    items: MultiSelectMenuItemType[]
-    showSeparator?: boolean
-}
-
+// Local types for reference
 type MultiSelectMenuItemType = {
     label: string
     value: string
     checked?: boolean
     subLabel?: string
-    leftSlot?: React.ReactNode
     slot1?: React.ReactNode
     slot2?: React.ReactNode
     slot3?: React.ReactNode
     slot4?: React.ReactNode
     disabled?: boolean
+    alwaysSelected?: boolean
     onClick?: () => void
     subMenu?: MultiSelectMenuItemType[]
+    tooltip?: string | React.ReactNode
+    disableTruncation?: boolean
+}
+
+type MultiSelectMenuGroupType = {
+    groupLabel?: string
+    items: MultiSelectMenuItemType[]
+    showSeparator?: boolean
 }
 
 const meta: Meta<typeof MultiSelect> = {
     title: 'Components/MultiSelect',
     component: MultiSelect,
     parameters: {
-        layout: 'centered',
+        layout: 'padded',
         docs: {
             description: {
                 component: `
-A multi-selection dropdown component that allows users to select multiple options from a list.
+A comprehensive multi-selection dropdown component that allows users to select multiple options from grouped lists.
 
 ## Features
-- Multiple selection from grouped items
-- Selection display as count or text list
-- Clear all selections button
-- Container and no-container variants
-- Multiple sizes (Small, Medium, Large)
-- Icon support in menu items
-- Keyboard navigation support
-- Customizable positioning and alignment
-- Form integration with labels and validation
-- Disabled state support
-- Custom slot for trigger content
+- **Multiple Selection**: Select multiple items from grouped lists
+- **Display Modes**: Show selected items as count or text list
+- **Search & Filtering**: Built-in search functionality for large datasets
+- **Select All**: Bulk selection with select all functionality
+- **Advanced Controls**: Action buttons, max selections, and virtualization
+- **Responsive Design**: Mobile drawer mode for better touch experience
+- **Rich Content**: Support for icons, sub-labels, tooltips, and custom slots
+- **Accessibility**: Full keyboard navigation and screen reader support
+- **Form Integration**: Complete form validation and error handling
+- **Performance**: Virtualization support for large datasets
+- **Infinite Scroll**: Load more items as needed
 
 ## Usage
 
 \`\`\`tsx
-import { MultiSelect, MultiSelectSelectionTagType } from '@juspay/blend-design-system';
+import { 
+  MultiSelect, 
+  MultiSelectSelectionTagType, 
+  MultiSelectVariant,
+  MultiSelectMenuSize 
+} from '@juspay/blend-design-system';
 
 const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
 <MultiSelect
   label="Select Skills"
-  placeholder="Choose skills"
+  placeholder="Choose your skills"
   items={skillItems}
   selectedValues={selectedValues}
-  onChange={setSelectedValues}
+  onChange={(value) => {
+    if (value === '') {
+      setSelectedValues([]);
+    } else {
+      setSelectedValues(prev => 
+        prev.includes(value) 
+          ? prev.filter(v => v !== value)
+          : [...prev, value]
+      );
+    }
+  }}
   selectionTagType={MultiSelectSelectionTagType.COUNT}
+  enableSearch
+  enableSelectAll
 />
 \`\`\`
         `,
@@ -114,55 +140,168 @@ const [selectedValues, setSelectedValues] = useState<string[]>([]);
     },
     argTypes: {
         label: {
-            control: 'text',
-            description: 'Label for the multi-select input',
+            control: { type: 'text' },
+            description: 'Label text displayed above the multi-select',
+            table: {
+                type: { summary: 'string' },
+                category: 'Labels',
+            },
         },
         sublabel: {
-            control: 'text',
-            description: 'Sub-label for additional context',
+            control: { type: 'text' },
+            description: 'Secondary label text for additional context',
+            table: {
+                type: { summary: 'string' },
+                category: 'Labels',
+            },
         },
         placeholder: {
-            control: 'text',
+            control: { type: 'text' },
             description: 'Placeholder text when no selection is made',
+            table: {
+                type: { summary: 'string' },
+                category: 'Content',
+            },
         },
         hintText: {
-            control: 'text',
-            description: 'Hint text displayed below the select',
+            control: { type: 'text' },
+            description: 'Hint text displayed below the multi-select',
+            table: {
+                type: { summary: 'string' },
+                category: 'Labels',
+            },
         },
         helpIconHintText: {
-            control: 'text',
+            control: { type: 'text' },
             description: 'Tooltip text for the help icon',
-        },
-        required: {
-            control: 'boolean',
-            description: 'Whether the field is required',
-        },
-        disabled: {
-            control: 'boolean',
-            description: 'Whether the multi-select is disabled',
-        },
-        size: {
-            control: 'select',
-            options: ['sm', 'md', 'lg'],
-            description: 'Size of the multi-select component',
-        },
-        variant: {
-            control: 'select',
-            options: ['container', 'no-container'],
-            description: 'Visual variant of the multi-select',
-        },
-        selectionTagType: {
-            control: 'select',
-            options: Object.values(MultiSelectSelectionTagType),
-            description: 'How to display selected items (count or text)',
+            table: {
+                type: { summary: 'string' },
+                category: 'Labels',
+            },
         },
         selectedValues: {
-            control: 'object',
+            control: { type: 'object' },
             description: 'Array of currently selected values',
+            table: {
+                type: { summary: 'string[]' },
+                category: 'Core',
+            },
+        },
+        onChange: {
+            action: 'selection-changed',
+            description: 'Callback fired when selection changes',
+            table: {
+                type: { summary: '(selectedValue: string) => void' },
+                category: 'Core',
+            },
         },
         items: {
-            control: 'object',
+            control: { type: 'object' },
             description: 'Array of grouped menu items',
+            table: {
+                type: { summary: 'MultiSelectMenuGroupType[]' },
+                category: 'Core',
+            },
+        },
+        size: {
+            control: { type: 'select' },
+            options: Object.values(MultiSelectMenuSize),
+            description: 'Size variant of the multi-select',
+            table: {
+                type: { summary: 'MultiSelectMenuSize' },
+                defaultValue: { summary: 'MultiSelectMenuSize.MEDIUM' },
+                category: 'Appearance',
+            },
+        },
+        variant: {
+            control: { type: 'select' },
+            options: Object.values(MultiSelectVariant),
+            description: 'Visual variant of the multi-select',
+            table: {
+                type: { summary: 'MultiSelectVariant' },
+                defaultValue: { summary: 'MultiSelectVariant.CONTAINER' },
+                category: 'Appearance',
+            },
+        },
+        selectionTagType: {
+            control: { type: 'select' },
+            options: Object.values(MultiSelectSelectionTagType),
+            description: 'How to display selected items (count or text)',
+            table: {
+                type: { summary: 'MultiSelectSelectionTagType' },
+                defaultValue: { summary: 'MultiSelectSelectionTagType.COUNT' },
+                category: 'Display',
+            },
+        },
+        required: {
+            control: { type: 'boolean' },
+            description: 'Whether the field is required',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Validation',
+            },
+        },
+        disabled: {
+            control: { type: 'boolean' },
+            description: 'Whether the multi-select is disabled',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'State',
+            },
+        },
+        enableSearch: {
+            control: { type: 'boolean' },
+            description: 'Enable search functionality in the dropdown',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'Features',
+            },
+        },
+        enableSelectAll: {
+            control: { type: 'boolean' },
+            description: 'Enable select all functionality',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Features',
+            },
+        },
+        maxSelections: {
+            control: { type: 'number' },
+            description: 'Maximum number of selections allowed',
+            table: {
+                type: { summary: 'number' },
+                category: 'Validation',
+            },
+        },
+        useDrawerOnMobile: {
+            control: { type: 'boolean' },
+            description: 'Use drawer interface on mobile devices',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'Responsive',
+            },
+        },
+        error: {
+            control: { type: 'boolean' },
+            description: 'Whether the multi-select is in error state',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Validation',
+            },
+        },
+        errorMessage: {
+            control: { type: 'text' },
+            description: 'Error message displayed when in error state',
+            table: {
+                type: { summary: 'string' },
+                category: 'Validation',
+            },
         },
     },
     tags: ['autodocs'],
@@ -171,125 +310,74 @@ const [selectedValues, setSelectedValues] = useState<string[]>([]);
 export default meta
 type Story = StoryObj<typeof MultiSelect>
 
-// Sample data
+// Sample data sets
 const skillItems: MultiSelectMenuGroupType[] = [
     {
-        label: 'Frontend',
+        groupLabel: 'Frontend Technologies',
         items: [
-            { value: 'react', label: 'React', leftSlot: <Code size={16} /> },
-            { value: 'vue', label: 'Vue.js', leftSlot: <Code size={16} /> },
-            {
-                value: 'angular',
-                label: 'Angular',
-                leftSlot: <Code size={16} />,
-            },
-            { value: 'svelte', label: 'Svelte', leftSlot: <Code size={16} /> },
-            { value: 'nextjs', label: 'Next.js', leftSlot: <Code size={16} /> },
+            { value: 'react', label: 'React', slot1: <Code size={16} /> },
+            { value: 'vue', label: 'Vue.js', slot1: <Code size={16} /> },
+            { value: 'angular', label: 'Angular', slot1: <Code size={16} /> },
+            { value: 'svelte', label: 'Svelte', slot1: <Code size={16} /> },
+            { value: 'nextjs', label: 'Next.js', slot1: <Code size={16} /> },
         ],
     },
     {
-        label: 'Backend',
+        groupLabel: 'Backend Technologies',
         items: [
-            {
-                value: 'nodejs',
-                label: 'Node.js',
-                leftSlot: <Server size={16} />,
-            },
-            {
-                value: 'python',
-                label: 'Python',
-                leftSlot: <Server size={16} />,
-            },
-            { value: 'java', label: 'Java', leftSlot: <Server size={16} /> },
-            { value: 'csharp', label: 'C#', leftSlot: <Server size={16} /> },
-            { value: 'go', label: 'Go', leftSlot: <Server size={16} /> },
+            { value: 'nodejs', label: 'Node.js', slot1: <Server size={16} /> },
+            { value: 'python', label: 'Python', slot1: <Server size={16} /> },
+            { value: 'java', label: 'Java', slot1: <Server size={16} /> },
+            { value: 'csharp', label: 'C#', slot1: <Server size={16} /> },
+            { value: 'go', label: 'Go', slot1: <Server size={16} /> },
+            { value: 'rust', label: 'Rust', slot1: <Server size={16} /> },
         ],
     },
     {
-        label: 'Database',
+        groupLabel: 'Databases',
         items: [
             {
                 value: 'postgresql',
                 label: 'PostgreSQL',
-                leftSlot: <Database size={16} />,
+                slot1: <Database size={16} />,
             },
-            {
-                value: 'mysql',
-                label: 'MySQL',
-                leftSlot: <Database size={16} />,
-            },
+            { value: 'mysql', label: 'MySQL', slot1: <Database size={16} /> },
             {
                 value: 'mongodb',
                 label: 'MongoDB',
-                leftSlot: <Database size={16} />,
+                slot1: <Database size={16} />,
             },
+            { value: 'redis', label: 'Redis', slot1: <Database size={16} /> },
             {
-                value: 'redis',
-                label: 'Redis',
-                leftSlot: <Database size={16} />,
-            },
-        ],
-    },
-]
-
-const tagItems: MultiSelectMenuGroupType[] = [
-    {
-        label: 'Categories',
-        items: [
-            {
-                value: 'technology',
-                label: 'Technology',
-                leftSlot: <Cpu size={16} />,
-            },
-            {
-                value: 'design',
-                label: 'Design',
-                leftSlot: <Palette size={16} />,
-            },
-            {
-                value: 'business',
-                label: 'Business',
-                leftSlot: <Briefcase size={16} />,
-            },
-            {
-                value: 'marketing',
-                label: 'Marketing',
-                leftSlot: <TrendingUp size={16} />,
-            },
-            {
-                value: 'sales',
-                label: 'Sales',
-                leftSlot: <DollarSign size={16} />,
+                value: 'elasticsearch',
+                label: 'Elasticsearch',
+                slot1: <Database size={16} />,
             },
         ],
     },
     {
-        label: 'Topics',
+        groupLabel: 'Cloud & DevOps',
         items: [
             {
-                value: 'ai',
-                label: 'Artificial Intelligence',
-                leftSlot: <Brain size={16} />,
+                value: 'aws',
+                label: 'Amazon Web Services',
+                slot1: <Cloud size={16} />,
             },
             {
-                value: 'blockchain',
-                label: 'Blockchain',
-                leftSlot: <Link size={16} />,
+                value: 'gcp',
+                label: 'Google Cloud Platform',
+                slot1: <Cloud size={16} />,
             },
             {
-                value: 'cloud',
-                label: 'Cloud Computing',
-                leftSlot: <Cloud size={16} />,
+                value: 'azure',
+                label: 'Microsoft Azure',
+                slot1: <Cloud size={16} />,
             },
+            { value: 'docker', label: 'Docker', slot1: <Layers size={16} /> },
             {
-                value: 'cybersecurity',
-                label: 'Cybersecurity',
-                leftSlot: <Shield size={16} />,
-            },
-            {
-                value: 'data',
-                label: 'Data Science',
-                leftSlot: <Database size={16} />,
+                value: 'kubernetes',
+                label: 'Kubernetes',
+                slot1: <Layers size={16} />,
             },
         ],
     },
@@ -297,113 +385,155 @@ const tagItems: MultiSelectMenuGroupType[] = [
 
 const permissionItems: MultiSelectMenuGroupType[] = [
     {
-        label: 'User Management',
+        groupLabel: 'User Management',
         items: [
             {
                 value: 'user.view',
                 label: 'View Users',
-                subLabel: 'Read-only access',
-                leftSlot: <Eye size={16} />,
+                subLabel: 'Read-only access to user data',
+                slot1: <Eye size={16} />,
             },
             {
                 value: 'user.create',
                 label: 'Create Users',
-                subLabel: 'Add new users',
-                leftSlot: <Plus size={16} />,
+                subLabel: 'Add new users to the system',
+                slot1: <Plus size={16} />,
             },
             {
                 value: 'user.edit',
                 label: 'Edit Users',
-                subLabel: 'Modify user details',
-                leftSlot: <Edit size={16} />,
+                subLabel: 'Modify existing user details',
+                slot1: <Edit size={16} />,
             },
             {
                 value: 'user.delete',
                 label: 'Delete Users',
-                subLabel: 'Remove users',
-                leftSlot: <Trash2 size={16} />,
+                subLabel: 'Remove users from the system',
+                slot1: <Trash2 size={16} />,
             },
         ],
     },
     {
-        label: 'Content Management',
+        groupLabel: 'Content Management',
         items: [
             {
                 value: 'content.view',
                 label: 'View Content',
-                subLabel: 'Read-only access',
-                leftSlot: <FileText size={16} />,
+                subLabel: 'Read-only access to content',
+                slot1: <FileText size={16} />,
             },
             {
                 value: 'content.create',
                 label: 'Create Content',
-                subLabel: 'Add new content',
-                leftSlot: <Plus size={16} />,
+                subLabel: 'Add new content items',
+                slot1: <Plus size={16} />,
             },
             {
                 value: 'content.edit',
                 label: 'Edit Content',
-                subLabel: 'Modify content',
-                leftSlot: <Edit size={16} />,
+                subLabel: 'Modify existing content',
+                slot1: <Edit size={16} />,
             },
             {
                 value: 'content.publish',
                 label: 'Publish Content',
-                subLabel: 'Make content live',
-                leftSlot: <Upload size={16} />,
+                subLabel: 'Make content publicly visible',
+                slot1: <Upload size={16} />,
             },
         ],
     },
     {
-        label: 'System Settings',
+        groupLabel: 'System Administration',
         items: [
             {
-                value: 'settings.view',
-                label: 'View Settings',
-                subLabel: 'Read-only access',
-                leftSlot: <Settings size={16} />,
+                value: 'admin.settings',
+                label: 'System Settings',
+                subLabel: 'Modify system configuration',
+                slot1: <Settings size={16} />,
             },
             {
-                value: 'settings.edit',
-                label: 'Edit Settings',
-                subLabel: 'Modify settings',
-                leftSlot: <Settings size={16} />,
+                value: 'admin.backup',
+                label: 'Backup & Recovery',
+                subLabel: 'Manage system backups',
+                slot1: <Archive size={16} />,
             },
             {
-                value: 'settings.advanced',
-                label: 'Advanced Settings',
-                subLabel: 'System config',
-                leftSlot: <Sliders size={16} />,
+                value: 'admin.security',
+                label: 'Security Settings',
+                subLabel: 'Configure security policies',
+                slot1: <Shield size={16} />,
             },
         ],
     },
 ]
 
-// Default story with interactive controls
-export const Default: Story = {
-    args: {
-        label: 'Select Skills',
-        placeholder: 'Choose skills',
-        items: skillItems,
-        selectedValues: [],
-        required: false,
-        disabled: false,
-        size: 'md' as any,
-        variant: 'container' as any,
-        selectionTagType: MultiSelectSelectionTagType.COUNT,
+const categoryItems: MultiSelectMenuGroupType[] = [
+    {
+        groupLabel: 'Business Categories',
+        items: [
+            {
+                value: 'technology',
+                label: 'Technology',
+                slot1: <Cpu size={16} />,
+            },
+            { value: 'design', label: 'Design', slot1: <Palette size={16} /> },
+            {
+                value: 'business',
+                label: 'Business',
+                slot1: <Briefcase size={16} />,
+            },
+            {
+                value: 'marketing',
+                label: 'Marketing',
+                slot1: <TrendingUp size={16} />,
+            },
+            { value: 'sales', label: 'Sales', slot1: <DollarSign size={16} /> },
+            {
+                value: 'support',
+                label: 'Customer Support',
+                slot1: <Headphones size={16} />,
+            },
+        ],
     },
-    render: (args) => {
-        const [selectedValues, setSelectedValues] = useState<string[]>(
-            args.selectedValues
-        )
+    {
+        groupLabel: 'Innovation Areas',
+        items: [
+            {
+                value: 'ai',
+                label: 'Artificial Intelligence',
+                slot1: <Brain size={16} />,
+            },
+            {
+                value: 'blockchain',
+                label: 'Blockchain',
+                slot1: <Link size={16} />,
+            },
+            {
+                value: 'iot',
+                label: 'Internet of Things',
+                slot1: <Globe size={16} />,
+            },
+            {
+                value: 'cybersecurity',
+                label: 'Cybersecurity',
+                slot1: <Shield size={16} />,
+            },
+            {
+                value: 'data-science',
+                label: 'Data Science',
+                slot1: <BarChart3 size={16} />,
+            },
+        ],
+    },
+]
 
-        // Update local state when args change
-        React.useEffect(() => {
-            setSelectedValues(args.selectedValues)
-        }, [args.selectedValues])
+// Default story
+export const Default: Story = {
+    render: function DefaultMultiSelect(args) {
+        const [selectedValues, setSelectedValues] = useState<string[]>([])
 
         return (
-            <div style={{ width: '320px' }}>
+            <div style={{ width: '400px' }}>
                 <MultiSelect
                     {...args}
                     selectedValues={selectedValues}
@@ -422,238 +552,35 @@ export const Default: Story = {
             </div>
         )
     },
-}
-
-// With count display
-export const WithCountDisplay: Story = {
-    render: () => {
-        const [selectedValues, setSelectedValues] = useState<string[]>([])
-
-        return (
-            <div style={{ width: '320px' }}>
-                <MultiSelect
-                    label="Select Tags"
-                    placeholder="Choose tags"
-                    items={tagItems}
-                    selectedValues={selectedValues}
-                    onChange={(value) => {
-                        if (value === '') {
-                            setSelectedValues([])
-                        } else if (typeof value === 'string') {
-                            setSelectedValues((prev) =>
-                                prev.includes(value)
-                                    ? prev.filter((v) => v !== value)
-                                    : [...prev, value]
-                            )
-                        }
-                    }}
-                    selectionTagType={MultiSelectSelectionTagType.COUNT}
-                    helpIconHintText="Select multiple tags for your content"
-                />
-            </div>
-        )
+    args: {
+        label: 'Select Skills',
+        placeholder: 'Choose your technical skills',
+        items: skillItems,
+        selectedValues: [],
+        selectionTagType: MultiSelectSelectionTagType.COUNT,
+        size: MultiSelectMenuSize.MEDIUM,
+        variant: MultiSelectVariant.CONTAINER,
+        enableSearch: true,
+        enableSelectAll: false,
+        required: false,
+        disabled: false,
     },
 }
 
-// With text display
-export const WithTextDisplay: Story = {
+// Selection display modes
+export const SelectionDisplayModes: Story = {
     render: () => {
-        const [selectedValues, setSelectedValues] = useState<string[]>([])
-
-        return (
-            <div style={{ width: '400px' }}>
-                <MultiSelect
-                    label="Select Categories"
-                    placeholder="Choose categories"
-                    items={tagItems}
-                    selectedValues={selectedValues}
-                    onChange={(value) => {
-                        if (value === '') {
-                            setSelectedValues([])
-                        } else if (typeof value === 'string') {
-                            setSelectedValues((prev) =>
-                                prev.includes(value)
-                                    ? prev.filter((v) => v !== value)
-                                    : [...prev, value]
-                            )
-                        }
-                    }}
-                    selectionTagType={MultiSelectSelectionTagType.TEXT}
-                />
-            </div>
-        )
-    },
-}
-
-// Different sizes
-export const Sizes: Story = {
-    render: () => {
-        const [selectedSmall, setSelectedSmall] = useState<string[]>([])
-        const [selectedMedium, setSelectedMedium] = useState<string[]>([])
-        const [selectedLarge, setSelectedLarge] = useState<string[]>([])
+        const [countValues, setCountValues] = useState<string[]>([
+            'react',
+            'nodejs',
+        ])
+        const [textValues, setTextValues] = useState<string[]>([
+            'design',
+            'technology',
+        ])
 
         return (
             <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '320px',
-                }}
-            >
-                <MultiSelect
-                    label="Small Size"
-                    placeholder="Choose options"
-                    items={skillItems}
-                    selectedValues={selectedSmall}
-                    onChange={(value) => {
-                        if (value === '') {
-                            setSelectedSmall([])
-                        } else if (typeof value === 'string') {
-                            setSelectedSmall((prev) =>
-                                prev.includes(value)
-                                    ? prev.filter((v) => v !== value)
-                                    : [...prev, value]
-                            )
-                        }
-                    }}
-                    size={'sm' as any}
-                />
-                <MultiSelect
-                    label="Medium Size (Default)"
-                    placeholder="Choose options"
-                    items={skillItems}
-                    selectedValues={selectedMedium}
-                    onChange={(value) => {
-                        if (value === '') {
-                            setSelectedMedium([])
-                        } else if (typeof value === 'string') {
-                            setSelectedMedium((prev) =>
-                                prev.includes(value)
-                                    ? prev.filter((v) => v !== value)
-                                    : [...prev, value]
-                            )
-                        }
-                    }}
-                    size={'md' as any}
-                />
-                <MultiSelect
-                    label="Large Size"
-                    placeholder="Choose options"
-                    items={skillItems}
-                    selectedValues={selectedLarge}
-                    onChange={(value) => {
-                        if (value === '') {
-                            setSelectedLarge([])
-                        } else if (typeof value === 'string') {
-                            setSelectedLarge((prev) =>
-                                prev.includes(value)
-                                    ? prev.filter((v) => v !== value)
-                                    : [...prev, value]
-                            )
-                        }
-                    }}
-                    size={'lg' as any}
-                />
-            </div>
-        )
-    },
-}
-
-// No container variant
-export const NoContainer: Story = {
-    render: () => {
-        const [selectedValues, setSelectedValues] = useState<string[]>([])
-
-        return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <span>Filter by:</span>
-                <MultiSelect
-                    label="Skills"
-                    placeholder="All skills"
-                    items={skillItems}
-                    selectedValues={selectedValues}
-                    onChange={(value) => {
-                        if (value === '') {
-                            setSelectedValues([])
-                        } else if (typeof value === 'string') {
-                            setSelectedValues((prev) =>
-                                prev.includes(value)
-                                    ? prev.filter((v) => v !== value)
-                                    : [...prev, value]
-                            )
-                        }
-                    }}
-                    variant={'no-container' as any}
-                    size={'sm' as any}
-                />
-            </div>
-        )
-    },
-}
-
-// With form elements
-export const FormIntegration: Story = {
-    render: () => {
-        const [skills, setSkills] = useState<string[]>([])
-        const [interests, setInterests] = useState<string[]>([])
-        const [permissions, setPermissions] = useState<string[]>([])
-
-        const interestItems: MultiSelectMenuGroupType[] = [
-            {
-                label: 'Professional',
-                items: [
-                    {
-                        value: 'leadership',
-                        label: 'Leadership',
-                        leftSlot: <Crown size={16} />,
-                    },
-                    {
-                        value: 'management',
-                        label: 'Management',
-                        leftSlot: <Users size={16} />,
-                    },
-                    {
-                        value: 'strategy',
-                        label: 'Strategy',
-                        leftSlot: <Target size={16} />,
-                    },
-                    {
-                        value: 'innovation',
-                        label: 'Innovation',
-                        leftSlot: <Lightbulb size={16} />,
-                    },
-                ],
-            },
-            {
-                label: 'Technical',
-                items: [
-                    {
-                        value: 'programming',
-                        label: 'Programming',
-                        leftSlot: <Code size={16} />,
-                    },
-                    {
-                        value: 'architecture',
-                        label: 'Architecture',
-                        leftSlot: <Layers size={16} />,
-                    },
-                    {
-                        value: 'devops',
-                        label: 'DevOps',
-                        leftSlot: <GitBranch size={16} />,
-                    },
-                    {
-                        value: 'security',
-                        label: 'Security',
-                        leftSlot: <Shield size={16} />,
-                    },
-                ],
-            },
-        ]
-
-        return (
-            <form
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -662,9 +589,453 @@ export const FormIntegration: Story = {
                 }}
             >
                 <MultiSelect
+                    label="Count Display"
+                    placeholder="Select skills"
+                    items={skillItems}
+                    selectedValues={countValues}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setCountValues([])
+                        } else if (typeof value === 'string') {
+                            setCountValues((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    selectionTagType={MultiSelectSelectionTagType.COUNT}
+                    helpIconHintText="Shows selected count in a compact format"
+                />
+
+                <MultiSelect
+                    label="Text Display"
+                    placeholder="Select categories"
+                    items={categoryItems}
+                    selectedValues={textValues}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setTextValues([])
+                        } else if (typeof value === 'string') {
+                            setTextValues((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    selectionTagType={MultiSelectSelectionTagType.TEXT}
+                    helpIconHintText="Shows selected items as readable text"
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'MultiSelect supports two selection display modes: COUNT (compact) and TEXT (readable list).',
+            },
+        },
+    },
+}
+
+// Different sizes
+export const Sizes: Story = {
+    render: () => {
+        const [smallValues, setSmallValues] = useState<string[]>([])
+        const [mediumValues, setMediumValues] = useState<string[]>([])
+        const [largeValues, setLargeValues] = useState<string[]>([])
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    width: '400px',
+                }}
+            >
+                <MultiSelect
+                    label="Small Size"
+                    placeholder="Choose options"
+                    items={skillItems}
+                    selectedValues={smallValues}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setSmallValues([])
+                        } else if (typeof value === 'string') {
+                            setSmallValues((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    size={MultiSelectMenuSize.SMALL}
+                />
+
+                <MultiSelect
+                    label="Medium Size (Default)"
+                    placeholder="Choose options"
+                    items={skillItems}
+                    selectedValues={mediumValues}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setMediumValues([])
+                        } else if (typeof value === 'string') {
+                            setMediumValues((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    size={MultiSelectMenuSize.MEDIUM}
+                />
+
+                <MultiSelect
+                    label="Large Size"
+                    placeholder="Choose options"
+                    items={skillItems}
+                    selectedValues={largeValues}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setLargeValues([])
+                        } else if (typeof value === 'string') {
+                            setLargeValues((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    size={MultiSelectMenuSize.LARGE}
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'MultiSelect comes in three sizes: Small (sm), Medium (md), and Large (lg).',
+            },
+        },
+    },
+}
+
+// With search functionality
+export const WithSearch: Story = {
+    render: () => {
+        const [selectedValues, setSelectedValues] = useState<string[]>([])
+
+        return (
+            <div style={{ width: '400px' }}>
+                <MultiSelect
+                    label="Technologies"
+                    placeholder="Search and select technologies"
+                    items={skillItems}
+                    selectedValues={selectedValues}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setSelectedValues([])
+                        } else if (typeof value === 'string') {
+                            setSelectedValues((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    enableSearch={true}
+                    searchPlaceholder="Type to filter technologies..."
+                    selectionTagType={MultiSelectSelectionTagType.COUNT}
+                    helpIconHintText="Start typing to filter the available options"
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Enable search functionality to filter through large lists of options.',
+            },
+        },
+    },
+}
+
+// With select all functionality
+export const WithSelectAll: Story = {
+    render: () => {
+        const [selectedValues, setSelectedValues] = useState<string[]>([])
+
+        return (
+            <div style={{ width: '400px' }}>
+                <MultiSelect
+                    label="User Permissions"
+                    placeholder="Select permissions"
+                    items={permissionItems}
+                    selectedValues={selectedValues}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setSelectedValues([])
+                        } else if (typeof value === 'string') {
+                            setSelectedValues((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    enableSelectAll={true}
+                    selectAllText="Grant All Permissions"
+                    selectionTagType={MultiSelectSelectionTagType.COUNT}
+                    helpIconHintText="You can select all permissions at once"
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Enable select all functionality for bulk selection of items.',
+            },
+        },
+    },
+}
+
+// No container variant
+export const NoContainer: Story = {
+    render: () => {
+        const [selectedValues, setSelectedValues] = useState<string[]>([
+            'technology',
+            'design',
+        ])
+
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <span style={{ fontWeight: 500 }}>Filter by categories:</span>
+                <MultiSelect
+                    label="Categories"
+                    placeholder="All categories"
+                    items={categoryItems}
+                    selectedValues={selectedValues}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setSelectedValues([])
+                        } else if (typeof value === 'string') {
+                            setSelectedValues((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    variant={MultiSelectVariant.NO_CONTAINER}
+                    size={MultiSelectMenuSize.SMALL}
+                    selectionTagType={MultiSelectSelectionTagType.COUNT}
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'No container variant for inline filtering and toolbar usage.',
+            },
+        },
+    },
+}
+
+// Maximum selections
+export const MaxSelections: Story = {
+    render: () => {
+        const [selectedValues, setSelectedValues] = useState<string[]>([
+            'react',
+            'nodejs',
+        ])
+        const maxCount = 3
+
+        return (
+            <div style={{ width: '400px' }}>
+                <MultiSelect
+                    label="Top 3 Skills"
+                    sublabel={`Select up to ${maxCount} primary skills`}
+                    placeholder="Choose your top skills"
+                    items={skillItems}
+                    selectedValues={selectedValues}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setSelectedValues([])
+                        } else if (typeof value === 'string') {
+                            setSelectedValues((prev) => {
+                                const newValues = prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                                return newValues.slice(0, maxCount)
+                            })
+                        }
+                    }}
+                    maxSelections={maxCount}
+                    selectionTagType={MultiSelectSelectionTagType.TEXT}
+                    hintText={`${selectedValues.length}/${maxCount} skills selected`}
+                    error={selectedValues.length === 0}
+                    errorMessage={
+                        selectedValues.length === 0
+                            ? 'Please select at least one skill'
+                            : ''
+                    }
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Limit the maximum number of selections with validation feedback.',
+            },
+        },
+    },
+}
+
+// Error states
+export const ErrorStates: Story = {
+    render: () => {
+        const [requiredValues, setRequiredValues] = useState<string[]>([])
+        const [validValues, setValidValues] = useState<string[]>([
+            'react',
+            'nodejs',
+        ])
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    width: '400px',
+                }}
+            >
+                <MultiSelect
+                    label="Required Skills"
+                    sublabel="Required field"
+                    placeholder="Select required skills"
+                    items={skillItems}
+                    selectedValues={requiredValues}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setRequiredValues([])
+                        } else if (typeof value === 'string') {
+                            setRequiredValues((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    required
+                    error={requiredValues.length === 0}
+                    errorMessage={
+                        requiredValues.length === 0
+                            ? 'Please select at least one skill'
+                            : ''
+                    }
+                    selectionTagType={MultiSelectSelectionTagType.COUNT}
+                />
+
+                <MultiSelect
+                    label="Valid Selection"
+                    placeholder="Working correctly"
+                    items={skillItems}
+                    selectedValues={validValues}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setValidValues([])
+                        } else if (typeof value === 'string') {
+                            setValidValues((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    hintText="This field is working correctly"
+                    selectionTagType={MultiSelectSelectionTagType.TEXT}
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'MultiSelect in error and valid states with appropriate feedback.',
+            },
+        },
+    },
+}
+
+// Disabled state
+export const DisabledState: Story = {
+    render: () => {
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    width: '400px',
+                }}
+            >
+                <MultiSelect
+                    label="Disabled Empty"
+                    placeholder="Cannot interact"
+                    items={skillItems}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    disabled
+                    selectionTagType={MultiSelectSelectionTagType.COUNT}
+                />
+
+                <MultiSelect
+                    label="Disabled with Selection"
+                    placeholder="Has selections but disabled"
+                    items={skillItems}
+                    selectedValues={['react', 'nodejs', 'postgresql']}
+                    onChange={() => {}}
+                    disabled
+                    selectionTagType={MultiSelectSelectionTagType.TEXT}
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'MultiSelect in disabled state, both empty and with selections.',
+            },
+        },
+    },
+}
+
+// Form integration
+export const FormIntegration: Story = {
+    render: () => {
+        const [skills, setSkills] = useState<string[]>([])
+        const [permissions, setPermissions] = useState<string[]>([])
+        const [categories, setCategories] = useState<string[]>([])
+
+        return (
+            <form
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    width: '500px',
+                }}
+            >
+                <MultiSelect
                     label="Technical Skills"
-                    sublabel="Required"
-                    placeholder="Select your skills"
+                    sublabel="Required - Select your primary skills"
+                    placeholder="Choose your technical expertise"
                     items={skillItems}
                     selectedValues={skills}
                     onChange={(value) => {
@@ -679,33 +1050,21 @@ export const FormIntegration: Story = {
                         }
                     }}
                     required
-                    hintText="Select at least 3 skills"
+                    enableSearch
+                    enableSelectAll
                     selectionTagType={MultiSelectSelectionTagType.COUNT}
-                />
-
-                <MultiSelect
-                    label="Areas of Interest"
-                    placeholder="Select your interests"
-                    items={interestItems}
-                    selectedValues={interests}
-                    onChange={(value) => {
-                        if (value === '') {
-                            setInterests([])
-                        } else if (typeof value === 'string') {
-                            setInterests((prev) =>
-                                prev.includes(value)
-                                    ? prev.filter((v) => v !== value)
-                                    : [...prev, value]
-                            )
-                        }
-                    }}
-                    helpIconHintText="This helps us recommend relevant content"
-                    selectionTagType={MultiSelectSelectionTagType.TEXT}
+                    error={skills.length === 0}
+                    errorMessage={
+                        skills.length === 0
+                            ? 'Please select at least one skill'
+                            : ''
+                    }
+                    helpIconHintText="Select the technologies you're proficient in"
                 />
 
                 <MultiSelect
                     label="User Permissions"
-                    placeholder="Assign permissions"
+                    placeholder="Assign user permissions"
                     items={permissionItems}
                     selectedValues={permissions}
                     onChange={(value) => {
@@ -719,11 +1078,38 @@ export const FormIntegration: Story = {
                             )
                         }
                     }}
-                    hintText="Grant appropriate access levels"
                     selectionTagType={MultiSelectSelectionTagType.COUNT}
+                    hintText="Grant appropriate access levels for this user"
+                />
+
+                <MultiSelect
+                    label="Interest Categories"
+                    placeholder="Select areas of interest"
+                    items={categoryItems}
+                    selectedValues={categories}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setCategories([])
+                        } else if (typeof value === 'string') {
+                            setCategories((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    selectionTagType={MultiSelectSelectionTagType.TEXT}
+                    helpIconHintText="This helps us personalize your experience"
                 />
             </form>
         )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'MultiSelect integrated into a form with validation and different configurations.',
+            },
+        },
     },
 }
 
@@ -732,65 +1118,12 @@ export const WithCustomSlot: Story = {
     render: () => {
         const [selectedValues, setSelectedValues] = useState<string[]>([])
 
-        const featureItems: MultiSelectMenuGroupType[] = [
-            {
-                label: 'Core Features',
-                items: [
-                    {
-                        value: 'dashboard',
-                        label: 'Dashboard',
-                        leftSlot: <LayoutDashboard size={16} />,
-                    },
-                    {
-                        value: 'analytics',
-                        label: 'Analytics',
-                        leftSlot: <BarChart3 size={16} />,
-                    },
-                    {
-                        value: 'reports',
-                        label: 'Reports',
-                        leftSlot: <FileText size={16} />,
-                    },
-                    {
-                        value: 'notifications',
-                        label: 'Notifications',
-                        leftSlot: <Bell size={16} />,
-                    },
-                ],
-            },
-            {
-                label: 'Advanced Features',
-                items: [
-                    {
-                        value: 'api',
-                        label: 'API Access',
-                        leftSlot: <Zap size={16} />,
-                    },
-                    {
-                        value: 'integrations',
-                        label: 'Integrations',
-                        leftSlot: <Layers size={16} />,
-                    },
-                    {
-                        value: 'automation',
-                        label: 'Automation',
-                        leftSlot: <RefreshCw size={16} />,
-                    },
-                    {
-                        value: 'ai',
-                        label: 'AI Features',
-                        leftSlot: <Brain size={16} />,
-                    },
-                ],
-            },
-        ]
-
         return (
-            <div style={{ width: '320px' }}>
+            <div style={{ width: '400px' }}>
                 <MultiSelect
-                    label="Enable Features"
-                    placeholder="Select features"
-                    items={featureItems}
+                    label="Feature Selection"
+                    placeholder="Enable features"
+                    items={categoryItems}
                     selectedValues={selectedValues}
                     onChange={(value) => {
                         if (value === '') {
@@ -805,27 +1138,33 @@ export const WithCustomSlot: Story = {
                     }}
                     slot={<Sparkles size={16} />}
                     selectionTagType={MultiSelectSelectionTagType.COUNT}
+                    helpIconHintText="Premium features with special icon"
                 />
             </div>
         )
     },
+    parameters: {
+        docs: {
+            description: {
+                story: 'MultiSelect with custom slot for additional branding or context.',
+            },
+        },
+    },
 }
 
-// Pre-selected values
-export const PreSelectedValues: Story = {
+// Action buttons
+export const WithActionButtons: Story = {
     render: () => {
         const [selectedValues, setSelectedValues] = useState<string[]>([
             'react',
             'nodejs',
-            'postgresql',
-            'redis',
         ])
 
         return (
-            <div style={{ width: '320px' }}>
+            <div style={{ width: '400px' }}>
                 <MultiSelect
-                    label="Current Tech Stack"
-                    placeholder="Modify tech stack"
+                    label="Batch Operations"
+                    placeholder="Select items for batch operations"
                     items={skillItems}
                     selectedValues={selectedValues}
                     onChange={(value) => {
@@ -839,176 +1178,94 @@ export const PreSelectedValues: Story = {
                             )
                         }
                     }}
-                    selectionTagType={MultiSelectSelectionTagType.TEXT}
+                    selectionTagType={MultiSelectSelectionTagType.COUNT}
+                    showActionButtons
+                    primaryAction={{
+                        text: 'Apply Changes',
+                        onClick: (values) =>
+                            alert(`Applied changes to: ${values.join(', ')}`),
+                        disabled: selectedValues.length === 0,
+                    }}
+                    secondaryAction={{
+                        text: 'Cancel',
+                        onClick: () => setSelectedValues([]),
+                    }}
+                    helpIconHintText="Use action buttons to apply changes in bulk"
                 />
             </div>
         )
     },
+    parameters: {
+        docs: {
+            description: {
+                story: 'MultiSelect with action buttons for batch operations and confirmations.',
+            },
+        },
+    },
 }
 
-// Complex example
-export const ComplexExample: Story = {
+// Complex dashboard example
+export const DashboardExample: Story = {
     render: () => {
-        const [selectedFilters, setSelectedFilters] = useState<string[]>([])
-        const [selectedColumns, setSelectedColumns] = useState<string[]>([
-            'name',
-            'email',
-            'role',
-            'status',
+        const [filters, setFilters] = useState<string[]>([
+            'technology',
+            'design',
         ])
-        const [selectedActions, setSelectedActions] = useState<string[]>([])
+        const [columns, setColumns] = useState<string[]>([
+            'user.view',
+            'user.edit',
+        ])
+        const [skills, setSkills] = useState<string[]>(['react', 'nodejs'])
 
         const filterItems: MultiSelectMenuGroupType[] = [
             {
-                label: 'Status',
+                groupLabel: 'Status Filters',
                 items: [
                     {
                         value: 'active',
                         label: 'Active',
-                        leftSlot: (
-                            <Circle size={16} color="#10b981" fill="#10b981" />
+                        slot1: (
+                            <Circle size={16} style={{ color: '#10b981' }} />
                         ),
                     },
                     {
                         value: 'inactive',
                         label: 'Inactive',
-                        leftSlot: (
-                            <Circle size={16} color="#ef4444" fill="#ef4444" />
+                        slot1: (
+                            <Circle size={16} style={{ color: '#ef4444' }} />
                         ),
                     },
                     {
                         value: 'pending',
                         label: 'Pending',
-                        leftSlot: (
-                            <Circle size={16} color="#f59e0b" fill="#f59e0b" />
-                        ),
-                    },
-                    {
-                        value: 'suspended',
-                        label: 'Suspended',
-                        leftSlot: (
-                            <Circle size={16} color="#6b7280" fill="#6b7280" />
+                        slot1: (
+                            <Circle size={16} style={{ color: '#f59e0b' }} />
                         ),
                     },
                 ],
             },
             {
-                label: 'Role',
-                items: [
-                    {
-                        value: 'admin',
-                        label: 'Admin',
-                        leftSlot: <Shield size={16} color="#ef4444" />,
-                    },
-                    {
-                        value: 'manager',
-                        label: 'Manager',
-                        leftSlot: <Users size={16} color="#3b82f6" />,
-                    },
-                    {
-                        value: 'user',
-                        label: 'User',
-                        leftSlot: <User size={16} color="#6b7280" />,
-                    },
-                    {
-                        value: 'guest',
-                        label: 'Guest',
-                        leftSlot: <User size={16} color="#d1d5db" />,
-                    },
-                ],
-            },
-            {
-                label: 'Department',
+                groupLabel: 'Department Filters',
                 items: [
                     {
                         value: 'engineering',
                         label: 'Engineering',
-                        leftSlot: <Code size={16} />,
+                        slot1: <Code size={16} />,
                     },
                     {
-                        value: 'sales',
-                        label: 'Sales',
-                        leftSlot: <TrendingUp size={16} />,
+                        value: 'design',
+                        label: 'Design',
+                        slot1: <Palette size={16} />,
+                    },
+                    {
+                        value: 'product',
+                        label: 'Product',
+                        slot1: <Target size={16} />,
                     },
                     {
                         value: 'marketing',
                         label: 'Marketing',
-                        leftSlot: <BarChart3 size={16} />,
-                    },
-                    {
-                        value: 'support',
-                        label: 'Support',
-                        leftSlot: <Headphones size={16} />,
-                    },
-                ],
-            },
-        ]
-
-        const columnItems: MultiSelectMenuGroupType[] = [
-            {
-                label: 'Basic Info',
-                items: [
-                    { value: 'name', label: 'Name', subLabel: 'Full name' },
-                    {
-                        value: 'email',
-                        label: 'Email',
-                        subLabel: 'Email address',
-                    },
-                    {
-                        value: 'phone',
-                        label: 'Phone',
-                        subLabel: 'Contact number',
-                    },
-                    {
-                        value: 'avatar',
-                        label: 'Avatar',
-                        subLabel: 'Profile picture',
-                    },
-                ],
-            },
-            {
-                label: 'Work Info',
-                items: [
-                    { value: 'role', label: 'Role', subLabel: 'Job role' },
-                    {
-                        value: 'department',
-                        label: 'Department',
-                        subLabel: 'Team',
-                    },
-                    {
-                        value: 'manager',
-                        label: 'Manager',
-                        subLabel: 'Reports to',
-                    },
-                    {
-                        value: 'location',
-                        label: 'Location',
-                        subLabel: 'Office',
-                    },
-                ],
-            },
-            {
-                label: 'Account Info',
-                items: [
-                    {
-                        value: 'status',
-                        label: 'Status',
-                        subLabel: 'Account status',
-                    },
-                    {
-                        value: 'created',
-                        label: 'Created',
-                        subLabel: 'Join date',
-                    },
-                    {
-                        value: 'lastLogin',
-                        label: 'Last Login',
-                        subLabel: 'Last active',
-                    },
-                    {
-                        value: 'permissions',
-                        label: 'Permissions',
-                        subLabel: 'Access level',
+                        slot1: <TrendingUp size={16} />,
                     },
                 ],
             },
@@ -1019,23 +1276,23 @@ export const ComplexExample: Story = {
                 items: [
                     {
                         value: 'export',
-                        label: 'Export',
-                        leftSlot: <Download size={16} />,
+                        label: 'Export Data',
+                        slot1: <Download size={16} />,
                     },
                     {
                         value: 'print',
-                        label: 'Print',
-                        leftSlot: <Printer size={16} />,
+                        label: 'Print Report',
+                        slot1: <Printer size={16} />,
                     },
                     {
                         value: 'share',
-                        label: 'Share',
-                        leftSlot: <Share2 size={16} />,
+                        label: 'Share Dashboard',
+                        slot1: <Share2 size={16} />,
                     },
                     {
                         value: 'archive',
-                        label: 'Archive',
-                        leftSlot: <Archive size={16} />,
+                        label: 'Archive Items',
+                        slot1: <Archive size={16} />,
                     },
                 ],
             },
@@ -1047,85 +1304,82 @@ export const ComplexExample: Story = {
                     padding: '24px',
                     backgroundColor: '#f9fafb',
                     borderRadius: '8px',
-                    width: '600px',
+                    width: '800px',
                 }}
             >
-                <h3 style={{ marginBottom: '24px' }}>
-                    User Management Dashboard
+                <h3 style={{ marginBottom: '24px', color: '#1f2937' }}>
+                    Analytics Dashboard Controls
                 </h3>
 
                 <div
                     style={{
-                        display: 'flex',
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr 200px',
                         gap: '16px',
                         marginBottom: '24px',
                     }}
                 >
-                    <div style={{ flex: 1 }}>
-                        <MultiSelect
-                            label="Filters"
-                            placeholder="Filter users"
-                            items={filterItems}
-                            selectedValues={selectedFilters}
-                            onChange={(value) => {
-                                if (value === '') {
-                                    setSelectedFilters([])
-                                } else if (typeof value === 'string') {
-                                    setSelectedFilters((prev) =>
-                                        prev.includes(value)
-                                            ? prev.filter((v) => v !== value)
-                                            : [...prev, value]
-                                    )
-                                }
-                            }}
-                            selectionTagType={MultiSelectSelectionTagType.COUNT}
-                            size={'sm' as any}
-                        />
-                    </div>
+                    <MultiSelect
+                        label="Dashboard Filters"
+                        placeholder="Apply filters"
+                        items={filterItems}
+                        selectedValues={filters}
+                        onChange={(value) => {
+                            if (value === '') {
+                                setFilters([])
+                            } else if (typeof value === 'string') {
+                                setFilters((prev) =>
+                                    prev.includes(value)
+                                        ? prev.filter((v) => v !== value)
+                                        : [...prev, value]
+                                )
+                            }
+                        }}
+                        size={MultiSelectMenuSize.SMALL}
+                        selectionTagType={MultiSelectSelectionTagType.COUNT}
+                        enableSearch
+                    />
 
-                    <div style={{ flex: 1 }}>
-                        <MultiSelect
-                            label="Visible Columns"
-                            placeholder="Select columns"
-                            items={columnItems}
-                            selectedValues={selectedColumns}
-                            onChange={(value) => {
-                                if (value === '') {
-                                    setSelectedColumns([])
-                                } else if (typeof value === 'string') {
-                                    setSelectedColumns((prev) =>
-                                        prev.includes(value)
-                                            ? prev.filter((v) => v !== value)
-                                            : [...prev, value]
-                                    )
-                                }
-                            }}
-                            selectionTagType={MultiSelectSelectionTagType.COUNT}
-                            size={'sm' as any}
-                        />
-                    </div>
+                    <MultiSelect
+                        label="Visible Columns"
+                        placeholder="Select columns"
+                        items={permissionItems}
+                        selectedValues={columns}
+                        onChange={(value) => {
+                            if (value === '') {
+                                setColumns([])
+                            } else if (typeof value === 'string') {
+                                setColumns((prev) =>
+                                    prev.includes(value)
+                                        ? prev.filter((v) => v !== value)
+                                        : [...prev, value]
+                                )
+                            }
+                        }}
+                        size={MultiSelectMenuSize.SMALL}
+                        selectionTagType={MultiSelectSelectionTagType.COUNT}
+                    />
 
-                    <div style={{ width: '150px' }}>
-                        <MultiSelect
-                            label="Bulk Actions"
-                            placeholder="Actions"
-                            items={actionItems}
-                            selectedValues={selectedActions}
-                            onChange={(value) => {
-                                if (value === '') {
-                                    setSelectedActions([])
-                                } else if (typeof value === 'string') {
-                                    setSelectedActions((prev) =>
-                                        prev.includes(value)
-                                            ? prev.filter((v) => v !== value)
-                                            : [...prev, value]
-                                    )
-                                }
-                            }}
-                            variant={'no-container' as any}
-                            size={'sm' as any}
-                        />
-                    </div>
+                    <MultiSelect
+                        label="Bulk Actions"
+                        placeholder="Actions"
+                        items={actionItems}
+                        selectedValues={skills}
+                        onChange={(value) => {
+                            if (value === '') {
+                                setSkills([])
+                            } else if (typeof value === 'string') {
+                                setSkills((prev) =>
+                                    prev.includes(value)
+                                        ? prev.filter((v) => v !== value)
+                                        : [...prev, value]
+                                )
+                            }
+                        }}
+                        variant={MultiSelectVariant.NO_CONTAINER}
+                        size={MultiSelectMenuSize.SMALL}
+                        selectionTagType={MultiSelectSelectionTagType.COUNT}
+                    />
                 </div>
 
                 <div
@@ -1136,23 +1390,51 @@ export const ComplexExample: Story = {
                         border: '1px solid #e5e7eb',
                     }}
                 >
-                    <p style={{ color: '#6b7280', fontSize: '14px' }}>
-                        {selectedFilters.length > 0
-                            ? `Showing users with ${selectedFilters.length} active filter${selectedFilters.length > 1 ? 's' : ''}`
-                            : 'Showing all users'}
-                    </p>
-                    <p
+                    <div
                         style={{
-                            color: '#6b7280',
-                            fontSize: '14px',
-                            marginTop: '8px',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
                         }}
                     >
-                        {selectedColumns.length} column
-                        {selectedColumns.length !== 1 ? 's' : ''} visible
-                    </p>
+                        <div>
+                            <p
+                                style={{
+                                    color: '#6b7280',
+                                    fontSize: '14px',
+                                    margin: 0,
+                                }}
+                            >
+                                {filters.length > 0
+                                    ? `${filters.length} filter${filters.length > 1 ? 's' : ''} applied`
+                                    : 'No filters applied'}
+                            </p>
+                            <p
+                                style={{
+                                    color: '#6b7280',
+                                    fontSize: '14px',
+                                    margin: '4px 0 0 0',
+                                }}
+                            >
+                                {columns.length} column
+                                {columns.length !== 1 ? 's' : ''} visible
+                            </p>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <Filter size={16} style={{ color: '#6b7280' }} />
+                            <Search size={16} style={{ color: '#6b7280' }} />
+                            <RefreshCw size={16} style={{ color: '#6b7280' }} />
+                        </div>
+                    </div>
                 </div>
             </div>
         )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Complex dashboard example with multiple MultiSelect components for filtering, column management, and bulk actions.',
+            },
+        },
     },
 }

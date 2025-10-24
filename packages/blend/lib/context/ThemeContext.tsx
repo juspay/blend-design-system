@@ -39,6 +39,7 @@ import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import type { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import type { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
+import type { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import { BREAKPOINTS } from '../breakpoints/breakPoints'
@@ -82,6 +83,7 @@ import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
+import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -122,6 +124,7 @@ export type ComponentTokenType = {
     AVATAR_GROUP?: ResponsiveAvatarGroupTokens
     SIDEBAR?: ResponsiveSidebarTokens
     UPLOAD?: ResponsiveUploadTokens
+    CODE_BLOCK?: ResponsiveCodeBlockTokens
 }
 
 type ThemeContextType = {
@@ -171,6 +174,7 @@ const ThemeContext = createContext<ThemeContextType>({
         AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),
         SIDEBAR: getSidebarTokens(FOUNDATION_THEME),
         UPLOAD: getUploadTokens(FOUNDATION_THEME),
+        CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

@@ -205,6 +205,11 @@ const UnitInputDemo = () => {
                         <h3>Preview</h3>
                         <div style={{ maxWidth: '400px' }}>
                             <UnitInput
+                                data-id={'Enter value'}
+                                data-input-name={
+                                    playgroundValue?.toString() || ''
+                                }
+                                name={playgroundValue?.toString() || ''}
                                 value={playgroundValue}
                                 onChange={(e) => {
                                     const newValue = parseFloat(e.target.value)
@@ -243,7 +248,6 @@ const UnitInputDemo = () => {
                                         ? getRightSlotIcon()
                                         : undefined
                                 }
-                                name="playground-unit-input"
                             />
                         </div>
                     </div>

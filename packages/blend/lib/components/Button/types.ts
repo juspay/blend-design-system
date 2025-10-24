@@ -22,7 +22,7 @@ export enum ButtonSubType {
 
 export enum ButtonState {
     DEFAULT = 'default',
-    HOBVER = 'hover',
+    HOVER = 'hover',
     ACTIVE = 'active',
     DISABLED = 'disabled',
 }
@@ -33,8 +33,6 @@ export type ButtonProps = {
     text?: string
     leadingIcon?: React.ReactNode
     trailingIcon?: React.ReactNode
-    isLoading?: boolean
-    isDisabled?: boolean
     disabled?: boolean
     onClick?: () => void
     loading?: boolean

@@ -67,7 +67,12 @@ const MultiValueInput = ({
     const paddingX = multiValueInputTokens.inputContainer.padding.x[size]
     const paddingY = multiValueInputTokens.inputContainer.padding.y[size]
     return (
-        <Block display="flex" flexDirection="column" gap={8}>
+        <Block
+            data-component-field-wrapper={`field-multi-value-input`}
+            display="flex"
+            flexDirection="column"
+            gap={8}
+        >
             <InputLabels
                 label={label}
                 sublabel={sublabel}

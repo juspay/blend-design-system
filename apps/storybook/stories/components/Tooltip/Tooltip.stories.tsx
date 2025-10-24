@@ -650,3 +650,351 @@ export const OffsetVariations: Story = {
         },
     },
 }
+
+// Max width examples
+export const MaxWidthExamples: Story = {
+    render: () => (
+        <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
+            <Tooltip
+                content="This is a long tooltip content that will be constrained to a narrow width of 150px. It should wrap to multiple lines and demonstrate the maxWidth property in action."
+                maxWidth="150px"
+                size={TooltipSize.LARGE}
+                showArrow={true}
+                side={TooltipSide.TOP}
+            >
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    text="Narrow (150px)"
+                />
+            </Tooltip>
+
+            <Tooltip
+                content="This tooltip has a medium width constraint of 250px. It provides a good balance between readability and space efficiency for moderately long content."
+                maxWidth="250px"
+                size={TooltipSize.LARGE}
+                showArrow={true}
+                side={TooltipSide.TOP}
+            >
+                <Button buttonType={ButtonType.PRIMARY} text="Medium (250px)" />
+            </Tooltip>
+
+            <Tooltip
+                content="This tooltip demonstrates a wide width constraint of 400px, which allows for longer content to be displayed on fewer lines while maintaining good readability."
+                maxWidth="400px"
+                size={TooltipSize.LARGE}
+                showArrow={true}
+                side={TooltipSide.TOP}
+            >
+                <Button buttonType={ButtonType.SECONDARY} text="Wide (400px)" />
+            </Tooltip>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Different maxWidth constraints on tooltips: narrow (150px), medium (250px), and wide (400px).',
+            },
+        },
+    },
+}
+
+// Form validation tooltips
+export const FormValidationTooltips: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '24px',
+                padding: '20px',
+                maxWidth: '400px',
+            }}
+        >
+            <div
+                style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
+                <label style={{ fontSize: '14px', fontWeight: '500' }}>
+                    Email Address *
+                </label>
+                <div style={{ position: 'relative' }}>
+                    <input
+                        type="email"
+                        placeholder="Enter your email"
+                        style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            border: '2px solid #ef4444',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                        }}
+                    />
+                    <Tooltip
+                        content={
+                            <div>
+                                <div
+                                    style={{
+                                        fontWeight: 'bold',
+                                        color: '#ef4444',
+                                    }}
+                                >
+                                    Invalid Email Format
+                                </div>
+                                <div style={{ marginTop: '4px' }}>
+                                    Please enter a valid email address like:
+                                    user@example.com
+                                </div>
+                            </div>
+                        }
+                        side={TooltipSide.RIGHT}
+                        size={TooltipSize.LARGE}
+                        showArrow={true}
+                        slot={<AlertTriangle size={14} color="#ef4444" />}
+                        slotDirection={TooltipSlotDirection.LEFT}
+                    >
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            text="!"
+                            style={{
+                                position: 'absolute',
+                                right: '8px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                width: '24px',
+                                height: '24px',
+                                minWidth: '24px',
+                                padding: '0',
+                                fontSize: '12px',
+                                backgroundColor: '#ef4444',
+                                color: 'white',
+                                border: 'none',
+                            }}
+                        />
+                    </Tooltip>
+                </div>
+            </div>
+
+            <div
+                style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
+                <label style={{ fontSize: '14px', fontWeight: '500' }}>
+                    Password *
+                </label>
+                <div style={{ position: 'relative' }}>
+                    <input
+                        type="password"
+                        placeholder="Enter your password"
+                        style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            border: '2px solid #10b981',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                        }}
+                    />
+                    <Tooltip
+                        content={
+                            <div>
+                                <div
+                                    style={{
+                                        fontWeight: 'bold',
+                                        color: '#10b981',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '4px',
+                                    }}
+                                >
+                                    <CheckCircle size={14} />
+                                    Strong Password
+                                </div>
+                                <div style={{ marginTop: '4px' }}>
+                                    ✓ At least 8 characters
+                                    <br />
+                                    ✓ Contains uppercase letter
+                                    <br />✓ Contains special character
+                                </div>
+                            </div>
+                        }
+                        side={TooltipSide.RIGHT}
+                        size={TooltipSize.LARGE}
+                        showArrow={true}
+                    >
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            text="✓"
+                            style={{
+                                position: 'absolute',
+                                right: '8px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                width: '24px',
+                                height: '24px',
+                                minWidth: '24px',
+                                padding: '0',
+                                fontSize: '12px',
+                                backgroundColor: '#10b981',
+                                color: 'white',
+                                border: 'none',
+                            }}
+                        />
+                    </Tooltip>
+                </div>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Tooltips used for form validation feedback showing error states and success confirmations.',
+            },
+        },
+    },
+}
+
+// Feature announcements
+export const FeatureAnnouncements: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                gap: '24px',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+            }}
+        >
+            <Tooltip
+                content={
+                    <div>
+                        <div
+                            style={{
+                                fontWeight: 'bold',
+                                color: '#3b82f6',
+                                marginBottom: '8px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                            }}
+                        >
+                            <span
+                                style={{
+                                    backgroundColor: '#3b82f6',
+                                    color: 'white',
+                                    padding: '2px 6px',
+                                    borderRadius: '4px',
+                                    fontSize: '10px',
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                NEW
+                            </span>
+                            Dark Mode Available!
+                        </div>
+                        <div>
+                            Switch to dark mode in settings for a better
+                            night-time experience.
+                            <br />
+                            <span style={{ fontSize: '12px', color: '#666' }}>
+                                Click here to try it now →
+                            </span>
+                        </div>
+                    </div>
+                }
+                size={TooltipSize.LARGE}
+                showArrow={true}
+                side={TooltipSide.BOTTOM}
+                maxWidth="280px"
+            >
+                <Button
+                    buttonType={ButtonType.PRIMARY}
+                    text="Settings"
+                    leadingIcon={Settings}
+                />
+            </Tooltip>
+
+            <Tooltip
+                content={
+                    <div>
+                        <div
+                            style={{
+                                fontWeight: 'bold',
+                                color: '#7c3aed',
+                                marginBottom: '8px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                            }}
+                        >
+                            <Star size={16} color="#fbbf24" />
+                            Upgrade to Premium
+                        </div>
+                        <div>
+                            Unlock advanced analytics, custom themes, and
+                            priority support.
+                            <br />
+                            <span style={{ fontSize: '12px', color: '#666' }}>
+                                50% off for the first month!
+                            </span>
+                        </div>
+                    </div>
+                }
+                size={TooltipSize.LARGE}
+                showArrow={true}
+                side={TooltipSide.TOP}
+                maxWidth="300px"
+                slot={
+                    <span
+                        style={{
+                            backgroundColor: '#7c3aed',
+                            color: 'white',
+                            padding: '2px 6px',
+                            borderRadius: '12px',
+                            fontSize: '10px',
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        PRO
+                    </span>
+                }
+                slotDirection={TooltipSlotDirection.RIGHT}
+            >
+                <Button buttonType={ButtonType.SECONDARY} text="Account" />
+            </Tooltip>
+
+            <Tooltip
+                content={
+                    <div>
+                        <div
+                            style={{
+                                fontWeight: 'bold',
+                                color: '#059669',
+                                marginBottom: '8px',
+                            }}
+                        >
+                            🎉 Milestone Reached!
+                        </div>
+                        <div>
+                            You've completed 100 tasks this month. Keep up the
+                            great work!
+                            <br />
+                            <span style={{ fontSize: '12px', color: '#666' }}>
+                                View your achievement badge →
+                            </span>
+                        </div>
+                    </div>
+                }
+                size={TooltipSize.LARGE}
+                showArrow={true}
+                side={TooltipSide.RIGHT}
+                maxWidth="320px"
+            >
+                <Button buttonType={ButtonType.SECONDARY} text="Dashboard" />
+            </Tooltip>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Tooltips used for feature announcements, promotions, and achievement notifications.',
+            },
+        },
+    },
+}

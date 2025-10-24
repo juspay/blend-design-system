@@ -133,19 +133,44 @@ export const createFilterHandlers = (
         value: string,
         onColumnFilter?: ColumnFilterHandler
     ) => {
-        setFilterState((prev) => ({
-            ...prev,
-            columnSelectedValues: {
-                ...prev.columnSelectedValues,
-                [fieldKey]: [value],
-            },
-        }))
-        onColumnFilter?.(
-            String(column.field),
-            FilterType.SELECT,
-            value,
-            'equals'
-        )
+        setFilterState((prev) => {
+            const currentSelected = prev.columnSelectedValues[fieldKey]
+            const currentValue = Array.isArray(currentSelected)
+                ? currentSelected[0]
+                : typeof currentSelected === 'string'
+                  ? currentSelected
+                  : ''
+
+            if (currentValue === value) {
+                onColumnFilter?.(
+                    String(column.field),
+                    FilterType.SELECT,
+                    '',
+                    'equals'
+                )
+                return {
+                    ...prev,
+                    columnSelectedValues: {
+                        ...prev.columnSelectedValues,
+                        [fieldKey]: [],
+                    },
+                }
+            } else {
+                onColumnFilter?.(
+                    String(column.field),
+                    FilterType.SELECT,
+                    value,
+                    'equals'
+                )
+                return {
+                    ...prev,
+                    columnSelectedValues: {
+                        ...prev.columnSelectedValues,
+                        [fieldKey]: [value],
+                    },
+                }
+            }
+        })
     }
 
     const handleMultiSelectFilter = (

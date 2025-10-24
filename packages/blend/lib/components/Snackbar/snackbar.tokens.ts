@@ -27,7 +27,6 @@ export type SnackbarTokens = Readonly<{
     backgroundColor: CSSObject['backgroundColor']
     borderRadius: CSSObject['borderRadius']
     padding: CSSObject['padding']
-    minWidth: CSSObject['minWidth']
     maxWidth: CSSObject['maxWidth']
     boxShadow: CSSObject['boxShadow']
     gap: CSSObject['gap']
@@ -118,7 +117,6 @@ export const getSnackbarTokens = (
             backgroundColor: foundationToken.colors.gray[900],
             borderRadius: foundationToken.border.radius[12],
             padding: foundationToken.unit[16],
-            minWidth: 320,
             maxWidth: 350,
             boxShadow: foundationToken.shadows.lg,
             gap: foundationToken.unit[10],
@@ -192,7 +190,6 @@ export const getSnackbarTokens = (
             backgroundColor: foundationToken.colors.gray[900],
             borderRadius: foundationToken.border.radius[8],
             padding: foundationToken.unit[16],
-            minWidth: 400,
             maxWidth: 420,
             boxShadow: foundationToken.shadows.lg,
             gap: foundationToken.unit[8],
