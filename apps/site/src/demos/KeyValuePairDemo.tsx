@@ -356,21 +356,72 @@ const KeyValuePairDemo = () => {
                 </div>
             </div>
 
-            {/* Text Truncation Examples */}
+            {/* Key Wrapping Behavior */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">
-                    Text Truncation with Tooltips
-                </h2>
+                <h2 className="text-2xl font-bold">Key Wrapping Behavior</h2>
                 <p className="text-sm text-gray-600">
-                    When text exceeds the container width, it gets truncated and
-                    shows a tooltip on hover.
+                    Keys always wrap to new lines when needed to ensure full
+                    visibility. Values can be truncated, wrapped, or clamped
+                    based on the textOverflow setting.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="space-y-3">
-                        <h3 className="text-sm font-medium">Long Key Text</h3>
+                        <h3 className="text-sm font-medium">Short Key</h3>
                         <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                             <KeyValuePair
-                                keyString="This is a very long key that should definitely be truncated"
+                                keyString="Status"
+                                value="Active"
+                                size={KeyValuePairSize.MEDIUM}
+                                maxWidth="150px"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">Medium Key</h3>
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
+                            <KeyValuePair
+                                keyString="Configuration Setting"
+                                value="Enabled"
+                                size={KeyValuePairSize.MEDIUM}
+                                maxWidth="150px"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">
+                            Long Key (Wraps)
+                        </h3>
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
+                            <KeyValuePair
+                                keyString="Very Long Configuration Setting Name"
+                                value="Value"
+                                size={KeyValuePairSize.MEDIUM}
+                                maxWidth="150px"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Text Truncation Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Value Text Overflow Options
+                </h2>
+                <p className="text-sm text-gray-600">
+                    Values can be truncated, wrapped, or clamped based on the
+                    textOverflow setting.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">
+                            Long Key Text (Wraps)
+                        </h3>
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
+                            <KeyValuePair
+                                keyString="This is a very long key that will wrap to multiple lines"
                                 value="Short Value"
                                 size={KeyValuePairSize.MEDIUM}
                                 maxWidth="150px"
@@ -394,7 +445,7 @@ const KeyValuePairDemo = () => {
                         <h3 className="text-sm font-medium">Both Long Texts</h3>
                         <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
                             <KeyValuePair
-                                keyString="Very Long Configuration Setting Name"
+                                keyString="Very Long Configuration Setting Name That Will Wrap"
                                 value="This is an extremely long configuration value that definitely needs truncation"
                                 size={KeyValuePairSize.MEDIUM}
                                 maxWidth="150px"

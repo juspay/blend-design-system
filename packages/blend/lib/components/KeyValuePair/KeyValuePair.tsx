@@ -12,8 +12,14 @@ import { KeyValuePairTokensType } from './KeyValuePair.tokens'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import Tooltip from '../Tooltip/Tooltip'
 import { TooltipSide } from '../Tooltip/types'
+import {
+    getTextStyles,
+    getPrimitiveTextStyles,
+    getContainerStyles,
+    getLayoutStyles,
+    getSlotStyles,
+} from './utils'
 
-// Helper component to handle responsive text display with different overflow modes
 const ResponsiveText = ({
     children,
     fontSize,
@@ -36,18 +42,15 @@ const ResponsiveText = ({
     const textRef = useRef<HTMLDivElement>(null)
     const [isTruncated, setIsTruncated] = useState(false)
 
-    // Check if text is actually truncated
     useEffect(() => {
         const element = textRef.current
-        if (!element || textOverflow === 'wrap') {
+        if (!element || textOverflow === 'wrap' || !showTooltipOnTruncate) {
             setIsTruncated(false)
             return
         }
 
         const checkTruncation = () => {
             if (textOverflow === 'truncate') {
-                // For truncate mode, check if scrollWidth exceeds clientWidth
-                // We need to check the first child (PrimitiveText) as that's where text lives
                 const textElement = element.firstElementChild as HTMLElement
                 if (textElement) {
                     const isOverflowing =
@@ -55,98 +58,36 @@ const ResponsiveText = ({
                     setIsTruncated(isOverflowing)
                 }
             } else if (textOverflow === 'wrap-clamp') {
-                // For wrap-clamp, check scrollHeight vs clientHeight
                 setIsTruncated(element.scrollHeight > element.clientHeight)
             }
         }
 
-        // Use setTimeout to ensure DOM is fully rendered
         const timeoutId = setTimeout(checkTruncation, 0)
-
         window.addEventListener('resize', checkTruncation)
+
         return () => {
             clearTimeout(timeoutId)
             window.removeEventListener('resize', checkTruncation)
         }
-    }, [children, textOverflow, maxLines])
-
-    // Shared ellipsis styles for truncate mode
-    const ellipsisStyles: CSSObject = {
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-    }
-
-    // Get styles based on overflow mode
-    const getTextStyles = (): CSSObject => {
-        const baseStyles: CSSObject = {
-            width: '100%',
-        }
-
-        switch (textOverflow) {
-            case 'truncate':
-                return {
-                    ...baseStyles,
-                    ...ellipsisStyles,
-                }
-            case 'wrap':
-                return {
-                    ...baseStyles,
-                    whiteSpace: 'normal',
-                    wordBreak: 'break-word',
-                }
-            case 'wrap-clamp':
-                // Multi-line text clamping with ellipsis
-                // Browser Support Notes:
-                // - Chrome/Edge/Safari: Full support via -webkit-line-clamp
-                // - Firefox 68+: Supports -webkit-line-clamp
-                // - Older browsers: Falls back to wrapping without line limit
-                // The overflow/word-break properties ensure graceful degradation
-                return {
-                    ...baseStyles,
-                    display: '-webkit-box',
-                    WebkitLineClamp: maxLines,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    wordBreak: 'break-word',
-                    // Fallback for browsers without -webkit-line-clamp support
-                    // Text will wrap naturally without line limit but still be contained
-                }
-            default:
-                return baseStyles
-        }
-    }
-
-    const getPrimitiveTextStyles = (): CSSObject => {
-        const baseStyles: CSSObject = {
-            display: 'block',
-        }
-
-        // Apply ellipsis styles to PrimitiveText for truncate mode
-        if (textOverflow === 'truncate') {
-            return {
-                ...baseStyles,
-                ...ellipsisStyles,
-            }
-        }
-
-        return baseStyles
-    }
+    }, [children, textOverflow, maxLines, showTooltipOnTruncate])
 
     const textElement = (
-        <Block ref={textRef} className={className} style={getTextStyles()}>
+        <Block
+            ref={textRef}
+            className={className}
+            style={getTextStyles(textOverflow, maxLines)}
+        >
             <PrimitiveText
                 fontSize={fontSize}
                 color={color}
                 fontWeight={fontWeight}
-                style={getPrimitiveTextStyles()}
+                style={getPrimitiveTextStyles(textOverflow)}
             >
                 {children}
             </PrimitiveText>
         </Block>
     )
 
-    // Show tooltip only if text is truncated and tooltip is enabled
     if (showTooltipOnTruncate && isTruncated) {
         return (
             <Tooltip content={children} side={TooltipSide.TOP}>
@@ -178,78 +119,47 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
         const keyValuePairTokens =
             useResponsiveTokens<KeyValuePairTokensType>('KEYVALUEPAIR')
 
+        const containerStyles = {
+            ...getLayoutStyles(keyValuePairState, keyValuePairTokens),
+            ...getContainerStyles(textOverflow, maxWidth),
+        }
+
+        const keyContainerStyles = {
+            display: 'flex',
+            gap: keyValuePairTokens.key.gap,
+            alignItems: 'center',
+        }
+
+        const valueContainerStyles = {
+            display: 'flex',
+            gap: keyValuePairTokens.value.gap,
+            alignItems: 'center',
+        }
+
         return (
-            <Block
-                ref={ref}
-                style={{
-                    display: 'flex',
-                    flexDirection:
-                        keyValuePairState === KeyValuePairStateType.vertical
-                            ? 'column'
-                            : 'row',
-                    justifyContent:
-                        keyValuePairState === KeyValuePairStateType.horizontal
-                            ? 'space-between'
-                            : 'flex-start',
-                    gap:
-                        keyValuePairState === KeyValuePairStateType.vertical
-                            ? keyValuePairTokens.gap.vertical
-                            : keyValuePairTokens.gap.horizontal,
-                    // Width strategy differs based on overflow mode:
-                    // - 'wrap' mode: Use width: 100% with maxWidth constraint
-                    //   This allows the component to be responsive and fill parent container
-                    //   while still respecting maxWidth limit. Essential for grid layouts.
-                    // - 'truncate'/'wrap-clamp': Use fixed width for consistent sizing
-                    //   This ensures predictable layout and proper ellipsis truncation.
-                    width: textOverflow === 'wrap' ? '100%' : maxWidth,
-                    maxWidth: textOverflow === 'wrap' ? maxWidth : undefined,
-                }}
-            >
-                <Block
-                    style={{
-                        display: 'flex',
-                        gap: keyValuePairTokens.key.gap,
-                        alignItems: 'center',
-                    }}
-                >
+            <Block ref={ref} style={containerStyles}>
+                {/* Key Section */}
+                <Block style={keyContainerStyles}>
                     <ResponsiveText
                         className="flex-1 min-w-0"
                         fontSize={keyValuePairTokens.key.fontSize}
                         color={keyValuePairTokens.key.color}
                         fontWeight={keyValuePairTokens.key.fontWeight}
-                        textOverflow={textOverflow}
+                        textOverflow="wrap"
                         maxLines={maxLines}
-                        showTooltipOnTruncate={showTooltipOnTruncate}
+                        showTooltipOnTruncate={false}
                     >
                         {keyString}
                     </ResponsiveText>
                     {keySlot && (
-                        <Block
-                            flexShrink={0}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                        >
-                            {keySlot}
-                        </Block>
+                        <Block style={getSlotStyles()}>{keySlot}</Block>
                     )}
                 </Block>
-                <Block
-                    style={{
-                        display: 'flex',
-                        gap: keyValuePairTokens.value.gap,
-                        alignItems: 'center',
-                    }}
-                >
+
+                {/* Value Section */}
+                <Block style={valueContainerStyles}>
                     {valueLeftSlot && (
-                        <Block
-                            flexShrink={0}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                        >
-                            {valueLeftSlot}
-                        </Block>
+                        <Block style={getSlotStyles()}>{valueLeftSlot}</Block>
                     )}
                     <ResponsiveText
                         className="flex-1 min-w-0"
@@ -263,14 +173,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         {value || ''}
                     </ResponsiveText>
                     {valueRightSlot && (
-                        <Block
-                            flexShrink={0}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                        >
-                            {valueRightSlot}
-                        </Block>
+                        <Block style={getSlotStyles()}>{valueRightSlot}</Block>
                     )}
                 </Block>
             </Block>
