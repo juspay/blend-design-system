@@ -25,8 +25,8 @@ import {
     getVisualUploadState,
     truncateFileList,
     createEnhancedValidator,
-    createEnhancedProcessFiles,
-    createEnhancedProcessFilesFn,
+    processFiles,
+    generateFileId,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import { Tooltip, TooltipSize } from '../Tooltip'
@@ -35,8 +35,15 @@ const FileListDisplay: React.FC<{
     files: UploadedFileWithStatus[]
     onFileRemove?: (fileId: string) => void
     uploadTokens: UploadTokenType
+    maxFiles?: number
 }> = ({ files, onFileRemove, uploadTokens }) => {
-    const { displayFiles, truncatedCount } = truncateFileList(files)
+    const sortedFiles = [...files].sort((a, b) => {
+        if (a.status === 'error' && b.status !== 'error') return -1
+        if (a.status !== 'error' && b.status === 'error') return 1
+        return 0
+    })
+
+    const { displayFiles, truncatedCount } = truncateFileList(sortedFiles)
 
     return (
         <Block
@@ -181,6 +188,7 @@ const SuccessState: React.FC<{
     onReplaceFile?: () => void
     onFileRemove?: (fileId: string) => void
     uploadTokens: UploadTokenType
+    maxFiles?: number
 }> = ({
     successfulFiles,
     multiple,
@@ -188,6 +196,7 @@ const SuccessState: React.FC<{
     onReplaceFile,
     onFileRemove,
     uploadTokens,
+    maxFiles,
 }) => (
     <Block
         display="flex"
@@ -248,6 +257,7 @@ const SuccessState: React.FC<{
                     files={successfulFiles}
                     onFileRemove={onFileRemove}
                     uploadTokens={uploadTokens}
+                    maxFiles={maxFiles}
                 />
             ) : (
                 onReplaceFile && (
@@ -264,6 +274,81 @@ const SuccessState: React.FC<{
     </Block>
 )
 
+const MixedState: React.FC<{
+    successfulFiles: UploadedFileWithStatus[]
+    errorFiles: UploadedFileWithStatus[]
+    children?: React.ReactNode
+    onFileRemove?: (fileId: string) => void
+    uploadTokens: UploadTokenType
+    maxFiles?: number
+}> = ({
+    successfulFiles,
+    errorFiles,
+    children,
+    onFileRemove,
+    uploadTokens,
+    maxFiles,
+}) => (
+    <Block
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={uploadTokens.container.content.slot.gap}
+    >
+        {children && (
+            <Block
+                width={uploadTokens.container.content.slot.width}
+                height={uploadTokens.container.content.slot.width}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+            >
+                {children}
+            </Block>
+        )}
+
+        <Block
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            gap={uploadTokens.container.content.text.gap}
+        >
+            <Text
+                as="span"
+                fontSize={uploadTokens.container.content.text.title.fontSize}
+                fontWeight={
+                    uploadTokens.container.content.text.title.fontWeight
+                }
+                color={uploadTokens.container.content.text.title.color}
+                textAlign="center"
+            >
+                Files uploaded
+            </Text>
+
+            <Text
+                as="span"
+                fontSize={uploadTokens.container.content.text.subtitle.fontSize}
+                fontWeight={
+                    uploadTokens.container.content.text.subtitle.fontWeight
+                }
+                color={uploadTokens.container.content.text.subtitle.color}
+                textAlign="center"
+            >
+                {successfulFiles.length} succeeded, {errorFiles.length} failed
+            </Text>
+        </Block>
+
+        <Block gap={uploadTokens.container.content.actionable.gap}>
+            <FileListDisplay
+                files={[...successfulFiles, ...errorFiles]}
+                onFileRemove={onFileRemove}
+                uploadTokens={uploadTokens}
+                maxFiles={maxFiles}
+            />
+        </Block>
+    </Block>
+)
+
 const ErrorState: React.FC<{
     errorFiles: UploadedFileWithStatus[]
     multiple: boolean
@@ -271,6 +356,7 @@ const ErrorState: React.FC<{
     errorText?: string
     onFileRemove?: (fileId: string) => void
     uploadTokens: UploadTokenType
+    maxFiles?: number
 }> = ({
     errorFiles,
     multiple,
@@ -278,6 +364,7 @@ const ErrorState: React.FC<{
     errorText,
     onFileRemove,
     uploadTokens,
+    maxFiles,
 }) => (
     <Block
         display="flex"
@@ -328,7 +415,8 @@ const ErrorState: React.FC<{
             >
                 {multiple
                     ? `${errorFiles.length} files failed`
-                    : 'Upload failed. Please try again.'}
+                    : errorFiles[0]?.error ||
+                      'Upload failed. Please try again.'}
             </Text>
         </Block>
 
@@ -338,9 +426,10 @@ const ErrorState: React.FC<{
                     files={errorFiles}
                     onFileRemove={onFileRemove}
                     uploadTokens={uploadTokens}
+                    maxFiles={maxFiles}
                 />
             ) : (
-                errorText && (
+                (errorText || errorFiles[0]?.error) && (
                     <Text
                         fontSize={
                             uploadTokens.container.content.actionable.errorText
@@ -356,7 +445,7 @@ const ErrorState: React.FC<{
                         }
                         textAlign="center"
                     >
-                        {errorText}
+                        {errorText || errorFiles[0]?.error}
                     </Text>
                 )
             )}
@@ -452,7 +541,6 @@ const Upload: React.FC<UploadProps> = ({
     uploadingFiles: externalUploadingFiles,
     uploadedFiles: externalUploadedFiles,
     failedFiles: externalFailedFiles,
-    enforceFileTypeConsistency = true,
     onDrop,
     onDropAccepted,
     onDropRejected,
@@ -506,28 +594,13 @@ const Upload: React.FC<UploadProps> = ({
     )
 
     const validateFile = useCallback(
-        createEnhancedValidator(
-            accept,
-            maxSize,
-            validator,
-            multiple,
-            enforceFileTypeConsistency,
-            uploadedFiles
-        ),
-        [
-            accept,
-            maxSize,
-            validator,
-            multiple,
-            enforceFileTypeConsistency,
-            uploadedFiles,
-        ]
+        createEnhancedValidator(accept, maxSize, validator),
+        [accept, maxSize, validator]
     )
 
-    const checkDuplicates = useCallback(
-        createEnhancedProcessFiles(uploadingFiles, uploadedFiles, failedFiles),
-        [uploadingFiles, uploadedFiles, failedFiles]
-    )
+    // Simple duplicate checking helper
+    const createFileKey = (file: File) =>
+        `${file.name}-${file.size}-${file.lastModified}`
 
     const handleInternalDrop = useCallback(
         (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
@@ -536,86 +609,191 @@ const Upload: React.FC<UploadProps> = ({
             if (acceptedFiles.length > 0) {
                 setInternalState(UploadState.UPLOADING)
 
-                const newUploadingFiles = acceptedFiles.map((file) => ({
-                    id: Math.random().toString(36).substr(2, 9),
-                    file,
-                    progress: 0,
-                    status: UploadState.UPLOADING,
-                }))
+                const existingFileKeys = multiple
+                    ? new Set([
+                          ...uploadingFiles.map((f) => createFileKey(f.file)),
+                          ...uploadedFiles.map((f) => createFileKey(f.file)),
+                          ...failedFiles.map((f) => createFileKey(f.file)),
+                      ])
+                    : new Set()
 
-                if (multiple) {
-                    setInternalUploadingFiles((prev) => [
-                        ...prev,
-                        ...newUploadingFiles,
-                    ])
-                } else {
-                    setInternalUploadingFiles(newUploadingFiles)
+                const currentTotalFiles =
+                    uploadingFiles.length + uploadedFiles.length
+
+                const uniqueFiles: File[] = []
+                const duplicateFiles: File[] = []
+                const maxFilesExceededFiles: File[] = []
+
+                acceptedFiles.forEach((file) => {
+                    const fileKey = createFileKey(file)
+                    if (multiple && existingFileKeys.has(fileKey)) {
+                        duplicateFiles.push(file)
+                    } else {
+                        if (
+                            multiple &&
+                            maxFiles &&
+                            currentTotalFiles + uniqueFiles.length >= maxFiles
+                        ) {
+                            maxFilesExceededFiles.push(file)
+                        } else {
+                            uniqueFiles.push(file)
+                            existingFileKeys.add(fileKey)
+                        }
+                    }
+                })
+
+                if (duplicateFiles.length > 0) {
+                    const duplicateRejections = duplicateFiles.map((file) => ({
+                        file,
+                        errors: [
+                            {
+                                code: 'file-duplicate',
+                                message: `File "${file.name}" is already uploaded or being processed`,
+                            },
+                        ],
+                    }))
+                    rejectedFiles.push(...duplicateRejections)
                 }
 
-                newUploadingFiles.forEach((uploadFile) => {
-                    const interval = setInterval(() => {
-                        setInternalUploadingFiles((prev) =>
-                            prev.map((f) => {
-                                if (f.id === uploadFile.id) {
-                                    const newProgress =
-                                        f.progress + Math.random() * 15
-                                    if (newProgress >= 100) {
-                                        clearInterval(interval)
-                                        setTimeout(() => {
-                                            setInternalUploadingFiles((prev) =>
-                                                prev.filter(
-                                                    (f) =>
-                                                        f.id !== uploadFile.id
-                                                )
-                                            )
+                if (maxFilesExceededFiles.length > 0) {
+                    const maxFilesRejections = maxFilesExceededFiles.map(
+                        (file) => ({
+                            file,
+                            errors: [
+                                {
+                                    code: 'file-too-many',
+                                    message: `Maximum ${maxFiles} files allowed. Cannot add "${file.name}".`,
+                                },
+                            ],
+                        })
+                    )
+                    rejectedFiles.push(...maxFilesRejections)
+                }
 
-                                            setInternalUploadedFiles((prev) => [
-                                                ...prev,
-                                                {
-                                                    id: uploadFile.id,
-                                                    file: uploadFile.file,
-                                                    status: 'success',
-                                                },
-                                            ])
+                if (uniqueFiles.length > 0) {
+                    const newUploadingFiles = uniqueFiles.map((file) => ({
+                        id: generateFileId(),
+                        file,
+                        progress: 0,
+                        status: UploadState.UPLOADING,
+                    }))
 
-                                            setInternalUploadingFiles(
-                                                (current) => {
-                                                    const remaining =
-                                                        current.filter(
+                    // For single files, replace all existing files; for multiple, add to existing
+                    if (multiple) {
+                        setInternalUploadingFiles((prev) => [
+                            ...prev,
+                            ...newUploadingFiles,
+                        ])
+                    } else {
+                        setInternalUploadingFiles(newUploadingFiles)
+                        setInternalUploadedFiles([])
+                        setInternalFailedFiles([])
+                    }
+
+                    newUploadingFiles.forEach((uploadFile) => {
+                        const interval = setInterval(() => {
+                            setInternalUploadingFiles((prev) =>
+                                prev.map((f) => {
+                                    if (f.id === uploadFile.id) {
+                                        const newProgress =
+                                            f.progress + Math.random() * 15
+                                        if (newProgress >= 100) {
+                                            clearInterval(interval)
+                                            setTimeout(() => {
+                                                // Remove from uploading
+                                                setInternalUploadingFiles(
+                                                    (prev) =>
+                                                        prev.filter(
                                                             (f) =>
                                                                 f.id !==
                                                                 uploadFile.id
                                                         )
-                                                    if (
-                                                        remaining.length === 0
-                                                    ) {
-                                                        setInternalState(
-                                                            UploadState.SUCCESS
-                                                        )
+                                                )
+
+                                                setInternalUploadedFiles(
+                                                    (prev) => {
+                                                        const fileKey =
+                                                            createFileKey(
+                                                                uploadFile.file
+                                                            )
+                                                        const alreadyExists =
+                                                            prev.some(
+                                                                (f) =>
+                                                                    createFileKey(
+                                                                        f.file
+                                                                    ) ===
+                                                                    fileKey
+                                                            )
+
+                                                        if (alreadyExists) {
+                                                            return prev // Don't add duplicate
+                                                        }
+
+                                                        return [
+                                                            ...prev,
+                                                            {
+                                                                id: uploadFile.id,
+                                                                file: uploadFile.file,
+                                                                status: 'success',
+                                                            },
+                                                        ]
                                                     }
-                                                    return remaining
-                                                }
-                                            )
-                                        }, 500)
-                                        return {
-                                            ...f,
-                                            progress: 100,
-                                            status: UploadState.SUCCESS,
+                                                )
+
+                                                setInternalUploadingFiles(
+                                                    (current) => {
+                                                        const remaining =
+                                                            current.filter(
+                                                                (f) =>
+                                                                    f.id !==
+                                                                    uploadFile.id
+                                                            )
+                                                        if (
+                                                            remaining.length ===
+                                                            0
+                                                        ) {
+                                                            setTimeout(() => {
+                                                                setInternalFailedFiles(
+                                                                    (
+                                                                        failedFiles
+                                                                    ) => {
+                                                                        if (
+                                                                            failedFiles.length >
+                                                                            0
+                                                                        ) {
+                                                                            setInternalState(
+                                                                                UploadState.ERROR
+                                                                            )
+                                                                        } else {
+                                                                            setInternalState(
+                                                                                UploadState.SUCCESS
+                                                                            )
+                                                                        }
+                                                                        return failedFiles
+                                                                    }
+                                                                )
+                                                            }, 100)
+                                                        }
+                                                        return remaining
+                                                    }
+                                                )
+                                            }, 500)
+                                            return { ...f, progress: 100 }
                                         }
+                                        return { ...f, progress: newProgress }
                                     }
-                                    return { ...f, progress: newProgress }
-                                }
-                                return f
-                            })
-                        )
-                    }, 200)
-                })
+                                    return f
+                                })
+                            )
+                        }, 200)
+                    })
+                }
             }
 
             if (rejectedFiles.length > 0) {
                 const rejectedFilesWithStatus = rejectedFiles.map(
                     (rejection) => ({
-                        id: Math.random().toString(36).substr(2, 9),
+                        id: generateFileId(),
                         file: rejection.file,
                         status: 'error' as const,
                         error: rejection.errors[0]?.message || 'File rejected',
@@ -629,7 +807,7 @@ const Upload: React.FC<UploadProps> = ({
                 setInternalState(UploadState.ERROR)
             }
         },
-        [disabled, multiple]
+        [disabled, multiple, uploadingFiles, uploadedFiles, failedFiles]
     )
 
     const handleInternalFileRemove = useCallback((fileId: string) => {
@@ -648,10 +826,9 @@ const Upload: React.FC<UploadProps> = ({
     const finalOnReplaceFile = onReplaceFile || handleInternalReplaceFile
 
     const processFilesFn = useCallback(
-        createEnhancedProcessFilesFn(
+        processFiles(
             disabled,
             validateFile,
-            checkDuplicates,
             maxFiles,
             finalOnDrop,
             onDropAccepted,
@@ -660,7 +837,6 @@ const Upload: React.FC<UploadProps> = ({
         [
             disabled,
             validateFile,
-            checkDuplicates,
             maxFiles,
             finalOnDrop,
             onDropAccepted,
@@ -706,6 +882,23 @@ const Upload: React.FC<UploadProps> = ({
             )
         }
 
+        if (
+            multiple &&
+            uploadContent.hasSuccessfulFiles &&
+            uploadContent.hasErrorFiles
+        ) {
+            return (
+                <MixedState
+                    successfulFiles={uploadContent.successfulFiles}
+                    errorFiles={uploadContent.errorFiles}
+                    children={children}
+                    onFileRemove={finalOnFileRemove}
+                    uploadTokens={uploadTokens}
+                    maxFiles={maxFiles}
+                />
+            )
+        }
+
         if (uploadContent.isSuccess && uploadContent.hasSuccessfulFiles) {
             return (
                 <SuccessState
@@ -715,6 +908,7 @@ const Upload: React.FC<UploadProps> = ({
                     onReplaceFile={finalOnReplaceFile}
                     onFileRemove={finalOnFileRemove}
                     uploadTokens={uploadTokens}
+                    maxFiles={maxFiles}
                 />
             )
         }
@@ -728,6 +922,7 @@ const Upload: React.FC<UploadProps> = ({
                     errorText={errorText}
                     onFileRemove={finalOnFileRemove}
                     uploadTokens={uploadTokens}
+                    maxFiles={maxFiles}
                 />
             )
         }

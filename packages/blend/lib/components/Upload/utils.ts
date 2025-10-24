@@ -365,13 +365,13 @@ export const truncateFileList = (
     displayFiles: { id: string; file: File; status: string }[]
     truncatedCount: number
 } => {
-    const maxFiles = 2 * 2
-    if (files.length <= maxFiles) {
+    const displayLimit = 4
+    if (files.length <= displayLimit) {
         return { displayFiles: files, truncatedCount: 0 }
     }
     return {
-        displayFiles: files.slice(0, maxFiles),
-        truncatedCount: files.length - maxFiles,
+        displayFiles: files.slice(0, displayLimit),
+        truncatedCount: files.length - displayLimit,
     }
 }
 
@@ -379,10 +379,7 @@ export const createEnhancedValidator =
     (
         accept: string[],
         maxSize?: number,
-        validator?: (file: File) => FileRejection['errors'][0] | null,
-        multiple?: boolean,
-        enforceFileTypeConsistency?: boolean,
-        uploadedFiles?: UploadedFileWithStatus[]
+        validator?: (file: File) => FileRejection['errors'][0] | null
     ) =>
     (file: File): FileRejection['errors'] => {
         const errors: FileRejection['errors'] = []
@@ -409,21 +406,6 @@ export const createEnhancedValidator =
                 code: 'file-too-large',
                 message: `File is too large. Maximum size: ${Math.round(maxSize / (1024 * 1024))} MB`,
             })
-        }
-
-        if (
-            multiple &&
-            enforceFileTypeConsistency &&
-            uploadedFiles &&
-            uploadedFiles.length > 0
-        ) {
-            const existingFileType = uploadedFiles[0]?.file.type
-            if (existingFileType && file.type !== existingFileType) {
-                errors.push({
-                    code: 'file-type-inconsistent',
-                    message: `All files must be of the same type. Expected: ${existingFileType.split('/')[1]?.toUpperCase() || existingFileType}`,
-                })
-            }
         }
 
         // Custom validation
@@ -473,6 +455,63 @@ export const createEnhancedProcessFiles =
 
         return { unique, duplicates }
     }
+
+export const generateFileId = (): string => {
+    return Math.random().toString(36).substr(2, 9)
+}
+
+export const createFileKey = (file: File): string => {
+    return `${file.name}-${file.size}-${file.lastModified}`
+}
+
+export const filterDuplicateFiles = (
+    newFiles: File[],
+    existingFiles: { file: File }[]
+): { unique: File[]; duplicates: File[] } => {
+    const existingFileKeys = new Set(
+        existingFiles.map((f) => createFileKey(f.file))
+    )
+
+    const unique: File[] = []
+    const duplicates: File[] = []
+    const processedKeys = new Set<string>()
+
+    newFiles.forEach((file) => {
+        const fileKey = createFileKey(file)
+        if (existingFileKeys.has(fileKey) || processedKeys.has(fileKey)) {
+            duplicates.push(file)
+        } else {
+            unique.push(file)
+            processedKeys.add(fileKey)
+        }
+    })
+
+    return { unique, duplicates }
+}
+
+export const createDuplicateRejections = (files: File[]): FileRejection[] => {
+    return files.map((file) => ({
+        file,
+        errors: [
+            {
+                code: 'file-duplicate',
+                message: `File "${file.name}" is already uploaded or being processed`,
+            },
+        ],
+    }))
+}
+
+export const simulateFileUpload = (
+    uploadFile: UploadFile,
+    onProgressUpdate: (id: string, progress: number) => void,
+    progressInterval: number = 200
+): (() => void) => {
+    const interval = setInterval(() => {
+        onProgressUpdate(uploadFile.id, Math.random() * 15)
+    }, progressInterval)
+
+    return () => clearInterval(interval)
+}
 
 export const createEnhancedProcessFilesFn =
     (
@@ -528,6 +567,20 @@ export const createEnhancedProcessFilesFn =
                 })
             )
             rejectedFiles.push(...duplicateRejections)
+        }
+
+        if (maxFiles && fileArray.length > maxFiles) {
+            const extraFiles = fileArray.slice(maxFiles)
+            const extraRejections: FileRejection[] = extraFiles.map((file) => ({
+                file,
+                errors: [
+                    {
+                        code: 'file-too-many',
+                        message: `Maximum ${maxFiles} files allowed. "${file.name}" is the ${fileArray.indexOf(file) + 1}th file.`,
+                    },
+                ],
+            }))
+            rejectedFiles.push(...extraRejections)
         }
 
         if (onDrop) {

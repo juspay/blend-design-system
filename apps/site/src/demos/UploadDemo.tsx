@@ -2,7 +2,6 @@ import { useState } from 'react'
 import {
     Upload,
     UploadState,
-    FileRejection,
 } from '../../../../packages/blend/lib/components/Upload'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import {
@@ -14,7 +13,6 @@ import {
     Video,
     Music,
 } from 'lucide-react'
-import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 
 const UploadDemo = () => {
     // Playground state
@@ -23,38 +21,10 @@ const UploadDemo = () => {
     const [playgroundRequired, setPlaygroundRequired] = useState(false)
     const [playgroundCustomSlot, setPlaygroundCustomSlot] = useState(false)
     const [playgroundHelpIcon, setPlaygroundHelpIcon] = useState(false)
-    const [playgroundEnforceConsistency, setPlaygroundEnforceConsistency] =
-        useState(true)
     const [playgroundProgressSpeed, setPlaygroundProgressSpeed] = useState(200)
 
     // Simple state for reset buttons
     const [resetKey, setResetKey] = useState(0)
-
-    const handleFilesRejected = (rejections: FileRejection[]) => {
-        rejections.forEach((rejection) => {
-            addSnackbar({
-                header: 'File Rejected',
-                description: `${rejection.file.name}: ${rejection.errors[0]?.message}`,
-            })
-        })
-    }
-
-    // Simple handlers for file type examples
-    const handleImageRejected = (rejectedFiles: FileRejection[]) => {
-        handleFilesRejected(rejectedFiles)
-    }
-
-    const handleVideoRejected = (rejectedFiles: FileRejection[]) => {
-        handleFilesRejected(rejectedFiles)
-    }
-
-    const handleAudioRejected = (rejectedFiles: FileRejection[]) => {
-        handleFilesRejected(rejectedFiles)
-    }
-
-    const handlePdfRejected = (rejectedFiles: FileRejection[]) => {
-        handleFilesRejected(rejectedFiles)
-    }
 
     const renderCustomSlot = () => <UploadIcon size={32} color="#6366f1" />
 
@@ -110,15 +80,6 @@ const UploadDemo = () => {
                                 setPlaygroundHelpIcon(!playgroundHelpIcon)
                             }
                         />
-                        <Switch
-                            label="Enforce File Type Consistency"
-                            checked={playgroundEnforceConsistency}
-                            onChange={() =>
-                                setPlaygroundEnforceConsistency(
-                                    !playgroundEnforceConsistency
-                                )
-                            }
-                        />
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -156,12 +117,29 @@ const UploadDemo = () => {
                             disabled={playgroundDisabled}
                             required={playgroundRequired}
                             description=".csv only | Max size 8 MB"
-                            accept={['.csv']}
+                            accept={[
+                                '.csv',
+                                '.txt',
+                                '.pdf',
+                                '.doc',
+                                '.docx',
+                                '.xls',
+                                '.xlsx',
+                                '.ppt',
+                                '.pptx',
+                                '.jpg',
+                                '.jpeg',
+                                '.png',
+                                '.gif',
+                                '.mp4',
+                                '.avi',
+                                '.mov',
+                                '.mp3',
+                                '.wav',
+                            ]}
                             maxSize={8 * 1024 * 1024} // 8MB
-                            enforceFileTypeConsistency={
-                                playgroundEnforceConsistency
-                            }
                             style={{ width: '480px' }}
+                            maxFiles={5}
                         >
                             {playgroundCustomSlot
                                 ? renderCustomSlot()
@@ -227,7 +205,6 @@ const UploadDemo = () => {
                             multiple={true}
                             description="Any file type | Max 5 files"
                             maxFiles={5}
-                            onDropRejected={handleFilesRejected}
                             style={{ width: '480px' }}
                         >
                             <UploadIcon size={32} color="#6366f1" />
@@ -341,7 +318,6 @@ const UploadDemo = () => {
                             description="JPG, PNG, GIF only"
                             accept={['.jpg', '.jpeg', '.png', '.gif']}
                             maxSize={5 * 1024 * 1024}
-                            onDropRejected={handleImageRejected}
                         >
                             <Image size={32} color="#10b981" />
                         </Upload>
@@ -357,7 +333,6 @@ const UploadDemo = () => {
                             description="MP4, AVI, MOV only"
                             accept={['.mp4', '.avi', '.mov']}
                             maxSize={50 * 1024 * 1024}
-                            onDropRejected={handleVideoRejected}
                         >
                             <Video size={32} color="#8b5cf6" />
                         </Upload>
@@ -373,7 +348,6 @@ const UploadDemo = () => {
                             description="MP3, WAV only"
                             accept={['.mp3', '.wav']}
                             maxSize={20 * 1024 * 1024}
-                            onDropRejected={handleAudioRejected}
                         >
                             <Music size={32} color="#f59e0b" />
                         </Upload>
@@ -387,51 +361,10 @@ const UploadDemo = () => {
                             description="PDFs only"
                             accept={['application/pdf']}
                             maxSize={10 * 1024 * 1024}
-                            onDropRejected={handlePdfRejected}
                         >
                             <FileText size={32} color="#ef4444" />
                         </Upload>
                     </div>
-                </div>
-            </div>
-
-            {/* File Type Consistency Demo */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">
-                    File Type Consistency Demo
-                </h2>
-                <div className="space-y-4">
-                    <p className="text-gray-600">
-                        This demo shows how file type consistency enforcement
-                        works. Upload one file type first, then try uploading a
-                        different type:
-                    </p>
-
-                    <div className="max-w-md">
-                        <Upload
-                            key={`consistency-${resetKey}`}
-                            label="Consistent File Types"
-                            subLabel="Required"
-                            helpIconHintText="When enforcing consistency, all files must be of the same type as the first uploaded file."
-                            required={true}
-                            multiple={true}
-                            description="Any file type | Enforces consistency"
-                            maxFiles={5}
-                            enforceFileTypeConsistency={true}
-                            onDropRejected={handleFilesRejected}
-                            style={{ width: '480px' }}
-                        >
-                            <UploadIcon size={32} color="#6366f1" />
-                        </Upload>
-                    </div>
-
-                    {/* Reset button */}
-                    <button
-                        onClick={() => setResetKey((prev) => prev + 1)}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                    >
-                        Reset Consistency Demo
-                    </button>
                 </div>
             </div>
 
@@ -443,12 +376,6 @@ const UploadDemo = () => {
                         label="Disabled Upload"
                         description="This upload is disabled"
                         disabled={true}
-                        onDropAccepted={() =>
-                            addSnackbar({
-                                header: 'Should not trigger',
-                                description: 'This should not happen',
-                            })
-                        }
                     >
                         <UploadIcon size={32} color="#6366f1" />
                     </Upload>
