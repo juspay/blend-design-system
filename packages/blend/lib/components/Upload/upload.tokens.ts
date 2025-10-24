@@ -28,34 +28,42 @@ export type UploadState =
  */
 export type UploadTokenType = {
     // Wrapper (outermost container)
-    padding: CSSObject['padding']
+    //  break in x and y and move inside container
 
     // Label section
-    label: {
-        text: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
+    //  header -> label / sublabel
+    header: {
+        label: {
+            text: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+            marginBottom: CSSObject['marginBottom']
+            gap: CSSObject['gap'] // gap between label and required asterisk
+        }
+        required: {
+            text: {
+                color: CSSObject['color']
+            }
+            gap: CSSObject['gap'] // gap between sublabel and required asterisk
+        }
+
+        subLabel: {
+            text: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+            gap: CSSObject['gap'] // gap between sublabel and help icon
+        }
+
+        helpIcon: {
+            width: CSSObject['width']
             color: CSSObject['color']
         }
-        marginBottom: CSSObject['marginBottom']
-        gap: CSSObject['gap'] // Gap between label and asterisk
     }
 
-    subLabel: {
-        text: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            color: CSSObject['color']
-        }
-    }
-
-    required: {
-        text: {
-            color: CSSObject['color']
-        }
-    }
-
-    // Container (upload box with state-dependent styling)
     container: {
         border: {
             idle: CSSObject['border']
@@ -73,57 +81,33 @@ export type UploadTokenType = {
         }
         borderRadius: CSSObject['borderRadius']
         padding: CSSObject['padding']
-        gap: CSSObject['gap'] // Gap between title and description
-    }
-
-    // Slot (content area)
-    slot: { width: CSSObject['width'] }
-
-    text: {
-        title: {
-            color: {
-                idle: CSSObject['color']
-                uploading: CSSObject['color']
-                success: CSSObject['color']
-                error: CSSObject['color']
+        content: {
+            slot: {
+                width: CSSObject['width']
+                gap: CSSObject['gap'] // slot and text gap
             }
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-        }
-        gap: CSSObject['gap'] // Gap between title and description
-        filename: {
-            color: CSSObject['color']
-            primaryColor: CSSObject['color'] // Color for highlighted filename
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-        }
-        description: {
-            color: {
-                idle: CSSObject['color']
-                uploading: CSSObject['color']
-                success: CSSObject['color']
-                error: CSSObject['color']
+            text: {
+                title: {
+                    color: CSSObject['color'] // hardcode the color for filename in uploading state
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+                subtitle: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+                gap: CSSObject['gap'] // gap between title and description
             }
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
+            actionable: {
+                gap: CSSObject['gap'] // gap between actionables and text
+                errorText: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+            }
         }
-        error: {
-            color: CSSObject['color']
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-        }
-    }
-
-    // Progress container
-    progressContainer: {
-        gap: CSSObject['gap']
-        padding: CSSObject['padding']
-    }
-
-    // File list
-    fileList: {
-        gap: CSSObject['gap']
-        marginTop: CSSObject['marginTop']
     }
 }
 
@@ -136,30 +120,34 @@ export const getUploadTokens = (
 ): ResponsiveUploadTokens => {
     return {
         sm: {
-            padding: foundationToken.unit[32],
-
-            // Label section
-            label: {
-                text: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[500],
-                    color: String(foundationToken.colors.gray[700]),
+            // Header section
+            header: {
+                label: {
+                    text: {
+                        fontSize: foundationToken.font.size.body.md.fontSize,
+                        fontWeight: foundationToken.font.weight[500],
+                        color: String(foundationToken.colors.gray[700]),
+                    },
+                    marginBottom: foundationToken.unit[8],
+                    gap: foundationToken.unit[2],
                 },
-                marginBottom: foundationToken.unit[8],
-                gap: foundationToken.unit[4],
-            },
-
-            subLabel: {
-                text: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[400],
+                required: {
+                    text: {
+                        color: String(foundationToken.colors.red[500]),
+                    },
+                    gap: foundationToken.unit[8],
+                },
+                subLabel: {
+                    text: {
+                        fontSize: foundationToken.font.size.body.sm.fontSize,
+                        fontWeight: foundationToken.font.weight[400],
+                        color: String(foundationToken.colors.gray[400]),
+                    },
+                    gap: foundationToken.unit[8],
+                },
+                helpIcon: {
+                    width: foundationToken.unit[16],
                     color: String(foundationToken.colors.gray[400]),
-                },
-            },
-
-            required: {
-                text: {
-                    color: String(foundationToken.colors.red[500]),
                 },
             },
 
@@ -180,89 +168,69 @@ export const getUploadTokens = (
                     dragActive: foundationToken.colors.primary[50],
                 },
                 borderRadius: foundationToken.border.radius[12],
-                padding: foundationToken.unit[32],
-                gap: foundationToken.unit[20],
-            },
-
-            // Content area layout
-            slot: {
-                width: foundationToken.unit[32],
-            },
-
-            // Text styling and gaps
-            text: {
-                title: {
-                    color: {
-                        idle: String(foundationToken.colors.gray[600]),
-                        uploading: String(foundationToken.colors.gray[600]),
-                        success: String(foundationToken.colors.gray[600]),
-                        error: String(foundationToken.colors.gray[600]),
+                padding: `${foundationToken.unit[24]} ${foundationToken.unit[32]}`,
+                content: {
+                    slot: {
+                        width: foundationToken.unit[32],
+                        gap: foundationToken.unit[16],
                     },
-                    fontSize: foundationToken.font.size.body.lg.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                },
-                gap: foundationToken.unit[4],
-                filename: {
-                    color: String(foundationToken.colors.gray[700]),
-                    primaryColor: String(foundationToken.colors.primary[600]),
-                    fontSize: foundationToken.font.size.body.lg.fontSize,
-                    fontWeight: foundationToken.font.weight[500],
-                },
-                description: {
-                    color: {
-                        idle: String(foundationToken.colors.gray[500]),
-                        uploading: String(foundationToken.colors.gray[500]),
-                        success: String(foundationToken.colors.gray[500]),
-                        error: String(foundationToken.colors.gray[500]),
+                    text: {
+                        title: {
+                            color: String(foundationToken.colors.primary[600]), // hardcoded filename color for uploading state
+                            fontSize:
+                                foundationToken.font.size.body.lg.fontSize,
+                            fontWeight: foundationToken.font.weight[600],
+                        },
+                        subtitle: {
+                            color: String(foundationToken.colors.gray[500]),
+                            fontSize:
+                                foundationToken.font.size.body.md.fontSize,
+                            fontWeight: foundationToken.font.weight[400],
+                        },
+                        gap: foundationToken.unit[4],
                     },
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[400],
+                    actionable: {
+                        gap: foundationToken.unit[20],
+                        errorText: {
+                            color: String(foundationToken.colors.red[500]),
+                            fontSize:
+                                foundationToken.font.size.body.sm.fontSize,
+                            fontWeight: foundationToken.font.weight[400],
+                        },
+                    },
                 },
-                error: {
-                    color: String(foundationToken.colors.red[500]),
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[400],
-                },
-            },
-
-            // Progress container
-            progressContainer: {
-                gap: foundationToken.unit[20],
-                padding: `${foundationToken.unit[20]} ${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
-            },
-
-            // File list
-            fileList: {
-                gap: foundationToken.unit[8],
-                marginTop: foundationToken.unit[16],
             },
         },
 
         lg: {
-            padding: foundationToken.unit[32],
-
-            // Label section
-            label: {
-                text: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[500],
-                    color: String(foundationToken.colors.gray[700]),
+            // Header section
+            header: {
+                label: {
+                    text: {
+                        fontSize: foundationToken.font.size.body.md.fontSize,
+                        fontWeight: foundationToken.font.weight[500],
+                        color: String(foundationToken.colors.gray[700]),
+                    },
+                    marginBottom: foundationToken.unit[8],
+                    gap: foundationToken.unit[2],
                 },
-                marginBottom: foundationToken.unit[8],
-                gap: foundationToken.unit[4],
-            },
-
-            subLabel: {
-                text: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[400],
+                required: {
+                    text: {
+                        color: String(foundationToken.colors.red[500]),
+                    },
+                    gap: foundationToken.unit[8],
+                },
+                subLabel: {
+                    text: {
+                        fontSize: foundationToken.font.size.body.sm.fontSize,
+                        fontWeight: foundationToken.font.weight[400],
+                        color: String(foundationToken.colors.gray[400]),
+                    },
+                    gap: foundationToken.unit[8],
+                },
+                helpIcon: {
+                    width: foundationToken.unit[16],
                     color: String(foundationToken.colors.gray[400]),
-                },
-            },
-
-            required: {
-                text: {
-                    color: String(foundationToken.colors.red[500]),
                 },
             },
 
@@ -283,61 +251,37 @@ export const getUploadTokens = (
                     dragActive: foundationToken.colors.primary[50],
                 },
                 borderRadius: foundationToken.border.radius[12],
-                padding: foundationToken.unit[32],
-                gap: foundationToken.unit[20],
-            },
-
-            // Content area layout
-            slot: {
-                width: foundationToken.unit[32],
-            },
-
-            // Text styling and gaps
-            text: {
-                title: {
-                    color: {
-                        idle: String(foundationToken.colors.gray[600]),
-                        uploading: String(foundationToken.colors.gray[600]),
-                        success: String(foundationToken.colors.gray[600]),
-                        error: String(foundationToken.colors.gray[600]),
+                padding: `${foundationToken.unit[32]} ${foundationToken.unit[40]}`,
+                content: {
+                    slot: {
+                        width: foundationToken.unit[32],
+                        gap: foundationToken.unit[20],
                     },
-                    fontSize: foundationToken.font.size.body.lg.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                },
-                gap: foundationToken.unit[4],
-                filename: {
-                    color: String(foundationToken.colors.gray[700]),
-                    primaryColor: String(foundationToken.colors.primary[600]),
-                    fontSize: foundationToken.font.size.body.lg.fontSize,
-                    fontWeight: foundationToken.font.weight[500],
-                },
-                description: {
-                    color: {
-                        idle: String(foundationToken.colors.gray[500]),
-                        uploading: String(foundationToken.colors.gray[500]),
-                        success: String(foundationToken.colors.gray[500]),
-                        error: String(foundationToken.colors.gray[500]),
+                    text: {
+                        title: {
+                            color: String(foundationToken.colors.primary[600]), // hardcoded filename color for uploading state
+                            fontSize:
+                                foundationToken.font.size.body.lg.fontSize,
+                            fontWeight: foundationToken.font.weight[600],
+                        },
+                        subtitle: {
+                            color: String(foundationToken.colors.gray[500]),
+                            fontSize:
+                                foundationToken.font.size.body.md.fontSize,
+                            fontWeight: foundationToken.font.weight[400],
+                        },
+                        gap: foundationToken.unit[4],
                     },
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[400],
+                    actionable: {
+                        gap: foundationToken.unit[24],
+                        errorText: {
+                            color: String(foundationToken.colors.red[500]),
+                            fontSize:
+                                foundationToken.font.size.body.sm.fontSize,
+                            fontWeight: foundationToken.font.weight[400],
+                        },
+                    },
                 },
-                error: {
-                    color: String(foundationToken.colors.red[500]),
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[400],
-                },
-            },
-
-            // Progress container
-            progressContainer: {
-                gap: foundationToken.unit[20],
-                padding: `${foundationToken.unit[20]} ${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
-            },
-
-            // File list
-            fileList: {
-                gap: foundationToken.unit[8],
-                marginTop: foundationToken.unit[16],
             },
         },
     }

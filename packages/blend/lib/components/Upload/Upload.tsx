@@ -22,6 +22,7 @@ import {
     getVisualUploadState,
     truncateFileList,
 } from './utils'
+import { FOUNDATION_THEME } from '../../tokens'
 
 const FileListDisplay: React.FC<{
     files: UploadedFileWithStatus[]
@@ -34,13 +35,12 @@ const FileListDisplay: React.FC<{
         <Block
             display="flex"
             flexDirection="column"
-            gap={uploadTokens.fileList.gap}
-            marginTop={uploadTokens.fileList.marginTop}
+            gap={uploadTokens.container.content.slot.gap}
         >
             <Block
                 display="flex"
                 flexWrap="wrap"
-                gap={uploadTokens.fileList.gap}
+                gap={FOUNDATION_THEME.unit[10]}
             >
                 {displayFiles.map((file) => (
                     <Tag
@@ -70,9 +70,13 @@ const FileListDisplay: React.FC<{
             </Block>
             {truncatedCount > 0 && (
                 <Text
-                    fontSize={uploadTokens.text.description.fontSize}
-                    fontWeight={uploadTokens.text.description.fontWeight}
-                    color={uploadTokens.text.description.color.idle}
+                    fontSize={
+                        uploadTokens.container.content.text.subtitle.fontSize
+                    }
+                    fontWeight={
+                        uploadTokens.container.content.text.subtitle.fontWeight
+                    }
+                    color={uploadTokens.container.content.text.subtitle.color}
                 >
                     +{truncatedCount} more files
                 </Text>
@@ -91,12 +95,12 @@ const UploadingState: React.FC<{
         display="flex"
         flexDirection="column"
         alignItems="center"
-        gap={uploadTokens.container.gap}
+        gap={uploadTokens.container.content.slot.gap}
     >
         {children && (
             <Block
-                width={uploadTokens.slot.width}
-                height={uploadTokens.slot.width}
+                width={uploadTokens.container.content.slot.width}
+                height={uploadTokens.container.content.slot.width}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -105,38 +109,55 @@ const UploadingState: React.FC<{
             </Block>
         )}
 
-        <Text
-            as="span"
-            fontSize={uploadTokens.text.title.fontSize}
-            fontWeight={uploadTokens.text.title.fontWeight}
-            color={uploadTokens.text.title.color.idle}
-            textAlign="center"
+        <Block
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            gap={uploadTokens.container.content.text.gap}
         >
-            Uploading{' '}
             <Text
                 as="span"
-                fontSize={uploadTokens.text.filename.fontSize}
-                fontWeight={uploadTokens.text.filename.fontWeight}
-                color={uploadTokens.text.filename.primaryColor}
-            >
-                '{uploadingFile.file.name}'
-            </Text>
-            ...
-        </Text>
-
-        {description && (
-            <Text
-                as="span"
-                fontSize={uploadTokens.text.description.fontSize}
-                fontWeight={uploadTokens.text.description.fontWeight}
-                color={uploadTokens.text.description.color.uploading}
+                fontSize={uploadTokens.container.content.text.title.fontSize}
+                fontWeight={
+                    uploadTokens.container.content.text.title.fontWeight
+                }
+                color={uploadTokens.container.content.text.subtitle.color}
                 textAlign="center"
             >
-                {description}
+                Uploading{' '}
+                <Text
+                    as="span"
+                    fontSize={
+                        uploadTokens.container.content.text.title.fontSize
+                    }
+                    fontWeight={
+                        uploadTokens.container.content.text.title.fontWeight
+                    }
+                    color={uploadTokens.container.content.text.title.color}
+                >
+                    '{uploadingFile.file.name}'
+                </Text>
+                ...
             </Text>
-        )}
 
-        <Block width="100%">
+            {description && (
+                <Text
+                    as="span"
+                    fontSize={
+                        uploadTokens.container.content.text.subtitle.fontSize
+                    }
+                    fontWeight={
+                        uploadTokens.container.content.text.subtitle.fontWeight
+                    }
+                    color={uploadTokens.container.content.text.subtitle.color}
+                    textAlign="center"
+                >
+                    {description}
+                </Text>
+            )}
+        </Block>
+
+        <Block width="100%" gap={uploadTokens.container.content.actionable.gap}>
             <ProgressBar
                 value={uploadingFile.progress}
                 size={ProgressBarSize.SMALL}
@@ -165,12 +186,12 @@ const SuccessState: React.FC<{
         display="flex"
         flexDirection="column"
         alignItems="center"
-        gap={uploadTokens.container.gap}
+        gap={uploadTokens.container.content.slot.gap}
     >
         {children && (
             <Block
-                width={uploadTokens.slot.width}
-                height={uploadTokens.slot.width}
+                width={uploadTokens.container.content.slot.width}
+                height={uploadTokens.container.content.slot.width}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -183,13 +204,15 @@ const SuccessState: React.FC<{
             display="flex"
             flexDirection="column"
             alignItems="center"
-            gap={uploadTokens.text.gap}
+            gap={uploadTokens.container.content.text.gap}
         >
             <Text
                 as="span"
-                fontSize={uploadTokens.text.title.fontSize}
-                fontWeight={uploadTokens.text.title.fontWeight}
-                color={uploadTokens.text.title.color.success}
+                fontSize={uploadTokens.container.content.text.title.fontSize}
+                fontWeight={
+                    uploadTokens.container.content.text.title.fontWeight
+                }
+                color={uploadTokens.container.content.text.subtitle.color}
                 textAlign="center"
             >
                 {multiple
@@ -199,9 +222,11 @@ const SuccessState: React.FC<{
 
             <Text
                 as="span"
-                fontSize={uploadTokens.text.description.fontSize}
-                fontWeight={uploadTokens.text.description.fontWeight}
-                color={uploadTokens.text.description.color.success}
+                fontSize={uploadTokens.container.content.text.subtitle.fontSize}
+                fontWeight={
+                    uploadTokens.container.content.text.subtitle.fontWeight
+                }
+                color={uploadTokens.container.content.text.subtitle.color}
                 textAlign="center"
             >
                 {multiple
@@ -210,23 +235,25 @@ const SuccessState: React.FC<{
             </Text>
         </Block>
 
-        {multiple ? (
-            <FileListDisplay
-                files={successfulFiles}
-                onFileRemove={onFileRemove}
-                uploadTokens={uploadTokens}
-            />
-        ) : (
-            onReplaceFile && (
-                <Button
-                    buttonType={ButtonType.SECONDARY}
-                    size={ButtonSize.MEDIUM}
-                    leadingIcon={<Repeat2 />}
-                    text="Replace file"
-                    onClick={onReplaceFile}
+        <Block gap={uploadTokens.container.content.actionable.gap}>
+            {multiple ? (
+                <FileListDisplay
+                    files={successfulFiles}
+                    onFileRemove={onFileRemove}
+                    uploadTokens={uploadTokens}
                 />
-            )
-        )}
+            ) : (
+                onReplaceFile && (
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        leadingIcon={<Repeat2 />}
+                        text="Replace file"
+                        onClick={onReplaceFile}
+                    />
+                )
+            )}
+        </Block>
     </Block>
 )
 
@@ -249,12 +276,12 @@ const ErrorState: React.FC<{
         display="flex"
         flexDirection="column"
         alignItems="center"
-        gap={uploadTokens.container.gap}
+        gap={uploadTokens.container.content.slot.gap}
     >
         {children && (
             <Block
-                width={uploadTokens.slot.width}
-                height={uploadTokens.slot.width}
+                width={uploadTokens.container.content.slot.width}
+                height={uploadTokens.container.content.slot.width}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -267,13 +294,17 @@ const ErrorState: React.FC<{
             display="flex"
             flexDirection="column"
             alignItems="center"
-            gap={uploadTokens.text.gap}
+            gap={uploadTokens.container.content.text.gap}
         >
             <Text
                 as="span"
-                fontSize={uploadTokens.text.title.fontSize}
-                fontWeight={uploadTokens.text.title.fontWeight}
-                color={uploadTokens.text.title.color.error}
+                fontSize={uploadTokens.container.content.text.title.fontSize}
+                fontWeight={
+                    uploadTokens.container.content.text.title.fontWeight
+                }
+                color={
+                    uploadTokens.container.content.actionable.errorText.color
+                }
                 textAlign="center"
             >
                 {multiple
@@ -283,9 +314,11 @@ const ErrorState: React.FC<{
 
             <Text
                 as="span"
-                fontSize={uploadTokens.text.description.fontSize}
-                fontWeight={uploadTokens.text.description.fontWeight}
-                color={uploadTokens.text.description.color.error}
+                fontSize={uploadTokens.container.content.text.subtitle.fontSize}
+                fontWeight={
+                    uploadTokens.container.content.text.subtitle.fontWeight
+                }
+                color={uploadTokens.container.content.text.subtitle.color}
                 textAlign="center"
             >
                 {multiple
@@ -294,24 +327,35 @@ const ErrorState: React.FC<{
             </Text>
         </Block>
 
-        {multiple ? (
-            <FileListDisplay
-                files={errorFiles}
-                onFileRemove={onFileRemove}
-                uploadTokens={uploadTokens}
-            />
-        ) : (
-            errorText && (
-                <Text
-                    fontSize={uploadTokens.text.error.fontSize}
-                    fontWeight={uploadTokens.text.error.fontWeight}
-                    color={uploadTokens.text.error.color}
-                    textAlign="center"
-                >
-                    {errorText}
-                </Text>
-            )
-        )}
+        <Block gap={FOUNDATION_THEME.unit[10]}>
+            {multiple ? (
+                <FileListDisplay
+                    files={errorFiles}
+                    onFileRemove={onFileRemove}
+                    uploadTokens={uploadTokens}
+                />
+            ) : (
+                errorText && (
+                    <Text
+                        fontSize={
+                            uploadTokens.container.content.actionable.errorText
+                                .fontSize
+                        }
+                        fontWeight={
+                            uploadTokens.container.content.actionable.errorText
+                                .fontWeight
+                        }
+                        color={
+                            uploadTokens.container.content.actionable.errorText
+                                .color
+                        }
+                        textAlign="center"
+                    >
+                        {errorText}
+                    </Text>
+                )
+            )}
+        </Block>
     </Block>
 )
 
@@ -325,12 +369,12 @@ const DefaultState: React.FC<{
         display="flex"
         flexDirection="column"
         alignItems="center"
-        gap={uploadTokens.container.gap}
+        gap={uploadTokens.container.content.slot.gap}
     >
         {children && (
             <Block
-                width={uploadTokens.slot.width}
-                height={uploadTokens.slot.width}
+                width={uploadTokens.container.content.slot.width}
+                height={uploadTokens.container.content.slot.width}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -343,13 +387,15 @@ const DefaultState: React.FC<{
             display="flex"
             flexDirection="column"
             alignItems="center"
-            gap={uploadTokens.text.gap}
+            gap={uploadTokens.container.content.text.gap}
         >
             <Text
                 as="span"
-                fontSize={uploadTokens.text.title.fontSize}
-                fontWeight={uploadTokens.text.title.fontWeight}
-                color={uploadTokens.text.title.color.idle}
+                fontSize={uploadTokens.container.content.text.title.fontSize}
+                fontWeight={
+                    uploadTokens.container.content.text.title.fontWeight
+                }
+                color={uploadTokens.container.content.text.subtitle.color}
                 textAlign="center"
             >
                 Choose a file or drag & drop it here
@@ -358,9 +404,13 @@ const DefaultState: React.FC<{
             {description && (
                 <Text
                     as="span"
-                    fontSize={uploadTokens.text.description.fontSize}
-                    fontWeight={uploadTokens.text.description.fontWeight}
-                    color={uploadTokens.text.description.color.idle}
+                    fontSize={
+                        uploadTokens.container.content.text.subtitle.fontSize
+                    }
+                    fontWeight={
+                        uploadTokens.container.content.text.subtitle.fontWeight
+                    }
+                    color={uploadTokens.container.content.text.subtitle.color}
                     textAlign="center"
                 >
                     {description}
@@ -368,12 +418,14 @@ const DefaultState: React.FC<{
             )}
         </Block>
 
-        <Button
-            buttonType={ButtonType.SECONDARY}
-            size={ButtonSize.MEDIUM}
-            text="Browse Files"
-            disabled={disabled}
-        />
+        <Block gap={uploadTokens.container.content.actionable.gap}>
+            <Button
+                buttonType={ButtonType.SECONDARY}
+                size={ButtonSize.MEDIUM}
+                text="Browse Files"
+                disabled={disabled}
+            />
+        </Block>
     </Block>
 )
 
@@ -510,32 +562,38 @@ const Upload: React.FC<UploadProps> = ({
     }
 
     return (
-        <Block className={className} padding={uploadTokens.padding} {...rest}>
+        <Block className={className} {...rest}>
             {/* Label Section */}
             {label && (
                 <Block
                     display="flex"
                     alignItems="center"
-                    justifyContent="space-between"
-                    marginBottom={uploadTokens.label.marginBottom}
+                    gap={uploadTokens.header.required.gap}
+                    marginBottom={uploadTokens.header.label.marginBottom}
                 >
                     <Block
                         display="flex"
                         alignItems="center"
-                        gap={uploadTokens.label.gap}
+                        gap={uploadTokens.header.label.gap}
                     >
                         <Text
-                            fontSize={uploadTokens.label.text.fontSize}
-                            fontWeight={uploadTokens.label.text.fontWeight}
-                            color={uploadTokens.label.text.color}
+                            fontSize={uploadTokens.header.label.text.fontSize}
+                            fontWeight={
+                                uploadTokens.header.label.text.fontWeight
+                            }
+                            color={uploadTokens.header.label.text.color}
                         >
                             {label}
                         </Text>
                         {required && (
                             <Text
-                                fontSize={uploadTokens.label.text.fontSize}
-                                fontWeight={uploadTokens.label.text.fontWeight}
-                                color={uploadTokens.required.text.color}
+                                fontSize={
+                                    uploadTokens.header.label.text.fontSize
+                                }
+                                fontWeight={
+                                    uploadTokens.header.label.text.fontWeight
+                                }
+                                color={uploadTokens.header.required.text.color}
                             >
                                 *
                             </Text>
@@ -543,9 +601,13 @@ const Upload: React.FC<UploadProps> = ({
                     </Block>
                     {subLabel && (
                         <Text
-                            fontSize={uploadTokens.subLabel.text.fontSize}
-                            fontWeight={uploadTokens.subLabel.text.fontWeight}
-                            color={uploadTokens.subLabel.text.color}
+                            fontSize={
+                                uploadTokens.header.subLabel.text.fontSize
+                            }
+                            fontWeight={
+                                uploadTokens.header.subLabel.text.fontWeight
+                            }
+                            color={uploadTokens.header.subLabel.text.color}
                         >
                             {subLabel}
                         </Text>
