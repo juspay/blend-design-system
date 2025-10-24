@@ -60,6 +60,251 @@ A comprehensive date range picker component with calendar interface, time select
             },
         },
     },
+    argTypes: {
+        // Core Props
+        value: {
+            control: false,
+            description: 'Current selected date range with start and end dates',
+            table: {
+                type: { summary: 'DateRange' },
+                category: 'Core',
+            },
+        },
+        onChange: {
+            action: 'date-range-changed',
+            description: 'Callback fired when the selected date range changes',
+            table: {
+                type: { summary: '(range: DateRange) => void' },
+                category: 'Core',
+            },
+        },
+        onPresetSelection: {
+            action: 'preset-selected',
+            description: 'Callback fired when a preset is selected',
+            table: {
+                type: { summary: '(data: PresetSelectionData) => void' },
+                category: 'Core',
+            },
+        },
+        placeholder: {
+            control: { type: 'text' },
+            description:
+                'Placeholder text shown when no date range is selected',
+            table: {
+                type: { summary: 'string' },
+                category: 'Core',
+            },
+        },
+
+        // Date Configuration Props
+        showDateTimePicker: {
+            control: { type: 'boolean' },
+            description: 'Enable time selection in addition to date selection',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Date Configuration',
+            },
+        },
+        minDate: {
+            control: { type: 'date' },
+            description: 'Minimum selectable date',
+            table: {
+                type: { summary: 'Date' },
+                category: 'Date Configuration',
+            },
+        },
+        maxDate: {
+            control: { type: 'date' },
+            description: 'Maximum selectable date',
+            table: {
+                type: { summary: 'Date' },
+                category: 'Date Configuration',
+            },
+        },
+        dateFormat: {
+            control: { type: 'text' },
+            description: 'Format string for date display (e.g., DD/MM/YYYY)',
+            table: {
+                type: { summary: 'string' },
+                category: 'Date Configuration',
+            },
+        },
+        allowSingleDateSelection: {
+            control: { type: 'boolean' },
+            description:
+                'Allow selecting a single date instead of requiring a range',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Date Configuration',
+            },
+        },
+
+        // Preset Props
+        showPresets: {
+            control: { type: 'boolean' },
+            description: 'Show quick preset options (today, last 7 days, etc.)',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'Presets',
+            },
+        },
+        showPreset: {
+            control: { type: 'boolean' },
+            description: 'Alternative prop name for showing presets',
+            table: {
+                type: { summary: 'boolean' },
+                category: 'Presets',
+            },
+        },
+
+        // Restriction Props
+        disableFutureDates: {
+            control: { type: 'boolean' },
+            description: 'Prevent selection of future dates',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Date Restrictions',
+            },
+        },
+        disablePastDates: {
+            control: { type: 'boolean' },
+            description: 'Prevent selection of past dates',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Date Restrictions',
+            },
+        },
+        hideFutureDates: {
+            control: { type: 'boolean' },
+            description: 'Hide future dates from calendar view',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Date Restrictions',
+            },
+        },
+        hidePastDates: {
+            control: { type: 'boolean' },
+            description: 'Hide past dates from calendar view',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Date Restrictions',
+            },
+        },
+
+        // UI Props
+        isDisabled: {
+            control: { type: 'boolean' },
+            description: 'Disable the entire date range picker',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'UI State',
+            },
+        },
+        size: {
+            control: { type: 'select' },
+            options: ['sm', 'md', 'lg'],
+            description: 'Size variant of the date picker',
+            table: {
+                type: { summary: 'DateRangePickerSize' },
+                defaultValue: { summary: 'md' },
+                category: 'UI State',
+            },
+        },
+        maxMenuHeight: {
+            control: { type: 'number', min: 200, max: 800 },
+            description: 'Maximum height of the picker dropdown menu',
+            table: {
+                type: { summary: 'number' },
+                category: 'UI State',
+            },
+        },
+
+        // Mobile Props
+        useDrawerOnMobile: {
+            control: { type: 'boolean' },
+            description: 'Use drawer interface on mobile devices',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'Mobile',
+            },
+        },
+        skipQuickFiltersOnMobile: {
+            control: { type: 'boolean' },
+            description: 'Hide quick filter presets on mobile',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Mobile',
+            },
+        },
+
+        // Complex Props (disabled controls for complex objects)
+        formatConfig: {
+            control: false,
+            description: 'Advanced date formatting configuration',
+            table: {
+                type: { summary: 'DateFormatConfig' },
+                category: 'Advanced',
+            },
+        },
+        triggerConfig: {
+            control: false,
+            description: 'Custom trigger element configuration',
+            table: {
+                type: { summary: 'TriggerConfig' },
+                category: 'Advanced',
+            },
+        },
+        customPresets: {
+            control: false,
+            description: 'Custom preset configurations',
+            table: {
+                type: { summary: 'PresetsConfig' },
+                category: 'Advanced',
+            },
+        },
+        customDisableDates: {
+            control: false,
+            description: 'Function to disable specific dates',
+            table: {
+                type: { summary: 'CustomDateDisableFunction' },
+                category: 'Advanced',
+            },
+        },
+        customRangeConfig: {
+            control: false,
+            description: 'Advanced range calculation configuration',
+            table: {
+                type: { summary: 'CustomRangeConfig' },
+                category: 'Advanced',
+            },
+        },
+        icon: {
+            control: false,
+            description: 'Custom icon element for the trigger',
+            table: {
+                type: { summary: 'ReactNode' },
+                category: 'Advanced',
+            },
+        },
+        triggerElement: {
+            control: false,
+            description: 'Custom trigger element to replace default input',
+            table: {
+                type: { summary: 'ReactNode' },
+                category: 'Advanced',
+            },
+        },
+    },
     tags: ['autodocs'],
 }
 

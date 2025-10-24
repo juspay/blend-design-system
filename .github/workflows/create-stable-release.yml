@@ -120,20 +120,18 @@ jobs:
             - name: Generate Stable Changelog
               run: |
                   VERSION=${{ steps.convert_version.outputs.stable_version }}
-                  LAST_STABLE_TAG=$(git tag -l | grep -v beta | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || echo "")
 
-                  # Create docs directory if it doesn't exist
-                  mkdir -p docs
+                  # Make the changelog generator executable
+                  chmod +x scripts/generate-changelog.js
 
-                  echo "# Changelog for v$VERSION (Stable)" > docs/CHANGELOG.md
-                  echo "" >> docs/CHANGELOG.md
-                  echo "This is a stable release. Changes since last stable release:" >> docs/CHANGELOG.md
-                  echo "" >> docs/CHANGELOG.md
-                  if [[ -n "$LAST_STABLE_TAG" ]]; then
-                    git log $LAST_STABLE_TAG..HEAD --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
-                  else
-                    git log -n 20 --pretty=format:"- %s (%h)" >> docs/CHANGELOG.md
-                  fi
+                  # Generate stable changelog using the new script
+                  node scripts/generate-changelog.js "$VERSION" stable
+
+                  echo "✅ Stable changelog generated successfully"
+
+                  # Show preview
+                  echo "📋 Stable changelog preview:"
+                  head -20 docs/CHANGELOG.md
 
             - name: Format Generated Files
               run: |

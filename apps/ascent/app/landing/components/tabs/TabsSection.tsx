@@ -67,9 +67,9 @@ export const TabsSection = () => {
     }, []) // Empty dependency array ensures this runs only once on mount
 
     const handleTabSelection = (label: string) => {
-        // Handle navigation for changelog tab
-        if (label === 'changelog') {
-            router.push('/changelog')
+        // Handle navigation for docs tab
+        if (label === 'docs') {
+            router.push('/docs')
             return
         }
 

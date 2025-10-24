@@ -1,7 +1,12 @@
-echo "Running code formatting..."
-pnpm format
-
 echo "Checking code formatting..."
-pnpm format:check
+if ! pnpm format:check; then
+  echo "Code formatting issues found. Auto-formatting files..."
+  pnpm format
+  echo "Adding formatted files to staging area..."
+  git add .
+  echo "Files formatted and staged successfully!"
+else
+  echo "Code formatting is already correct!"
+fi
 
 echo "Pre-commit checks passed!"

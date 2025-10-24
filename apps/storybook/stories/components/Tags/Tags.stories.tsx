@@ -28,6 +28,11 @@ import {
     AtSign,
     DollarSign,
     Percent,
+    Plus,
+    Server,
+    Database,
+    Activity,
+    Smartphone,
 } from 'lucide-react'
 
 // Figma Code Connect is configured in Tags.figma.tsx
@@ -1188,6 +1193,483 @@ export const ComprehensiveShowcase: Story = {
         docs: {
             description: {
                 story: 'A comprehensive showcase demonstrating the versatility and various use cases of the Tag component.',
+            },
+        },
+    },
+}
+
+// Edge Cases and Accessibility
+export const EdgeCases: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    Text Length Variations
+                </h3>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '8px',
+                        flexWrap: 'wrap',
+                        alignItems: 'flex-start',
+                    }}
+                >
+                    <Tag text="A" size={TagSize.SM} />
+                    <Tag text="Short" size={TagSize.SM} />
+                    <Tag text="Medium length tag" size={TagSize.SM} />
+                    <Tag
+                        text="Very long tag that demonstrates text wrapping behavior and layout considerations"
+                        size={TagSize.SM}
+                        style={{ maxWidth: '200px' }}
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    Special Characters and Unicode
+                </h3>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <Tag text="🎉 Celebration" leftSlot={<Star size={12} />} />
+                    <Tag text="Café & Résumé" color={TagColor.PURPLE} />
+                    <Tag text="数据分析" color={TagColor.PRIMARY} />
+                    <Tag text="α/β Testing" color={TagColor.SUCCESS} />
+                    <Tag text="<script/> Safe" color={TagColor.ERROR} />
+                    <Tag text="100% Success" leftSlot={<Percent size={12} />} />
+                </div>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    High Contrast & Accessibility
+                </h3>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <Tag
+                        text="High Contrast"
+                        variant={TagVariant.ATTENTIVE}
+                        color={TagColor.NEUTRAL}
+                        size={TagSize.MD}
+                    />
+                    <Tag
+                        text="Screen Reader"
+                        variant={TagVariant.ATTENTIVE}
+                        color={TagColor.ERROR}
+                        size={TagSize.MD}
+                        aria-label="Important error tag for screen readers"
+                    />
+                    <Tag
+                        text="Focus Visible"
+                        variant={TagVariant.SUBTLE}
+                        color={TagColor.PRIMARY}
+                        size={TagSize.MD}
+                        onClick={() => {}}
+                        style={{
+                            outline: '2px solid #3b82f6',
+                            outlineOffset: '2px',
+                        }}
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    Dense Layout Performance
+                </h3>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '4px',
+                        flexWrap: 'wrap',
+                        maxWidth: '600px',
+                    }}
+                >
+                    {Array.from({ length: 50 }, (_, i) => (
+                        <Tag
+                            key={i}
+                            text={`Tag ${i + 1}`}
+                            size={TagSize.XS}
+                            color={
+                                [
+                                    TagColor.PRIMARY,
+                                    TagColor.SUCCESS,
+                                    TagColor.WARNING,
+                                    TagColor.ERROR,
+                                    TagColor.PURPLE,
+                                    TagColor.NEUTRAL,
+                                ][i % 6]
+                            }
+                            variant={
+                                [
+                                    TagVariant.SUBTLE,
+                                    TagVariant.NO_FILL,
+                                    TagVariant.ATTENTIVE,
+                                ][i % 3]
+                            }
+                        />
+                    ))}
+                </div>
+                <p
+                    style={{
+                        fontSize: '12px',
+                        color: '#666',
+                        marginTop: '8px',
+                    }}
+                >
+                    50 tags to test performance and layout with dense content
+                </p>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Edge cases including text length variations, special characters, accessibility features, and performance with many tags.',
+            },
+        },
+    },
+}
+
+// Advanced Interactive Patterns
+export const AdvancedInteractivePatterns: Story = {
+    render: () => {
+        const AdvancedInteractiveComponent = () => {
+            const [selectedCategories, setSelectedCategories] = React.useState([
+                'frontend',
+            ])
+            const [searchTags, setSearchTags] = React.useState([
+                'react',
+                'javascript',
+            ])
+            const [filterMode, setFilterMode] = React.useState<
+                'inclusive' | 'exclusive'
+            >('inclusive')
+
+            const categories = [
+                {
+                    id: 'frontend',
+                    label: 'Frontend',
+                    color: TagColor.PRIMARY,
+                    icon: <User size={12} />,
+                },
+                {
+                    id: 'backend',
+                    label: 'Backend',
+                    color: TagColor.SUCCESS,
+                    icon: <Server size={12} />,
+                },
+                {
+                    id: 'database',
+                    label: 'Database',
+                    color: TagColor.WARNING,
+                    icon: <Database size={12} />,
+                },
+                {
+                    id: 'devops',
+                    label: 'DevOps',
+                    color: TagColor.ERROR,
+                    icon: <Activity size={12} />,
+                },
+                {
+                    id: 'mobile',
+                    label: 'Mobile',
+                    color: TagColor.PURPLE,
+                    icon: <Smartphone size={12} />,
+                },
+            ]
+
+            const availableTags = [
+                'react',
+                'vue',
+                'angular',
+                'javascript',
+                'typescript',
+                'python',
+                'java',
+                'docker',
+                'kubernetes',
+            ]
+
+            const toggleCategory = (categoryId: string) => {
+                setSelectedCategories((prev) =>
+                    prev.includes(categoryId)
+                        ? prev.filter((id) => id !== categoryId)
+                        : [...prev, categoryId]
+                )
+            }
+
+            const removeSearchTag = (tag: string) => {
+                setSearchTags((prev) => prev.filter((t) => t !== tag))
+            }
+
+            const addSearchTag = (tag: string) => {
+                if (!searchTags.includes(tag)) {
+                    setSearchTags((prev) => [...prev, tag])
+                }
+            }
+
+            return (
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '20px',
+                        maxWidth: '800px',
+                    }}
+                >
+                    {/* Category Selection */}
+                    <div>
+                        <h4
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '14px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Select Categories (Multi-select)
+                        </h4>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '8px',
+                                flexWrap: 'wrap',
+                            }}
+                        >
+                            {categories.map((category) => (
+                                <Tag
+                                    key={category.id}
+                                    text={category.label}
+                                    color={category.color}
+                                    variant={
+                                        selectedCategories.includes(category.id)
+                                            ? TagVariant.ATTENTIVE
+                                            : TagVariant.NO_FILL
+                                    }
+                                    leftSlot={category.icon}
+                                    rightSlot={
+                                        selectedCategories.includes(
+                                            category.id
+                                        ) ? (
+                                            <Check size={12} />
+                                        ) : null
+                                    }
+                                    onClick={() => toggleCategory(category.id)}
+                                    style={{
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s ease',
+                                        transform: selectedCategories.includes(
+                                            category.id
+                                        )
+                                            ? 'scale(1.05)'
+                                            : 'scale(1)',
+                                    }}
+                                />
+                            ))}
+                        </div>
+                        <p
+                            style={{
+                                fontSize: '12px',
+                                color: '#666',
+                                margin: '8px 0 0 0',
+                            }}
+                        >
+                            Selected:{' '}
+                            {selectedCategories.length > 0
+                                ? selectedCategories.join(', ')
+                                : 'None'}
+                        </p>
+                    </div>
+
+                    {/* Search Tags with Add/Remove */}
+                    <div>
+                        <h4
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '14px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Search Tags (Removable)
+                        </h4>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '8px',
+                                flexWrap: 'wrap',
+                                marginBottom: '12px',
+                            }}
+                        >
+                            {searchTags.map((tag) => (
+                                <Tag
+                                    key={tag}
+                                    text={tag}
+                                    color={TagColor.PRIMARY}
+                                    variant={TagVariant.SUBTLE}
+                                    leftSlot={<Hash size={12} />}
+                                    rightSlot={<X size={12} />}
+                                    onClick={() => removeSearchTag(tag)}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                            ))}
+                            {searchTags.length === 0 && (
+                                <span
+                                    style={{
+                                        fontSize: '12px',
+                                        color: '#666',
+                                        fontStyle: 'italic',
+                                    }}
+                                >
+                                    No search tags active
+                                </span>
+                            )}
+                        </div>
+
+                        <div>
+                            <h5
+                                style={{
+                                    margin: '0 0 8px 0',
+                                    fontSize: '12px',
+                                    color: '#666',
+                                }}
+                            >
+                                Add Tags:
+                            </h5>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    gap: '6px',
+                                    flexWrap: 'wrap',
+                                }}
+                            >
+                                {availableTags
+                                    .filter((tag) => !searchTags.includes(tag))
+                                    .map((tag) => (
+                                        <Tag
+                                            key={tag}
+                                            text={tag}
+                                            size={TagSize.XS}
+                                            variant={TagVariant.NO_FILL}
+                                            color={TagColor.NEUTRAL}
+                                            rightSlot={<Plus size={10} />}
+                                            onClick={() => addSearchTag(tag)}
+                                            style={{ cursor: 'pointer' }}
+                                        />
+                                    ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Filter Mode Toggle */}
+                    <div>
+                        <h4
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '14px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Filter Mode
+                        </h4>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <Tag
+                                text="Inclusive (OR)"
+                                color={TagColor.SUCCESS}
+                                variant={
+                                    filterMode === 'inclusive'
+                                        ? TagVariant.ATTENTIVE
+                                        : TagVariant.NO_FILL
+                                }
+                                leftSlot={<Check size={12} />}
+                                onClick={() => setFilterMode('inclusive')}
+                                style={{ cursor: 'pointer' }}
+                            />
+                            <Tag
+                                text="Exclusive (AND)"
+                                color={TagColor.ERROR}
+                                variant={
+                                    filterMode === 'exclusive'
+                                        ? TagVariant.ATTENTIVE
+                                        : TagVariant.NO_FILL
+                                }
+                                leftSlot={<X size={12} />}
+                                onClick={() => setFilterMode('exclusive')}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Results Summary */}
+                    <div
+                        style={{
+                            padding: '16px',
+                            backgroundColor: '#f8fafc',
+                            borderRadius: '8px',
+                            border: '1px solid #e2e8f0',
+                        }}
+                    >
+                        <h4
+                            style={{
+                                margin: '0 0 8px 0',
+                                fontSize: '14px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Current Filters Summary
+                        </h4>
+                        <div style={{ fontSize: '12px', color: '#666' }}>
+                            <div>
+                                Categories:{' '}
+                                {selectedCategories.length > 0
+                                    ? selectedCategories.join(', ')
+                                    : 'All'}
+                            </div>
+                            <div>
+                                Tags:{' '}
+                                {searchTags.length > 0
+                                    ? searchTags.join(', ')
+                                    : 'None'}
+                            </div>
+                            <div>
+                                Mode:{' '}
+                                {filterMode === 'inclusive'
+                                    ? 'Show items matching ANY tag'
+                                    : 'Show items matching ALL tags'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+        return <AdvancedInteractiveComponent />
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Advanced interactive patterns including multi-select categories, removable search tags, and filter mode toggles.',
             },
         },
     },

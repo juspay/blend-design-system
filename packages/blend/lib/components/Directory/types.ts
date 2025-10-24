@@ -19,6 +19,7 @@ export type NavbarItem = {
     rightSlot?: ReactNode
     onClick?: () => void
     href?: string
+    isSelected?: boolean
 }
 
 export type SectionProps = {
