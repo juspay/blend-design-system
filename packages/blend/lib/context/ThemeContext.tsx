@@ -88,6 +88,10 @@ import {
     ResponsiveStepperTokens,
 } from '../components/Stepper/stepper.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+import {
+    getWorkflowTokens,
+    type ResponsiveWorkflowTokens,
+} from '../components/WorkflowCanvas/workflow.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -129,6 +133,7 @@ export type ComponentTokenType = {
     AVATAR_GROUP?: ResponsiveAvatarGroupTokens
     SIDEBAR?: ResponsiveSidebarTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
+    WORKFLOW_CANVAS?: ResponsiveWorkflowTokens
 }
 
 type ThemeContextType = {
@@ -179,6 +184,7 @@ const ThemeContext = createContext<ThemeContextType>({
         AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),
         SIDEBAR: getSidebarTokens(FOUNDATION_THEME),
         CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
+        WORKFLOW_CANVAS: getWorkflowTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

@@ -33,6 +33,7 @@ export * from './components/Stepper'
 export * from './components/Skeleton'
 export * from './components/KeyValuePair'
 export * from './components/VirtualList'
+export * from './components/WorkflowCanvas'
 
 // V2 Components with Theme Support
 export * from './components/ButtonGroup'
