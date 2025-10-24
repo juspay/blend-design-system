@@ -1,7 +1,8 @@
+import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
 
 const HorizonatlLine = ({
-    color = '#CACFD8',
+    color = FOUNDATION_THEME.colors.gray[300],
     height = '1.2px',
     width = '100%',
 }: {

@@ -1,5 +1,6 @@
 import { forwardRef } from 'react'
 import Block from '../Primitives/Block/Block'
+import { FOUNDATION_THEME } from '../../tokens'
 
 const VerticalLine = forwardRef<
     HTMLDivElement,
@@ -7,7 +8,7 @@ const VerticalLine = forwardRef<
         color?: string
         height?: string
     }
->(({ color = '#CACFD8', height = '100%' }, ref) => {
+>(({ color = FOUNDATION_THEME.colors.gray[300], height = '100%' }, ref) => {
     return (
         <Block
             ref={ref}
