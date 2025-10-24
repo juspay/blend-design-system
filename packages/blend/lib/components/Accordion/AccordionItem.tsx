@@ -7,10 +7,10 @@ import { AccordionType, AccordionChevronPosition } from './types'
 import type { AccordionTokenType } from './accordion.tokens'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { foundationToken } from '../../foundationToken'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { FOUNDATION_THEME } from '../../tokens'
 
 const StyledAccordionItem = styled(RadixAccordion.Item)<{
     $accordionType: AccordionType
@@ -119,8 +119,8 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
     }),
 
     '&:focus-visible': {
-        outline: `2px solid ${foundationToken.colors.primary[500]}`,
-        outlineOffset: foundationToken.spacing[2],
+        outline: `2px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+        outlineOffset: FOUNDATION_THEME.unit[2],
     },
 
     ...(props.$accordionType === AccordionType.NO_BORDER &&
@@ -168,7 +168,7 @@ const StyledSeparator = styled.hr<{
 }>((props) => ({
     margin: 0,
     border: 'none',
-    height: foundationToken.borderWidth[1],
+    height: FOUNDATION_THEME.border.width[1],
     backgroundColor:
         props.$accordionToken.separator.color[props.$accordionType],
 }))
@@ -229,11 +229,11 @@ const AccordionItem = forwardRef<
 
         const getChevronIcon = () => {
             const iconStyles = {
-                width: foundationToken.spacing[16],
-                height: foundationToken.spacing[16],
+                width: FOUNDATION_THEME.unit[16],
+                height: FOUNDATION_THEME.unit[16],
                 color: isDisabled
-                    ? foundationToken.colors.gray[300]
-                    : foundationToken.colors.gray[500],
+                    ? FOUNDATION_THEME.colors.gray[300]
+                    : FOUNDATION_THEME.colors.gray[500],
             }
 
             return (
@@ -285,7 +285,7 @@ const AccordionItem = forwardRef<
                                 alignItems="flex-start"
                                 width="100%"
                                 position="relative"
-                                gap={foundationToken.spacing[8]}
+                                gap={FOUNDATION_THEME.unit[8]}
                             >
                                 {chevronPosition ===
                                     AccordionChevronPosition.LEFT && (
@@ -326,7 +326,7 @@ const AccordionItem = forwardRef<
                                     <Block
                                         display="flex"
                                         alignItems="center"
-                                        gap={foundationToken.spacing[8]}
+                                        gap={FOUNDATION_THEME.unit[8]}
                                     >
                                         <PrimitiveText
                                             fontSize={

@@ -34,11 +34,11 @@ import { Settings, Check } from 'lucide-react'
 import Menu from '../Menu/Menu'
 import { MenuGroupType, MenuAlignment } from '../Menu/types'
 
-import { foundationToken } from '../../foundationToken'
 import { useMobileDataTable } from './hooks/useMobileDataTable'
 import MobileColumnDrawer from './MobileColumnDrawer'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import styled from 'styled-components'
+import { FOUNDATION_THEME } from '../../tokens'
 
 const ScrollableContainer = styled(Block)`
     overflow-x: auto;
@@ -1007,7 +1007,7 @@ const DataTable = forwardRef(
                                                             .table.body.cell
                                                             .fontSize,
                                                     backgroundColor:
-                                                        foundationToken.colors
+                                                        FOUNDATION_THEME.colors
                                                             .gray[0],
                                                 }}
                                             >
