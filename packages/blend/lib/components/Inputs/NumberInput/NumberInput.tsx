@@ -53,6 +53,7 @@ const NumberInput = ({
 
     return (
         <Block
+            data-component-field-wrapper={`field-${name}`}
             display="flex"
             flexDirection="column"
             gap={numberInputTokens.gap}

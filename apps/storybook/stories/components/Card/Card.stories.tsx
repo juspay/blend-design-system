@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import React from 'react'
 import {
     Card,
     CardVariant,
@@ -29,34 +30,227 @@ const meta: Meta<typeof Card> = {
         docs: {
             description: {
                 component: `
-# Card Component
+A flexible container component that supports three distinct variants, each optimized for different use cases and content types.
 
-The Card component supports three main variants:
+## Features
+
+- **Three distinct variants** - Default, Aligned, and Custom for maximum flexibility
+- **Responsive design** with token-based styling system
+- **Hover effects** with smooth transitions and visual feedback
+- **Accessibility support** with proper ARIA attributes and keyboard navigation
+- **Flexible content slots** for complex layouts and content organization
+- **Automatic spacing** and consistent visual hierarchy
+- **Built-in action support** with integrated button handling
 
 ## Variants
 
-### Default Card
-- **Header Box**: Gray 25 background with headerSlot1, headerTitle, headerTag, headerSlot2
-- **Sub Header**: Below header title and tag only
-- **Body Content**: bodySlot1, bodyTitle, content, bodySlot2, actionButton
-- **All slots available**: Complete flexibility with all slot options
+### Default Card (\`variant?: CardVariant.DEFAULT\`)
 
-### Aligned Card  
-- **CardSlot**: Positioned based on alignment (vertical/horizontal)
-- **Center Align**: Optional centering of content
-- **Limited slots**: No headerSlot1 or bodySlot2
-- **Flexible layout**: Perfect for image cards, profiles, or horizontal layouts
+The Default Card provides a structured layout with distinct header and body sections, perfect for data displays, dashboards, and content cards.
 
-### Custom Card
-- **Simple wrapper**: Just 16px padding
-- **Complete control**: Pass any React element as children
-- **Creative freedom**: Build custom layouts without constraints
+**Structure:**
+- **Header Section**: Gray background container with flexible slot system
+- **Sub Header**: Descriptive text positioned below header title and tag
+- **Body Section**: Main content area with multiple customizable slots
+- **Action Area**: Dedicated space for primary actions
 
-## Key Features
-- **Responsive design** with token-based styling
-- **Hover effects** with smooth transitions  
-- **Accessibility support** with proper ARIA attributes
-- **Flexible content** with multiple slot options
+**Available Slots:**
+- \`headerSlot1\` - Leading content in header (icons, avatars, status indicators)
+- \`headerTitle\` - Main header text/title
+- \`headerTag\` - Status tags, badges, or category labels
+- \`headerSlot2\` - Trailing content in header (buttons, menu actions)
+- \`subHeader\` - Descriptive text below header title and tag
+- \`bodySlot1\` - Custom content above body title (alerts, notifications)
+- \`bodyTitle\` - Main body heading
+- \`content\` - Primary body content (descriptions, details)
+- \`bodySlot2\` - Custom content below main content (metrics, statistics)
+- \`actionButton\` - Primary action button with full ButtonProps support
+
+### Aligned Card (\`variant: CardVariant.ALIGNED\`)
+
+The Aligned Card offers flexible positioning of content with a dedicated card slot, ideal for image cards, profiles, and media-rich content.
+
+**Layout Options:**
+- **Vertical Alignment** (\`CardAlignment.VERTICAL\`): Content flows vertically with card slot above text
+- **Horizontal Alignment** (\`CardAlignment.HORIZONTAL\`): Card slot and content positioned side-by-side
+- **Center Alignment** (\`centerAlign: boolean\`): Optional content centering for both layouts
+
+**Available Props:**
+- \`cardSlot\` - Flexible content area (images, icons, avatars, graphics)
+- \`alignment\` - VERTICAL or HORIZONTAL layout direction
+- \`centerAlign\` - Boolean for content centering
+- \`headerTitle\`, \`headerTag\`, \`headerSlot2\` - Header content (no headerSlot1)
+- \`subHeader\` - Descriptive text
+- \`bodySlot1\`, \`bodyTitle\`, \`content\` - Body content (no bodySlot2)
+- \`actionButton\` - Primary action button
+
+### Custom Card (\`variant: CardVariant.CUSTOM\`)
+
+The Custom Card provides complete creative control with minimal constraints - just a 16px padding wrapper and card styling.
+
+**Use Cases:**
+- Dashboard metrics and KPIs with custom layouts
+- Forms and interactive content with unique arrangements
+- Complex content that doesn't fit standard patterns
+- Creative layouts requiring full design control
+
+**Available Props:**
+- \`children\` - Complete custom content with full React element support
+
+## Usage Examples
+
+### Basic Default Card
+\`\`\`tsx
+import { Card, ButtonType, ButtonSize } from '@juspay/blend-design-system';
+
+<Card
+  headerTitle="Analytics Dashboard"
+  headerTag={<Tag text="Pro" color="success" />}
+  subHeader="Real-time performance metrics and insights"
+  bodyTitle="Monthly Summary"
+  content="Track your key metrics and performance indicators with comprehensive analytics."
+  actionButton={{
+    text: "View Full Report",
+    buttonType: ButtonType.PRIMARY,
+    size: ButtonSize.SMALL
+  }}
+/>
+\`\`\`
+
+### Aligned Card with Profile Layout
+\`\`\`tsx
+import { Card, CardVariant, CardAlignment } from '@juspay/blend-design-system';
+
+<Card
+  variant={CardVariant.ALIGNED}
+  alignment={CardAlignment.VERTICAL}
+  centerAlign={true}
+  cardSlot={<Avatar src="/profile.jpg" alt="Profile" size="large" />}
+  headerTitle="John Doe"
+  headerTag={<Tag text="Premium" color="success" />}
+  content="Senior Developer with expertise in React and Node.js."
+  actionButton={{
+    text: "View Profile",
+    buttonType: ButtonType.SECONDARY,
+    size: ButtonSize.SMALL
+  }}
+/>
+\`\`\`
+
+### Custom Dashboard Card
+\`\`\`tsx
+import { Card, CardVariant, Button } from '@juspay/blend-design-system';
+
+<Card variant={CardVariant.CUSTOM}>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <h3>Custom Dashboard</h3>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+      <MetricCard value="142" label="Total Users" />
+      <MetricCard value="89%" label="Success Rate" />
+    </div>
+    <Button text="View Analytics" buttonType={ButtonType.PRIMARY} />
+  </div>
+</Card>
+\`\`\`
+
+## Design Guidelines
+
+### When to Use Each Variant
+
+**Default Card:**
+- Standard content layouts with clear header/body structure
+- Data displays, dashboards, and informational content
+- When you need multiple organized content slots
+- Content that follows consistent information hierarchy
+
+**Aligned Card:**
+- Profile cards and user information displays
+- Image-heavy content and media cards
+- Side-by-side layouts and compact arrangements
+- When visual content (images, icons) is primary
+
+**Custom Card:**
+- Unique layouts that don't fit standard patterns
+- Complex dashboard components with custom metrics
+- Forms and interactive content requiring specific arrangements
+- When you need complete creative control over layout
+
+### Content Organization Best Practices
+
+1. **Information Hierarchy**: Use headerTitle → subHeader → bodyTitle → content flow for clarity
+2. **Visual Balance**: Distribute content across slots to avoid visual clustering
+3. **Action Placement**: Use actionButton for primary actions to maintain consistency
+4. **Slot Usage**: Leverage appropriate slots based on content type and importance
+5. **Responsive Considerations**: Ensure content adapts gracefully across screen sizes
+
+## Accessibility Features
+
+- **Semantic Structure**: Proper heading hierarchy and content organization
+- **Keyboard Navigation**: Full keyboard accessibility for interactive elements
+- **Screen Reader Support**: Appropriate ARIA attributes and content structure
+- **Color Contrast**: Meets WCAG guidelines for text and background contrast
+- **Focus Management**: Clear focus indicators and logical tab order
+
+## Technical Specifications
+
+### Props Interface
+\`\`\`typescript
+type CardProps = {
+  className?: string
+  maxWidth?: string
+} & (DefaultCardProps | AlignedCardProps | CustomCardProps)
+
+// Default Card Props
+type DefaultCardProps = {
+  variant?: CardVariant.DEFAULT
+  headerSlot1?: ReactNode
+  headerTitle?: string
+  headerTag?: ReactNode
+  headerSlot2?: ReactNode
+  subHeader?: string
+  bodySlot1?: ReactNode
+  bodyTitle?: string
+  content?: ReactNode
+  bodySlot2?: ReactNode
+  actionButton?: ButtonProps
+}
+
+// Aligned Card Props  
+type AlignedCardProps = {
+  variant: CardVariant.ALIGNED
+  alignment: CardAlignment
+  centerAlign?: boolean
+  cardSlot?: ReactNode
+  headerTitle?: string
+  headerTag?: ReactNode
+  headerSlot2?: ReactNode
+  subHeader?: string
+  bodySlot1?: ReactNode
+  bodyTitle?: string
+  content?: ReactNode
+  actionButton?: ButtonProps
+}
+
+// Custom Card Props
+type CustomCardProps = {
+  variant: CardVariant.CUSTOM
+  children: ReactNode
+}
+\`\`\`
+
+### Enums
+\`\`\`typescript
+enum CardVariant {
+  DEFAULT = 'default',
+  ALIGNED = 'aligned', 
+  CUSTOM = 'custom'
+}
+
+enum CardAlignment {
+  VERTICAL = 'vertical',
+  HORIZONTAL = 'horizontal'
+}
+\`\`\`
                 `,
             },
         },

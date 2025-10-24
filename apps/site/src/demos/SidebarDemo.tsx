@@ -5,6 +5,7 @@ import {
     Menu as MenuIcon,
     BarChart2,
     Type,
+    Code,
     Calendar as CalendarIcon,
     ListFilter,
     User as UserIcon,
@@ -88,6 +89,7 @@ import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
 import SearchInputDemo from './SearchInputDemo'
 import VirtualListDemo from './VirtualListDemo'
+import CodeBlockDemo from './CodeBlockDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -142,7 +144,8 @@ const SidebarDemo = () => {
         | 'dataRangePicker'
         | 'allComponents'
         | 'virtualList'
-    >('stepper')
+        | 'codeBlock'
+    >('dataRangePicker')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -396,6 +399,8 @@ const SidebarDemo = () => {
                 return <AllComponentsDemo />
             case 'virtualList':
                 return <VirtualListDemo />
+            case 'codeBlock':
+                return <CodeBlockDemo />
             default:
                 return (
                     <div className="p-8">
@@ -461,6 +466,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Square style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'buttons',
                     onClick: () => setActiveComponent('buttons'),
                 },
                 {
@@ -468,6 +474,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Grid style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'buttonGroups',
                     onClick: () => setActiveComponent('buttonGroups'),
                 },
                 {
@@ -475,6 +482,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <TagIcon style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'tags',
                     onClick: () => setActiveComponent('tags'),
                 },
                 {
@@ -482,6 +490,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Users style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'avatars',
                     onClick: () => setActiveComponent('avatars'),
                 },
                 {
@@ -489,6 +498,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Users style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'avatarGroup',
                     onClick: () => setActiveComponent('avatarGroup'),
                 },
                 {
@@ -496,6 +506,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Grid style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'breadcrumb',
                     onClick: () => setActiveComponent('breadcrumb'),
                 },
                 {
@@ -503,6 +514,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <List style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'virtualList',
                     onClick: () => setActiveComponent('virtualList'),
                 },
             ],
@@ -516,6 +528,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <FormInput style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'input',
                     onClick: () => setActiveComponent('input'),
                 },
                 {
@@ -523,6 +536,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Search style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'searchInput',
                     onClick: () => setActiveComponent('searchInput'),
                 },
                 {
@@ -530,6 +544,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Shield style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'otpInput',
                     onClick: () => setActiveComponent('otpInput'),
                 },
                 {
@@ -537,6 +552,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Weight style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'unitInput',
                     onClick: () => setActiveComponent('unitInput'),
                 },
                 {
@@ -546,6 +562,7 @@ const SidebarDemo = () => {
                             style={{ width: '16px', height: '16px' }}
                         />
                     ),
+                    isSelected: activeComponent === 'numberInput',
                     onClick: () => setActiveComponent('numberInput'),
                 },
                 {
@@ -555,6 +572,7 @@ const SidebarDemo = () => {
                             style={{ width: '16px', height: '16px' }}
                         />
                     ),
+                    isSelected: activeComponent === 'dropdownInput',
                     onClick: () => setActiveComponent('dropdownInput'),
                 },
                 {
@@ -562,6 +580,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <FileText style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'textArea',
                     onClick: () => setActiveComponent('textArea'),
                 },
                 {
@@ -569,10 +588,12 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <ListFilter style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'multiValueInput',
                     onClick: () => setActiveComponent('multiValueInput'),
                 },
                 {
                     label: 'Key Value Pair',
+                    isSelected: activeComponent === 'keyValuePair',
                     onClick: () => setActiveComponent('keyValuePair'),
                 },
             ],
@@ -585,6 +606,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Layout style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'topbar',
                     onClick: () => setActiveComponent('topbar'),
                 },
                 {
@@ -592,6 +614,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <MenuIcon style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'menu',
                     items: [
                         {
                             label: 'Item 1',
@@ -600,6 +623,7 @@ const SidebarDemo = () => {
                                     style={{ width: '16px', height: '16px' }}
                                 />
                             ),
+                            isSelected: activeComponent === 'menu',
                             onClick: () => setActiveComponent('menu'),
                             items: [
                                 {
@@ -612,6 +636,7 @@ const SidebarDemo = () => {
                                             }}
                                         />
                                     ),
+                                    isSelected: activeComponent === 'menu',
                                     onClick: () => setActiveComponent('menu'),
                                     items: [
                                         {
@@ -624,6 +649,8 @@ const SidebarDemo = () => {
                                                     }}
                                                 />
                                             ),
+                                            isSelected:
+                                                activeComponent === 'menu',
                                             onClick: () =>
                                                 setActiveComponent('menu'),
                                         },
@@ -646,6 +673,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <List style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'singleSelect',
                     onClick: () => setActiveComponent('singleSelect'),
                 },
                 {
@@ -653,6 +681,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <ListFilter style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'multiSelect',
                     onClick: () => setActiveComponent('multiSelect'),
                 },
                 {
@@ -660,6 +689,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Layout style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'tabs',
                     onClick: () => setActiveComponent('tabs'),
                 },
                 {
@@ -667,6 +697,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <List style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'accordion',
                     onClick: () => setActiveComponent('accordion'),
                 },
                 {
@@ -688,6 +719,7 @@ const SidebarDemo = () => {
                             style={{ width: '16px', height: '16px' }}
                         />
                     ),
+                    isSelected: activeComponent === 'alerts',
                     onClick: () => setActiveComponent('alerts'),
                 },
                 {
@@ -695,6 +727,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <BellIcon style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'snackbar',
                     onClick: () => setActiveComponent('snackbar'),
                 },
                 {
@@ -702,11 +735,13 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Info style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'tooltips',
                     onClick: () => setActiveComponent('tooltips'),
                 },
                 {
                     label: 'Modal',
                     leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    isSelected: activeComponent === 'modal',
                     onClick: () => setActiveComponent('modal'),
                 },
                 {
@@ -716,11 +751,13 @@ const SidebarDemo = () => {
                             style={{ width: '16px', height: '16px' }}
                         />
                     ),
+                    isSelected: activeComponent === 'popover',
                     onClick: () => setActiveComponent('popover'),
                 },
                 {
                     label: 'Drawer',
                     leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    isSelected: activeComponent === 'drawer',
                     onClick: () => setActiveComponent('drawer'),
                 },
             ],
@@ -735,6 +772,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <BarChart2 style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'charts',
                     onClick: () => setActiveComponent('charts'),
                 },
                 {
@@ -742,6 +780,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <FileText style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'statCard',
                     onClick: () => setActiveComponent('statCard'),
                 },
                 {
@@ -749,6 +788,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Square style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'card',
                     onClick: () => setActiveComponent('card'),
                 },
                 {
@@ -756,6 +796,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <BarChart2 style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'progressBar',
                     onClick: () => setActiveComponent('progressBar'),
                 },
                 {
@@ -763,6 +804,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Table style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'dataTable',
                     onClick: () => setActiveComponent('dataTable'),
                 },
                 {
@@ -772,7 +814,15 @@ const SidebarDemo = () => {
                             style={{ width: '16px', height: '16px' }}
                         />
                     ),
+                    isSelected: activeComponent === 'dataRangePicker',
                     onClick: () => setActiveComponent('dataRangePicker'),
+                },
+                {
+                    label: 'Code Block',
+                    leftSlot: (
+                        <Code style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('codeBlock'),
                 },
             ],
         },
@@ -786,6 +836,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Radio style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'radio',
                     onClick: () => setActiveComponent('radio'),
                 },
                 {
@@ -793,6 +844,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Square style={{ width: '16px', height: '16px' }} />
                     ), // Using Square as a placeholder icon
+                    isSelected: activeComponent === 'checkbox',
                     onClick: () => setActiveComponent('checkbox'),
                 },
                 {
@@ -800,6 +852,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Square style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'switch',
                     onClick: () => setActiveComponent('switch'),
                 },
                 {
@@ -807,6 +860,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <ListFilter style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'selectors',
                     onClick: () => setActiveComponent('selectors'),
                 },
             ],
@@ -819,6 +873,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Type style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'fonts',
                     onClick: () => setActiveComponent('fonts'),
                 },
             ],
@@ -831,6 +886,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Palette style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'colorPalette',
                     onClick: () => setActiveComponent('colorPalette'),
                 },
                 {
@@ -838,6 +894,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Grid style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'allComponents',
                     onClick: () => setActiveComponent('allComponents'),
                 },
             ],

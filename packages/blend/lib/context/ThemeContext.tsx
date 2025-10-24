@@ -41,6 +41,8 @@ import {
 import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import type { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
+import type { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import { getTagTokens } from '../components/Tags/tag.tokens'
 import { getSearchInputTokens } from '../components/Inputs/SearchInput/searchInput.tokens'
@@ -85,6 +87,7 @@ import {
     getStepperTokens,
     ResponsiveStepperTokens,
 } from '../components/Stepper/stepper.tokens'
+import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -125,6 +128,7 @@ export type ComponentTokenType = {
     AVATAR?: ResponsiveAvatarTokens
     AVATAR_GROUP?: ResponsiveAvatarGroupTokens
     SIDEBAR?: ResponsiveSidebarTokens
+    CODE_BLOCK?: ResponsiveCodeBlockTokens
 }
 
 type ThemeContextType = {
@@ -174,6 +178,7 @@ const ThemeContext = createContext<ThemeContextType>({
         AVATAR: getAvatarTokens(FOUNDATION_THEME),
         AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),
         SIDEBAR: getSidebarTokens(FOUNDATION_THEME),
+        CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

@@ -3,6 +3,7 @@ import { ColumnDefinition, SearchConfig, AdvancedFilterProps } from '../types'
 export type DataTableHeaderProps<T extends Record<string, unknown>> = {
     title?: string
     description?: string
+    showHeader?: boolean
     showToolbar?: boolean
     enableSearch?: boolean
     searchPlaceholder?: string

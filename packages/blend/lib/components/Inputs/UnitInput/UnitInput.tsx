@@ -163,7 +163,13 @@ const UnitInput = ({
     }
 
     return (
-        <Block display="flex" flexDirection="column" gap={8} width="100%">
+        <Block
+            data-component-field-wrapper={`field-${name}`}
+            display="flex"
+            flexDirection="column"
+            gap={8}
+            width="100%"
+        >
             {(!isSmallScreen || size !== UnitInputSize.LARGE) && (
                 <InputLabels
                     label={label}
