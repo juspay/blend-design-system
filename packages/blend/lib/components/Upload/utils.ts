@@ -107,12 +107,15 @@ export const processFiles =
             }
         })
 
-        onDrop?.(acceptedFiles, rejectedFiles)
-        if (acceptedFiles.length > 0) {
-            onDropAccepted?.(acceptedFiles)
-        }
-        if (rejectedFiles.length > 0) {
-            onDropRejected?.(rejectedFiles)
+        if (onDrop) {
+            onDrop(acceptedFiles, rejectedFiles)
+        } else {
+            if (acceptedFiles.length > 0) {
+                onDropAccepted?.(acceptedFiles)
+            }
+            if (rejectedFiles.length > 0) {
+                onDropRejected?.(rejectedFiles)
+            }
         }
     }
 

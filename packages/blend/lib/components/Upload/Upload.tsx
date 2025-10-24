@@ -19,7 +19,6 @@ import {
     createClickHandler,
     createFileInputChangeHandler,
     getUploadContent,
-    getMainTitle,
     getVisualUploadState,
     truncateFileList,
 } from './utils'
@@ -319,18 +318,9 @@ const ErrorState: React.FC<{
 const DefaultState: React.FC<{
     children?: React.ReactNode
     description?: string
-    isDragActive: boolean
-    isDragAccept: boolean
     disabled: boolean
     uploadTokens: UploadTokenType
-}> = ({
-    children,
-    description,
-    isDragActive,
-    isDragAccept,
-    disabled,
-    uploadTokens,
-}) => (
+}> = ({ children, description, disabled, uploadTokens }) => (
     <Block
         display="flex"
         flexDirection="column"
@@ -362,10 +352,10 @@ const DefaultState: React.FC<{
                 color={uploadTokens.text.title.color.idle}
                 textAlign="center"
             >
-                {getMainTitle(isDragActive, isDragAccept)}
+                Choose a file or drag & drop it here
             </Text>
 
-            {description && !isDragActive && (
+            {description && (
                 <Text
                     as="span"
                     fontSize={uploadTokens.text.description.fontSize}
@@ -378,14 +368,12 @@ const DefaultState: React.FC<{
             )}
         </Block>
 
-        {!isDragActive && (
-            <Button
-                buttonType={ButtonType.SECONDARY}
-                size={ButtonSize.MEDIUM}
-                text="Browse Files"
-                disabled={disabled}
-            />
-        )}
+        <Button
+            buttonType={ButtonType.SECONDARY}
+            size={ButtonSize.MEDIUM}
+            text="Browse Files"
+            disabled={disabled}
+        />
     </Block>
 )
 
@@ -515,8 +503,6 @@ const Upload: React.FC<UploadProps> = ({
             <DefaultState
                 children={children}
                 description={description}
-                isDragActive={isDragActive}
-                isDragAccept={isDragAccept}
                 disabled={disabled}
                 uploadTokens={uploadTokens}
             />

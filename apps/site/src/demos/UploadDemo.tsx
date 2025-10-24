@@ -291,10 +291,9 @@ const UploadDemo = () => {
                             uploadedFiles={uploadedFiles}
                             failedFiles={failedFiles}
                             onDrop={handleDrop}
-                            onDropAccepted={handleFilesAccepted}
-                            onDropRejected={handleFilesRejected}
                             onFileRemove={handleFileRemove}
                             onReplaceFile={handleReplaceFile}
+                            style={{ width: '480px' }}
                         >
                             {playgroundCustomSlot
                                 ? renderCustomSlot()
@@ -379,9 +378,8 @@ const UploadDemo = () => {
                             uploadedFiles={multipleUploadedFiles}
                             failedFiles={multipleFailedFiles}
                             onDrop={handleMultipleDrop}
-                            onDropAccepted={handleMultipleFilesAccepted}
-                            onDropRejected={handleFilesRejected}
                             onFileRemove={handleFileRemove}
+                            style={{ width: '480px' }}
                         >
                             <UploadIcon size={32} color="#6366f1" />
                         </Upload>
