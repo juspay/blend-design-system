@@ -67,6 +67,7 @@ export const Tooltip = ({
                                     )}
                                 <Block flexGrow={1} overflow="hidden">
                                     <PrimitiveText
+                                        data-text={content}
                                         color={tooltipTokens.text.color}
                                         fontSize={
                                             tooltipTokens.text.fontSize[size]
