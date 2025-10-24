@@ -29,6 +29,7 @@ import { getStatCardToken } from '../components/StatCard/statcard.tokens'
 import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
 import { getChartTokens } from '../components/Charts/chart.tokens'
 import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
+import { getStepperTokens } from '../components/Stepper/stepper.tokens'
 import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { getCardTokens } from '../components/Card/card.tokens'
 import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
@@ -104,6 +105,7 @@ const initTokens = (
         CHARTS: componentTokens.CHARTS ?? getChartTokens(foundationTokens),
         SNACKBAR:
             componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
+        STEPPER: componentTokens.STEPPER ?? getStepperTokens(foundationTokens),
         CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
         SKELETON:
             componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
