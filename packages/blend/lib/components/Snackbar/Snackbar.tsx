@@ -56,13 +56,13 @@ export const StyledToast: React.FC<CustomToastProps> = ({
             backgroundColor={snackbarTokens.backgroundColor}
             borderRadius={snackbarTokens.borderRadius}
             padding={snackbarTokens.padding}
-            minWidth={snackbarTokens.minWidth}
             maxWidth={snackbarTokens.maxWidth}
             boxShadow={snackbarTokens.boxShadow}
             {...props}
         >
             {' '}
-            <Block>
+            {/*  need to fix line height to remove margin */}
+            <Block marginTop={4}>
                 <SnackbarIcon variant={variant} />
             </Block>
             <Block display="flex" gap={snackbarTokens.gap}>

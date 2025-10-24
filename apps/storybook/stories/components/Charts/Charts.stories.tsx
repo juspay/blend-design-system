@@ -5,6 +5,9 @@ import {
     ChartType,
     ChartLegendPosition,
     NewNestedDataPoint,
+    AxisType,
+    AxisIntervalType,
+    LegendsChangeType,
 } from '@juspay/blend-design-system'
 import {
     TrendingUp,
@@ -17,21 +20,83 @@ import {
     LineChart,
 } from 'lucide-react'
 
-// Disable animations in Storybook
+// Disable ALL animations in Storybook for Charts
 if (typeof window !== 'undefined') {
     const style = document.createElement('style')
     style.innerHTML = `
+    /* Disable all Recharts animations */
+    .recharts-wrapper,
+    .recharts-wrapper *,
+    .recharts-surface,
+    .recharts-layer,
     .recharts-line-curve,
     .recharts-bar-rectangle,
-    .recharts-pie-sector {
+    .recharts-pie-sector,
+    .recharts-scatter-dots,
+    .recharts-area-area,
+    .recharts-radial-bar-sector,
+    .recharts-funnel-trapezoid,
+    .recharts-sankey-node,
+    .recharts-sankey-link,
+    .recharts-treemap-depth,
+    .recharts-cartesian-axis,
+    .recharts-cartesian-grid,
+    .recharts-polar-grid,
+    .recharts-legend-wrapper,
+    .recharts-tooltip-wrapper,
+    .recharts-brush,
+    .recharts-reference-line,
+    .recharts-reference-area,
+    .recharts-reference-dot,
+    .recharts-error-bar,
+    .recharts-label,
+    .recharts-label-list {
       animation: none !important;
       transition: none !important;
+      animation-duration: 0s !important;
+      animation-delay: 0s !important;
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
     }
-    .recharts-layer {
+    
+    /* Disable any growing/scaling animations */
+    .recharts-wrapper * {
+      transform-origin: initial !important;
+    }
+    
+    /* Force immediate render for all chart elements */
+    .recharts-surface > * {
+      opacity: 1 !important;
+    }
+    
+    /* Specifically disable the left-to-right growing animation */
+    .recharts-bar-rectangle,
+    .recharts-line-curve,
+    .recharts-area-area {
+      stroke-dasharray: none !important;
+      stroke-dashoffset: 0 !important;
+    }
+    
+    /* Disable any width/height animations that cause growing effect */
+    .recharts-wrapper,
+    .recharts-surface,
+    .recharts-responsive-container {
+      transition: none !important;
       animation: none !important;
     }
   `
     document.head.appendChild(style)
+
+    // Also disable animations at the global level for Recharts
+    if (window.requestAnimationFrame) {
+        const originalRAF = window.requestAnimationFrame
+        window.requestAnimationFrame = function (callback) {
+            // For Recharts animations, execute immediately
+            return originalRAF.call(this, function () {
+                callback(Date.now())
+            })
+        }
+    }
 }
 
 const meta: Meta<typeof Charts> = {
@@ -74,8 +139,8 @@ const data = [
 <Charts
   chartType={ChartType.LINE}
   data={data}
-  xAxisLabel="Month"
-  yAxisLabel="Amount ($)"
+  xAxis={{ label: 'Month', showLabel: true, show: true }}
+  yAxis={{ label: 'Amount ($)', showLabel: true, show: true, type: AxisType.CURRENCY }}
   chartHeaderSlot={<h3>Monthly Revenue</h3>}
 />
 \`\`\`
@@ -87,19 +152,12 @@ const data = [
         chartType: {
             control: 'select',
             options: Object.values(ChartType),
-            description: 'The type of chart to render',
+            description:
+                'The type of chart to render (Line, Bar, Pie, Scatter)',
         },
         data: {
             control: 'object',
             description: 'Array of nested data points for the chart',
-        },
-        xAxisLabel: {
-            control: 'text',
-            description: 'Label for the X-axis',
-        },
-        yAxisLabel: {
-            control: 'text',
-            description: 'Label for the Y-axis',
         },
         colors: {
             control: 'object',
@@ -109,6 +167,54 @@ const data = [
             control: 'select',
             options: Object.values(ChartLegendPosition),
             description: 'Position of the legend relative to the chart',
+        },
+        stackedLegends: {
+            control: 'boolean',
+            description: 'Whether to show legends in a stacked layout',
+        },
+        stackedLegendsData: {
+            control: 'object',
+            description:
+                'Data for stacked legends with value, delta, and change type',
+        },
+        barsize: {
+            control: 'number',
+            description: 'Size of bars in bar charts',
+        },
+        xAxis: {
+            control: 'object',
+            description:
+                'X-axis configuration with label, type, formatting options',
+        },
+        yAxis: {
+            control: 'object',
+            description:
+                'Y-axis configuration with label, type, formatting options',
+        },
+        noData: {
+            control: 'object',
+            description:
+                'Configuration for no-data state with title, subtitle, slot, and button',
+        },
+        height: {
+            control: 'number',
+            description: 'Height of the chart in pixels',
+        },
+        showHeader: {
+            control: 'boolean',
+            description: 'Whether to show the chart header',
+        },
+        showCollapseIcon: {
+            control: 'boolean',
+            description: 'Whether to show the collapse/expand icon in header',
+        },
+        isExpanded: {
+            control: 'boolean',
+            description: 'Controlled state for chart expansion',
+        },
+        onExpandedChange: {
+            action: 'expandedChanged',
+            description: 'Callback fired when chart expansion state changes',
         },
         chartHeaderSlot: {
             control: false,
@@ -223,8 +329,21 @@ export const Default: Story = {
     args: {
         chartType: ChartType.LINE,
         data: generateMonthlyData(),
-        xAxisLabel: 'Month',
-        yAxisLabel: 'Amount ($)',
+        xAxis: {
+            label: 'Month',
+            showLabel: true,
+            show: true,
+        },
+        yAxis: {
+            label: 'Amount ($)',
+            showLabel: true,
+            show: true,
+            type: AxisType.CURRENCY,
+        },
+        height: 400,
+        showHeader: true,
+        showCollapseIcon: true,
+        legendPosition: ChartLegendPosition.TOP,
         chartHeaderSlot: (
             <div style={{ fontSize: '18px', fontWeight: 'bold' }}>
                 Monthly Financial Overview
@@ -240,8 +359,17 @@ export const LineChartExample: Story = {
             <Charts
                 chartType={ChartType.LINE}
                 data={generateMonthlyData()}
-                xAxisLabel="Month"
-                yAxisLabel="Amount ($)"
+                xAxis={{
+                    label: 'Month',
+                    showLabel: true,
+                    show: true,
+                }}
+                yAxis={{
+                    label: 'Amount ($)',
+                    showLabel: true,
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
                 colors={['#3b82f6', '#10b981', '#ef4444']}
                 chartHeaderSlot={
                     <div
@@ -302,8 +430,17 @@ export const BarChartExample: Story = {
             <Charts
                 chartType={ChartType.BAR}
                 data={generateMonthlyData()}
-                xAxisLabel="Month"
-                yAxisLabel="Amount ($)"
+                xAxis={{
+                    label: 'Month',
+                    showLabel: true,
+                    show: true,
+                }}
+                yAxis={{
+                    label: 'Amount ($)',
+                    showLabel: true,
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
                 colors={['#8b5cf6', '#f59e0b', '#06b6d4']}
                 chartHeaderSlot={
                     <div
@@ -437,8 +574,17 @@ export const CustomColors: Story = {
             <Charts
                 chartType={ChartType.BAR}
                 data={generateMonthlyData()}
-                xAxisLabel="Month"
-                yAxisLabel="Amount ($)"
+                xAxis={{
+                    label: 'Month',
+                    showLabel: true,
+                    show: true,
+                }}
+                yAxis={{
+                    label: 'Amount ($)',
+                    showLabel: true,
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
                 colors={['#dc2626', '#059669', '#7c3aed']}
                 chartHeaderSlot={
                     <span style={{ fontSize: '18px', fontWeight: 'bold' }}>
@@ -504,8 +650,17 @@ export const ComplexDataExample: Story = {
                 <Charts
                     chartType={ChartType.LINE}
                     data={complexData}
-                    xAxisLabel="Quarter"
-                    yAxisLabel="Users (thousands)"
+                    xAxis={{
+                        label: 'Quarter',
+                        showLabel: true,
+                        show: true,
+                    }}
+                    yAxis={{
+                        label: 'Users (thousands)',
+                        showLabel: true,
+                        show: true,
+                        type: AxisType.NUMBER,
+                    }}
                     colors={['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6']}
                     chartHeaderSlot={
                         <div
@@ -575,8 +730,17 @@ export const InteractiveFeatures: Story = {
             <Charts
                 chartType={ChartType.LINE}
                 data={generateMonthlyData()}
-                xAxisLabel="Month"
-                yAxisLabel="Amount ($)"
+                xAxis={{
+                    label: 'Month',
+                    showLabel: true,
+                    show: true,
+                }}
+                yAxis={{
+                    label: 'Amount ($)',
+                    showLabel: true,
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
                 chartHeaderSlot={
                     <div>
                         <div
@@ -615,8 +779,17 @@ export const EmptyState: Story = {
             <Charts
                 chartType={ChartType.LINE}
                 data={[]}
-                xAxisLabel="Time"
-                yAxisLabel="Value"
+                xAxis={{
+                    label: 'Time',
+                    showLabel: true,
+                    show: true,
+                }}
+                yAxis={{
+                    label: 'Value',
+                    showLabel: true,
+                    show: true,
+                    type: AxisType.NUMBER,
+                }}
                 chartHeaderSlot={
                     <div style={{ textAlign: 'center', padding: '20px' }}>
                         <div
@@ -652,8 +825,17 @@ export const ResponsiveExample: Story = {
             <Charts
                 chartType={ChartType.BAR}
                 data={generateMonthlyData()}
-                xAxisLabel="Month"
-                yAxisLabel="Amount ($)"
+                xAxis={{
+                    label: 'Month',
+                    showLabel: true,
+                    show: true,
+                }}
+                yAxis={{
+                    label: 'Amount ($)',
+                    showLabel: true,
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
                 chartHeaderSlot={
                     <div
                         style={{
@@ -679,6 +861,46 @@ export const ResponsiveExample: Story = {
         docs: {
             description: {
                 story: 'Chart that adapts to container size with responsive design.',
+            },
+        },
+    },
+}
+
+// Interactive Playground
+export const InteractivePlayground: Story = {
+    args: {
+        chartType: ChartType.LINE,
+        data: generateMonthlyData(),
+        height: 400,
+        showHeader: true,
+        showCollapseIcon: true,
+        stackedLegends: false,
+        barsize: 30,
+        legendPosition: ChartLegendPosition.TOP,
+        xAxis: {
+            label: 'Month',
+            showLabel: true,
+            show: true,
+        },
+        yAxis: {
+            label: 'Amount ($)',
+            showLabel: true,
+            show: true,
+            type: AxisType.CURRENCY,
+        },
+        chartHeaderSlot: (
+            <div style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                Interactive Chart Playground
+            </div>
+        ),
+        slot1: (
+            <span style={{ color: '#10b981', fontSize: '14px' }}>+12.5%</span>
+        ),
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interactive playground to experiment with all Charts props using the controls panel.',
             },
         },
     },
