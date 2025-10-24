@@ -42,6 +42,7 @@ export type UploadProps = {
     // Labels and content
     label?: string
     subLabel?: string
+    helpIconHintText?: string
     children?: React.ReactNode
     description?: string
     className?: string
@@ -52,6 +53,9 @@ export type UploadProps = {
     uploadingFiles?: UploadFile[]
     uploadedFiles?: UploadedFileWithStatus[]
     failedFiles?: UploadedFileWithStatus[]
+
+    // Upload configuration
+    enforceFileTypeConsistency?: boolean // Enforce same file type for multiple uploads
 
     // Callbacks - file selection and upload management
     onDrop?: (acceptedFiles: File[], fileRejections: FileRejection[]) => void

@@ -3,8 +3,6 @@ import {
     Upload,
     UploadState,
     FileRejection,
-    UploadFile,
-    UploadedFileWithStatus,
 } from '../../../../packages/blend/lib/components/Upload'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import {
@@ -13,6 +11,8 @@ import {
     FileText,
     CheckCircle,
     AlertCircle,
+    Video,
+    Music,
 } from 'lucide-react'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 
@@ -22,174 +22,13 @@ const UploadDemo = () => {
     const [playgroundDisabled, setPlaygroundDisabled] = useState(false)
     const [playgroundRequired, setPlaygroundRequired] = useState(false)
     const [playgroundCustomSlot, setPlaygroundCustomSlot] = useState(false)
+    const [playgroundHelpIcon, setPlaygroundHelpIcon] = useState(false)
+    const [playgroundEnforceConsistency, setPlaygroundEnforceConsistency] =
+        useState(true)
+    const [playgroundProgressSpeed, setPlaygroundProgressSpeed] = useState(200)
 
-    // Upload state demo
-    const [componentState, setComponentState] = useState<UploadState>(
-        UploadState.IDLE
-    )
-    const [uploadingFiles, setUploadingFiles] = useState<UploadFile[]>([])
-    const [uploadedFiles, setUploadedFiles] = useState<
-        UploadedFileWithStatus[]
-    >([])
-    const [failedFiles, setFailedFiles] = useState<UploadedFileWithStatus[]>([])
-
-    // Multiple file demo state
-    const [multipleUploadState, setMultipleUploadState] = useState<UploadState>(
-        UploadState.IDLE
-    )
-    const [multipleUploadingFiles, setMultipleUploadingFiles] = useState<
-        UploadFile[]
-    >([])
-    const [multipleUploadedFiles, setMultipleUploadedFiles] = useState<
-        UploadedFileWithStatus[]
-    >([])
-    const [multipleFailedFiles, setMultipleFailedFiles] = useState<
-        UploadedFileWithStatus[]
-    >([])
-
-    const generateFileId = () => Math.random().toString(36).substr(2, 9)
-
-    const handleFilesAccepted = (files: File[]) => {
-        // Simulate upload for first file
-        const file = files[0]
-        if (file) {
-            const uploadFile: UploadFile = {
-                id: generateFileId(),
-                file,
-                progress: 0,
-                status: UploadState.UPLOADING,
-            }
-
-            setUploadingFiles([uploadFile])
-            setComponentState(UploadState.UPLOADING)
-
-            const interval = setInterval(() => {
-                setUploadingFiles((prev) =>
-                    prev.map((f) => {
-                        if (f.id === uploadFile.id) {
-                            const newProgress = f.progress + Math.random() * 15
-                            if (newProgress >= 100) {
-                                clearInterval(interval)
-                                setTimeout(() => {
-                                    setUploadingFiles([])
-                                    setUploadedFiles([
-                                        {
-                                            id: uploadFile.id,
-                                            file,
-                                            status: 'success',
-                                        },
-                                    ])
-                                    setComponentState(UploadState.SUCCESS)
-                                    addSnackbar({
-                                        header: 'Upload Complete!',
-                                        description: `${file.name} has been uploaded successfully.`,
-                                    })
-                                }, 500)
-                                return {
-                                    ...f,
-                                    progress: 100,
-                                    status: UploadState.SUCCESS,
-                                }
-                            }
-                            return { ...f, progress: newProgress }
-                        }
-                        return f
-                    })
-                )
-            }, 200)
-        }
-
-        addSnackbar({
-            header: 'Files Selected',
-            description: `Selected ${files.length} file(s): ${files.map((f) => f.name).join(', ')}`,
-        })
-    }
-
-    const handleMultipleFilesAccepted = (files: File[]) => {
-        setMultipleUploadState(UploadState.UPLOADING)
-
-        const uploadingFiles = files.map((file) => ({
-            id: generateFileId(),
-            file,
-            progress: 0,
-            status: UploadState.UPLOADING,
-        }))
-
-        setMultipleUploadingFiles(uploadingFiles)
-
-        // Simulate different outcomes for different files
-        uploadingFiles.forEach((uploadFile, index) => {
-            const interval = setInterval(() => {
-                setMultipleUploadingFiles((prev) =>
-                    prev.map((f) => {
-                        if (f.id === uploadFile.id) {
-                            const newProgress = f.progress + Math.random() * 20
-                            if (newProgress >= 100) {
-                                clearInterval(interval)
-
-                                // Simulate some failures (every 3rd file fails)
-                                const isError = index % 3 === 2
-
-                                setTimeout(() => {
-                                    setMultipleUploadingFiles((prev) =>
-                                        prev.filter(
-                                            (f) => f.id !== uploadFile.id
-                                        )
-                                    )
-
-                                    if (isError) {
-                                        setMultipleFailedFiles((prev) => [
-                                            ...prev,
-                                            {
-                                                id: uploadFile.id,
-                                                file: uploadFile.file,
-                                                status: 'error',
-                                                error: 'File type not supported',
-                                            },
-                                        ])
-                                    } else {
-                                        setMultipleUploadedFiles((prev) => [
-                                            ...prev,
-                                            {
-                                                id: uploadFile.id,
-                                                file: uploadFile.file,
-                                                status: 'success',
-                                            },
-                                        ])
-                                    }
-
-                                    // Check if all files are processed
-                                    const allProcessed = uploadingFiles.every(
-                                        (_, i) => i <= index
-                                    )
-                                    if (allProcessed) {
-                                        const hasErrors = uploadingFiles.some(
-                                            (_, i) => i % 3 === 2
-                                        )
-                                        setMultipleUploadState(
-                                            hasErrors
-                                                ? UploadState.ERROR
-                                                : UploadState.SUCCESS
-                                        )
-                                    }
-                                }, 500)
-
-                                return {
-                                    ...f,
-                                    progress: 100,
-                                    status: isError
-                                        ? UploadState.ERROR
-                                        : UploadState.SUCCESS,
-                                }
-                            }
-                            return { ...f, progress: newProgress }
-                        }
-                        return f
-                    })
-                )
-            }, 300)
-        })
-    }
+    // Simple state for reset buttons
+    const [resetKey, setResetKey] = useState(0)
 
     const handleFilesRejected = (rejections: FileRejection[]) => {
         rejections.forEach((rejection) => {
@@ -200,47 +39,37 @@ const UploadDemo = () => {
         })
     }
 
-    const handleDrop = (
-        acceptedFiles: File[],
-        rejectedFiles: FileRejection[]
-    ) => {
-        if (acceptedFiles.length > 0) {
-            handleFilesAccepted(acceptedFiles)
-        }
-        if (rejectedFiles.length > 0) {
-            handleFilesRejected(rejectedFiles)
-        }
+    // Simple handlers for file type examples
+    const handleImageRejected = (rejectedFiles: FileRejection[]) => {
+        handleFilesRejected(rejectedFiles)
     }
 
-    const handleMultipleDrop = (
-        acceptedFiles: File[],
-        rejectedFiles: FileRejection[]
-    ) => {
-        if (acceptedFiles.length > 0) {
-            handleMultipleFilesAccepted(acceptedFiles)
-        }
-        if (rejectedFiles.length > 0) {
-            handleFilesRejected(rejectedFiles)
-        }
+    const handleVideoRejected = (rejectedFiles: FileRejection[]) => {
+        handleFilesRejected(rejectedFiles)
     }
 
-    const handleFileRemove = (fileId: string) => {
-        setUploadedFiles((prev) => prev.filter((f) => f.id !== fileId))
-        setFailedFiles((prev) => prev.filter((f) => f.id !== fileId))
-        setMultipleUploadedFiles((prev) => prev.filter((f) => f.id !== fileId))
-        setMultipleFailedFiles((prev) => prev.filter((f) => f.id !== fileId))
+    const handleAudioRejected = (rejectedFiles: FileRejection[]) => {
+        handleFilesRejected(rejectedFiles)
     }
 
-    const handleReplaceFile = () => {
-        setComponentState(UploadState.IDLE)
-        setUploadedFiles([])
-        setFailedFiles([])
+    const handlePdfRejected = (rejectedFiles: FileRejection[]) => {
+        handleFilesRejected(rejectedFiles)
     }
 
     const renderCustomSlot = () => <UploadIcon size={32} color="#6366f1" />
 
     return (
         <div className="p-8 space-y-12">
+            {/* Global Reset Button */}
+            <div className="flex justify-end">
+                <button
+                    onClick={() => setResetKey((prev) => prev + 1)}
+                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                >
+                    Reset All Demos
+                </button>
+            </div>
+
             {/* Playground Section */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Playground</h2>
@@ -274,25 +103,64 @@ const UploadDemo = () => {
                                 setPlaygroundCustomSlot(!playgroundCustomSlot)
                             }
                         />
+                        <Switch
+                            label="Help Icon"
+                            checked={playgroundHelpIcon}
+                            onChange={() =>
+                                setPlaygroundHelpIcon(!playgroundHelpIcon)
+                            }
+                        />
+                        <Switch
+                            label="Enforce File Type Consistency"
+                            checked={playgroundEnforceConsistency}
+                            onChange={() =>
+                                setPlaygroundEnforceConsistency(
+                                    !playgroundEnforceConsistency
+                                )
+                            }
+                        />
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                        <label className="text-sm font-medium">
+                            Progress Speed (ms):
+                        </label>
+                        <input
+                            type="range"
+                            min="50"
+                            max="1000"
+                            step="50"
+                            value={playgroundProgressSpeed}
+                            onChange={(e) =>
+                                setPlaygroundProgressSpeed(
+                                    Number(e.target.value)
+                                )
+                            }
+                            className="w-32"
+                        />
+                        <span className="text-sm text-gray-600">
+                            {playgroundProgressSpeed}ms
+                        </span>
                     </div>
 
                     <div className="min-h-[200px] rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
                         <Upload
                             label="Upload Files"
                             subLabel="Max 10MB"
+                            helpIconHintText={
+                                playgroundHelpIcon
+                                    ? 'Upload your files here. Supported formats include CSV files up to 8MB in size.'
+                                    : undefined
+                            }
                             multiple={playgroundMultiple}
                             disabled={playgroundDisabled}
                             required={playgroundRequired}
                             description=".csv only | Max size 8 MB"
                             accept={['.csv']}
                             maxSize={8 * 1024 * 1024} // 8MB
-                            state={componentState}
-                            uploadingFiles={uploadingFiles}
-                            uploadedFiles={uploadedFiles}
-                            failedFiles={failedFiles}
-                            onDrop={handleDrop}
-                            onFileRemove={handleFileRemove}
-                            onReplaceFile={handleReplaceFile}
+                            enforceFileTypeConsistency={
+                                playgroundEnforceConsistency
+                            }
                             style={{ width: '480px' }}
                         >
                             {playgroundCustomSlot
@@ -300,25 +168,6 @@ const UploadDemo = () => {
                                 : undefined}
                         </Upload>
                     </div>
-
-                    {/* Reset Upload State Button */}
-                    {(componentState !== UploadState.IDLE ||
-                        uploadingFiles.length > 0 ||
-                        uploadedFiles.length > 0) && (
-                        <div className="flex justify-center">
-                            <button
-                                onClick={() => {
-                                    setComponentState(UploadState.IDLE)
-                                    setUploadingFiles([])
-                                    setUploadedFiles([])
-                                    setFailedFiles([])
-                                }}
-                                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                            >
-                                Reset Upload State
-                            </button>
-                        </div>
-                    )}
                 </div>
             </div>
 
@@ -333,8 +182,10 @@ const UploadDemo = () => {
                         <Upload
                             label="Profile Picture"
                             required={true}
+                            helpIconHintText="Upload your profile picture. Supported formats: JPG, PNG, GIF up to 5MB."
                             description="Images only"
                             accept={['image/*']}
+                            maxSize={5 * 1024 * 1024}
                         >
                             <Image size={32} color="#10b981" />
                         </Upload>
@@ -347,8 +198,10 @@ const UploadDemo = () => {
                         <Upload
                             label="Documents"
                             subLabel="Optional"
+                            helpIconHintText="Upload your documents in PDF format. Maximum file size is 10MB."
                             description="PDF files only"
                             accept={['application/pdf']}
+                            maxSize={10 * 1024 * 1024}
                         >
                             <FileText size={32} color="#ef4444" />
                         </Upload>
@@ -361,24 +214,20 @@ const UploadDemo = () => {
                 <h2 className="text-2xl font-bold">Multiple Files Upload</h2>
                 <div className="space-y-4">
                     <p className="text-gray-600">
-                        This demo shows multiple file upload with success and
-                        error states:
+                        This demo shows multiple file upload with automatic
+                        duplicate prevention and error handling:
                     </p>
 
                     <div className="max-w-md">
                         <Upload
+                            key={`multiple-${resetKey}`}
                             label="Multiple File Upload"
                             subLabel="Required"
                             required={true}
                             multiple={true}
                             description="Any file type | Max 5 files"
                             maxFiles={5}
-                            state={multipleUploadState}
-                            uploadingFiles={multipleUploadingFiles}
-                            uploadedFiles={multipleUploadedFiles}
-                            failedFiles={multipleFailedFiles}
-                            onDrop={handleMultipleDrop}
-                            onFileRemove={handleFileRemove}
+                            onDropRejected={handleFilesRejected}
                             style={{ width: '480px' }}
                         >
                             <UploadIcon size={32} color="#6366f1" />
@@ -387,12 +236,7 @@ const UploadDemo = () => {
 
                     {/* Reset button */}
                     <button
-                        onClick={() => {
-                            setMultipleUploadState(UploadState.IDLE)
-                            setMultipleUploadingFiles([])
-                            setMultipleUploadedFiles([])
-                            setMultipleFailedFiles([])
-                        }}
+                        onClick={() => setResetKey((prev) => prev + 1)}
                         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                     >
                         Reset Multiple Upload Demo
@@ -486,72 +330,108 @@ const UploadDemo = () => {
             {/* Different File Types */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">File Type Examples</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="space-y-3">
-                        <h3 className="text-sm font-medium">Any File</h3>
+                        <h3 className="text-sm font-medium">
+                            Images Only (JPG, PNG, GIF)
+                        </h3>
                         <Upload
-                            label="Any File Upload"
-                            description="Any file type allowed"
-                            onDropAccepted={(files) =>
-                                addSnackbar({
-                                    header: 'Files Selected',
-                                    description: `${files.length} file(s) selected`,
-                                })
-                            }
-                        >
-                            <UploadIcon size={32} color="#6366f1" />
-                        </Upload>
-                    </div>
-
-                    <div className="space-y-3">
-                        <h3 className="text-sm font-medium">Images Only</h3>
-                        <Upload
+                            key={`image-${resetKey}`}
                             label="Image Upload"
-                            description="Images only"
-                            accept={['image/*']}
-                            onDropAccepted={(files) =>
-                                addSnackbar({
-                                    header: 'Images Selected',
-                                    description: `${files.length} image(s) selected`,
-                                })
-                            }
-                            onDropRejected={(rejections) =>
-                                addSnackbar({
-                                    header: 'Invalid File',
-                                    description:
-                                        rejections[0]?.errors[0]?.message ||
-                                        'Invalid file type',
-                                })
-                            }
+                            description="JPG, PNG, GIF only"
+                            accept={['.jpg', '.jpeg', '.png', '.gif']}
+                            maxSize={5 * 1024 * 1024}
+                            onDropRejected={handleImageRejected}
                         >
                             <Image size={32} color="#10b981" />
                         </Upload>
                     </div>
 
                     <div className="space-y-3">
+                        <h3 className="text-sm font-medium">
+                            Videos Only (MP4, AVI, MOV)
+                        </h3>
+                        <Upload
+                            key={`video-${resetKey}`}
+                            label="Video Upload"
+                            description="MP4, AVI, MOV only"
+                            accept={['.mp4', '.avi', '.mov']}
+                            maxSize={50 * 1024 * 1024}
+                            onDropRejected={handleVideoRejected}
+                        >
+                            <Video size={32} color="#8b5cf6" />
+                        </Upload>
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">
+                            Audio Files (MP3, WAV)
+                        </h3>
+                        <Upload
+                            key={`audio-${resetKey}`}
+                            label="Audio Upload"
+                            description="MP3, WAV only"
+                            accept={['.mp3', '.wav']}
+                            maxSize={20 * 1024 * 1024}
+                            onDropRejected={handleAudioRejected}
+                        >
+                            <Music size={32} color="#f59e0b" />
+                        </Upload>
+                    </div>
+
+                    <div className="space-y-3">
                         <h3 className="text-sm font-medium">PDFs Only</h3>
                         <Upload
+                            key={`pdf-${resetKey}`}
                             label="PDF Upload"
                             description="PDFs only"
                             accept={['application/pdf']}
-                            onDropAccepted={(files) =>
-                                addSnackbar({
-                                    header: 'PDFs Selected',
-                                    description: `${files.length} PDF(s) selected`,
-                                })
-                            }
-                            onDropRejected={(rejections) =>
-                                addSnackbar({
-                                    header: 'Invalid File',
-                                    description:
-                                        rejections[0]?.errors[0]?.message ||
-                                        'Only PDF files allowed',
-                                })
-                            }
+                            maxSize={10 * 1024 * 1024}
+                            onDropRejected={handlePdfRejected}
                         >
                             <FileText size={32} color="#ef4444" />
                         </Upload>
                     </div>
+                </div>
+            </div>
+
+            {/* File Type Consistency Demo */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    File Type Consistency Demo
+                </h2>
+                <div className="space-y-4">
+                    <p className="text-gray-600">
+                        This demo shows how file type consistency enforcement
+                        works. Upload one file type first, then try uploading a
+                        different type:
+                    </p>
+
+                    <div className="max-w-md">
+                        <Upload
+                            key={`consistency-${resetKey}`}
+                            label="Consistent File Types"
+                            subLabel="Required"
+                            helpIconHintText="When enforcing consistency, all files must be of the same type as the first uploaded file."
+                            required={true}
+                            multiple={true}
+                            description="Any file type | Enforces consistency"
+                            maxFiles={5}
+                            enforceFileTypeConsistency={true}
+                            onDropRejected={handleFilesRejected}
+                            style={{ width: '480px' }}
+                        >
+                            <UploadIcon size={32} color="#6366f1" />
+                        </Upload>
+                    </div>
+
+                    {/* Reset button */}
+                    <button
+                        onClick={() => setResetKey((prev) => prev + 1)}
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                    >
+                        Reset Consistency Demo
+                    </button>
                 </div>
             </div>
 

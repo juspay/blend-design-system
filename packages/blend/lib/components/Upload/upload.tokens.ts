@@ -176,7 +176,7 @@ export const getUploadTokens = (
                     },
                     text: {
                         title: {
-                            color: String(foundationToken.colors.primary[600]), // hardcoded filename color for uploading state
+                            color: String(foundationToken.colors.gray[700]), // hardcoded filename color for uploading state
                             fontSize:
                                 foundationToken.font.size.body.lg.fontSize,
                             fontWeight: foundationToken.font.weight[600],
@@ -259,7 +259,7 @@ export const getUploadTokens = (
                     },
                     text: {
                         title: {
-                            color: String(foundationToken.colors.primary[600]), // hardcoded filename color for uploading state
+                            color: String(foundationToken.colors.gray[700]), // hardcoded filename color for uploading state
                             fontSize:
                                 foundationToken.font.size.body.lg.fontSize,
                             fontWeight: foundationToken.font.weight[600],

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState, useCallback } from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { Button, ButtonType, ButtonSize } from '../Button'
@@ -6,14 +6,17 @@ import { ProgressBar, ProgressBarSize } from '../ProgressBar'
 import Tag from '../Tags/Tags'
 import { TagColor, TagVariant, TagShape } from '../Tags/types'
 import { UploadState } from './types'
-import type { UploadProps, UploadedFileWithStatus } from './types'
+import type {
+    UploadProps,
+    UploadedFileWithStatus,
+    UploadFile,
+    FileRejection,
+} from './types'
 import type { UploadTokenType } from './upload.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { Repeat2, X } from 'lucide-react'
+import { Repeat2, X, HelpCircle } from 'lucide-react'
 import {
     useUploadState,
-    validateFile,
-    processFiles,
     updateDragState,
     createDragHandlers,
     createClickHandler,
@@ -21,8 +24,12 @@ import {
     getUploadContent,
     getVisualUploadState,
     truncateFileList,
+    createEnhancedValidator,
+    createEnhancedProcessFiles,
+    createEnhancedProcessFilesFn,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
+import { Tooltip, TooltipSize } from '../Tooltip'
 
 const FileListDisplay: React.FC<{
     files: UploadedFileWithStatus[]
@@ -121,7 +128,7 @@ const UploadingState: React.FC<{
                 fontWeight={
                     uploadTokens.container.content.text.title.fontWeight
                 }
-                color={uploadTokens.container.content.text.subtitle.color}
+                color={uploadTokens.container.content.text.title.color}
                 textAlign="center"
             >
                 Uploading{' '}
@@ -133,7 +140,7 @@ const UploadingState: React.FC<{
                     fontWeight={
                         uploadTokens.container.content.text.title.fontWeight
                     }
-                    color={uploadTokens.container.content.text.title.color}
+                    color={FOUNDATION_THEME.colors.primary[600]}
                 >
                     '{uploadingFile.file.name}'
                 </Text>
@@ -212,7 +219,7 @@ const SuccessState: React.FC<{
                 fontWeight={
                     uploadTokens.container.content.text.title.fontWeight
                 }
-                color={uploadTokens.container.content.text.subtitle.color}
+                color={uploadTokens.container.content.text.title.color}
                 textAlign="center"
             >
                 {multiple
@@ -302,9 +309,7 @@ const ErrorState: React.FC<{
                 fontWeight={
                     uploadTokens.container.content.text.title.fontWeight
                 }
-                color={
-                    uploadTokens.container.content.actionable.errorText.color
-                }
+                color={uploadTokens.container.content.text.title.color}
                 textAlign="center"
             >
                 {multiple
@@ -395,7 +400,7 @@ const DefaultState: React.FC<{
                 fontWeight={
                     uploadTokens.container.content.text.title.fontWeight
                 }
-                color={uploadTokens.container.content.text.subtitle.color}
+                color={uploadTokens.container.content.text.title.color}
                 textAlign="center"
             >
                 Choose a file or drag & drop it here
@@ -438,14 +443,16 @@ const Upload: React.FC<UploadProps> = ({
     required = false,
     label,
     subLabel,
+    helpIconHintText,
     children,
     description,
     className,
     errorText,
-    state = UploadState.IDLE,
-    uploadingFiles = [],
-    uploadedFiles = [],
-    failedFiles = [],
+    state: externalState,
+    uploadingFiles: externalUploadingFiles,
+    uploadedFiles: externalUploadedFiles,
+    failedFiles: externalFailedFiles,
+    enforceFileTypeConsistency = true,
     onDrop,
     onDropAccepted,
     onDropRejected,
@@ -459,6 +466,26 @@ const Upload: React.FC<UploadProps> = ({
 }) => {
     const uploadTokens = useResponsiveTokens<UploadTokenType>('UPLOAD')
     const fileInputRef = useRef<HTMLInputElement>(null)
+
+    // Internal state management
+    const [internalState, setInternalState] = useState<UploadState>(
+        UploadState.IDLE
+    )
+    const [internalUploadingFiles, setInternalUploadingFiles] = useState<
+        UploadFile[]
+    >([])
+    const [internalUploadedFiles, setInternalUploadedFiles] = useState<
+        UploadedFileWithStatus[]
+    >([])
+    const [internalFailedFiles, setInternalFailedFiles] = useState<
+        UploadedFileWithStatus[]
+    >([])
+
+    // Use external state if provided, otherwise use internal state
+    const state = externalState ?? internalState
+    const uploadingFiles = externalUploadingFiles ?? internalUploadingFiles
+    const uploadedFiles = externalUploadedFiles ?? internalUploadedFiles
+    const failedFiles = externalFailedFiles ?? internalFailedFiles
 
     const { internalDragState, setInternalDragState, setDragCounter } =
         useUploadState()
@@ -478,18 +505,172 @@ const Upload: React.FC<UploadProps> = ({
         state
     )
 
-    const validateFileFn = validateFile(accept, maxSize, validator)
-    const processFilesFn = processFiles(
-        disabled,
-        validateFileFn,
-        maxFiles,
-        onDrop,
-        onDropAccepted,
-        onDropRejected
+    const validateFile = useCallback(
+        createEnhancedValidator(
+            accept,
+            maxSize,
+            validator,
+            multiple,
+            enforceFileTypeConsistency,
+            uploadedFiles
+        ),
+        [
+            accept,
+            maxSize,
+            validator,
+            multiple,
+            enforceFileTypeConsistency,
+            uploadedFiles,
+        ]
     )
+
+    const checkDuplicates = useCallback(
+        createEnhancedProcessFiles(uploadingFiles, uploadedFiles, failedFiles),
+        [uploadingFiles, uploadedFiles, failedFiles]
+    )
+
+    const handleInternalDrop = useCallback(
+        (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+            if (disabled) return
+
+            if (acceptedFiles.length > 0) {
+                setInternalState(UploadState.UPLOADING)
+
+                const newUploadingFiles = acceptedFiles.map((file) => ({
+                    id: Math.random().toString(36).substr(2, 9),
+                    file,
+                    progress: 0,
+                    status: UploadState.UPLOADING,
+                }))
+
+                if (multiple) {
+                    setInternalUploadingFiles((prev) => [
+                        ...prev,
+                        ...newUploadingFiles,
+                    ])
+                } else {
+                    setInternalUploadingFiles(newUploadingFiles)
+                }
+
+                newUploadingFiles.forEach((uploadFile) => {
+                    const interval = setInterval(() => {
+                        setInternalUploadingFiles((prev) =>
+                            prev.map((f) => {
+                                if (f.id === uploadFile.id) {
+                                    const newProgress =
+                                        f.progress + Math.random() * 15
+                                    if (newProgress >= 100) {
+                                        clearInterval(interval)
+                                        setTimeout(() => {
+                                            setInternalUploadingFiles((prev) =>
+                                                prev.filter(
+                                                    (f) =>
+                                                        f.id !== uploadFile.id
+                                                )
+                                            )
+
+                                            setInternalUploadedFiles((prev) => [
+                                                ...prev,
+                                                {
+                                                    id: uploadFile.id,
+                                                    file: uploadFile.file,
+                                                    status: 'success',
+                                                },
+                                            ])
+
+                                            setInternalUploadingFiles(
+                                                (current) => {
+                                                    const remaining =
+                                                        current.filter(
+                                                            (f) =>
+                                                                f.id !==
+                                                                uploadFile.id
+                                                        )
+                                                    if (
+                                                        remaining.length === 0
+                                                    ) {
+                                                        setInternalState(
+                                                            UploadState.SUCCESS
+                                                        )
+                                                    }
+                                                    return remaining
+                                                }
+                                            )
+                                        }, 500)
+                                        return {
+                                            ...f,
+                                            progress: 100,
+                                            status: UploadState.SUCCESS,
+                                        }
+                                    }
+                                    return { ...f, progress: newProgress }
+                                }
+                                return f
+                            })
+                        )
+                    }, 200)
+                })
+            }
+
+            if (rejectedFiles.length > 0) {
+                const rejectedFilesWithStatus = rejectedFiles.map(
+                    (rejection) => ({
+                        id: Math.random().toString(36).substr(2, 9),
+                        file: rejection.file,
+                        status: 'error' as const,
+                        error: rejection.errors[0]?.message || 'File rejected',
+                    })
+                )
+
+                setInternalFailedFiles((prev) => [
+                    ...prev,
+                    ...rejectedFilesWithStatus,
+                ])
+                setInternalState(UploadState.ERROR)
+            }
+        },
+        [disabled, multiple]
+    )
+
+    const handleInternalFileRemove = useCallback((fileId: string) => {
+        setInternalUploadedFiles((prev) => prev.filter((f) => f.id !== fileId))
+        setInternalFailedFiles((prev) => prev.filter((f) => f.id !== fileId))
+    }, [])
+
+    const handleInternalReplaceFile = useCallback(() => {
+        setInternalState(UploadState.IDLE)
+        setInternalUploadedFiles([])
+        setInternalFailedFiles([])
+    }, [])
+
+    const finalOnDrop = onDrop || handleInternalDrop
+    const finalOnFileRemove = onFileRemove || handleInternalFileRemove
+    const finalOnReplaceFile = onReplaceFile || handleInternalReplaceFile
+
+    const processFilesFn = useCallback(
+        createEnhancedProcessFilesFn(
+            disabled,
+            validateFile,
+            checkDuplicates,
+            maxFiles,
+            finalOnDrop,
+            onDropAccepted,
+            onDropRejected
+        ),
+        [
+            disabled,
+            validateFile,
+            checkDuplicates,
+            maxFiles,
+            finalOnDrop,
+            onDropAccepted,
+            onDropRejected,
+        ]
+    )
+
     const updateDragStateFn = updateDragState(
         controlledIsDragActive,
-        validateFileFn,
+        validateFile,
         setInternalDragState
     )
     const { handleDragEnter, handleDragLeave, handleDragOver, handleDrop } =
@@ -531,8 +712,8 @@ const Upload: React.FC<UploadProps> = ({
                     successfulFiles={uploadContent.successfulFiles}
                     multiple={uploadContent.multiple}
                     children={children}
-                    onReplaceFile={onReplaceFile}
-                    onFileRemove={onFileRemove}
+                    onReplaceFile={finalOnReplaceFile}
+                    onFileRemove={finalOnFileRemove}
                     uploadTokens={uploadTokens}
                 />
             )
@@ -545,7 +726,7 @@ const Upload: React.FC<UploadProps> = ({
                     multiple={uploadContent.multiple}
                     children={children}
                     errorText={errorText}
-                    onFileRemove={onFileRemove}
+                    onFileRemove={finalOnFileRemove}
                     uploadTokens={uploadTokens}
                 />
             )
@@ -563,7 +744,6 @@ const Upload: React.FC<UploadProps> = ({
 
     return (
         <Block className={className} {...rest}>
-            {/* Label Section */}
             {label && (
                 <Block
                     display="flex"
@@ -599,23 +779,49 @@ const Upload: React.FC<UploadProps> = ({
                             </Text>
                         )}
                     </Block>
+
                     {subLabel && (
-                        <Text
-                            fontSize={
-                                uploadTokens.header.subLabel.text.fontSize
-                            }
-                            fontWeight={
-                                uploadTokens.header.subLabel.text.fontWeight
-                            }
-                            color={uploadTokens.header.subLabel.text.color}
+                        <Block
+                            display="flex"
+                            alignItems="center"
+                            gap={uploadTokens.header.subLabel.gap}
                         >
-                            {subLabel}
-                        </Text>
+                            <Text
+                                fontSize={
+                                    uploadTokens.header.subLabel.text.fontSize
+                                }
+                                fontWeight={
+                                    uploadTokens.header.subLabel.text.fontWeight
+                                }
+                                color={uploadTokens.header.subLabel.text.color}
+                            >
+                                ({subLabel})
+                            </Text>
+
+                            {helpIconHintText && (
+                                <Block contentCentered size={16}>
+                                    <Tooltip
+                                        content={helpIconHintText}
+                                        size={TooltipSize.SMALL}
+                                    >
+                                        <HelpCircle
+                                            size={
+                                                uploadTokens.header.helpIcon
+                                                    .width
+                                            }
+                                            color={
+                                                uploadTokens.header.helpIcon
+                                                    .color
+                                            }
+                                        />
+                                    </Tooltip>
+                                </Block>
+                            )}
+                        </Block>
                     )}
                 </Block>
             )}
 
-            {/* Upload Container */}
             <Block
                 display="flex"
                 flexDirection="column"

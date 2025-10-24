@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import type { FileRejection, UploadFile } from './types'
+import React, { useState } from 'react'
+import type { FileRejection, UploadFile, UploadedFileWithStatus } from './types'
 import { UploadState } from './types'
 
 export const useUploadState = () => {
@@ -365,7 +365,7 @@ export const truncateFileList = (
     displayFiles: { id: string; file: File; status: string }[]
     truncatedCount: number
 } => {
-    const maxFiles = 2 * 2 // Assume 2 files per row
+    const maxFiles = 2 * 2
     if (files.length <= maxFiles) {
         return { displayFiles: files, truncatedCount: 0 }
     }
@@ -374,3 +374,170 @@ export const truncateFileList = (
         truncatedCount: files.length - maxFiles,
     }
 }
+
+export const createEnhancedValidator =
+    (
+        accept: string[],
+        maxSize?: number,
+        validator?: (file: File) => FileRejection['errors'][0] | null,
+        multiple?: boolean,
+        enforceFileTypeConsistency?: boolean,
+        uploadedFiles?: UploadedFileWithStatus[]
+    ) =>
+    (file: File): FileRejection['errors'] => {
+        const errors: FileRejection['errors'] = []
+
+        if (accept.length > 0) {
+            const isAccepted = accept.some((acceptedType) => {
+                if (acceptedType.startsWith('.')) {
+                    return file.name
+                        .toLowerCase()
+                        .endsWith(acceptedType.toLowerCase())
+                }
+                return file.type.match(acceptedType.replace(/\*/g, '.*'))
+            })
+            if (!isAccepted) {
+                errors.push({
+                    code: 'file-invalid-type',
+                    message: `File type not accepted. Accepted types: ${accept.join(', ')}`,
+                })
+            }
+        }
+
+        if (maxSize && file.size > maxSize) {
+            errors.push({
+                code: 'file-too-large',
+                message: `File is too large. Maximum size: ${Math.round(maxSize / (1024 * 1024))} MB`,
+            })
+        }
+
+        if (
+            multiple &&
+            enforceFileTypeConsistency &&
+            uploadedFiles &&
+            uploadedFiles.length > 0
+        ) {
+            const existingFileType = uploadedFiles[0]?.file.type
+            if (existingFileType && file.type !== existingFileType) {
+                errors.push({
+                    code: 'file-type-inconsistent',
+                    message: `All files must be of the same type. Expected: ${existingFileType.split('/')[1]?.toUpperCase() || existingFileType}`,
+                })
+            }
+        }
+
+        // Custom validation
+        if (validator) {
+            const customError = validator(file)
+            if (customError) {
+                errors.push(customError)
+            }
+        }
+
+        return errors
+    }
+
+// Check for duplicate files
+export const createEnhancedProcessFiles =
+    (
+        uploadingFiles: UploadFile[],
+        uploadedFiles: UploadedFileWithStatus[],
+        failedFiles: UploadedFileWithStatus[]
+    ) =>
+    (files: File[]): { unique: File[]; duplicates: File[] } => {
+        const existingFileKeys = new Set([
+            ...uploadingFiles.map(
+                (f) => `${f.file.name}-${f.file.size}-${f.file.lastModified}`
+            ),
+            ...uploadedFiles.map(
+                (f) => `${f.file.name}-${f.file.size}-${f.file.lastModified}`
+            ),
+            ...failedFiles.map(
+                (f) => `${f.file.name}-${f.file.size}-${f.file.lastModified}`
+            ),
+        ])
+
+        const unique: File[] = []
+        const duplicates: File[] = []
+        const processedKeys = new Set<string>()
+
+        files.forEach((file) => {
+            const fileKey = `${file.name}-${file.size}-${file.lastModified}`
+            if (existingFileKeys.has(fileKey) || processedKeys.has(fileKey)) {
+                duplicates.push(file)
+            } else {
+                unique.push(file)
+                processedKeys.add(fileKey)
+            }
+        })
+
+        return { unique, duplicates }
+    }
+
+export const createEnhancedProcessFilesFn =
+    (
+        disabled: boolean,
+        validateFileFn: (file: File) => FileRejection['errors'],
+        checkDuplicatesFn: (files: File[]) => {
+            unique: File[]
+            duplicates: File[]
+        },
+        maxFiles?: number,
+        onDrop?: (
+            acceptedFiles: File[],
+            rejectedFiles: FileRejection[]
+        ) => void,
+        onDropAccepted?: (files: File[]) => void,
+        onDropRejected?: (rejections: FileRejection[]) => void
+    ) =>
+    (files: FileList) => {
+        if (disabled) return
+
+        const fileArray = Array.from(files)
+        let filesToProcess = fileArray
+
+        if (maxFiles && fileArray.length > maxFiles) {
+            filesToProcess = fileArray.slice(0, maxFiles)
+        }
+
+        const acceptedFiles: File[] = []
+        const rejectedFiles: FileRejection[] = []
+
+        filesToProcess.forEach((file) => {
+            const errors = validateFileFn(file)
+            if (errors.length === 0) {
+                acceptedFiles.push(file)
+            } else {
+                rejectedFiles.push({ file, errors })
+            }
+        })
+
+        const { unique: uniqueAcceptedFiles, duplicates } =
+            checkDuplicatesFn(acceptedFiles)
+
+        if (duplicates.length > 0) {
+            const duplicateRejections: FileRejection[] = duplicates.map(
+                (file) => ({
+                    file,
+                    errors: [
+                        {
+                            code: 'file-duplicate',
+                            message: `File "${file.name}" is already uploaded or being processed`,
+                        },
+                    ],
+                })
+            )
+            rejectedFiles.push(...duplicateRejections)
+        }
+
+        if (onDrop) {
+            onDrop(uniqueAcceptedFiles, rejectedFiles)
+        } else {
+            if (uniqueAcceptedFiles.length > 0) {
+                onDropAccepted?.(uniqueAcceptedFiles)
+            }
+            if (rejectedFiles.length > 0) {
+                onDropRejected?.(rejectedFiles)
+            }
+        }
+    }
