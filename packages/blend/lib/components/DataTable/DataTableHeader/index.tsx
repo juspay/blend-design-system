@@ -80,6 +80,7 @@ const DataTableHeader = forwardRef<
         {
             title,
             description,
+            showHeader = true,
             showToolbar = true,
             enableSearch = false,
             searchPlaceholder = 'Search...',
@@ -102,6 +103,12 @@ const DataTableHeader = forwardRef<
         const [isDrawerOpen, setIsDrawerOpen] = useState(false)
         const [isSearchOpen, setIsSearchOpen] = useState(false)
 
+        // Don't render anything if showHeader is false
+        if (!showHeader) {
+            return null
+        }
+
+        // Don't render if no content to show and toolbar is disabled
         if (!title && !description && !showToolbar) {
             return null
         }
@@ -523,7 +530,7 @@ const DataTableHeader = forwardRef<
                                                 alignOffset={-20}
                                                 secondaryAction={{
                                                     onClick: onClearAllFilters,
-                                                    isDisabled:
+                                                    disabled:
                                                         !searchConfig.query.trim() &&
                                                         advancedFilters.length ===
                                                             0,

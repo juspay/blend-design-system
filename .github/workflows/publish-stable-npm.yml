@@ -117,36 +117,69 @@ jobs:
                     echo "⚠️  Warning: Expected $VERSION but NPM shows $PUBLISHED_VERSION for latest tag"
                   fi
 
-            - name: Update Release Notes
+            - name: Generate Enhanced Release Notes
+              if: steps.check_published.outputs.already_published != 'true'
+              run: |
+                  VERSION="${{ steps.verify_version.outputs.version }}"
+
+                  # Generate enhanced release notes
+                  cat > /tmp/release-notes.md << EOF
+                  # 🎉 Stable Release v${VERSION}
+
+                  **This stable release is now published to NPM and ready for production use!**
+
+                  ## 📦 Installation
+
+                  \`\`\`bash
+                  # Install latest stable version
+                  npm install @juspay/blend-design-system@latest
+
+                  # Install specific version
+                  npm install @juspay/blend-design-system@${VERSION}
+
+                  # Yarn
+                  yarn add @juspay/blend-design-system@latest
+                  \`\`\`
+
+                  ## 📋 Package Information
+
+                  | Property | Value |
+                  |----------|-------|
+                  | **Package** | \`@juspay/blend-design-system\` |
+                  | **Version** | \`${VERSION}\` |
+                  | **NPM Tag** | \`latest\` |
+                  | **Published** | $(date -u '+%Y-%m-%d %H:%M:%S UTC') |
+                  | **Node Compatibility** | >=18.0.0 |
+
+                  ## 🚀 What's Included
+
+                  This stable release includes all features and fixes from the corresponding beta version, thoroughly tested and ready for production environments.
+
+                  ## 📚 Documentation & Resources
+
+                  - [📖 Component Documentation](https://your-docs-url.com)
+                  - [🎨 Storybook](https://your-storybook-url.com)
+                  - [🔧 Migration Guide](https://github.com/juspay/blend-design-system/blob/main/MIGRATION.md)
+                  - [🐛 Report Issues](https://github.com/juspay/blend-design-system/issues/new)
+
+                  ## 🔗 Quick Links
+
+                  - [View on NPM](https://www.npmjs.com/package/@juspay/blend-design-system)
+                  - [Full Changelog](https://github.com/juspay/blend-design-system/blob/main/docs/CHANGELOG.md)
+                  - [Release Notes](https://github.com/juspay/blend-design-system/releases)
+
+                  ---
+
+                  **🙏 Thank you for using Blend Design System!**
+                  EOF
+
+            - name: Update GitHub Release with Enhanced Notes
               if: steps.check_published.outputs.already_published != 'true'
               uses: softprops/action-gh-release@v2
               with:
                   tag_name: v${{ steps.verify_version.outputs.version }}
                   name: Release v${{ steps.verify_version.outputs.version }}
-                  body: |
-                      # Release v${{ steps.verify_version.outputs.version }}
-
-                      🎉 **Stable release published to NPM!**
-
-                      ## Installation
-                      ```bash
-                      npm install @juspay/blend-design-system@latest
-                      # or
-                      npm install @juspay/blend-design-system@${{ steps.verify_version.outputs.version }}
-                      ```
-
-                      ## NPM Package Info
-                      - **Package**: `@juspay/blend-design-system`
-                      - **Version**: `${{ steps.verify_version.outputs.version }}`
-                      - **Tag**: `latest`
-                      - **Published**: $(date -u)
-
-                      ## What's Changed
-                      This stable release includes all changes from the corresponding beta version.
-
-                      ---
-
-                      **Full Changelog**: https://github.com/juspay/blend-design-system/releases
+                  body_path: /tmp/release-notes.md
                   draft: false
                   prerelease: false
 
