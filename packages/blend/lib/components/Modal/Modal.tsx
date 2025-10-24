@@ -85,7 +85,7 @@ const ModalHeader = ({
                 >
                     {title && (
                         <Text
-                            data-modal-title={title}
+                            data-header-text={title}
                             variant="heading.sm"
                             fontWeight={600}
                             color={modalTokens.header.text.title.color}
@@ -97,7 +97,7 @@ const ModalHeader = ({
                 </Block>
                 {subtitle && (
                     <Text
-                        data-modal-subtitle={subtitle}
+                        data-header-subtitle-text={subtitle}
                         variant="code.lg"
                         color={modalTokens.header.text.subtitle.color}
                         fontWeight={400}
