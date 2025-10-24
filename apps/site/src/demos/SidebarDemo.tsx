@@ -84,6 +84,7 @@ import {
 } from '../../../../packages/blend/lib/main'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
+import StepperDemo from './StepperDemo'
 import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
 import SearchInputDemo from './SearchInputDemo'
@@ -137,6 +138,7 @@ const SidebarDemo = () => {
         | 'multiValueInput'
         | 'topbar'
         | 'otpInput'
+        | 'stepper'
         | 'keyValuePair'
         | 'card'
         | 'dataRangePicker'
@@ -385,6 +387,8 @@ const SidebarDemo = () => {
                 return <PopoverDemo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
+            case 'stepper':
+                return <StepperDemo />
             case 'topbar':
                 return <TopbarDemo />
             case 'keyValuePair':
@@ -695,6 +699,13 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'accordion',
                     onClick: () => setActiveComponent('accordion'),
+                },
+                {
+                    label: 'Stepper',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('stepper'),
                 },
             ],
         },

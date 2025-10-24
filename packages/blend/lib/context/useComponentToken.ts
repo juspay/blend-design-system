@@ -28,6 +28,7 @@ import type { ResponsiveDrawerTokens } from '../components/Drawer/drawer.tokens'
 import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
 import { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
+import { ResponsiveStepperTokens } from '../components/Stepper/stepper.tokens'
 import { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { ResponsiveCardTokens } from '../components/Card/card.tokens'
 import { ResponsiveSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
@@ -71,6 +72,7 @@ export const useComponentToken = (
     | ResponsiveDrawerTokens
     | ResponsiveChartTokens
     | ResponsiveSnackbarTokens
+    | ResponsiveStepperTokens
     | ResponsiveKeyValuePairTokens
     | ResponsiveCardTokens
     | ResponsiveSkeletonTokens
@@ -142,6 +144,8 @@ export const useComponentToken = (
             return componentTokens.CHARTS
         case 'SNACKBAR':
             return componentTokens.SNACKBAR
+        case 'STEPPER':
+            return componentTokens.STEPPER
         case 'KEYVALUEPAIR':
             return componentTokens.KEYVALUEPAIR
         case 'CARD':
